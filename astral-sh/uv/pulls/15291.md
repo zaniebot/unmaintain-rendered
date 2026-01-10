@@ -1,0 +1,49 @@
+```yaml
+number: 15291
+title: Force cache indexes to set hash digests and cache info
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: charlie/ca
+created_at: 2025-08-14T22:11:18Z
+updated_at: 2025-08-14T22:28:57Z
+url: https://github.com/astral-sh/uv/pull/15291
+synced_at: 2026-01-10T06:44:33Z
+```
+
+# Force cache indexes to set hash digests and cache info
+
+---
+
+_Pull request opened by @charliermarsh on 2025-08-14 22:11_
+
+## Summary
+
+Making it harder to accidentally omit these.
+
+---
+
+_Label `internal` added by @charliermarsh on 2025-08-14 22:11_
+
+---
+
+_Marked ready for review by @charliermarsh on 2025-08-14 22:11_
+
+---
+
+_Merged by @charliermarsh on 2025-08-14 22:28_
+
+---
+
+_Closed by @charliermarsh on 2025-08-14 22:28_
+
+---
+
+_Branch deleted on 2025-08-14 22:28_
+
+---
