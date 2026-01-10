@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add None type - astral-sh/ruff #11788</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add None type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11788">#11788</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-06-06 22:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-06-06 22:52</div>
+            <div class="timeline-body"><p>Add type for None.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-06 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-06-06 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-06-06 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-06 23:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-07 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 06:21</div>
+            <div class="timeline-body"><p>Looks good. I encourage you to land PRs without review if you consider them trivial or feel very certain about them. It's not that I mind reviewing them, but it can help you to move quicker (a bit less rebasing etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/semantic/types.rs</code>:31 on 2024-06-07 12:29</div>
+            <div class="timeline-body"><p>I'm okay with this if it unblocks your work on type narrowing, but in the long term, I'm not sure we should represent <code>None</code> as a distinct kind of type. Mypy and pyright have both had a lot of bugs because of the extent to which they special-case <code>None</code> (pyright particularly), and I'd like us to think hard about whether we need to do so to the same extent that they've done.</p>
+<p>What's actually special about <code>None</code>? Three things, I think:</p>
+<ol>
+<li>When we see <code>None</code> in a type annotation, we should immediately desugar that to <code>Instance(types.NoneType)</code> (or <a href="https://github.com/python/typeshed/blob/4da35728277ee15c16f578ecf62acfc71b8caadf/stdlib/_typeshed/__init__.pyi#L308-L311">the typeshed backport</a> for Python less than 3.10)</li>
+<li>When printing the type to users in diagnostics, we should immediately resugar it from <code>Instance(types.NoneType)</code> to <code>None</code></li>
+<li>We need to understand internally that <code>NoneType</code> has exactly one instance, <code>None</code>, so that you can use identity checks such as <code>x is not None</code> for type narrowing</li>
+</ol>
+<p>Well, I say &quot;three things&quot;, but actually, the third point isn't unique at all! Other singletons exist in Python, such as <code>...</code>, <code>NotImplemented</code>, <code>typing.NoDefault</code> on py313+, etc. Mypy and pyright both support narrowing unions including <code>types.EllipsisType</code> with <code>x is not ...</code>, and I think we should too. And maybe it would be reasonable for a user to narrow a <code>bool | str</code> union via a <code>x is not True and x is not False</code> check.</p>
+<p>So does <code>None</code> really need to be its own variant in the enum here? Or should we have a more generalised way of representing builtin types that only have 1 or 2 possible instances, and that can therefore be narrowed via identity checks?</p>
+<p>As I say, I'm fine with this for now, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types.rs</code>:31 on 2024-06-07 14:20</div>
+            <div class="timeline-body"><p>This is a good question, and I debated the same thing while working on this PR.</p>
+<p>I went with this for now basically because otherwise I would have had to wait for typeshed to be ready, and I needed some representation of <code>None</code> for type narrowing to work. But I think it will probably be better to switch to <code>Instance(types.NoneType)</code> once we have typeshed in place. I'll add a TODO for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/semantic/types.rs</code>:31 on 2024-06-07 14:22</div>
+            <div class="timeline-body"><p>Great, sounds like we're aligned. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/semantic/types.rs</code>:31 on 2024-06-07 14:22</div>
+            <div class="timeline-body"><p>I'll have typeshed for you soon!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-06-07 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-06-07 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-06-07 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-07 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

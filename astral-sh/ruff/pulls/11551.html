@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect excludes in `ruff server` configuration discovery - astral-sh/ruff #11551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect excludes in <code>ruff server</code> configuration discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11551">#11551</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-26 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-26 23:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Right now, we're discovering configuration files even within (e.g.) virtual environments, because we're recursing without respecting the <code>exclude</code> field on parent configuration.</p>
+<p>Closes https://github.com/astral-sh/ruff-vscode/issues/478.</p>
+<h2>Test Plan</h2>
+<p>Installed Pandas; verified that I saw no warnings:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1309177/dcf4115c-d7b3-453b-b7c7-afdd4804d6f5" alt="Screenshot 2024-05-26 at 8 09 05 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2024-05-26 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-26 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @charliermarsh on 2024-05-26 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-26 23:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:158 on 2024-05-26 23:46</div>
+            <div class="timeline-body"><p>This is loosely drawn from <code>python_files_in_path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-05-26 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-27 00:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-05-27 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-27 00:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:88 on 2024-05-27 00:36</div>
+            <div class="timeline-body"><p>We need some sort of mechanism here because we have to both immutably borrow <code>index</code> in <code>filter_entry</code> (which <em>has</em> to be a closure) and mutably borrow it in the <code>for</code> loop body.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-05-27 09:45</div>
+            <div class="timeline-body"><p>So, if I understand this change correctly, does it mean that the root cause of the issue is that the server uses a low level API from the linter (<code>check_path</code>) which means the server doesn't benefit from any logic before that?</p>
+<p>If that's the case, then I don't think the server benefits from the cache either and I wonder what other logic would be required here. Nevertheless, I don't think that needs to be checked or addressed in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:88 on 2024-05-27 09:51</div>
+            <div class="timeline-body"><p>Yeah, I don't see any obvious way to avoid using <code>RefCell</code> without collecting them all in a vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:128 on 2024-05-27 13:28</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                    .rfind(|(path, _)| directory.starts_with(path))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:155 on 2024-05-27 13:31</div>
+            <div class="timeline-body"><p>I first assumed that the <code>{</code> starts a new block, and only after removing it realised that it starts the <code>for</code> body.</p>
+<p>I think it would be good to extract the <code>WalkDir::new</code> into a variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-27 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-27 13:34</div>
+            <div class="timeline-body"><p>A possible alternative to avoid the <code>RefCell</code> is to use <code>WalkDir::skip_current_dir</code> instead of the <code>filter_entries</code> API. It avoids the need for a closure,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>So, if I understand this change correctly, does it mean that the root cause of the issue is that the server uses a low level API from the linter (check_path) which means the server doesn't benefit from any logic before that?</p>
+</blockquote>
+<p>Yes, I believe so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 15:08</div>
+            <div class="timeline-body"><p>If either of you want to modify and merge + release this today, feel free -- otherwise I may be able to get to it tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:40</div>
+            <div class="timeline-body"><p>Gonna try and fix-up + merge this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:53</div>
+            <div class="timeline-body"><p>I removed <code>RefCell</code> in favor of <code>skip_current_dir()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-27 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-27 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

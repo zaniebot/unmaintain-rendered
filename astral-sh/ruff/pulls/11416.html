@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[redknot] add module type and attribute lookup for some types - astral-sh/ruff #11416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[redknot] add module type and attribute lookup for some types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11416">#11416</a>
+        opened by <a href="https://github.com/plredmond">@plredmond</a>
+        on 2024-05-14 00:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-14 00:56</div>
+            <div class="timeline-body"><ul>
+<li>Add a module type, <code>ModuleTypeId</code></li>
+<li>Add an attribute lookup method <code>get_member</code> for <code>Type</code><ul>
+<li>Only implemented for <code>ModuleTypeId</code> and <code>ClassTypeId</code></li>
+<li>[x] Should this be a trait?
+<em>Answer: no</em></li>
+<li>[x] Uses <code>unwrap</code>, but we should remove that. Maybe add a new variant to <code>QueryError</code>?
+<em>Answer: Return <code>Option&lt;Type&gt;</code> as is done elsewhere</em></li>
+</ul>
+</li>
+<li>Add <code>infer_definition_type</code> case for <code>Import</code></li>
+<li>Add <code>infer_expr_type</code> case for <code>Attribute</code></li>
+<li>Add a test to exercise these</li>
+<li>[x] remove all NOTE/FIXME/TODO after discussing with reviewers</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-14 01:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[redknot] attr chain lookup for unspecified-encoding rule" to "[redknot] module attr chain lookup for unspecified-encoding rule" by @plredmond on 2024-05-14 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[redknot] module attr chain lookup for unspecified-encoding rule" to "[redknot] module type, attribute type lookup" by @plredmond on 2024-05-24 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[redknot] module type, attribute type lookup" to "[redknot] module type, attribute lookup" by @plredmond on 2024-05-24 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[redknot] module type, attribute lookup" to "[redknot] add module type and attribute lookup for some types" by @plredmond on 2024-05-24 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @plredmond on 2024-05-24 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @plredmond on 2024-05-24 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @plredmond on 2024-05-24 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-24 21:51</div>
+            <div class="timeline-body"><p>Since you folks were ooo, I added questions that I had as NOTE/TODO/FIXME comments in the diff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-05-27 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:66 on 2024-05-27 14:50</div>
+            <div class="timeline-body"><p>I think it would be okay to change the signature of <code>get_member</code> to return <code>QueryResult&lt;Option&lt;Type&gt;&gt;</code>.  I don't think we should panic because it's likely that a lint rule uses this API to test if a class has a specific member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:57 on 2024-05-27 14:51</div>
+            <div class="timeline-body"><p>I don't think we necessarily need a trait. Defining a <code>type_id.get_member</code> method seems sufficient because we don't need to dynamically call <code>get_member</code> on any <code>type_id</code> (we use static dispatch here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:376 on 2024-05-27 14:56</div>
+            <div class="timeline-body"><p>Uh interesting. I assumed that <code>Module</code> would store the <code>FileId</code> but it indeed stores the <code>PathBuf</code>. I wonder if we should change <code>Module</code> to store a <code>FileId</code> instead of the <code>Path</code>. But I need to think this through more carefully before we do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-27 14:58</div>
+            <div class="timeline-body"><p>Looks good to me overall but I let @carljm approve who has more insight on what the actual inference logic should be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:55 on 2024-05-28 03:22</div>
+            <div class="timeline-body"><p>I'm OK with simplified naming that leaves out <code>_type</code>; we understand that we are working with types here, everything is a type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:66 on 2024-05-28 03:25</div>
+            <div class="timeline-body"><p>Yes, I agree that this method should return <code>QueryResult&lt;Option&lt;Type&gt;&gt;</code>. &quot;No such member&quot; and &quot;query error (e.g. cancelled)&quot; are distinct results that should be distinctly represented (and the &quot;no such member&quot; result is not an error.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:71 on 2024-05-28 03:27</div>
+            <div class="timeline-body"><p>This is OK as is, but might make sense to wrap this up into <code>ClassTypeId.get_member()</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 03:32</div>
+            <div class="timeline-body"><p>Accessing a member of a union should really be a type error if any of the unioned types lack the member. In inference-only mode we won't want to issue this error, though -- I think we should add <code>Unknown</code> to the member type union instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:88 on 2024-05-28 03:35</div>
+            <div class="timeline-body"><p>In an intersection, the type must be all of the intersected types, so if any of those have the member, it has the member. So we can return a type if any of the types have it; if more than one has it, we should return the intersection of those types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:410 on 2024-05-28 03:38</div>
+            <div class="timeline-body"><p>These all look good, can remove the NOTE</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 03:45</div>
+            <div class="timeline-body"><p>This is excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-28 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 07:40</div>
+            <div class="timeline-body"><p>Long-term it would be interesting to still return a &quot;guessed&quot; type when only some variants implement the specific member. It could allow for better recovery in some situations (e.g. intelli sense). The API would need to be explicit that the type isn't certain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 15:58</div>
+            <div class="timeline-body"><p>Yes, that's actually what my comment proposes, that e.g. if we have <code>x: A | B | C</code> and we access <code>x.foo</code>, and types <code>A</code> and <code>B</code> have a <code>foo</code> attribute but <code>C</code> does not, we would return <code>A.foo | B.foo | Unknown</code> instead of erroring. Effectively this is our best guess of the type, and the union with <code>Unknown</code> is the marker of our uncertainty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:66 on 2024-05-28 16:41</div>
+            <div class="timeline-body"><p>Yes, this is obvious in hindsight. :sweat_smile: ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:376 on 2024-05-28 16:42</div>
+            <div class="timeline-body"><p>Is there any change required for <code>ModuleTypeId</code> here? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 17:10</div>
+            <div class="timeline-body"><p>Ok! This approach (returning the union of <code>get_member</code> results for each type in the union, and adding <code>Unknown</code> once if any of result is <code>None</code>) makes more sense than what I was suggesting. I can do that in a followup PR if desired.</p>
+<p>One question: Is there any case where <code>get_member</code> of a union type <em>doesn't</em> return a result?</p>
+<p>For example, if you have <code>A | B</code> and neither has a <code>.foo</code> attribute, would <code>(A | B).get_member(&quot;foo&quot;)</code> be <code>Type::Unknown</code>? (sorry abusing syntax here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:88 on 2024-05-28 17:17</div>
+            <div class="timeline-body"><ul>
+<li>No types have the member, return <code>None</code></li>
+<li>One type has the member, return the member type (or a singleton intersection containing it?).</li>
+<li>Two types have the member, return the intersection of the member types.</li>
+<li>Two types have the member, but one type doesn't have the member...? It seems to me that the intersection ought to be empty.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @plredmond on 2024-05-28 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-28 17:18</div>
+            <div class="timeline-body"><p>Thanks for your review. I've made requested changes and asked some questions to describe the follow-up work in comments. Let me know when/if it's ok to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 17:24</div>
+            <div class="timeline-body"><p>Yeah this is a good question, and I don't have a clear answer yet. I need to think through more carefully when we should return None vs Unknown, and how that will interact with inference-only vs type-checking modes.</p>
+<p>In principle a nice clean answer would to always use Unknown and never return None. But I worry that this doesn't allow us to distinguish &quot;attribute doesn't exist&quot; from &quot;attribute exists but resolving its type gives us Unknown.&quot; But maybe it's ok to not distinguish these from the caller, if we're able to surface diagnostics wherever we create an Unknown. Which I think we should be able to. (It may require passing some kind of diagnostic-sink to all these methods.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 17:28</div>
+            <div class="timeline-body"><p>On the other hand I can imagine that in some lint rules we might want to be able to distinguish these cases, without necessarily creating a diagnostic for the missing attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:88 on 2024-05-28 17:37</div>
+            <div class="timeline-body"><p>There never a need for singleton intersection (or union), it should  always simplify to just the single type.</p>
+<p>In the final case, the type that is missing the attribute should just contribute nothing to the intersection, it shouldn't contribute the bottom type (thus making the intersection empty). I would have to think a bit more about the right way to think about this formally, but I'm sure it's the right behavior. A &amp; B &amp; C must be an A and a B and a C, so if only A and B have the attribute, we know the attribute is present and its type is A.foo &amp; B.foo; C contributes no information about its type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:376 on 2024-05-28 17:39</div>
+            <div class="timeline-body"><p>I think it's fine as is for now. We can always change later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:452 on 2024-05-28 17:42</div>
+            <div class="timeline-body"><p>Just realized we should actually call this <code>get_class_member</code> because ClassTypeId is used by both Class and Instance types, and the set of visible attributes can vary in each case.</p>
+<p>(Not 100% sure this is the best way to handle it, but it's the naming convention currently used otherwise here, so let's stick to it until/unless we switch to a different approach.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:457 on 2024-05-28 17:43</div>
+            <div class="timeline-body"><p>And we can remove <code>get_class_member</code> from this TODO list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-05-28 17:45</div>
+            <div class="timeline-body"><p>I think with the one method name change I suggested, this is ready to merge. The union and intersection TODOs don't specify all the details we discussed in those comment threads, but they don't need to, especially since we're not totally clear on all those details yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-28 17:47</div>
+            <div class="timeline-body"><p>Oh there are a couple clippy issues to fix, too.</p>
+<p>Looks like you could easily support AnnotatedAssignment the same as Assignment for now (with a TODO to actually look at the annotation) and our Definition handling would cover all variants?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-28 19:28</div>
+            <div class="timeline-body"><ul>
+<li>Clippy: rename an unused variable which we'll use after completing the <code>get_member</code> case for unions</li>
+<li>Added case to <code>infer_definition_type</code> for <code>AnnotatedAssignment</code> variant which returns <code>Type::Unknown</code> when the value isn't present; includes a TODO to look at the annotation (which presumably will have a type expression)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:599 on 2024-05-28 19:31</div>
+            <div class="timeline-body"><p>I left this as a TODO for now, but could implement it if you tell me what you'd like. It's the <em>type</em> of a module, which doesn't have much info when python prints it out. Probably a bikeshed.</p>
+<pre><code class="language-python">&gt;&gt;&gt; import x
+&gt;&gt;&gt; x
+&lt;module 'x' from '/home/asteroid/code/redknot.attrchain/x.py'&gt;
+&gt;&gt;&gt; type(x)
+&lt;class 'module'&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:599 on 2024-05-28 19:33</div>
+            <div class="timeline-body"><p>I think copying the runtime output (for the module object, not the type, since this is not the general module type but the literal type for a particular module) is reasonable here; totally fine with you either doing it in this PR or leaving it as a todo for later, up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:83 on 2024-05-28 19:33</div>
+            <div class="timeline-body"><p>I think that keeping those cases distinct is important at this level, but perhaps it should wait until we have a use case to drive their clarification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-05-28 19:36</div>
+            <div class="timeline-body"><p>Clippy still not happy with that variable name, but once you appease clippy this looks good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-28 19:37</div>
+            <div class="timeline-body"><p>Oh weird. ~~Maybe the CI-clippy is getting some stricter options than my local one.~~[Edit: No, I just forgot to run it] Ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:599 on 2024-05-28 19:57</div>
+            <div class="timeline-body"><p>Well, <code>DisplayType</code> only has access to <code>TypeStore</code>. We'd need a <code>SemanticDb</code> to call <code>ModuleTypeId::name</code> and/or a <code>Files</code> to call <code>Files::path</code> on <code>FileId</code>. I don't think I can access either of these in this context. I'll leave it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @plredmond on 2024-05-28 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-05-28 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-28 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use speculative parsing for with-items - astral-sh/ruff #11770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use speculative parsing for with-items</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11770">#11770</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-06 04:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-06 04:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the with-items parsing logic to use speculative parsing instead.</p>
+<h3>Existing logic</h3>
+<p>First, let's understand the previous logic:</p>
+<ol>
+<li>The parser sees <code>(</code>, it doesn't know whether it's part of a parenthesized with items or a parenthesized expression</li>
+<li>Consider it a parenthesized with items and perform a hand-rolled speculative parsing</li>
+<li>Then, verify the assumption and if it's incorrect convert the parsed with items into an appropriate expression which becomes part of the first with item</li>
+</ol>
+<p>Here, in (3) there are lots of edge cases which we've to deal with:</p>
+<ol>
+<li>Trailing comma with a single element should be <a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2140-L2153">converted to the expression as is</a></li>
+<li>Trailing comma with multiple elements should be <a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2155-L2178">converted to a tuple expression</a></li>
+<li>Limit the allowed expression based on whether it's <a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2144-L2152">(1)</a> or <a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2157-L2171">(2)</a></li>
+<li><a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2181-L2200">Consider postfix expressions</a> after (3)</li>
+<li><a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2203-L2208">Consider <code>if</code> expressions</a> after (3)</li>
+<li><a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2210-L2228">Consider binary expressions</a> after (3)</li>
+</ol>
+<p>Consider other cases like</p>
+<ul>
+<li><a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2020-L2035">Single generator expression</a></li>
+<li><a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2122-L2130">Expecting a comma</a></li>
+</ul>
+<p>And, this is all possible only if we allow parsing these expressions in the <a href="https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L2287-L2334">with item parsing logic</a>.</p>
+<h3>Speculative parsing</h3>
+<p>With #11457 merged, we can simplify this logic by changing the step (3) from above to just rewind the parser back to the <code>(</code> if our assumption (parenthesized with-items) was incorrect and then continue parsing it considering parenthesized expression.</p>
+<p>This also behaves a lot similar to what a PEG parser does which is to consider the first grammar rule and if it fails consider the second grammar rule and so on.</p>
+<p>resolves: #11639</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Verify the updated snapshots</li>
+<li>[x] Run the fuzzer on around 3000 valid source code (locally)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-06-06 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-06-06 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-06 05:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-06-06 06:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-06 06:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__ambiguous_lpar_with_items.py.snap</code>:1441 on 2024-06-06 06:38</div>
+            <div class="timeline-body"><p>The problem here is that the speculative parsing failed so we fallback to considering parenthesized expression. The terminator token for with-items parsing with the kind being parenthesized expression is <code>:</code>, so it'll expect a <code>,</code> after a with item (<code>item</code>) but not at the end (<code>:</code>).</p>
+<p>I think I want to improve the logic of parsing comma-separated list from <code>(element comma) (element comma) ...</code> to <code>(element) (comma element) (comma element) ...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_colon.py.snap</code>:60 on 2024-06-06 06:38</div>
+            <div class="timeline-body"><p>This is an improvement: https://play.ruff.rs/3c1fd581-e5df-4aa4-8528-7550e6d63e4f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__ambiguous_lpar_with_items.py.snap</code>:1367 on 2024-06-06 06:41</div>
+            <div class="timeline-body"><p>I haven't included this logic (https://github.com/astral-sh/ruff/blob/9b2cf569b22855439fa916be6fc417b372074f42/crates/ruff_python_parser/src/parser/statement.rs#L1910-L1940) which took care of raising &quot;expected an expression&quot; error. It's an edge case where we would raise a different error while in the following we'd raise &quot;trailing comma not allowed&quot;.</p>
+<pre><code class="language-py">with (item1, item2), item3,: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__ambiguous_lpar_with_items.py.snap</code>:1367 on 2024-06-06 06:46</div>
+            <div class="timeline-body"><p>I couldn't find a simple way to do it and I'm not sure if it's worth it. The &quot;trailing comma&quot; error is raised by list parsing while the &quot;expect an expression&quot; is raised by the with-item parsing logic. Even if I'm able to add the logic, both errors will be displayed because they're raised at separate location but they both contradict each other. So, we should only raise one of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__ambiguous_lpar_with_items.py.snap</code>:1367 on 2024-06-06 07:27</div>
+            <div class="timeline-body"><p>I think both errors are equally good and ask the same fo the user. Remove the comma or add an expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__unclosed_ambiguous_lpar.py.snap</code>:29 on 2024-06-06 07:29</div>
+            <div class="timeline-body"><p>This seems better :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__unclosed_ambiguous_lpar_eof.py.snap</code>:18 on 2024-06-06 07:30</div>
+            <div class="timeline-body"><p>It seems that this PR changed whether the with item includes the range of the parentheses. Is this expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 07:31</div>
+            <div class="timeline-body"><p>The old parse tree here was probably slightly better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-06 07:37</div>
+            <div class="timeline-body"><p>Nice! I find the new code much easier to reason about!</p>
+<p>The only thought I have is if we should restrict error recovery while we're doing speculative parsing to avoid that the error recovery breaks our validation if the with items is what we think it is... I do think it isn't necessary because the error recovery never eats over a character that we use to determine whether our assumption was correct (<code>)</code> or <code>:</code> both exit the recovery logic).</p>
+<p>Edit: ~~I recommend you to run the fuzzer for a while in the background. It proved useful last time ;)~~
+I should read the summary more carefully. You already did that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__with__unclosed_ambiguous_lpar_eof.py.snap</code>:18 on 2024-06-06 08:36</div>
+            <div class="timeline-body"><p>Yes. This is for the following code:</p>
+<pre><code class="language-py">with (
+</code></pre>
+<p>Here, the speculative parsing fails and thus it becomes a parenthesized expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 08:52</div>
+            <div class="timeline-body"><p>Yeah, missing closing parenthesis is difficult to recover from because it's occurring in list parsing which skips over the <code>:</code> token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-06 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-06 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-06 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 09:08</div>
+            <div class="timeline-body"><p>Should the recovery skip over the <code>:</code>? Shouldn't it stop when seeing a <code>:</code> because it is part of the with items recovery set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 09:20</div>
+            <div class="timeline-body"><p>For the initial assumption of parenthesized with-items, the <code>:</code> is not part of the recovery set (maybe it should?) and so we don't stop at <code>:</code> which means we can't reliably detect whether our assumption was correct. This is why it falls back to parenthesized expression and parsing it as a tuple expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 10:22</div>
+            <div class="timeline-body"><p>Yeah, i think it probably should. Or we risk running over the end of the case header</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-06 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@with_items_parenthesized_missing_comma.py.snap</code>:246 on 2024-06-06 11:45</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/11775</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

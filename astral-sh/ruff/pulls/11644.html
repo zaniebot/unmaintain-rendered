@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Implement `return-in-generator` (`B901`) - astral-sh/ruff #11644</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Implement <code>return-in-generator</code> (<code>B901</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11644">#11644</a>
+        opened by <a href="https://github.com/tobb10001">@tobb10001</a>
+        on 2024-05-31 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tobb10001">@tobb10001</a> on 2024-05-31 17:58</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR implements the rule B901, which is part of the opinionated rules of <code>flake8-bugbear</code>.</p>
+<p>This rule seems to be desired in <code>ruff</code> as per https://github.com/astral-sh/ruff/issues/3758 and https://github.com/astral-sh/ruff/issues/2954#issuecomment-1441162976.</p>
+<h2>Test Plan</h2>
+<p>As this PR was made closely following the <a href="https://github.com/astral-sh/ruff/blob/8a25531a7144fd4a6b62c54efde1ef28e2dc18c4/CONTRIBUTING.md">CONTRIBUTING.md</a>, it tests using the snapshot approach, that is described there.</p>
+<h2>Sources</h2>
+<p>The implementation is inspired by <a href="https://github.com/PyCQA/flake8-bugbear/blob/d1aec4cbef7c4a49147c428b7e4a97e497b5d163/bugbear.py#L1092">the original implementation in the <code>flake8-bugbear</code> repository</a>. The error message and <a href="https://github.com/PyCQA/flake8-bugbear/blob/d1aec4cbef7c4a49147c428b7e4a97e497b5d163/tests/b901.py">test file</a> where also copied from there.</p>
+<p>The documentation I came up with on my own and needs improvement. Maybe the example given in https://github.com/astral-sh/ruff/issues/2954#issuecomment-1441162976 could be used, but maybe they are too complex, I'm not sure.</p>
+<h2>Open Questions</h2>
+<ul>
+<li><p>[x] Documentation. (See above.)</p>
+</li>
+<li><p>[x] Can I access the parent in a visitor?</p>
+<p>The <a href="https://github.com/PyCQA/flake8-bugbear/blob/d1aec4cbef7c4a49147c428b7e4a97e497b5d163/bugbear.py#L1100">original implementation</a> references the <code>yield</code> statement's parent to check if it is an expression statement. I didn't find a way to do this in <code>ruff</code> and used the <code>is_expresssion_statement</code> field on the visitor instead. What are your thoughts on this? Is it possible and / or desired to access the parent node here?</p>
+</li>
+<li><p>[x] Is <code>Option::is_some(...)</code> -&gt; <code>...unwrap()</code> the right thing to do?</p>
+<p>Referring to <a href="https://github.com/tobb10001/ruff/blob/9d5a280f71103ef33df5676d00a6c68c601261ac/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs?plain=1#L91-L96">this piece of code</a>. From my understanding, the <code>.unwrap()</code> is safe, because it is checked that <code>return_</code> is not <code>None</code>. However, I feel like I missed a more elegant solution that does both in one.</p>
+</li>
+</ul>
+<h2>Other</h2>
+<p>I don't know a lot about this rule, I just implemented it because I found it in a https://github.com/astral-sh/ruff/labels/good%20first%20issue.</p>
+<p>I'm new to Rust, so any constructive critisism is appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-31 18:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 2 projects; 48 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/93e6f0070aa4d295f348912c10037be63c419e0f/tests/models/test_taskinstance.py#L2421'>tests/models/test_taskinstance.py:2421:17:</a> B901 Using `yield` and `return {value}` in a generator function can lead to confusing behavior
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/16fc3936a4005513c6afebfbbf7919445d7032ac/integration/test_server_side_event.py#L24'>integration/test_server_side_event.py:24:13:</a> B901 Using `yield` and `return {value}` in a generator function can lead to confusing behavior
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| B901 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-31 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:91 on 2024-05-31 19:08</div>
+            <div class="timeline-body"><p>Typically you'd write this like:</p>
+<pre><code class="language-rust">if visitor.has_yield {
+  if let Some(return_) = visitor.return_.as_ref() {
+    checker.diagnositcs.push(Diagnostic::new(ReturnXInGenerator, return_));
+  }
+}
+</code></pre>
+<p>That way, you can avoid the unwrap by making it <em>guaranteed</em> that you have a <code>Some</code> if the condition passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-31 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:63 on 2024-05-31 19:08</div>
+            <div class="timeline-body"><p>I think I would do this by checking <code>Stmt::Expr</code> here, and then just introspecting the value directly to see if the value is <code>Expr::Yield</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-31 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-05-31 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-05-31 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-31 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:91 on 2024-05-31 19:09</div>
+            <div class="timeline-body"><p>(Separately, <code>visitor.return_.is_some()</code> would be more natural than <code>Option::is_some</code> -- we can call it as a method.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-31 19:09</div>
+            <div class="timeline-body"><p>Thanks! Two small comments based on your questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tobb10001">@tobb10001</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:91 on 2024-05-31 19:38</div>
+            <div class="timeline-body"><p>Thanks for the hint.</p>
+<p>The compiler didn't like <code>.as_ref()</code>, so I just left it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tobb10001">@tobb10001</a> reviewed on 2024-05-31 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tobb10001">@tobb10001</a> reviewed on 2024-05-31 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tobb10001">@tobb10001</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:63 on 2024-05-31 19:39</div>
+            <div class="timeline-body"><p>Good idea, I updated the implementation to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-31 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_x_in_generator.rs</code>:91 on 2024-05-31 20:23</div>
+            <div class="timeline-body"><p>Oh yeah, if you don't need it def omit -- sometimes you need it, was hard to tell when writing on GitHub :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-31 21:39</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-bugbear`] Implement `return-x-in-generator` (`B901`)" to "[`flake8-bugbear`] Implement `return-in-generator` (`B901`)" by @charliermarsh on 2024-05-31 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-31 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-31 21:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `CommentRanges` from the parsed output - astral-sh/ruff #11591</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>CommentRanges</code> from the parsed output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11591">#11591</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-29 01:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-29 01:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the usages of <code>CommentRanges</code> from the <code>Indexer</code> to the parsed output.</p>
+<p>First, the <code>CommentRanges</code> are now built during the parsing step. In the future, depending on the performance numbers, it could be updated to be done after the parsing step. Nevertheless, the struct will be owned by the parsed output. So, all references should now use the struct from the parsed output instead of the indexer.</p>
+<p>Now, the motivation to build <code>CommentRanges</code> while parsing is so that it can be shared between the linter and the formatter as both requires it. This also removes the need to have a dedicated method (<code>tokens_and_ranges</code>).</p>
+<p>There are two main updates:</p>
+<ol>
+<li>The functions which only require <code>CommentRanges</code> are passed in the type directly</li>
+<li>If the functions require other fields from <code>Program</code>, then the program is passed instead</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-05-29 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-05-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-29 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:46 on 2024-05-29 06:40</div>
+            <div class="timeline-body"><p>Nit: You could assigned <code>tokens</code> and <code>comment_ranges</code> to local variables to reduce the diff size.</p>
+<pre><code class="language-rust">
+			let tokens = program.tokens();
+			let comment_ranges = program.comment_ranges();
+
+			BlankLinesChecker::new(locator, stylist, settings, source_type, cell_offsets)
+            .check_lines(tokens, &amp;mut diagnostics);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:240 on 2024-05-29 06:40</div>
+            <div class="timeline-body"><p>Is the change from <code>UnsafeFix</code> to <code>SafeFix</code> intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_with.rs</code>:172 on 2024-05-29 06:44</div>
+            <div class="timeline-body"><p>I think this is a case where it could make sense to simply expose <code>comment_ranges</code> on <code>checker</code> so that it matters less where the comment ranges are actually stored. I don't think it is necessary to change now but it would e.g. help if we move comment ranges in the future again.</p>
+<p>Overall, I think this is a weakness of our <code>checker</code> API. Lint rules need to know too much about individual representations. I think it would be better if there's a single <code>context</code> and the rules could simply ask:</p>
+<ul>
+<li>Give me the comment ranges</li>
+<li>give me the indexer</li>
+<li>give me the line index</li>
+</ul>
+<p>etc. without having to do deep drilling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-29 06:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Nevertheless, the struct will be owned by the parsed output. So, all references should now use the struct from the parsed output instead of the indexer.</p>
+</blockquote>
+<p>I'm not sure if this will remain true if we build the comment ranges after parsing. One of the benefits of building it after parsing is that we can make it optional and only run it when the comment ranges are needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-29 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/linter.rs</code>:240 on 2024-05-29 08:31</div>
+            <div class="timeline-body"><p>No, it's the way diff is being rendered. I've updated the code to assign it to a variable which reduces the diff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-29 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_with.rs</code>:172 on 2024-05-29 08:32</div>
+            <div class="timeline-body"><p>Yeah, I completely agree with your sentiment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-29 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-29 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-29 08:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

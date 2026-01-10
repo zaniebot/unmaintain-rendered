@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pytest`] Reverse `PT001` and `PT0023` defaults - astral-sh/ruff #12106</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pytest</code>] Reverse <code>PT001</code> and <code>PT0023</code> defaults</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12106">#12106</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-06-29 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-06-29 20:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This patch inverts the defaults for <a href="https://docs.astral.sh/ruff/rules/pytest-fixture-incorrect-parentheses-style/">pytest-fixture-incorrect-parentheses-style (PT001)</a> and <a href="https://docs.astral.sh/ruff/rules/pytest-incorrect-mark-parentheses-style/">pytest-incorrect-mark-parentheses-style (PT003)</a> to prefer dropping superfluous parentheses.</p>
+<p>Presently, Ruff defaults to adding superfluous parentheses on pytest mark and fixture decorators for documented purpose of consistency; for example,</p>
+<pre><code class="language-diff"> import pytest
+
+
+-@pytest.mark.foo
++@pytest.mark.foo()
+ def test_bar(): ...
+</code></pre>
+<p>This behaviour is counter to the official pytest recommendation and diverges from the flake8-pytest-style plugin as of version 2.0.0 (see https://github.com/m-burst/flake8-pytest-style/issues/272). Seeing as either default satisfies the documented benefit of consistency across a codebase, it makes sense to change the behaviour to be consistent with pytest and the flake8 plugin as well.</p>
+<p>This change is breaking, so is gated behind preview (at least under my understanding of Ruff versioning). The implementation of this gating feature is a bit hacky, but seemed to be the least disruptive solution without performing invasive surgery on the <code>#[option()]</code> macro.</p>
+<p>Related to #8796.</p>
+<h3>Caveat</h3>
+<p>Whilst updating the documentation, I sought to reference the pytest recommendation to drop superfluous parentheses, but couldn't find any official instruction beyond it being a revealed preference within the pytest documentation code examples (as well as the linked issues from a core pytest developer). Thus, the wording of the preference is deliberately timid; it's to cohere with pytest rather than follow an explicit guidance.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+<p>I also ran</p>
+<pre><code class="language-sh">cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT001.py --no-cache --diff --select PT001
+</code></pre>
+<p>and compared against it with <code>--preview</code> to verify that the default does change under preview (I also repeated this with <code>echo '[tool.ruff]\npreview = true' &gt; pyproject.toml</code> to verify that it works with a configuration file).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tjkuson on 2024-06-29 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-06-30 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> removed by @MichaReiser on 2024-06-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-06-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-01 02:02</div>
+            <div class="timeline-body"><p>This makes sense to me -- thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-01 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Reverse PT001 and PT0023 defaults" to "[`pytest`] Reverse `PT001` and `PT0023` defaults" by @charliermarsh on 2024-07-01 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-01 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-01 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-01 03:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:34 UTC
+    </footer>
+</body>
+</html>

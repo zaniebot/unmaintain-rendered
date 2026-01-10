@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `Tokens` from parsed type annotation or parsed source - astral-sh/ruff #11740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>Tokens</code> from parsed type annotation or parsed source</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11740">#11740</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-04 16:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-04 16:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug where the checker would require the tokens for an invalid offset w.r.t. the source code.</p>
+<p>Taking the source code from the linked issue as an example:</p>
+<pre><code class="language-py">relese_version :&quot;0.0is 64&quot;
+</code></pre>
+<p>Now, this isn't really a valid type annotation but that's what this PR is fixing. Regardless of whether it's valid or not, Ruff shouldn't panic.</p>
+<p>The checker would visit the parsed type annotation (<code>0.0is 64</code>) and try to detect any violations. Certain rule logic requests the tokens for the same but it would fail because the lexer would only have the <code>String</code> token considering original source code. This worked before because the lexer was invoked again for each rule logic.</p>
+<p>The solution is to store the parsed type annotation on the checker if it's in a typing context and use the tokens from that instead if it's available. This is enforced by creating a new API on the checker to get the tokens.</p>
+<p>But, this means that there are two ways to get the tokens via the checker API. I want to restrict this in a follow-up PR (#11741) to only expose <code>tokens</code> and <code>comment_ranges</code> as methods and restrict access to the parsed source code.</p>
+<p>fixes: #11736</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Add a test case for <code>F632</code> rule and update the snapshot</li>
+<li>[x] Check all affected rules</li>
+<li>[x] No ecosystem changes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-06-04 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-04 17:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-05 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-05 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-05 07:47</div>
+            <div class="timeline-body"><p>I've added test cases for all affected rules as well. Even though the type annotations themselves aren't valid, Ruff shouldn't panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-05 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-05 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-05 07:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

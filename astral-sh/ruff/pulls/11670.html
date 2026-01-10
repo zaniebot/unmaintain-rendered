@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] use reachable definitions in infer_expression_type - astral-sh/ruff #11670</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] use reachable definitions in infer_expression_type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11670">#11670</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-06-01 01:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-06-01 01:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Switch name resolution in <code>infer_expression_type</code> from resolving the public type of a symbol, to resolving the reachable definitions of that symbol from the reference point, using the flow graph.</p>
+<p>This surfaced a bug in the flow graph implementation and a bug in symbol table building, both of which are also fixed here.</p>
+<p>The bug in flow graph implementation was that when we pushed and popped scopes, we didn't maintain a stack of &quot;current flow nodes&quot; in all stacked scopes, to be restored when we returned to that scope. Now we do.</p>
+<p>The bug in symbol table building that we didn't visit the parts of functions and class definitions in the correct scopes. E.g. decorators should be visited in the outer scope, arguments should be visited inside the type-params scope (if any) but not inside the function body scope, and only the body itself should actually be visited inside the body scope. Fixing this requires that we no longer use <code>walk_stmt</code> here, instead we have to visit each individual component.</p>
+<h2>Test Plan</h2>
+<p>Added test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-01 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-06-01 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-06-01 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:247 on 2024-06-01 08:18</div>
+            <div class="timeline-body"><p>Nit: I think I would prefer a named struct here to awoid the awkward <code>.1</code> and <code>.0</code> which I always find hard to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:567 on 2024-06-01 08:18</div>
+            <div class="timeline-body"><p>Nit: Maybe add an empty line in between to make it clear that the comment only applies to the assignment</p>
+<pre><code class="language-suggestion">                        self.flow_node_id = FlowGraph::start();
+                        
+                        return Some(def_node.definition.clone());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:620 on 2024-06-01 08:20</div>
+            <div class="timeline-body"><p>The compiler might be clever enough to work this out but maybe</p>
+<pre><code class="language-suggestion">        let (_, flow_node_id) = self.scopes.last_mut().expect(&quot;scope stack is never empty&quot;);
+        *flow_node_id = new_flow_node_id;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-01 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-03 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:567 on 2024-06-03 23:15</div>
+            <div class="timeline-body"><p>Point taken, but this code changes in next PR anyway; not going to change it here which will just cause conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-03 23:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-06-03 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-06-03 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-03 23:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

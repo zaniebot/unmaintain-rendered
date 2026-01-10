@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `TokenSource` to find new location for re-lexing - astral-sh/ruff #12060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>TokenSource</code> to find new location for re-lexing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12060">#12060</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-27 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-27 04:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR splits the re-lexing logic into two parts:</p>
+<ol>
+<li><code>TokenSource</code>: The token source will be responsible to find the position the lexer needs to be moved to</li>
+<li><code>Lexer</code>: The lexer will be responsible to reduce the nesting level and move itself to the new position if recovered from a parenthesized context</li>
+</ol>
+<p>This split makes it easy to find the new lexer position without needing to implement the backwards lexing logic again which would need to handle cases involving:</p>
+<ul>
+<li>Different kinds of newlines</li>
+<li>Line continuation character(s)</li>
+<li>Comments</li>
+<li>Whitespaces</li>
+</ul>
+<h3>F-strings</h3>
+<p>This change did reveal one thing about re-lexing f-strings. Consider the following example:</p>
+<pre><code class="language-py">f'{'
+#  ^
+f'foo'
+</code></pre>
+<p>Here, the quote as highlighted by the caret (<code>^</code>) is the start of a string inside an f-string expression. This is unterminated string which means the token emitted is actually <code>Unknown</code>. The parser tries to recover from it but there's no newline token in the vector so the new logic doesn't recover from it. The previous logic does recover because it's looking at the raw characters instead.</p>
+<p>The parser would be at <code>FStringStart</code> (the one for the second line) when it calls into the re-lexing logic to recover from an unterminated f-string on the first line. So, moving backwards the first character encountered is a newline character but the first token encountered is an <code>Unknown</code> token.</p>
+<p>This is improved with #12067</p>
+<p>fixes: #12046
+fixes: #12036</p>
+<h2>Test Plan</h2>
+<p>Update the snapshot and validate the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-27 04:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-06-27 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-06-27 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-06-27 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-27 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1386 on 2024-06-27 11:22</div>
+            <div class="timeline-body"><p>Oh wow, that's a lot of code that is gone now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1413 on 2024-06-27 11:23</div>
+            <div class="timeline-body"><p>Does it still make sense to reduce the nesting level above unconditionally or could we invert the condition here and only then reduce the nesting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:80 on 2024-06-27 11:25</div>
+            <div class="timeline-body"><p>Not important and I'm fine to keep it this way. I was just wondering if we could store the offset of the <code>non_logical_newline</code> and truncate the <code>self.tokens</code> to that position if <code>re_lex_logical_token</code> returns <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-27 11:25</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-27 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1413 on 2024-06-27 11:34</div>
+            <div class="timeline-body"><p>Yeah, good point, we can invert the condition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-27 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1413 on 2024-06-27 11:35</div>
+            <div class="timeline-body"><p>Hmm, actually, it might still not be possible. Let me confirm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-27 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-27 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-27 11:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:34 UTC
+    </footer>
+</body>
+</html>

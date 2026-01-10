@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update parser API to merge lexing and parsing - astral-sh/ruff #11494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update parser API to merge lexing and parsing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11494">#11494</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-22 10:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-22 10:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the parser API within the <code>ruff_python_parser</code> crate. It doesn't change any of the references in this PR.</p>
+<p>The final API looks like:</p>
+<pre><code class="language-rs">pub fn parse_module(source: &amp;str) -&gt; Result&lt;Program&lt;ModModule&gt;, ParseError&gt; {}
+
+pub fn parse_expression(source: &amp;str) -&gt; Result&lt;Program&lt;ModExpression&gt;, ParseError&gt; {}
+
+pub fn parse_expression_range(
+    source: &amp;str,
+    range: TextRange,
+) -&gt; Result&lt;Program&lt;ModExpression&gt;, ParseError&gt; {}
+
+pub fn parse(source: &amp;str, mode: Mode) -&gt; Result&lt;Program&lt;Mod&gt;, ParseError&gt; {}
+
+// Temporary. The `parse` will replace this function once we update the downstream
+// tools to work with programs containing syntax error.
+pub fn parse_unchecked(source: &amp;str, mode: Mode) -&gt; Program&lt;Mod&gt; {}
+
+// Same as `parse_unchecked` but using `PySourceType` instead of the `Mode`
+pub fn parsed_unchecked_source(source: &amp;str, source_type: PySourceType) -&gt; Program&lt;ModModule&gt; {}
+</code></pre>
+<p>Following is a detailed list of changes:</p>
+<ul>
+<li>Make <code>Program</code> generic over <code>T</code> which can be either <code>Mod</code> (enum), <code>ModModule</code> or <code>ModExpression</code><ul>
+<li>Add helper methods to cast <code>Mod</code> into <code>ModModule</code> or <code>ModExpression</code></li>
+<li>Add helper method <code>Program::into_result</code> which converts a <code>Program&lt;T&gt;</code> into a <code>Result&lt;Program&lt;T&gt;, ParseError&gt;</code> where the <code>Err</code> variant contains the first <code>ParseError</code></li>
+</ul>
+</li>
+<li>Update <code>TokenSource</code> to store the comment ranges<ul>
+<li>Parser crate depends on <code>ruff_python_trivia</code> because of <code>CommentRanges</code>. This struct could possibly be moved in the parser crate itself at the end</li>
+</ul>
+</li>
+<li>Move from <code>parse_expression_starts_at</code> to <code>parse_expression_range</code> which parses the source code at the given range using <code>Mode::Expression</code>. Unlike the <code>starts_at</code> variant, this accepts the entire source code</li>
+<li>Remove all access to the <code>Lexer</code></li>
+<li>Remove all <code>parse_*</code> functions which works on the tokens provided by the caller</li>
+</ul>
+<h2>Test Plan</h2>
+<p>The good news is that the tests in <code>ruff_python_parser</code> can be run. So,</p>
+<pre><code>cargo insta test --package ruff_python_parser
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Make `Lexer` lazy (#11244)" to "Update parser API to merge lexing and parsing" by @dhruvmanila on 2024-05-22 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-22 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-22 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-22 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-22 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:361 on 2024-05-22 13:52</div>
+            <div class="timeline-body"><p>The <code>Tokens</code> struct will gain new methods as I understand how the lexer APIs are being used by the downstream tools but two APIs have been added:</p>
+<ol>
+<li><code>up_to_first_unknown</code> - Slice of tokens up to (and excluding) the first unknown token. This is what the linter sees.</li>
+<li><code>tokens_in_range</code> - This will replace most usages of <code>lex_starts_at</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-05-22 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:146 on 2024-05-27 13:40</div>
+            <div class="timeline-body"><p>What's the sizse of a <code>TokenSourceCheckpoint</code> and <code>ParserCheckpoint</code> at this point? It seems to becoming somewhat big ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:29 on 2024-05-27 13:41</div>
+            <div class="timeline-body"><p>I'm not entirely sure if we should collect the comments in the parse phase or if it is actually faster to extract them after by simply looping over the tokens where needed.</p>
+<p>Doint it later has the advantage that it doesn't require any rewinding. I'm okay going with this solution but it might be worth testing that the performance difference is between doing it inside of the parser and doing it as a separate pass. I somewhat suspect that both are equally fast, in which case I would probably prefer doing it outside of the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/typing.rs</code>:27 on 2024-05-27 13:43</div>
+            <div class="timeline-body"><p>The inline comments are uncommon for Rust.</p>
+<p>It's more common to refer to the arguments using their name.</p>
+<p>Parses the value of a string literal <code>parsed_contents</code> with <code>range</code> as a type annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/typing.rs</code>:41 on 2024-05-27 13:44</div>
+            <div class="timeline-body"><p>I suspect that this will fail if the string has any prefixes. While uncommon, it is valid python code to e.g. have <code>r&quot;test&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:225 on 2024-05-27 13:46</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>parse_with_recovery</code> to make it clear that this parsing mode performs error recovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:240 on 2024-05-27 13:55</div>
+            <div class="timeline-body"><p>You brought it up in Discord that we'll have a conflict with red-knot.</p>
+<p>How about <code>Parsed</code> or <code>SyntaxTree</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:241 on 2024-05-27 13:56</div>
+            <div class="timeline-body"><p>Nit: I would rename this to <code>root</code> if you choose to rename the struct to <code>SyntaxTree</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-27 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:146 on 2024-05-27 16:13</div>
+            <div class="timeline-body"><p>Yeah, it is getting quite big:</p>
+<ul>
+<li><code>ParserCheckpoint</code> - 176 bytes</li>
+<li><code>TokenSourceCheckpoint</code> - 152 bytes</li>
+<li><code>LexerCheckpoint</code> - 136 bytes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:29 on 2024-05-27 16:14</div>
+            <div class="timeline-body"><p>Yeah, I can add it to my todo list to look at once the code starts to compile :)</p>
+<p>It makes sense to keep it outside the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/typing.rs</code>:41 on 2024-05-27 16:34</div>
+            <div class="timeline-body"><p>I think the name of the function is misleading, it does match against both prefixes and quotes:</p>
+<p>https://github.com/astral-sh/ruff/blob/c30d34e802ecffc6e820465adc4f7190ede1efb8/crates/ruff_python_ast/src/str.rs#L207-L221</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:240 on 2024-05-27 16:50</div>
+            <div class="timeline-body"><p>Yeah, I like <code>Parsed</code>. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-27 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-27 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:240 on 2024-05-27 16:54</div>
+            <div class="timeline-body"><p>I'll change this in a follow-up PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

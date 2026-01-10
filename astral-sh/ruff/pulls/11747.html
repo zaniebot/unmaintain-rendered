@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Tracing system now respects log level and trace level, with options to log to a file - astral-sh/ruff #11747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code>: Tracing system now respects log level and trace level, with options to log to a file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11747">#11747</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-06-05 01:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-05 01:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #10968.
+Fixes #11545.</p>
+<p>The server's tracing system has been rewritten from the ground up. The server now has trace level and log level settings which restrict the tracing events and spans that get logged.</p>
+<ul>
+<li>A <code>logLevel</code> setting has been added, which lets a user set the log level. By default, it is set to <code>&quot;info&quot;</code>.</li>
+<li>A <code>logFile</code> setting has also been added, which lets the user supply an optional file to send tracing output (it does not have to exist as a file yet). By default, if this is unset, tracing output will be sent to <code>stderr</code>.</li>
+<li>A <code>$/setTrace</code> handler has also been added, and we also set the trace level from the initialization options. For editors without direct support for tracing, the environment variable <code>RUFF_TRACE</code> can override the trace level.</li>
+<li>Small changes have been made to how we display tracing output. We no longer use <code>tracing-tree</code>, and instead use <code>tracing_subscriber::fmt::Layer</code> to format output. Thread names are now included in traces, and I've made some adjustment to thread worker names to be more useful.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>In VS Code, with <code>ruff.trace.server</code> set to its default value, no logs from Ruff should appear.</p>
+<p>After changing <code>ruff.trace.server</code> to either <code>messages</code> or <code>verbose</code>, you should see log messages at <code>info</code> level or higher appear in Ruff's output:
+<img width="1005" alt="Screenshot 2024-06-10 at 10 35 04 AM" src="https://github.com/astral-sh/ruff/assets/19577865/6050d107-9815-4bd2-96d0-e86f096a57f5"></p>
+<p>In Helix, by default, no logs from Ruff should appear.</p>
+<p>To set the trace level in Helix, you'll need to modify your language configuration as follows:</p>
+<pre><code class="language-toml">[language-server.ruff]
+command = &quot;/Users/jane/astral/ruff/target/debug/ruff&quot;
+args = [&quot;server&quot;, &quot;--preview&quot;]
+environment = { &quot;RUFF_TRACE&quot; = &quot;messages&quot; }
+</code></pre>
+<p>After doing this, logs of <code>info</code> level or higher should be visible in Helix:
+<img width="1216" alt="Screenshot 2024-06-10 at 10 39 26 AM" src="https://github.com/astral-sh/ruff/assets/19577865/8ff88692-d3f7-4fd1-941e-86fb338fcdcc"></p>
+<p>You can use <code>:log-open</code> to quickly open the Helix log file.</p>
+<p>In Neovim, by default, no logs from Ruff should appear.</p>
+<p>To set the trace level in Neovim, you'll need to modify your configuration as follows:</p>
+<pre><code class="language-lua">require('lspconfig').ruff.setup {
+  cmd = {&quot;/path/to/debug/executable&quot;, &quot;server&quot;, &quot;--preview&quot;},
+  cmd_env = { RUFF_TRACE = &quot;messages&quot; }
+}
+</code></pre>
+<p>You should see logs appear in <code>:LspLog</code> that look like the following:
+<img width="1490" alt="Screenshot 2024-06-11 at 11 24 01 AM" src="https://github.com/astral-sh/ruff/assets/19577865/576cd5fa-03cf-477a-b879-b29a9a1200ff"></p>
+<p>You can adjust <code>logLevel</code> and <code>logFile</code> in <code>settings</code>:</p>
+<pre><code class="language-lua">require('lspconfig').ruff.setup {
+  cmd = {&quot;/path/to/debug/executable&quot;, &quot;server&quot;, &quot;--preview&quot;},
+  cmd_env = { RUFF_TRACE = &quot;messages&quot; },
+  settings = {
+    logLevel = &quot;debug&quot;,
+    logFile = &quot;your/log/file/path/log.txt&quot;
+  }
+}
+</code></pre>
+<p>The <code>logLevel</code> and <code>logFile</code> can also be set in Helix like so:</p>
+<pre><code class="language-toml">[language-server.ruff.config.settings]
+logLevel = &quot;debug&quot;
+logFile = &quot;your/log/file/path/log.txt&quot;
+</code></pre>
+<p>Even if this log file does not exist, it should now be created and written to after running the server:</p>
+<img width="1148" alt="Screenshot 2024-06-10 at 10 43 44 AM" src="https://github.com/astral-sh/ruff/assets/19577865/ab533cf7-d5ac-4178-97f1-e56da17450dd">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-06-05 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-06-05 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:11 on 2024-06-05 01:03</div>
+            <div class="timeline-body"><p>~~The reason I went with <code>Messages</code> instead of <code>Off</code> as a default is so that <code>info</code> events are logged by default if the trace value is unset by the LSP client.~~</p>
+<p>Nevermind, I misunderstood what TraceValue was for. It should be <code>Off</code> by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-05 01:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-05 01:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:40 on 2024-06-05 06:54</div>
+            <div class="timeline-body"><p>The <code>TRACE_VALUE</code> value is never read, but only set. We should delete the code if we aren't using it anyway or implement the logic to use the value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-05 06:59</div>
+            <div class="timeline-body"><p>I think implementing this shouldn't be too hard</p>
+<ul>
+<li>Store the <code>LogLevel</code> instead of the <code>TRACE_VALUE</code></li>
+<li>Change <code>LogFilter</code> to read the <code>TRACE_VALUE</code> variable instead of the local <code>filter</code> to determine the level</li>
+</ul>
+<p>You could also consider making <code>LogLevel</code> inherit from <code>:u8</code> and adding a <code>TryFrom&lt;u8&gt; for LogLevel</code>. That way, you could use a <code>AtomicU8</code> for <code>TRACE_VALUE</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-06-05 07:00</div>
+            <div class="timeline-body"><p>Looks good. I think we should address the TODO before merging this and extend the test plan with a case that shows that changing the verbosity in the extension settings changes the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-05 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:40 on 2024-06-05 18:22</div>
+            <div class="timeline-body"><p>The PR made a note that this would be used in the future:</p>
+<blockquote>
+<p>This PR also introduces a $/setTrace handler, which will be used in the future by our tracing span subscriber.</p>
+</blockquote>
+<p>I wanted to at least add a handler for this so that we don't get a warning about a nonexistent handler every time the trace level changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-05 18:24</div>
+            <div class="timeline-body"><p>I actually explored having the log level be set by the trace value (you can see it in the commit history). I ultimately decided against this because the trace value sent by the LSP is <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#traceValue">only meant for <code>$/logTrace</code>, not <code>window/logMessage</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-05 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-05 20:29</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/jane/server/logging-v2">CodSpeed Performance Report</a></h2>
+<h3>Merging #11747 will <strong>improve performances by 13.17%</strong></h3>
+<p><sub>Comparing <code>jane/server/logging-v2</code> (f5d35dd) with <code>main</code> (521a358)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>jane/server/logging-v2</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 917.3 µs | 810.5 µs | +13.17% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-06-05 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-05 23:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-05 23:30</div>
+            <div class="timeline-body"><p>I've introduced a <code>logLevel</code> setting to client settings to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-06 06:00</div>
+            <div class="timeline-body"><p>Oh I didn't realize that difference when reviewing yesterday. What's the reason we don't use <code>$/logTrace</code> because it seems like the right fit from the spec</p>
+<blockquote>
+<p>$/logTrace should be used for systematic trace reporting. For single debugging messages, the server should send <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_logMessage">window/logMessage</a> notifications. <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#logTrace">source</a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 06:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-06 06:06</div>
+            <div class="timeline-body"><p>Okay, I think I'm starting to understand what this PR does. I think the PR title needs updating.</p>
+<p>I try to summarize my understanding to make sure it is correct.</p>
+<p>This PR only logs <code>trace::debug</code>, <code>trace::warn</code> but it omits all <code>trace::debug_span</code> etc. Is this correct?</p>
+<p>What's the motivation for making this distinction instead of just logging all tracing events with <code>$/logTrace</code> for now. That seems simpler because it doesn't require additional filtering or yet another setting (which I'm worried that it just gets hard to understand for users, especially because <code>TRACE_VALUE: message</code> exists). Is it because you need a way to format a span to a string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-07 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:25 on 2024-06-07 00:15</div>
+            <div class="timeline-body"><p>@MichaReiser My plan was for tracing events to go through <code>window/logMessage</code> and then later implement a additional tracing layer that sends all tracing events / messages to <code>$/logTrace</code> as a follow-up.</p>
+<p>The reason I'm doing this is to separate the log level from the trace level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server`: Use `window/logMessage` for tracing events" to "`ruff server`: Tracing system now respects log level and trace level, with options to log to a file" by @snowsignal on 2024-06-09 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:131 on 2024-06-10 06:38</div>
+            <div class="timeline-body"><p>Nit: <code>tracing-subscriber</code> has a <code>BoxMakeWriter</code> that is just that. You can call it with <code>BoxMakeWriter::new(std::io::stderr)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:147 on 2024-06-10 06:40</div>
+            <div class="timeline-body"><p>I would find some module level documentation helpful that explains the different ways on how tracing can be configured. It seem we now support an env var, <code>TRACE_VALUE</code>, a file, and the PR description mentions a <code>logLevel</code> setting, but it's not clear to me where that one is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:133 on 2024-06-10 06:43</div>
+            <div class="timeline-body"><p>It seems that we now only support <code>Off</code> vs <code>Message</code> and <code>Verbose</code>. What do you think of mapping <code>Message</code> to <code>Info</code>, and <code>Verbose</code> to <code>Debug</code> or <code>Trace</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:125 on 2024-06-10 06:45</div>
+            <div class="timeline-body"><p>It seems we need to inform tracing  when the log level changes</p>
+<blockquote>
+<p>If the maximum level the Filter will enable can change over the course of its lifetime, it is free to return a different value from multiple invocations of this method. However, note that changes in the maximum level will only be reflected after the callsite Interest cache is rebuilt, by calling the tracing_core::callsite::rebuild_interest_cache function. Therefore, if the Filter will change the value returned by this method, it is responsible for ensuring that [rebuild_interest_cache`]rebuild is called after the value of the max level changes.</p>
+</blockquote>
+<p><a href="https://docs.rs/tracing-subscriber/latest/tracing_subscriber/layer/trait.Filter.html#method.max_level_hint">source</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:76 on 2024-06-10 06:46</div>
+            <div class="timeline-body"><p>What's the motivation of having two filters rather than just one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/message.rs</code>:41 on 2024-06-10 06:48</div>
+            <div class="timeline-body"><p>Did you change this to <code>eprintln</code> because it might happen before tracing is set up? I think it would still be nice if the message also goes to tracing to ensure the error is captured in a logfile if <code>logFile</code> is set</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:77 on 2024-06-10 06:49</div>
+            <div class="timeline-body"><p>How about creating a <code>GlobalSettings</code> struct that includes a <code>client_settings</code> fields attributed with <code>#[flatten]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:87 on 2024-06-10 06:50</div>
+            <div class="timeline-body"><p>Is it required to restart the server when changing the <code>logFile</code> or <code>logLevel</code> setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 06:51</div>
+            <div class="timeline-body"><p>The code changes look good to me. I left a few questions and are waiting for a test plan that shows a few traces.</p>
+<p>I think some documentation on how the tracing setup would be helpful, especially because it now supports environment variables, tracing level, logLevel, log file etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:133 on 2024-06-10 13:43</div>
+            <div class="timeline-body"><p>The difference between <code>messages</code> and <code>verbose</code> is the amount of information that gets logged, not the level of logging. Since our tracing system doesn't have separated 'verbose' information attached to its traces, I think it makes sense to treat them the same. <code>logLevel</code> should be the source of truth for the traces that get shown, IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:125 on 2024-06-10 13:45</div>
+            <div class="timeline-body"><p>The log level doesn't change over the lifecycle of the server, though. It's the responsibility of the client to reboot the server with new settings when the client settings change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:76 on 2024-06-10 13:46</div>
+            <div class="timeline-body"><p>They're filtering by different things, and I'd rather keep them separated for modularity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/message.rs</code>:41 on 2024-06-10 13:46</div>
+            <div class="timeline-body"><p>Good idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:87 on 2024-06-10 13:47</div>
+            <div class="timeline-body"><p>Yes, that's how its set up right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:76 on 2024-06-10 14:32</div>
+            <div class="timeline-body"><p>Could you add a documentation explaining what they're filtering by then so that a future me understand the motivation of keeping them different and doesn't merge them together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:131 on 2024-06-10 17:16</div>
+            <div class="timeline-body"><p>Unfortunately, this is a different return type, so it wouldn't work here. We need to consolidate the log file / stderr writer into a single type here, otherwise the tracing layer would have a different type and we'd need to build it in two completely distinct branches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:131 on 2024-06-10 17:25</div>
+            <div class="timeline-body"><p>It seems to work fine for rust analyzer:</p>
+<pre><code>    let writer = match log_file {
+        Some(file) =&gt; BoxMakeWriter::new(Arc::new(file)),
+        None =&gt; BoxMakeWriter::new(std::io::stderr),
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:133 on 2024-06-10 17:26</div>
+            <div class="timeline-body"><p>That makes sense. Maybe put this answer somewhere into the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-10 17:26</div>
+            <div class="timeline-body"><p>This looks good to me. Happy to approve tomorrow morning when the Test plan's filled out. Thanks for doing another iteration on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:131 on 2024-06-10 17:28</div>
+            <div class="timeline-body"><p>Oh, I see what you mean! Nevermind 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-06-11 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-11 06:23</div>
+            <div class="timeline-body"><p>Nice! Thank's for taking the time to iterate on the design</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/trace.rs</code>:16 on 2024-06-11 06:54</div>
+            <div class="timeline-body"><p>It might be useful to provide this information in the server docs either in the global docs (<code>crates/ruff_server/README.md</code>) or editor specific docs (<code>crates/ruff_server/docs/setup/*.md</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-11 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-11 07:07</div>
+            <div class="timeline-body"><p>This isn't blocking the PR but can you provide similar examples for Neovim. I'm able to set the <code>RUFF_TRACE</code> environment variable via the <code>cmd_env</code> key but not able to figure out where the <code>logLevel</code> / <code>logFile</code> should go and how should they affect the messages displayed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-11 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:16 on 2024-06-11 14:24</div>
+            <div class="timeline-body"><p>I'll update the docs in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-11 18:29</div>
+            <div class="timeline-body"><p>@dhruvmanila I've updated the PR description with a Neovim testing guide 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-06-11 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-06-11 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-11 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

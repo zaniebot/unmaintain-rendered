@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Defer notebook cell deletion to avoid an error message - astral-sh/ruff #11864</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code>: Defer notebook cell deletion to avoid an error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11864">#11864</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-06-13 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-13 19:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff-vscode/issues/496.</p>
+<p>Cells are no longer removed from the notebook index when a notebook gets updated, but rather when <code>textDocument/didClose</code> is called for them. This solves an issue where their premature removal from the notebook cell index would cause their URL to be un-queryable in the <code>textDocument/didClose</code> handler.</p>
+<h2>Test Plan</h2>
+<p>Create and then delete a notebook cell in VS Code. No error should appear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-06-13 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-13 19:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:162 on 2024-06-13 20:26</div>
+            <div class="timeline-body"><p>Does that mean that we never retain cells until didClose is called? Does the specification explain why vs code might reference cells after they have been closed ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-13 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-13 20:28</div>
+            <div class="timeline-body"><p>Any chance that this solves https://github.com/astral-sh/ruff/issues/11851</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-14 01:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Any chance that this solves #11851</p>
+</blockquote>
+<p>Created https://github.com/astral-sh/ruff/pull/11867 for that. According to <a href="https://github.com/astral-sh/ruff/issues/11851#issuecomment-2166221751">this message's log</a> it seems he was got multiple error on closing a notebook document with multiple cells in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-14 02:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index.rs</code>:169 on 2024-06-14 02:34</div>
+            <div class="timeline-body"><p>I'm not sure if we should remove this logic. Does VS Code send two requests (<code>notebookDocument/didChange</code> and <code>textDocument/didClose</code>) when a cell is deleted? Is there a case where it might only send either one of them? Can you check which request is sent by VS Code between <code>notebookDocument/didChange</code> and <code>textDocument/didClose</code> assuming that's what's causing this bug?</p>
+<p>Looking at the <code>pygls</code> implementation, it retains both logic except that it doesn't warn the user when removing a cell if it doesn't exists: https://github.com/openlawlibrary/pygls/blob/da9b77b7446ffc3c8a503670408dfc76e4a777b0/pygls/workspace/workspace.py#L272-L273</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-14 02:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index.rs</code>:169 on 2024-06-14 02:45</div>
+            <div class="timeline-body"><p>Ok, I don't see any additional requests sent by VS Code that references the closed cell between <code>notebookDocument/didChange</code> and <code>textDocument/didClose</code>:</p>
+<pre><code>2024-06-14 08:11:46.288 [info] [Trace - 8:11:46 AM] Sending notification 'notebookDocument/didChange'.
+2024-06-14 08:11:46.289 [info] Params: {
+    &quot;notebookDocument&quot;: {
+        &quot;version&quot;: 7,
+        &quot;uri&quot;: &quot;untitled:Untitled-1.ipynb?jupyter-notebook&quot;
+    },
+    &quot;change&quot;: {
+        &quot;cells&quot;: {
+            &quot;structure&quot;: {
+                &quot;array&quot;: {
+                    &quot;start&quot;: 1,
+                    &quot;deleteCount&quot;: 1
+                },
+                &quot;didOpen&quot;: [],
+                &quot;didClose&quot;: [
+                    {
+                        &quot;uri&quot;: &quot;vscode-notebook-cell:Untitled-1.ipynb?jupyter-notebook#W2sdW50aXRsZWQ%3D&quot;
+                    }
+                ]
+            }
+        }
+    }
+}
+
+
+2024-06-14 08:11:46.290 [info]   96.769647s DEBUG ruff_server::session::index Falling back to configuration of the only active workspace for the new document 'untitled:Untitled-1.ipynb?jupyter-notebook'.
+  96.769686s DEBUG ruff_server::session::index Falling back to configuration of the only active workspace for the new document 'untitled:Untitled-1.ipynb?jupyter-notebook'.
+
+2024-06-14 08:11:46.290 [info] [Trace - 8:11:46 AM] Received notification 'textDocument/publishDiagnostics'.
+2024-06-14 08:11:46.291 [info] Params: {
+    &quot;diagnostics&quot;: [],
+    &quot;uri&quot;: &quot;vscode-notebook-cell:Untitled-1.ipynb?jupyter-notebook#W0sdW50aXRsZWQ%3D&quot;,
+    &quot;version&quot;: 7
+}
+
+
+2024-06-14 08:11:46.303 [info] [Trace - 8:11:46 AM] Sending notification 'textDocument/didClose'.
+2024-06-14 08:11:46.303 [info] Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;vscode-notebook-cell:Untitled-1.ipynb?jupyter-notebook#W2sdW50aXRsZWQ%3D&quot;
+    }
+}
+</code></pre>
+<p>So, I guess it's just that the server is trying to take the snapshot in <code>textDocument/didClose</code> handler but the <code>notebookDocument/didChange</code> already removed this cell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-14 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:169 on 2024-06-14 07:56</div>
+            <div class="timeline-body"><p>Do I understand it correctly that this means that VS code always sends an explicit <code>didClose</code> notification for all cells that were also closed in the <code>didChange</code> notification?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-14 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index.rs</code>:169 on 2024-06-14 09:15</div>
+            <div class="timeline-body"><p>Yes, it seems like so. I think it's because cells are modeled as a text document which means that if a cell is removed it triggers both <code>notebookDocument/didChange</code> and <code>textDocument/didClose</code> request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-14 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:350 on 2024-06-14 14:06</div>
+            <div class="timeline-body"><p>Could we keep erroring in this case or what's the motivation for changing this from an error to a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:00</div>
+            <div class="timeline-body"><p>Reading through the comments, I think the change makes sense. However, I would find it helpful if we can expand the comment explaining how cells are closed now with an explanation on how VS code handles it. I think that would also be helpful for someone coming back to this PR to understand why and what has changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-14 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:162 on 2024-06-14 22:00</div>
+            <div class="timeline-body"><p>VS Code uses <code>didClose</code> to close a notebook cell. Unfortunately I can't find anything in the specification about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-14 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:350 on 2024-06-14 22:01</div>
+            <div class="timeline-body"><p>Technically this is just moving over the code that removes the cell from the index 😄</p>
+<p>The error happened because we try to take a snapshot and that fails. This is a less critical error because if we fail to remove a notebook cell from the index, that means it's already been removed for one reason or another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-14 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:169 on 2024-06-14 22:03</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<blockquote>
+<p>Can you check which request is sent by VS Code between notebookDocument/didChange and textDocument/didClose assuming that's what's causing this bug?</p>
+</blockquote>
+<p>As you saw, there aren't any requests being sent in between. Rather, the <code>didClose</code> handler tries to take a document snapshot before removing the document. This is so that it can publish an empty diagnostics list for the document/cell before closing it. That's what was causing the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-15 08:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-06-18 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-06-18 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-18 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-18 03:38</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/jane/server/defer-cell-index-deletion">CodSpeed Performance Report</a></h2>
+<h3>Merging #11864 will <strong>degrade performances by 9.48%</strong></h3>
+<p><sub>Comparing <code>jane/server/defer-cell-index-deletion</code> (9c4abdb) with <code>jane/server/defer-cell-index-deletion</code> (dd865d0)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>❌ 1</code> regressions
+<code>✅ 28</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/jane/server/defer-cell-index-deletion">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>jane/server/defer-cell-index-deletion</code> | <code>jane/server/defer-cell-index-deletion</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[numpy/globals.py]</code> | 701.9 µs | 775.5 µs | -9.48% |
+| ⚡ | <code>parser[pydantic/types.py]</code> | 2.2 ms | 2.1 ms | +4.26% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

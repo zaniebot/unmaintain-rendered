@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use POSIX representations of paths when creating the typeshed zip file - astral-sh/ruff #11982</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use POSIX representations of paths when creating the typeshed zip file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11982">#11982</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-06-22 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-22 13:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the bug that caused the tests added in https://github.com/astral-sh/ruff/pull/11970 to fail. In the higher-level <code>ruff_db::vendored::VendoredFileSystem</code> abstraction we use for querying whether files exist in the zip file, all paths are normalized to use POSIX path separators before they're looked up in the underlying zip archive. But when we're creating the zip archive in <code>build.rs</code>, we're currently just using the operating system's default path separator (<code>\\</code> on Windows!). If we normalize the path separator in the <code>ruff_db</code> abstractions, we need to also do so in <code>build.rs</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_module_resolver</code> still passes for me on macOS; hopefully it will also pass on Windows in CI. I'm pretty confident this is the cause of the test failures we saw on https://github.com/astral-sh/ruff/pull/11970: in a PR to my fork here, I added some debug prints so we could figure out what was going on with Windows, and you can see that the zip file on Windows has paths such as <code>stdlib\\abc.pyi</code> instead of <code>stdlib/abc.pyi</code>: https://github.com/AlexWaygood/ruff/pull/10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-06-22 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-06-22 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-22 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 13:53</div>
+            <div class="timeline-body"><p>Hmm I don't think that's necessary. At least according to the ZIP file standard:</p>
+<blockquote>
+<p>4.4.17.1 The name of the file, with optional relative path.
+The path stored MUST NOT contain a drive or
+device letter, or a leading slash.  All slashes
+MUST be forward slashes '/' as opposed to
+backwards slashes '' for compatibility with Amiga
+and UNIX file systems etc.  If input came from standard
+input, there is no file name field.
+https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT</p>
+</blockquote>
+<p>I wonder if all that is needed is to fix the test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-22 13:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-22 13:55</div>
+            <div class="timeline-body"><p>Not sure I understand. I think that's all that I'm doing. All that this PR does is use <code>path_slash</code> to change <code>\</code>s to <code>/</code>s before writing the files to the zip archive at build time. No other normalization is being done here. What do you think I'm doing here that's unnecessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/build.rs</code>:43 on 2024-06-22 14:00</div>
+            <div class="timeline-body"><p>There's a <a href="https://docs.rs/zip/1.1.4/zip/write/struct.ZipWriter.html#method.start_file_from_path"><code>start_file_from_path</code></a> function that takes care of the normalization</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/typeshed.rs</code>:21 on 2024-06-22 14:02</div>
+            <div class="timeline-body"><p>Rather than adding the dependency, I recommend to construct the path as a normal string: <code>&quot;stdlib/functools.pyi&quot;</code>, seems simpler and removes the need for a dependency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-22 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/typeshed.rs</code>:21 on 2024-06-22 14:03</div>
+            <div class="timeline-body"><p>Good point, this isn't needed here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-22 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/build.rs</code>:43 on 2024-06-22 14:05</div>
+            <div class="timeline-body"><p>On v0.6.6, the version we have pinned in <code>Cargo.toml</code>, there is a deprecation warning attached to this method in the docs: https://docs.rs/zip/0.6.6/zip/write/struct.ZipWriter.html#method.start_file_from_path.</p>
+<p>The deprecation warning isn't there on the latest version, so I suppose they must have fixed the issues and undeprecated the method. But we're keeping <code>zip</code> pinned to the old version due to https://github.com/astral-sh/uv/issues/3642</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-22 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/build.rs</code>:43 on 2024-06-22 14:12</div>
+            <div class="timeline-body"><p>This is what the change looks like (relative to this PR branch) if we want to keep the <code>zip</code> crate pinned to v0.6.6 and have Clippy pass:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_module_resolver/build.rs b/crates/red_knot_module_resolver/build.rs
+index 15f67f3bb..c138d3bc9 100644
+--- a/crates/red_knot_module_resolver/build.rs
++++ b/crates/red_knot_module_resolver/build.rs
+@@ -8,7 +8,6 @@
+ use std::fs::File;
+ use std::path::Path;
+ 
+-use path_slash::PathExt;
+ use zip::result::ZipResult;
+ use zip::write::{FileOptions, ZipWriter};
+ use zip::CompressionMethod;
+@@ -30,24 +29,24 @@ fn zip_dir(directory_path: &amp;str, writer: File) -&gt; ZipResult&lt;File&gt; {
+     for entry in walkdir::WalkDir::new(directory_path) {
+         let dir_entry = entry.unwrap();
+         let absolute_path = dir_entry.path();
+-        let normalized_relative_path = absolute_path
++        let relative_path = absolute_path
+             .strip_prefix(Path::new(directory_path))
+-            .unwrap()
+-            .to_slash()
+-            .expect(&quot;Unexpected non-utf8 typeshed path!&quot;);
++            .unwrap();
+ 
+         // Write file or directory explicitly
+         // Some unzip tools unzip files with directory paths correctly, some do not!
+         if absolute_path.is_file() {
+-            println!(&quot;adding file {absolute_path:?} as {normalized_relative_path:?} ...&quot;);
+-            zip.start_file(normalized_relative_path, options)?;
++            println!(&quot;adding file {absolute_path:?} as {relative_path:?} ...&quot;);
++            #[allow(deprecated)]
++            zip.start_file_from_path(relative_path, options)?;
+             let mut f = File::open(absolute_path)?;
+             std::io::copy(&amp;mut f, &amp;mut zip).unwrap();
+-        } else if !normalized_relative_path.is_empty() {
++        } else if relative_path == Path::new(&quot;&quot;) {
+             // Only if not root! Avoids path spec / warning
+             // and mapname conversion failed error on unzip
+-            println!(&quot;adding dir {absolute_path:?} as {normalized_relative_path:?} ...&quot;);
+-            zip.add_directory(normalized_relative_path, options)?;
++            println!(&quot;adding dir {absolute_path:?} as {relative_path:?} ...&quot;);
++            #[allow(deprecated)]
++            zip.add_directory_from_path(relative_path, options)?;
+         }
+     }
+     zip.finish()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-22 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-06-22 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-06-22 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-22 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

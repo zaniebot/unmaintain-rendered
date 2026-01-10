@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix all compilation errors - astral-sh/ruff #11612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix all compilation errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11612">#11612</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-30 06:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-30 06:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes all the compilation error as raised by <code>clippy</code>. It doesn't look at the tests. Apart from that it also does the following:</p>
+<ul>
+<li>Expose a <code>lex</code> method which creates the <code>Lexer</code> object. This is used in the benchmark crate. Ideally, we shouldn't expose the lexer and in the future we should move the lexer benchmark in the parser crate</li>
+<li>Update the parser reference in <code>red_knot</code> crate</li>
+<li>Change all references of <code>&amp;[LexResult]</code> to <code>&amp;Tokens</code></li>
+<li>Add <code>CommentRanges</code> to the <code>LinterResult</code> as it's required after the linter run. The <code>Program</code> is consumed because it requires an owned <code>ParseError</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-30 06:41</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/compile">CodSpeed Performance Report</a></h2>
+<h3>Merging #11612 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/compile</code> (39a9845) with <code>dhruv/compile</code> (b422554)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/linter.rs</code>:211 on 2024-05-30 10:31</div>
+            <div class="timeline-body"><p>I'm not sure if it makes sense to consume the <code>Program</code> and include <code>CommentRanges</code> to <code>LinterResult</code>. I'm thinking of just cloning the <code>ParseError</code> here, it shouldn't affect performance at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/test.rs</code>:179 on 2024-05-30 10:32</div>
+            <div class="timeline-body"><p>Um, this is actually a bug. Sorry, it's difficult to separate all this changes very carefully</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1876 on 2024-05-30 10:33</div>
+            <div class="timeline-body"><p>We need to expose the lexer because the benchmark crate requires it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_trivia_integration_tests/tests/simple_tokenizer.rs</code>:26 on 2024-05-30 10:33</div>
+            <div class="timeline-body"><p>We're only interested in the comment ranges and the source can contain syntax errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_wasm/src/lib.rs</code>:265 on 2024-05-30 10:34</div>
+            <div class="timeline-body"><p>This is just maintaining the existing behavior where the playground displays the token stream even if it contains syntax errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-30 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-30 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_dev/src/print_tokens.rs</code>:29 on 2024-05-30 10:49</div>
+            <div class="timeline-body"><p>Could we implement <code>IntoIter</code> for <code>&amp;Tokens</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:211 on 2024-05-30 10:50</div>
+            <div class="timeline-body"><p>Yeah we could do that too. Or you could consider adding a <code>take_errors</code> method to <code>Program</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/stylist.rs</code>:215 on 2024-05-30 10:55</div>
+            <div class="timeline-body"><p>What's the reason for changing the expected output in this test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-30 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_codegen/src/stylist.rs</code>:215 on 2024-05-30 10:57</div>
+            <div class="timeline-body"><p>This is coming from <code>main</code> via https://github.com/astral-sh/ruff/commit/bd46cd1fcf3dbc0da1cff763d061293c9bc09087 but I failed to recognize that while rebasing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-30 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-30 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-30 11:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

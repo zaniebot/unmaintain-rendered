@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENH copyright-notice: check in the first 4096 bytes instead of 1024 - astral-sh/ruff #11927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ENH copyright-notice: check in the first 4096 bytes instead of 1024</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11927">#11927</a>
+        opened by <a href="https://github.com/adrinjalali">@adrinjalali</a>
+        on 2024-06-18 14:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/adrinjalali">@adrinjalali</a> on 2024-06-18 14:48</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>related to https://github.com/astral-sh/ruff/issues/5306</p>
+<p>The check right now only checks in the first 1024 bytes, and that's really not enough when there's a docstring at the beginning of a file.</p>
+<p>A more proper fix might be needed, which might be more complex (and I don't have the <code>rust</code> skills to implement that). But this temporary &quot;fix&quot; might enable more users to use this.</p>
+<p>Context: We want to use this rule in https://github.com/scikit-learn/scikit-learn/ and we got blocked because of this hardcoded rule (which TBH took us quite a while to figure out why it was failing since it's not documented).</p>
+<h2>Test Plan</h2>
+<p>This is already kinda tested, modified the test for the new byte number.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "4096" to "ENH copyright-notice: check in the first 4096 bytes instead of 1024" by @adrinjalali on 2024-06-18 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-06-18 15:50</div>
+            <div class="timeline-body"><p>Seems okay to me. Thanks for contributing! cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-06-18 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-18 16:03</div>
+            <div class="timeline-body"><p>Looks okay, although I'm not sure why the limit even exists. The only performance issue that I can see is if the regex uses a wildcard at the start. Any regex without a wildcard at the start should end by just testing a few characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-18 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-18 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 16:07</div>
+            <div class="timeline-body"><p>Okay it seems that the somewhat arbitrary limit is coming from the original lint rule. I think the limit there makes sense because the rule actually reads the file. The situation for ruff is different because we already have the file in memory.</p>
+<p>Anyway, thanks for contributing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 16:07</div>
+            <div class="timeline-body"><p>I'm not sure either cc @BurntSushi</p>
+<p>Not a lot of context in the original implementation discussion at https://github.com/astral-sh/ruff/pull/4701</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-18 16:44</div>
+            <div class="timeline-body"><p>Here's the regex:</p>
+<p>https://github.com/astral-sh/ruff/blob/2e7c3454e0d4ef24b6d46c7ec5fac7eab56ae907/crates/ruff_linter/src/rules/flake8_copyright/settings.rs#L18</p>
+<p>Specifically:</p>
+<pre><code>(?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*
+</code></pre>
+<p>And the search is using <code>Regex::find</code>, which is an unanchored search. So the regex behaves as if there is a <code>(?s:.)*?</code> at the beginning. So putting a limit on how much is searched seems sensible if you only expect it to be near the beginning of file <em>and</em> it's plausible that this could be used to search very large files. I doubt 4096 and 1024 will make much of a difference, so this change seems okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-18 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

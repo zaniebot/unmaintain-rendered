@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove allocation in `parse_identifier` - astral-sh/ruff #12103</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove allocation in <code>parse_identifier</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12103">#12103</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-29 12:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-29 12:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I think this PR removes an allocation from <code>parse_identifier</code>.</p>
+<p><code>parse_identifier</code> converts the <code>Box&lt;str&gt;</code> from the <code>TokenValue::Name</code> to a <code>String</code> by calling <code>.to_string</code>.
+<code>to_string</code> is a small wrapper around <code>format!(&quot;{name}&quot;)</code> which allocates a new string without reusing the <code>Box&lt;str&gt;</code> allocation, unless the compiler can see through the operation.</p>
+<p>This PR uses <code>Box&lt;str&gt;::into_string</code> which, to my knowledge, reuses the underlying allocation.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-06-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-06-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2024-06-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-29 12:59</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/parse-identifier-reduce-alloc">CodSpeed Performance Report</a></h2>
+<h3>Merging #12103 will <strong>improve performances by 7.44%</strong></h3>
+<p><sub>Comparing <code>parse-identifier-reduce-alloc</code> (83894c9) with <code>main</code> (47b2273)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 4</code> improvements
+<code>✅ 26</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>parse-identifier-reduce-alloc</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[large/dataset.py]</code> | 5.4 ms | 5 ms | +7.44% |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 1,007.9 µs | 954.6 µs | +5.59% |
+| ⚡ | <code>parser[pydantic/types.py]</code> | 2.2 ms | 2.1 ms | +5.9% |
+| ⚡ | <code>parser[unicode/pypinyin.py]</code> | 329.3 µs | 315 µs | +4.54% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-29 13:00</div>
+            <div class="timeline-body"><p>I'll go ahead and merge this. This change should be pretty uncontroversial :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-29 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-29 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-29 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-29 13:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 2 project errors)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove allcation in `parse_identifier`" to "Remove allocation in `parse_identifier`" by @AlexWaygood on 2024-06-29 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot[salsa part 2]: Setup semantic DB and Jar - astral-sh/ruff #11837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot[salsa part 2]: Setup semantic DB and Jar</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11837">#11837</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-11 14:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-11 14:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR sets up an empty Salsa <code>Jar</code> and <code>Db</code>. This is mostly boring template code but I thought it's worth separating it form an actual interesting PR ;)</p>
+<h2>Test Plan</h2>
+<p><code>cargo build</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-11 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-11 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-06-11 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-11 14:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/source.rs</code>:80 on 2024-06-12 13:33</div>
+            <div class="timeline-body"><p>It's surprising to me that we have to manually update the revision here; should <code>write_file</code> do that itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-06-12 13:38</div>
+            <div class="timeline-body"><p>I still have some concerns about having this code just mixed in directly with the rest of the modules in <code>ruff_python_semantic</code> and using only features to distinguish what is red-knot, but otherwise this PR looks fine, and I assume we will revisit that structure as follow-up, not on this PR, for rebase-conflict reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:80 on 2024-06-12 13:47</div>
+            <div class="timeline-body"><p>The <code>FileSystem</code> that I have in mind should be independent of the <code>vfs</code> and salsa db. It's just an abstraction over <code>std::fs</code>. What I have in mind to avoid the <code>set_revision</code> call here is that we have an <code>apply_changes</code> method where we pass all file changes (adds, remove, modified) that updates the vfs state. It's probably the <code>FileSystem'</code>s or the host's responsibility to collect all made changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-12 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/source.rs</code>:80 on 2024-06-12 14:00</div>
+            <div class="timeline-body"><p>That makes sense, and would address my concern: I don't want to expose/use APIs that make it easy to change a file's contents but forget to bump its revision.</p>
+<p>I think this also gets back to what I find confusing about the <code>Vfs</code> and <code>FileSystem</code> structure, which is that there is no single entity which really encapsulates our virtual file system. Where does this <code>apply_changes</code> method live? I guess it is just a free function that takes a <code>Db</code> and some changes to apply?</p>
+<p>Probably this is just something I have to get used to with Salsa, that the <code>Db</code> owns all the state, so most API that we use for managing state is just a function that takes a <code>Db</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/lib.rs</code>:85 on 2024-06-12 16:43</div>
+            <div class="timeline-body"><p>It wasn't immediately obvious to me here that &quot;take&quot; was a referende to <code>std::mem::take</code>; I'd find this slightly clearer:</p>
+<pre><code class="language-suggestion">        /// Empties the internal store of salsa events that have been emitted,
+        /// and returns them as a `Vec` (equivalent to [`std::mem::take`]).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-06-12 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-13 06:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:80 on 2024-06-13 06:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Where does this apply_changes method live? I guess it is just a free function that takes a Db and some changes to apply?</p>
+</blockquote>
+<p>It would probably be a free standing function that takes <code>&amp;mut Db</code>. And yes, the fact that it is a free standing function takes some time to get used to. An alternative is to make it a method in <code>Vfs</code>, but I think that won't work because it would require holding a mutable reference to <code>Db</code> and a read only reference to <code>FileSystem</code>.</p>
+<blockquote>
+<p>Probably this is just something I have to get used to with Salsa, that the Db owns all the state, so most API that we use for managing state is just a function that takes a Db.</p>
+</blockquote>
+<p>yes, that takes some time to get used to. It's also something I'm still figuring out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-13 06:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I still have some concerns about having this code just mixed in directly with the rest of the modules in ruff_python_semantic and using only features to distinguish what is red-knot, but otherwise this PR looks fine, and I assume we will revisit that structure as follow-up, not on this PR, for rebase-conflict reasons.</p>
+</blockquote>
+<p>I think it's easiest if we discuss this in person in our planning meeting on Friday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-13 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-13 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-13 07:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

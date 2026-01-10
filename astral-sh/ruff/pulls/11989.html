@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Eagerly normalize `VendoredPathBuf`s - astral-sh/ruff #11989</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Eagerly normalize <code>VendoredPathBuf</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11989">#11989</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-06-23 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-23 15:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently <code>VendoredPath</code>s are only normalized when you actually try to use them to lookup a path in the vendored zip archive. This has a couple of disadvantages:</p>
+<ul>
+<li>The path is only &quot;dynamically&quot; checked when you actually try to use it. If the path is invalid, we should probably validate it and normalize it at the point where it's constructed, so that it's impossible to create a <code>VendoredPath(Buf)</code> to begin with.</li>
+<li>Every time you query whether a path exists (or query some other metadata about the path) in the zip archive, the normalization has to allocate a new <code>String</code>. But this allocation is hidden from the user of the <code>VendoredFileSystem</code> APIs, and feels somewhat wasteful if you're making several queries with the same path.</li>
+</ul>
+<p>This PR changes the design of the <code>VendoredFileSystem</code>, <code>VendoredPath</code> and <code>VendoredPathBuf</code> so that normalization is done eagerly at the point when <code>VendoredPath</code> and <code>VendoredPathBuf</code> are created, rather than lazily when you try to use them to query paths in the zip archive. The main <em>disadvantage</em> of this is that it becomes a lot more annoying to construct a <code>VendoredPath</code> from an <code>&amp;str</code>. Previously you could do <code>VendoredPath::new(&quot;foo.pyi&quot;)</code>; now you must do <code>&amp;VendoredPathBuf::try_from(&quot;foo.pyi&quot;).unwrap()</code>.</p>
+<p>I'm not wedded to this PR as it does feel like it makes the API somewhat more awkward to use. But I said I'd look into this as a followup for https://github.com/astral-sh/ruff/pull/11863 (see e.g. https://github.com/astral-sh/ruff/pull/11863#discussion_r1639324437). So this is the followup!</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ruff_db</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-06-23 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-23 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-23 15:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-23 15:53</div>
+            <div class="timeline-body"><p>I think my preferred solution here would be to improve the normalization logic to avoid allocating if the path's already normalized. But I'm not opposed to do the normalization eagerly.</p>
+<p>If we so the normalization eagerly, than I don't think the Path variant still makes sense, we should just use &amp;PathBuf</p>
+<p>What's unclear to me is how the normalization works when joining paths because we would then have to normalize both paths before we can join them (which includes an allocation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:22 on 2024-06-23 15:55</div>
+            <div class="timeline-body"><p>I would keep the components naming because it's more familiar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-23 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:25 on 2024-06-23 16:38</div>
+            <div class="timeline-body"><p>This will yield an incorrect result if you have ../ and normalized_parts is empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-23 16:47</div>
+            <div class="timeline-body"><p>Reading through this more, I'm leaning towards keeping it as is because it makes the API more cumbersome to use without very convincing benefits.</p>
+<blockquote>
+<p>The path is only &quot;dynamically&quot; checked when you actually try to use it. If the path is invalid, we should probably validate it and normalize it at the point where it's constructed, s</p>
+</blockquote>
+<p>It's unclear to me if we actually do want to do this. I don't think there's anything wrong with <code>VendoredPath::new(&quot;root/sub&quot;).join(&quot;../other&quot;)</code> where <code>../other</code> would no longer be a valid <code>VendoredPath</code> (because it starts with a <code>../</code>)</p>
+<blockquote>
+<p>Every time you query whether a path exists (or query some other metadata about the path) in the zip archive, the normalization has to allocate a new String.</p>
+</blockquote>
+<p>I agree that this is not ideal but I think we can instead change the normalization to return a <code>Cow</code> and only allocate if the path isn't normalized.</p>
+<p>I also expect that this won't be a very hot path because module resolution is cached. So we only resolve every module once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-23 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-23 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:25 on 2024-06-23 18:40</div>
+            <div class="timeline-body"><p>Good point. Fixed in https://github.com/astral-sh/ruff/pull/11989/commits/0775bc715c1b905c265e496ea74e765e11bccc89.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-23 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Reading through this more, I'm leaning towards keeping it as is because it makes the API more cumbersome to use without very convincing benefits.</p>
+</blockquote>
+<p>Yeah, I am also unsure. But I think part of the issue is that the current implementation on <code>main</code> isn't very principled: it panics if it encounters an unnormalized path, when it should probably return an error instead. https://github.com/astral-sh/ruff/pull/11991 is an alternative to this PR that tries to do the normalization in a more principled way, and it also makes the APIs more cumbersome to use.</p>
+<blockquote>
+<p>It's unclear to me if we actually do want to do this. I don't think there's anything wrong with <code>VendoredPath::new(&quot;root/sub&quot;).join(&quot;../other&quot;)</code> where <code>../other</code> would no longer be a valid <code>VendoredPath</code> (because it starts with a <code>../</code>)</p>
+</blockquote>
+<p>Hmm, that's an interesting point. We could possibly have something like a <code>join_str()</code> method instead, that allows you to join a fragment to this path even if the fragment itself is not a valid path. But I agree that that's not ideal...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-23 18:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/eagerly-normalize-vendored-paths">CodSpeed Performance Report</a></h2>
+<h3>Merging #11989 will <strong>improve performances by 4.92%</strong></h3>
+<p><sub>Comparing <code>alex/eagerly-normalize-vendored-paths</code> (4bd1fe8) with <code>main</code> (068b75c)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>alex/eagerly-normalize-vendored-paths</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[pydantic/types.py]</code> | 1.9 ms | 1.8 ms | +4.92% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-28 12:46</div>
+            <div class="timeline-body"><p>Leaving this for the time being</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-06-28 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-28 12:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

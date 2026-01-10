@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Encapsulate module resolution logic in `module.rs` - astral-sh/ruff #11767</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Encapsulate module resolution logic in <code>module.rs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11767">#11767</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-06-05 22:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-05 22:43</div>
+            <div class="timeline-body"><p>This PR encapsulates all module-resolution logic in <code>module.rs</code>. Currently a <code>Vec</code> of search paths is passed into the routines in <code>module.rs</code>, but this opens the door to the search paths being passed in an incorrect order. The order of search paths should be maintained as an invariant via a common routine to avoid the possiblity of error.</p>
+<p><code>ResolvedSearchPathOrder::new()</code> implements the module resolution order given at https://typing.readthedocs.io/en/latest/spec/distributing.html#import-resolution-ordering, with some small differences (applying the changes proposed in https://discuss.python.org/t/pep-561-s-module-resolution-order-seems-incorrect/55048).</p>
+<p>Work towards https://github.com/astral-sh/ruff/issues/11653</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-06 10:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-06-06 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-06-06 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-06 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-06 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-06 13:26</div>
+            <div class="timeline-body"><p>(Note that this PR essentially implements <code>--custom-typeshed-dir</code> internally, even though we don't yet support resolving to our vendored typeshed stubs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:28 on 2024-06-06 13:26</div>
+            <div class="timeline-body"><p>Haha, nooo xD. This is a huge setback on my quest to remove <code>is-macro</code>. I prefer writing the is methods manually. Rust-analyzer and other ideas often struggle with what is-macro generats, but that's a personal preference.  So, up to you if y ou want to keep it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:49 on 2024-06-06 13:27</div>
+            <div class="timeline-body"><p>Without having read the implementation. Passing an empty vec and <code>None</code> twice seems a bit weird. Is this temporary until we e.g. have typing-shed paths?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:451 on 2024-06-06 13:30</div>
+            <div class="timeline-body"><p>I think not using <code>chain</code> here would be easier to read</p>
+<pre><code class="language-suggestion">						let mut paths = extra_paths.into_iter().map(|path| ModuleSearchPath::new(path, ModuleSearchPathKind::Extra));
+						
+						paths.push(ModuleSearchPath::new(
+                  workspace_root,
+                  ModuleSearchPathKind::FirstParty,
+              )));
+              
+              paths.extend(custom_typeshed.into_iter().map(|path| {
+                  ModuleSearchPath::new(path, ModuleSearchPathKind::StandardLibrary)
+              }));
+                
+              paths.extend(site_packages.into_iter().map(|path| {
+                  ModuleSearchPath::new(path, ModuleSearchPathKind::SitePackagesThirdParty)
+              }));
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:49 on 2024-06-06 13:59</div>
+            <div class="timeline-body"><p>Reading more through the code. Ignore my comment. What's nice about <code>ResolvedSearchPathOrder</code> is that I think this can be modeled very easily with salsa when we have settings.</p>
+<p>All we need to do is to move it into a query that takes the type checker settings and it returns the resolved search paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:426 on 2024-06-06 14:01</div>
+            <div class="timeline-body"><p>I would probably call this <code>ResolvedSearchPathOrder</code> because an instance of it doesn't implement an order, it's the ordered search paths.</p>
+<p>An alternative would be that <code>SearchPathOrder</code> sorts the paths: Given a list of <code>ModuleSearchPath</code>, sort the paths according to PEP-561 (using the `ModuleSearchPathKind)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:433 on 2024-06-06 14:04</div>
+            <div class="timeline-body"><p>I think a slightly nicer API (requires a few more allocations but whathever, we build this once) is to use a builder:</p>
+<pre><code>ResolvedSearchPathBuilder::workspace(workspace_root)
+    .extras(extras)
+    .site_packages(site_packages)
+    .typeshed(typeshed)
+    .build()
+</code></pre>
+<p>where <code>ResolvedSearchPathBuilder</code> is</p>
+<pre><code class="language-rust">struct ResolvedSearchPathBuilder {
+    extras: Vec&lt;PathBuf&gt;,
+    workspace_root: PathBuf,
+    typeshed: Option&lt;PathBuf&gt;,
+    site_packages: Option&lt;PathBuf&gt;
+}
+</code></pre>
+<p>But I don't think it realy maters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-06 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:433 on 2024-06-06 14:08</div>
+            <div class="timeline-body"><p>👍 I considered this, but here I think I prefer to force us to explicitly state whether we're passing in <code>site-packages</code> or whether we want to run in &quot;isolated mode&quot;, ignoring all <code>site-packages</code> packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:426 on 2024-06-06 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I would probably call this <code>ResolvedSearchPathOrder</code></p>
+</blockquote>
+<p>Not sure I understand -- that's what it's already called</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:451 on 2024-06-06 14:24</div>
+            <div class="timeline-body"><p>Hmm, to me it seems a fair bit more verbose but no more readable :/</p>
+<pre><code class="language-diff">--- a/crates/red_knot/src/module.rs
++++ b/crates/red_knot/src/module.rs
+@@ -430,26 +430,40 @@ impl ResolvedSearchPathOrder {
+         site_packages: Option&lt;PathBuf&gt;,
+         custom_typeshed: Option&lt;PathBuf&gt;,
+     ) -&gt; Self {
+-        Self(
++        let mut paths: Vec&lt;ModuleSearchPath&gt; = Vec::with_capacity(
++            extra_paths.len()
++                + 1
++                + usize::from(site_packages.is_some())
++                + usize::from(custom_typeshed.is_some()),
++        );
++
++        paths.extend(
+             extra_paths
+                 .into_iter()
+-                .map(|path| ModuleSearchPath::new(path, ModuleSearchPathKind::Extra))
+-                .chain(std::iter::once(ModuleSearchPath::new(
+-                    workspace_root,
+-                    ModuleSearchPathKind::FirstParty,
+-                )))
+-                // TODO fallback to vendored typeshed stubs if no custom typeshed directory is provided by the user
+-                .chain(
+-                    custom_typeshed.into_iter().map(|path| {
+-                        ModuleSearchPath::new(path, ModuleSearchPathKind::StandardLibrary)
+-                    }),
+-                )
+-                .chain(site_packages.into_iter().map(|path| {
+-                    ModuleSearchPath::new(path, ModuleSearchPathKind::SitePackagesThirdParty)
+-                }))
+-                // TODO vendor typeshed's third-party stubs as well as the stdlib and fallback to them as a final step
+-                .collect(),
+-        )
++                .map(|path| ModuleSearchPath::new(path, ModuleSearchPathKind::Extra)),
++        );
++
++        paths.push(ModuleSearchPath::new(
++            workspace_root,
++            ModuleSearchPathKind::FirstParty,
++        ));
++
++        // TODO fallback to vendored typeshed stubs if no custom typeshed directory is provided by the user
++        paths.extend(
++            custom_typeshed
++                .into_iter()
++                .map(|path| ModuleSearchPath::new(path, ModuleSearchPathKind::StandardLibrary)),
++        );
++
++        paths.extend(
++            site_packages.into_iter().map(|path| {
++                ModuleSearchPath::new(path, ModuleSearchPathKind::SitePackagesThirdParty)
++            }),
++        );
++
++        // TODO vendor typeshed's third-party stubs as well as the stdlib and fallback to them as a final step
++
++        Self(paths)
+     }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:426 on 2024-06-06 14:27</div>
+            <div class="timeline-body"><p>I think I see what you mean, though. I renamed it to <code>OrderedSearchPaths</code> in https://github.com/astral-sh/ruff/pull/11767/commits/4f0bcf5aa2dfd6a95533e9ec8d0fa87f100d3bd8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-06-06 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-06-06 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-06 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:426 on 2024-06-06 14:36</div>
+            <div class="timeline-body"><p>Oops sorry. That should have been *I probably <strong>wouldn't</strong> *. I didn't sleep well tonight and it is really showing. Sorry for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:451 on 2024-06-06 14:37</div>
+            <div class="timeline-body"><p>Yeah, I probably would forgo the <code>with_capacity</code> optimisation which you also won't get with <code>std::iter::chain</code> because <code>ExactSizeIterator</code> isn't implemented for chained (because it could overflow).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:28 on 2024-06-06 14:38</div>
+            <div class="timeline-body"><p>Lol, I should have been more opinionated. It hurts that this is merged haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/Cargo.toml</code>:28 on 2024-06-06 14:39</div>
+            <div class="timeline-body"><p>Hahaha, I'm sorry. I've never had a problem with Rust-analyzer not being able to understand these generated methods locally!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:451 on 2024-06-06 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>which you also won't get with <code>std::iter::chain</code> because <code>ExactSizeIterator</code> isn't implemented for chained (because it could overflow)</p>
+</blockquote>
+<p>Ahh, I didn't realise that! But it makes sense now that you mention it.</p>
+<p>I still kinda like the <code>chain()</code> personally, though 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-06 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/Cargo.toml</code>:28 on 2024-06-06 15:17</div>
+            <div class="timeline-body"><p>Sounds like what @MichaReiser really means by &quot;rust-analyzer and other IDEs often struggle ...&quot; is &quot;RustRover, which I use, often struggles ...&quot; ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:234 on 2024-06-06 15:19</div>
+            <div class="timeline-body"><p>I find the word &quot;dependency&quot; here confusing. I wouldn't think of first-party code as a &quot;dependency&quot; -- the dependencies probably live in site-packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/Cargo.toml</code>:28 on 2024-06-06 15:20</div>
+            <div class="timeline-body"><p>(That said, I'm fine with avoiding this kind of thing -- it's also easier for humans to read explicit methods than a proc macro.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:237 on 2024-06-06 15:20</div>
+            <div class="timeline-body"><p>the stdlib portion of typeshed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:229 on 2024-06-06 15:21</div>
+            <div class="timeline-body"><p>Worth a comment that these are listed here in priority order? And even a link to the relevant page of the typing spec (soon hopefully to be updated to match what we're doing here)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:433 on 2024-06-06 15:25</div>
+            <div class="timeline-body"><p>I did almost comment on the call to <code>OrderedSearchPaths::new</code> above that it's hard to read/understand the call in code review, without IDE support, and without Python keyword arguments. Not sure how much this matters. Another way to address it would be taking in a config struct as argument instead of just positional args.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-06 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:451 on 2024-06-06 15:28</div>
+            <div class="timeline-body"><p>I guess we could also <code>shrink_to_fit</code> the paths before returning, but probably doesn't matter given that few of these are ever created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-06 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:433 on 2024-06-06 15:29</div>
+            <div class="timeline-body"><p>I think we can ignore it for now. Ultimately what we'll do is to read the settings and take the fields from there (or fall back to other defaults).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:675 on 2024-06-06 15:30</div>
+            <div class="timeline-body"><p>I guess this is so when people point to a custom typeshed, they can just point to the root of the typeshed repo?</p>
+<p>What about instead resolving this once upfront in the way we set our stdlib and typeshed-third-party search paths, so we don't have to do it on every resolution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-06 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:234 on 2024-06-06 15:40</div>
+            <div class="timeline-body"><p>I just carried over the pre-existing comment here, but yeah, agree that this isn't the best terminology. I'll fix it up in a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:675 on 2024-06-06 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess this is so when people point to a custom typeshed, they can just point to the root of the typeshed repo?</p>
+</blockquote>
+<p>Yup. That's what mypy and pyright do currently, and it's what I would expect a <code>--custom-typeshed-dir</code> argument to do.</p>
+<blockquote>
+<p>What about instead resolving this once upfront in the way we set our stdlib and typeshed-third-party search paths, so we don't have to do it on every resolution?</p>
+</blockquote>
+<p>Could do! I decided to go this way so that calling <code>.path()</code> on the <code>ModuleSearchPath</code> instance would give you the path for <code>typeshed</code> rather than the path for <code>typeshed/stdlib</code>. That felt like it made the most sense here. As discussed elsewhere, I think we're going to have to do different things for each different kind of module search path anyway, so we're not going to be able to treat all paths in the resolved vector the same way even if this module search path pointed to <code>typeshed/stdlib</code> rather than just <code>typeshed</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-06 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:675 on 2024-06-06 15:46</div>
+            <div class="timeline-body"><p>To me it seems more useful if <code>.path()</code> on the <code>ModuleSearchPath</code> instance points to the actual path imports will be resolved from.</p>
+<p>And agreed that <code>foo-stubs</code> packages mean special handling for resolutions in site-packages specifically, but in general the more work we can do upfront and the less work we can do on resolution of each package, the better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:675 on 2024-06-06 15:48</div>
+            <div class="timeline-body"><p>Okay, no strong opinion from me on this; I can change this!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

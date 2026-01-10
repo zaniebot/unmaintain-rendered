@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `E999` as a rule, disallow any disablement methods for syntax error - astral-sh/ruff #11901</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>E999</code> as a rule, disallow any disablement methods for syntax error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11901">#11901</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-17 11:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-17 11:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the way syntax errors are handled throughout the linter.</p>
+<p>The main change is that it's now not considered as a rule which involves the following changes:</p>
+<ul>
+<li>Update <code>Message</code> to be an enum with two variants - one for diagnostic message and the other for syntax error message</li>
+<li>Provide methods on the new message enum to query information required by downstream usages</li>
+</ul>
+<p>This means that the syntax errors cannot be hidden / disabled via any disablement methods. These are:</p>
+<ol>
+<li>Configuration via <code>select</code>, <code>ignore</code>, <code>per-file-ignores</code>, and their <code>extend-*</code> variants<pre><code class="language-console">$ cargo run -- check ~/playground/ruff/src/lsp.py --extend-select=E999 --no-preview --no-cache 
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check /Users/dhruv/playground/ruff/src/lsp.py --extend-select=E999 --no-preview --no-cache`
+warning: Rule `E999` is deprecated and will be removed in a future release. Syntax errors will always be shown regardless of whether this rule is selected or not.
+/Users/dhruv/playground/ruff/src/lsp.py:1:8: F401 [*] `abc` imported but unused
+  |
+1 | import abc
+  |        ^^^ F401
+2 | from pathlib import Path
+3 | import os
+  |
+  = help: Remove unused import: `abc`
+</code></pre>
+</li>
+<li>Command-line flags via <code>--select</code>, <code>--ignore</code>, <code>--per-file-ignores</code>, and their <code>--extend-*</code> variants<pre><code class="language-console">$ cargo run -- check ~/playground/ruff/src/lsp.py --no-cache --config=~/playground/ruff/pyproject.toml 
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check /Users/dhruv/playground/ruff/src/lsp.py --no-cache --config=/Users/dhruv/playground/ruff/pyproject.toml`
+warning: Rule `E999` is deprecated and will be removed in a future release. Syntax errors will always be shown regardless of whether this rule is selected or not.
+/Users/dhruv/playground/ruff/src/lsp.py:1:8: F401 [*] `abc` imported but unused
+  |
+1 | import abc
+  |        ^^^ F401
+2 | from pathlib import Path
+3 | import os
+  |
+  = help: Remove unused import: `abc`
+</code></pre>
+</li>
+</ol>
+<p>This also means that the <strong>output format</strong> needs to be updated:</p>
+<ol>
+<li>The <code>code</code>, <code>noqa_row</code>, <code>url</code> fields in the JSON output is optional (<code>null</code> for syntax errors)</li>
+<li>Other formats are changed accordingly
+For each format, a new test case specific to syntax errors have been added. Please refer to the snapshot output for the exact format for syntax error message.</li>
+</ol>
+<p>The output of the <code>--statistics</code> flag will have a blank entry for syntax errors:</p>
+<pre><code>315     F821    [ ] undefined-name
+119             [ ] syntax-error
+103     F811    [ ] redefined-while-unused
+</code></pre>
+<p>The <strong>language server</strong> is updated to consider the syntax errors by convert them into LSP diagnostic format separately.</p>
+<h3>Preview</h3>
+<p>There are no quick fixes provided to disable syntax errors. This will automatically work for <code>ruff-lsp</code> because the <code>noqa_row</code> field will be <code>null</code> in that case.
+<img width="772" alt="Screenshot 2024-06-26 at 14 57 08" src="https://github.com/astral-sh/ruff/assets/67177269/aaac827e-4777-4ac8-8c68-eaf9f2c36774"></p>
+<p>Even with <code>noqa</code> comment, the syntax error is displayed:
+<img width="763" alt="Screenshot 2024-06-26 at 14 59 51" src="https://github.com/astral-sh/ruff/assets/67177269/ba1afb68-7eaf-4b44-91af-6d93246475e2"></p>
+<p>Rule documentation page:
+<img width="1371" alt="Screenshot 2024-06-26 at 16 48 07" src="https://github.com/astral-sh/ruff/assets/67177269/524f01df-d91f-4ac0-86cc-40e76b318b24"></p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Disablement methods via config shows a warning<ul>
+<li>[x] <code>select</code>, <code>extend-select</code></li>
+<li>[ ] ~<code>ignore</code>~ <em>doesn't show any message</em></li>
+<li>[ ] ~<code>per-file-ignores</code>, <code>extend-per-file-ignores</code>~ <em>doesn't show any message</em></li>
+</ul>
+</li>
+<li>[x] Disablement methods via command-line flag shows a warning<ul>
+<li>[x] <code>--select</code>, <code>--extend-select</code></li>
+<li>[ ] ~<code>--ignore</code>~ <em>doesn't show any message</em></li>
+<li>[ ] ~<code>--per-file-ignores</code>, <code>--extend-per-file-ignores</code>~ <em>doesn't show any message</em></li>
+</ul>
+</li>
+<li>[x] File with syntax errors should exit with code 1</li>
+<li>[x] Language server<ul>
+<li>[x] Should show diagnostics for syntax errors</li>
+<li>[x] Should not recommend a quick fix edit for adding <code>noqa</code> comment</li>
+<li>[x] Same for <code>ruff-lsp</code></li>
+</ul>
+</li>
+</ul>
+<p>resolves: #8447</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid any disablement methods for syntax error diagnostics" to "Disable all disablement methods for syntax error diagnostics" by @dhruvmanila on 2024-06-18 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-18 12:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -2 violations, +0 -0 fixes in 1 projects; 49 projects unchanged)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/demisto/content/blob/3eee441edbd722831fb2a3bd041f85a9e4c893c5/Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py#L106'>Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py:106:12:</a> E999 SyntaxError: Multiple exception types must be parenthesized
+- <a href='https://github.com/demisto/content/blob/3eee441edbd722831fb2a3bd041f85a9e4c893c5/Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py#L325'>Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py:325:8:</a> E999 SyntaxError: Multiple exception types must be parenthesized
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E999 | 2 | 0 | 2 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-06-19 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @dhruvmanila on 2024-06-19 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @dhruvmanila on 2024-06-19 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-06-19 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-19 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-19 08:16</div>
+            <div class="timeline-body"><p>What happens if a user specifies <code>E999</code> in <code>select</code>, <code>ignore</code>, <code>exclude</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-19 08:17</div>
+            <div class="timeline-body"><p>I wonder if it still makes sense to model <code>SyntaxError</code> as a rule, now that it no longer behaves like a rule. Is it just <code>Message</code> where we need to pass <code>E999</code> to? Could we use an <code>enum</code> in <code>Message</code>?</p>
+<p>For example, I suspect that <code>E999</code> is still valid according to the schema?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-19 10:10</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens if a user specifies <code>E999</code> in <code>select</code>, <code>ignore</code>, <code>exclude</code>?</p>
+</blockquote>
+<p>It shouldn't affect anything, the <code>E999</code> diagnostics (if any) will still be displayed.</p>
+<blockquote>
+<p>I wonder if it still makes sense to model <code>SyntaxError</code> as a rule, now that it no longer behaves like a rule. Is it just <code>Message</code> where we need to pass <code>E999</code> to? Could we use an <code>enum</code> in <code>Message</code>?</p>
+</blockquote>
+<p>Good point. Let me check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-19 10:17</div>
+            <div class="timeline-body"><blockquote>
+<p>It shouldn't affect anything, the E999 diagnostics (if any) will still be displayed.</p>
+</blockquote>
+<p>But we don't show a warning. I'm worried that this is confusing for users that would expect <code>E999</code> not to show up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 12:57</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, I suspect that <code>E999</code> is still valid according to the schema?</p>
+</blockquote>
+<p>Yeah, that's correct. I guess that doesn't make sense since it, now, doesn't behave as a rule (as you mentioned). Although I wonder how would one go about configuring the fixable part if and when we introduce them.</p>
+<p>For some more context, Pyright doesn't seem to consider it as a rule either, at least that's what I'm inferring from the fact that there's no &quot;rule&quot; field in the JSON output:</p>
+<pre><code class="language-json">       {
+            &quot;file&quot;: &quot;/Users/dhruv/playground/ruff/parser/_.py&quot;,
+            &quot;severity&quot;: &quot;error&quot;,
+            &quot;message&quot;: &quot;Expected expression to the right of \&quot;=\&quot;&quot;,
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 3,
+                    &quot;character&quot;: 17
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 4,
+                    &quot;character&quot;: 0
+                }
+            }
+        }
+</code></pre>
+<p>Vs the one with the &quot;rule&quot; field:</p>
+<pre><code class="language-json">       {
+            &quot;file&quot;: &quot;/Users/dhruv/playground/ruff/src/lsp.py&quot;,
+            &quot;severity&quot;: &quot;error&quot;,
+            &quot;message&quot;: &quot;\&quot;name\&quot; is not defined&quot;,
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 9,
+                    &quot;character&quot;: 6
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 9,
+                    &quot;character&quot;: 10
+                }
+            },
+            &quot;rule&quot;: &quot;reportUndefinedVariable&quot;
+        }
+</code></pre>
+<p>I'm not sure how does Biome does it but they have a separate <code>ParseDiagnostic</code> and it's in a separate category (&quot;parse&quot;) not present in the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 13:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure how does Biome does it but they have a separate ParseDiagnostic and it's in a separate category (&quot;parse&quot;) not present in the documentation.</p>
+</blockquote>
+<p>Biome supports different <code>Diagnostic</code>s and only Formatter and Linter diagnostics are suppressable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 13:12</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, I suspect that <code>E999</code> is still valid according to the schema?</p>
+</blockquote>
+<p>I think we can just remove this code from the rule table so that it's not considered valid in config. But, that opens up another set of problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 15:12</div>
+            <div class="timeline-body"><p>What's the motivation for making it unsuppressable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-23 15:48</div>
+            <div class="timeline-body"><p>There's some reasoning in the internal discord thread https://discord.com/channels/1039017663004942429/1082324250112823306/1250836504738267157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 15:51</div>
+            <div class="timeline-body"><p>I don't see the motivation described in there, just more context on why it was added initially.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-24 09:21</div>
+            <div class="timeline-body"><p>Historically, I think the main motivation was because the parser didn't support new syntax which isn't the case with the new parser. We guarantee that the Ruff parser will always match the latest Python grammar. This means there's no need to suppress the syntax errors although there can be use cases in a test fixture for which the file should be exluded instead. This also means that we don't need to show the syntax errors as log messages in addition to the diagnostics.</p>
+<p><strong>Other syntax errors:</strong> In the future, Ruff will also start providing <a href="https://github.com/astral-sh/ruff/issues/6591">syntax error diagnostics for unsupported syntax as per the target version</a> or the ones <a href="https://github.com/astral-sh/ruff/issues/11934">raised by the compiler</a>. Allowing to disable syntax errors means that Ruff won't be able to provide diagnostics for these kinds of syntax errors in case it's disabled. But, the syntax errors indicate that Python won't be able to run the code itself.</p>
+<p>Looking at the <strong>ecosystem</strong>, the following tools support ignoring syntax errors:</p>
+<ul>
+<li><p><code>flake8</code> via <code>noqa: E999</code></p>
+</li>
+<li><p><code>pylint</code>
+We can't disable syntax errors in Pylint via comment:</p>
+<pre><code class="language-py">x =  # pylint: disable=syntax-error
+</code></pre>
+<p>But, we can via the config file:</p>
+<pre><code class="language-toml">[tool.pylint.&quot;MESSAGES CONTROL&quot;]
+disable = [&quot;syntax-error&quot;]
+</code></pre>
+</li>
+</ul>
+<p>While, the following doesn't:</p>
+<ul>
+<li>Pyright: https://github.com/microsoft/pyright/blob/main/docs/configuration.md#main-configuration-options (typeCheckingMode)<ul>
+<li>Also, Pyright doesn't have any rule id corresponding to a syntax error</li>
+</ul>
+</li>
+<li><code>mypy</code>: https://mypy.readthedocs.io/en/stable/error_code_list.html#report-syntax-errors-syntax</li>
+<li><code>biome</code>, under the &quot;parse&quot; category<pre><code class="language-js">// biome-ignore parse: reason
+import fs from 'fs;
+</code></pre>
+</li>
+<li><code>eslint</code> (no rule id corresponding to syntax errors)</li>
+<li><code>oxc</code></li>
+</ul>
+<p><strong>Searching for <code>E999</code> on https://grep.app gives the following relevant results:</strong></p>
+<ul>
+<li>Ignoring syntax errors from Pylint because Ruff will raise them<ul>
+<li><code>home-assistant/core</code>: https://github.com/home-assistant/core/blob/dev/pyproject.toml#L209</li>
+<li><code>ansible/molecule</code>: https://github.com/ansible/molecule/blob/fd3ed55b11bf896aa1892ee75a6f32761eed3032/pyproject.toml#L138C34-L138C35</li>
+</ul>
+</li>
+<li><code>codium-ai</code> is ignoring <code>E999</code> from Ruff; https://github.com/Codium-ai/pr-agent/blob/74bb07e9c40e735b47eed0d13b621e27a0f76bef/pyproject.toml#L75 although I cloned the repository and there are no syntax errors that Ruff is reporting when I removed it from the config</li>
+<li><code>hatch</code> includes <code>E999</code> in the selection: https://github.com/pypa/hatch/blob/72e09428a2e6846962413b227534c0eb365a86ed/ruff_defaults.toml#L133</li>
+<li><code>sphinx-gallery</code> has a usage within per-file-ignores (https://github.com/sphinx-gallery/sphinx-gallery/blob/0d7823073f9307cfeaad370ad41207354dfe9713/pyproject.toml#L113-L115) for which I think the file should be excluded completely</li>
+<li>Used to ignore a file containing <code>match</code> statements which we already support now: https://github.com/alice-biometrics/meiga/blob/4856023988835dc8c1cac6d3bdc72ca842ecb59c/pyproject.toml#L134-L136</li>
+</ul>
+<p><strong>tl;dr</strong> for the above search is that most usages are to include <code>E999</code> and to exclude syntax errors from Pylint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-24 13:05</div>
+            <div class="timeline-body"><blockquote>
+<p><strong>Other syntax errors:</strong> In the future, Ruff will also start providing <a href="https://github.com/astral-sh/ruff/issues/6591">syntax error diagnostics for unsupported syntax as per the target version</a> or the ones <a href="https://github.com/astral-sh/ruff/issues/11934">raised by the compiler</a>. Allowing to disable syntax errors means that Ruff won't be able to provide diagnostics for these kinds of syntax errors in case it's disabled. But, the syntax errors indicate that Python won't be able to run the code itself.</p>
+</blockquote>
+<p>Some of these syntax errors emitted by the Python compiler are very subtle -- some have been the subject of several revisions at CPython (e.g. https://github.com/python/cpython/pull/100581).</p>
+<p>From the perspective of Python users, these are all just <code>SyntaxError</code>s, so I think they should all be bucketed under E999; Ruff users shouldn't have to care about the distinction of where the SyntaxErrors originate from in the CPython internals. But if we get the logic wrong somehow for one of these rules that we plan to implement outside of the parser, making E999 unsuppressable might mean that users who encounter E999 false positives on their code are unable to upgrade their Ruff version until there's a release with a bugfix. That doesn't sound ideal to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 13:08</div>
+            <div class="timeline-body"><blockquote>
+<p>But if we get the logic wrong somehow for one of these rules that we plan to implement outside of the parser, making E999 unsuppressable might mean that users who encounter E999 false positives on their code are unable to upgrade their Ruff version until there's a release with a bugfix. That doesn't sound ideal to me.</p>
+</blockquote>
+<p>You can always omit the file entirely via <code>exclude</code> -- it's effectively the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-24 13:11</div>
+            <div class="timeline-body"><blockquote>
+<p>You can always omit the file entirely via <code>exclude</code> -- it's effectively the same thing.</p>
+</blockquote>
+<p>but for the ones we plan on detecting outside of the parser especially, it feels like it would be nicer if we could move in the other direction to this PR, and support suppressing specific instances of E999 using <code># noqa</code> comments. And even for the ones detected in the parser, that might make sense in some situations, given that our parser now supports error recovery?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 13:19</div>
+            <div class="timeline-body"><p>The reason why I'm in favor of removing suppressions for <code>E999</code> is that there's almost never a good reason to suppress them (other than a bug in Ruff). This is considerably different from other lints where it is often fine to suppress them. Having this distinction seems useful to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-24 13:28</div>
+            <div class="timeline-body"><p>I agree that this rule is in a different, distinct category to most (probably all) of our other rules. However, I don't think it necessarily follows that our users will benefit if we prevent them from suppressing rules in this other category. I'm not sure that the reasons for this restriction will necessarily be self-evident to users, and I doubt that having the restriction there will significantly help clarify the distinction between the categories in the minds of our users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-25 12:37</div>
+            <div class="timeline-body"><p>(We discussed this internally and the TL;DR is that I'm now okay with this change. While I'd still prefer to have a world where there are as few special cases as possible in our configuration setup, the truth of the matter is that it's not possible to <code># noqa</code> E999 on a speicfic line today, and it doesn't make much sense to try to allow that until and unless we have a parser and linter that are both resilient to syntax errors. If and when we have that, we could consider revisiting this special case in our configuration setup, but it'll probably be a while until we get there. Until we achieve those long-term goals, I agree that this PR gets us to a better place.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2024-06-25 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-25 16:44</div>
+            <div class="timeline-body"><p>Putting this into draft for now. All changes are done locally. I'll write up the test cases, validate the behavior and push it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @dhruvmanila on 2024-06-26 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Disable all disablement methods for syntax error diagnostics" to "Remove `E999` as a rule, disallow any disablement methods for syntax error" by @dhruvmanila on 2024-06-26 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-06-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @dhruvmanila on 2024-06-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @dhruvmanila on 2024-06-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-06-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 10:55</div>
+            <div class="timeline-body"><p>I'll review the PR in detail in a minute, but I think we should wait to remove the <code>E999</code> rule. Instead, we should mark it as deprecated and, ideally, emit a warning when it is used in any of the selectors (maybe that's already done automatically when it is marked as deprecated)?</p>
+<p>The main reason is that we try to first deprecate a feature before completely removing it (gives users a nicer upgrade experience).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-26 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll review the PR in detail in a minute, but I think we should wait to remove the <code>E999</code> rule. Instead, we should mark it as deprecated and, ideally, emit a warning when it is used in any of the selectors (maybe that's already done automatically when it is marked as deprecated)?</p>
+</blockquote>
+<p>Yeah, I just thought of that, I'm already on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/printer.rs</code>:83 on 2024-06-26 11:08</div>
+            <div class="timeline-body"><p>Nit: <code>f.write_str(self.0.as_str())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/github.rs</code>:53 on 2024-06-26 11:14</div>
+            <div class="timeline-body"><p>Nit, maybe:</p>
+<pre><code class="language-rust">if let Some(rule) = message.rule() {
+    write!(writer, &quot; {code}&quot; ,rule.noqa_code())?;
+}
+
+writeln!(writer, &quot; {}&quot;, message.body())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/json.rs</code>:82 on 2024-06-26 11:16</div>
+            <div class="timeline-body"><p>Nit: I'm inclined to add a <code>code</code> and <code>url</code> method to <code>Message</code> that return <code>Option&lt;String&gt;</code> and <code>Option&lt;Url&gt;</code> to avoid the repetition in the different emitters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:108 on 2024-06-26 11:19</div>
+            <div class="timeline-body"><p>Uh, our parse errors only have a start offset and not a range. That's funny.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-26 11:24</div>
+            <div class="timeline-body"><p>This is great! I'm also like that <code>Message</code> is now an enum. I expect that we want to incorporate formatter errors in the future as well and it being an enum already moves in the right direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 11:25</div>
+            <div class="timeline-body"><p>The only functionality that we &quot;loose&quot; when merging this PR is that it is no longer possible to disable <code>E999</code> in the editor to avoid that both pyright and ruff show syntax errors. Is this something you plan to add to <code>ruff server</code> (and ruff lsp?)</p>
+<p>Huh, RustRover's review feature isnt' there yet.... Submitting my review once would have been enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-06-26 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-26 11:40</div>
+            <div class="timeline-body"><blockquote>
+<p>The only functionality that we &quot;loose&quot; when merging this PR is that it is no longer possible to disable <code>E999</code> in the editor to avoid that both pyright and ruff show syntax errors. Is this something you plan to add to <code>ruff server</code> (and ruff lsp?)</p>
+</blockquote>
+<p>It should be low effort if we want to add it to the new server. I don't think we should add any new &quot;features&quot; to <code>ruff-lsp</code>.</p>
+<p>Any suggestions for the config name?</p>
+<ol>
+<li><code>lint.hide_syntax_errors</code></li>
+<li><code>lint.exclude_syntax_errors</code></li>
+<li><code>hide_syntax_errors</code> (global)</li>
+<li><code>exclude_syntax_errors</code> (global)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-26 11:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Any suggestions for the config name?</p>
+</blockquote>
+<p><code>lint.ignore_syntax_errors</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-26 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:108 on 2024-06-26 11:47</div>
+            <div class="timeline-body"><p>I'm not sure I follow here. This is mainly a copy-paste from the existing logic :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 11:51</div>
+            <div class="timeline-body"><p>I'm leaning towards a global option because we may want to always show (or not show) syntax error in the future even if linting is disabled.</p>
+<p>I'm leaning towards using <code>enable</code> because we already support a few <code>enable</code> options (and it's about enabling/disabling a LSP feature). I would not use the <code>ignore</code> semantics because it's too close to how rules are enabled/disabled.</p>
+<p><code>syntax_errors.enable</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-26 11:53</div>
+            <div class="timeline-body"><p>Makes sense. <code>show_syntax_errors = true</code> / <code>show_syntax_errors = false</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-26 12:04</div>
+            <div class="timeline-body"><blockquote>
+<p><code>syntax_errors.enable</code>?</p>
+</blockquote>
+<p>This would be useful if we want to provide more options apart from enabling / disabling. I'm not sure what they would be right now and don't know if there's any other functionality we could provide related to syntax errors (maybe &quot;fix&quot; enabled or not?). I'm leaning towards what Alex has suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-26 12:20</div>
+            <div class="timeline-body"><p>(I'm going to make the server changes in a follow-up PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-27 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-27 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-27 02:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

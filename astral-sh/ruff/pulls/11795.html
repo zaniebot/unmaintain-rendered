@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update indentation representation for the common case - astral-sh/ruff #11795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update indentation representation for the common case</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11795">#11795</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-07 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-07 13:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-07 13:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-14 05:12</div>
+            <div class="timeline-body"><p>Update: This doesn't seem to provide any performance improvements on Codspeed although locally it gives me around 5% difference in the parser benchmarks.</p>
+<pre><code>group                         indentations-parser                    main-parser
+-----                         -------------------                    -----------
+parser/large/dataset.py       1.00    661.6±2.31µs    61.5 MB/sec    1.03    681.6±2.58µs    59.7 MB/sec
+parser/numpy/ctypeslib.py     1.00    107.1±0.35µs   155.5 MB/sec    1.05    112.0±0.40µs   148.7 MB/sec
+parser/numpy/globals.py       1.00      8.2±0.03µs   359.7 MB/sec    1.05      8.6±0.03µs   343.0 MB/sec
+parser/pydantic/types.py      1.00    251.8±0.88µs   101.3 MB/sec    1.04    262.1±0.98µs    97.3 MB/sec
+parser/unicode/pypinyin.py    1.00     33.0±0.20µs   127.5 MB/sec    1.03     33.9±0.15µs   124.0 MB/sec
+</code></pre>
+<p>I've tried the following three representations:</p>
+<ol>
+<li>Save the first indentation and keep a counter which is incremented and decremented accordingly. If the new indentation isn't in multiples of the first indentation, we convert it into a stack and continue.</li>
+</ol>
+<pre><code class="language-rs">struct IndentationCounter {
+    /// The first indentation in the source code.
+    first: Option&lt;Indentation&gt;,
+    /// The current indentation level.
+    level: u32,
+}
+</code></pre>
+<ol start="2">
+<li>Similar to (1), but adds a new field which reflects the current indentation. This optimizes for accessing the current indentation while in (1) the current indentation needs to be computed which adds a bit of overhead.</li>
+</ol>
+<pre><code class="language-rs">struct IndentationCounter {
+    /// The current indentation.
+    current: Indentation,
+    /// The first indentation in the source code.
+    first: Option&lt;Indentation&gt;,
+    /// The current indentation level.
+    level: u32,
+}
+</code></pre>
+<ol start="3">
+<li>Represent an indentation at a more granular level by including the indent style. This will be checked against the new indentation style and creates a short-circuiting behavior to avoid checking the size. But, this adds an overhead of creating the indent style flag in the lexer.</li>
+</ol>
+<pre><code class="language-rs">bitflags! {
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
+    pub(super) struct IndentStyle: u8 {
+        const SPACE = 1 &lt;&lt; 0;
+        const TAB = 1 &lt;&lt; 1;
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+struct IndentationCounter {
+    /// The indentation style i.e., tabs or spaces
+    style: IndentStyle,
+    /// The size of a single indentation in terms of the number of characters.
+    size: Character,
+    /// The current indentation level.
+    level: u32,
+}
+</code></pre>
+<p>I think the reason it doesn't really give performance improvement is that the overhead of checking whether the indentation changed and computing the current indentation offsets any performance gains.</p>
+<p>Currently, the change in this PR reflects solution (2) from above. I don't think it's worth adding the complexity if there's no performance gains from it which is why I'm thinking of removing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-06-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @dhruvmanila on 2024-06-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Update indentation representation for the common case" to "Update indentation representation for the common case" by @dhruvmanila on 2024-06-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 06:13</div>
+            <div class="timeline-body"><p>Codspeed does show a 2% lexer perf improvement and about a 1% for the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-14 06:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Codspeed does show a 2% lexer perf improvement and about a 1% for the parser.</p>
+</blockquote>
+<p>Yeah, I'm not sure if the increase in code complexity is worth the nominal gain</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

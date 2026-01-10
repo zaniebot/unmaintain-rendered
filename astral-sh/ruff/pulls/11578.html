@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `TokenFlags` stored on each `Token` - astral-sh/ruff #11578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>TokenFlags</code> stored on each <code>Token</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11578">#11578</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-28 06:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-28 06:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements the <code>TokenFlags</code> which will be stored on each <code>Token</code> and certain flags will be set depending on the token kind. Currently, it's equivalent to <code>AnyStringFlags</code> but it will help in the future to provide additional information regarding certain tokens like unterminated string, number kinds, etc.</p>
+<p>The main motivation to add a <code>TokenFlags</code> is to store certain information related to the token which will then be used by downstream tools. Currently, the information is only related to string tokens. The downstream tools should not be allowed access to the flags directly, it's an implementation detail. Instead, methods will be provided on <code>Token</code> to query certain information. An example can be seen in the follow-up PR (https://github.com/astral-sh/ruff/pull/11592).</p>
+<p>For example, the <code>Stylist</code> and <code>Indexer</code> uses the string flags stored on <code>String</code>/<code>FStringStart</code> token to get certain information. They will be updated to use these flags instead, thus removing the need for <code>Tok</code> completely.</p>
+<p>Prior art in TypeScript: https://github.com/microsoft/TypeScript/blob/16beff101ae1dae0600820ebf22632ac8a40cfc8/src/compiler/types.ts#L2788-L2827</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-28 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-28 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1390 on 2024-05-28 07:10</div>
+            <div class="timeline-body"><p>I might be missing something, but it looks like this is identical to the <code>AnyStringFlags</code> type we already have in <code>nodes.rs</code> in terms of its interface and capabilities. Couldn't we just reuse that type? It was originally designed for use in the lexer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1390 on 2024-05-28 08:12</div>
+            <div class="timeline-body"><p>Yes, currently it is equivalent to the <code>AnyStringFlags</code> but we do plan to add additional flags which might not be related to a string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-28 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1390 on 2024-05-28 08:19</div>
+            <div class="timeline-body"><p>Got it, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:40 on 2024-05-28 09:44</div>
+            <div class="timeline-body"><p>These are here just to help me with finding the remaining references and will be removed at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:161 on 2024-05-28 10:04</div>
+            <div class="timeline-body"><p>We could go from <code>AnyStringPrefix</code> -&gt; <code>TokenFlags</code> but that seemed like an unnecessary computation. So, instead of <code>char</code> -&gt; <code>AnyStringPrefix</code> -&gt; <code>TokenFlags</code>, we go directly from <code>char</code> -&gt; <code>TokenFlags</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:592 on 2024-05-28 10:06</div>
+            <div class="timeline-body"><p>This means that all three f-string tokens (<code>FStringStart</code>, <code>FStringMiddle</code>, <code>FStringEnd</code>) will have the flag set without any additional cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Implement `TokenFlags`" to "Implement `TokenFlags`" by @dhruvmanila on 2024-05-28 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement `TokenFlags`" to "Implement `TokenFlags` stored on each `Token`" by @dhruvmanila on 2024-05-28 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-28 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-28 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:146 on 2024-05-28 10:58</div>
+            <div class="timeline-body"><p>Nit: I think I would move this method after <code>lex_identifier</code>. I was surprised to find this as the very first non-infrastructure method (maybe we should reorganize the lexer methods in a separate PR once we're done with your parser work. E.g. move <code>next_token</code> to the top, followed by <code>lex_token</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:146 on 2024-05-28 11:00</div>
+            <div class="timeline-body"><p>Nit: You could consider changing the method to <code>Option&lt;TokenFlags&gt;</code> to remove the side effect from it.</p>
+<pre><code class="language-rust">if let Some(prefix_flags) = self.try_single_char_prefix(first) {
+	self.token_flags |= prefix_flags;
+  self.lex_string(...)
+} else {
+	...
+}
+</code></pre>
+<p>Although it might not be worth it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-28 11:03</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>I think it would be helpful to add some additional context to the PR summary why we need this. What I understand is that we need it for some token based lint rules to remove the dependency on <code>Tok</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-29 05:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:146 on 2024-05-29 05:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Although it might not be worth it...</p>
+</blockquote>
+<p>Yeah, not sure if it's worth doing.</p>
+<blockquote>
+<p>Nit: I think I would move this method after <code>lex_identifier</code>. I was surprised to find this as the very first non-infrastructure method (maybe we should reorganize the lexer methods in a separate PR once we're done with your parser work. E.g. move <code>next_token</code> to the top, followed by <code>lex_token</code>).</p>
+</blockquote>
+<p>Yes, I'm going to follow-up on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-29 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-29 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-29 06:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

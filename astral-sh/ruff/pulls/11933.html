@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid consuming trailing whitespace during re-lexing - astral-sh/ruff #11933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid consuming trailing whitespace during re-lexing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11933">#11933</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-19 02:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-19 02:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the re-lexing logic to avoid consuming the trailing whitespace and move the lexer explicitly to the last newline character encountered while moving backwards.</p>
+<p>Consider the following code snippet as taken from the test case highlighted with whitespace (<code>.</code>) and newline (<code>\n</code>) characters:</p>
+<pre><code class="language-py"># There are trailing whitespace before the newline character but those whitespaces are
+# part of the comment token
+f&quot;&quot;&quot;hello {x # comment....\n
+#                     ^
+y = 1\n
+</code></pre>
+<p>The parser is at <code>y</code> when it's trying to recover from an unclosed <code>{</code>, so it calls into the re-lexing logic which tries to move the lexer back to the end of the previous line. But, as it consumed all whitespaces it moved the lexer to the location marked by <code>^</code> in the above code snippet. But, those whitespaces are part of the comment token. This means that the range for the two tokens were overlapping which introduced the panic.</p>
+<p>Note that this is only a bug when there's a comment with a trailing whitespace otherwise it's fine to move the lexer to the whitespace character. This is because the lexer would just skip the whitespace otherwise. Nevertheless, this PR updates the logic to move it explicitly to the newline character in all cases.</p>
+<p>fixes: #11929</p>
+<h2>Test Plan</h2>
+<p>Add test cases and update the snapshot. Make sure that it doesn't panic on the code snippet in the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-06-19 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-06-19 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-19 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1391 on 2024-06-19 02:57</div>
+            <div class="timeline-body"><p>Now, we encode both information in a single variable:</p>
+<ol>
+<li>The lexer needs to be moved</li>
+<li>The position the lexer needs to be moved to</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-19 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-19 03:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-19 05:20</div>
+            <div class="timeline-body"><p>Makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-19 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-19 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-19 06:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Implement `quoted-fstring-value` (`B907`) - astral-sh/ruff #11977</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Implement <code>quoted-fstring-value</code> (<code>B907</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11977">#11977</a>
+        opened by <a href="https://github.com/alexcdennis">@alexcdennis</a>
+        on 2024-06-21 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alexcdennis">@alexcdennis</a> on 2024-06-21 21:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements rule B907 <code>quoted-fstring-value</code>.</p>
+<p>Tracking Issue: #3758</p>
+<p>From the <a href="https://github.com/PyCQA/flake8-bugbear/tree/18abb9fdec66430d36010ffcee2d7dc54c802d3a?tab=readme-ov-file#opinionated-warnings">bugbear documentation</a></p>
+<blockquote>
+<p>B907: Consider replacing f&quot;'{foo}'&quot; with f&quot;{foo!r}&quot; which is both easier to read and will escape quotes inside foo if that would appear. The check tries to filter out any format specs that are invalid together with !r. If you're using other conversion flags then e.g. f&quot;'{foo!a}'&quot; can be replaced with f&quot;{ascii(foo)!r}&quot;. Not currently implemented for python&lt;3.8 or str.format() calls.</p>
+</blockquote>
+<h2>Changes from original</h2>
+<p>The original rule in bugbear was marked as optional/opinionated (https://github.com/PyCQA/flake8-bugbear/pull/333) because there were several complaints about limitations (https://github.com/PyCQA/flake8-bugbear/issues/329, https://github.com/PyCQA/flake8-bugbear/issues/331, https://github.com/PyCQA/flake8-bugbear/issues/332, https://github.com/astral-sh/ruff/issues/1893#issuecomment-1383132618).</p>
+<p>The cause of all these limitations was that the suggested fix (to always add <code>!r</code>) was too opinionated and could changed the semantics of the output.</p>
+<p>As such, this implementation diverges from the original by changing the framing in the documentation and error messages to remove all reference to the problematic suggested fix. Instead, it opts for a more nuanced approach which requires the user to consider their own fix on a case-by-case basis, while also providing an opt out (the user may add a noop to the code).</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+<h2>Sources</h2>
+<p>Implementation inspired by <a href="https://github.com/PyCQA/flake8-bugbear/blob/18abb9fdec66430d36010ffcee2d7dc54c802d3a/bugbear.py#L1419">original bugbear implementation</a>
+Test cases include all test cases from the <a href="https://github.com/PyCQA/flake8-bugbear/blob/18abb9fdec66430d36010ffcee2d7dc54c802d3a/tests/b907.py">original bugbear test file</a>, plus extras</p>
+<h2>Related/References</h2>
+<h3>ruff</h3>
+<p>#1893
+https://github.com/astral-sh/ruff/issues/2954#issuecomment-1483594606</p>
+<h3>bugbear</h3>
+<p>https://github.com/PyCQA/flake8-bugbear/issues/319</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-23 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-23 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 00:41</div>
+            <div class="timeline-body"><p>It seems like the check in bugbear suffered from a lot of false positives (and hence was moved to the opinionated section). Do you know how many of those are present in the implementation here? What are the limitations of the rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcdennis">@alexcdennis</a> on 2024-06-27 01:10</div>
+            <div class="timeline-body"><p>This rule has all of the same limitations as the original, since it is the same algorithm.</p>
+<p>All of the limitations that I have seen suggested fall under the same issue: this rule may suggests a fix (adding <code>!r</code>) that changes the meaning of the output.
+(1) If the value is not a string, adding <code>!r</code> changes the output (https://github.com/PyCQA/flake8-bugbear/issues/329, https://github.com/astral-sh/ruff/issues/1893#issuecomment-1383132618)
+(2) If the value is a string where there is a different meaning between double quotes and single quotes, then <code>!r</code> can change this meaning (eg an SQL query https://github.com/PyCQA/flake8-bugbear/issues/331) (since <code>!r</code> considers double and single quotes to be interchangeable and will substitute one for the other at unexpected times)</p>
+<p>Under the current framing (that adding <code>!r</code> is the correct fix), neither of these limitations can be overcome.
+(1) Detecting whether or not the value is a string requires type inference
+(2) This is no static rule that can understand the intent of the programmer for the arbitrary semantics of the string output</p>
+<p>However, the real cause of both of these issues is the original framing that the proposed fix (adding <code>!r</code>) is correct in all situations. Thus, in order to overcome these limitations, we need to change this framing by removing that proposed fix altogether. (It is not clear to me that there is a fix that is correct in all situations)</p>
+<p>For this reason, I originally tried to word the message as a suggestion for the user to consider if this is a problem on a case-by-case basis instead of as something that the user must fix. I think this still requires more rewording in order to make this clearer.</p>
+<p>edit: rewritten in order to hopefully improve clarity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcdennis">@alexcdennis</a> on 2024-06-28 19:13</div>
+            <div class="timeline-body"><p>I have changed the framing around the rule by changing the suggested fix. I believe that this overcomes all previously suggested limitations, as discussed above.</p>
+<p>Summary:
+Instead of the original suggested fix of &quot;always add <code>!r</code>&quot;, the new suggested fix is &quot;consider on a case-by-case basis; if you want to signal that this is intended behavior, add a noop&quot;</p>
+<p>Open questions:
+Is the new documentation/error message too wordy/nuanced/confusing?
+If so, is there a way to reword it to make it clearer?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

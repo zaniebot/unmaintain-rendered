@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: Add directory support to `MemoryFileSystem` - astral-sh/ruff #11825</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: Add directory support to <code>MemoryFileSystem</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11825">#11825</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-10 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-10 14:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for handling directories to the <code>MemoryFileSystem</code>.
+I'm adding this now because the module resolver contains logic that branches if <code>path</code> is a directory.</p>
+<p>I used this PR to remove permissions support from the <code>MemoryFileSystem</code>. I think having support for it is misleading, it gives the impression that the file system would check permissions when reading/writing which it does not and I don't plan on adding.
+The <code>MemoryFileSystem</code> is mainly intended for testing. We should use the real file system to test more advanced or even platform specific filesystem behavior. That's the only way to get that right.</p>
+<h2>Test Plan</h2>
+<p>Added tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-06-10 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-10 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-06-10 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-10 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-11 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: Add directory support to `MemoryFileSystem`" to "red-knot[salsa part 4]: Add directory support to `MemoryFileSystem`" by @MichaReiser on 2024-06-11 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-06-11 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dhruvmanila removed by @MichaReiser on 2024-06-11 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-11 14:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:19 on 2024-06-12 14:04</div>
+            <div class="timeline-body"><p>+1 to this approach. We should use in-memory file system for fast and easy testing of semantic analysis, not for testing filesystem behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:172 on 2024-06-12 14:06</div>
+            <div class="timeline-body"><p>Why the switch from <code>FxDashMap</code> to an <code>FxHashMap</code> wrapped in a <code>RwLock</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:216 on 2024-06-12 14:08</div>
+            <div class="timeline-body"><p>I am very surprised that we have to implement such a thing ourselves instead of just using a battle-tested library method for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-06-12 14:12</div>
+            <div class="timeline-body"><p>Looks like there are some clippy/test problems to resolve before merging this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:172 on 2024-06-12 14:48</div>
+            <div class="timeline-body"><p>Good question. I don't think it was necessary as part of this PR. I first thought I would need a <code>BTreeMap</code>. I'll leave it this way because I do need a <code>BTreeMap</code> when adding support for removing directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:216 on 2024-06-12 14:49</div>
+            <div class="timeline-body"><p>I think it exists, it's just not stabalized. @BurntSushi knows more ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:93 on 2024-06-12 16:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Sets the last modified timestamp of the file stored at `path` to now.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:223 on 2024-06-12 17:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        if let Some(c @ (camino::Utf8Component::Prefix(..) | camino::Utf8Component::RootDir)) =
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-06-12 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot[salsa part 4]: Add directory support to `MemoryFileSystem`" to "red-knot: Add directory support to `MemoryFileSystem`" by @MichaReiser on 2024-06-13 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-13 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-13 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-13 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-13 07:49</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/salsa-memory-fs-directories">CodSpeed Performance Report</a></h2>
+<h3>Merging #11825 will <strong>improve performances by 13.32%</strong></h3>
+<p><sub>Comparing <code>salsa-memory-fs-directories</code> (671d556) with <code>main</code> (d4dd96d)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>salsa-memory-fs-directories</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 915.2 µs | 807.6 µs | +13.32% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

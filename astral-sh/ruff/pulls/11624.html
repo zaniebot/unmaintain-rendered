@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] initial (very incomplete) flow graph - astral-sh/ruff #11624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] initial (very incomplete) flow graph</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11624">#11624</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-31 03:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-31 03:21</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Introduces the skeleton of the flow graph. So far it doesn't actually handle any non-linear control flow :) But it does show how we can go from an expression that references a symbol, backward through the flow graph, to find reachable definitions of that symbol.</p>
+<p>Adding non-linear control flow will mean adding flow nodes with multiple predecessors, which will introduce more complexity into <code>ReachableDefinitionsIterator.next()</code>. But one step at a time.</p>
+<h2>Test Plan</h2>
+<p>Added a (very basic) test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-05-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-31 03:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-05-31 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @plredmond by @carljm on 2024-05-31 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:249 on 2024-05-31 06:55</div>
+            <div class="timeline-body"><p>I would have expected that the flow graph is separate from the symbol table so that we can built it separately. Maybe that's not worth it because of the overhead of a second AST pass. But it just doesn't feel like it's part of a symbol table.</p>
+<p>Two other reasons why it might be worth to move it out of <code>SymbolTable</code></p>
+<ul>
+<li>I think it could be interesting to build the flow graph at a more granular level. E.g. allow querying the top-level module graph or the module graph per function, or class. I think that could be interesting because building the CFG can be somewhat involved and we should avoid building it for code that we never end up analyzing (This assumes that basic blocks never have edges to basic blocks from other functions)</li>
+<li>We need to think about how we want to split <code>SymbolTable</code> long term between the data we want to store in a persistent cache and we probably don't want to cache the CFG (but it might as well be that we don't cache anything in SymbolTable, so that this isn't a concern)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:283 on 2024-05-31 06:57</div>
+            <div class="timeline-body"><p>Can we add some documentation to what this iterator returns. What I understand is that it finds the definitions that are reachable from the current node by navigating backwards through the CFG? How does this work for definitions that aren't defined in the same function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:562 on 2024-05-31 06:58</div>
+            <div class="timeline-body"><p>We should look into making <code>Definition</code> <code>Copy</code> if that's something we return frequently. I add it to our monthly plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-31 06:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/symbols.rs</code>:283 on 2024-05-31 09:33</div>
+            <div class="timeline-body"><p>+1 for some more docs here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-31 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:249 on 2024-05-31 09:44</div>
+            <div class="timeline-body"><p>another reason for splitting the CFG out is that we may want to navigate the AST in a different order. I think our existing implementation navigates the AST backward to ensure it knows the branch targets ahead of time.</p>
+<p>https://github.com/augustelalande/ruff/blob/87a3e967d4e8df53989ff1d1512749ba1df23328/crates/ruff_linter/src/rules/ruff/rules/unreachable.rs#L737-L740</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-31 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:249 on 2024-05-31 17:04</div>
+            <div class="timeline-body"><p>I initially thought the same, and even started building it separately initially. But after working on it for a while, I concluded that it should not be separate.</p>
+<p>The CFG is very closely tied to Definitions. The main purpose of our CFG is for determining reachability of definitions. Definitions are also tied to a Symbol. It will be a lot more difficult to reconstruct these relationships if we build CFG in a separate pass from symbol tables; it's much simpler if we build them together. And it's also more efficient to do a single AST traversal, rather than two.</p>
+<p>There is never a scenario where we need (local) symbols and definitions, and we don't need a CFG, or vice versa. We always need to use them together. Therefore there isn't a gain in keeping them separate.</p>
+<p>I agree that it's awkward naming-wise; I don't think CFG is really &quot;part of&quot; a symbol table, but that is currently how it's structured in this PR. This is mostly just because I wanted to get feedback on the PR before embarking on more invasive renamings / restructuring (and I'm kind of trying to avoid big restructurings anyway while Salsa rework is in progress.) I think that ultimately this should be restructured so we have a different name (in one doc I called it &quot;indexing&quot;, pyright calls it &quot;binding&quot;) for this information-collecting AST pass, and then symbol tables and flow graph would both be part of the &quot;index&quot; or whatever we call it, rather than having flow graph be part of symbol tables. But we would still build them together.</p>
+<p>I also agree that we may want to explore &quot;indexing&quot; at a more granular level than whole-module-at-a-time. (I'm not totally sure this will actually make sense, but it's worth discussing at least.) But if we do this, it should apply to symbol tables and definitions also, it shouldn't apply only to CFG. If we don't need the CFG of some function, we also don't need its symbol tables or definitions. If we need its symbol tables or definitions, we need the CFG (otherwise we have no idea which definitions are relevant.) So more granular indexing does not imply doing something different for CFG than for symbol definitions.</p>
+<p>Related to the previous point, I also agree we need to think about symbol table splitting, but again I think this is orthogonal to CFG. Wherever we have definitions, we should have CFG. So CFG should always be tied together with &quot;local symbols&quot; -- the stuff we need for local analysis -- but separate from &quot;public symbols&quot; and their types -- the stuff we persistent cache.</p>
+<p>I am quite confident after looking at pyright and the ruff PR that for our purposes there is no reason to build CFG by backwards AST traversal, so I don't think that's a consideration. (If you are building a CFG that you want to traverse in the forwards direction, it can be more convenient to build it by backwards AST traversal, because you want to track successors of each node. But we are building a CFG for backwards traversal, so we want predecessors of each node; it's more convenient to build this by forwards AST traversal. Of course if you ultimately want both successor and predecessor linkages, you do this by making another pass over the CFG once it is initially built with linkage in just one direction.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-31 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:283 on 2024-05-31 17:10</div>
+            <div class="timeline-body"><p>Sure, I can add a docstring here.</p>
+<blockquote>
+<p>What I understand is that it finds the definitions that are reachable from the current node by navigating backwards through the CFG?</p>
+</blockquote>
+<p>Yes, that's correct.</p>
+<blockquote>
+<p>How does this work for definitions that aren't defined in the same function?</p>
+</blockquote>
+<p>We only consider local definitions when deciding the type of a symbol. This is necessary for efficient type inference, otherwise the entire program would have to be analyzed in order to decide the type of any module-level symbol.</p>
+<p>Imports count as local definitions, and of course type inference will traverse the import and look at the type of the imported name to decide the type of the import &quot;definition.&quot; So reachability analysis only needs to worry about finding the local import definition. Similarly function arguments are definitions; in this case the only type information we have is the annotation on the argument, since we don't want to have to find every call site of the function. (That would mean we have to analyze all dependent modules in order to infer types in any function.) We may in some cases infer a relationship via our local CFG between the type of an argument and the function's return type, which we would model using typevars; this can still allow some amount of cross-function inference.</p>
+<p>Assignments to a name from outside its scope (e.g. a nested function using <code>nonlocal</code> to assign to a name in an enclosing scope, a function using <code>global</code> to assign to a module-level name, or a module doing <code>import mod; mod.a = ...</code>) should be compatible with its public type. Those assignments will be analyzed when their own scope is analyzed. Names that might be subject to such external reassignments (i.e. module-level names, or cellvars that are assigned to by a nested scope) do need special handling in type inference / narrowing to account for the possibility of external reassignment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-31 20:27</div>
+            <div class="timeline-body"><p>Going to go ahead and merge, remaining comments are all larger issues that may need discussion and can be changed in future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-05-31 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-31 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-31 23:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

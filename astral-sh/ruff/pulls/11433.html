@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix starts at logic for the parser flow - astral-sh/ruff #11433</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix starts at logic for the parser flow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11433">#11433</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-15 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-15 11:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the parser flow for the starts at functionality.</p>
+<p>The parser APIs are as follows:</p>
+<ul>
+<li><code>Parser::new</code></li>
+<li><code>Parser::new_starts_at</code></li>
+</ul>
+<p>The <code>TokenSource</code> and <code>Lexer</code> will have the same function signature where they also accepts a start offset. This makes the APIs easier to reason about and avoids adding both variants for the token source and the lexer.</p>
+<p>The <code>*_starts_at</code> APIs now expect the entire source code and the lexer will skip that many bytes as the offset. This will match the <code>*_starts_at</code> naming as well.</p>
+<p>The high level APIs which are part of the public interface will be updated to take in a range instead of the offset. Internally, we'll slice the source code up to the end range and pass this sub-string and the start range value to the parser. This change will be done at the end as it affects all the downstream calls as well.</p>
+<p>So, all in all, the final APIs will be:</p>
+<pre><code class="language-rs">pub fn parse(source: &amp;str, mode: Mode) -&gt; Program {
+	Parser::new(source, mode).parse_program()
+}
+
+pub fn parse_range(source: &amp;str, mode: Mode, range: TextRange) -&gt; Program {
+	let source = source[..range.end().to_usize()];
+	Parser::new_starts_at(source, mode, range.start()).parse_program()
+}
+</code></pre>
+<p>Both the above APIs expect the entire source code. This is so that the caller doesn't need to worry about slicing the correct part of the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-15 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-15 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-15 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-15 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-15 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-27 08:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:113 on 2024-05-27 08:46</div>
+            <div class="timeline-body"><p>Should this be set to <code>start_offset</code> for the <code>if self.last_token_end &lt;= start</code> check in <code>node_range</code> to work as expected?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

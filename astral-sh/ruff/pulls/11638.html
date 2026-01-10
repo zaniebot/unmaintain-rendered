@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: improve internal documentation in `module.rs` - astral-sh/ruff #11638</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: improve internal documentation in <code>module.rs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11638">#11638</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-05-31 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-31 14:08</div>
+            <div class="timeline-body"><p>This PR improves the internal documentation for various methods and structs in <code>module.rs</code>. The main purpose of this is to make sure I properly understand everything that the current code is doing :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-05-31 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-05-31 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-05-31 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-31 14:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 14:47</div>
+            <div class="timeline-body"><p>Another reason is that it is a specific concept that is worth its own name and it also stores additional data that isn't available on a path (except if you mean <code>ModulePath</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-31 14:48</div>
+            <div class="timeline-body"><p>Thanks. I'll have to copy those comments over.</p>
+<p>I also renamed a couple of things in my PR (<code>root</code> =&gt; <code>search_path</code>) and move them around but I can deal with this when it comes to merging my PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 14:57</div>
+            <div class="timeline-body"><p>Right. At first I thought this struct was really a <code>ModuleID</code> struct because it seemed to be a thin wrapper around a primitive type. But now I see that the primitive type really is the ID for the module, and that the struct is correctly named. Which means that this comment is not quite accurate!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 16:06</div>
+            <div class="timeline-body"><p>Hmm, but that isn't quite right either, I see? Since the <code>modules</code> field on the <code>ModuleResolver</code> struct maps <code>Module</code> objects to <code>ModuleData</code> objects, and its the <code>ModuleData</code> objects that seem to hold the interesting information about the module.</p>
+<p>In general I feel slightly confused about whether this is meant to represent:</p>
+<ul>
+<li>a struct that can be queried directly to obtain interesting information about a module (this is what would be implied by the name <code>Module</code> to me); or,</li>
+<li>a cheap ID that can be used to easily retrieve some other object that can be queried directly to obtain interesting information about a module (similar to <code>FileID</code> elsewhere in redknot, or to <code>BindingID</code> in <code>ruff_python_semantic/binding.rs</code>).</li>
+</ul>
+<p>Currently it feels like it maybe sits awkwardly between the two concepts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 16:07</div>
+            <div class="timeline-body"><p>I think I'll just remove this comment and try to refactor this into something I like more ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-05-31 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-05-31 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-31 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-31 17:56</div>
+            <div class="timeline-body"><p>This is excellent, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-31 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 18:52</div>
+            <div class="timeline-body"><p>The way module is defined is very intentional. Not necessarily the fields it stores and its name but that it is a thin wrapper around a <code>u32</code> with methods to query its fields. From an API perspective, this is the <code>Module</code> and an outside client doesn't need to be concerned about how it stores the data internally.</p>
+<p>The reason why we shouldn't change this representation significantly is because this exactly maps to Salsa. You can have a look at my PR and you'll find something very similar:</p>
+<ul>
+<li><code>ResolvedModule</code> is a newtype wrapper around a <code>u32</code>. This is important for fast cache lookups and to avoid awkward lifetimes. It also ensures that we can store a <code>ResolvedModule</code> very cheaply, it's just 4 bytes.</li>
+<li>It has accessor functions that take <code>db</code> as an argument and return the field data</li>
+</ul>
+<p>We can't change this without breaking Salsa compatibility. Ideally, you try to keep the API roughly unchanged (or use something similar to the salsa PR). But feel free to restructure the internal data structures however you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/module.rs</code>:19 on 2024-05-31 19:19</div>
+            <div class="timeline-body"><p>Thanks. I was confused by the names of variables such as this in <code>module.rs</code>, which seemed to imply to me that <code>Module</code> instances did not in fact represent modules -- that they only represented module IDs that could be used to lookup modules, and that it was in fact <code>ModuleData</code> instances that represented modules. Here the <code>id</code> variable has type <code>Module</code>, and the <code>module</code> variable has type <code>ModuleData</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/7ce17b773643556d9d2c7aab1506ece87991c0f0/crates/red_knot/src/module.rs#L491-L500</p>
+<p>I'll create another PR to try to clarify things further in the internal documentation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

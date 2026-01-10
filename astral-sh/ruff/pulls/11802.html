@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: `VfsFile` input ingredient and a `Vfs` - astral-sh/ruff #11802</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: <code>VfsFile</code> input ingredient and a <code>Vfs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11802">#11802</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-08 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-08 15:22</div>
+            <div class="timeline-body"><p>This PR adds the foundation for red-knots salsa integration. It starts by defining a virtual filesystem that is Salsa's view of the files on disk (metadata only for now, I'll add support for content in the next PR).</p>
+<h3>VFS</h3>
+<p>The <code>Vfs</code> supports operating on files from the local filesystem (disk, editor, WASM, in memory) or vendored stub files (this PR only adds a stub implementation). It is virtual because it supports multiple sources and it is Salsa's view of the file system state.</p>
+<p>The most notable change in terms of what we discussed for vendored files is that this PR exposes two methods on the <code>Vfs</code>:</p>
+<ul>
+<li><code>file</code>: To &quot;intern&quot; a file system path.</li>
+<li><code>vendored</code>: To intern a vendored path</li>
+</ul>
+<p>The motivation behind this is that the methods differ in their return-type (and argument, but that's less important). For <code>file</code>, it's important that the implementation returns a <code>File</code> object even for files that don't exist so that salsa can track the fact that this query needs to be re-executed if such a file gets created later. This isn't necessary for vendored files because the vendored file system is readonly. Returning <code>None</code> in that case reduces the number of dependencies that salsa has to track, and in turn, can result in better performance. Splitting the methods also has the benefit that they're easier to call. I suspect that code paths will either exclusively work with file system or vendored path. It would be cumbersome if the callers need to wrap the path in a <code>VfsPath</code> just for the interning.</p>
+<h3><code>FileSystem</code></h3>
+<p>This PR also introduces a new <code>FileSystem</code> trait that abstracts away how filesystem files are read. The goal of this is that we can support different environments:</p>
+<ul>
+<li>WASM: Ruff might not have access to a full file system or it's all in memory as it is the case in our playground today</li>
+<li>LSP: The lsp does support reading from files, but unsaved changes take precedence over the content on disk.</li>
+<li>tests: Ideally, tests don't need to write the content to disk. Instead, they can use an in-memory file system.</li>
+</ul>
+<h3>Crate name</h3>
+<p>I ended up creating a new crate because I couldn't find an existing crate that fits well. I first wanted to use <code>ruff_source_file</code> which is very similar. However, <code>ruff_notebook</code> depends on it and I suspect that this crate might depend on <code>ruff_notebook</code> in the long term (unless we use some <code>Arc&lt;dyn Trait + Eq&gt;</code> to represent file content).</p>
+<p>The other reason why I didn't put it in <code>ruff_source_file</code> is that it is intended to store low level data structures for files. A Vfs and a dependency on salsa feels a bit overkill for such a crate</p>
+<h3>Open Questions</h3>
+<ul>
+<li>dir walking: It's not entirely clear to me how to implement dir walking because <code>walkdir</code> doesn't support virtual filesystems. Ideally, both the memory file system and the real implementation would use the same dir walking mechanism to avoid differences in behavior.</li>
+<li>File watching: I think file systems need either to automatically watch files for changes or need an API that allows setting up file watchers. They probably need a second API that allows pulling all changes (file added, removed, changed events). The host would call a <code>apply_changes</code> method that takes a mutable self whenever it observed file system changes, so that the <code>Vfs</code> can update its metadata.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-08 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: First draft of the `File` input ingredient and a `Vfs`" to "red-knot: `File` input ingredient and a `Vfs`" by @MichaReiser on 2024-06-08 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs/path.rs</code>:99 on 2024-06-08 15:23</div>
+            <div class="timeline-body"><p>@AlexWaygood I think this could be interesting for you. Ideally, <code>Vendored</code> would wrap a <code>VendoredPathBuf</code> but I decided not to do this as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-08 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-08 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:151 on 2024-06-08 15:24</div>
+            <div class="timeline-body"><p>@AlexWaygood what I have in mind here is that the implementation calls into the <code>vendored</code> crate to read the file metadata (<code>vendored_path.last_modification_time()</code>, <code>vendored_path.exists()</code>, and <code>ruff_venored::read_to_string(vendored_path)</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-08 15:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: `File` input ingredient and a `Vfs`" to "red-knot: `VfsFile` input ingredient and a `Vfs`" by @MichaReiser on 2024-06-09 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-09 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/lib.rs</code>:23 on 2024-06-09 13:55</div>
+            <div class="timeline-body"><p>@AlexWaygood I think we ultimately want two different entry functions for regular files, and vendored files. Mainly because I think it's a bit annoying if you're working with a vendored path and you then need to convert it to a <code>VfsPath</code> just to get the <code>VfsFile</code>. Funnily, the first thing that the implementation would do is to dispatch on the path type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-10 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-06-10 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:34 on 2024-06-10 06:32</div>
+            <div class="timeline-body"><p>CC: @snowsignal I don't plan to support this as part of this PR but something we need to figure out for red-knot/LSP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-10 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-10 14:35</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/salsa-files-vfs">CodSpeed Performance Report</a></h2>
+<h3>Merging #11802 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>salsa-files-vfs</code> (ce952b3) with <code>salsa-files-vfs</code> (a98db3d)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:14 on 2024-06-10 15:53</div>
+            <div class="timeline-body"><p>This might be something of a Rust-newbie question: what's the advantage of defining a public type alias here instead of just doing <code>use std::io::Result;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:18 on 2024-06-10 15:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The file system is agnostic to the actual storage medium: it could be a real file system, a combination
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:30 on 2024-06-10 16:06</div>
+            <div class="timeline-body"><p>Did you consider using e.g. https://docs.rs/vfs/latest/vfs/filesystem/trait.FileSystem.html# rather than creating a new trait? I suppose advantages of creating our own are (1) we don't need to implement all the required methods that that trait has and (2) it enables us to avoid adding another external dependency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:164 on 2024-06-10 16:27</div>
+            <div class="timeline-body"><p>Same question as https://github.com/astral-sh/ruff/pull/11338/files#r1633165461 -- what do we need to know the permissions of the file for? If the file doesn't have read permissions, I think for our purposes we might as well model that as the file just not existing. And I don't think we'd need any other permissions, would we?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:38 on 2024-06-10 16:29</div>
+            <div class="timeline-body"><p>Does this mean that we won't provide type-checking for Python scripts if their filename contains non-utf8 characters? Is this a limit Ruff already has when linting Python?</p>
+<p>I think we can guarantee that vendored files are always going to be valid utf-8 but I'm not sure about non-vendored files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:250 on 2024-06-10 16:55</div>
+            <div class="timeline-body"><p>bah, so verbose, could do this in one line with a lil' <code>is_macro</code> dependency ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:12 on 2024-06-10 16:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// In-memory file system.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-10 16:55</div>
+            <div class="timeline-body"><p>Okay, not having a <code>db.file(VfsPath)</code> method is going to be problematic. I realized this when implementing the module resolver where we have a <code>path_to_module(db, VfsFilePath)</code> function. I could match on the <code>path</code> and call the two different functions but that's rather annoying.</p>
+<p>I have to figure out how we handle the signature difference between vendored paths and regular paths. I would very much like the possibility that <code>vendored</code> returns <code>None</code> if the file doesn't exist.</p>
+<p>I plan to address this as a separate PR to reduce my rebasing work.</p>
+<p>Edit: This is solved in https://github.com/astral-sh/ruff/pull/11826</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:164 on 2024-06-10 16:58</div>
+            <div class="timeline-body"><p>Oh, I suppose we need to know whether or not we have write permissions if we're going to be able to do autofixes or fixup formatting. I forget that <code>red-knot</code> has broader ambitions than just type-checking 😄</p>
+<p>Still, I wonder if this really needs to be <code>Option&lt;u32&gt;</code> or if we could just have a <code>writable: bool</code> field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_db/src/file_system.rs</code>:34 on 2024-06-10 16:59</div>
+            <div class="timeline-body"><p>Thanks for pinging me on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-10 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:14 on 2024-06-10 17:06</div>
+            <div class="timeline-body"><p>I see in <code>crates/ruff_db/src/file_system/memory.rs</code> we have to use <code>std::io::Error::new()</code> when returning error types, which makes me think even more that we may as well just use <code>std::io::Result</code> here directly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: `VfsFile` input ingredient and a `Vfs`" to "red-knot: `VfsFile` input ingredient and a `Vfs` [salsa 1..]" by @MichaReiser on 2024-06-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: `VfsFile` input ingredient and a `Vfs` [salsa 1..]" to "red-knot(salsa part 1): `VfsFile` input ingredient and a `Vfs`" by @MichaReiser on 2024-06-11 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot(salsa part 1): `VfsFile` input ingredient and a `Vfs`" to "red-knot[salsa part 1]: `VfsFile` input ingredient and a `Vfs`" by @MichaReiser on 2024-06-11 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:39 on 2024-06-11 15:03</div>
+            <div class="timeline-body"><p>I guess we need this for the safety of the pointer-casting below in <code>new</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:48 on 2024-06-11 15:06</div>
+            <div class="timeline-body"><p>Maybe it seems trivial here, but best to have a SAFETY comment? (And mention the <code>repr(transparent)</code> above)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:41 on 2024-06-11 15:07</div>
+            <div class="timeline-body"><p>At the moment this type seems to be purely a transparent wrapper around a <code>camino::Utf8Path</code>. Do we expect it to do more in the future? Or does it exist solely for type-system purposes (as a sort of newtype), so we can control creation of our vfs paths?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:85 on 2024-06-11 15:22</div>
+            <div class="timeline-body"><p>yeah this is exactly the comment that I thought should also be in <code>FileSystemPath::new</code> above</p>
+<p>actually, could we just call <code>FileSystemPath::new</code> here instead of duplicating the same unsafe block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:95 on 2024-06-11 15:25</div>
+            <div class="timeline-body"><p>curious what your heuristic is for deciding that this one should not be marked <code>#[inline]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:159 on 2024-06-11 15:26</div>
+            <div class="timeline-body"><p>These can't just be derived?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/file_system.rs</code>:223 on 2024-06-11 15:29</div>
+            <div class="timeline-body"><p>how do you choose between <code>u128::from(...)</code> vs <code>.. as u128</code>, here vs above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/lib.rs</code>:17 on 2024-06-11 15:35</div>
+            <div class="timeline-body"><p>Cupboard is a cute naming idea, but if a) salsa doesn't use it, and b) we aren't going to fully commit to it (using it throughout our own code), then I think mentioning it in a comment is just confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/vfs.rs</code>:187 on 2024-06-11 15:46</div>
+            <div class="timeline-body"><p>0 or <code>None</code>?</p>
+<p>Should this be an <code>Option&lt;NonZeroU32&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/vfs/path.rs</code>:17 on 2024-06-11 15:51</div>
+            <div class="timeline-body"><p>SAFETY comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/vfs.rs</code>:31 on 2024-06-11 16:00</div>
+            <div class="timeline-body"><p>I do find this layering pretty confusing in trying to understand the code. I think partly it's just the naming: what we call <code>FileSystem</code> is already &quot;virtual&quot; in that it can represent on-disk, memory, etc. And then we have another &quot;virtual file system&quot; layer on top of that.</p>
+<p>I'm also not sure of the accuracy of this statement:</p>
+<blockquote>
+<p>The other reason is that most operations know if they are working with vendored or file system paths.</p>
+</blockquote>
+<p>Maybe it will turn out to be the case? It's just not clear to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-06-11 17:15</div>
+            <div class="timeline-body"><p>Strong +1 on the decision to make this its own crate. I think in general making new crates for red-knot functionality should be preferred over squeezing it into existing crates; I think the latter will cause more confusion. In particular I don't think we should try to put red-knot's semantic model into the existing <code>ruff_python_semantic</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:159 on 2024-06-11 18:38</div>
+            <div class="timeline-body"><p>Display can't be derived and the default Debug would print FileSystemPath(path) which seems unnecessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-11 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Strong +1 on the decision to make this its own crate. I think in general making new crates for red-knot functionality should be preferred over squeezing it into existing crates; I think the latter will cause more confusion. In particular I don't think we should try to put red-knot's semantic model into the existing ruff_python_semantic crate.</p>
+</blockquote>
+<p>I'm a bit surprised by this comment because that's what I proposed in discord and I didn't see any objection to doing this for ruff_python_semantic</p>
+<p>I can see how it can cause confusion. Mainly for imports when you get both Symbols (the ruff and red_knot one).</p>
+<p>I don't think we can't avoid mixing them long term. The red knot crates at least will have to depend on their corresponding duff crates to use their functionality and it then becomes less clear to me what the benefit of keeping them separate really is. I also think that it is a motivation function to integrate early and more often compared to building this out entirely in different crates</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:31 on 2024-06-11 18:47</div>
+            <div class="timeline-body"><p>I can say from using the API that it's working pretty well so far. But I admit that the terminology is confusing. Do you have any suggestions on how the naming could be improved or what specifically you find confusing.</p>
+<p>I can try to improve the documentation. The way I think about FileSystem is less that it is a virtual file system. It's rather more how we access it. Mwhat would you think of FileSystemDriver?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:41 on 2024-06-11 18:50</div>
+            <div class="timeline-body"><p>There are multiple goals</p>
+<ul>
+<li>To prevent that FileSystemPath and VendoredPath are mixed</li>
+<li>To remove all methods that perform IO to force us to use the file system API (eg path.exists)</li>
+<li>To make it easier to change the internal representation. We'll have to figure out how to represent untitled files in the editor (they have no path). It's quite likely that we'll use just plain strings internally</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:39 on 2024-06-11 18:51</div>
+            <div class="timeline-body"><p>Yeah exactly. Otherwise the Path and a reference to a PathBuf aren't guaranteed to have the same layout</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-12 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/vfs.rs</code>:31 on 2024-06-12 01:07</div>
+            <div class="timeline-body"><p>I spent some more time looking at it and I think it's fine, if it seems to you to be working out well. I'm not sure that a rename of <code>FileSystem</code> to <code>FileSystemDriver</code> would make much difference; I think &quot;Driver&quot; ends up being kind of an empty filler word there that doesn't really communicate much.</p>
+<p>It was hard for me to figure out the model for how these two things interact, since neither one encapsulates the other. It seems the model is that a Db has both a Vfs and a FileSystem, and it will use the FileSystem for looking up filesystem paths, and manage looking up vendored paths itself, though that hasn't been implemented yet, just stubbed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-12 04:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit surprised by this comment because that's what I proposed in discord and I didn't see any objection to doing this for ruff_python_semantic</p>
+</blockquote>
+<p>Oh sorry! I think I do remember that Discord comment now; I guess I didn't think very carefully about it then.</p>
+<blockquote>
+<p>I can see how it can cause confusion. Mainly for imports when you get both Symbols (the ruff and red_knot one).</p>
+</blockquote>
+<p>I think it will just be generally hard to figure out how to structure things within one crate to make it clear what is red-knot and what is &quot;v1&quot;. E.g. there is a top-level <code>definition.rs</code> in <code>ruff_python_semantic</code>, but red-knot will have its own version of Definitions; where do they go? Perhaps it will help me envision how this can work if I see the overall structure you have in mind within the crate to avoid just having a random assortment of sub-modules, some of which are v1 and some of which are red-knot, with no obvious way to tell which is which. If this structure is the outcome, I don't think that's a good outcome</p>
+<blockquote>
+<p>I don't think we can't avoid mixing them long term. The red knot crates at least will have to depend on their corresponding duff crates to use their functionality and it then becomes less clear to me what the benefit of keeping them separate really is. I also think that it is a motivation function to integrate early and more often compared to building this out entirely in different crates</p>
+</blockquote>
+<p>I agree that red knot will probably have to depend on v1, but the dependency should not go in the other direction, and to me this is enough reason to keep them separate.</p>
+<p>I'm not clear what sort of &quot;integration&quot; we actually envision between the v1 semantic model and the red-knot semantic model that this would encourage. Can you clarify what kind of integration you are thinking of? My understanding is that they will always remain separate, and rules will have to explicitly be ported in some way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-12 06:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it will just be generally hard to figure out how to structure things within one crate to make it clear what is red-knot and what is &quot;v1&quot;. E.g. there is a top-level definition.rs in ruff_python_semantic, but red-knot will have its own version of Definitions; where do they go? Perhaps it will help me envision how this can work if I see the overall structure you have in mind within the crate to avoid just having a random assortment of sub-modules, some of which are v1 and some of which are red-knot, with no obvious way to tell which is which. If this structure is the outcome, I don't think that's a good outcome</p>
+</blockquote>
+<p>I agree on this and something I have started thinking about as well. I don't think what I've done in my follow up PRs is ideal and I wanted to iterate on it. For now, the red knot code is gated behind the <code>red_knot</code> feature. That means, by default the <code>ruff_python_semantic</code> crate doesn't compile with any red knot functionality. This prevents that any <code>v1</code> code access <code>red_knot</code> code from ruff.</p>
+<p>I think what could be improved is that we move all <code>red_knot</code> code that isn't shared between <code>v1</code> and <code>red_knot</code> into a <code>red_knot</code> module. Although it then quickly becomes unclear what should be in there. Should we move the <code>db</code> out as soon as a single <code>v1</code> API uses any red knot code? What about code that doesn't exist in <code>v1</code> at all, e.g. the module resolver?</p>
+<p>Regardless, this would then be very close to having two separate crates. The difference I see is that moving files in a crate tends to be easier and we can also already make use of the right crate visibilities (we don't need to make anything <code>pub</code> just so that we can access it from the <code>red_knot</code> crate.</p>
+<p>I overall don't have a strong preference and I think I would just go with one approach for now. We don't need to get it right just now, it's easy to split the code out later.</p>
+<blockquote>
+<p>I'm not clear what sort of &quot;integration&quot; we actually envision between the v1 semantic model and the red-knot semantic model that this would encourage. Can you clarify what kind of integration you are thinking of? My understanding is that they will always remain separate, and rules will have to explicitly be ported in some way.</p>
+</blockquote>
+<p>I at least want to try to come up with a rule API that would work for both <code>v1</code> and <code>red_knot</code>, at least for a majority of the rules. I would strongly prefer if we can avoid copying rules from <code>ruff</code> to the <code>red_knot</code> crate because that would come close to a rule-freeze for a couple of months. But this requires that <code>ruff_linter</code> has access to both <code>red_knot</code> and <code>v1</code> code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:31 on 2024-06-12 06:35</div>
+            <div class="timeline-body"><p>Maybe what's confusing here is the naming of <code>Vfs</code>? Maybe it should just be <code>VfsFiles</code>?</p>
+<p>Anyway, I do think your concern is valid and I went back and forth a couple of times between <code>FileSystem</code> handling all <code>VfsPath</code>s and the <code>FileSystem</code> only handling specific paths. And maybe my reasoning that vendored paths are different enough to not pass them through <code>FileSystem</code> is unjustified, considering that calling <code>write_file</code> with a path pointing to a directory also fails. So there's anyway some extra care that needs to be taken when handling paths that aren't checked at compile time. But I find it kind of nice if we can catch some of them at compile time.</p>
+<p>The way I think about it is that <code>FileSystem</code> is a replacement for <code>std::fs</code>, that's it. It doesn't add support for using multiple file systems at once (vendored and the regular one), which is what <code>Vfs</code> does.</p>
+<p>An entirely different design (not fully thought through) would be to ditch the <code>FileSystem</code> trait all together. The main motivation for it is that we can support unsaved files and untitled files in the LSP use case. But we could support this in another way by adding a <code>open_file</code> and <code>close_file</code> function to <code>Vfs</code> that allows to manually override the content of a file.</p>
+<p>The only functionality we would looe is that we can't &quot;mock out&quot; the file system during tests with an in memory file system. But maybe that's not worth going through all that trouble. The WASM integration story would then require to provide a &quot;stub&quot; FS implementation. It's not a big detail and something that e.g. emscripten provides out of the box but it comes with a bit more boilerplate code than an option to just use a memory file system.</p>
+<p>Either way, I don't consider the Vfs / FileSystem design that I proposed here as the final design. It requires some more iterating and I'm open to redesigning it completely.</p>
+<ul>
+<li>We merge what we have now, with the risk that we might need to refactor some of the calling code</li>
+<li>We strip out the <code>FileSystem</code> trait and revisit the design when implementing LSP support.</li>
+</ul>
+<p>I'm leaning towards keeping what we have here. There's not a lot of downstream code depending on <code>FileSystem</code>, so that a refactor should be fairly painless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:95 on 2024-06-12 06:50</div>
+            <div class="timeline-body"><p>Probably most methods in here should be marked as <code>inline</code>. Not that I think it matters too much for our use case. Inline tells the Rust compiler to emit sufficient information that cross-crate inlining works even if LTO is disabled. That's less important for us because we have LTO (thin) enabled.</p>
+<p>My general thinking is: If the method is only a very thin wrapper, that is called frequently add <code>[#inline]</code>. But I'm not super consistent on it as you can see</p>
+<p>The call in the test needs to use <code>as</code> because the lossy conversion there is intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 06:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:223 on 2024-06-12 06:53</div>
+            <div class="timeline-body"><p>Good catch. I should probably use <code>from</code> here too.</p>
+<blockquote>
+<p>When converting between numeric types, one thing to note is that From is only implemented for lossless conversions (e.g. you can convert from i32 to i64 with From, but not the other way around), whereas as works for both lossless and lossy conversions (if the conversion is lossy, it truncates). Thus, if you want to ensure that you don't accidentally perform a lossy conversion, you may prefer using From::from rather than as. <a href="https://stackoverflow.com/questions/48795329/what-is-the-difference-between-fromfrom-and-as-in-rust">source</a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:187 on 2024-06-12 06:57</div>
+            <div class="timeline-body"><p>It should be <code>None</code>.</p>
+<p>The FS api uses a <code>u32</code> as return type. I'm not aware that 0 is ever a valid permission but I want to avoid conversion errors and using a <code>NonZeroU32</code> doesn't give us much here (other than the size savings)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-12 07:01</div>
+            <div class="timeline-body"><p>I'll go ahead and merge this PR. This does not mean that we made a decision on how to proceed with <code>FileSystem</code> and <code>Vfs</code> or where we want to place the <code>red_knot</code> code in <code>ruff_python_semantic</code>. I just don't consider these two decisions as merge blocking and I would prefer to do this refactor as separate PRs on top of my entire stack anyway, because I don't enjoy suffering through rebases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:223 on 2024-06-12 07:03</div>
+            <div class="timeline-body"><p>Actually, I have to use <code>as</code> for seconds because seconds is a <code>i64</code> and converting it to an <code>u128</code> doesn't suffer truncation, but the conversion isn't lossless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot[salsa part 1]: `VfsFile` input ingredient and a `Vfs`" to "red-knot: `VfsFile` input ingredient and a `Vfs`" by @MichaReiser on 2024-06-12 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-12 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-12 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-12 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-12 13:27</div>
+            <div class="timeline-body"><p>I do see that visibilities could be a reason to share a crate, if there's a lot of use of &quot;old&quot; internals from red-knot code.</p>
+<p>Ultimately I think sharing a crate could work fine, too, as long as we have a structure that makes it clear what is v1 and what is red-knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vfs.rs</code>:41 on 2024-06-12 15:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Lookup table that maps VfsPaths to salsa-interned [`VfsFile`] instances.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vfs.rs</code>:96 on 2024-06-12 15:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Looks up a vendored file by its path. Returns `Some` if a vendored file for the given path
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vfs.rs</code>:147 on 2024-06-12 15:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Creates a salsa-like snapshot of the files. The instances share
+    /// the same path-to-file mapping.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:44</div>
+            <div class="timeline-body"><p>Sorry for the slow review here. It took me a little bit of time to get my head round some of this, but it LGTM. Happy to open my own followup PR for some of my docs nits, unless there are any you particularly disagree with!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:14 on 2024-06-12 15:47</div>
+            <div class="timeline-body"><p>It makes it easier to change the result type later, because I made sure that all methods return <code>file_system::Result</code>. It's also easier to write because I don't have to think about what's the right return type. I can just use that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:14 on 2024-06-12 15:48</div>
+            <div class="timeline-body"><p>Makes sense, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:30 on 2024-06-12 15:49</div>
+            <div class="timeline-body"><p>I considered it but it implements more functionality than we need and lacks functionality that we want. For example, we need a way to walk the file system, ideally I want to use <code>walk_dir</code> for that. I also want to add file watching functionality that <code>Vfs</code> lacks. We could obviously extend the <code>Vfs</code> trait, but it just didn't feel like a great fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:164 on 2024-06-12 15:49</div>
+            <div class="timeline-body"><p>Some ruff rules check the file permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:164 on 2024-06-12 15:50</div>
+            <div class="timeline-body"><p>TIL</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:38 on 2024-06-12 15:50</div>
+            <div class="timeline-body"><p>Yes, it limits us to UTF8 paths only but Ruff already assumes UTF8 today (we have so many <code>path.to_str().unwrap()</code> calls. Also, non UTF8 paths are extremely uncommon. I think all modern file system support UTF8 today (or at least, paths can be encoded to UTF8).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:250 on 2024-06-12 15:50</div>
+            <div class="timeline-body"><p>no comment</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

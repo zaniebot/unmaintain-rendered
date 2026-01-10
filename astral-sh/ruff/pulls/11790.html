@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add type narrowing - astral-sh/ruff #11790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add type narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11790">#11790</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-06-07 02:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-06-07 02:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add Constraint nodes to flow graph, and narrow types based on that (only <code>is None</code> and <code>is not None</code> narrowing supported for now, to prototype the structure.)</p>
+<p>Also add simplification of zero- and one-element unions and intersections, and flattening of intersections.</p>
+<p>There's a lot more normalization logic needed for unions and intersections (as is obvious from the inferred type in the added <code>narrow_none</code> test), but this will be non-trivial and I'd rather do it in a separate PR.</p>
+<p>Here's a flowchart diagram for the code in the added <code>narrow_none</code> test:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/61586/5152a400-739c-41ff-8bbf-3c19d16bd083" alt="Screenshot 2024-06-07 at 2 58 00 PM" /></p>
+<p>The top branch is for the <code>if</code> expression in the initial assignment to <code>x</code>; that <code>Constraint</code> node would only affect the type of <code>flag</code>, which we don't care about in this test.</p>
+<p>The second branch is for the <code>if</code> statement, with <code>Constraint</code> node affecting the type of <code>x</code>.</p>
+<h2>Test Plan</h2>
+<p>Added tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-07 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:108 on 2024-06-07 10:09</div>
+            <div class="timeline-body"><p>Collecting here and for <code>intersected_types</code> seems unnecessary. Can we just collect once (e.g. by using a plain old loop ;))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-07 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2024-06-07 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-06-07 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 19:38</div>
+            <div class="timeline-body"><blockquote>
+<p>There's a lot more normalization logic needed for unions and intersections (as is obvious from the inferred type in the added narrow_none test), but this will be non-trivial and I'd rather do it in a separate PR.</p>
+</blockquote>
+<p>Yeah please don't add that. I rather have you figure it out how we do this in salsa, I don't know yet where this would fit nicely :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic.rs</code>:70 on 2024-06-07 19:42</div>
+            <div class="timeline-body"><p>I'll accept this because I know that this gets removed with salsa ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic.rs</code>:840 on 2024-06-07 19:44</div>
+            <div class="timeline-body"><p><code>cd</code> is a little cryptic. Can we use a more descriptive name? I'm having a hard time understanding what's going on here without a type hint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-07 19:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-07 19:47</div>
+            <div class="timeline-body"><p>Hmm, the <code>vec</code> here is a bit unfortunate (and in <code>FlowState</code>) but I'm not sure how to best avoid it.</p>
+<p>The reason why I'm saying that is that now every <code>ConstraintDefinition</code> needs to implement <code>Drop</code>. So it isn't just more expensive to create the <code>ConstraintDefinition</code>, it also requires that the caller needs to check if it has to deallocate the vec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-06-07 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-07 19:58</div>
+            <div class="timeline-body"><p>I'm not sure if that works. I'm a bit tired. But how about:</p>
+<ul>
+<li>The iterator stores a single <code>constraints: Vec&lt;ExpressionId&gt;</code></li>
+<li><code>FlowState</code> instead stores <code>constraints: Range&lt;usize&gt;</code> that is a range into <code>iter.constraints</code>.</li>
+<li>Instead of <code>constraints.push</code>, push to the central constraints vec</li>
+<li>When returning the <code>constraints</code>, slice into <code>iter.constraints</code> (requires lifetimes)</li>
+<li>Now, it's not entirely clear when we need to remove constraints again. But I think we should truncate <code>constraints</code> right after calling <code>self.pending.pop()</code> to the length of <code>state.constraints</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:265 on 2024-06-07 19:58</div>
+            <div class="timeline-body"><p>Would you mind adding a mermaid diagram (rendered) to the PR summary. I think it would be helpful to understand the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types.rs</code>:269 on 2024-06-07 20:00</div>
+            <div class="timeline-body"><p>We probably also want to avoid creating <code>UnionIds</code> for two unions that are identical. But let's solve this another day</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-07 20:00</div>
+            <div class="timeline-body"><p>I need to look at this with fresh eyes, but I left an idea for how we might be able to avoid a few allocations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic.rs</code>:70 on 2024-06-07 20:03</div>
+            <div class="timeline-body"><p>Yes, that's also the only reason I was OK with adding it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic.rs</code>:840 on 2024-06-07 20:07</div>
+            <div class="timeline-body"><p>Sure, I'll try to make this more clear and use a more descriptive name (<code>cd</code> is a <code>ConstrainedDefinition</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-07 20:09</div>
+            <div class="timeline-body"><p>Sure, I can play with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types.rs</code>:269 on 2024-06-07 20:10</div>
+            <div class="timeline-body"><p>Yes, that's part of union normalization in my mind, but I guess there's no TODO for it here; I'll add one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-07 20:38</div>
+            <div class="timeline-body"><p>I can easily remove the Vec from FlowState with this plan (and I'll push that), but I'm not sure about removing it from <code>ConstrainedDefinition</code>.</p>
+<p>I think the part of this that can't work is borrowing the slice from the iterator; it seems like this is fundamentally not compatible with the design of the Iterator trait (see discussion at https://users.rust-lang.org/t/returning-borrowed-values-from-an-iterator/1096/10).</p>
+<p>It might be possible to have <code>ConstrainedDefinition</code> also just hold a <code>Range&lt;usize&gt;</code>, and query the iterator for the actual constraints. This makes the API quite awkward (you have to make sure to do these queries before you iterate to the next definition, because of truncation), and I'm not sure it ends up any better in terms of allocations (because of the previous requirement, the caller would still end up just making its own Vec of the constraints anyway).</p>
+<p>Do you think removing the vec from <code>ConstrainedDefinition</code> is important to solve now, or could be revisited post-Salsa?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:265 on 2024-06-07 21:00</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-07 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-07 21:13</div>
+            <div class="timeline-body"><p>I think there's a reasonably good chance that post-Salsa, if we're doing inference all at once per scope, that the whole FlowGraph implementation may go away, in favor of eagerly tracking local symbol types as we walk the AST doing type inference. There's no reason to pay the overhead for laziness we don't use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-08 05:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-08 05:59</div>
+            <div class="timeline-body"><p>Yeah you're right. You can't reference data stored on the vec itself. It either must have a longer lifetime or be per item. An alternative solution could be to change the item type to an <code>enum</code> where it is either a <code>Definition</code> or a <code>Constraint</code>, technically flattening the constraints.</p>
+<blockquote>
+<p>Do you think removing the vec from ConstrainedDefinition is important to solve now, or could be revisited post-Salsa?</p>
+</blockquote>
+<p>Not if you think it will go away with Salsa, maybe add a todo. Avoiding allocations for the CFG would be nice because it is a rather hot code path, at least in our current design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-08 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/flow_graph.rs</code>:137 on 2024-06-08 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>An alternative solution could be to change the item type to an enum where it is either a Definition or a Constraint, technically flattening the constraints.</p>
+</blockquote>
+<p>I think this could work, but I'm not sure how much it will reduce overall allocation. The caller will just end up having to collect the constraints as it waits for the definition they apply to, or create more intermediate intersection types along the way, which also involves allocation as intersection types hold a vec of their elements.</p>
+<p>It seems like we can shift the allocation around, but the basic need to have an arbitrary number of constraints apply to each definition means that we can't really get rid of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:122 on 2024-06-10 08:28</div>
+            <div class="timeline-body"><p>Hmm, that becomes interesting in a salsa world where all types must be inferred upfront for each scope. What I have today is that each scope stores the types of each definition.</p>
+<p>I guess hwo this would work is that the intersection type would be defined in the scope that uses the definition (where the narrowing is happening) and not in the scope where the definition is defined. However, that can add a dependency from the usage scope to the AST nodes of the inference constraints, which might be undesired. Because I assume the expressions can come from many different scopes. But maybe that's just how it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-10 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:72 on 2024-06-10 08:31</div>
+            <div class="timeline-body"><p>I think we can remove the <code>Debug</code> trait from here, even if it is useful for debugging.</p>
+<p>I also prefer taking <code>IntoIterator</code> for methods that are generic over an iterable because it's nicer to call</p>
+<pre><code class="language-suggestion">where
+    T: IntoIterator&lt;Item = ConstrainedDefinition&gt;,
+</code></pre>
+<p>Should this method be public or can we constrain it to the current module? Same for <code>infer_type_from_definitions</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:242 on 2024-06-10 08:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// for `x` and the expression ID for `x is not None`. Returns `None` if the given expression applies
+/// no constraints on the given symbol.
+#[tracing::instrument(level = &quot;trace&quot;, skip(db))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:242 on 2024-06-10 08:32</div>
+            <div class="timeline-body"><p>The section here is a bit hard to read because it's hard to tell where <code>None</code> refers to Rust's <code>None</code> and where it refers to <code>Type::None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-10 08:37</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>I'll probably need some help from you to integrate the CFG changes into salsa. I think constraints add a new interesting challenge (where the definition types are no longer a fixed set of types, instead it can now be an open ended set of types depending on the refinements between use and definitions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-10 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:122 on 2024-06-10 15:13</div>
+            <div class="timeline-body"><p>All of the CFG logic is internal to a scope, it doesn't cross scopes. There is no such thing as finding a definition in a different scope for a name. Currently this is kind of implicit in how we build the CFG; we start over with the Start node every time we enter a new scope, so there is no possible way to reach a different scope when traversing the CFG. All scopes share the same Start node, though this is really just an implementation optimization since the Start node has no data. We could possibly make this more explicit in having a separate FlowGraph structure for each scope instead.</p>
+<p>I don't have support implemented yet for free/nonlocal/global variables. This first depends on doing the symbol table analysis so that we know when we are resolving a free/nonlocal/global variable. How this should work depends on how much narrowing we want to do on such variables, which is a correctness vs usability tradeoff -- users may expect narrowing of these variables, even where it's really not sound (because some intervening call could have changed the value in the other scope.) But assuming we want to narrow them, one way it could work is that we insert a synthetic &quot;definition&quot; at the start of the local scope for the free/nonlocal/global variable, and that definition would resolve to the public type of the symbol in the scope where it's defined.</p>
+<p>I don't think we will ever want the CFG traversal itself to cross scopes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-10 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:242 on 2024-06-10 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>The section here is a bit hard to read because it's hard to tell where None refers to Rust's None and where it refers to Type::None</p>
+</blockquote>
+<p>Hmm, how can it ever be ambiguous? Bare <code>None</code> always has to be Rust <code>None</code>; <code>Type::None</code> always must have the <code>Type::</code> prefix.</p>
+<p>But once we have typeshed I expect this will all change anyway, because <code>Type::None</code> should go away in favor of a <code>Type::Instance(&lt;builtin NoneType class&gt;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-10 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:242 on 2024-06-10 15:17</div>
+            <div class="timeline-body"><p>Oh, I see, you mean the comment. I assumed the same name scoping rules applied there too. Will see if I can make it more clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-12 04:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:72 on 2024-06-12 04:31</div>
+            <div class="timeline-body"><p>The <code>Debug</code> trait constraint was here because it's required for tracing. And switching to <code>IntoIterator</code> was also giving me trouble with tracing. I just removed the tracing; not sure we really need it on these internal functions.</p>
+<p>And I removed the <code>pub</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-12 04:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:242 on 2024-06-12 04:35</div>
+            <div class="timeline-body"><p>Adjusted the doc string text to be clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-06-12 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-06-12 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-12 04:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

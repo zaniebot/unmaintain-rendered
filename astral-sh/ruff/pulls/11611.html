@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix various bugs found via running the test suite - astral-sh/ruff #11611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix various bugs found via running the test suite</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11611">#11611</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-30 06:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-30 06:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes various bugs found when running the test suite. Note that it doesn't update the code to make it compile which is done in a separate PR.</p>
+<p>Refer to review comments for each individual bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-05-30 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1163 on 2024-05-30 10:07</div>
+            <div class="timeline-body"><p>The function requires the range and the right side of the binary expression so we let's just pass the binary expression as a whole.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:116 on 2024-05-30 10:07</div>
+            <div class="timeline-body"><p>Must've been a copy paste mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:478 on 2024-05-30 10:10</div>
+            <div class="timeline-body"><p>I think this isn't a bug fix, but mostly a change from:</p>
+<pre><code class="language-rs">if matches!(self.tokens.peek(), Some((TokenKind::Def, _)))
+</code></pre>
+<p>To</p>
+<pre><code class="language-rs">                            if self
+                                .tokens
+                                .peek()
+                                .is_some_and(|token| token.kind() == TokenKind::Def)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/invalid_literal_comparisons.rs</code>:114 on 2024-05-30 10:12</div>
+            <div class="timeline-body"><p>The reason this offset exists was because the lexer function used was <code>lex</code> instead of <code>lex_starts_at</code>.</p>
+<p>https://github.com/astral-sh/ruff/blob/b0a751012e2990f86ff58b17157bf86c73e9a64c/crates/ruff_linter/src/rules/pyflakes/rules/invalid_literal_comparisons.rs#L152-L157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/fixes.rs</code>:28 on 2024-05-30 10:14</div>
+            <div class="timeline-body"><p>Now, we use the locator containing the entire source code, so the start offset should be the statement start offset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/fixes.rs</code>:61 on 2024-05-30 10:14</div>
+            <div class="timeline-body"><p>Similarly, the final string piece should use the end offset from the statement range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:446 on 2024-05-30 10:15</div>
+            <div class="timeline-body"><p>This should use the start of the entire binary expression instead of just the string expression. For example,</p>
+<pre><code class="language-py">  (&quot;%d&quot; &quot;%d&quot;) % (1, 2)
+# ^^^^^^^^^^^^^^^^^^^^ binary expression
+#  ^^^^^^^^^ string expression
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:486 on 2024-05-30 10:16</div>
+            <div class="timeline-body"><p>Same as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:17 on 2024-05-30 10:18</div>
+            <div class="timeline-body"><p>Indicate that the lifetime of tokens is independent of the context similar to the source lifetime. This allows <code>LogicalLineIter</code> to get the <code>Tokens</code> reference along with passing the mutable reference to the context to <code>fmt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_index/src/multiline_ranges.rs</code>:52 on 2024-05-30 10:19</div>
+            <div class="timeline-body"><p>The range should be of <code>FStringMiddle</code>, not <code>FStringStart</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:186 on 2024-05-30 10:19</div>
+            <div class="timeline-body"><p>Oops! Forgot to bump the cursor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:580 on 2024-05-30 10:20</div>
+            <div class="timeline-body"><p>Ummmm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:741 on 2024-05-30 10:20</div>
+            <div class="timeline-body"><p>Yeah, not sure why I did this xD</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1467 on 2024-05-30 10:21</div>
+            <div class="timeline-body"><p>Using <code>contains</code> is incorrect here.</p>
+<p>For all other changes, I find <code>intersects</code> easier to reason about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:152 on 2024-05-30 10:22</div>
+            <div class="timeline-body"><p>The <code>EndOfFile</code> token shouldn't be included in the token stream, it's just to indicate the parser to stop. This isn't in <code>bump</code> because it only needs to be done once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-30 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-30 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:116 on 2024-05-30 10:41</div>
+            <div class="timeline-body"><p>That must have been annoying to find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:478 on 2024-05-30 10:43</div>
+            <div class="timeline-body"><p>Yeah, I think this is more a compilation error fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:795 on 2024-05-30 10:44</div>
+            <div class="timeline-body"><p>Nit: I think <code>'_</code> should just work fine here but there's no need to change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_index/src/multiline_ranges.rs</code>:52 on 2024-05-30 10:45</div>
+            <div class="timeline-body"><p>Is this a bug in main too or something you introduced by your refactor?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:152 on 2024-05-30 10:46</div>
+            <div class="timeline-body"><p>I think this comment would be useful in the source. I personally wouldn't mind if the EOF token is in the token stream but I don't feel strongly (and I wouldn't make the change as part of this stack if it changes too many snapshot tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-30 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-30 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_index/src/multiline_ranges.rs</code>:52 on 2024-05-30 10:48</div>
+            <div class="timeline-body"><p>The later, it was introduced by me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-30 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-30 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-30 10:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

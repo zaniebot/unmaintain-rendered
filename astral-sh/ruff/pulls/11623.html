@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] infer int literal types - astral-sh/ruff #11623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] infer int literal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11623">#11623</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-30 23:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-30 23:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Give red-knot the ability to infer int literal types. This is quick and easy, mostly because these types are a convenient way to observe control-flow handling with simple assignments.</p>
+<h2>Test Plan</h2>
+<p>Added test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-30 23:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-31 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-05-31 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @plredmond by @carljm on 2024-05-31 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-05-31 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:151 on 2024-05-31 06:46</div>
+            <div class="timeline-body"><p>Could we change <code>Type::IntLiteral</code> to store a <code>ruff_python_ast::Int</code> instead of an <code>i64</code> to get support for big int literals with the optimization to avoid allocating for values that fit into <code>i64</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:155 on 2024-05-31 06:48</div>
+            <div class="timeline-body"><p>I would probably use a match here since we want to handle all branches in the future (and rename <code>v</code> to <code>value</code>...)</p>
+<pre><code class="language-suggestion">					match value {
+							ast::Number::Int(int) =&gt; Ok(n.as_i64().map(Type::IntLiteral).unwrap_or(Type::Unknown)),	
+							ast::Number::Float(_) | ast::Number::Complex(_) =&gt; {
+                // TODO builtins.float or builtins.complex
+                Ok(Type::Unknown)
+              }
+          }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-31 06:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:151 on 2024-05-31 09:21</div>
+            <div class="timeline-body"><p>This caused issues for pyright as well, so it's definitely something we'll need to support eventually (but I don't think it <em>has</em> to be done in this PR):</p>
+<ul>
+<li>https://github.com/microsoft/pyright/issues/2860</li>
+<li>https://github.com/microsoft/pyright/issues/2879</li>
+</ul>
+<p>Relevant pyright commit: https://github.com/microsoft/pyright/commit/65f444daecfa3884e082c6cd528c6bd5ee2102df</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:154 on 2024-05-31 09:31</div>
+            <div class="timeline-body"><p><code>builtins.complex</code> and <code>builtins.float</code> are not valid parameters to <code>Literal</code> in type expressions. But I suppose for our purposes, we need to hang on to the actual value of the symbol as well as the type, as many lint rules may find the actual value useful. But we may need to think carefully about how we display these types to users in diagnostic messages -- it might be confusing if we reported to a user that a variable has type <code>Literal[3.1234552]</code> or whatever, when that isn't a valid Python type according to the specification.</p>
+<p>I think mypy does something similar where they have an internal representation for <code>Literal</code> floats; this is important for when they want to compile Python code with mypyc (not a concern for us). But that Literal type is never shown to users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-31 09:32</div>
+            <div class="timeline-body"><p>LGTM, modulo comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:151 on 2024-05-31 17:32</div>
+            <div class="timeline-body"><p>Sure, that's a good idea, I can make this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-31 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-31 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:154 on 2024-05-31 17:34</div>
+            <div class="timeline-body"><p><code>builtins.float</code> and <code>builtins.complex</code> here are meant to simply say that we should infer those general types (the type <code>float</code> or the type <code>complex</code>), not a <code>Literal</code> of those types.</p>
+<p>I agree we may want to consider internally supporting literals of them as well, but this comment wasn't meant to imply anything about that.</p>
+<p>Is there a way to word it that would make that clearer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-31 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:154 on 2024-05-31 17:40</div>
+            <div class="timeline-body"><p>Right, sorry -- I was reading the TODO comment in the context of the PR's purpose and assumed you meant something to do with <code>Literal</code> types. But in the context of the function I think it's clear as-is; I just didn't look closely enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-31 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:151 on 2024-05-31 19:19</div>
+            <div class="timeline-body"><p>After further discussion, this would make <code>Type</code> non <code>Copy</code> which I don't want to do -- I think we will need to intern bignum literals (as well as e.g. string literals). So I'm going to leave this as-is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-05-31 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-31 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-31 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

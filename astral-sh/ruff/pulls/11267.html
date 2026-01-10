@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor the `ExprDict` node - astral-sh/ruff #11267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor the <code>ExprDict</code> node</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11267">#11267</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-05-03 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-03 17:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR refactors the <code>ExprDict</code> node in <code>crates/ruff_python_ast/nodes.rs</code> from this:</p>
+<pre><code class="language-rs">struct ExprDict {
+    keys: Vec&lt;Option&lt;Expr&gt;&gt;,
+    values: Vec&lt;Expr&gt;,
+}
+</code></pre>
+<p>to this:</p>
+<pre><code class="language-rs">struct DictItem {
+    key: Option&lt;Expr&gt;,
+    value: Expr,
+}
+
+struct ExprDict {
+    items: Vec&lt;DictItem&gt;,
+}
+</code></pre>
+<p>This has several advantages:</p>
+<ul>
+<li>In most cases where we're iterating over the elts for an <code>ExprDict</code> node, we <code>zip</code> the keys and values together to iterate over them both simultaneously. With the new representation of the AST structure, using <code>zip</code> is no longer necessary; the key and value are naturally paired together, and iteration over the two together can be done in a much more elegant way.</li>
+<li>All of our rules that <em>do</em> currently iterate over the keys and values zipped together implicitly rely on the invariant that the <code>keys</code> and <code>values</code> vectors on an <code>ExprDict</code> node will be of exactly the same length. This refactoring encodes this invariant into the type itself, making it explicit.</li>
+<li>The size of an <code>ExprDict</code> node is reduced from 56 to 32 bytes</li>
+</ul>
+<p>In addition to the above refactoring, I added two convenience methods to <code>ExprDict</code> so that we can still easily iterate over and index into the keys and values of a dictionary: <code>keys()</code> and <code>values()</code>. Both return read-only &quot;view&quot; objects that allow you to iterate over -- and also index directly into -- an <code>ExprDict</code> node's keys or values. Some of these implementations might be <em>slightly</em> over the top right now. Let me know what you think!</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> / <code>cargo insta review</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-05-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-05-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-05-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/repeated_keys.rs</code>:198 on 2024-05-03 17:47</div>
+            <div class="timeline-body"><p>I wanted to do this here:</p>
+<pre><code class="language-suggestion">                    let comparable_value: ComparableExpr = (&amp;dict.values()[i]).into();
+</code></pre>
+<p>But the borrow checker wouldn't let me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-03 18:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/recovery.rs</code>:54 on 2024-05-06 06:50</div>
+            <div class="timeline-body"><p>We should probably change patterns in the same way to keep the AST consistent (doesn't have to be part of this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:399 on 2024-05-06 06:53</div>
+            <div class="timeline-body"><p>The semantic here is now different, but I don't know if the old iteration order was intentional. We'll have to check the python semantic to know if the evaluation order is <code>keys</code> followed by <code>values</code> or if it is for each pair, <code>key</code> then <code>value</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:810 on 2024-05-06 06:54</div>
+            <div class="timeline-body"><p>Nit: I think <code>DictKeys</code> would be more idiomatic (e.g. the iterator for <code>HashMap</code> is just <code>Keys</code>). It's an iterator over keys.</p>
+<p>Oh, I just now see that this isn't the iterator.</p>
+<p>I wonder if this extra struct is necessary. All methods can be implemented directly on iterator</p>
+<ul>
+<li><code>first</code>/<code>last</code> -&gt; Are iterator functions</li>
+<li><code>len</code>/<code>is_empty</code> -&gt; Are <code>ExactSizeIter</code> functions</li>
+<li><code>get</code> -&gt; <code>nth</code></li>
+</ul>
+<p>The only one that isn't is the implementation of <code>Index</code>. I wonder if we should just add <code>key(index)</code> and <code>value(index)</code> methods to <code>ExprDict</code> instead. But that probably heavily depends on where the <code>Index</code> methods are used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:380 on 2024-05-06 07:01</div>
+            <div class="timeline-body"><p>Same as for the <code>visitor</code>. The new implementation visits the items in a different ordering. We need to verify if this new order matches Python's evaluation order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:177 on 2024-05-06 07:03</div>
+            <div class="timeline-body"><p>Reading the code here makes me wonder if the <code>keys</code> and <code>values</code> method should be implemented on <code>DictItems</code> (a zero cost wrapper around <code>Vec&lt;DictItem&gt;</code>) instead of on the <code>ExprDict</code>. It's a bit awkward that it is now necessary to hold on to the <code>dict</code> and <code>items</code>. I think the alternative is to expose an <code>items()</code> method on <code>dict</code> that returns the items slice. That way, the code here can be written entirely without destructuring <code>dict</code></p>
+<ul>
+<li><code>range</code> -&gt; <code>dict.range()</code></li>
+<li><code>items</code> -&gt; <code>dict.items()</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/repeated_keyword_argument.rs</code>:61 on 2024-05-06 07:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            for key in dict.keys().iter().flatten() {
+</code></pre>
+<p>We should expose an <code>iter</code> function if it doesn't already exist (It's most common to have <code>iter</code> and <code>into_iter</code> but rare to onlyh have <code>into_iter</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1204 on 2024-05-06 07:12</div>
+            <div class="timeline-body"><p>Same as for the visitor. The new implementatio changes the visitation order from keys, then values to: for each pair, <code>key</code> then <code>value</code>. Does this match pythons evaluation order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 07:15</div>
+            <div class="timeline-body"><p>There are a few places where you changed the visitation order but where it is important that the visitation order matches the runtime evaluation order. We should double check which order is correct.</p>
+<p>I would consider:</p>
+<ul>
+<li>Implementing <code>items()</code> as a method on <code>ExprDict</code> (returns a <code>&amp;[DictItem]</code>). This way, all relevant methods are directly available on the <code>expression</code> and it isn't required to mix and match <code>items</code>, with <code>expr.keys()</code>, expr.values()`</li>
+<li>I would consider changing <code>keys()</code> and <code>values()</code> to directly return iterators instead of <code>View</code>s and replace <code>Index</code> with <code>key(index)</code> and <code>value(index)</code> (although we may want to return <code>Options</code> and have <code>key_unwrap</code> and <code>value_unwrap</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/repeated_keys.rs</code>:198 on 2024-05-06 07:19</div>
+            <div class="timeline-body"><p>I think the problem here is that <code>Index::index</code> returns an <code>Expr</code> a lifetime of <code>DictKeysView</code> (It doesn't return a <code>&amp;'a Self::Output</code>). We could work around this by having a <code>dict.value(i)</code> method instead because that method could return a <code>&amp;'a Expr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-06 07:21</div>
+            <div class="timeline-body"><p>I really like the change. Having both key and value in a single item makes the API way more convenient to use. Thanks for doing this refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:810 on 2024-05-06 07:25</div>
+            <div class="timeline-body"><p>Yep, the intermediate &quot;view&quot; object only gets us indexing on top of all the iterator functionality. Having <code>.keys()</code> return a view object felt appealing as it's very similar to what Python does at runtime with the <code>.keys()</code>, <code>.values()</code> and <code>.items()</code> methods on dictionaries (although the runtime <code>dict_keys</code>, <code>dict_values</code> and <code>dict_items</code> view objects aren't actually indexable in Python — they're closer to set-like containers than sequences). But I also wasn't sure whether the extra complexity of the intermediate struct was warranted here; I'm happy to get rid of them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 07:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:399 on 2024-05-06 07:30</div>
+            <div class="timeline-body"><p>I think Python evaluates dictionary literals pair-by-pair (i.e., according to the change I'm proposing here):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; {a:b}
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'a' is not defined
+&gt;&gt;&gt; {'a':b, c:'d'}
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'b' is not defined
+</code></pre>
+<p>If it evaluated all the keys before any of the values, the second error would be &quot;'c' is not defined&quot; rather than &quot;'b' is not defined&quot;. I'll see if I can verify this more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:302 on 2024-05-06 08:26</div>
+            <div class="timeline-body"><p>I'm assuming the need to change the type of <code>value_elts</code> is because of the indirection of <code>DictKeyView</code>? I wonder if we could just use an iterator approach along with <a href="https://doc.rust-lang.org/stable/std/slice/struct.Iter.html#method.as_slice"><code>as_slice</code></a> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:692 on 2024-05-06 08:27</div>
+            <div class="timeline-body"><p>nit: I think it could be useful to have <code>ComparableDictItem</code> but it's not strictly required, so I'm fine with this option as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:810 on 2024-05-06 08:29</div>
+            <div class="timeline-body"><p>nit: I'd just keep the iterator and remove the intermediate struct. I like the <code>key(index)</code> approach Micha suggested. Although, I leave it up to you as you will know more about how the dictionary expression is being utilized in downstream tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:797 on 2024-05-06 08:33</div>
+            <div class="timeline-body"><p>I wonder if you thought about an alternative design which would utilize an enum like:</p>
+<pre><code class="language-rs">pub enum DictItem {
+	KeyValue(KeyValueItem),
+	DoubleStarred(Expr), // or Expanded, Spread, ...
+}
+</code></pre>
+<p>Although this approach does add in an additional indirection.</p>
+<p>That said, I'd keep the <code>DictItem</code> approach for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:399 on 2024-05-06 08:36</div>
+            <div class="timeline-body"><p>There's a small mention of the evaluation order in the docs although it's still unclear to me:</p>
+<blockquote>
+<p>If a comma-separated sequence of dict items is given, they are evaluated from left to right to define the entries of the dictionary [...]</p>
+<p>Reference: https://docs.python.org/3/reference/expressions.html#dictionary-displays</p>
+</blockquote>
+<p>And, the following might mean that the order as in this PR is correct:</p>
+<blockquote>
+<p>This means that you can specify the same key multiple times in the dict item list, and the final dictionary’s value for that key will be the last one given.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-06 08:39</div>
+            <div class="timeline-body"><p>Thank you for doing this refactor!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:797 on 2024-05-06 08:43</div>
+            <div class="timeline-body"><p>Oh, very nice... I hadn't considered this at all! And I think it makes it much more readable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-06 08:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:797 on 2024-05-06 08:46</div>
+            <div class="timeline-body"><p>Just to be clear, I'd keep the <code>DictItem</code> approach as is in this PR. This is just an alternative design that I had in mind while working on the parser :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:692 on 2024-05-06 11:37</div>
+            <div class="timeline-body"><p>Implemented in https://github.com/astral-sh/ruff/pull/11267/commits/65e5b1dd4fd67d6570cf6ed1a7a9c3fa899105d4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/parser/recovery.rs</code>:54 on 2024-05-06 13:46</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/11267/commits/3ce0f6a96f0dd2a1c3d8cb8a452a4d5b7c5ad08a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:4619 on 2024-05-06 13:49</div>
+            <div class="timeline-body"><p>I have no idea if <code>80</code> is correct for Rustc &lt; 1.76. I just did <code>72 + 8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-06 13:56</div>
+            <div class="timeline-body"><p>The evaluation order at runtime is <code>key, value, key, value, ...</code> in source order, matching the new order used in this PR.</p>
+<p>This is perhaps simplest to observe by de-compiling some Python code using <code>dis</code>:</p>
+<pre><code>&gt;&gt;&gt; import dis
+&gt;&gt;&gt; def f():
+...     return {a: b, c: d}
+...
+&gt;&gt;&gt; dis.dis(f)
+  1           RESUME                   0
+
+  2           LOAD_GLOBAL              0 (a)
+              LOAD_GLOBAL              2 (b)
+              LOAD_GLOBAL              4 (c)
+              LOAD_GLOBAL              6 (d)
+              BUILD_MAP                2
+              RETURN_VALUE
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-06 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>The evaluation order at runtime is <code>key, value, key, value, ...</code> in source order, matching the new order used in this PR.</p>
+<p>This is perhaps simplest to observe by de-compiling some Python code using <code>dis</code>:</p>
+</blockquote>
+<p>But unfortunately, it appears that the evaluation order for mapping patterns in <code>case</code> statements may be different, so I might have to tweak some of the changes I just pushed in https://github.com/astral-sh/ruff/pull/11267/commits/3ce0f6a96f0dd2a1c3d8cb8a452a4d5b7c5ad08a:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f():
+...     match config:
+...         case {'a': 'b', 'c': 'd'}:
+...             pass
+... 
+&gt;&gt;&gt; dis.dis(f)
+  1           0 RESUME                   0
+
+  2           2 LOAD_GLOBAL              0 (config)
+
+  3          12 MATCH_MAPPING
+             14 POP_JUMP_IF_FALSE       24 (to 64)
+             16 GET_LEN
+             18 LOAD_CONST               1 (2)
+             20 COMPARE_OP              92 (&gt;=)
+             24 POP_JUMP_IF_FALSE       19 (to 64)
+             26 LOAD_CONST               4 (('a', 'c'))
+             28 MATCH_KEYS
+             30 COPY                     1
+             32 POP_JUMP_IF_NONE        13 (to 60)
+             34 UNPACK_SEQUENCE          2
+             38 LOAD_CONST               2 ('b')
+             40 COMPARE_OP              40 (==)
+             44 POP_JUMP_IF_FALSE        7 (to 60)
+             46 LOAD_CONST               3 ('d')
+             48 COMPARE_OP              40 (==)
+             52 POP_JUMP_IF_FALSE        4 (to 62)
+             54 POP_TOP
+             56 POP_TOP
+
+  4          58 RETURN_CONST             0 (None)
+
+  3     &gt;&gt;   60 POP_TOP
+        &gt;&gt;   62 POP_TOP
+        &gt;&gt;   64 POP_TOP
+             66 RETURN_CONST             0 (None)
+</code></pre>
+<p>(Side note: wow that's a lot of bytecode instructions!)</p>
+<p>I'm not entirely sure if there's a situation where it would matter for a mapping pattern, but perhaps we should err on the side of caution here and match the Python runtime as far as possible anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/node.rs</code>:3807 on 2024-05-06 14:07</div>
+            <div class="timeline-body"><p>Hmm, here I didn't change the iteration order, but according to the results of <code>dis.dis()</code> in https://github.com/astral-sh/ruff/pull/11267#issuecomment-2096090737, the existing order might be incorrect? Possibly we should be visiting all the keys in a <code>PatternMatchMapping</code> before we visit any of the values, since it seems (unlike with dictionary literals) the Python runtime loads all the keys before loading any of the values when it comes to mapping patterns</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:302 on 2024-05-06 14:54</div>
+            <div class="timeline-body"><p>the main reason to change the type is that there used to be a <code>Vec&lt;Expr&gt;</code> representing the <code>values</code> of the <code>ExprDict</code> node that was owned by the <code>ExprDict</code> node, and we just passed around a reference to that <code>Vec</code>. Now there isn't anymore, so we either need to construct our own <code>Vec</code> of values that we own (seems wasteful as it involves allocating) or do something like this, or pass around a reference to a container from which we could easily retrieve the <code>values</code>. I've switched to the latter approach in https://github.com/astral-sh/ruff/pull/11267/commits/4837ce49136c535ceb4ab92ffe94a8bc46c837db, to simplify the signature here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-06 16:48</div>
+            <div class="timeline-body"><p>I've taken the changes to the pattern-matching nodes back out again, as @dhruvmanila pointed out to me that they might conflict with some changes around that node being planned in #10570 (thanks!).</p>
+<blockquote>
+<p>I wonder if you thought about an alternative design which would utilize an enum like:</p>
+<pre><code class="language-rust">pub enum DictItem {
+  KeyValue(KeyValueItem),
+  DoubleStarred(Expr), // or Expanded, Spread, ...
+}
+</code></pre>
+</blockquote>
+<p>I have a working prototype of this locally, and I think it's possibly an improvement. But I'm also happy to leave it for now.</p>
+<p>The PR should be ready for re-review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-05-06 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-05-06 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:826 on 2024-05-07 06:16</div>
+            <div class="timeline-body"><p>I think we could implement <code>Index</code> for <code>item</code>, if that's even something that's commonly used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:865 on 2024-05-07 06:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.items.size_hint()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:908 on 2024-05-07 06:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.items.size_hint()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:902 on 2024-05-07 06:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.next_back()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:859 on 2024-05-07 06:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.next_back()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:876 on 2024-05-07 06:22</div>
+            <div class="timeline-body"><p>You get <code>is_empty</code> for free by implementing <code>is_empty</code>. You may want to consider overriding <code>ExactSizeIterator::len()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:834 on 2024-05-07 06:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Clone)]
+</code></pre>
+<p>It's sometimes useful to have the ability to clone an iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:810 on 2024-05-07 06:27</div>
+            <div class="timeline-body"><p>You could rewrite this to</p>
+<pre><code class="language-suggestion">            ast::Expr::Dict(dict) =&gt; {
+                let mut narrowed_keys = Vec::with_capacity(dict.len());
+                for key in dict.iter_keys() {
+                    if let Some(key) = key {
+                        // This is somewhat unfortunate,
+                        // *but* using a dict for __slots__ is very rare
+                        narrowed_keys.push(key.to_owned());
+                    } else {
+                        return None;
+                    }
+                }
+                // If `None` was present in the keys, it indicates a &quot;** splat&quot;, .e.g
+                // `__slots__ = {&quot;foo&quot;: &quot;bar&quot;, **other_dict}`
+                // If `None` wasn't present in the keys,
+                // the length of the keys should always equal the length of the values
+                assert_eq!(narrowed_keys.len(), dict.len());
+                Self {
+                    elts: Cow::Owned(narrowed_keys),
+                    range: dict.range(),
+                    display_kind: DisplayKind::Dict { items: dict.items() },
+                }
+            }
+            _ =&gt; return None,
+</code></pre>
+<p>If you add a <code>len</code> and <code>is_empty</code> method to <code>ExprDict</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:814 on 2024-05-07 06:28</div>
+            <div class="timeline-body"><p>I recommend returning a slice here. It's often easier to work with a slice than an iterator.</p>
+<pre><code class="language-suggestion">    pub fn iter_items(&amp;self) -&gt; &amp;[DictItem] {
+        self.items.iter()
+    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_dict.rs</code>:43 on 2024-05-07 06:29</div>
+            <div class="timeline-body"><p>Nit. You could consider passing the item to <code>KeyValuePair</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-07 06:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-07 06:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I've taken the changes to the pattern-matching nodes back out again, as @dhruvmanila pointed out to me that they might conflict with some changes around that node being planned in https://github.com/astral-sh/ruff/issues/10570 (thanks!).</p>
+</blockquote>
+<p>Do we know how the pattern layout will change? Are the changes compatible with the changes we made here or will we end up with a large inconsistency between the two nodes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:876 on 2024-05-07 06:38</div>
+            <div class="timeline-body"><p>Unfortunately <code>is_empty</code> is an unstable feature of <code>ExactSizeIterator</code> currently: https://doc.rust-lang.org/std/iter/trait.ExactSizeIterator.html#method.is_empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 06:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:877 on 2024-05-07 06:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Clone)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:810 on 2024-05-07 06:46</div>
+            <div class="timeline-body"><p>I think adding those methods to <code>ExprDict</code> is very worth considering, but I'd want to add them to <code>ExprList</code>, <code>ExprSet</code> and <code>ExprTuple</code> at the same time. I think it's outside the scope of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-07 06:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we know how the pattern layout will change? Are the changes compatible with the changes we made here or will we end up with a large inconsistency between the two nodes?</p>
+</blockquote>
+<p>Not sure. I'll wait for @dhruvmanila to chime in before merging (I know he's out for much of today)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_formatter/src/expression/expr_dict.rs</code>:43 on 2024-05-07 09:14</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/11267/commits/1d6bab848d0a72571e087f52502787582a44aec6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:814 on 2024-05-07 09:22</div>
+            <div class="timeline-body"><p>I feel like I'd either prefer to keep the returned type consistent with <code>iter_key()</code> and <code>iter_values()</code>, or just remove this method entirely. If you want a <code>[DictItem]</code> slice, you can just access the <code>.items</code> field on the <code>ExprDict</code> node directly; it's a public field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-07 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:826 on 2024-05-07 09:32</div>
+            <div class="timeline-body"><p>I'm not sure it's a common enough need for it to be worth it. But if we did do this, I think (same as https://github.com/astral-sh/ruff/pull/11267#discussion_r1591893793) we should do it for <code>ExprList</code>, <code>ExprSet</code> and <code>ExprTuple</code> at the same time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:814 on 2024-05-07 10:50</div>
+            <div class="timeline-body"><p>nit: in that case, I'd remove the <code>iter_items</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-05-07 10:54</div>
+            <div class="timeline-body"><p>Thank you for working on this refactor!</p>
+<p>Can you add basic documentation around the new structs and methods? I'd specifically want to document the panic case for methods which index into the dictionary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-07 11:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:814 on 2024-05-07 11:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like I'd either prefer to keep the returned type consistent with iter_key() and iter_values(), or just remove this method entirely. If you want a [DictItem] slice, you can just access the .items field on the ExprDict node directly; it's a public field</p>
+</blockquote>
+<p>That's true. The reason why I often prefer methods is because it avoids the sometimes awkward <code>&amp;</code> or <code>as_ref()</code></p>
+<pre><code class="language-rust">for item in &amp;dict.items
+</code></pre>
+<p>vs</p>
+<pre><code>for item in dict.items() 
+</code></pre>
+<p>But yeah, I'm okay with removing the method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-07 11:41</div>
+            <div class="timeline-body"><p>Thanks both!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-05-07 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-05-07 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-01 10:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

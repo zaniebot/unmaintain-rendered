@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot(Salsa): Types without refinements - astral-sh/ruff #11899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot(Salsa): Types without refinements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11899">#11899</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-17 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-17 11:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ports the type inference code from red-knot to a salsa based implementation.</p>
+<p>The biggest difference to the implementation in red-knot is that the type inference is per scope and not per expression, similar to how we build symbol tables.</p>
+<p>This PR adds automatic type invalidation when types of dependency changes; this is a functionality that the implementation in the red knot crate doesn't support today.</p>
+<h2>Not yet ported</h2>
+<p>This PR does not yet implement type narrowing based on the control flow graph because the salsa version doesn't have a control flow graph yet.</p>
+<h2>Tests</h2>
+<p>I ported the existing tests of the red-knot code base that aren't context sensitive. I added a few new tests that validate that local changes don't trigger cross-file invalidation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-17 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-18 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-18 11:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-18 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index/builder.rs</code>:105 on 2024-06-18 20:51</div>
+            <div class="timeline-body"><p>Is it worth debug-asserting (here and above for ast-ids) that we get the same <code>scope_id</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index.rs</code>:84 on 2024-06-18 20:58</div>
+            <div class="timeline-body"><p>Add a doc comment for this?</p>
+<p>This is a good addition; it was too awkward before and required going through the Definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index/symbol.rs</code>:82 on 2024-06-18 21:07</div>
+            <div class="timeline-body"><p><code>scope_id</code> doesn't seem right to me as the name here, since this identifies a symbol within a scope, not a scope. What about <code>scope_symbol_id</code>? Or tbh <code>symbol_id</code> seems fine also.</p>
+<p>I guess what you were going for here is <code>scope_id</code> as in &quot;id of this symbol, within its scope&quot;? Maybe <code>scoped_id</code> would more clearly communicate that. (Maybe <code>ScopeSymbolId</code> should rather be <code>ScopedSymbolId</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index/symbol.rs</code>:89 on 2024-06-18 21:08</div>
+            <div class="timeline-body"><p>similar comment to above, name doesn't feel quite right</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index/symbol.rs</code>:194 on 2024-06-18 21:12</div>
+            <div class="timeline-body"><p>same comment as above: I see what you're aiming for here, but to me <code>file_id</code> strongly communicates &quot;id of a file&quot;. The <code>scoped_id</code> suggestion I made above doesn't work here (&quot;<code>filed_id</code>&quot; is not a thing); it could be <code>per_file_id</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:33 on 2024-06-18 21:21</div>
+            <div class="timeline-body"><p>I find the name <code>scope_ast_id</code> for this method confusing; I think it's the same confusion as above, that I expect the return to include a scope somehow. Maybe in line with the above comments, <code>scoped_ast_id</code> would work for this as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:77 on 2024-06-18 21:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Infers all types for `scope`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:211 on 2024-06-18 23:41</div>
+            <div class="timeline-body"><p>If we only ever intend to parameterize <code>TypeId</code> with a type implementing <code>LocalTypeId</code>, is it better to put this constraint on the specific method that needs it, or on the trait, or on <code>TypeId</code> itself? It seems like a <code>TypeId</code> of something that isn't a <code>LocalTypeId</code> would be pretty useless, so would it be better for the type system to catch this when we try to create such a type, rather than just when we try to call <code>lookup</code> on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:355 on 2024-06-18 23:46</div>
+            <div class="timeline-body"><p>This is nice! I would call it simply <code>union</code>, as that's what it does; unions the being-built union type with another type. &quot;variant&quot; is less clear. If you don't find <code>union</code> clear enough, it could also be <code>extend</code>, or just <code>add</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:431 on 2024-06-18 23:49</div>
+            <div class="timeline-body"><p>This comment implies that multiple local scopes are supported, but the code doesn't agree.</p>
+<p>I think to support cycles we will need to support multiple incomplete local scopes, and one scope querying a type from another incomplete scope.</p>
+<p>E.g. consider this pair of modules:</p>
+<pre><code># a.py
+import b
+
+class A(b.B): pass
+</code></pre>
+<pre><code># b.py
+class B: pass
+
+import a
+
+class C(a.A): pass
+</code></pre>
+<p>With these modules, <code>python -c &quot;import b&quot;</code> passes without error, since by the time <code>a</code> is imported, <code>b</code> already has the <code>B</code> class defined (even though the <code>b</code> module is not yet complete). This kind of thing happens in real-world large Python codebases, so we have to support it, and not error because we are unable to find <code>b.B</code>.</p>
+<p>Basically the problem here is that Python populates the module namespace item-by-item, allowing cases like the above. If we populate our equivalent of a module namespace all-at-once instead of item-by-item, as in the current design, we won't be able to handle code like this that works at runtime. (Item-by-item laziness like we had in the non-Salsa version also solved this problem.)</p>
+<p>I'm not really sure how the current structure in this PR can support that; we'd have to be able to pass a <code>TypingContext</code> with multiple local scopes along with all public-symbol queries, which doesn't work since the whole point of <code>TypingContext</code> is to include local partial results that aren't DB ingredients, so can't be part of a query.</p>
+<p>What ideas do you have here? We might have to intern types per-definition, without requiring complete inference of the entire scope first.</p>
+<p>Sorry I didn't catch this issue when reviewing the initial version of the salsa-conversion PR :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:566 on 2024-06-19 02:24</div>
+            <div class="timeline-body"><p>I think I commented this on a previous PR; still don't like it that we are using APIs (even in tests) that allow us to modify a file's contents without changing its revision. (Also this is just a lot of boilerplate for modifying a file in a test.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:567 on 2024-06-19 02:25</div>
+            <div class="timeline-body"><p>Why do we have to sleep here? Is there some kind of concurrency inside Salsa that we have to wait for? Is there any event-based way we can ensure the required work is done, rather than sleeping? Requiring a sleep in tests is a code smell that tends to lead to flakiness and also slows down tests unnecessarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:611 on 2024-06-19 02:42</div>
+            <div class="timeline-body"><p>Is it important that we re-query the path here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-19 02:49</div>
+            <div class="timeline-body"><p>This is a bit opaque, might be worth a comment (and/or a failed-assertion message?) clarifying what we are asserting (IIUC, that we had to re-run inference on the <code>a</code> root scope?).</p>
+<p>It would be nice to have some helpers so that it is less verbose and complicated to make an assertion like &quot;exactly these scopes had to re-run inference&quot;. I anticipate we'll be doing this in tests a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:583 on 2024-06-19 02:49</div>
+            <div class="timeline-body"><p>Should we also assert on the number of events?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:581 on 2024-06-19 02:50</div>
+            <div class="timeline-body"><p>Why is this method named <code>take_sale_events()</code>? Is it supposed to be <code>take_salsa_events()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:41 on 2024-06-19 02:59</div>
+            <div class="timeline-body"><p>One consequence of storing types per scope is that we may have a lot more duplicated union and intersection types, since we won't be able to de-duplicate per-file, but rather per-scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:131 on 2024-06-19 03:06</div>
+            <div class="timeline-body"><p>I don't think &quot;lower&quot; is good terminology for these methods. &quot;Lower&quot; means to compile something into a lower-level (less abstracted) representation; &quot;lift&quot; is used for compiling something into a more abstracted, higher-level representation. To the extent that either of these terms applies to what we're doing here, I think &quot;lift&quot; would fit better than &quot;lower&quot; -- types are a higher-abstraction view of the code than the AST.</p>
+<p>But I don't think either &quot;lower&quot; or &quot;lift&quot; apply very well here. What about <code>infer_module</code>, <code>infer_class_body</code>, etc.?</p>
+<p>(I should have made this comment on the initial draft PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:190 on 2024-06-19 03:16</div>
+            <div class="timeline-body"><p>Why do all the <code>: _</code> instead of just a single <code>, ..</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:243 on 2024-06-19 03:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // If the class has type parameters, then the class body scope is the first child scope of the type parameter's scope
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:539 on 2024-06-19 03:35</div>
+            <div class="timeline-body"><p>This is missing some important pieces of logic. We don't need to add it right now (in fact I'd rather not, unless we also add tests for it), but if we're going to have this code at all, I'd like to at least have TODOs here for the following:</p>
+<ul>
+<li>symbols in class scopes are never visible from nested scopes, unless they are immediately-nested type param scopes</li>
+<li>we are missing the fallback to builtins scope</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:523 on 2024-06-19 03:35</div>
+            <div class="timeline-body"><p>This TODO seems out of place, since you do have code below that considers nonlocal scopes. We just need more specific TODOs for the missing logic in that code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:696 on 2024-06-19 03:48</div>
+            <div class="timeline-body"><p>What is the benefit of this method returning <code>DefinitionType</code> rather than just <code>Type</code>? All the callers just call <code>into_type()</code> right away; we might as well do the same thing internally and just return <code>Type</code>. <code>Type</code> is already an enum that discriminates unions from other types, why do we need to wrap it in another one?</p>
+<pre><code class="language-suggestion">            self.union_ty(builder.build())
+        } else {
+            first
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:668 on 2024-06-19 03:54</div>
+            <div class="timeline-body"><p>This name seems odd to me because the type here is constructed from all local definitions, not just one, but the name is singular. I think a better name would be <code>symbol_public_ty</code>. And I would like to preserve the comments I wrote about it on <code>infer_symbol_public_type</code> in the previous <code>infer.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:690 on 2024-06-19 04:01</div>
+            <div class="timeline-body"><p>I'm not sure I understand this comment. Is it really just saying we'll only be able to de-duplicate per scope, rather than per-file?</p>
+<p>De-duplication is something that I definitely think we should add, so it would be good to have a TODO comment (or an issue) for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:404 on 2024-06-19 04:12</div>
+            <div class="timeline-body"><p>I guess <code>IntersectionTypeBuilder</code> (with the intersection-flattening logic) will come along with CFG, where intersection types are actually created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:304 on 2024-06-19 04:25</div>
+            <div class="timeline-body"><p>There were some important TODO comments in the previous code that are missing here, about handling unpacking assignment, e.g. <code>x, (y, z) = foo()</code>. This is going to be a bit tricky to handle, since we will need to construct different <code>Definition</code> for all three variables on the LHS, and somehow represent in those Definition the &quot;location&quot; of each var in the unpacking expression; but it can't just be a simple index like for import Definitions.</p>
+<p>If we can now have AST IDs for any node, I wonder if both for imports and for assignments it would be better to keep in the Definition the AST ID of the relevant sub-node (i.e. the Name with Store ctx on the LHS for assignment, and the alias for imports) rather than the outer statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:732 on 2024-06-19 04:27</div>
+            <div class="timeline-body"><p>Can <code>TestDb</code> have a wrapper method so we don't have to always write <code>memory_file_system()</code> here? It seems redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:804 on 2024-06-19 04:34</div>
+            <div class="timeline-body"><p>I'm not sure how this test (and others below) are passing, since we aren't using <code>dedent</code> on this string. Is our parser more forgiving about extra common leading whitespace than CPython's parser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:753 on 2024-06-19 04:35</div>
+            <div class="timeline-body"><p>Per my follow-up comment on the symbol table PR, I'm not convinced by the text-offsets argument, and I'd still rather use <code>dedent</code> in tests (unless we don't need it? see below) instead of this style of indentation for multi-line code in tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 04:40</div>
+            <div class="timeline-body"><p>On the whole, this looks really good to me. A lot of things are cleaner and clearer than in the previous version. I am definitely learning to write better Rust from seeing how you rewrite my code :)</p>
+<p>I think the most concerning comment here (in the sense of &quot;might have significant implications for needing to revisit this architecture&quot;) is the one about cycles and the need to support multiple partially-completed scopes at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/semantic_index/symbol.rs</code>:82 on 2024-06-19 05:37</div>
+            <div class="timeline-body"><p>I renamed them like 5 times and all of them are awkward, either when reading it at the definition or add the usage side.</p>
+<p>For example, I often write</p>
+<pre><code class="language-rust">let symbol = public_symbol_ty(...);
+symbol.symbol_id()
+</code></pre>
+<p>The <code>symbol_id</code> is then just confusing because why do I get the symbol id when I already have one?</p>
+<blockquote>
+<p>(Maybe ScopeSymbolId should rather be ScopedSymbolId?)</p>
+</blockquote>
+<p>Yeah maybe. But should it then be <code>FiledSymbolID</code> :P I think renaming to scoped makes sense regardless of the slight inconsistency but I'll do it as a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:211 on 2024-06-19 05:39</div>
+            <div class="timeline-body"><p>The motivation to add the constraint on the method level is to not leak the <code>LocalTypeId</code>. I initially had it on the <code>impl</code> block level but it requires that the <code>LocalTypeId</code> must be public.</p>
+<p>Uhm. I was sure I renamed all these types to <code>Scope*TypeId</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:431 on 2024-06-19 05:54</div>
+            <div class="timeline-body"><p>From a type type inference point. What's the type of <code>b.B</code> in <code>C</code>'s bases? Is it <code>Unknown</code> or should it be the actual type of <code>B</code>?</p>
+<p>What happens with a cycle today (and I should have mentioned in the summary that I didn't look at cycles) is that Salsa will panic. Salsa's solution to cycles is that a query can define a fallback method that gets called when it finds a cycle to break the cycle. I haven't looked to closely at what we're allowed to do in the cycle resolution. We're probably not allowed to call any queries (or at least, only call queries that we are 100% sure can't create cycles).</p>
+<p>If the type of <code>a.A</code> is <code>Unknown</code>, than I think the cycle resolution is easy. We can just return an empty <code>TypeInference</code> result and change <code>symbol_ty</code>, <code>expression_ty</code> etc. to return <code>Unknown</code> or <code>Unbound</code> if there's no entry in the list.</p>
+<p>If, however, we need to have a more specific type, than this could be challenging indeed. I don't think Salsa gives us a pointer of why and where the cycle occurred and it isn't always as simple as in the given example. A cycle is also possible through many transitive dependencies.</p>
+<p>I'm not sure if we can maintain a stack or similar inside of a Salsa query because Salsa queries are, ideally, idempotent and don't rely on outside information, or it becomes very easy to break the automatic caching.
+One possibility is to have a specific marker type for cases where we encounter cycles. A &quot;Lazy&quot; or similar. I would need to think more about it. But the idea would be to defer the resolution of these types (and nodes) until query time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:566 on 2024-06-19 05:55</div>
+            <div class="timeline-body"><p>There's a comment on the <code>touch</code> implementation that I added after your last comment explaining that this is temporary until we figure out how to model changes. I plan to change it, it's just not the top priority right now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:567 on 2024-06-19 05:55</div>
+            <div class="timeline-body"><p>Oh, good catch. I don't think we need it. This was a desperate try to make the test pass somehow by applying as much force as possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:583 on 2024-06-19 05:56</div>
+            <div class="timeline-body"><p>I don't think it's necessary. Any number larger than 1 would be Salsa bug because it would mean that salsa executed a query more than once without any input changing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-19 05:58</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be nice to have some helpers so that it is less verbose and complicated to make an assertion like &quot;exactly these scopes had to re-run inference&quot;. I anticipate we'll be doing this in tests a lot.</p>
+</blockquote>
+<p>I'm not sure how often we'll write these kinds of tests. Ideally, we only have a few tests for this.</p>
+<p>I think what I would like to have is a nice way of printing the query execution plan from salsa and snapshoting it. It's slightly less explicit but it also has the benefit that adding or removing intermediate query shows how that effects the systems caching and invalidation behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 05:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:611 on 2024-06-19 05:59</div>
+            <div class="timeline-body"><p>Not with Salsa 2022 but it won't compile with Salsa 3.0 if we don't because Salsa won't allow you to hold on to any Salsa values when calling a <code>&amp;mut Db</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:41 on 2024-06-19 06:05</div>
+            <div class="timeline-body"><p>I'm not sure if it will be a lot more, or just some more. We won't duplicate types that we resolve from an other scope or module. We only duplicate the type if both scopes contain code paths joining the same two types.</p>
+<p>I also think that we can work around this with software engineers' favorite trick: one more layer of indirection. We could create a true <code>Interner</code> for types and create one per file and exclude the internet from the <code>Eq</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:190 on 2024-06-19 06:08</div>
+            <div class="timeline-body"><p>The benefit of using <code>: _</code> over <code>..</code> is that it forces you to handle every field explicitly. Either by using it in the code below or explicitly ignoring it by adding a <code>: _</code>.</p>
+<p>The benefit of <code>..</code> is that you don't have to do that.</p>
+<p>My rule of thumb is that if some logic will likely need updating when a new AST field is added, use <code>: _</code>. If the logic concerns only a very specific aspect of the node, use <code>..</code>.</p>
+<p>For type inference I think it's important that Rust forces us to think about how the type inference logic needs updating when adding a new AST field, because most likely it does. That's why I use <code>: _</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:304 on 2024-06-19 06:11</div>
+            <div class="timeline-body"><blockquote>
+<p>If we can now have AST IDs for any node, I wonder if both for imports and for assignments it would be better to keep in the Definition the AST ID of the relevant sub-node (i.e. the Name with Store ctx on the LHS for assignment, and the alias for imports) rather than the outer statement.</p>
+</blockquote>
+<p>Possibly. I think I had this in my prototype PR but then run into issues where I needed to go from <code>AstId</code> -&gt; <code>Node</code> where I would only get the <code>Alias</code> which isn't useful (or at least not useful enough to do type inference) and our AST has no mechanism to do upward traversal. This version no longer needs this functionality. So maybe it's okay to just store the specific target / alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:539 on 2024-06-19 06:13</div>
+            <div class="timeline-body"><blockquote>
+<p>symbols in class scopes are never visible from nested scopes, unless they are immediately-nested type param scopes
+Good point.</p>
+</blockquote>
+<blockquote>
+<p>we are missing the fallback to builtins scope</p>
+</blockquote>
+<p>Maybe, it depends on how we model builtin scopes. Is a builtin scope just a scope that we add to every module and is part of <code>scopes</code>? In that case, builtins would be handled already ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:668 on 2024-06-19 06:14</div>
+            <div class="timeline-body"><p>I don't think this should be <code>symbol_public_ty</code> because it only considers the definitions seen up to this point, not all definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:732 on 2024-06-19 06:16</div>
+            <div class="timeline-body"><p>Possibly. I don't want to change this as part of this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:804 on 2024-06-19 06:16</div>
+            <div class="timeline-body"><p>Yeah, our parser fully recovers from parse errors and we aren't querying the parse errors in these tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:753 on 2024-06-19 06:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not convinced by the text-offsets argument,</p>
+</blockquote>
+<p>Wait until you have to debug some more byte offset errors, but maybe it's different in the type checker context. Debugging byte offsets was something I did frequently when working on the formatter.</p>
+<p>I personally find both about equally ugly because rustfmt can't format them for you. But I'm not sure if I like having <code>dedent</code> calls in all tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 06:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:431 on 2024-06-19 06:23</div>
+            <div class="timeline-body"><p>There should not be any Unknown types in this example.</p>
+<p>There is no cycle here from the point of view of Python execution, or from the point of view of definition granularity. We only create a cycle here by forcing eager scope-at-a-time resolution of all types.</p>
+<p>I think the answer we need here is not related to &quot;how do we handle cycles in Salsa&quot; -- I think in order to achieve good type inference results in real world code bases, we need to improve our granularity so that this case is not a cycle in Salsa at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 06:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-19 06:36</div>
+            <div class="timeline-body"><p>Hmm, I don't like the snapshot approach. I find snapshot tests pretty hard to understand and manage, and way too easy to wrongly update the snapshot without even realizing that it's invalidating the entire point of the test, or rendering the test itself wrong.</p>
+<p>I think it results in better tests if we have nicely abstracted APIs to be used by human-written tests, designed for making very specific and easy to read and understand assertions at a higher level of abstraction about specific conditions that we care about, eg &quot;when we make this change to module y and re-query a type in module z, we don't have to re-infer types in module x&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:583 on 2024-06-19 06:38</div>
+            <div class="timeline-body"><p>Oh, I didn't mean the number of filtered events, I meant the total number, so we'd catch unexpected changes there. But on second thought I don't think this is a good idea, it's too broad and opaque and easily changed by refactors to our queries that don't actually break invariants we care about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:668 on 2024-06-19 06:45</div>
+            <div class="timeline-body"><p>Ah good point, I missed that subtlety. In that case this all needs to change with control flow support anyway, so don't worry about what it's called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 06:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:753 on 2024-06-19 06:48</div>
+            <div class="timeline-body"><p>I wouldn't want dedent calls in every test. I'd want helpers for writing file contents in tests with less boilerplate, which would also call dedent on the given source.</p>
+<p>And yeah, I think caring about byte offsets will be a lot less common in these tests than in parser or formatter tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 06:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-19 06:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it results in better tests if we have nicely abstracted APIs to be used by human-written tests</p>
+</blockquote>
+<p>I like that too but I struggled designing this with all the generics involved with Salsa. We might be able to come up with a macro. Anyway, I don't think that's something we need solving now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-19 07:07</div>
+            <div class="timeline-body"><p>You might think differnetly of snapshot tests if the query execution plan is a nice mermaid flow chart ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:431 on 2024-06-19 07:27</div>
+            <div class="timeline-body"><p>I spent some more time reading about Salsa's cycle recovery and yes, I think we can't depend on it.</p>
+<p>What I understand from the documentation is that Salsa aborts one query in the cycle and replaces it with a fallback value. In our case that would mean that an entire module doesn't get type checked.</p>
+<p>https://salsa-rs.github.io/salsa/cycles/fallback.html</p>
+<p>So we have to design type inference in a way that prevents cycles all together or using the fallback type in these cases is &quot;fine&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-19 07:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:131 on 2024-06-19 07:31</div>
+            <div class="timeline-body"><p>I don't mind using <code>infer</code> but do think that <code>lower</code> is a valid term, rust analyzer uses it too. You lower from one representation into another and seems to be used widely in the rust ecosystem</p>
+<p>https://github.com/rust-diplomat/diplomat/issues/252</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:131 on 2024-06-19 19:11</div>
+            <div class="timeline-body"><p>It's certainly a valid and used term, it's just that it implies moving to a lower level of abstraction (typically in a compiler it means a step closer to assembly). What representations are at a &quot;lower&quot; or &quot;higher&quot; level of abstraction is of course somewhat subjective, especially when we aren't compiling to machine code at all, but I don't think that in our case here types are lower-level than AST. Whether HIR in r-a is &quot;lower level&quot; than AST I'm not sure, though my impression is that HIR is an abstraction over AST, so I think that usage is kind of questionable as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-19 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:539 on 2024-06-19 19:15</div>
+            <div class="timeline-body"><p>Yeah, good point, that way of handling builtin scope might work out fine. Though it would save a bit of memory to just special-case it in lookup instead of adding an extra entry to every scopes array that is always the same. (Similar to the discussion of which way to handle <code>Definition::Unbound</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-20 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:539 on 2024-06-20 07:13</div>
+            <div class="timeline-body"><p>Possibly, but not necessarily if we could e.g. <code>Arc</code> it somehow. But this is a design space to explore later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-20 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types.rs</code>:587 on 2024-06-20 10:03</div>
+            <div class="timeline-body"><p>So much pain</p>
+<pre><code class="language-rust">pub(crate) fn assert_will_run_function_query&lt;C, Db, Jar&gt;(
+        db: &amp;Db,
+        to_function: impl FnOnce(&amp;C) -&gt; &amp;salsa::function::FunctionIngredient&lt;C&gt;,
+        key: C::Key,
+        events: &amp;[salsa::Event],
+    ) where
+        C: salsa::function::Configuration&lt;Jar = Jar&gt;
+            + salsa::storage::IngredientsFor&lt;Jar = Jar, Ingredients = C&gt;,
+        Jar: HasIngredientsFor&lt;C&gt;,
+        Db: salsa::DbWithJar&lt;Jar&gt;,
+        C::Key: AsId,
+    {
+        will_run_function_query(db, to_function, key, events, true);
+    }
+
+    pub(crate) fn assert_will_not_run_function_query&lt;C, Db, Jar&gt;(
+        db: &amp;Db,
+        to_function: impl FnOnce(&amp;C) -&gt; &amp;salsa::function::FunctionIngredient&lt;C&gt;,
+        key: C::Key,
+        events: &amp;[salsa::Event],
+    ) where
+        C: salsa::function::Configuration&lt;Jar = Jar&gt;
+            + salsa::storage::IngredientsFor&lt;Jar = Jar, Ingredients = C&gt;,
+        Jar: HasIngredientsFor&lt;C&gt;,
+        Db: salsa::DbWithJar&lt;Jar&gt;,
+        C::Key: AsId,
+    {
+        will_run_function_query(db, to_function, key, events, false);
+    }
+
+    fn will_run_function_query&lt;C, Db, Jar&gt;(
+        db: &amp;Db,
+        to_function: impl FnOnce(&amp;C) -&gt; &amp;salsa::function::FunctionIngredient&lt;C&gt;,
+        key: C::Key,
+        events: &amp;[salsa::Event],
+        should_run: bool,
+    ) where
+        C: salsa::function::Configuration&lt;Jar = Jar&gt;
+            + salsa::storage::IngredientsFor&lt;Jar = Jar, Ingredients = C&gt;,
+        Jar: HasIngredientsFor&lt;C&gt;,
+        Db: salsa::DbWithJar&lt;Jar&gt;,
+        C::Key: AsId,
+    {
+        let (jar, _) =
+            &lt;_ as salsa::storage::HasJar&lt;&lt;C as salsa::storage::IngredientsFor&gt;::Jar&gt;&gt;::jar(db);
+        let ingredient = jar.ingredient();
+
+        let function_ingredient = to_function(ingredient);
+
+        let ingredient_index =
+            &lt;salsa::function::FunctionIngredient&lt;C&gt; as Ingredient&lt;Db&gt;&gt;::ingredient_index(
+                function_ingredient,
+            );
+
+        let did_run = events.iter().any(|event| {
+            if let salsa::EventKind::WillExecute { database_key } = event.kind {
+                database_key.ingredient_index() == ingredient_index
+                    &amp;&amp; database_key.key_index() == key.as_id()
+            } else {
+                false
+            }
+        });
+
+        if should_run &amp;&amp; !did_run {
+            panic!(
+                &quot;Expected query {:?} to run but it didn't&quot;,
+                DebugIdx {
+                    db: PhantomData::&lt;Db&gt;,
+                    value_id: key.as_id(),
+                    ingredient: function_ingredient,
+                }
+            );
+        } else if !should_run &amp;&amp; did_run {
+            panic!(
+                &quot;Expected query {:?} not to run but it did&quot;,
+                DebugIdx {
+                    db: PhantomData::&lt;Db&gt;,
+                    value_id: key.as_id(),
+                    ingredient: function_ingredient,
+                }
+            );
+        }
+    }
+
+    struct DebugIdx&lt;'a, I, Db&gt;
+    where
+        I: Ingredient&lt;Db&gt;,
+    {
+        value_id: salsa::Id,
+        ingredient: &amp;'a I,
+        db: PhantomData&lt;Db&gt;,
+    }
+
+    impl&lt;'a, I, Db&gt; std::fmt::Debug for DebugIdx&lt;'a, I, Db&gt;
+    where
+        I: Ingredient&lt;Db&gt;,
+    {
+        fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+            self.ingredient.fmt_index(Some(self.value_id), f)
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-20 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/red_knot/types/infer.rs</code>:696 on 2024-06-20 10:34</div>
+            <div class="timeline-body"><p>Hmm, not sure. I introduced it to work around a mutability issue where I needed to infer the type of a definition in a context where I also needed to borrow other data from <code>&amp;self</code>. Returning this intermediate type allowed rust to prove that <code>into_ty</code> didn't mutate the same data as that I was borrowing. However, this doesn't seem necessary anymore.</p>
+<p>I'll remove it for now, but I suspect that you'll need it again when working on the control flow graph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-20 10:43</div>
+            <div class="timeline-body"><p>I haven't yet found a solution for the cyclic import problem but Carl and I discussed that we don't think that this should block this PR. It seems there are a few different solutions to it, but they all require extending Salsa's functionality. See https://salsa.zulipchat.com/#narrow/stream/145099-general/topic/Handling.20cyclic.20imports</p>
+<p>Let's solve the <code>dedent</code> and testing functionality problem separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot [salsa part 8]: Types without refinements" to "red-knot(Salsa): Types without refinements" by @MichaReiser on 2024-06-20 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-20 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-20 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-20 10:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

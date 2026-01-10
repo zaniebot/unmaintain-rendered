@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge maps when combining options - astral-sh/ruff #9927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Merge maps when combining options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9927">#9927</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-11 03:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 03:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a user provides a value via a sub-table in a configuration file, we should combine that table when extending, rather than overwriting it.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/9872.</p>
+<h2>Test Plan</h2>
+<p>Creating a directory following the structure in #9872. Verified that <code>--show-settings</code> showed the custom section as a known package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-11 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-02-11 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-11 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 03:32</div>
+            <div class="timeline-body"><p>Adding a test...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-11 03:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/combine_options.rs</code>:53 on 2024-02-11 09:20</div>
+            <div class="timeline-body"><p>I prefer &quot;dumb&quot; derive macros that, ideally, call a trait method rather than that they contain the entire implementation.</p>
+<p>This is achievable for <code>CombinePluginOptions</code>, although it requires more boilerplate code.</p>
+<p><code>handle_field</code> in macro:</p>
+<pre><code class="language-rust">    Ok(quote_spanned!(
+        ident.span() =&gt; #ident: crate::configuration::CombinePluginOptions::combine(self.#ident, other.#ident)
+    ))
+</code></pre>
+<p>next to <code>CombinePluginOptions</code></p>
+<pre><code>macro_rules! or_combine_plugin_impl {
+    ($ty:ident) =&gt; {
+        impl CombinePluginOptions for Option&lt;$ty&gt; {
+            #[inline]
+            fn combine(self, other: Self) -&gt; Self {
+                self.or(other)
+            }
+        }
+    };
+}
+
+or_combine_plugin_impl!(bool);
+or_combine_plugin_impl!(u8);
+or_combine_plugin_impl!(u16);
+or_combine_plugin_impl!(u32);
+or_combine_plugin_impl!(u64);
+or_combine_plugin_impl!(usize);
+or_combine_plugin_impl!(i8);
+or_combine_plugin_impl!(i16);
+or_combine_plugin_impl!(i32);
+or_combine_plugin_impl!(i64);
+or_combine_plugin_impl!(isize);
+or_combine_plugin_impl!(String);
+
+impl&lt;T: CombinePluginOptions&gt; CombinePluginOptions for Option&lt;T&gt; {
+    fn combine(self, other: Self) -&gt; Self {
+        match (self, other) {
+            (Some(base), Some(other)) =&gt; Some(base.combine(other)),
+            (Some(base), None) =&gt; Some(base),
+            (None, Some(other)) =&gt; Some(other),
+            (None, None) =&gt; None,
+        }
+    }
+}
+
+impl&lt;T&gt; CombinePluginOptions for Option&lt;Vec&lt;T&gt;&gt; {
+    fn combine(self, other: Self) -&gt; Self {
+        self.or(other)
+    }
+}
+
+impl&lt;T, S&gt; CombinePluginOptions for Option&lt;HashSet&lt;T, S&gt;&gt; {
+    fn combine(self, other: Self) -&gt; Self {
+        self.or(other)
+    }
+}
+
+impl&lt;K, V, S&gt; CombinePluginOptions for HashMap&lt;K, V, S&gt;
+where
+    K: Eq + Hash,
+    S: BuildHasher,
+{
+    fn combine(mut self, other: Self) -&gt; Self {
+        self.extend(other);
+        self
+    }
+}
+
+or_combine_plugin_impl!(ParametrizeNameType);
+or_combine_plugin_impl!(ParametrizeValuesType);
+or_combine_plugin_impl!(ParametrizeValuesRowType);
+or_combine_plugin_impl!(Quote);
+or_combine_plugin_impl!(Strictness);
+or_combine_plugin_impl!(RelativeImportsOrder);
+or_combine_plugin_impl!(LineLength);
+or_combine_plugin_impl!(Convention);
+or_combine_plugin_impl!(IndentStyle);
+or_combine_plugin_impl!(QuoteStyle);
+or_combine_plugin_impl!(LineEnding);
+or_combine_plugin_impl!(DocstringCodeLineWidth);
+</code></pre>
+<p>We could avoid all the boilerplate if Rust supported specialization...  (it would boil down to <code>impl&lt;T&gt; CombinePluginOptions for Option&lt;T&gt;</code> and one specialization <code>impl&lt;T: CombinePluginOptions&gt; for Option&lt;T&gt;</code>). Maybe @BurntSushi knows a better way to avoid some of the boilerplate.</p>
+<p>The advantage of being explicit about how <code>CombinePluginOptions</code> is implemented is that we can have custom implementations (like for HashMap) or even other types we don't know yet. It also ensures that we explicitly consider how <code>Option&lt;T&gt;</code> should be merged rather than assuming <code>Option::or</code> is the right choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-11 09:21</div>
+            <div class="timeline-body"><p>This is one of those bug fixes that are, theoretically, a breaking change 😟</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-11 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_macros/src/combine_options.rs</code>:53 on 2024-02-11 15:21</div>
+            <div class="timeline-body"><p>Sounds good, I can do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 15:53</div>
+            <div class="timeline-body"><p>Yeah. I think this behavior is more intuitive when you consider how TOML is structured, but it also means there's now no way to &quot;unset&quot; values in a map when extending.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-12 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_macros/src/combine_options.rs</code>:53 on 2024-02-12 13:06</div>
+            <div class="timeline-body"><p>Yeah I like @MichaReiser's approach here.</p>
+<blockquote>
+<p>We could avoid all the boilerplate if Rust supported specialization... (it would boil down to <code>impl&lt;T&gt; CombinePluginOptions for Option&lt;T&gt;</code> and one specialization <code>impl&lt;T: CombinePluginOptions&gt; for Option&lt;T&gt;</code>). Maybe @BurntSushi knows a better way to avoid some of the boilerplate.</p>
+</blockquote>
+<p>Nothing is really coming to me here. And <a href="https://github.com/rust-lang/rust/issues/31844">specialization is unfortunately probably not going to land any time soon</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-02-13 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah. I think this behavior is more intuitive when you consider how TOML is structured, but it also means there's now no way to &quot;unset&quot; values in a map when extending.</p>
+</blockquote>
+<p>You should still be able to &quot;unset&quot; by explicitly writing the extended value and setting it to a null value, perhaps. The issue would be that there isn't (I am not aware of) a &quot;universal safe value&quot;. I think TOML explicitly doesn't like or expects to handle empty/null/nil values.</p>
+<p>I think an explicit unset could still be expressed by:
+./.ruff.toml:</p>
+<blockquote>
+<p>[sometag]
+a = &quot;a&quot;</p>
+</blockquote>
+<p>./subdir/.ruff.toml:</p>
+<blockquote>
+<p>extend &quot;../ruff.toml&quot;
+[sometag]
+a = {}</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-14 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/combine_options.rs</code>:53 on 2024-02-14 14:38</div>
+            <div class="timeline-body"><p>I applied the changes for you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2024-02-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @charliermarsh on 2024-02-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.3.0" by @MichaReiser on 2024-02-29 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.4" by @MichaReiser on 2024-02-29 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-06 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-06 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2024-03-08 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-03-08 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.4.0" by @dhruvmanila on 2024-04-18 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @dhruvmanila on 2024-04-18 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 08:32</div>
+            <div class="timeline-body"><p>To confirm the behavior change. We'll now start merging the following options:</p>
+<ul>
+<li><code>per_file_ignores</code></li>
+<li><code>extend-per-file-ignores</code> (Do we still need the <code>extend</code>?)</li>
+<li><code>flake8_import_convention_options.aliases</code></li>
+<li><code>flake8_import_convention_options.extend_aliases</code></li>
+<li><code>flake8_import_convention_options.banned_aliases</code></li>
+<li><code>flake8_import_convention_options.banned_from</code></li>
+<li><code>flake8_tidy_imports.banned_api</code></li>
+<li><code>isort.sections</code></li>
+</ul>
+<p>I'm not sure whether the new behavior is correct for all settings, or at least it becomes less clear why we would still need the <code>extend-</code> options when &quot;extending&quot; becomes the new default for tables.</p>
+<p>The new <code>CombineOptions</code> allows us to use different merging behaviors for different settings, but I'm worried this will be confusing.</p>
+<p>This makes me hesitant to merge this change. @charliermarsh what are your thoughts on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-06-25 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 08:11</div>
+            <div class="timeline-body"><p>I don't feel confident that this is the right solution to justify a breaking change because it doesn't play nice with Ruff's <code>extend</code> semantics. We need to holistically rethink the semantics of extending configurations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-26 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

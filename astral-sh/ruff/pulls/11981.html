@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Add `assert-with-print-message` rule (#11974) - astral-sh/ruff #11981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Add <code>assert-with-print-message</code> rule (#11974)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11981">#11981</a>
+        opened by <a href="https://github.com/denwong47">@denwong47</a>
+        on 2024-06-22 12:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/denwong47">@denwong47</a> on 2024-06-22 12:22</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Addresses #11974 to add a <code>RUF</code> rule to replace <code>print</code> expressions in <code>assert</code> statements with the inner message.</p>
+<p>An autofix is available, but is considered unsafe as it changes behaviour of the execution, notably:</p>
+<ul>
+<li>removal of the printout in <code>stdout</code>, and</li>
+<li><code>AssertionError</code> instance containing a different message.</li>
+</ul>
+<p>While the detection of the condition is a straightforward matter, deciding how to resolve the print arguments into a string literal can be a relatively subjective matter. The implementation of this PR chooses to be as tolerant as possible, and will attempt to reformat any number of <code>print</code> arguments containing single or concatenated strings or variables into either a string literal, or a f-string if any variables or placeholders are detected.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>.</p>
+<h2>Examples</h2>
+<p>For ease of discussion, this is the diff for the tests:</p>
+<pre><code class="language-diff"> # Standard Case
+ # Expects:
+ # - single StringLiteral
+-assert True, print(&quot;This print is not intentional.&quot;)
++assert True, &quot;This print is not intentional.&quot;
+ 
+ # Concatenated string literals
+ # Expects:
+ # - single StringLiteral
+-assert True, print(&quot;This print&quot; &quot; is not intentional.&quot;)
++assert True, &quot;This print is not intentional.&quot;
+ 
+ # Positional arguments, string literals
+ # Expects:
+ # - single StringLiteral concatenated with &quot; &quot;
+-assert True, print(&quot;This print&quot;, &quot;is not intentional&quot;)
++assert True, &quot;This print is not intentional&quot;
+ 
+ # Concatenated string literals combined with Positional arguments
+ # Expects:
+ # - single stringliteral concatenated with &quot; &quot; only between `print` and `is`
+-assert True, print(&quot;This &quot; &quot;print&quot;, &quot;is not intentional.&quot;)
++assert True, &quot;This print is not intentional.&quot;
+ 
+ # Positional arguments, string literals with a variable
+ # Expects:
+ # - single FString concatenated with &quot; &quot;
+-assert True, print(&quot;This&quot;, print.__name__, &quot;is not intentional.&quot;)
++assert True, f&quot;This {print.__name__} is not intentional.&quot;
+
+ # Mixed brackets string literals
+ # Expects:
+ # - single StringLiteral concatenated with &quot; &quot;
+-assert True, print(&quot;This print&quot;, 'is not intentional', &quot;&quot;&quot;and should be removed&quot;&quot;&quot;)
++assert True, &quot;This print is not intentional and should be removed&quot;
+ 
+ # Mixed brackets with other brackets inside
+ # Expects:
+ # - single StringLiteral concatenated with &quot; &quot; and escaped brackets
+-assert True, print(&quot;This print&quot;, 'is not &quot;intentional&quot;', &quot;&quot;&quot;and &quot;should&quot; be 'removed'&quot;&quot;&quot;)
++assert True, &quot;This print is not \&quot;intentional\&quot; and \&quot;should\&quot; be 'removed'&quot;
+ 
+ # Positional arguments, string literals with a separator
+ # Expects:
+ # - single StringLiteral concatenated with &quot;|&quot;
+-assert True, print(&quot;This print&quot;, &quot;is not intentional&quot;, sep=&quot;|&quot;)
++assert True, &quot;This print|is not intentional&quot;
+ 
+ # Positional arguments, string literals with None as separator
+ # Expects:
+ # - single StringLiteral concatenated with &quot; &quot;
+-assert True, print(&quot;This print&quot;, &quot;is not intentional&quot;, sep=None)
++assert True, &quot;This print is not intentional&quot;
+ 
+ # Positional arguments, string literals with variable as separator, needs f-string
+ # Expects:
+ # - single FString concatenated with &quot;{U00A0}&quot;
+-assert True, print(&quot;This print&quot;, &quot;is not intentional&quot;, sep=U00A0)
++assert True, f&quot;This print{U00A0}is not intentional&quot;
+ 
+ # Unnecessary f-string
+ # Expects:
+ # - single StringLiteral
+-assert True, print(f&quot;This f-string is just a literal.&quot;)
++assert True, &quot;This f-string is just a literal.&quot;
+ 
+ # Positional arguments, string literals and f-strings
+ # Expects:
+ # - single FString concatenated with &quot; &quot;
+-assert True, print(&quot;This print&quot;, f&quot;is not {'intentional':s}&quot;)
++assert True, f&quot;This print is not {'intentional':s}&quot;
+ 
+ # Positional arguments, string literals and f-strings with a separator
+ # Expects:
+ # - single FString concatenated with &quot;|&quot;
+-assert True, print(&quot;This print&quot;, f&quot;is not {'intentional':s}&quot;, sep=&quot;|&quot;)
++assert True, f&quot;This print|is not {'intentional':s}&quot;
+ 
+ # A single f-string
+ # Expects:
+ # - single FString
+-assert True, print(f&quot;This print is not {'intentional':s}&quot;)
++assert True, f&quot;This print is not {'intentional':s}&quot;
+ 
+ # A single f-string with a redundant separator
+ # Expects:
+ # - single FString
+-assert True, print(f&quot;This print is not {'intentional':s}&quot;, sep=&quot;|&quot;)
++assert True, f&quot;This print is not {'intentional':s}&quot;
+ 
+ # Complex f-string with variable as separator
+ # Expects:
+ # - single FString concatenated with &quot;{U00A0}&quot;, all placeholders preserved
+ condition = &quot;True is True&quot;
+ maintainer = &quot;John Doe&quot;
+-assert True, print(&quot;Unreachable due to&quot;, condition, f&quot;, ask {maintainer} for advice&quot;, sep=U00A0)
++assert True, f&quot;Unreachable due to{U00A0}{condition}{U00A0}, ask {maintainer} for advice&quot;
+ 
+ # Empty print
+ # Expects:
+ # - `msg` entirely removed from assertion
+-assert True, print()
++assert True
+ 
+ # Empty print with separator
+ # Expects:
+ # - `msg` entirely removed from assertion
+-assert True, print(sep=&quot; &quot;)
++assert True
+ 
+ # Custom print function that actually returns a string
+ # Expects:
+@@ -100,4 +100,4 @@
+ # Use of `builtins.print`
+ # Expects:
+ # - single StringLiteral
+-assert True, builtins.print(&quot;This print should be removed.&quot;)
++assert True, &quot;This print should be removed.&quot;
+</code></pre>
+<h2>Known Issues</h2>
+<p>The current implementation resolves all arguments and separators of the <code>print</code> expression into a single string, be it <code>StringLiteralValue::single</code> or a <code>FStringValue::single</code>. This:</p>
+<ul>
+<li>potentially joins together strings well beyond the ideal character limit for each line, and</li>
+<li>does not preserve multi-line strings in their original format, in favour of a single line <code>&quot;...\n...\n...&quot;</code> format.</li>
+</ul>
+<p>These are purely formatting issues only occurring in unusual scenarios.</p>
+<p>Additionally, the autofix will tolerate <code>print</code> calls that were previously invalid:</p>
+<pre><code class="language-python">assert True, print(&quot;this&quot;, &quot;should not be allowed&quot;, sep=42)
+</code></pre>
+<p>This will be transformed into</p>
+<pre><code class="language-python">assert True, f&quot;this{42}should not be allowed&quot;
+</code></pre>
+<p>which some could argue is an alteration of behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Add `assert-with-print-expression` flag (#11974)" to "[`ruff`] Add `assert-with-print-expression` rule (#11974)" by @denwong47 on 2024-06-22 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-06-23 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-23 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-23 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 15:01</div>
+            <div class="timeline-body"><p>Thanks! I will review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-23 16:44</div>
+            <div class="timeline-body"><p>This is excellent work, nicely done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-23 16:48</div>
+            <div class="timeline-body"><p>I think I would rename the rule to <code>assert-with-print-message</code>, it's otherwise unclear if it also captures <code>assert print(&quot;test&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 16:50</div>
+            <div class="timeline-body"><p>Makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-23 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-23 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-23 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Add `assert-with-print-expression` rule (#11974)" to "[`ruff`] Add `assert-with-print-message` rule (#11974)" by @MichaReiser on 2024-06-23 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-06-23 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-23 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

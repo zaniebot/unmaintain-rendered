@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `--config` and `--isolated` global flags - astral-sh/ruff #10150</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>--config</code> and <code>--isolated</code> global flags</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10150">#10150</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-02-28 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-28 13:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #9892.</p>
+<p>This PR makes <code>--config</code> and <code>--isolated</code> global flags that are accepted by all ruff subcommands: ruff will no longer error out if a redundant <code>--config</code> argument is passed to a command such as <code>ruff version</code> or <code>ruff rule</code>. The flag has no effect for subcommands that do not need it (but it is still validated).</p>
+<h2>Test Plan</h2>
+<p>There were no tests for <code>ruff version</code>, so I added them as part of this PR, and used the new tests to assert that the <code>--config</code> flag is now accepted by <code>ruff version</code>. I also manually tested to check things were working as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/lib.rs</code>:32 on 2024-02-28 13:09</div>
+            <div class="timeline-body"><p>I made this change as I couldn't otherwise figure out how to access functions from the <code>version</code> module in <code>crates/ruff/tests/version.rs</code>. But this might be a Rust newbie thing 🙃. Lmk if there's a better solution here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/version.rs</code>:74 on 2024-02-28 13:11</div>
+            <div class="timeline-body"><p>I would duplicate this information in the test instead of making the module public. Especially beause the <code>version_string</code> function isn't used in the implementation code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/version.rs</code>:75 on 2024-02-28 13:13</div>
+            <div class="timeline-body"><p>I would prefer using <code>filters</code> in the test over making this function and the entire module public.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/version.rs</code>:74 on 2024-02-28 13:17</div>
+            <div class="timeline-body"><p>I wondered about doing this (diff is relative to this PR branch):</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/version.rs b/crates/ruff/src/version.rs
+index 6de4b2534..194dd62c7 100644
+--- a/crates/ruff/src/version.rs
++++ b/crates/ruff/src/version.rs
+@@ -14,7 +14,7 @@ pub(crate) struct CommitInfo {
+ 
+ /// Ruff's version.
+ #[derive(Serialize)]
+-pub(crate) struct VersionInfo {
++pub struct VersionInfo {
+     /// Ruff's version, such as &quot;0.5.1&quot;
+     version: String,
+     /// Information about the git commit we may have been built from.
+@@ -40,7 +40,7 @@ impl fmt::Display for VersionInfo {
+ }
+ 
+ /// Returns information about Ruff's version.
+-pub(crate) fn version() -&gt; VersionInfo {
++pub fn version() -&gt; VersionInfo {
+     // Environment variables are only read at compile-time
+     macro_rules! option_env_str {
+         ($name:expr) =&gt; {
+@@ -68,11 +68,6 @@ pub(crate) fn version() -&gt; VersionInfo {
+     }
+ }
+ 
+-/// Used for testing the --version command
+-pub fn version_string() -&gt; String {
+-    format!(&quot;{}&quot;, version())
+-}
+-
+ #[cfg(test)]
+ mod tests {
+     use insta::{assert_display_snapshot, assert_json_snapshot};
+diff --git a/crates/ruff/tests/version.rs b/crates/ruff/tests/version.rs
+index 69e8ea1ca..360747722 100644
+--- a/crates/ruff/tests/version.rs
++++ b/crates/ruff/tests/version.rs
+@@ -7,10 +7,12 @@ use insta_cmd::{assert_cmd_snapshot, get_cargo_bin};
+ use regex::escape;
+ use tempfile::TempDir;
+ 
+-use ruff::version::version_string;
+-
+ const BIN_NAME: &amp;str = &quot;ruff&quot;;
+ 
++fn version_string() -&gt; String {
++    format!(&quot;{}&quot;, ruff::version::version())
++}
++
+ #[test]
+</code></pre>
+<p>But that actually exposes more of the module publicly rather than less (which is why I went with what I have currently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:49 on 2024-02-28 13:20</div>
+            <div class="timeline-body"><p>What does <code>global</code> do? Is it necessary considering that it is defined at the top level arguments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:70 on 2024-02-28 13:21</div>
+            <div class="timeline-body"><p>I don't have a good suggestion. <code>ArgGroup</code> could be what we want but I'm not sure.</p>
+<p>What I'm thinking is that it would be nice to group the global settings (potentially even with a different header that these are global options). The benefit of grouping the arguments in a struct is that we could pass them around as a single argument instead of passing each value separately (doesn't scale well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-28 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/configuration.md</code>:595 on 2024-02-28 13:22</div>
+            <div class="timeline-body"><p>It feels a bit strange that <code>--isolated</code> is in <code>Miscellaneous</code> and <code>--config</code> is not. I think I would move <code>--config</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/version.rs</code>:74 on 2024-02-28 13:24</div>
+            <div class="timeline-body"><p>Sorry yeah, see my other comment (I deleted it but didn't realise that I submitted it right away). I recommend using filters here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/version.rs</code>:75 on 2024-02-28 13:24</div>
+            <div class="timeline-body"><p>Good point, I can probably just use a regex in the filter rather than <code>re.escap</code>ing the exact version in the filter... thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-28 13:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:49 on 2024-02-28 13:29</div>
+            <div class="timeline-body"><p>It's necessary, yes -- without <code>global = true</code>, <code>--config</code> would only be accepted as a flag for the <em>top-level</em> command (just <code>ruff</code>). With <code>global = true</code>, it's accepted for all subcommands as well as the top-level command: <code>ruff check</code>, <code>ruff format</code>, <code>ruff rule</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/version.rs</code>:11 on 2024-02-28 13:44</div>
+            <div class="timeline-body"><p>Possibly this regex is a little overboard 😆 I'd be okay with going with something a little more vague if you prefer, e.g.</p>
+<pre><code class="language-suggestion">    r&quot;\d+\.\d+\.\d+.*&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:49 on 2024-02-28 13:55</div>
+            <div class="timeline-body"><p>That makes sense. Thanks for explaining</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-02-28 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/version.rs</code>:11 on 2024-02-28 16:04</div>
+            <div class="timeline-body"><p>I don't have a strong preference. I prefer simple regex because I can't read regex expressions but 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-28 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:70 on 2024-02-28 16:45</div>
+            <div class="timeline-body"><p>I had a go at creating a struct to group them altogether in https://github.com/astral-sh/ruff/pull/10150/commits/664beb42ddd54d1976aafad41fe9b71a6c3d03fb, but I'm not sure... it's hard in particular to think of a good name for the struct. The word &quot;config/configuration&quot; is getting quite overloaded...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-02-28 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/configuration.md</code>:543 on 2024-02-29 10:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Global options:
+</code></pre>
+<p>To align with <code>Options</code> (it's not Configuration options)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-29 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:23</div>
+            <div class="timeline-body"><p>Uh, <code>clap</code> supports <code>flatten</code>. Can we use</p>
+<pre><code>    #[clap(flatten)]
+    global: GlobalConfigArgs
+</code></pre>
+<p>The <code>GlobalConfigArgs</code> then also fits better into the naming convention where clap parses into <code>*Args</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-29 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:569 on 2024-02-29 12:27</div>
+            <div class="timeline-body"><p><code>pub(crate)</code> should be sufficient</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-29 12:28</div>
+            <div class="timeline-body"><p>Improvements that we could make that are unrelated to your change but could improve readability (as separate PRs):</p>
+<ul>
+<li>Rename <code>HelpFormat</code> to <code>OutputFormat</code>.</li>
+<li>Move <code>ConfigArguments</code> next to <code>FormatArguments</code> and <code>CheckArguments</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:32</div>
+            <div class="timeline-body"><p>What's the relation between <code>log_level</code> and <code>Args::log_level_args</code>. How do we ensure that the two are in sync?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-29 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-29 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:46</div>
+            <div class="timeline-body"><p><code>log_level_args</code> is an instance of the <code>LogLevelArgs</code> struct that contains information about the various logging-related flags the user may or may not have passed on the CLI.</p>
+<p><code>log_level</code> is a variant of the <code>LogLevel</code> enum: the flags have now been parsed internally so that we now know what logging level to apply henceforth.</p>
+<p>The <code>LogLevelArgs</code> struct is parsed into a <code>LogLevel</code> variant in <code>Args::partition()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-29 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:50</div>
+            <div class="timeline-body"><p>I'll have a play with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-29 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:51</div>
+            <div class="timeline-body"><p>it's quite nice to eagerly parse <code>LogLevelArgs</code> into more structured data, as I'm doing now, but I think that might be trickier if we use <code>flatten</code> like you suggest in https://github.com/astral-sh/ruff/pull/10150#discussion_r1507492780</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-29 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:55</div>
+            <div class="timeline-body"><p>Oh I see, <code>Args</code>  has a <code>partition</code> too and <code>GlobalConfigArgs</code> (as of today) is not really a <code>Args</code> but more an <code>Arguments</code> (it's not populated by clap).</p>
+<p>I think we can make <code>log_level</code> a function on <code>GlobalConfigArgs</code> and inline <code>LogLevelArgs</code> into <code>GlobalConfigArgs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-29 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:35 on 2024-02-29 12:57</div>
+            <div class="timeline-body"><p>Ahh that sounds like a nice solution. I'll try it after lunch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-29 14:58</div>
+            <div class="timeline-body"><p>Alright, ready for another look, I think 😅 the implementation now uses <code>clap(flatten)</code>, as you suggested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-02-29 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:67 on 2024-02-29 18:31</div>
+            <div class="timeline-body"><p>Nit: Can we derive default instead? Or use setters for the optional values? Or do we have call sites that need to set all values?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-04 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-04 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-04 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-04 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-01 10:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

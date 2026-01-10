@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: Port module resolver to salsa - astral-sh/ruff #11835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: Port module resolver to salsa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11835">#11835</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-11 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-11 12:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ports the module (<em>not</em> memory) resolver from red-knot to Salsa and moves it into <code>ruff_python_semantic</code>. Using Salsa requires us to use some <code>Vfs</code> methods instead of calling <code>path.exists</code>. In return, Salsa gives us automatic invalidation of the resolved modules when the file status in <code>Vfs</code> change (e.g. a file gets deleted or is added).</p>
+<p>I had to add new functionality to <code>FileSystemPath</code> and <code>FileSystem</code> to implement the module resolver.</p>
+<h2>Open question</h2>
+<ul>
+<li>Should we rename the Rust module <code>module</code> to <code>module_resolver</code>? Currently <code>module</code> contains the generic <code>Module</code> definition and <code>module/resolver</code> the resolver implementation. The reason why I'm inclined to move everything under <code>module_resolver</code> is that what's now defined as <code>Module</code> is only a <code>Module</code> in the sense of module resolution. It doesn't represent a module at runtime or the <code>ModuleType</code>.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I ported all existing tests and added new tests that verify the invalidation logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:84 on 2024-06-11 12:43</div>
+            <div class="timeline-body"><p>I converted the examples to doctests and found bugs in both <code>parent</code> and <code>starts_with</code> :hand_over_mouth:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:212 on 2024-06-11 12:44</div>
+            <div class="timeline-body"><p>What's different to the non-salsa version is that I removed <code>ModulePath</code> and instead made <code>search_path</code> and <code>file</code> (used to be called <code>path</code>) direct members of <code>Module</code>. It makes the API somewhat easier to use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:303 on 2024-06-11 12:45</div>
+            <div class="timeline-body"><p>This now stores a <code>VfsPath</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:138 on 2024-06-11 12:47</div>
+            <div class="timeline-body"><p>I moved the field documentations to the fields and I renamed the structs. Otherwise unchanged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:229 on 2024-06-11 12:48</div>
+            <div class="timeline-body"><p>I expect that this will become a salsa-query long term where it internally queries the settings to resolve the typeshed paths. For now, a single function to prepare for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:258 on 2024-06-11 12:50</div>
+            <div class="timeline-body"><p>The <code>file.exists()</code> check now becomes a simple call that tries to resolve the <code>VfsFile</code> for the path. If that fails, then the file doesn't exist (or isn't accessible). The benefit of this is that this operation at the same time expresses that resolving <code>name</code> depends on whether <code>stub</code> exists and salsa will rerun the query if the <code>stub.status</code> changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:376 on 2024-06-11 12:51</div>
+            <div class="timeline-body"><p>The tests are mostly 1:1 ports with the exception of the symlink test where we no longer tread symlinks as the same module as discussed on discord.</p>
+<p>There are a few new tests at the end that verify that the salsa invalidation works as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:806 on 2024-06-11 12:52</div>
+            <div class="timeline-body"><p>This test demonstrates how we can use the OS filesystem in a test for when we want to test more advanced FS behavior that's not implemented (and I have no intention to implement it) in MemoryFs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:1 on 2024-06-11 12:53</div>
+            <div class="timeline-body"><p>I had to add more methods to <code>FileSystemPath</code> because the module resolver (and <code>ModuleName</code>) perform path manipulations. The doctests are directly copied from <code>camino</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/memory.rs</code>:1 on 2024-06-11 12:54</div>
+            <div class="timeline-body"><p>I wrote a few tests that demonstrate that Salsa retriggers module resolution when a file gets removed. This required adding support for removing files and directories.</p>
+<p>Removing directories required changing the map from a regular hash map to a <code>BTreeMap</code> so that it becomes possible to search for all files in a directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs/path.rs</code>:1 on 2024-06-11 12:55</div>
+            <div class="timeline-body"><p>I added a few more convenient implementations that make working with <code>VfsPath</code> more ergonomic (I got annoyed when writing tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/db.rs</code>:1 on 2024-06-11 12:56</div>
+            <div class="timeline-body"><p>One mode resolver test, tests symlinking functionality that the memory file system doesn't support. The changes in here add support for swapping the memory file system with the real FS for tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-11 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-11 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/Cargo.toml</code>:14 on 2024-06-11 13:06</div>
+            <div class="timeline-body"><p>Sorry @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-11 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-06-11 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: Port module resolver to salsa" to "red-knot[salsa part 6]: Port module resolver to salsa" by @MichaReiser on 2024-06-11 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-11 14:29</div>
+            <div class="timeline-body"><p>Lol, what's this branch name... <code>memory_resolver</code>. I hope the code I wrote is better than my naming</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-11 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-06-12 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dhruvmanila removed by @MichaReiser on 2024-06-12 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:182 on 2024-06-12 14:03</div>
+            <div class="timeline-body"><p>I need to add a to-do list item to check in what situations Python normalizes the import statement itself. E.g. <code>import foo.bar.baz</code> is obviously normalized to the same thing as <code>..bar.baz</code> and <code>.baz</code> in some situations, and I don't know how symlinks play into that. But I think it's correct that we shouldn't normalize the path here (the normalization of the import statement should probably happen at an earlier stage)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:1 on 2024-06-12 14:14</div>
+            <div class="timeline-body"><p>Overall, it feels like we have to expose a <em>lot</em> of methods here that just delegate to the wrapped <code>Utf8Path</code> and <code>Utf8PathBuf</code> types, such that I wonder what we gain from the newtype wrappers. It might be simpler just to use <code>Utf8Path</code> and <code>Utf8PathBuf</code> directly? I might be missing some of the benefits here from the newtype wrappers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vfs.rs</code>:276 on 2024-06-12 14:19</div>
+            <div class="timeline-body"><p>(The name of this wasn't immediately clear to me when I skimmed by it on the first read, until I looked at the surrounding code on the second read)</p>
+<pre><code class="language-suggestion">    /// Private method providing the implementation for `touch_path` and `touch`
+    fn touch_impl(db: &amp;mut dyn Db, path: &amp;VfsPath, file: Option&lt;VfsFile&gt;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:74 on 2024-06-12 14:23</div>
+            <div class="timeline-body"><p>(Doesn't have to be dealt with here.) Another option might be to return a <code>Result</code> from this <code>new</code> method (similar to <code>regex::Regex::new()</code>). Then we could also add other assertions here that would also make sense, such as the fact that all components should be valid Python identifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:73 on 2024-06-12 14:45</div>
+            <div class="timeline-body"><p>I find this comment slightly confusing because you say that <code>path_to_module</code> resolves to a file, but the type signature says that it returns <code>Option&lt;Module&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:185 on 2024-06-12 14:52</div>
+            <div class="timeline-body"><p>haha, I see you got rid of my <code>chain</code>s 😆 I still honestly prefer them, but I won't insist</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 14:55</div>
+            <div class="timeline-body"><p>Because of the typeshed <code>VERSIONS</code> file, we will also need to add the target Python version as an input to this function at some point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-06-12 14:56</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:1 on 2024-06-12 15:07</div>
+            <div class="timeline-body"><p>Ah I see you already discussed this with @carljm in https://github.com/astral-sh/ruff/pull/11802/files#r1635057752.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:74 on 2024-06-12 15:16</div>
+            <div class="timeline-body"><p>What I worry is that it makes the API fairly annoying to use. I need to check where we call <code>new</code> to see if returning <code>None</code> in these cases (or an error) would make the API cumbersome to use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:73 on 2024-06-12 15:17</div>
+            <div class="timeline-body"><p>What I mean by <code>resolves</code> is that it performs a vfs lookup to get the file for the given path. It's not about the return type. I can try to clarify this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 15:19</div>
+            <div class="timeline-body"><p>Hmm, do we need to make it an argument to the function? Can't we assume the same python versions for all <code>resolve_module</code> calls? I don't think we want to support type checking programs where part of the program use python 3.8 and another part Python 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 15:21</div>
+            <div class="timeline-body"><p>Ah, yes, we can absolutely assume the same Python version for all <code>resolve_module</code> calls within any single invocation of Ruff. I suppose I was thinking of this function as a &quot;pure&quot; function where all the inputs were part of the function signature. But if that doesn't work with Salsa, so be it :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 15:39</div>
+            <div class="timeline-body"><p>It does work with Salsa, but it does require that we intern the python versions. That wouldn't be a big deal by itself, but seems cumbersome to use if we can assume the same python version anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-12 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 15:42</div>
+            <div class="timeline-body"><p>I do feel like I like the clarity of having all necessary inputs for module resolution being part of the function signature, but I don't have a very strong opinion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-12 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:233 on 2024-06-12 15:52</div>
+            <div class="timeline-body"><p>I think we can add it to the method that <code>resolve_module</code> calls internally.</p>
+<p>But I think it would be very awkward if all upstream queries have to call <code>resolve_module(db, &quot;name&quot;, python_version(db))</code> just because we want it to be part of the API (on top of the issue that it now needs to be interned).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-13 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module/resolver.rs</code>:185 on 2024-06-13 07:57</div>
+            <div class="timeline-body"><p>I tried... but it broke my brain to find the compile errors with the very long expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/module.rs</code>:74 on 2024-06-13 08:17</div>
+            <div class="timeline-body"><p>I changed <code>new</code> to return an <code>Option</code> and added a new <code>new_static</code> method for when working with static module names (&quot;avoids allocations all together)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-13 08:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-13 09:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot[salsa part 6]: Port module resolver to salsa" to "red-knot: Port module resolver to salsa" by @MichaReiser on 2024-06-18 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-18 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-18 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-18 12:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

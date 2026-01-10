@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-code flake8-trio and flake8-async rules to match upstream - astral-sh/ruff #10416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Re-code flake8-trio and flake8-async rules to match upstream</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10416">#10416</a>
+        opened by <a href="https://github.com/augustelalande">@augustelalande</a>
+        on 2024-03-15 01:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-15 01:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Re-code flake8-trio and flake8-async rules to match upstream. Resolves #10303.</p>
+<p><strong><code>TRIO</code> rules</strong></p>
+<ul>
+<li><code>TRIO</code> has been renamed to <code>ASYNC1</code></li>
+<li><code>TRIO100</code> -&gt; <code>ASYNC100</code></li>
+<li><code>TRIO105</code> -&gt; <code>ASYNC105</code></li>
+<li><code>TRIO109</code> -&gt; <code>ASYNC109</code></li>
+<li><code>TRIO110</code> -&gt; <code>ASYNC110</code></li>
+<li><code>TRIO115</code> -&gt; <code>ASYNC115</code></li>
+</ul>
+<p><strong><code>ASYNC</code> rules</strong></p>
+<ul>
+<li><code>ASYNC116</code> unchanged</li>
+<li><code>ASYNC100..ASYNC102</code> has been renamed to <code>ASYNC2</code></li>
+<li><code>ASYNC100</code> moved to <code>ASYNC210</code>,</li>
+<li><code>ASYNC101</code> was split into <code>ASYNC220</code>, <code>ASYNC221</code>, <code>ASYNC222</code>, <code>ASYNC230</code>, and <code>ASYNC251</code></li>
+<li><code>ASYNC102</code> was merged into <code>ASYNC220</code> and <code>ASYNC221</code></li>
+</ul>
+<h2>Behavior changes</h2>
+<ul>
+<li><code>ASYNC210</code> (previously <code>ASYNC100</code>): Now detects <code>urllib3.request</code> calls</li>
+<li><code>ASYNC230</code>: Now also detects calls to <code>io.open</code>, <code>io.open_code</code></li>
+</ul>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-15 01:34</div>
+            <div class="timeline-body"><p>This is mostly done, except for the previous ASYNC101 and ASYNC102 which don't exactly match any the of the new ASYNC rules. The closest matches are ASYNC220 and ASYNC222, but the behaviors don't match exactly. Part of the problem is that the previous rules should be split into multiple rules (this is easy). The other problem which I'm not sure how to resolve is that it doesn't seem like any of the new ASYNC rules check for <code>time.sleep</code> or ~<code>open</code>~ (nevermind ASYNC230 covers <code>open</code>), but this is a useful check that we should keep, so the question is what should I do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-15 01:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-15 05:04</div>
+            <div class="timeline-body"><p>Ok so I modified the implementation of ASYNC220 and ASYNC222, as well as added ASYNC221 so that the three rules would match the behavior of flake8-async. For now I added a check for time.sleep as part of ASYNC222.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-15 09:32</div>
+            <div class="timeline-body"><p>Oh, I'd missed that we don't check for time.sleep anymore. It's a bad match for ASYNC222, as the recommended replacement is using <code>[trio/anyio/asyncio].sleep()</code>, and not to wrap it in <code>to_thread_run_sync</code> or <code>run_in_executor</code>. I'll implement it quickly as ASYNC251</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-15 13:20</div>
+            <div class="timeline-body"><p>Ok I moved the time.sleep check to a newly created ASYNC251</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2024-03-15 16:40</div>
+            <div class="timeline-body"><p>We've just released ASYNC251 upstream, so this is back to matching the merged flake8-async plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 16:55</div>
+            <div class="timeline-body"><p>Note that we'll need to add &quot;redirects&quot; for all of these rules, see <a href="https://github.com/astral-sh/ruff/blob/1fadefa67b26508cc59cf38e6130bde2243c929d/crates/ruff_linter/src/rule_redirects.rs">rule_redirects.rs</a>. See https://github.com/astral-sh/ruff/pull/9756 for example.</p>
+<p>We may be able to make use of https://github.com/astral-sh/ruff/pull/9691 as well, not sure yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-15 21:51</div>
+            <div class="timeline-body"><p>Ok I added redirects for the old TRIO rules. But as mentioned the old ASYNC rules don't directly correspond to new ASYNC rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-18 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:115 on 2024-03-18 20:29</div>
+            <div class="timeline-body"><p>It looks like some ASYNC rules were also moved from one code to another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-18 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/codes.rs</code>:331 on 2024-03-18 20:34</div>
+            <div class="timeline-body"><p>I think these probably <em>shouldn't</em> be in preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-03-18 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:115 on 2024-03-18 23:18</div>
+            <div class="timeline-body"><p>ASYNC100 moved to ASYNC210, (but the ASYNC100 code was taken over by TRIO100)
+ASYNC101 was split into ASYNC220, ASYNC221, ASYNC222, ASYNC230, and ASYNC251
+ASYNC102 was merged into ASYNC220 and ASYNC221</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-03-18 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/codes.rs</code>:331 on 2024-03-18 23:18</div>
+            <div class="timeline-body"><p>Up to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-03-18 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/codes.rs</code>:331 on 2024-03-18 23:19</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-03-28 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:115 on 2024-03-28 22:57</div>
+            <div class="timeline-body"><p>@charliermarsh any advice on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-03-29 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-03-29 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-05-17 16:46</div>
+            <div class="timeline-body"><p>I've got some comments on the human-friendly rule names you have, and it might be good if we synced them to ease transition between flake8-async and ruff. See https://github.com/python-trio/flake8-async/pull/248#issuecomment-2117984198</p>
+<p>(I'm sorry we're moving so quickly as of late :grin:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-05-23 02:11</div>
+            <div class="timeline-body"><p>This PR has some merge conflicts now, anything I can do to help?</p>
+<p>I'm motivated to add (the new) ASYNC101 to Ruff because of the problems mentioned in the draft <a href="https://github.com/python/peps/pull/3782">PEP 789</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 02:15</div>
+            <div class="timeline-body"><p>The main issue is that it's going to be a breaking change for users (e.g., <code>ASYNC100</code> continues to exist but is now a different rule). We may be able to include it in v0.5.0 though which will be ~soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @charliermarsh on 2024-05-23 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 02:16</div>
+            <div class="timeline-body"><p>@zanieb - let's include this in v0.5.0 since it's starting to cause problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 02:16</div>
+            <div class="timeline-body"><p>@augustelalande -- I'm happy to take responsibility for resolving any conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-23 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:115 on 2024-05-23 02:17</div>
+            <div class="timeline-body"><p>I think what you have here is right... The TRIO rules are gone, so lets redirect them away. But the ASYNC rules probably can't be safely redirected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-05-23 02:34</div>
+            <div class="timeline-body"><p>@charliermarsh I'll do it now. I'm also gonna update the rules with the new names from https://github.com/python-trio/flake8-async/pull/248#issuecomment-2117984198</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-05-23 02:57</div>
+            <div class="timeline-body"><p>Nevermind the last part. Updating all the rule names is a significant effort so should be a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 12:14</div>
+            <div class="timeline-body"><p>Okay, I'm done with the rebase and I very much hope I didn't mess anything up. I now need to get a better understanding of the change itself to be able to review it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 12:54</div>
+            <div class="timeline-body"><p>I'm trying to get my head around over all the changes and are having a hard time. What's unclear to me is:</p>
+<ul>
+<li>What's the exact mapping from old rules to new rules</li>
+<li>What I understand is that our rules don't precisely match <code>flake8-async</code>. Which rules are different and to what extend?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 13:47</div>
+            <div class="timeline-body"><p>From the chanegelog: <code>Added asyncio support for several error codes</code>. I think that' the case for most of the TRIO rules. This isn't something we have to change as part of this PR but important for the changelog</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 15:45</div>
+            <div class="timeline-body"><p>Okay, I think I now have a good overview of what has changed. I plan on reviewing this PR tomorrow (and hopefully merge).</p>
+<p>I don't think there's anything we can do about mapping the old <code>ASYNC</code> rules.</p>
+<p><strong>Trio</strong> to <strong>ASYNC</strong></p>
+<ul>
+<li><code>TRIO100</code> -&gt; <code>ASYNC100</code> :<ul>
+<li>No support for <code>anyio</code> or <code>asyncio</code></li>
+<li>Ruff: <code>TrioTimeoutWithoutAwait</code></li>
+<li>Flake8: <code>cancel-scope-no-checkpoint</code></li>
+</ul>
+</li>
+<li><code>TRIO105</code> -&gt; <code>ASYNC105</code><ul>
+<li>Ruff: <code>TrioSyncCall</code></li>
+<li>Flake8: <code>missing-await</code></li>
+<li>Both only support trio</li>
+</ul>
+</li>
+<li><code>TRIO109</code> -&gt; <code>ASYNC109</code><ul>
+<li>I think the flake8 rule also supports <code>anyio</code> and <code>asyncio</code>.</li>
+<li>Ruff: <code>TrioAsyncFunctionWithTimeout</code></li>
+<li>Flake8: <code>async-function-with-timeout</code></li>
+</ul>
+</li>
+<li><code>TRIO110</code> -&gt; <code>ASYNC110</code><ul>
+<li>Ruff: <code>TrioUnneededSleep</code></li>
+<li>Flake8: <code>async-busy-wait</code></li>
+<li>Missing <code>anyio</code> support</li>
+</ul>
+</li>
+<li><code>TRIO115</code> -&gt; <code>ASYNC115</code><ul>
+<li>Ruff: <code>TrioZeroSleepCall</code></li>
+<li>Flake8: <code>async-zero-sleep</code></li>
+<li>Missing <code>anyio</code> support</li>
+</ul>
+</li>
+<li><code>TRIO116</code> -&gt; <code>ASYNC116</code><ul>
+<li>Ruff: <code>SleepForeverCall</code></li>
+<li>Flake8: <code>long-sleep-not-forever</code></li>
+<li>Missing <code>anyio</code> support</li>
+</ul>
+</li>
+</ul>
+<p><strong>ASYNC</strong> rule changes</p>
+<ul>
+<li><code>ASYNC100</code> -&gt; <code>ASYNC210</code>:<ul>
+<li>Ruff: <code>BlockingHttpCallInAsyncFunction</code></li>
+<li>Flake8: <code>blocking-http-call</code></li>
+<li>Looks about right</li>
+</ul>
+</li>
+<li><code>ASYNC101</code> -&gt;<ul>
+<li>Used to test for<ul>
+<li><code>open</code> -&gt; <code>ASYNC230</code></li>
+<li><code>time.sleep</code> -&gt; <code>ASYNC251</code></li>
+<li><code>subprocess</code>:<ul>
+<li><code>subprocess.run</code>, -&gt; <code>ASYNC221</code></li>
+<li><code>subprocess.Popen</code> -&gt; <code>ASYNC220</code></li>
+<li><code>subprocess.call</code> -&gt; <code>ASYNC221</code></li>
+<li><code>subprocess.check_call</code> -&gt; <code>ASYNC221</code></li>
+<li><code>subprocess.check_output</code> -&gt; <code>ASYNC221</code></li>
+<li><code>subprocess.getoutput</code>, -&gt; <code>ASYNC221</code></li>
+<li><code>subprocess.getstatusoutput</code> -&gt; <code>ASYNC221</code></li>
+</ul>
+</li>
+<li><code>os</code><ul>
+<li><code>wait</code> -&gt; <code>ASYNC222</code></li>
+<li><code>wait3</code> -&gt; <code>ASYNC222</code></li>
+<li><code>wait4</code> -&gt; <code>ASYNC222</code></li>
+<li><code>waitid</code> -&gt; <code>ASYNC222</code></li>
+<li><code>waitpid</code> -&gt; <code>ASYNC222</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>ASYNC220</code>:<ul>
+<li>Also tests for <code>os.popen</code>, <code>os.spawn</code> (if not <code>p_wait</code>)</li>
+<li>flake8: <code>blocking-create-subprocess</code></li>
+<li>Ruff: <code>CreateSubprocessInAsyncFunction</code></li>
+</ul>
+</li>
+<li><code>ASYNC221</code>:<ul>
+<li>Also tests for <code>os.system</code>, <code>os.posix_spawn</code>, <code>os.posix_spawnp</code></li>
+<li>flake8: <code>blocking-run-process</code></li>
+<li>Ruff: <code>RunProcessInAsyncFunction</code></li>
+<li>Sometimes <code>os.spawn</code> (when not <code>ASYNC220</code>)</li>
+</ul>
+</li>
+<li><code>ASYNC222</code>:<ul>
+<li>Ruff: <code>WaitForProcessInAsyncFunction</code></li>
+<li>Flake8: <code>blocking-process-wait</code></li>
+</ul>
+</li>
+<li><code>ASYNC230</code>:<ul>
+<li>Ruff: <code>BlockingOpenCallInAsyncFunction</code></li>
+<li>flake8: <code>blocking-open-call</code></li>
+</ul>
+</li>
+<li><code>ASYNC251</code>:<ul>
+<li>Ruff: <code>BlockingSleepInAsyncFunction</code></li>
+<li>flake8: <code>blocking-sleep</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-06-25 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @MichaReiser on 2024-06-25 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @MichaReiser on 2024-06-25 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-06-25 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-06-25 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-06-25 17:13</div>
+            <div class="timeline-body"><p>I'm not sure with &quot;no support for x&quot; you refer to upstream, or this PR. But in case there's any confusion about upstream support:</p>
+<ul>
+<li>ASYNC100 supports all of trio/anyio/asyncio</li>
+<li>ASYNC105 is trio-only. Since type checkers started catching this the rule is mostly redundant, which is the only reason we haven't cared to extend it for anyio/asyncio.</li>
+<li>ASYNC109 supports all of trio/anyio/asyncio</li>
+<li>ASYNC110 has trio&amp;anyio support. asyncio support is TODO, but it's a trivial fix so you could probably go ahead and support it regardless of if/when I get around to it upstream</li>
+<li>ASYNC115&amp;ASYNC116 has trio&amp;anyio support. asyncio does not have equivalent constructs</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 19:41</div>
+            <div class="timeline-body"><p>@jakkdl Thanks for detailing the upstream features. I mainly tried to document with <em>no support</em> what features Ruff lacks compared to the upstream rules. I don't think we should or have to address these shortcomings in this PR but I want to be aware of it when reviewing (and we may even want to document it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-06-25 21:18</div>
+            <div class="timeline-body"><p>Good summary from @MichaReiser and @jakkdl</p>
+<p>There is still a significant amount of work to bring feature parity between <code>ruff</code> and <code>flake8-async</code>, but IMO the first step has to be resolving the merge between <code>flake8-async</code> and <code>flake8-trio</code> (i.e. this PR), everything else should follow in future PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-06-25 21:22</div>
+            <div class="timeline-body"><blockquote>
+<p>@jakkdl Thanks for detailing the upstream features. I mainly tried to document with <em>no support</em> what features Ruff lacks compared to the upstream rules. I don't think we should or have to address these shortcomings in this PR but I want to be aware of it when reviewing (and we may even want to document it)</p>
+</blockquote>
+<p>Not sure if it needs to be documented in the code base, or if simply opening an issue would be sufficient.</p>
+<p>FYI <code>flake8-trio</code> is already being tracked in #8451</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:107 on 2024-06-26 07:25</div>
+            <div class="timeline-body"><p>I think we should change <code>TRIO</code> to only map to <code>ASYNC1</code> because the old <code>ASYNC100</code> rules weren't part of the <code>ASYNC</code> selector. That's still not perfect because it will enable <code>ASYNC116</code> but it is closer to what users had before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-26 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-26 07:44</div>
+            <div class="timeline-body"><p>Sorry for the long wait. This looks really good. Thanks for going through the struggle of not just recoding the rules, but also splitting the existing rules and adopting their behavior to match the upstream rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 08:42</div>
+            <div class="timeline-body"><p>I manually tested the redirection rules and it all looks good. Let's merge this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-26 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-26 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-26 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-26 14:49</div>
+            <div class="timeline-body"><p>I think one nice follow up after the release would be to rename the rules to match the upstream names.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider match-case stmts for `C901`, `PLR0912`, and `PLR0915` - astral-sh/ruff #11521</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider match-case stmts for <code>C901</code>, <code>PLR0912</code>, and <code>PLR0915</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11521">#11521</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-05-23 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-05-23 19:34</div>
+            <div class="timeline-body"><p>Resolves #11421</p>
+<h2>Summary</h2>
+<p>Instead of counting match/case as one statement, consider each <code>case</code> as a conditional.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-23 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-23 19:38</div>
+            <div class="timeline-body"><p>I'm not so sure about this, the equivalent <code>else statement</code> has the following check:</p>
+<pre><code class="language-rust">                   if clause.test.is_some() {
+                        complexity += 1;
+                    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-23 19:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_branches.rs</code>:183 on 2024-05-24 06:27</div>
+            <div class="timeline-body"><p>I don't think we should count the <code>match</code> statement itself as a branch because it's the case blocks which does the branching.</p>
+<pre><code class="language-suggestion">                cases.len()
+                    + cases
+                        .iter()
+                        .map(|case| num_branches(&amp;case.body))
+                        .sum::&lt;usize&gt;()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:103 on 2024-05-24 06:29</div>
+            <div class="timeline-body"><p>Similar to the <code>too-many-branches</code>, the <code>match</code> statement itself doesn't add the complexity but it's the <code>case</code> blocks which does.</p>
+<pre><code class="language-suggestion">                for case in cases {
+                    complexity += 1;
+                    complexity += get_complexity_number(&amp;case.body);
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_statements.rs</code>:95 on 2024-05-24 06:31</div>
+            <div class="timeline-body"><p>I'm unsure of whether <code>case</code> should be counted here but looking at the logic for other statements, I think it should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> requested changes on 2024-05-24 06:32</div>
+            <div class="timeline-body"><p>Thank you for working on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-24 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-24 06:32</div>
+            <div class="timeline-body"><p>Can you clarify what you're not sure about? Is it that the catch-all case (<code>_</code>) acts as an <code>else</code> block of an <code>if</code> statement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-05-24 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-24 07:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-24 07:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it that the catch-all case (_) acts as an else block of an if statement?</p>
+</blockquote>
+<p>Yep, complexity wise to me it's equivalent to the following <code>if else</code> statement.</p>
+<pre><code class="language-python">if x == 30:
+    print(&quot;foo&quot;)
+else:
+    print(&quot;bar&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-24 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_branches.rs</code>:183 on 2024-05-24 07:59</div>
+            <div class="timeline-body"><p>Makes sense, done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-24 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_statements.rs</code>:95 on 2024-05-24 08:07</div>
+            <div class="timeline-body"><p>Hm, feel like we should count it yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-24 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-24 09:13</div>
+            <div class="timeline-body"><p>Aren't they equivalent? We'd consider the above <code>if else</code> statement with complexity 2 and similarly for the following match statement:</p>
+<pre><code class="language-py">match subject:
+	case foo: ...
+	case _: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-24 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_statements.rs</code>:95 on 2024-05-24 09:13</div>
+            <div class="timeline-body"><p>Yeah, I was just thinking out loud :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider match-case stmts for C901, PLR0912, and PLR0915" to "Consider match-case stmts for `C901`, `PLR0912`, and `PLR0915`" by @dhruvmanila on 2024-05-24 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-05-24 09:14</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-24 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-24 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-24 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-24 11:16</div>
+            <div class="timeline-body"><p>The <code>if else</code> statement has a complexity of 1, the <code> &amp;clause.test.is_some()</code> evaluates to false for the <code>else</code>.</p>
+<pre><code class="language-sh">[crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs:413:9] &amp;source = &quot;\nif x == 3:\n    print(\&quot;foo\&quot;)\nelse:\n    print(\&quot;bar\&quot;)\n &quot;
+[crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs:79:21] &amp;clause.test.is_some() = false
+[crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs:415:9] &amp;get_complexity_number(&amp;stmts) = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-24 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-24 14:06</div>
+            <div class="timeline-body"><p>Oh I see. Hmm, that's interesting. Yeah, I think we could do that i.e., check if the last <code>case</code> pattern is either a <code>_</code> or any variable as both act as a catch-all pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-05-25 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-25 09:04</div>
+            <div class="timeline-body"><p>I think only <code>_</code> acts as a wild card pattern if my understanding of the <a href="https://docs.python.org/3/reference/compound_stmts.html#wildcard-patterns">documentation</a> is correct. In any case, I can make a follow up PR to handle this. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 04:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/mccabe/rules/function_is_too_complex.rs</code>:440 on 2024-05-27 04:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think only <code>_</code> acts as a wild card pattern if my understanding of the <a href="https://docs.python.org/3/reference/compound_stmts.html#wildcard-patterns">documentation</a> is correct.</p>
+</blockquote>
+<p>Yes, although a name pattern would also <em>act</em> in a similar way except that it also binds the value to the variable. So, in the following example <code>foo</code> will be same as <code>subject</code>. It's like doing <code>foo = subject</code>.</p>
+<pre><code class="language-py">match subject:
+	case 2: ...
+	case foo: ...
+</code></pre>
+<p>You can even see that in CPython where it raises a syntax error similar to <code>_</code> if the name pattern is not the last pattern:</p>
+<pre><code class="language-py">match 1:
+    case x:
+        print(x)
+    case 2:
+        ...
+</code></pre>
+<p>Running <code>python test.py</code>:</p>
+<pre><code class="language-console">$ python3.13 parser/_.py
+  File &quot;/Users/dhruv/playground/ruff/parser/_.py&quot;, line 2
+    case x:
+         ^
+SyntaxError: name capture 'x' makes remaining patterns unreachable
+</code></pre>
+<blockquote>
+<p>In any case, I can make a follow up PR to handle this. :)</p>
+</blockquote>
+<p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 10:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

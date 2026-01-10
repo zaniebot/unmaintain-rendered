@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace most usages of `lex_starts_at` with `Tokens` - astral-sh/ruff #11511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace most usages of <code>lex_starts_at</code> with <code>Tokens</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11511">#11511</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-23 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-23 11:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #11401</p>
+<p>This PR refactors most usages of <code>lex_starts_at</code> to use the <code>Tokens</code> struct available on the <code>Program</code>.</p>
+<p>This PR also introduces the following two APIs:</p>
+<ol>
+<li><code>count</code> (on <code>StringLiteralValue</code>) to return the number of string literal parts in the string expression</li>
+<li><code>after</code> (on <code>Tokens</code>) to return the token slice after the given <code>TextSize</code> offset</li>
+</ol>
+<h2>Test Plan</h2>
+<p>I don't really have a way to test this currently and so I'll have to wait until all changes are made so that the code compiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-05-23 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-23 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove `lex_starts_at` usage from `UP031`" to "Replace most usages of `lex_starts_at` with `Tokens`" by @dhruvmanila on 2024-05-23 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:256 on 2024-05-27 12:44</div>
+            <div class="timeline-body"><p>Could we just pass <code>program</code> to <code>Importrer::new</code> and let it extract the relevant fields?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/imports.rs</code>:22 on 2024-05-27 12:46</div>
+            <div class="timeline-body"><p>What do you think of storing <code>tokens</code> on <code>Indexer</code>? I'm asking because the ruff linter has so many structs that methods need to do anything useful and it would be nice if we could reduce them to fewer.</p>
+<p>Edit: I see that there are other places where <code>Indexer</code> isn't available. Hopefully we can reudce the number of structs passed around with red knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1722 on 2024-05-27 13:00</div>
+            <div class="timeline-body"><p>Nit: I wouldn't call this <code>count</code> because it isn't actually counting. It's also unclear how it is different from <code>len</code> (which probably should return a <code>TextSize</code>)</p>
+<p>Maybe <code>literals_len</code>. The alternative is to add <code>len</code> as a method to <code>Iter</code> and add a <code>literals</code> method so that it reads as <code>string.literals().len()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:425 on 2024-05-27 13:01</div>
+            <div class="timeline-body"><p>Do we depend on this behavior? I think I would rather have the implementation <code>panic</code> if the offset isn't at a token boundary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:420 on 2024-05-27 13:03</div>
+            <div class="timeline-body"><p>I'm not sure in which PR you added <code>tokens_in_range</code> and I also don't know if it is a good idea.</p>
+<p>We could avoid the <code>end</code> binary search by either:</p>
+<ul>
+<li>doing a linear serach from the start. That would be based on the assumption that the end is close to the start (linear search has better cache locality)</li>
+<li>Return a custom iterator that lazily checks <code>end</code> in the <code>next</code> call. I don't know if that's feasible or if any logic depends on the fact that <code>tokens_in_range</code> returns a slice.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-27 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1722 on 2024-05-28 04:39</div>
+            <div class="timeline-body"><p>Why do you think it isn't counting? I can change it to <code>.as_slice().len()</code> or <code>.iter().count()</code> - both are available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 04:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/imports.rs</code>:22 on 2024-05-28 04:41</div>
+            <div class="timeline-body"><p>Here, I can just pass the <code>Program</code> which has both <code>Suite</code> and <code>Tokens</code> similar to your suggestion above for <code>Importer::new</code>. As such, if I pass <code>Program</code> in <code>Importer::new</code>, the <code>check_imports</code> should take <code>Program</code> because later on it calls <code>Importer::new</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 04:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1722 on 2024-05-28 04:45</div>
+            <div class="timeline-body"><p>I've changed it to <code>.as_slice().len()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 04:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:425 on 2024-05-28 04:47</div>
+            <div class="timeline-body"><p>I think I'll have a clearer picture once the code compiles. I plan on being able to do that by today as that will allow me to do a lot of testing. And, I plan on revisiting the APIs once everything is changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-28 04:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:420 on 2024-05-28 04:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I also don't know if it is a good idea.</p>
+</blockquote>
+<p>Why though?</p>
+<p>A lot of usages of the lexer are to get the tokens within a specified range, usually the range belongs to a node. This does mean that the token tree would be more useful than this.</p>
+<blockquote>
+<p>We could avoid the <code>end</code> binary search by either:</p>
+<ul>
+<li>doing a linear serach from the start. That would be based on the assumption that the end is close to the start (linear search has better cache locality)</li>
+<li>Return a custom iterator that lazily checks <code>end</code> in the <code>next</code> call. I don't know if that's feasible or if any logic depends on the fact that <code>tokens_in_range</code> returns a slice.</li>
+</ul>
+</blockquote>
+<p>I can explore this ideas once the code compiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-28 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-28 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-28 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-28 07:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:420 on 2024-05-28 07:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Why though?</p>
+</blockquote>
+<p>Sorry, I phrased this poorly. The <code>tokens_in_range</code> is a good idea. I'm not sure if my proposal of not using a binary search is a good idea.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

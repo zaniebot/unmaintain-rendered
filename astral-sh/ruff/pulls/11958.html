@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual impl of `Debug` on `Token` - astral-sh/ruff #11958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Manual impl of <code>Debug</code> on <code>Token</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11958">#11958</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-21 05:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 05:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I look at the token stream a lot, not specifically in the playground but in the terminal output and it's annoying to scroll a lot to find specific location. Most of the information is also redundant.</p>
+<p>The final format we end up with is: <code>&lt;kind&gt; &lt;range&gt; (flags = ...)</code> e.g., <code>String 0..4 (flags = BYTE_STRING)</code> where the flags part is only populated if there are any flags set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-06-21 05:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-21 05:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 05:59</div>
+            <div class="timeline-body"><p>Hmm, I think I preferred the old one. The new representation isn't very self explanatory without e.g. knowing what <code>0..5</code> means.</p>
+<ul>
+<li>I agree that <code>kind</code> and <code>Token</code> could be collapsed. We could take inspiration from Rust where the <code>Debug</code> implementation of <code>Token::String</code> gets outputted exactly as such. So we could change it to <code>Token::Lpar</code></li>
+<li>I agree that we should omit the flags if they're empty.</li>
+<li>We could show the range as <code>Token::Lpar@0..5</code> but it's not entirely clear to me how we would want to show the flags if they're non empty</li>
+</ul>
+<p>How about: <code>Token::Lpar@0..5(flags = ...)</code> which would even be more dense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 09:50</div>
+            <div class="timeline-body"><blockquote>
+<p>How about: <code>Token::Lpar@0..5(flags = ...)</code> which would even be more dense?</p>
+</blockquote>
+<p>Hmm, I'm not sure about not having any space in between so here's without space:</p>
+<pre><code>Name@0..1,
+Equal@2..3,
+String@4..12(flags = BYTE_STRING),
+Newline@11..12,
+FStringStart@12..15(flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringMiddle@15..19(flags = F_STRING | RAW_STRING_LOWERCASE),
+Lbrace@19..20,
+Name@20..21,
+Plus@22..23,
+Name@24..25,
+Rbrace@25..26,
+FStringMiddle@26..30(flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringEnd@30..31(flags = F_STRING | RAW_STRING_LOWERCASE),
+Newline@31..32
+</code></pre>
+<p>And, here's with space (I like this):</p>
+<pre><code>Name @ 0..1,
+Equal @ 2..3,
+String @ 4..12 (flags = BYTE_STRING),
+Newline @ 12..13,
+FStringStart @ 13..16 (flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringMiddle @ 16..20 (flags = F_STRING | RAW_STRING_LOWERCASE),
+Lbrace @ 20..21,
+Name @ 21..22,
+Plus @ 23..24,
+Name @ 25..26,
+Rbrace @ 26..27,
+FStringMiddle @ 27..31 (flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringEnd @ 31..32 (flags = F_STRING | RAW_STRING_LOWERCASE),
+Newline @ 32..33
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 10:54</div>
+            <div class="timeline-body"><p>To me, this has a bit too much spacing. It's unclear where the <code>@</code> belongs</p>
+<pre><code>Name @ 0..1,
+Equal @ 2..3,
+String @ 4..12 (flags = BYTE_STRING),
+Newline @ 12..13,
+FStringStart @ 13..16 (flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringMiddle @ 16..20 (flags = F_STRING | RAW_STRING_LOWERCASE),
+Lbrace @ 20..21,
+Name @ 21..22,
+Plus @ 23..24,
+Name @ 25..26,
+Rbrace @ 26..27,
+FStringMiddle @ 27..31 (flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringEnd @ 31..32 (flags = F_STRING | RAW_STRING_LOWERCASE),
+Newline @ 32..33
+</code></pre>
+<p>I think I would prefer a combination of the two</p>
+<pre><code>Name@0..1,
+Equal@2..3,
+String@4..12 (flags = BYTE_STRING),
+Newline@12..13,
+FStringStart@13..16 (flags = F_STRING | RAW_STRING_LOWERCASE),
+FStringMiddle@16..20 (flags = F_STRING | RAW_STRING_LOWERCASE),
+Lbrace@20..21,
+Name@21..22,
+Plus@23..24,
+Name@25..26,
+Rbrace@26..27,
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 11:44</div>
+            <div class="timeline-body"><blockquote>
+<p>To me, this has a bit too much spacing. It's unclear where the <code>@</code> belongs</p>
+</blockquote>
+<p>I guess I'm fine with not having a space around <code>@</code> but out of curiosity what are the options where <code>@</code> could belong to in your view? I just find it comparatively easier to read the entire list quickly if there's a space, which indicates that the word ends right there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 11:57</div>
+            <div class="timeline-body"><p>With the space, the <code>@</code> is mainly noise to me. Maybe we just remove it and go with something closer you had in your first version? <code>String 4..12 (flags = ByteString)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-21 11:59</div>
+            <div class="timeline-body"><blockquote>
+<p>With the space, the <code>@</code> is mainly noise to me. Maybe we just remove it and go with something closer you had in your first version? <code>String 4..12 (flags = ByteString)</code>?</p>
+</blockquote>
+<p>Yeah, I think that's good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-21 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-21 14:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-22 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-22 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-22 04:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

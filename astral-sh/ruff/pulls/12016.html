@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use correct range to highlight line continuation error - astral-sh/ruff #12016</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use correct range to highlight line continuation error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12016">#12016</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-25 03:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-25 03:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the range highlighted for the line continuation error.</p>
+<p>Previously, it would highlight an incorrect range:</p>
+<pre><code>1 | call(a, b, \\\
+  |           ^^ Syntax Error: unexpected character after line continuation character
+2 | 
+3 | def bar():
+  |
+</code></pre>
+<p>And now:</p>
+<pre><code>  |
+1 | call(a, b, \\\
+  |             ^ Syntax Error: unexpected character after line continuation character
+2 | 
+3 | def bar():
+  |
+</code></pre>
+<p>This is implemented by avoiding to update the token range for the <code>Unknown</code> token which is emitted when there's a lexical error. Instead, the <code>push_error</code> helper method will be responsible to update the range to the error location.</p>
+<p>This actually becomes a requirement which can be seen in follow-up PRs.</p>
+<h2>Test Plan</h2>
+<p>Update and validate the snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-06-25 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-06-25 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-25 03:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:153 on 2024-06-25 06:21</div>
+            <div class="timeline-body"><p>It's a bit unfortunate that we now have this branch in the very hot <code>next_token</code> function for the very rare case of an unknown token. But I don't see a better way of solving this that doesn't require a lot of repetition on the token range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-25 06:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-25 06:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:153 on 2024-06-25 06:26</div>
+            <div class="timeline-body"><p>Yeah, I agree. I thought of doing something like what you've suggested (computing the token range at the place where it's emitted) but wanted to see if this actually impacts the performance. It doesn't seem to be which is why I'm fine moving ahead with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-06-25 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-25 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-25 08:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>

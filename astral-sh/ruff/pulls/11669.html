@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] infer_symbol_public_type infers union of all definitions - astral-sh/ruff #11669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] infer_symbol_public_type infers union of all definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11669">#11669</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-06-01 01:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-06-01 01:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Rename <code>infer_symbol_type</code> to <code>infer_symbol_public_type</code>, and allow it to work on symbols with more than one definition. For now, use the most cautious/sound inference, which is the union of all definitions. We can prune this union more in future by eliminating definitions if we can show that they can't be visible (this requires both that the symbol is definitely later reassigned, and that there is no intervening call/import that might be able to see the over-written definition).</p>
+<h2>Test Plan</h2>
+<p>Added a test showing inference of union from multiple definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-01 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-06-01 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-06-01 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-01 02:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:40 on 2024-06-01 07:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let ty = match &amp;*tys {
+        [] =&gt; Type::Unknown,
+        [ty] =&gt; ty,
+        tys =&gt; Type::Union(jar.type_store.add_union(symbol.file_id, &amp;tys)),
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:36 on 2024-06-01 07:54</div>
+            <div class="timeline-body"><p>We could possibly get away here without collecting in the most common case (in which case my suggestion below doesn't work.</p>
+<pre><code class="language-rust">let mut tys = defs
+        .iter()
+        .map(|def| infer_definition_type(db, symbol, def.clone())).peekable();
+
+if let Some(first) = tys.next() {
+	if tys.peek().is_some() {
+		Type::Union(jar.type_store.add_union(symbo.file_id, std::iter::chain([first], tys).collect()));
+	} else {
+		first
+  }
+} else {
+	Type::Unkown
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:26 on 2024-06-01 07:58</div>
+            <div class="timeline-body"><p>The distinction between public and non public types is unclear to me, also how we guarantee that you can't call this function for a local symbol. But that's something we can tackle independently.</p>
+<p>It may help to add some documentation to the query to explain the distinction and for what this query should be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-01 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-03 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:36 on 2024-06-03 22:17</div>
+            <div class="timeline-body"><p>This is really nice, thank you! With a few tweaks to deal with the QueryResult (and using <code>Iterator::chain</code> not <code>std::iter::chain</code>), I got it to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-03 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:40 on 2024-06-03 22:18</div>
+            <div class="timeline-body"><p>Not using this because I'm using the version that avoids collecting in the common case, but this is also a really good lesson in the power of <code>match</code>, thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:26 on 2024-06-03 22:55</div>
+            <div class="timeline-body"><p>I added a docstring to the method that replaces the comment I'd written internally, and tries to explain what the &quot;public type&quot; is. Let me know if it's not clear.</p>
+<p>The &quot;public type&quot; is relevant for any symbol that can be seen from outside its own scope: this includes all public symbols, and it also includes all &quot;cellvars&quot; (function-internal symbols that are used by a nested function.)</p>
+<p>We may need to refine our terminology here, because this means that even symbols inside a function (which I wouldn't call &quot;public symbols&quot; in terms of cross-module dependency tracking) still have a &quot;public type&quot; which is relevant to type checking.</p>
+<p>I don't think we need to &quot;guarantee that you can't call this function&quot; for any symbol. This function shouldn't ever be needed in type inference for purely-local symbols (where every use of the symbol is at a specific known point in control flow and uses only definitions reachable from there), but that's a matter for validating correctness of type inference; this function can return a reasonable result for any symbol (it's just the union of all definitions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-03 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-06-03 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-06-03 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-03 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:43 on 2024-06-05 14:07</div>
+            <div class="timeline-body"><p>nit: I'd probably have used <code>std::iter::once(first)</code> here rather than <code>[first].into_iter()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-05 14:35</div>
+            <div class="timeline-body"><p>Nice! Sorry for the slow review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-06 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:43 on 2024-06-06 16:03</div>
+            <div class="timeline-body"><p>Changed in a later PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-06 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:43 on 2024-06-06 16:04</div>
+            <div class="timeline-body"><p>I spotted, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:32 UTC
+    </footer>
+</body>
+</html>

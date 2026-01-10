@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider soft keyword for various parsing logic - astral-sh/ruff #11474</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider soft keyword for various parsing logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11474">#11474</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-20 10:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-20 10:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates various checks to consider soft keywords.</p>
+<ol>
+<li>Update the following methods to also check whether the parser is at a soft keyword token:<ol>
+<li><code>at_simple_stmt</code></li>
+<li><code>at_stmt</code></li>
+<li><code>at_expr</code></li>
+<li><code>at_pattern_start</code></li>
+<li><code>at_mapping_pattern_start</code></li>
+</ol>
+</li>
+<li>Update various references of <code>parser.at(TokenKind::Name)</code> to use <code>parser.at_name_or_soft_keyword</code>. In the future, we should update it to also include other keywords on a case-by-case basis.</li>
+<li>Re-use <code>parse_name</code> and <code>parse_identifier</code> for literal pattern parsing. We should always use either of these methods instead of doing the same manually to make sure that soft keyword are correctly tranformed.</li>
+</ol>
+<p>For (i) and (ii), we could've just extended the <code>EXPR_SET</code> with the soft keyword tokens but I think it's better to be explicit about what the method checks and to have separation between the token set corresponding to statement and soft keywords.</p>
+<h2>Test Plan</h2>
+<p>Add a few test cases and update the snapshots. These snapshots were generated through the local fork of the parser which compiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-20 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-20 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2024-05-21 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-21 02:51</div>
+            <div class="timeline-body"><p>(Converting this to draft as there are a few more references to be looked at.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider soft keyword for expr / pattern parsing" to "Consider soft keyword for various parsing logic" by @dhruvmanila on 2024-05-21 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-21 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-21 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-21 05:26</div>
+            <div class="timeline-body"><p>This is ready to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-05-21 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:1055 on 2024-05-27 12:20</div>
+            <div class="timeline-body"><p>I think I would just call <code>p.at_name_or_soft_keyword</code> <code>p.at_name</code> to align it with <code>parse_name</code>. The downside is that this can be confusing because there's also a <code>Name</code> token. Could we rename <code>parse_name</code> to <code>parse_identifier</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-27 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-27 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:1055 on 2024-05-27 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I would just call <code>p.at_name_or_soft_keyword</code> <code>p.at_name</code> to align it with <code>parse_name</code>. The downside is that this can be confusing because there's also a <code>Name</code> token.</p>
+</blockquote>
+<p>Yeah, I thought of doing that but I found the explicit name better just to avoid this confusion.</p>
+<blockquote>
+<p>Could we rename <code>parse_name</code> to <code>parse_identifier</code>?</p>
+</blockquote>
+<p>They both exists because sometimes the parser needs to construct an <code>ExprName</code> node while other times it only needs an <code>Identifier</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-pyi] Implement PYI057 - astral-sh/ruff #11486</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-pyi] Implement PYI057</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11486">#11486</a>
+        opened by <a href="https://github.com/tomasr8">@tomasr8</a>
+        on 2024-05-21 21:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tomasr8">@tomasr8</a> on 2024-05-21 21:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds <a href="https://github.com/PyCQA/flake8-pyi/blob/main/ERRORCODES.md">Y057</a> from flake8-pyi.</p>
+<p>I don't think we can apply any autofix here?</p>
+<p>I'm new to rust so apologies in advance if I've made some rookie mistakes :sweat_smile:</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> + <code>cargo insta review</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @tomasr8 on 2024-05-21 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-21 22:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 49 projects unchanged)</p>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/b2f6e5221b180d42a3770543a72036baa52b3907/stdlib/_collections_abc.pyi#L10'>stdlib/_collections_abc.pyi:10:5:</a> PYI057 Do not use `typing.ByteString`, which has unclear semantics and is deprecated
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI057 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 22:17</div>
+            <div class="timeline-body"><p>Hi! The primary reviewer for this is out right now so it might be a bit slower than usual to get reviewed.</p>
+<p>Could you change the rule to be in <code>Preview</code> instead of the <code>Stable</code> group?</p>
+<p>Additionally, I think use of <code>resolve_qualified_name</code> might be helpful in your implementation:</p>
+<p>https://github.com/astral-sh/ruff/blob/f79c980e17bf1ef6064a589dfc5e6b1c288e860f/crates/ruff_python_semantic/src/model.rs#L726-L741</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 22:17</div>
+            <div class="timeline-body"><p>Welcome to the project :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomasr8">@tomasr8</a> on 2024-05-21 22:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Additionally, I think use of resolve_qualified_name might be helpful in your implementation:</p>
+</blockquote>
+<p>I thought there might be something like this already, but couldn't find it. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:9 on 2024-05-27 10:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Checks for uses of `typing.ByteString` or `collections.abc.ByteString`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:15 on 2024-05-27 10:37</div>
+            <div class="timeline-body"><p>It's true that the Python docs don't actually mention this, but it might be worth mentioning here that <code>typing_extensions</code> backports this for older Python versions:</p>
+<pre><code class="language-suggestion">/// `collections.abc.Buffer` (or the `typing_extensions` backport
+/// on Python &lt;3.12) or a union like `bytes | bytearray | memoryview` instead.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:56 on 2024-05-27 11:00</div>
+            <div class="timeline-body"><p>This message should be a succinct summary of what the user should do to fix the violation (if an autofix is available, and you're using e.g. VSCode, double-clicking on this message when you hover over the violation in the editor will apply the autofix).</p>
+<p>In this case I think I'd probably not implement this method at all! Since we're not offering an autofix, it's not necessary. And it's hard for us to tell exactly what the best fix is in any one case -- in some cases it might be to use <code>collections.abc.Buffer</code>, in some cases it might be to use <code>typing_extensions.Buffer</code>, and in some cases it might be to use a union. (The ambiguity is precisely why we've deprecated <code>ByteString</code>!)</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:32 on 2024-05-27 11:18</div>
+            <div class="timeline-body"><p>Rather than storing the full name as a string on the violation struct, I'd be tempted to do something like this, so that we only record the module where <code>ByteString</code> came from:</p>
+<pre><code class="language-rs">#[violation]
+pub struct ByteStringUsage {
+    origin: ByteStringOrigin,
+}
+
+impl Violation for ByteStringUsage {
+    const FIX_AVAILABILITY: FixAvailability = FixAvailability::None;
+
+    #[derive_message_formats]
+    fn message(&amp;self) -&gt; String {
+        let ByteStringUsage { origin } = self;
+        format!(&quot;Do not use `{origin}.ByteString`, which has unclear semantics and is deprecated&quot;)
+    }
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+enum ByteStringOrigin {
+    Typing,
+    CollectionsAbc,
+}
+
+impl std::fmt::Display for ByteStringOrigin {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        f.write_str(match self {
+            Self::Typing =&gt; &quot;typing&quot;,
+            Self::CollectionsAbc =&gt; &quot;collections.abc&quot;,
+        })
+    }
+}
+</code></pre>
+<p>The diagnostic has the invariant that the error message will always be the same, except for the detail of where <code>ByteString</code> is coming from; by using an enum here, we make that clearer for readers of the code by encoding the invariant in the type. Using an enum also means that the diagnostic struct will take up less space in memory -- that's not that important here, as the diagnostic structs aren't performance-critical, but it's always nice to use less memory where possible :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-27 11:19</div>
+            <div class="timeline-body"><p>Great to see you around here @tomasr8! :-D Overall this looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomasr8">@tomasr8</a> on 2024-05-29 09:49</div>
+            <div class="timeline-body"><p>oops didn't notice you already fixed the conflict :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-29 09:49</div>
+            <div class="timeline-body"><p>hehe, no worries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomasr8">@tomasr8</a> on 2024-05-29 09:53</div>
+            <div class="timeline-body"><p>Thanks for the review! (as always :D)</p>
+<p>I removed the <code>fix_title</code> implementation and used an enum instead of the <code>full_name</code> string as you suggested.</p>
+<p>The <code>bytestring_import</code> function should also be a bit more efficient now since I check for the module id before entering the loop and return early if it doesn't match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-29 10:01</div>
+            <div class="timeline-body"><p>Thanks very much! Looks great now. I just pushed a couple of nitpick-fixes to your branch :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-05-29 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-05-29 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-29 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:68 on 2024-05-29 10:03</div>
+            <div class="timeline-body"><p>@tomasr8: I added this in my latest push. It's an optimisation we do in a lot of rules. It's a very cheap check to see whether any of the relevant modules we care about have been imported at all. If not, we can just short-circuit the rest of the rule :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-05-29 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-05-29 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tomasr8">@tomasr8</a> reviewed on 2024-05-29 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tomasr8">@tomasr8</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bytestring_usage.rs</code>:68 on 2024-05-29 10:07</div>
+            <div class="timeline-body"><p>Ah cool! I'll keep that in mind for future PRs :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-29 10:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

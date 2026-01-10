@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use default settings if initialization options is empty or not provided - astral-sh/ruff #11566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use default settings if initialization options is empty or not provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11566">#11566</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-27 11:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-27 11:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the bug to avoid flattening the global-only settings for the new server.</p>
+<p>This was added in https://github.com/astral-sh/ruff/pull/11497, possibly to correctly de-serialize an empty value (<code>{}</code>). But, this lead to a bug where the configuration under the <code>settings</code> key was not being read for global-only variant.</p>
+<p>By using #[serde(default)], we ensure that the settings field in the <code>GlobalOnly</code> variant is optional and that an empty JSON object <code>{}</code> is correctly deserialized into <code>GlobalOnly</code> with a default <code>ClientSettings</code> instance.</p>
+<p>fixes: #11507</p>
+<h2>Test Plan</h2>
+<p>Update the snapshot and existing test case. Also, verify the following settings in Neovim:</p>
+<ol>
+<li>Nothing</li>
+</ol>
+<pre><code class="language-lua">ruff = {
+  cmd = {
+    '/Users/dhruv/work/astral/ruff/target/debug/ruff',
+    'server',
+    '--preview',
+  },
+}
+</code></pre>
+<ol start="2">
+<li>Empty dictionary</li>
+</ol>
+<pre><code class="language-lua">ruff = {
+  cmd = {
+    '/Users/dhruv/work/astral/ruff/target/debug/ruff',
+    'server',
+    '--preview',
+  },
+  init_options = vim.empty_dict(),
+}
+</code></pre>
+<ol start="3">
+<li>Empty <code>settings</code></li>
+</ol>
+<pre><code class="language-lua">ruff = {
+  cmd = {
+    '/Users/dhruv/work/astral/ruff/target/debug/ruff',
+    'server',
+    '--preview',
+  },
+  init_options = {
+    settings = vim.empty_dict(),
+  },
+}
+</code></pre>
+<ol start="4">
+<li>With some configuration:</li>
+</ol>
+<pre><code class="language-lua">ruff = {
+  cmd = {
+    '/Users/dhruv/work/astral/ruff/target/debug/ruff',
+    'server',
+    '--preview',
+  },
+  init_options = {
+    settings = {
+      configuration = '/tmp/ruff-repro/pyproject.toml',
+    },
+  },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-27 11:27</div>
+            <div class="timeline-body"><p>This might not be the correct solution because now the empty initialization options fail to deserialize.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-05-27 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-05-27 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-27 12:22</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/avoid-flatten">CodSpeed Performance Report</a></h2>
+<h3>Merging #11566 will <strong>improve performances by 11.03%</strong></h3>
+<p><sub>Comparing <code>dhruv/avoid-flatten</code> (0b9fd71) with <code>main</code> (6be00d5)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/avoid-flatten</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 1.2 ms | 1 ms | +11.03% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-27 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-27 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid flattening global only server settings" to "Use default settings if initialization options is empty or not provided" by @dhruvmanila on 2024-05-27 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-27 12:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-27 13:11</div>
+            <div class="timeline-body"><p>If we have none. Should we add a test for an empty settings object?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-27 15:36</div>
+            <div class="timeline-body"><p>There is a test :)</p>
+<p>https://github.com/astral-sh/ruff/blob/0b9fd71e68bcea1b3901554bd19c08361b53a511/crates/ruff_server/src/session/settings.rs#L710-L715</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-27 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-27 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:31 UTC
+    </footer>
+</body>
+</html>

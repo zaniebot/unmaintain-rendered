@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Include vendored typeshed stubs as a zipfile in the Ruff binary - astral-sh/ruff #11779</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Include vendored typeshed stubs as a zipfile in the Ruff binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11779">#11779</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-06-06 19:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-06 19:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Work towards https://github.com/astral-sh/ruff/issues/11653.</p>
+<p>This PR adds a <code>build.rs</code> script to the <code>red_knot</code> crate that compresses our vendored typeshed stubs into a zip that is then included in the Ruff binary via <code>include_bytes!()</code> in <code>module.rs</code>. This will enable us to resolve modules to vendored stdlib stubs from typeshed in the future.</p>
+<p>Details:</p>
+<ul>
+<li>The <code>build.rs</code> script is run before anything else in the crate is built</li>
+<li>We print a <code>cargo:rerun-if-changed</code> directive to stdout to let Cargo know that the <code>build.rs</code> only needs to be rerun if the contents of <code>crates/red_knot/vendor/typeshed</code> changes, or if the <code>build.rs</code> script itself changes. Docs here: https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed. We need to use a syntax for this directive that's officially deprecated, due to the fact that our pinned minimum Rust version is old enough that it doesn't support the new version. (The deprecated syntax is <code>cargo:rerun-if-changed=</code>, with one colon. The new syntax uses <code>cargo::rerun-if-changed=</code>, with two colons.)</li>
+<li>The zipfile that is created during the build step is <code>.gitignored</code>. Unfortunately there will be a need to manually keep that <code>.gitignore</code> entry in sync with the hardcoded path in <code>build.rs</code>.</li>
+<li>The PR adds a new Ruff dependency on the <code>zip</code> crate. Following the precedent in https://github.com/astral-sh/uv/issues/3642, I pinned to an old version of the <code>zip</code> crate, and added a Renovate rule to make sure that we don't get dependency-update PRs for that crate.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Some basic tests have been added that show that the zip archive containing typeshed is available from the Ruff after it has been built, and that the zip archive has some stdlib stubs in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-06-06 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-06 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-06-06 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-06-06 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-06 19:41</div>
+            <div class="timeline-body"><p>Looks good! Did you (manually) verify that changing a file in the vendored typeshed directory triggers a rebuild of the zip and the changed contents show up in the binary? (Eg delete <code>update_wrapper</code> from the functools stub and see the added test fail.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-06 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks good! Did you (manually) verify that changing a file in the vendored typeshed directory triggers a rebuild of the zip and the changed contents show up in the binary? (Eg delete <code>update_wrapper</code> from the functools stub and see the added test fail.)</p>
+</blockquote>
+<p>Tried that out, and it looks good!</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/90cd58b2-4cae-4050-9114-c0cdea5e5d18" alt="image" /></p>
+<p>Now to make it work on Windows...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-06 19:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-06 20:35</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/renovate.json5</code>:47 on 2024-06-07 06:43</div>
+            <div class="timeline-body"><p>Can you add a note on that issue to mention that <code>red_knot</code> now also uses the <code>zip</code> crate. Or maybe this is something we can discuss in today's standup? The main concern seems to be with 0.66 and 1 but we're now at version 2 already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.gitignore</code>:220 on 2024-06-07 06:44</div>
+            <div class="timeline-body"><p>Can we create the <code>zip</code> in the <code>target</code> directory where cargo stores all its build artifacts? This way, we can avoid adding an additional ignore, and it also makes it clear that this is a build-time-created artifact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:3626 on 2024-06-07 06:46</div>
+            <div class="timeline-body"><p>Uff, so many new dependencies. Would you mind having a look at https://docs.rs/crate/zip/0.6.6/features and removing all features that we don't need? We probably only need a very specific subset</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/build.rs</code>:81 on 2024-06-07 06:49</div>
+            <div class="timeline-body"><p>I don't think we want to filter here. Instead we want to error if we can't read a file. It could otherwise happen that we don't include a file because of a read error and we would only learn about it post release.</p>
+<p>I think I would also move the <code>WalkDir</code> call into <code>zip_dir</code> and instead change <code>zip_dir</code> to take a path as an argument. That removes the ugly <code>impl Iterator</code> ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/build.rs</code>:51 on 2024-06-07 06:50</div>
+            <div class="timeline-body"><p>Can we remove the println statements? Especially if they clutter the CLI output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/build.rs</code>:56 on 2024-06-07 06:54</div>
+            <div class="timeline-body"><p>I wonder if you could use <code>std::io::copy</code> here, assuming that <code>f</code> implements <code>Read</code> and <code>zip</code> implements <code>Write</code></p>
+<p>https://doc.rust-lang.org/std/io/fn.copy.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/build.rs</code>:42 on 2024-06-07 06:55</div>
+            <div class="timeline-body"><p>Maybe rename <code>name</code> to <code>relative_path</code>. Because I think it isn't just the file's name, it's actually the file paths, just relative to the <code>root</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/build.rs</code>:67 on 2024-06-07 06:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    zip.finish()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:20 on 2024-06-07 06:57</div>
+            <div class="timeline-body"><p>I recommend to move the const to the <code>tests</code> module for now so that you don't need the <code>dead_code</code> suppression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-07 06:57</div>
+            <div class="timeline-body"><p>Nice work. I've some questions before approving</p>
+<ul>
+<li>What's the binary size increase?</li>
+<li>What's the build time increase on an incremental (change to a rust file) and clean build. You can get the timings with <code>cargo build --timings -p red_knot</code></li>
+<li>Did you open a created archive. Does it look correct?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 07:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/build.rs</code>:81 on 2024-06-07 07:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we want to filter here.</p>
+</blockquote>
+<p>Yeah, I wondered about that... In the end I guess I was lazy and didn't make too many changes to the recipe Carl and I found at https://github.com/zip-rs/zip-old/blob/5d0f198124946b7be4e5969719a7f29f363118cd/examples/write_dir.rs. But this makes sense; I'll make the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/renovate.json5</code>:47 on 2024-06-07 09:25</div>
+            <div class="timeline-body"><p>Left a note in https://github.com/astral-sh/uv/issues/3642#issuecomment-2154452853</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/build.rs</code>:56 on 2024-06-07 09:40</div>
+            <div class="timeline-body"><p>Nice, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.gitignore</code>:220 on 2024-06-07 10:22</div>
+            <div class="timeline-body"><p>To clarify: do you mean <code>$ROOT/target</code> (which already exists), or do you mean creating a new <code>$ROOT/crates/red_knot/target</code> directory for redknot-specific build artifacts? (I'm happy to do either)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 10:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/build.rs</code>:51 on 2024-06-07 10:24</div>
+            <div class="timeline-body"><p>Because this is a build script, these aren't actually printed to stdout during the build process unless the build actually fails -- it's more like logging, really. But if the build fails, then the entire captured stdout from the build is printed in a summary, e.g.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/45b61f59-998b-4460-a2be-4bf154d3ed5f" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-07 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.gitignore</code>:220 on 2024-06-07 10:29</div>
+            <div class="timeline-body"><p>Reading through https://github.com/rust-lang/cargo/issues/9661, it sounds like getting the location of the <code>target</code> directory reliably from a build script is a deliberately unsolved problem, and that build scripts are not meant to put artifacts there. https://github.com/rust-lang/cargo/issues/9661 says:</p>
+<blockquote>
+<p><code>OUT_DIR</code> — If the package has a build script, this is set to the folder where the build script should place its output. See below for more information. (Only set during compilation.)</p>
+</blockquote>
+<p>That implies to me that I should be putting the zip there, rather than where I have it in this PR currently or in <code>target/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 11:48</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>What's the binary size increase?</li>
+</ul>
+</blockquote>
+<p>On <code>main</code>, after running <code>cargo clean &amp;&amp; cargo build --all-features</code>:</p>
+<ul>
+<li>The executable created for <code>red_knot</code> is 9.565 MB</li>
+<li>The executable created for <code>ruff</code> is 77.481 MB</li>
+</ul>
+<p>With this PR branch:</p>
+<ul>
+<li>The executable created for <code>red_knot</code> is 9.565 MB</li>
+<li>The executable created for <code>ruff</code> is 77.487 MB</li>
+</ul>
+<p>The <code>TYPESHED_ZIP_BYTES</code> array in <code>module.rs</code> appears to be of length 617,342.</p>
+<blockquote>
+<ul>
+<li>What's the build time increase on an incremental (change to a rust file) and clean build. You can get the timings with <code>cargo build --timings -p red_knot</code></li>
+</ul>
+</blockquote>
+<p>On <code>main</code>, <code>cargo clean &amp;&amp; cargo build --timings -p red_knot</code> reports the total time as being 9.7s. With this PR branch, it increases to 10.5s. The time taken for an incremental build after a change to a Rust file (that isn't <code>build.rs</code>) seems noisy/unchanged -- it took 0.95s for me on <code>main</code> and 0.81s on this PR branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 12:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you open a created archive. Does it look correct?</p>
+</blockquote>
+<p>We're definitely able to inspect the contents of files in the zip at runtime using the <code>zip</code> crate that we used to create the zip. From what I can tell, everything is as we'd expect it to be. I assert as such in the tests I added, and the tests correctly fail if I change the contents of the vendored <code>stdlib/functools.pyi</code> file.</p>
+<p>I also managed to inspect the filenames in the zip using Python's <code>zipfile</code> module, and everything was as I would expect it to be. (Except that on my machine, the zip includes a <code>.DS_STORE</code> file... but probably not a huge issue, and unlikely to appear in the binaries we publish to PyPI.)</p>
+<p>I've been struggling to extract the zip archive or inspect the contents of any of the files in the zip from outside Rust -- most tools for unzipping zip archives don't seem to expect the <code>zstd</code> algorithm to be used, and I havne't succeeded in using <code>zstandard</code> tools to extract the zip either. I don't know if that's a concern or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-07 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-07 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.gitignore</code>:220 on 2024-06-07 12:27</div>
+            <div class="timeline-body"><p>Yeah sorry, I'm not very familiar with build scripts. Out dir seems to be what I was looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 12:29</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the binary size increase?</p>
+</blockquote>
+<p>Sorry, I should have been more explicit. Can you compare the release build numbers.</p>
+<p>Also, The red knot binary size is identical. I think the typeshed files should be larger than 0 bytes? Ohhh, maybe the compiler optimizes them away (or isn't part of the executable anymore if you moved it to tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 12:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, The red knot binary size is identical. I think the typeshed files should be larger than 0 bytes? Ohhh, maybe the compiler optimizes them away (or isn't part of the executable anymore if you moved it to tests)</p>
+</blockquote>
+<p>Yeah, this confused me as well, since the length of the <code>TYPESHED_ZIP_BYTES</code> array is definitely not zero. I deliberately passed <code>--tests</code> so I think it should be included in the binary. Not sure.</p>
+<blockquote>
+<p>Sorry, I should have been more explicit. Can you compare the release build numbers.</p>
+</blockquote>
+<p>No worries, I'll do that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-07 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 14:11</div>
+            <div class="timeline-body"><p>With <code>cargo build --release --all-features --all-targets</code>.</p>
+<p><code>main</code>:</p>
+<ul>
+<li><code>red_knot</code> binary: 3.221 MB</li>
+<li><code>ruff</code> binary: 25.195 MB</li>
+</ul>
+<p>PR branch:</p>
+<ul>
+<li><code>red_knot</code> binary: 3.221 MB</li>
+<li><code>ruff</code> binary: 25.196 MB</li>
+</ul>
+<p>So, still not showing up in the size of the binary (even though it's definitely compiling all the test features as part of that command.</p>
+<p>Still, we know how large the zip is from this:</p>
+<blockquote>
+<p>The <code>TYPESHED_ZIP_BYTES</code> array in <code>module.rs</code> appears to be of length 617,342.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 14:29</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/ruff/pull/11779/commits/c5ad832102cc9cd16da3c8035c0fb9d413da6890, I switched to setting the location of the zip (relative to cargo's <code>OUT_DIR</code> environment variable) via an environment variable set at compile time in <code>.cargo/config.toml</code>. This feels slightly nicer than having to hardcode the location manually in both <code>crates/red_knot/build.rs</code> and <code>crates/red_knot/src/module.rs</code>. @MichaReiser, are you okay with that change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 14:49</div>
+            <div class="timeline-body"><p>@AlexWaygood what's the benefit of the environment variable for the name of the zip? It feels like unnecessary complexity to me, considering that we don't have a use case for a different name.</p>
+<p>If it's just to avoid the path repetition, then I think adding a comment to <code>build.rs</code> or the other way around would be sufficient.</p>
+<p>Edit: Like I'm not against it, but it makes the code harder to follow. I then need to search for where the environment variable comes from and understand if there's actually a use case where we want to change the path. Having it hard coded makes it very explicit and failing to update the path in one file will also give you compile errors right away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 14:52</div>
+            <div class="timeline-body"><p>Yes, it was just to avoid the repetition, and to make it so that there was a &quot;single source of truth&quot; for the location. It felt more &quot;principled&quot; to me. But I also wasn't sure if it was worth the new complexity, so I'll revert it if you find it less readable 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, it was just to avoid the repetition, and to make it so that there was a &quot;single source of truth&quot; for the location. It felt more &quot;principled&quot; to me. But I also wasn't sure if it was worth the new complexity, so I'll revert it if you find it less readable</p>
+</blockquote>
+<p>I think it's just slightly over-engineered ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-07 14:57</div>
+            <div class="timeline-body"><p>Thanks both for the reviews!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-06-07 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-06-07 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-07 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:56:33 UTC
+    </footer>
+</body>
+</html>
