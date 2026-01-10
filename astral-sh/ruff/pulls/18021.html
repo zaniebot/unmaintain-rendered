@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Infer parameter specializations of generic aliases - astral-sh/ruff #18021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Infer parameter specializations of generic aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18021">#18021</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-05-11 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 21:07</div>
+            <div class="timeline-body"><p>This updates our function specialization inference to infer type mappings from parameters that are generic aliases, e.g.:</p>
+<pre><code class="language-py">def f[T](x: list[T]) -&gt; T: ...
+
+reveal_type(f([&quot;a&quot;, &quot;b&quot;]))  # revealed: str
+</code></pre>
+<p>Though note that we're still inferring the type of list literals as <code>list[Unknown]</code>, so for now we actually need something like the following in our tests:</p>
+<pre><code class="language-py">def _(x: list[str]):
+    reveal_type(f(x))  # revealed: str
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-05-11 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-11 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-11 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-11 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-11 21:10</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+- error[invalid-assignment] src/trio/_core/_tests/test_run.py:2745:9: Object of type `ExceptionGroup[Exception]` is not assignable to `ValueError | ExceptionGroup[ValueError]`
++ error[no-matching-overload] src/trio/_tests/test_testing_raisesgroup.py:394:10: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:98:5: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:103:5: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:119:5: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:121:5: No overload of bound method `__init__` matches arguments
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:92:51: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:95:49: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:99:57: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:102:48: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:106:67: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:107:69: Unused blanket `type: ignore` directive
+- Found 1118 diagnostics
++ Found 1116 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[invalid-argument-type] porcupine/pluginloader.py:298:40: Argument to function `_decide_loading_order` is incorrect: Expected `dict[Unknown, set[Unknown]]`, found `dict[PluginInfo, set[PluginInfo]]`
+- Found 98 diagnostics
++ Found 97 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[invalid-argument-type] mkosi/__init__.py:4383:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/__init__.py:4424:9: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/burn.py:41:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/qemu.py:1002:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/qemu.py:1061:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/qemu.py:1090:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/qemu.py:1641:9: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/sysupdate.py:81:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- Found 326 diagnostics
++ Found 318 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-argument-type] expression/collections/map.py:186:24: Argument to function `of_list` is incorrect: Expected `list[tuple[Unknown, Unknown]]`, found `list[tuple[_Key_, _Result]]`
+- error[invalid-argument-type] expression/collections/map.py:454:32: Argument to function `of_list` is incorrect: Expected `Block[tuple[Unknown, Unknown]]`, found `Block[tuple[_Key, _Value]]`
+- error[invalid-argument-type] expression/extra/result/traversable.py:50:21: Argument to function `traverse` is incorrect: Expected `(Unknown, /) -&gt; Result[Unknown, Unknown]`, found `def identity(value: _A) -&gt; _A`
++ error[invalid-argument-type] expression/extra/result/traversable.py:50:21: Argument to function `traverse` is incorrect: Expected `(Result[_TSource, _TError], /) -&gt; Result[Unknown, Unknown]`, found `def identity(value: _A) -&gt; _A`
+- error[no-matching-overload] tests/test_parser.py:243:12: No overload of bound method `starmap` matches arguments
+- Found 305 diagnostics
++ Found 302 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[invalid-argument-type] tests/vegalite/v5/test_api.py:1708:25: Argument to bound method `delitem` is incorrect: Expected `Mapping[Literal[&quot;pandas&quot;], Unknown]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] tests/vegalite/v5/test_api.py:1709:25: Argument to bound method `delitem` is incorrect: Expected `Mapping[Literal[&quot;numpy&quot;], Unknown]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] tests/vegalite/v5/test_api.py:1710:25: Argument to bound method `delitem` is incorrect: Expected `Mapping[Literal[&quot;pyarrow&quot;], Unknown]`, found `dict[str, ModuleType]`
+- Found 1563 diagnostics
++ Found 1560 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:188:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;PY_COLORS&quot;], Literal[&quot;1&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:193:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;PY_COLORS&quot;], Literal[&quot;0&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:198:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;NO_COLOR&quot;], Literal[&quot;1&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:203:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;FORCE_COLOR&quot;], Literal[&quot;1&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:221:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;NO_COLOR&quot;], str]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:222:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;FORCE_COLOR&quot;], str]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:227:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;NO_COLOR&quot;], Literal[&quot;&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/io/test_terminalwriter.py:228:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;FORCE_COLOR&quot;], Literal[&quot;&quot;]]`, found `_Environ[str]`
+- error[invalid-argument-type] testing/test_config.py:1371:25: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;mytestplugin&quot;], PseudoPlugin]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] testing/test_pathlib.py:319:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;pointsback123&quot;], ModuleType]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] testing/test_pluginmanager.py:349:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[Literal[&quot;PYTEST_PLUGINS&quot;], Literal[&quot;xy123&quot;]]`, found `_Environ[str]`
++ error[invalid-argument-type] testing/test_pytester.py:318:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
++ error[invalid-argument-type] testing/test_pytester.py:329:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
++ error[invalid-argument-type] testing/test_pytester.py:342:33: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
+- Found 938 diagnostics
++ Found 930 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[type-assertion-failure] tests/annotations/declarations.py:951:5: Actual type `FullBuilds[Unknown] | StdBuilds[Unknown]` is not the same as asserted type `FullBuilds[@Todo(Support for `typing.TypeAlias`)] | StdBuilds[@Todo(Support for `typing.TypeAlias`)]`
+- Found 650 diagnostics
++ Found 649 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[invalid-argument-type] mypy/build.py:3486:26: Argument to function `topsort` is incorrect: Expected `dict[Unknown, set[Unknown]]`, found `dict[AbstractSet[Unknown], set[AbstractSet[Unknown]]]`
++ error[invalid-return-type] mypy/expandtype.py:163:16: Return type does not match returned value: Expected `T`, found `Type`
+- error[invalid-argument-type] mypy/join.py:602:56: Argument to bound method `__init__` is incorrect: Expected `set[str]`, found `set[str | Unknown]`
+- error[invalid-argument-type] mypy/plugins/singledispatch.py:102:47: Argument to function `get_first_arg` is incorrect: Expected `list[list[Unknown]]`, found `list[list[Type]]`
+- error[invalid-argument-type] mypy/plugins/singledispatch.py:131:52: Argument to function `get_first_arg` is incorrect: Expected `list[list[Unknown]]`, found `list[list[Type]]`
++ error[no-matching-overload] mypy/plugins/singledispatch.py:102:17: No overload of function `get_proper_type` matches arguments
++ error[no-matching-overload] mypy/plugins/singledispatch.py:131:22: No overload of function `get_proper_type` matches arguments
+- error[invalid-argument-type] mypy/plugins/singledispatch.py:208:30: Argument to function `get_first_arg` is incorrect: Expected `list[list[Unknown]]`, found `list[list[Type]]`
+- error[invalid-argument-type] mypy/solve.py:147:58: Argument to function `strongly_connected_components` is incorrect: Expected `dict[Unknown, list[Unknown]]`, found `dict[TypeVarId, list[TypeVarId]]`
++ error[invalid-argument-type] mypy/solve.py:147:58: Argument to function `strongly_connected_components` is incorrect: Expected `dict[Unknown | TypeVarId, list[Unknown | TypeVarId]]`, found `dict[TypeVarId, list[TypeVarId]]`
+- error[invalid-argument-type] mypy/solve.py:150:32: Argument to function `topsort` is incorrect: Expected `dict[Unknown, set[Unknown]]`, found `dict[AbstractSet[Unknown], set[AbstractSet[Unknown]]]`
+- error[invalid-argument-type] mypy/solve.py:150:51: Argument to function `prepare_sccs` is incorrect: Expected `dict[Unknown, list[Unknown]]`, found `dict[TypeVarId, list[TypeVarId]]`
+- Found 3334 diagnostics
++ Found 3330 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:165:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Unknown, Unknown]`
++ error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:165:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Asset, Balance]`
+- error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:166:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Unknown, Unknown]`
++ error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:166:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Asset, Balance]`
+- error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:182:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Unknown, Unknown]`
++ error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:182:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Asset, Balance]`
+- error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:183:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Unknown, Unknown]`
++ error[invalid-argument-type] rotkehlchen/accounting/structures/balance.py:183:13: Argument is incorrect: Expected `defaultdict[Asset, Balance]`, found `dict[Asset, Balance]`
+- error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[int | Unknown]`
++ error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[Unknown | int]`
+- error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[int | Unknown]`
++ error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[Unknown | int]`
+- error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[int | Unknown]`
++ error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[Unknown | int]`
+- error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[int | Unknown]`
++ error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[Unknown | int]`
+- error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[int | Unknown]`
++ error[invalid-argument-type] rotkehlchen/chain/ethereum/modules/eth2/eth2.py:229:17: Argument to bound method `get_validators_profit` is incorrect: Expected `set[int] | None`, found `None | set[Unknown] | set[int] | set[Unknown | int]`
+
+sympy (https://github.com/sympy/sympy)
+- warning[possibly-unbound-attribute] sympy/utilities/codegen.py:700:27: Attribute `label` on type `property | Unknown` is possibly unbound
++ error[unresolved-attribute] sympy/utilities/codegen.py:700:27: Type `property` has no attribute `label`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 01:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 01:39</div>
+            <div class="timeline-body"><p>hmm, the comment here says to keep this field private ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 01:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:683 on 2025-05-12 01:41</div>
+            <div class="timeline-body"><p>what about generic protocol instances? Do we need to add a branch for them as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-12 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 13:47</div>
+            <div class="timeline-body"><p>Woof, talk about tunnel vision!  I had done this to be able to pattern-match on the field so that I could have a match arm that only applied to nominal instances of generic aliases.</p>
+<p>I'll back this out and tweak the match arm — though keeping it that way might become more difficult in the future if/when the match becomes more complex, with fallthroughs being needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-12 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 13:49</div>
+            <div class="timeline-body"><p>Oh, actually there's another trick we can use here.  Let me push it up as a proposal to see what you think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-12 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 14:03</div>
+            <div class="timeline-body"><p>Here you go — if we add an unused <code>PhantomData</code> field, we can mark <em>that</em> as private to prevent construction, but still allow read/match access to the <code>class</code> field. wdyt? (If you're :+1: then I'll also remove the <code>class()</code> accessor method in favor of just reading the field, but didn't want to clutter the diff with that yet if you prefer the original)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:68 on 2025-05-12 14:04</div>
+            <div class="timeline-body"><p>oh, that's clever! It's a shame I'm only learning about this trick now -- much of the diff in #17525 came from me making the <code>class</code> field private, and I guess that was unnecessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 14:06</div>
+            <div class="timeline-body"><p>Yeah, I like the way that it allows for easier pattern-matching while preserving the property that it's only possible to construct <code>NominalInstanceType</code>s from the <code>Type::instance()</code> method!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-12 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:683 on 2025-05-12 14:33</div>
+            <div class="timeline-body"><p>Good idea, though I'd like to tackle that as a follow-on PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-12 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-12 22:42</div>
+            <div class="timeline-body"><p>We adds the parentheses, then we takes the parentheses away again.</p>
+<p>(Also, the actual fix here is excellent)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-05-13 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-13 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-13 02:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

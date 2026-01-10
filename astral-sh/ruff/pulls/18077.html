@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Check assignments to implicit global symbols are assignable to the types declared on `types.ModuleType` - astral-sh/ruff #18077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Check assignments to implicit global symbols are assignable to the types declared on <code>types.ModuleType</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18077">#18077</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-13 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 19:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we'll happily let you do this without complaining about it:</p>
+<pre><code class="language-py">__doc__ = 42
+</code></pre>
+<p>But this is unsound! All modules are instances of <code>types.ModuleType</code>, and typeshed states that all <code>types.ModuleType</code> instances have a <code>__doc__</code> attribute of type <code>str | None</code>. <code>Literal[42]</code> is not assignable to <code>str | None</code>, so we should not permit this.</p>
+<p>This PR fixes this soundness hole by falling back to declarations on <code>types.ModuleType</code> when checking assignments in the global scope. Cc. @tekknolagi (cf. https://github.com/astral-sh/ruff/pull/18071#issuecomment-2877485872).</p>
+<p>I also fix an issue in this PR where we would incorrectly report a symbol as being unbound if it is declared as global in an inner scope and it is an implicit <code>ModuleType</code> global in the global scope, e.g.</p>
+<pre><code class="language-py">def f():
+    global __loader__
+    print(__loader__)  # we previously emitted `[unresolved-reference]` here
+</code></pre>
+<h2>Test Plan</h2>
+<p>mdtests added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-13 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-13 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-13 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-13 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-13 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2025-05-13 19:35</div>
+            <div class="timeline-body"><p>this is also unsound, I suppose? I think it would need a fix in a different area of the code, though (we just wouldn't permit the redeclaration if it's an implicit <code>ModuleType</code> attribute in the global scope and it's not assignable to the type on <code>ModuleType</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-13 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 19:35</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2025-05-13 19:39</div>
+            <div class="timeline-body"><p>Yes, was just commenting on this. I think we could probably just forbid re-declaring these? (I also don't think this is a priority that we should spend time on now, it's not likely to impact many users. We should probably add a TODO comment for it, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-13 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2025-05-13 19:44</div>
+            <div class="timeline-body"><p>(I'll add a TODO and do this as a followup if we agree)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-13 19:52</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-13 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2025-05-13 20:29</div>
+            <div class="timeline-body"><p>It's not that hard, so I ended up just fixing this rather than adding a TODO. See https://github.com/astral-sh/ruff/pull/18077/commits/e9b73f001f65e92908e5b4a5990f1e8c26fa6016</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-13 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 20:29</div>
+            <div class="timeline-body"><p>(Re-requesting review just for the changes pushed in https://github.com/astral-sh/ruff/pull/18077/commits/e9b73f001f65e92908e5b4a5990f1e8c26fa6016)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-13 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-13 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-13 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-13 20:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

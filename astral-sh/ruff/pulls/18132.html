@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix relative imports in stub packages - astral-sh/ruff #18132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix relative imports in stub packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18132">#18132</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-16 13:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 13:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Relative imports call <code>file_to_module</code> which always returned <code>None</code> for stub packages because
+a stub package path like <code>pyyaml-stubs/__init__.py</code> can't be converted into a valid <code>ModuleName</code> because <code>-stubs</code> isn't a valid identifier.</p>
+<p>This PR fixes the path to module name conversion by stripping the <code>-stubs</code> suffix.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/408</p>
+<h2>Test Plan</h2>
+<p>See fixed mdtest (Thanks @sharkdp for writing a failing test for it!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-16 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-16 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-16 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-16 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-16 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix relative imports for stub packages" to "[ty] Fix relative imports in stub packages" by @MichaReiser on 2025-05-16 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-16 13:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+- warning[unused-ignore-comment] src/trio/_subprocess_platform/waitid.py:45:51: Unused blanket `type: ignore` directive
+- Found 1092 diagnostics
++ Found 1091 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
+- error[unresolved-attribute] tests/_async/test_client_actions.py:43:22: Type `&lt;module 'mock'&gt;` has no attribute `Mock`
+- error[unresolved-import] tests/_async/test_expires_heuristics.py:13:18: Module `mock` has no member `Mock`
+- Found 32 diagnostics
++ Found 30 diagnostics
+
+imagehash (https://github.com/JohannesBuchner/imagehash)
+- error[unresolved-attribute] imagehash/__init__.py:277:8: Type `&lt;module 'scipy.fftpack'&gt;` has no attribute `dct`
+- error[unresolved-attribute] imagehash/__init__.py:277:26: Type `&lt;module 'scipy.fftpack'&gt;` has no attribute `dct`
+- error[unresolved-attribute] imagehash/__init__.py:297:8: Type `&lt;module 'scipy.fftpack'&gt;` has no attribute `dct`
+- Found 13 diagnostics
++ Found 10 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- error[invalid-argument-type] alerta/auth/oidc.py:177:33: Argument to bound method `__init__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | None`
++ error[invalid-argument-type] alerta/auth/oidc.py:177:33: Argument to bound method `__init__` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
+- error[invalid-argument-type] alerta/auth/oidc.py:177:70: Argument to bound method `__init__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | None`
++ error[invalid-argument-type] alerta/auth/oidc.py:177:70: Argument to bound method `__init__` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
+- error[invalid-argument-type] alerta/auth/oidc.py:203:43: Argument to function `create_token` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | None`
++ error[invalid-argument-type] alerta/auth/oidc.py:203:43: Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
+- error[invalid-argument-type] alerta/auth/oidc.py:205:26: Argument to function `create_token` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | None`
++ error[invalid-argument-type] alerta/auth/oidc.py:205:26: Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
+- error[invalid-argument-type] alerta/auth/oidc.py:205:70: Argument to function `create_token` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | None`
++ error[invalid-argument-type] alerta/auth/oidc.py:205:70: Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[unresolved-attribute] sockeye/config.py:32:27: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
+- Found 399 diagnostics
++ Found 398 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
++ error[no-matching-overload] aiohttp_devtools/logs.py:32:17: No overload of bound method `__init__` matches arguments
+- Found 62 diagnostics
++ Found 63 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ warning[possibly-unbound-attribute] src/poetry/publishing/uploader.py:262:39: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/poetry/publishing/uploader.py:263:28: Attribute `reason` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/poetry/publishing/uploader.py:263:50: Attribute `content` on type `Response | None` is possibly unbound
+- Found 1013 diagnostics
++ Found 1016 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ error[invalid-base] pybind11/setup_helpers.py:89:25: Invalid class base with type `&lt;class 'Extension'&gt; | &lt;class 'Extension'&gt;` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 260 diagnostics
++ Found 261 diagnostics
+
+altair (https://github.com/vega/altair)
+- warning[unused-ignore-comment] altair/utils/schemapi.py:445:76: Unused blanket `type: ignore` directive
+- Found 1349 diagnostics
++ Found 1348 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[unresolved-attribute] pwndbg/dbg/gdb/__init__.py:1292:16: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:98:1: Unresolved attribute `start` on type `&lt;module 'gdb.events'&gt;`.
++ error[unresolved-attribute] pwndbg/gdblib/events.py:130:30: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:132:30: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:134:9: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:204:26: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:251:5: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:328:26: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
++ error[unresolved-attribute] pwndbg/gdblib/events.py:374:26: Type `&lt;module 'gdb.events'&gt;` has no attribute `start`
+- Found 2215 diagnostics
++ Found 2224 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:5:7: Cannot resolve imported module `.block_parser`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:6:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:7:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:8:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:9:7: Cannot resolve imported module `.inline_parser`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:10:7: Cannot resolve imported module `.markdown`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:11:7: Cannot resolve imported module `.plugins`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:12:7: Cannot resolve imported module `.renderers.html`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:13:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:14:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:15:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/__init__.pyi:16:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:3:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:4:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:5:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:6:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:7:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:8:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:9:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:10:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:11:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:12:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:13:7: Cannot resolve imported module `.list_parser`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:14:7: Cannot resolve imported module `.list_parser`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:15:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:16:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:17:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/block_parser.pyi:18:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:3:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:4:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:5:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:6:7: Cannot resolve imported module `._fenced`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:7:7: Cannot resolve imported module `._rst`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:8:7: Cannot resolve imported module `.admonition`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:9:7: Cannot resolve imported module `.image`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:10:7: Cannot resolve imported module `.image`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:11:7: Cannot resolve imported module `.include`
+- error[unresolved-import] mypy-stubs/mistune/directives/__init__.pyi:12:7: Cannot resolve imported module `.toc`
+- error[unresolved-import] mypy-stubs/mistune/directives/_base.pyi:16:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/_base.pyi:17:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/_base.pyi:18:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/_fenced.pyi:5:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/_fenced.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/_fenced.pyi:7:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/_fenced.pyi:8:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/_rst.pyi:3:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/_rst.pyi:4:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/_rst.pyi:5:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/_rst.pyi:6:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/admonition.pyi:5:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/admonition.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/admonition.pyi:7:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/admonition.pyi:8:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/admonition.pyi:9:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/image.pyi:3:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/image.pyi:4:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/image.pyi:5:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/image.pyi:6:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:3:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:4:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:5:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:6:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:7:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/include.pyi:8:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:5:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:7:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:8:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:9:8: Cannot resolve imported module `..toc`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:10:8: Cannot resolve imported module `..toc`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:11:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/directives/toc.pyi:12:7: Cannot resolve imported module `._base`
+- error[unresolved-import] mypy-stubs/mistune/helpers.pyi:5:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:13:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:14:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:15:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:16:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:17:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:18:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:19:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:20:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:21:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:22:7: Cannot resolve imported module `.helpers`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:23:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:24:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/inline_parser.pyi:25:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/list_parser.pyi:3:7: Cannot resolve imported module `.block_parser`
+- error[unresolved-import] mypy-stubs/mistune/list_parser.pyi:4:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/list_parser.pyi:5:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/list_parser.pyi:6:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/list_parser.pyi:7:7: Cannot resolve imported module `.util`
+- error[unresolved-import] mypy-stubs/mistune/markdown.pyi:5:7: Cannot resolve imported module `.block_parser`
+- error[unresolved-import] mypy-stubs/mistune/markdown.pyi:6:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/markdown.pyi:7:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/markdown.pyi:8:7: Cannot resolve imported module `.inline_parser`
+- error[unresolved-import] mypy-stubs/mistune/markdown.pyi:9:7: Cannot resolve imported module `.plugins`
+- error[unresolved-import] mypy-stubs/mistune/plugins/__init__.pyi:3:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/abbr.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/def_list.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/footnotes.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/formatting.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/math.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:3:8: Cannot resolve imported module `..block_parser`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:4:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:5:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:7:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:8:8: Cannot resolve imported module `..helpers`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:9:8: Cannot resolve imported module `..helpers`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:10:8: Cannot resolve imported module `..inline_parser`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:11:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/ruby.pyi:12:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/plugins/speedup.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/spoiler.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/table.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/task_lists.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/plugins/url.pyi:1:8: Cannot resolve imported module `..markdown`
+- error[unresolved-import] mypy-stubs/mistune/renderers/_list.pyi:3:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/_list.pyi:4:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/_list.pyi:5:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/renderers/html.pyi:5:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/html.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/html.pyi:7:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/renderers/html.pyi:8:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/renderers/markdown.pyi:5:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/markdown.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/markdown.pyi:7:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/renderers/markdown.pyi:8:7: Cannot resolve imported module `._list`
+- error[unresolved-import] mypy-stubs/mistune/renderers/rst.pyi:5:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/rst.pyi:6:8: Cannot resolve imported module `..core`
+- error[unresolved-import] mypy-stubs/mistune/renderers/rst.pyi:7:8: Cannot resolve imported module `..util`
+- error[unresolved-import] mypy-stubs/mistune/renderers/rst.pyi:8:7: Cannot resolve imported module `._list`
+- error[unresolved-import] mypy-stubs/mistune/toc.pyi:3:7: Cannot resolve imported module `.core`
+- error[unresolved-import] mypy-stubs/mistune/toc.pyi:4:7: Cannot resolve imported module `.markdown`
+- error[unresolved-import] mypy-stubs/mistune/toc.pyi:5:7: Cannot resolve imported module `.util`
+- Found 400 diagnostics
++ Found 265 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ error[unresolved-attribute] mkdocs/tests/base.py:23:12: Type `Markdown` has no attribute `toc_tokens`
+- error[unresolved-import] mkdocs/theme.py:12:22: Module `yaml` has no member `CSafeLoader`
++ warning[unused-ignore-comment] mkdocs/theme.py:14:34: Unused blanket `type: ignore` directive
+- error[unresolved-import] mkdocs/utils/meta.py:43:22: Module `yaml` has no member `CSafeLoader`
++ warning[unused-ignore-comment] mkdocs/utils/meta.py:45:34: Unused blanket `type: ignore` directive
++ error[invalid-assignment] mkdocs/utils/yaml.py:27:5: Object of type `(ScalarNode &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]` is not assignable to `str`
+- error[unresolved-attribute] mkdocs/utils/yaml.py:23:35: Type `&lt;module 'yaml'&gt;` has no attribute `BaseLoader`
+- error[unresolved-attribute] mkdocs/utils/yaml.py:23:58: Type `&lt;module 'yaml'&gt;` has no attribute `ScalarNode`
+- error[unresolved-attribute] mkdocs/utils/yaml.py:109:28: Type `&lt;module 'yaml'&gt;` has no attribute `Loader`
+- error[unresolved-attribute] mkdocs/utils/yaml.py:128:46: Type `&lt;module 'yaml'&gt;` has no attribute `BaseLoader`
+- error[unresolved-attribute] mkdocs/utils/yaml.py:133:12: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+- Found 345 diagnostics
++ Found 342 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ error[no-matching-overload] dragonchain/lib/database/redis.py:117:14: No overload of bound method `__init__` matches arguments
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:102:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].set(name: @Todo(Support for `typing.TypeAlias`), value: @Todo(Support for `typing.TypeAlias`), ex: None | int | float | timedelta = None, px: None | int | float | timedelta = None, nx: bool = Literal[False], xx: bool = Literal[False], keepttl: bool = Literal[False], get: bool = Literal[False], exat: @Todo(Support for `typing.TypeAlias`) | None = None, pxat: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; bool | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:106:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].set(name: @Todo(Support for `typing.TypeAlias`), value: @Todo(Support for `typing.TypeAlias`), ex: None | int | float | timedelta = None, px: None | int | float | timedelta = None, nx: bool = Literal[False], xx: bool = Literal[False], keepttl: bool = Literal[False], get: bool = Literal[False], exat: @Todo(Support for `typing.TypeAlias`) | None = None, pxat: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; bool | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:110:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].get(name: @Todo(Support for `typing.TypeAlias`)) -&gt; Unknown | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:114:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].delete(*names: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:122:9: Attribute `assert_called_once` on type `Unknown | (bound method Redis[Unknown].flushall(asynchronous: bool = Literal[False], **kwargs: @Todo(Support for `typing.TypeAlias`)) -&gt; bool)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:126:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].hdel(name: @Todo(Support for `typing.TypeAlias`), *keys: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:130:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].lpush(name: @Todo(Support for `typing.TypeAlias`), *values: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:134:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].rpush(name: @Todo(Support for `typing.TypeAlias`), *values: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:138:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].delete(*names: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:142:9: Attribute `assert_called_once_with` on type `Unknown | (Overload[(name: @Todo(Support for `typing.TypeAlias`), key: @Todo(Support for `typing.TypeAlias`), value: @Todo(Support for `typing.TypeAlias`), mapping: Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)] | None = None, items: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; int, (name: @Todo(Support for `typing.TypeAlias`), key: None, value: None, mapping: Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)], items: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; int, (name: @Todo(Support for `typing.TypeAlias`), *, mapping: Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)], items: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; int])` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:146:9: Attribute `assert_called_once_with` on type `Unknown | (Overload[(keys: @Todo(Support for `typing.TypeAlias`) | Iterable[@Todo(Support for `typing.TypeAlias`)], timeout: Literal[0] | None = Literal[0]) -&gt; tuple[Unknown, Unknown], (keys: @Todo(Support for `typing.TypeAlias`) | Iterable[@Todo(Support for `typing.TypeAlias`)], timeout: int | float) -&gt; tuple[Unknown, Unknown] | None])` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:150:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].brpoplpush(src, dst, timeout: int | None = Literal[0]) -&gt; Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:154:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].get(name: @Todo(Support for `typing.TypeAlias`)) -&gt; Unknown | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:158:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].lindex(name: @Todo(Support for `typing.TypeAlias`), index: int) -&gt; Unknown | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:162:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].set(name: @Todo(Support for `typing.TypeAlias`), value: @Todo(Support for `typing.TypeAlias`), ex: None | int | float | timedelta = None, px: None | int | float | timedelta = None, nx: bool = Literal[False], xx: bool = Literal[False], keepttl: bool = Literal[False], get: bool = Literal[False], exat: @Todo(Support for `typing.TypeAlias`) | None = None, pxat: @Todo(Support for `typing.TypeAlias`) | None = None) -&gt; bool | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:166:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].ltrim(name: @Todo(Support for `typing.TypeAlias`), start: int, end: int) -&gt; bool)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:170:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].hget(name: @Todo(Support for `typing.TypeAlias`), key: @Todo(Support for `typing.TypeAlias`)) -&gt; Unknown | None)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:174:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].sadd(name: @Todo(Support for `typing.TypeAlias`), *values: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:178:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].sismember(name: @Todo(Support for `typing.TypeAlias`), value: @Todo(Support for `typing.TypeAlias`)) -&gt; bool)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:182:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].smembers(name: @Todo(Support for `typing.TypeAlias`)) -&gt; set[Unknown])` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:186:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].srem(name: @Todo(Support for `typing.TypeAlias`), *values: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:190:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].lrange(name: @Todo(Support for `typing.TypeAlias`), start: int, end: int) -&gt; list[Unknown])` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:194:9: Attribute `pipelineassert_called_once_with` on type `Unknown | Redis[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:198:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].llen(name: @Todo(Support for `typing.TypeAlias`)) -&gt; int)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:202:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].rpoplpush(src, dst) -&gt; Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:206:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].lpop(name, count: int | None = None) -&gt; Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:210:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].hgetall(name: @Todo(Support for `typing.TypeAlias`)) -&gt; dict[Unknown, Unknown])` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:214:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].hexists(name: @Todo(Support for `typing.TypeAlias`), key: @Todo(Support for `typing.TypeAlias`)) -&gt; bool)` is possibly unbound
++ warning[possibly-unbound-attribute] dragonchain/lib/database/redis_utest.py:218:9: Attribute `assert_called_once_with` on type `Unknown | (bound method Redis[Unknown].zadd(name: @Todo(Support for `typing.TypeAlias`), mapping: Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)], nx: bool = Literal[False], xx: bool = Literal[False], ch: bool = Literal[False], incr: bool = Literal[False], gt: @Todo(Support for `typing.TypeAlias`) | None = Literal[False], lt: @Todo(Support for `typing.TypeAlias`) | None = Literal[False]) -&gt; int)` is possibly unbound
+- Found 311 diagnostics
++ Found 341 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[unresolved-import] docs/refman/loaderyaml.py:166:30: Module `yaml` has no member `CLoader`
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1432:13: Attribute `write` on type `str | Unknown` is possibly unbound
++ error[unresolved-attribute] mesonbuild/backend/ninjabackend.py:1432:13: Type `str` has no attribute `write`
+- Found 1449 diagnostics
++ Found 1448 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
++ error[invalid-assignment] cwltool/main.py:169:9: Implicit shadowing of function `default_user_agent`
+- error[unresolved-import] mypy-stubs/arcp/__init__.pyi:1:7: Cannot resolve imported module `.parse`
+- error[unresolved-import] mypy-stubs/arcp/__init__.pyi:2:7: Cannot resolve imported module `.parse`
+- error[unresolved-import] mypy-stubs/spython/main/__init__.pyi:3:7: Cannot resolve imported module `.base`
+- error[unresolved-import] mypy-stubs/spython/main/__init__.pyi:4:7: Cannot resolve imported module `.build`
+- error[unresolved-import] mypy-stubs/spython/main/build.pyi:3:7: Cannot resolve imported module `.base`
+- error[unresolved-import] mypy-stubs/spython/main/parse/parsers/base.pyi:3:8: Cannot resolve imported module `..recipe`
+- error[unresolved-import] mypy-stubs/spython/main/parse/parsers/docker.pyi:1:8: Cannot resolve imported module `..recipe`
+- error[unresolved-import] mypy-stubs/spython/main/parse/parsers/docker.pyi:2:7: Cannot resolve imported module `.base`
+- error[unresolved-import] mypy-stubs/spython/main/parse/writers/base.pyi:1:8: Cannot resolve imported module `..recipe`
+- error[unresolved-import] mypy-stubs/spython/main/parse/writers/singularity.pyi:3:8: Cannot resolve imported module `..recipe`
+- error[unresolved-import] mypy-stubs/spython/main/parse/writers/singularity.pyi:4:7: Cannot resolve imported module `.base`
+- Found 315 diagnostics
++ Found 305 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ warning[possibly-unbound-attribute] paasta_tools/flink_tools.py:251:15: Attribute `url` on type `Request | PreparedRequest | None` is possibly unbound
++ warning[possibly-unbound-attribute] paasta_tools/flink_tools.py:269:15: Attribute `url` on type `Request | PreparedRequest | None` is possibly unbound
++ warning[possibly-unbound-attribute] paasta_tools/mesos_tools.py:668:34: Attribute `url` on type `Request | PreparedRequest | None` is possibly unbound
++ error[missing-argument] paasta_tools/tron/client.py:45:24: No argument provided for required parameter `url` of function `get`
++ error[missing-argument] paasta_tools/tron/client.py:51:24: No argument provided for required parameter `url` of function `post`
++ warning[unused-ignore-comment] paasta_tools/yaml_tools.py:17:48: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] paasta_tools/yaml_tools.py:18:48: Unused blanket `type: ignore` directive
+- error[unresolved-import] paasta_tools/yaml_tools.py:8:22: Module `yaml` has no member `CSafeLoader`
+- error[unresolved-import] paasta_tools/yaml_tools.py:9:22: Module `yaml` has no member `CSafeDumper`
+- error[unresolved-import] paasta_tools/yaml_tools.py:14:26: Module `yaml` has no member `CSafeLoader`
+- error[unresolved-import] paasta_tools/yaml_tools.py:15:26: Module `yaml` has no member `CSafeDumper`
+- Found 974 diagnostics
++ Found 977 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[unresolved-attribute] cki_lib/yaml.py:26:19: Type `&lt;module 'yaml'&gt;` has no attribute `SafeDumper`
+- error[unresolved-attribute] cki_lib/yaml.py:33:43: Type `&lt;module 'yaml'&gt;` has no attribute `ScalarNode`
+- error[unresolved-attribute] cki_lib/yaml.py:73:23: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
+- error[unresolved-attribute] cki_lib/yaml.py:107:23: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
++ error[unresolved-attribute] tests/test_session.py:148:33: Type `PreparedRequest` has no attribute `req_kwargs`
+- Found 180 diagnostics
++ Found 177 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
++ error[invalid-assignment] arviz/plots/ecdfplot.py:11:5: Implicit shadowing of function `ecdf`
++ error[no-matching-overload] arviz/plots/ecdfplot.py:314:30: No overload of bound method `cdf` matches arguments
++ error[missing-argument] arviz/plots/hdiplot.py:187:18: No arguments provided for required parameters `window_length`, `polyorder` of function `savgol_filter`
+- error[unresolved-import] arviz/stats/density_utils.py:6:27: Module `scipy.fftpack` has no member `fft`
+- error[unresolved-import] arviz/stats/density_utils.py:9:34: Module `scipy.signal.windows` has no member `gaussian`
+- error[unresolved-import] arviz/stats/density_utils.py:11:27: Module `scipy.special` has no member `ive`
++ error[not-iterable] arviz/stats/density_utils.py:262:23: Object of type `int` is not iterable
++ error[not-iterable] arviz/stats/density_utils.py:262:23: Object of type `float` is not iterable
++ error[no-matching-overload] arviz/stats/ecdf_utils.py:283:22: No overload of function `minimize_scalar` matches arguments
+- error[unresolved-import] arviz/stats/stats_utils.py:10:27: Module `scipy.fftpack` has no member `next_fast_len`
+- error[unresolved-import] arviz/stats/stats_utils.py:12:32: Module `scipy.stats.mstats` has no member `mquantiles`
++ error[invalid-argument-type] arviz/stats/stats_utils.py:343:61: Argument to function `mquantiles` is incorrect: Expected `tuple[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)] | tuple[()]`, found `(Unknown &amp; ~None) | tuple[Unknown, ...]`
+- error[unresolved-import] arviz/tests/base_tests/test_stats.py:12:27: Module `scipy.special` has no member `logsumexp`
+- error[unresolved-import] arviz/tests/base_tests/test_stats_utils.py:7:27: Module `scipy.special` has no member `logsumexp`
+
+operator (https://github.com/canonical/operator)
+- error[unresolved-attribute] ops/_private/yaml.py:24:45: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
+- error[unresolved-attribute] ops/_private/yaml.py:25:45: Type `&lt;module 'yaml'&gt;` has no attribute `SafeDumper`
++ warning[unused-ignore-comment] ops/storage.py:335:36: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] ops/storage.py:346:66: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] ops/storage.py:43:58: Type `&lt;module 'yaml'&gt;` has no attribute `Node`
+- error[unresolved-attribute] ops/storage.py:331:44: Type `&lt;module 'yaml'&gt;` has no attribute `SafeDumper`
+- error[unresolved-attribute] ops/storage.py:332:44: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
+- error[unresolved-attribute] ops/storage.py:362:46: Type `&lt;module 'yaml'&gt;` has no attribute `Dumper`
++ warning[unused-ignore-comment] ops/storage.py:355:36: Unused blanket `type: ignore` directive
+- Found 120 diagnostics
++ Found 117 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[unresolved-attribute] benchmarks/base/run.py:15:37: Type `&lt;module 'yaml'&gt;` has no attribute `FullLoader`
++ error[invalid-base] ddtrace/appsec/_iast/_taint_tracking/_vendor/pybind11/pybind11/setup_helpers.py:89:25: Invalid class base with type `&lt;class 'Extension'&gt; | &lt;class 'Extension'&gt;` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[invalid-argument-type] ddtrace/vendor/psutil/setup.py:221:54: Argument to bound method `append` is incorrect: Expected `tuple[str, str | None]`, found `tuple[Literal[&quot;PSUTIL_SUNOS10&quot;], Literal[1]]`
+- error[unresolved-attribute] docs/conf.py:419:61: Type `&lt;module 'yaml'&gt;` has no attribute `CLoader`
+- error[unresolved-attribute] tests/contrib/integration_registry/conftest.py:51:12: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+- Found 8724 diagnostics
++ Found 8723 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ error[no-matching-overload] optuna/progress_bar.py:60:38: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] optuna/progress_bar.py:64:38: No overload of bound method `__init__` matches arguments
+- Found 1183 diagnostics
++ Found 1185 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
++ warning[call-possibly-unbound-method] src/hotkeys.py:162:41: Method `__getitem__` of type `str | None` is possibly unbound
+- Found 51 diagnostics
++ Found 52 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[unresolved-attribute] cloudinit/config/cc_lxd.py:392:17: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+- error[unresolved-attribute] cloudinit/config/schema.py:1084:12: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+- error[unresolved-attribute] cloudinit/safeyaml.py:23:47: Type `&lt;module 'yaml'&gt;` has no attribute `Mark`
+- error[unresolved-attribute] cloudinit/safeyaml.py:23:68: Type `&lt;module 'yaml'&gt;` has no attribute `Mark`
+- error[unresolved-attribute] cloudinit/safeyaml.py:113:34: Type `&lt;module 'yaml'&gt;` has no attribute `SafeLoader`
+- error[unresolved-attribute] cloudinit/sources/helpers/vmware/imc/guestcust_util.py:273:16: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
++ error[missing-argument] cloudinit/url_helper.py:569:24: No arguments provided for required parameters `method`, `url` of bound method `request`
+- error[unresolved-attribute] cloudinit/util.py:991:13: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
++ error[invalid-argument-type] tests/unittests/test__init__.py:311:54: Argument to bound method `__init__` is incorrect: Expected `Response`, found `FakeResponse`
+- Found 743 diagnostics
++ Found 738 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- warning[unused-ignore-comment] github/GithubRetry.py:214:63: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] github/GithubRetry.py:222:48: Unused blanket `type: ignore` directive
+- Found 327 diagnostics
++ Found 325 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- error[unresolved-import] backend/services/user_updater.py:13:22: Module `httplib2` has no member `ServerNotFoundError`
+- Found 118 diagnostics
++ Found 117 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
++ error[no-matching-overload] manticore/core/workspace.py:381:24: No overload of bound method `__init__` matches arguments
+- Found 1251 diagnostics
++ Found 1252 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- warning[possibly-unbound-attribute] apprise/plugins/matrix.py:1369:54: Attribute `content` on type `None | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/matrix.py:1369:54: Attribute `content` on type `None | Response` is possibly unbound
++ error[unresolved-attribute] test/test_apprise_attachments.py:276:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_attach_http.py:446:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_attach_http.py:447:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_africas_talking.py:137:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_apprise_api.py:211:9: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_apprise_api.py:212:9: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_bulksms.py:160:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_bulkvs.py:145:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_burstsms.py:145:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_burstsms.py:170:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_burstsms.py:171:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_form.py:170:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_form.py:171:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_form.py:310:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_json.py:168:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_json.py:237:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_json.py:238:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_json.py:299:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_xml.py:182:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_xml.py:183:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_custom_xml.py:243:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_emby.py:102:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_emby.py:103:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_httpsms.py:138:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_join.py:165:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_join.py:166:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_lunasea.py:164:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_lunasea.py:165:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_mailgun.py:202:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_mailgun.py:203:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_mailgun.py:322:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_mailgun.py:323:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_messagebird.py:119:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_msg91.py:123:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_ntfy.py:425:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_ntfy.py:426:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_seven.py:120:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sinch.py:149:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sinch.py:170:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sinch.py:171:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sms_manager.py:132:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:284:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:285:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:334:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:335:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:554:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:556:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:572:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:596:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smseagle.py:597:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smtp2go.py:168:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_smtp2go.py:169:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:295:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:296:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:305:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:306:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:347:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_sparkpost.py:348:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_synology.py:144:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_threema.py:128:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_twilio.py:230:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_twilio.py:256:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_twilio.py:257:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:182:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:198:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:199:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:228:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:234:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:235:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_voipms.py:252:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_vonage.py:196:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_vonage.py:221:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_vonage.py:222:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_whatsapp.py:231:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_whatsapp.py:252:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_whatsapp.py:253:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:220:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:221:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:263:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:264:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:338:5: Unresolved attribute `status_code` on type `Request`.
++ error[unresolved-attribute] test/test_plugin_wxpusher.py:342:5: Unresolved attribute `content` on type `Request`.
++ error[unresolved-attribute] test/test_rest_plugins.py:3989:5: Unresolved attribute `status_code` on type `Request`.
+- Found 3625 diagnostics
++ Found 3708 diagnostics
+
+rclip (https://github.com/yurijmikhalevich/rclip)
++ error[no-matching-overload] rclip/main.py:116:10: No overload of bound method `__init__` matches arguments
+- Found 16 diagnostics
++ Found 17 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- error[unresolved-import] django-stubs/__init__.pyi:3:7: Cannot resolve imported module `.utils.version`
+- error[unresolved-import] django-stubs/apps/__init__.pyi:1:7: Cannot resolve imported module `.config`
+- error[unresolved-import] django-stubs/apps/__init__.pyi:2:7: Cannot resolve imported module `.registry`
+- error[unresolved-import] django-stubs/apps/registry.pyi:7:7: Cannot resolve imported module `.config`
+- error[unresolved-import] django-stubs/conf/__init__.pyi:7:1: Cannot resolve imported module `.`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:1:1: Cannot resolve imported module `.`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:2:7: Cannot resolve imported module `.decorators`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:3:7: Cannot resolve imported module `.decorators`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:4:7: Cannot resolve imported module `.decorators`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:5:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:6:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:7:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:8:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:9:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:10:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:11:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:12:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:13:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:14:7: Cannot resolve imported module `.filters`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:15:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:16:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:17:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:18:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:19:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:20:7: Cannot resolve imported module `.options`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:21:7: Cannot resolve imported module `.sites`
+- error[unresolved-import] django-stubs/contrib/admin/__init__.pyi:22:7: Cannot resolve imported module `.sites`
+- error[unresolved-import] django-stubs/contrib/admin/templatetags/admin_list.pyi:13:7: Cannot resolve imported module `.base`
+- error[unresolved-import] django-stubs/contrib/admin/templatetags/admin_modify.pyi:7:7: Cannot resolve imported module `.base`
+- error[unresolved-import] django-stubs/contrib/auth/__init__.pyi:9:7: Cannot resolve imported module `.signals`
+- error[unresolved-import] django-stubs/contrib/auth/__init__.pyi:10:7: Cannot resolve imported module `.signals`
+- error[unresolved-import] django-stubs/contrib/auth/__init__.pyi:11:7: Cannot resolve imported module `.signals`
+- error[inconsistent-mro] django-stubs/contrib/auth/forms.pyi:115:1: Cannot create a consistent method resolution order (MRO) for class `SetPasswordForm` with bases list `[typing.Generic[_UserType: AbstractBaseUser], &lt;class 'SetPasswordMixin[Unknown]'&gt;, Unknown]`
++ error[inconsistent-mro] django-stubs/contrib/auth/forms.pyi:115:1: Cannot create a consistent method resolution order (MRO) for class `SetPasswordForm` with bases list `[typing.Generic[_UserType: AbstractBaseUser], &lt;class 'SetPasswordMixin[Unknown]'&gt;, &lt;class 'Form'&gt;]`
+- error[unresolved-attribute] django-stubs/contrib/contenttypes/management/__init__.pyi:12:25: Type `&lt;module 'django.db.migrations'&gt;` has no attribute `RunPython`
+- error[unresolved-import] django-stubs/contrib/gis/db/backends/spatialite/base.pyi:5:7: Cannot resolve imported module `.client`
+- error[unresolved-import] django-stubs/contrib/gis/db/backends/spatialite/base.pyi:6:7: Cannot resolve imported module `.features`
+- error[unresolved-import] django-stubs/contrib/gis/db/backends/spatialite/base.pyi:7:7: Cannot resolve imported module `.introspection`
+- error[unresolved-import] django-stubs/contrib/gis/db/backends/spatialite/base.pyi:8:7: Cannot resolve imported module `.operations`
+- error[unresolved-import] django-stubs/contrib/gis/db/backends/spatialite/base.pyi:9:7: Cannot resolve imported module `.schema`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:3:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:4:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:5:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:6:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:7:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:8:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:9:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:10:7: Cannot resolve imported module `.fields`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:11:7: Cannot resolve imported module `.widgets`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:12:7: Cannot resolve imported module `.widgets`
+- error[unresolved-import] django-stubs/contrib/gis/forms/__init__.pyi:13:7: Cannot resolve imported module `.widgets`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:1:8: Cannot resolve imported module `..geometry`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:2:8: Cannot resolve imported module `..geometry`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:3:7: Cannot resolve imported module `.collections`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:4:7: Cannot resolve imported module `.collections`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:5:7: Cannot resolve imported module `.collections`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:6:7: Cannot resolve imported module `.collections`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:7:7: Cannot resolve imported module `.error`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:8:7: Cannot resolve imported module `.factory`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:9:7: Cannot resolve imported module `.factory`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:10:7: Cannot resolve imported module `.geometry`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:11:7: Cannot resolve imported module `.io`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:12:7: Cannot resolve imported module `.io`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:13:7: Cannot resolve imported module `.io`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:14:7: Cannot resolve imported module `.io`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:15:7: Cannot resolve imported module `.libgeos`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:16:7: Cannot resolve imported module `.linestring`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:17:7: Cannot resolve imported module `.linestring`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:18:7: Cannot resolve imported module `.point`
+- error[unresolved-import] django-stubs/contrib/gis/geos/__init__.pyi:19:7: Cannot resolve imported module `.polygon`
+- error[unresolved-import] django-stubs/contrib/gis/geos/prepared.pyi:3:7: Cannot resolve imported module `.base`
+- error[unresolved-import] django-stubs/contrib/gis/geos/prepared.pyi:4:7: Cannot resolve imported module `.geometry`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:1:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:2:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:3:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:4:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:5:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:6:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:7:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:8:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:9:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:10:7: Cannot resolve imported module `.api`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:11:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:12:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:13:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:14:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:15:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:16:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/messages/__init__.pyi:17:7: Cannot resolve imported module `.constants`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:1:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:2:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:3:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:4:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:5:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:6:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:7:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:8:7: Cannot resolve imported module `.general`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:9:7: Cannot resolve imported module `.statistics`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:10:7: Cannot resolve imported module `.statistics`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:11:7: Cannot resolve imported module `.statistics`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:12:7: Cannot resolve imported module `.statistics`
+- error[unresolved-import] django-stubs/contrib/postgres/aggregates/__init__.pyi:13:7: Cannot resolve import...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-16 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-16 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-16 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-16 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-16 13:36</div>
+            <div class="timeline-body"><p>nice fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

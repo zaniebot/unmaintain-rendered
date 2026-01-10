@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relativize path in github annotations - astral-sh/ruff #17435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relativize path in github annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17435">#17435</a>
+        opened by <a href="https://github.com/sochotnicky">@sochotnicky</a>
+        on 2025-04-16 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-16 21:10</div>
+            <div class="timeline-body"><hr />
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Without relative paths GH actions will not correctly display inline
+comments in the right place.</p>
+<p>It's possible this is only affecting GitHub enterprise or self-hosted
+runners.</p>
+<p>See #17433</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p><code>ruff check --output-format=github</code> should show annotations with paths relative to root of the project instead of absolute paths in the filesystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-16 21:27</div>
+            <div class="timeline-body"><p>Thanks for the report, and for the PR! Have you been able to test if this fixed your issue? And is it possible to add a test in ruff to demonstrate it, or is the difference only apparent on the GitHub runners?</p>
+<p>I'm also wondering if we should track the <code>project_dir</code> like in the GitLab version:</p>
+<p>https://github.com/astral-sh/ruff/blob/0d29246eb2822617e962c203233216eefc278319/crates/ruff_linter/src/message/gitlab.rs#L79-L81</p>
+<p>I'm not that familiar with this part of the codebase, so these are just a couple of quick ideas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-16 21:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-16 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the report, and for the PR! Have you been able to test if this fixed your issue?</p>
+</blockquote>
+<p>Yes, I actually realized that the annotations were set, but comments were not shown because the paths didn't match. So testing this is in the end easy. Compile ruff, run it in a project with github output and make sure paths are relative to project root not absolute filesystem paths.</p>
+<p>There's probably some corner cases but this code seems to work as expected for my case at least</p>
+<blockquote>
+<p>And is it possible to add a test in ruff to demonstrate it, or is the difference only apparent on the GitHub runners?</p>
+</blockquote>
+<p>I am sure it's possible, just not sure how to do that right now. All current tests seem to have filenames without paths in them so I'd need to dig a bit how that works</p>
+<blockquote>
+<p>I'm also wondering if we should track the <code>project_dir</code> like in the GitLab version:</p>
+<p>https://github.com/astral-sh/ruff/blob/0d29246eb2822617e962c203233216eefc278319/crates/ruff_linter/src/message/gitlab.rs#L79-L81</p>
+<p>I'm not that familiar with this part of the codebase, so these are just a couple of quick ideas.</p>
+</blockquote>
+<p>That gitlab example is a good one actually. I agree that making this consistent makes sense. Will take a few days to get back to this to finish it off. Feel free to adjust ahead of time if you feel like it :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-17 07:31</div>
+            <div class="timeline-body"><p>So what's missing is tests. It's doable, one way might be to tweak https://github.com/sochotnicky/ruff/blob/4d735c496b8dd02dde5b24c72d702b30742a151b/crates/ruff_linter/src/message/mod.rs#L376 method so that <code>fib.py</code> and <code>undef.py</code> actually have a path. Something like <code>/projects/project/fib.py</code> and <code>/projects/project/undef.py</code>.</p>
+<p>Doing that unconditionally would change outputs of other tests too though. Adding an argument to <code>create_messages</code> that would be Option<String> for &quot;base path&quot; for the files doesn't feel quite right either.</p>
+<p>Any preferences/thoughts?</p>
+<p>Edit: I've pushed a commit with the <code>/projects/project/...</code> change to better illustrate. If the approach is acceptable I can polish it a bit (i.e. get the tests working - they are broken in GH CI since the code tries to get relative path for a file that has no path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sochotnicky">@sochotnicky</a> reviewed on 2025-04-17 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on <code>crates/ruff_linter/src/message/snapshots/ruff_linter__message__gitlab__tests__output.snap</code>:15 on 2025-04-17 08:06</div>
+            <div class="timeline-body"><p>Alternatively - provide the <code>project_dir</code> same as in github test and this won't change, instead we could add a new test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-18 06:46</div>
+            <div class="timeline-body"><p>Re-thinking, I actually think changing the test cases to use some full absolute path would make sense? That's what gets actually used in real usage (at least in my case).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-18 16:52</div>
+            <div class="timeline-body"><p>Thanks again for working on this. I've been checking in on it when I receive notifications but haven't done a full review yet. I'm also interested in @MichaReiser's thoughts when he gets back next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-19 09:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks again for working on this. I've been checking in on it when I receive notifications but haven't done a full review yet. I'm also interested in @MichaReiser's thoughts when he gets back next week.</p>
+</blockquote>
+<p>No rush, I have a workaround in place. I'll pause work until I hear back so I don't waste time. I realize the junit tests fail on windows. If the current approach would be acceptable I'd have a look and fix that up. Otherwise I can submit the fix without the test addition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 07:59</div>
+            <div class="timeline-body"><p>I haven't looked at the implementation yet because I wanted to consult the GitHub documentation on annotations first but it always returns a <em>Too many requests</em> errors. Well... https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions</p>
+<p>Do you have any reference for the github annotations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 14:55</div>
+            <div class="timeline-body"><p>I'm a bit hesitant merging this change without a reproduction in the issue. Mainly because I'm surprised that GitHub annotations don't work when using absolute paths (which I think is what we currently have) but do work when using relative paths. Unless the problem is that paths aren't relative nor absolute.</p>
+<p>A reproduction on GitHub would also be great to verify that this change works as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sochotnicky">@sochotnicky</a> on 2025-04-23 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit hesitant merging this change without a reproduction in the issue. Mainly because I'm surprised that GitHub annotations don't work when using absolute paths (which I think is what we currently have) but do work when using relative paths. Unless the problem is that paths aren't relative nor absolute.</p>
+</blockquote>
+<p>I understand. I've done some manual testing with various echo calls that use relative/absolute paths and the absolute paths simply do not work on our self-hosted runners. The only thing I can think of is that there are several different absolute paths to the work directory (due to symlinks). And maybe for some reason this messes up GH runner code and that's where the actual bug is.</p>
+<p>I'd need to dig through https://github.com/actions/runner/blob/c21dc6090bd630da629d79c492a2c9616be71e64/src/Runner.Worker/Handlers/OutputManager.cs and perhaps https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging to confirm the above theory to some degree though</p>
+<blockquote>
+<p>A reproduction on GitHub would also be great to verify that this change works as expected.</p>
+</blockquote>
+<p>I don't have anything public I can share since this is all on private GH enterprise instance. I could redact logs etc. Or perhaps start a dedicated runner and connect it to a public GH repository for testing.</p>
+<p>I don't think I'll have much time in coming days to dig deeper though. At some point I'll circle back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-23 15:19</div>
+            <div class="timeline-body"><p>We could ask a question in https://github.com/orgs/community/discussions.</p>
+<blockquote>
+<p>I'd need to dig through <a href="https://github.com/actions/runner/blob/c21dc6090bd630da629d79c492a2c9616be71e64/src/Runner.Worker/Handlers/OutputManager.cs">actions/runner@<code>c21dc60</code>/src/Runner.Worker/Handlers/OutputManager.cs</a> and perhaps <a href="https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging">docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging</a> to confirm the above theory to some degree though</p>
+</blockquote>
+<p>You're possibly aware of this but for GitHub docs, you'd need to search in the enterprise documentation, the link that you've provided is for the public instance. You can change that using a dropdown menu in the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-24 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/github.rs</code>:17 on 2025-04-24 06:54</div>
+            <div class="timeline-body"><blockquote>
+<p>The default working directory on the runner for steps, and the default location of your repository when using the <a href="https://github.com/actions/checkout">checkout</a> action. For example, /home/runner/work/my-repo-name/my-repo-name.</p>
+</blockquote>
+<p>I'm concerned that this will break users that clone their repository to a non-default location.</p>
+<p>It makes me wonder if we need to transform the paths twice:</p>
+<ol>
+<li>Make the path absolute relative to the current working directory</li>
+<li>Make the path relative to <code>GITHUB_WORKSPACE</code></li>
+</ol>
+<p>Or are the paths already absolute?</p>
+<p>(I'm sorry, I'm not very familiar with the entire Message infrastructure)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-26 09:38</div>
+            <div class="timeline-body"><p>It seems this PR has stalled. Feel free to comment if you plan to continue working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-26 09:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

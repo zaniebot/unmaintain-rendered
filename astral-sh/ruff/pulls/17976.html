@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement a recursive check for RUF060 - astral-sh/ruff #17976</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement a recursive check for RUF060</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17976">#17976</a>
+        opened by <a href="https://github.com/naslundx">@naslundx</a>
+        on 2025-05-09 08:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/naslundx">@naslundx</a> on 2025-05-09 08:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The existing implementation of RUF060 (InEmptyCollection) is not recursive, meaning that although set([]) results in an empty collection, the existing code fails it because set is taking an argument.</p>
+<p>The updated implementation allows set and frozenset to take empty collection as positional argument (which results in empty set/frozenset).</p>
+<h2>Test Plan</h2>
+<p>Added test cases for recursive cases + updated snapshot (see RUF060.py).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-09 08:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-09 16:25</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/in_empty_collection.rs</code>:78 on 2025-05-09 16:34</div>
+            <div class="timeline-body"><p>Actually, is this part correct? I tested locally and</p>
+<pre><code class="language-python">frozenset() in {frozenset()}
+</code></pre>
+<p>is getting a diagnostic now, even though Python returns <code>True</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; frozenset() in {frozenset()}
+True
+</code></pre>
+<p>I think we may need to limit the recursive case to calls like down below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-09 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/naslundx">@naslundx</a> reviewed on 2025-05-09 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/naslundx">@naslundx</a> on <code>crates/ruff_linter/src/rules/ruff/rules/in_empty_collection.rs</code>:78 on 2025-05-09 19:56</div>
+            <div class="timeline-body"><p>Oh, that's a very good find. Indeed, I did not consider the difference between how the two ways of constructing a set differ</p>
+<pre><code>&gt;&gt;&gt; set([frozenset()]) == {frozenset()}  # note the [...]
+True
+</code></pre>
+<p>Will fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/naslundx">@naslundx</a> reviewed on 2025-05-09 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/naslundx">@naslundx</a> on <code>crates/ruff_linter/src/rules/ruff/rules/in_empty_collection.rs</code>:78 on 2025-05-09 20:00</div>
+            <div class="timeline-body"><p>Did not expect this either, but...</p>
+<pre><code>&gt;&gt;&gt; len({&quot;&quot;})
+1
+
+&gt;&gt;&gt; len(set(&quot;&quot;))
+0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naslundx">@naslundx</a> on 2025-05-09 20:21</div>
+            <div class="timeline-body"><p>Thanks @ntBre - I reduced the PR but added some more test cases from comments above. (changes in new commit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-05-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-05-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-12 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/in_empty_collection.rs</code>:78 on 2025-05-12 20:13</div>
+            <div class="timeline-body"><p>Ah that is a funny one, calling <code>set</code> on a string will create a set of the characters:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; set(&quot;123&quot;)
+{'1', '2', '3'}
+</code></pre>
+<p>so the empty string gives the empty set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-12 20:15</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-12 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-12 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a> reviewed on 2025-05-15 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Avasam">@Avasam</a> on <code>crates/ruff_linter/src/rules/ruff/rules/in_empty_collection.rs</code>:78 on 2025-05-15 20:24</div>
+            <div class="timeline-body"><p>Classic <code>str</code> is an <code>Iterable[str]</code> ^-^</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

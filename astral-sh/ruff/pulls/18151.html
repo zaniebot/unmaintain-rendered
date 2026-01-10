@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Avoid panicking when there are multiple workspaces - astral-sh/ruff #18151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Avoid panicking when there are multiple workspaces</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18151">#18151</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-17 13:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-17 13:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the language server to avoid panicking when there are multiple workspace folders passed during initialization. The server currently picks up the first workspace folder and provides a warning and a log message.</p>
+<h2>Test Plan</h2>
+<p><img width="1724" alt="Screenshot 2025-05-17 at 11 43 09" src="https://github.com/user-attachments/assets/1a7ddbc3-198d-4191-a28f-9b69321e8f99" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-05-17 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-05-17 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-17 15:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-05-17 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-17 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:100 on 2025-05-17 16:18</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        if workspaces.len() &gt; 1 {
+            let first = workspaces.first().unwrap();
+        }
+
+        if let [first, _second, ..] = workspaces.as_slice() {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-17 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-20 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:100 on 2025-05-20 15:23</div>
+            <div class="timeline-body"><p>I'm assuming you mean something like the following as I'm not able to follow the suggested diff:</p>
+<pre><code class="language-rs">        let workspaces = if let [first, _second, ..] = workspaces.as_slice() {
+            tracing::warn!(
+                &quot;Multiple workspaces are not yet supported, using the first workspace: {}&quot;,
+                &amp;first.0
+            );
+            show_warn_msg!(
+                &quot;Multiple workspaces are not yet supported, using the first workspace: {}&quot;,
+                &amp;first.0
+            );
+            vec![first.clone()]
+        } else {
+            workspaces
+        };
+</code></pre>
+<p>This is not possible without adding <code>Clone</code> to <code>ClientSettings</code> which we purposely avoided before.</p>
+<p>I'm going to go ahead with the current approach but happy to understand what you meant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-05-20 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-05-20 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-20 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

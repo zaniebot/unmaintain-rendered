@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] add fix safety section (`SIM110`) - astral-sh/ruff #18114</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] add fix safety section (<code>SIM110</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18114">#18114</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-05-15 06:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-05-15 06:53</div>
+            <div class="timeline-body"><p>The PR add the <code>fix safety</code> section for rule <code>SIM110</code> (#15584 )</p>
+<h3>Unsafe Fix Example</h3>
+<pre><code class="language-python">def predicate(item):
+    global called
+    called += 1
+    if called == 1:
+    # after first call we change the method
+        def new_predicate(_): return False
+        globals()['predicate'] = new_predicate
+    return True
+
+def foo():
+    for item in range(10):
+        if predicate(item):
+            return True
+    return False
+
+def foo_gen():
+    return any(predicate(item) for item in range(10))
+
+called = 0
+print(foo())      # true – returns immediately on first call
+
+called = 0
+print(foo_gen())  # false – second call uses new `predicate`
+</code></pre>
+<h3>Note</h3>
+<p>I notice that <a href="https://github.com/astral-sh/ruff/blob/46be305ad243a5286d4269b1f8e5fd67623d38c2/crates/ruff_linter/src/rules/flake8_simplify/rules/reimplemented_builtin.rs#L60">here</a> we have two rules, <code>SIM110</code> &amp; <code>SIM111</code>. The second one seems not anymore active. Should I delete <code>SIM111</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-15 07:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-05-15 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-15 20:42</div>
+            <div class="timeline-body"><p>That's quite an exotic example! I'm not sure if it's doing exactly what you think, though. I tried switching the order in which I call <code>foo</code> and <code>foo_gen</code>, and the output was still <code>True</code> and then <code>False</code>:</p>
+<h3>Original order</h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; def predicate(item):
+...     global called
+...     called += 1
+...     if called == 1:
+...     # after first call we change the method
+...         def new_predicate(_): return False
+...         globals()['predicate'] = new_predicate
+...     return True
+...
+... def foo():
+...     for item in range(10):
+...         if predicate(item):
+...             return True
+...     return False
+...
+... def foo_gen():
+...     return any(predicate(item) for item in range(10))
+...
+... called = 0
+... print(foo())      # true – returns immediately on first call
+...
+... called = 0
+... print(foo_gen())  # false – second call uses new `predicate`
+...
+True
+False
+</code></pre>
+<h3>Swapped order</h3>
+<pre><code class="language-pycon">&gt;&gt;&gt; def predicate(item):
+...     global called
+...     called += 1
+...     if called == 1:
+...     # after first call we change the method
+...         def new_predicate(_): return False
+...         globals()['predicate'] = new_predicate
+...     return True
+...
+... def foo():
+...     for item in range(10):
+...         if predicate(item):
+...             return True
+...     return False
+...
+... def foo_gen():
+...     return any(predicate(item) for item in range(10))
+...
+... called = 0
+... print(foo_gen())      # true – returns immediately on first call
+...
+... called = 0
+... print(foo())  # false – second call uses new `predicate`
+...
+True
+False
+</code></pre>
+<p>I think both versions use the same <code>predicate</code> for the whole loop, but <code>called</code> isn't actually getting reset between calls.</p>
+<p>So removing comments might be the main reason for unsafety here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-05-18 20:13</div>
+            <div class="timeline-body"><p>@ntBre You are right. :-)</p>
+<p>I just added the fact it could remove comment.</p>
+<p>Other question: we could make the fix <em>safe</em> when it doesn't remove comments right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-19 20:37</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<blockquote>
+<p>Other question: we could make the fix safe when it doesn't remove comments right?</p>
+</blockquote>
+<p>Yes, I think that's right since we couldn't come up with any other reason for the unsafety.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-19 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-19 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto generate ast expression nodes - astral-sh/ruff #16285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto generate ast expression nodes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16285">#16285</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2025-02-20 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-02-20 19:13</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Part of https://github.com/astral-sh/ruff/issues/15655</p>
+<ul>
+<li>Auto generate AST nodes using definitions in <code>ast.toml</code>. I added attributes similar to <a href="https://github.com/python/cpython/blob/main/Parser/asdl.py#L67"><code>Field</code></a> in ASDL to hold field information</li>
+</ul>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Nothing outside the <code>ruff_python_ast</code> package should change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-02-20 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 19:26</div>
+            <div class="timeline-body"><p>Uhh, exciting.</p>
+<p>I do feel a bit conflicted about using <code>toml</code> to define our grammar over e.g. something like ungrammar but maybe it's the right choice and doesn't really matter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-20 19:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-02-20 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-02-20 19:35</div>
+            <div class="timeline-body"><p>@MichaReiser I will also use ungrammar on a separate branch to see the difference I just know the name nothing more. I was also unsure if I should extend the <code>ast.toml</code> file or not.</p>
+<p>I first started by re-using the ASDL parser by python and then realized the ASDL is not offering more functionality here for generating Nodes and Enums. I decided to continue with <code>toml</code> file since we can add custom fields there as well. For example the fields order or other payload can be added to the <code>toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 20:45</div>
+            <div class="timeline-body"><p>RustPython used to use ASDL and, uff, that was painful. It's probably different because we actually parsed the official python grammar and derived the AST from it. The problem with that is that our AST diverged in many places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:112 on 2025-02-20 21:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the AST definition easy to understand and maintain?</p>
+</blockquote>
+<p>Given this concern, this syntax does start to look a bit unwieldy.</p>
+<blockquote>
+<p>Is it easy to parse in our code generator?</p>
+</blockquote>
+<p>But on the other hand, continuing to use TOML still makes it easier to iterate on the code generator itself.</p>
+<p>So given all of this, I'd still lean towards using this TOML syntax.  We can always revisit the syntax later if we feel there's something that e.g. ungrammar would give us that the TOML doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:647 on 2025-02-20 21:17</div>
+            <div class="timeline-body"><p>I would suggest checking whether the AST node type has a non-<code>None</code> <code>fields</code> instead of hard-coding a list of nodes here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:505 on 2025-02-20 21:18</div>
+            <div class="timeline-body"><p>In other places, we are using</p>
+<pre><code class="language-rust">use crate::{self as ast};
+</code></pre>
+<p>and then <code>ast::ExprDict</code> instead of <code>crate::ExprDict</code>.  That makes it mimic how this crate is used in the rest of the ruff codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-20 21:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I do feel a bit conflicted about using <code>toml</code> to define our grammar over e.g. something like ungrammar but maybe it's the right choice and doesn't really matter?</p>
+</blockquote>
+<p>To be honest I don't have a strong opinion between our hand-rolled TOML, ASDL, and ungrammar.  To me, the main concerns are:</p>
+<ul>
+<li>Is the AST definition easy to understand and maintain?</li>
+<li>Is it easy to parse in our code generator?</li>
+</ul>
+<p>Our hand-rolled TOML was great for the first proof-of-concept, since we could rely on Python's builtin <code>tomllib</code> to do the bulk of the parsing.</p>
+<p>I thought ASDL could be nice primarily because we could reuse a lot of the parsing logic from CPython, since (at least at the moment) we are using a Python script to parse the AST definition and generate our (Rust) code.  (At first I hoped it would also have the benefit of letting us reuse the <em>grammar itself</em> from CPython, but as @MichaReiser points out, our AST has diverged from CPython's representation.)</p>
+<blockquote>
+<p>RustPython used to use ASDL and, uff, that was painful.</p>
+</blockquote>
+<p>What part was painful about it?  Was the syntax itself too limited?  Or was it cumbersome to parse and generate code from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p>What part was painful about it? Was the syntax itself too limited? Or was it cumbersome to parse and generate code from?</p>
+</blockquote>
+<p>The main pain point was that it parsed python's official AST grammar and then did some hacky overrides in code for where we wanted to diverge.</p>
+<p>My other concern with using ASDL is that it isn't easy for us to extend if we need to and I always found it hard to read (e.g. could we extract field documentation?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-02-21 22:25</div>
+            <div class="timeline-body"><p>good news 🎉 I was able to complete the generation for all expression nodes. There are a few hacky things I need to fix.</p>
+<p>We need a way to provide the derive attribute to structs. Right now I just added a <code>derives</code> field that adds additional derives for nodes that have the <code>Default</code> derive.</p>
+<pre><code>ExprNoneLiteral = { fields = [], derives = [&quot;Default&quot;]}
+</code></pre>
+<p>I initially thought only knowing a field is a sequence or not would be enough to insert it in a <code>Vec</code> but I found in <code>ExprCompare</code> one of the types is <code>Box&lt;[crate::CmpOp]&gt;</code>.</p>
+<pre><code>ExprCompare = { fields = [
+    { name = &quot;ops&quot;, type = &quot;Box&lt;[crate::CmpOp]&gt;&quot;},
+    { name = &quot;comparators&quot;, type = &quot;Box&lt;[Expr]&gt;&quot;}
+]}
+</code></pre>
+<p>I added a rule to automatically box if a field type is the group of the node it belongs to so we box every <code>Expr</code> but this might be confusing because for <code>Box&lt;str&gt;</code> we need to box explicitly. Or for <code>[Expr]</code> type the auto boxing won't work. I'm also not interested in making it more complicated but I'm not sure what way would be better.
+Also it won't work in this example:</p>
+<pre><code>{ name = &quot;parameters&quot;, type = &quot;Box&lt;crate::Parameters&gt;&quot;, optional = true },
+</code></pre>
+<p>I'm not sure if we refer to <code>Name</code> just by it's name and import it in the file or like this:</p>
+<pre><code>{ name = &quot;id&quot;, type = &quot;name::Name&quot; },
+</code></pre>
+<p>The current code also uses <code>crate::</code> before every type. This is wrong because if a type is <code>bool</code> it should not become <code>crate::bool</code> but removing that requires every type to contain the <code>crate</code> word which is redundant mostly. We can solve this by having a map of types that should not have <code>crate::</code> I don't know what would be the easiest solution.</p>
+<p>I'm reading about ungrammar but I feel because of the extensibility we need in the generator using a custom file would be easier because we can add stuff without hacking it on top of something else. But I have to read it first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-02-25 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:100 on 2025-02-25 14:43</div>
+            <div class="timeline-body"><p>as a style nit, the following are equivalent TOML (i.e., it shouldn't require changes to the generator) that I think might be a bit easier to read:</p>
+<pre><code class="language-toml">[Expr.nodes.ExprUnaryOp]
+fields = [
+  { name = &quot;op&quot;, type = &quot;UnaryOp&quot; },
+  { name = &quot;operand&quot;, type = &quot;Expr&quot; }
+]
+</code></pre>
+<p>or</p>
+<pre><code class="language-toml">[[Expr.nodes.ExprUnaryOp.fields]]
+name = &quot;op&quot;
+type = &quot;UnaryOp&quot;
+
+[[Expr.nodes.ExprUnaryOp.fields]]
+name = &quot;operand&quot;
+type = &quot;Expr&quot;
+</code></pre>
+<p>I have a slight preference for the last one, since it eliminates the nested maps and lists from the TOML.  What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:167 on 2025-02-25 14:45</div>
+            <div class="timeline-body"><p>and combining the above suggestion with the extra <code>derives</code> field, you'd get:</p>
+<pre><code class="language-toml">[Expr.nodes.ExprBooleanLiteral]
+derives = [&quot;Default&quot;]
+
+[[Expr.nodes.ExprBooleanLiteral.fields]]
+name = &quot;value&quot;
+type = &quot;bool&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:581 on 2025-02-25 14:49</div>
+            <div class="timeline-body"><p>two nits:</p>
+<p>Since you use <code>[]</code> as the default for <code>derives</code> in the <code>Field</code> constructor I don't think you need it here.</p>
+<p>And you can eliminate the trailing comma for an empty <code>derives</code> list as follows:</p>
+<pre><code class="language-suggestion">                &quot;#[derive(Clone, Debug, PartialEq&quot;
+                + &quot;&quot;.join(f&quot;, {derive}&quot; for derive in node.derives)
+</code></pre>
+<p>(The second part is less important since we're going to <code>rustfmt</code> the code anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:591 on 2025-02-25 14:52</div>
+            <div class="timeline-body"><p>I like your suggestion of adding a hard-coded list of types (defined near the top of this file) that don't require a <code>crate::</code> qualifier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:593 on 2025-02-25 14:53</div>
+            <div class="timeline-body"><p>We will want to do this if the field type is <em>any</em> group, not just the current group.  Most of the <code>Stmt</code> nodes, for instance, contain expressions, which are all <code>Box&lt;Expr&gt;</code> even though that's a different node group:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c007db7e23b44a8824e2848bb15d8448b46ceee/crates/ruff_python_ast/src/nodes.rs#L178-L183</p>
+<blockquote>
+<p>I added a rule to automatically box if a field type is the group of the node it belongs to so we box every <code>Expr</code> but this might be confusing because for <code>Box&lt;str&gt;</code> we need to box explicitly. Or for <code>[Expr]</code> type the auto boxing won't work. I'm also not interested in making it more complicated but I'm not sure what way would be better.</p>
+</blockquote>
+<p>I think this suggestion also makes this concern less concerning: auto-boxing for singleton node groups is great, and that doesn't mean we have to find a way to auto-box every place that <code>Box</code> appears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:392 on 2025-02-25 14:58</div>
+            <div class="timeline-body"><p>These comments have value, so they should either move over to the TOML file as TOML comments near the corresponding node definitions, or should get added as another TOML field so that we can still add them to the generated output.</p>
+<p>We are not currently publishing this to <code>crates.io</code>/<code>docs.rs</code>, so I would be fine with just moving them over as TOML comments for now, since the TOML file will become our source-of-truth documentation for these types and their fields.  We can always find a way to add them as rustdocs in the future should we need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:650 on 2025-02-25 14:59</div>
+            <div class="timeline-body"><p>As we get closer to a mergeable version of this PR, don't forget to remove all of these commented-out blocks.  They will exist in the git history if we ever need to resurrect them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/src/relocate.rs</code>:21 on 2025-02-25 14:59</div>
+            <div class="timeline-body"><p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:185 on 2025-02-25 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if we refer to <code>Name</code> just by it's name and import it in the file or like this:</p>
+<pre><code>{ name = &quot;id&quot;, type = &quot;name::Name&quot; },
+</code></pre>
+</blockquote>
+<p>I think it's worth ensuring that we can use just <code>Name</code> here in the TOML, and importing it at the top of the generated Rust file is a perfectly fine way to do that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:147 on 2025-02-25 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I initially thought only knowing a field is a sequence or not would be enough to insert it in a <code>Vec</code> but I found in <code>ExprCompare</code> one of the types is <code>Box&lt;[crate::CmpOp]&gt;</code></p>
+</blockquote>
+<p>Doing this as a hard-coded type without a <code>seq</code> is just fine as a special case.  We might also check whether they <em>need</em> to be a box-of-slice instead of a vec.  The only benefit I can see is that we save one word of storage since we only need pointer+length instead of pointer+length+capacity.  And if that's worth doing, why aren't we doing that for all of the other vecs?  But we don't have to tackle that in this PR, this is fine as you have it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:169 on 2025-02-25 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>We need a way to provide the derive attribute to structs. Right now I just added a <code>derives</code> field that adds additional derives for nodes that have the <code>Default</code> derive.</p>
+</blockquote>
+<p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-25 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>good news 🎉 I was able to complete the generation for all expression nodes. There are a few hacky things I need to fix.</p>
+</blockquote>
+<p>This is starting to come together very nicely! Thank you for tackling this.</p>
+<blockquote>
+<p>I'm reading about ungrammar but I feel because of the extensibility we need in the generator using a custom file would be easier because we can add stuff without hacking it on top of something else. But I have to read it first.</p>
+</blockquote>
+<p>Given some of my style nits about cleaning up the TOML, I think it's fine to proceed with this PR without also looking for a way to migrate to ungrammar.  I think that can be a separate experiment/PR — and in all honesty, a lower priority one, since this seems to be shaping up nicely as it currently is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:185 on 2025-02-25 18:54</div>
+            <div class="timeline-body"><p>I defined the imports at the top of the <code>generate.py</code>.</p>
+<p>One additional improvement is to define the imports in a way we can check if a name is imported and not use <code>crate</code> prefix for it.</p>
+<p>For now I just used the global list of types we don't want to prefix with <code>crate</code>(the other comment) instead. Because we only have one import and it might be too soon to generalize.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:392 on 2025-02-25 19:19</div>
+            <div class="timeline-body"><p>I moved this comment and the python ast links to the TOML file. I skipped the rust doc. But it might be useful to add them even before publishing the crates because the docs will show up in the editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-25 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-25 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:100 on 2025-02-25 19:32</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-25 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:392 on 2025-02-25 19:46</div>
+            <div class="timeline-body"><p>I decided to do this now since we were adding the comments for <code>Mod</code> I followed the same approach and this way the comments also show up in the editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Glyphack on 2025-02-26 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Glyphack on 2025-02-26 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-26 07:40</div>
+            <div class="timeline-body"><p>Should we use inline arrays? I find the syntax very verbose to read and find it hard to get a sense of a nodes fields</p>
+<pre><code class="language-suggestion">fields = [
+	{ name = &quot;op&quot;, type = &quot;BoolOp&quot; },
+	{ name = &quot;values&quot;, type = &quot;Expr&quot;, seq = true },
+	...
+}
+</code></pre>
+<p>The downside of this is that inline tables can't be multiline (this can be a problem with comments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:96 on 2025-02-26 07:40</div>
+            <div class="timeline-body"><p>Nit: Just doc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:266 on 2025-02-26 07:48</div>
+            <div class="timeline-body"><p>Having to explicitly use <code>Box&lt;[Expr]&gt;</code> here has the downside that it still requires manually updating all types when changing from one representation to another.</p>
+<p>I also find that <code>type = Expr</code> + <code>seq = true</code> reads somewhat strangely. It also allows for combination that aren't allowed. E.g. is <code>seq = true</code> + <code>optional = true</code> supported? I wonder if we should do something like:</p>
+<pre><code>type = &quot;Expr&quot; // single item or escape hatch 
+type = { kind: &quot;sequence&quot;, element-type: &quot;Expr&quot;, slice: true } 
+type = { kind: &quot;required&quot;, value: &quot;Expr&quot; }
+type = { kind: &quot;optiona&quot;, value: &quot;Expr&quot; }
+</code></pre>
+<p>I'm not very convinced it is better. Maybe you have ideas to improve it further?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:287 on 2025-02-26 07:50</div>
+            <div class="timeline-body"><p>Nit: We could also use a list here and join the elements?</p>
+<pre><code class="language-suggestion">rustdoc = [
+	&quot;An AST node that represents either a single-part f-string literal&quot;,
+	&quot;or an implicitly concatenated f-string literal.&quot;,
+	&quot;&quot;,
+	&quot;This type differs from the original Python AST ([JoinedStr]) in that it&quot;,
+	&quot;doesn't join the implicitly concatenated parts into a single string. Instead,&quot;,
+	&quot;it keeps them separate and provide various methods to access the parts.&quot;,
+	&quot;&quot;,
+	&quot;[JoinedStr]: https://docs.python.org/3/library/ast.html#ast.JoinedStr&quot;
+]
+</code></pre>
+<p>But I must admit it looks worse with the empty lines... hmm</p>
+<p>I would definetely remove the need for <code>///</code> They're unnecessary noise when authoring the TOML file and they can easily be inserted by the script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-26 07:52</div>
+            <div class="timeline-body"><p>I like where this is going.</p>
+<p>I do find the TOML somewhat hard to parse because of how verbose fields is. I'd suggest exploring using regular lists with inline tables to make the format more compact. We can still use the &quot;full-table&quot; layout in cases where it is necessary (because inline-tables need to be single line)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:96 on 2025-02-26 12:19</div>
+            <div class="timeline-body"><p><code>rustdoc</code> is consistent with the existing per-group comments.  If we use <code>doc</code> here we should change the other one to be consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-26 12:22</div>
+            <div class="timeline-body"><p>In fairness to @Glyphack I had suggested the syntax he's using here https://github.com/astral-sh/ruff/pull/16285#discussion_r1969927355!</p>
+<p>Another possibility, since <code>name</code> is required and unique, would be</p>
+<pre><code class="language-toml">[Expr.nodes.ExprBoolOp]
+fields = {
+  op = { type = &quot;BoolOp&quot; },
+  values = { type = &quot;Expr&quot;, seq = true }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:287 on 2025-02-26 12:24</div>
+            <div class="timeline-body"><p>That's a good point that the script can insert the <code>///</code>s.  I think removing those, but keeping the multi-line string, is likely to be a good compromise:</p>
+<pre><code class="language-suggestion">rustdoc = &quot;&quot;&quot;
+An AST node that represents either a single-part f-string literal
+or an implicitly concatenated f-string literal.
+
+This type differs from the original Python AST ([JoinedStr]) in that it
+doesn't join the implicitly concatenated parts into a single string. Instead,
+it keeps them separate and provide various methods to access the parts.
+
+[JoinedStr]: https://docs.python.org/3/library/ast.html#ast.JoinedStr&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-26 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-26 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-26 12:34</div>
+            <div class="timeline-body"><p>Oh, I didn't see that one.</p>
+<p>The second doesn't work, I think, because toml inline tables don't allow line breaks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:287 on 2025-02-26 20:15</div>
+            <div class="timeline-body"><p>Good point I'm going with the second version with multi line strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-26 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-26 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:96 on 2025-02-26 20:21</div>
+            <div class="timeline-body"><p>I also prefer <code>doc</code> it's shorter I'll change all to <code>doc</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-26 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-26 21:05</div>
+            <div class="timeline-body"><p>yes unfortunately it's not possible to have line break inside an inline table.
+https://toml.io/en/v1.0.0#inline-table</p>
+<p>To make that work we need to have a table <code>[Expr.nodes.ExprBoolOp.fields.op]</code> which takes it more verbose I think?</p>
+<p>But I think instead of the inline table using an inline array would solve the problem of having all the fields in one section and we only need to write an extra &quot;name = ...&quot; does sound good to me.</p>
+<p>But one thing to keep in mind is that if we use inline table for the field attributes and have tables inside attributes(for example if we apply this comment https://github.com/astral-sh/ruff/pull/16285#discussion_r1971093809) it might get very messy example:</p>
+<pre><code>[Expr.nodes.ExprBoolOp]
+fields = [
+  { name = &quot;values&quot;, type = { kind = &quot;sequence&quot;, element-type = &quot;Expr&quot; } }
+]
+</code></pre>
+<p>I feel we end up making type a more complex field in the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-26 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:266 on 2025-02-26 21:28</div>
+            <div class="timeline-body"><p>Yeah the current format has no restrictions and definitely has some problems like You can use type <code>Vec&lt;Expr&gt;</code> and also set the sequence. Honestly I was not sure how specific should I make the types in this stage.
+I think your suggestion is needed in the end. For example when we want to provide functions to access data without accessing the fields the exact types are useful.</p>
+<p>My feeling is that if you are also unsure we can leave this undecided to when it's needed?</p>
+<p>Update: I will implement this along with the comment https://github.com/astral-sh/ruff/pull/16285#discussion_r1973039467</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:17 on 2025-02-27 02:47</div>
+            <div class="timeline-body"><blockquote>
+<p>One additional improvement is to define the imports in a way we can check if a name is imported and not use <code>crate</code> prefix for it.</p>
+<p>For now I just used the global list of types we don't want to prefix with <code>crate</code>(the other comment) instead. Because we only have one import and it might be too soon to generalize.</p>
+</blockquote>
+<p>I agree that it's too soon to generalize.  Given that, I don't think it's worth defining this as a Python array — just put the necessary <code>use</code> statements directly into the Rust preamble below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:25 on 2025-02-27 02:52</div>
+            <div class="timeline-body"><p>Come to think of it, once we have migrated <em>all</em> of the node types over to this mechanism, none of them will need <code>crate::</code> qualifiers, since everything will be either (a) defined in the generated file, (b) in an <code>use</code> statement at the top of the generated file, or (c) a primitive of some kind.  So it might make sense to invert this into a list of types that <em>do</em> need a crate prefix.  That would also eliminate the <code>Box</code> special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-27 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-27 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-27 07:48</div>
+            <div class="timeline-body"><p>That's a fair concern. Maybe we need ungrammar after all (just joking).</p>
+<p>The alternative is to change <code>type</code> to accept some form of DSL (which is what ungrammar would do as well)</p>
+<ul>
+<li><code>Expr</code> (single expression)</li>
+<li><code>Expr?</code> (optional expression)</li>
+<li><code>Expr*</code> or <code>[Expr]</code> (Vec)</li>
+<li><code>&amp;Expr*</code> or <code>&amp;[Expr]</code> (Slice) maybe there's a better way of spelling this</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-27 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/generate.py</code>:25 on 2025-02-27 21:35</div>
+            <div class="timeline-body"><p>Good idea, also while doing that I realized a lot of the <code>create::</code> that was added before was unnecessary. Also the list has a few elements we can get rid of soon after moving other things to generated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-27 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-27 21:43</div>
+            <div class="timeline-body"><p>Let me try this out 👍. I'll use <code>Expr*</code> and <code>&amp;Expr*</code> syntax for now.</p>
+<p>Also if we decide to make this a DSL we can just drop the name since it can be easily added by having something like: <code>value:Expr</code> and eliminate the table in toml:</p>
+<pre><code>[Expr.nodes.ExprBoolOp]
+fields = [
+  &quot;op:BoolOp&quot;,
+  &quot;values:Expr*&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-28 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-02-28 07:57</div>
+            <div class="timeline-body"><p>I don't mind the inline table. I probably prefer it because it's less <em>magic</em>. So I think I prefer</p>
+<pre><code class="language-toml">fields = [
+  { name = &quot;op&quot;, type=&quot;BoolOp&quot; },
+  { name = &quot;values&quot;, type = &quot;Expr*&quot; }
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-03-02 11:30</div>
+            <div class="timeline-body"><p>A question, do you think we would want to nest these rules? for example creating a vector with optional values. The rule for it would be <code>Expr?*</code>. It doesn't look good so I intentionally left this out of the current implementation. We can introduce parenthesis if we want to do it.</p>
+<p>I think the correct way to do this also would be to not only have <code>FieldType</code> class but have a class for each data type it represents for example <code>FieldTypeSeq</code> for fields that are sequence:</p>
+<pre><code class="language-python">class FieldTypeSeq:
+  element_ty: FieldType
+  is_slice: bool
+
+
+class FieldTypeOptional:
+  some_ty: FieldType
+</code></pre>
+<p>I did not want to make code more complex without a reason right now, it's probably needed when porting more code to generate script.</p>
+<p>Let me know what do you think about the implementation.</p>
+<p>https://github.com/astral-sh/ruff/pull/16285/files#diff-c52a3d2dd4a45e516b700b71c4d38350f80c2796c8eb236f05e7a2dddf3689f1R145</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-03-02 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-03-03 09:54</div>
+            <div class="timeline-body"><p>Do we have use cases today where we have optional sequence elements (I hope not). I think it's very unlikely that we'll need this in the future because we want a node for each element in a sequence to at least preserve the node's range (each element in a sequence should implement the <code>AstNode</code> trait and <code>None</code> can't do that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-03 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-03-03 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-03-03 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:88 on 2025-03-03 17:56</div>
+            <div class="timeline-body"><p>Just checked and there's no use of this (I searched for Vec&lt;Option in the codebase)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:38</div>
+            <div class="timeline-body"><p>@dcreager this looks good to me. I'll let you have the final review as the issue author</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:1 on 2025-03-04 20:49</div>
+            <div class="timeline-body"><p>Update the comment at the top of this file:</p>
+<ul>
+<li><code>rustdoc</code> → <code>doc</code> in the &quot;group options&quot; section</li>
+<li>Describe <code>doc</code>, <code>derives</code>, and <code>fields</code> in the &quot;syntax node options&quot; section</li>
+<li>In particular, make sure to describe the mini-language for <code>fields.type</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-04 20:49</div>
+            <div class="timeline-body"><p>This is great! My only comment is that we need to update the documentation to describe the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-03-04 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:1 on 2025-03-04 21:14</div>
+            <div class="timeline-body"><p>Thanks for the reminder. I delayed this to document when changes are final but completely forgot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Glyphack on 2025-03-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-03-05 13:24</div>
+            <div class="timeline-body"><p>Love it.  Thanks for tackling this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-03-05 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-03-05 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-21 20:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

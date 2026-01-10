@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support `import &lt;namespace&gt;` and `from &lt;namespace&gt; import module` - astral-sh/ruff #18137</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support <code>import &lt;namespace&gt;</code> and <code>from &lt;namespace&gt; import module</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18137">#18137</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-16 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 15:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The module resolver incorrectly returned <code>None</code> if a module name resolves to a namespace package (it did correctly handle the case where a module name resolves to a file inside a namespace package).</p>
+<p>Supporting this requires a smaller refactor because <code>Module</code> assumed that <code>file</code> and <code>search_path</code> are always known. However, neither are present for a namespace package (it doesn't resolve to a file AND the package can exist on multiple search paths).</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/375
+Fixes https://github.com/astral-sh/ty/issues/363</p>
+<h2>Test plan</h2>
+<p>Added regression tests. I verified that the imports in the linked issues resolve successfully.</p>
+<h2>Ecosystem review</h2>
+<ul>
+<li><code>optuna</code>: Correct, <a href="https://github.com/optuna/optuna/tree/master/optuna/storages/_grpc/auto_generated"><code>auto_generated</code></a> is a namespace package</li>
+<li><code>rotki</code>: Correct, the project has a <a href="https://github.com/rotki/rotki/tree/develop/packaging?rgh-link-date=2025-05-16T17%3A27%3A03Z"><code>packaging</code></a> folder. It doesn't contain any python code but it isn't wrong for ty to pick it up as a namespace package.</li>
+<li>~~<code>psycopg</code>~~: All the code is in <code>psycopg/psycopg</code> (it's a src layout but the <code>src</code> folder is called <code>psycopg</code>). We weren't able to resolve any imports before. We now resolve <code>psycopg</code> as a namespace package which is <em>correct</em> from a module resolution point. The solution here is to change how we detect <code>src.root</code> or that they change their configuration to set <code>src.root</code></li>
+<li><a href="https://github.com/yurijmikhalevich/rclip/tree/main/rclip"><code>rclip</code></a>: Is a namespace package and we are now able to resolve the imports</li>
+<li><code>dd-trace-py</code>: <code>benchmarks</code> is a namespace package and we're now able to resolve imports. They also use other namespace packages that now resolve correctly</li>
+<li><code>scipy</code>: They use submodules for some of the modules in <a href="https://github.com/scipy/scipy/tree/main/scipy/_lib"><code>_lib</code></a> but they point to the <a href="https://github.com/data-apis/array-api-compat/tree/8005d6d02c0f1717881de37a710871bb955eb5cd">project root</a> and not the package folder? We now recognize them as namespace packages.</li>
+</ul>
+<p>Unsure:</p>
+<p><strong><code>schema_salad</code></strong>:</p>
+<p>The relevant lines are:</p>
+<pre><code class="language-py">import ruamel.yaml
+from ruamel.yaml.comments import CommentedBase, CommentedMap, CommentedSeq
+
+def _add_lc_filename(r: ruamel.yaml.comments.CommentedBase, source: AnyStr) -&gt; None:
+</code></pre>
+<p><code>ruamel</code> is a namespace package, <code>ruamel.yaml</code> is a regular package.</p>
+<p>Before: We inferred <code>Unknown</code> for <code>ruamel</code> and <code>yaml</code>
+Now: We infer <code>ruamel.yaml</code> but it seems we don't resolve the <code>comments.py</code> module?</p>
+<p>I think this is unrelated to my changes.</p>
+<p><strong>cwltool</strong>: Same as <code>schema_salad</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-16 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-16 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:82 on 2025-05-16 15:12</div>
+            <div class="timeline-body"><p>Double check if this is needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-16 15:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">schema_salad (https://github.com/common-workflow-language/schema_salad)
++ error[unresolved-attribute] schema_salad/sourceline.py:12:25: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] schema_salad/sourceline.py:13:22: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] schema_salad/sourceline.py:30:24: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] schema_salad/sourceline.py:271:38: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
+- Found 247 diagnostics
++ Found 251 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[unresolved-import] examples/contrib/test_jsondump.py:6:6: Cannot resolve imported module `mitmproxy.test`
++ error[unresolved-attribute] examples/contrib/test_jsondump.py:10:15: Type `&lt;module 'mitmproxy.test.tutils'&gt;` has no attribute `test_data`
+- error[unresolved-import] examples/contrib/test_jsondump.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/test_jsondump.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/test_xss_scanner.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/test_xss_scanner.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_mapping.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_mapping.py:9:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_mapping.py:66:9: Object of type `Literal[b&quot;Test&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:69:16: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_mapping.py:78:9: Object of type `Literal[b&quot;&lt;body&gt; Test &lt;/body&gt;&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:82:16: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:82:16: Attribute `decode` on type `bytes | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_mapping.py:91:9: Object of type `Literal[b&quot;&lt;body&gt; Test &lt;/body&gt;&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:93:9: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:96:16: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_mapping.py:105:9: Object of type `Literal[b&quot;&lt;title&gt; Test &lt;/title&gt;&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_mapping.py:108:16: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_mapping.py:143:9: Object of type `Literal[b&quot;&lt;title&gt; Test &lt;/title&gt;&quot;]` is not assignable to attribute `content` on type `Response | None`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_proxyauth_selenium.py:11:6: Cannot resolve imported module `mitmproxy.test`
++ error[unresolved-attribute] examples/contrib/webscanner_helper/test_proxyauth_selenium.py:57:9: Unresolved attribute `is_replay` on type `Request`.
+- error[unresolved-import] examples/contrib/webscanner_helper/test_proxyauth_selenium.py:12:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urldict.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urldict.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urlindex.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urlindex.py:15:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urlinjection.py:11:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_urlinjection.py:12:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlindex.py:131:16: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlindex.py:146:16: Attribute `status_code` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_urlindex.py:172:9: Object of type `Literal[404]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:39:41: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:41:37: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_urlinjection.py:46:9: Object of type `Literal[&quot;&lt;body&gt;&lt;/body&gt;&quot;]` is not assignable to attribute `text` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:47:41: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:49:37: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_urlinjection.py:54:9: Object of type `Literal[404]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:55:41: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:57:37: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_urlinjection.py:72:9: Object of type `Literal[404]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:73:42: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:75:38: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_urlinjection.py:90:9: Object of type `Literal[404]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:92:13: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:95:70: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:112:51: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] examples/contrib/webscanner_helper/test_urlinjection.py:114:47: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] examples/contrib/webscanner_helper/test_watchdog.py:56:9: Object of type `Literal[&quot;Test Error&quot;]` is not assignable to attribute `error` of type `Error | None`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_watchdog.py:10:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] examples/contrib/webscanner_helper/test_watchdog.py:11:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/examples/test_examples.py:63:20: Attribute `content` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/examples/test_examples.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/examples/test_examples.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/examples/test_examples.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/helper_tools/dumperview.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/helper_tools/dumperview.py:8:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/helper_tools/dumperview.py:54:5: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/helper_tools/dumperview.py:55:5: Object of type `bytes` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] test/helper_tools/dumperview.py:63:5: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/helper_tools/dumperview.py:64:5: Object of type `Literal[b&quot;&lt;html&gt;&lt;body&gt;Hello!&lt;/body&gt;&lt;/html&gt;&quot;]` is not assignable to attribute `content` on type `Response | None`
+- error[unresolved-import] test/mitmproxy/addons/test_anticache.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_anticache.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_anticomp.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_anticomp.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_asgiapp.py:10:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_block.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_blocklist.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_blocklist.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_browser.py:4:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_blocklist.py:44:24: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_blocklist.py:57:20: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_blocklist.py:76:20: Attribute `msg` on type `Error | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_blocklist.py:76:35: Attribute `KILLED_MESSAGE` on type `Error | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_clientplayback.py:122:20: Attribute `status_code` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_clientplayback.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_clientplayback.py:15:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] test/mitmproxy/addons/test_clientplayback.py:182:5: Object of type `None` is not assignable to attribute `request` of type `Request`
+- error[unresolved-import] test/mitmproxy/addons/test_command_history.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_comment.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_comment.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_core.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_core.py:6:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_core.py:92:16: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_core.py:94:16: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_core.py:95:16: Attribute `reason` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_core.py:99:16: Attribute `reason` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_core.py:101:16: Attribute `reason` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_cut.py:10:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_cut.py:11:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_disable_h2c.py:39:20: Attribute `msg` on type `Error | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_disable_h2c.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_disable_h2c.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_disable_h2c.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_dns_resolver.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_dns_resolver.py:15:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_dns_resolver.py:16:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:126:24: Attribute `response_code` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:128:24: Attribute `response_code` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:132:28: Attribute `response_code` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:134:28: Attribute `response_code` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:135:28: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:141:24: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:143:24: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:146:21: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dns_resolver.py:151:21: Attribute `answers` on type `DNSMessage | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_dumper.py:13:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_dumper.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_dumper.py:15:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:26:9: Object of type `Literal[b&quot;foo&quot;]` is not assignable to attribute `content` on type `Response | None`
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:77:9: Object of type `Literal[300]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dumper.py:84:9: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:85:9: Object of type `Literal[400]` is not assignable to attribute `status_code` on type `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dumper.py:101:5: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:102:5: Object of type `bytes` is not assignable to attribute `content` on type `Response | None`
++ error[invalid-argument-type] test/mitmproxy/addons/test_dumper.py:108:25: Argument to bound method `_echo_message` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage`, found `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dumper.py:115:5: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:116:5: Object of type `bytes` is not assignable to attribute `content` on type `Response | None`
++ error[invalid-argument-type] test/mitmproxy/addons/test_dumper.py:123:25: Argument to bound method `_echo_message` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage`, found `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dumper.py:143:9: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_dumper.py:144:9: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:145:9: Object of type `bytes` is not assignable to attribute `content` on type `Response | None`
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:146:9: Object of type `Headers` is not assignable to attribute `trailers` on type `Response | None`
++ error[invalid-assignment] test/mitmproxy/addons/test_dumper.py:289:9: Object of type `Literal[b&quot;HTTP/2.0&quot;]` is not assignable to attribute `http_version` on type `Response | None`
+- error[unresolved-import] test/mitmproxy/addons/test_export.py:10:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_export.py:11:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_export.py:12:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_intercept.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_intercept.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_keepserving.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_maplocal.py:9:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_maplocal.py:10:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_maplocal.py:154:20: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_maplocal.py:162:20: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_maplocal.py:172:20: Attribute `content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_maplocal.py:183:20: Attribute `status_code` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_mapremote.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_mapremote.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_modifybody.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_modifybody.py:6:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] test/mitmproxy/addons/test_modifybody.py:41:13: Object of type `Literal[b&quot;foo&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifybody.py:43:20: Attribute `content` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_modifybody.py:58:13: Object of type `Literal[b&quot;foo&quot;]` is not assignable to attribute `content` on type `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifybody.py:62:21: Attribute `content` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_modifyheaders.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_modifyheaders.py:6:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:48:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:50:20: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:55:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:57:20: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:73:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:75:33: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:84:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:86:33: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_modifyheaders.py:116:21: Attribute `headers` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_next_layer.py:36:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_onboarding.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_proxyauth.py:11:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_proxyauth.py:12:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_proxyauth.py:107:20: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_proxyauth.py:119:20: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_proxyauth.py:223:20: Attribute `status_code` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_proxyauth.py:229:20: Attribute `status_code` on type `Response | None` is possibly unbound
++ error[invalid-assignment] test/mitmproxy/addons/test_proxyauth.py:243:13: Object of type `Literal[True]` is not assignable to attribute `is_replay` of type `str | None`
+- error[unresolved-import] test/mitmproxy/addons/test_proxyserver.py:37:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_proxyserver.py:38:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_readfile.py:10:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_readfile.py:11:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_save.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_save.py:8:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_savehar.py:251:13: Attribute `content` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_savehar.py:17:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_savehar.py:18:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_savehar.py:19:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_script.py:13:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_script.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_serverplayback.py:9:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_serverplayback.py:10:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_serverplayback.py:359:16: Attribute `data` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_serverplayback.py:359:36: Attribute `data` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_serverplayback.py:419:16: Attribute `status_code` on type `Response | None` is possibly unbound
+- error[unresolved-attribute] test/mitmproxy/addons/test_serverplayback.py:353:22: Type `&lt;module 'mitmproxy'&gt;` has no attribute `test`
+- error[unresolved-attribute] test/mitmproxy/addons/test_serverplayback.py:374:22: Type `&lt;module 'mitmproxy'&gt;` has no attribute `test`
+- error[unresolved-attribute] test/mitmproxy/addons/test_serverplayback.py:389:22: Type `&lt;module 'mitmproxy'&gt;` has no attribute `test`
+- error[unresolved-attribute] test/mitmproxy/addons/test_serverplayback.py:413:22: Type `&lt;module 'mitmproxy'&gt;` has no attribute `test`
+- error[unresolved-import] test/mitmproxy/addons/test_stickyauth.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_stickyauth.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_stickycookie.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_stickycookie.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_stickycookie.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_strip_dns_https_records.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_strip_dns_https_records.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_strip_dns_https_records.py:8:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_stickycookie.py:31:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_stickycookie.py:45:9: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_stickycookie.py:96:17: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_strip_dns_https_records.py:51:31: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_strip_dns_https_records.py:77:20: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_strip_dns_https_records.py:81:20: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_strip_dns_https_records.py:83:13: Attribute `answers` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_strip_dns_https_records.py:85:20: Attribute `answers` on type `DNSMessage | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_termlog.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_tlsconfig.py:21:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_update_alt_svc.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_update_alt_svc.py:5:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_update_alt_svc.py:28:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_update_alt_svc.py:36:13: Attribute `headers` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_update_alt_svc.py:43:13: Attribute `headers` on type `Response | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/addons/test_upstream_auth.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_upstream_auth.py:9:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_view.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/addons/test_view.py:8:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-argument-type] test/mitmproxy/addons/test_view.py:54:35: Argument to function `len` is incorrect: Expected `Sized`, found `bytes | None`
++ error[invalid-argument-type] test/mitmproxy/addons/test_view.py:54:65: Argument to function `len` is incorrect: Expected `Sized`, found `bytes | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_view.py:54:65: Attribute `raw_content` on type `Response | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/addons/test_view.py:71:31: Attribute `size` on type `DNSMessage | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/contentviews/test___init__.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test___init__.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test__api.py:9:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test__utils.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test__utils.py:9:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/contentviews/test__utils.py:22:13: Attribute `headers` on type `Response | None` is possibly unbound
++ error[invalid-argument-type] test/mitmproxy/contentviews/test__utils.py:23:38: Argument to function `make_metadata` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage | DNSMessage`, found `Response | None`
++ warning[possibly-unbound-attribute] test/mitmproxy/contentviews/test__utils.py:47:19: Attribute `messages` on type `WebSocketData | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/contentviews/test__view_http3.py:6:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test__view_query.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/contentviews/test__view_socketio.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/proxy/bench.py:14:7: Cannot resolve imported module `.layers.http`
+- error[unresolved-import] test/mitmproxy/proxy/bench.py:15:7: Cannot resolve imported module `.layers.http`
+- error[unresolved-import] test/mitmproxy/proxy/layers/test_modes.py:35:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/proxy/layers/test_modes.py:36:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/proxy/test_context.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/proxy/test_context.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/proxy/test_mode_servers.py:20:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/script/test_concurrent.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/script/test_concurrent.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_addonmanager.py:13:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_addonmanager.py:14:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_command.py:11:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_command.py:12:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_dns.py:9:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_dns.py:10:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/test_dns.py:338:16: Attribute `get_state` on type `DNSMessage | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/test_dns.py:346:16: Attribute `get_state` on type `Error | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/test_eventsequence.py:5:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/test_eventsequence.py:39:16: Attribute `messages` on type `WebSocketData | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/test_eventsequence.py:41:16: Attribute `messages` on type `WebSocketData | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/test_eventsequence.py:43:16: Attribute `messages` on type `WebSocketData | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/mitmproxy/test_eventsequence.py:45:16: Attribute `messages` on type `WebSocketData | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/test_flow.py:13:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_flow.py:14:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] test/mitmproxy/test_flow.py:39:9: Object of type `Literal[True]` is not assignable to attribute `marked` of type `str`
++ error[invalid-assignment] test/mitmproxy/test_flow.py:62:9: Object of type `Literal[200]` is not assignable to attribute `status_code` on type `Response | None`
++ error[invalid-assignment] test/mitmproxy/test_flow.py:66:9: Object of type `Literal[201]` is not assignable to attribute `status_code` on type `Response | None`
+- error[unresolved-import] test/mitmproxy/test_flowfilter.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_taddons.py:1:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_tcp.py:5:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/test_tcp.py:40:16: Attribute `get_state` on type `Error | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/test_types.py:12:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_types.py:13:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/test_udp.py:5:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/test_udp.py:40:16: Attribute `get_state` on type `Error | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/test_websocket.py:6:6: Cannot resolve imported module `mitmproxy.test`
++ warning[possibly-unbound-attribute] test/mitmproxy/test_websocket.py:20:30: Attribute `_get_formatted_messages` on type `WebSocketData | None` is possibly unbound
+- error[unresolved-import] test/mitmproxy/tools/console/test_commander.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/console/test_common.py:3:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/console/test_contentview.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/console/test_flowview.py:2:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/console/test_keymap.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/web/test_app.py:17:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] test/mitmproxy/tools/web/test_app.py:69:9: Object of type `None` is not assignable to attribute `content` on type `Response | None`
+- error[unresolved-import] test/mitmproxy/tools/web/test_static_viewer.py:7:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/web/test_static_viewer.py:8:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/tools/web/test_webaddons.py:4:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] test/mitmproxy/utils/test_magisk.py:5:6: Cannot resolve imported module `mitmproxy.test`
+- error[unresolved-import] web/gen/tflow_js.py:10:6: Cannot resolve imported module `mitmproxy.test`
++ error[invalid-assignment] web/gen/tflow_js.py:31:5: Object of type `Headers` is not assignable to attribute `trailers` on type `Response | None`
+- Found 2124 diagnostics
++ Found 2112 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[unresolved-import] optuna/storages/_grpc/client.py:30:10: Cannot resolve imported module `optuna.storages._grpc.auto_generated`
+- error[unresolved-import] optuna/storages/_grpc/client.py:31:10: Cannot resolve imported module `optuna.storages._grpc.auto_generated`
+- error[unresolved-import] optuna/storages/_grpc/server.py:16:10: Cannot resolve imported module `optuna.storages._grpc.auto_generated`
+- error[unresolved-import] optuna/storages/_grpc/servicer.py:23:10: Cannot resolve imported module `optuna.storages._grpc.auto_generated`
+- error[unresolved-import] optuna/storages/_grpc/servicer.py:24:10: Cannot resolve imported module `optuna.storages._grpc.auto_generated`
+- Found 1072 diagnostics
++ Found 1067 diagnostics
+
+rclip (https://github.com/yurijmikhalevich/rclip)
+- error[unresolved-import] rclip/main.py:13:6: Cannot resolve imported module `rclip`
+- error[unresolved-import] rclip/main.py:17:6: Cannot resolve imported module `rclip.utils`
+- error[unresolved-import] rclip/model.py:8:6: Cannot resolve imported module `rclip.utils`
+- Found 16 diagnostics
++ Found 13 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
++ error[unresolved-attribute] cwltool/main.py:188:17: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] cwltool/main.py:189:22: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] cwltool/main.py:245:23: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] cwltool/main.py:331:16: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `comments`
++ error[unresolved-attribute] cwltool/main.py:747:5: Type `&lt;module 'ruamel.yaml'&gt;` has no attribute `representer`
+- Found 297 diagnostics
++ Found 302 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[unresolved-import] benchmarks/bm/iast_utils/aspects_benchmarks_generate.py:11:6: Cannot resolve imported module `benchmarks.bm.iast_fixtures`
+- error[unresolved-import] benchmarks/bm/iast_utils/aspects_benchmarks_generate.py:12:6: Cannot resolve imported module `benchmarks.bm.iast_fixtures`
+- error[unresolved-import] benchmarks/bm/iast_utils/aspects_benchmarks_generate.py:13:6: Cannot resolve imported module `benchmarks.bm.iast_fixtures`
+- error[unresolved-import] ddtrace/contrib/internal/celery/signals.py:11:6: Cannot resolve imported module `ddtrace.contrib.internal.celery`
+- error[unresolved-import] ddtrace/contrib/internal/django/patch.py:206:5: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/django/patch.py:430:5: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/django/patch.py:467:5: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/django/patch.py:614:5: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/django/patch.py:906:5: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/aio_client_interceptor.py:21:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/aio_client_interceptor.py:22:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/aio_server_interceptor.py:23:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/client_interceptor.py:14:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/client_interceptor.py:15:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/patch.py:5:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/patch.py:6:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/server_interceptor.py:11:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/grpc/utils.py:6:6: Cannot resolve imported module `ddtrace.contrib.internal.grpc`
+- error[unresolved-import] ddtrace/contrib/internal/openai/patch.py:7:6: Cannot resolve imported module `ddtrace.contrib.internal.openai`
+- error[unresolved-import] ddtrace/contrib/internal/protobuf/patch.py:1:6: Cannot resolve imported module `google`
++ error[unresolved-attribute] ddtrace/contrib/internal/protobuf/patch.py:30:5: Unresolved attribute `_datadog_patch` on type `&lt;module 'google.protobuf'&gt;`.
++ error[unresolved-attribute] ddtrace/contrib/internal/protobuf/patch.py:40:9: Unresolved attribute `_datadog_patch` on type `&lt;module 'google.protobuf'&gt;`.
++ error[unresolved-attribute] ddtrace/contrib/internal/protobuf/patch.py:42:16: Type `&lt;module 'google.protobuf'&gt;` has no attribute `internal`
+- error[unresolved-import] ddtrace/contrib/internal/tornado/application.py:7:6: Cannot resolve imported module `ddtrace.contrib.internal.tornado`
+- error[unresolved-import] ddtrace/contrib/internal/tornado/patch.py:12:1: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/tornado/patch.py:13:1: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/tornado/patch.py:14:1: Cannot resolve imported module `.`
+- error[unresolved-import] ddtrace/contrib/internal/tornado/patch.py:15:1: Cannot resolve imported module `.`
+- error[invalid-assignment] ddtrace/contrib/internal/tornado/patch.py:54:5: Object of type `Unknown` is not assignable to attribute `_wrap_executor` on type `Unknown | Tracer`
++ error[invalid-assignment] ddtrace/contrib/internal/tornado/patch.py:54:5: Object of type `def wrap_executor(tracer, fn, args, kwargs, span_name, service=None, resource=None, span_type=None) -&gt; Unknown` is not assignable to attribute `_wrap_executor` on type `Unknown | Tracer`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:10:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:30:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:31:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:32:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:45:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:46:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:47:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:8:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:26:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:27:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:28:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:42:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:43:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:44:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:17:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:13:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_efd_all_pass.py:17:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:15:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:17:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:17:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:28:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:56:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:57:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:58:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:60:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:63:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:66:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:86:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:87:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:90:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:93:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:96:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:99:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:103:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:126:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:127:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:128:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:130:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:131:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:132:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:163:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:164:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:165:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:167:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:168:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:169:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:25:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:52:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:53:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:54:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:56:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:59:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:62:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:82:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:83:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:86:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:89:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:92:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:95:40: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:99:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:122:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:123:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:124:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:126:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:127:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:128:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:159:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:160:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:161:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:163:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:164:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:165:25: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-import] tests/ci_visibility/api/test_internal_test_visibility_api.py:5:6: Cannot resolve imported module `ddtrace.internal.test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:49:33: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:52:37: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:57:53: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:83:37: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:86:41: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/api/test_internal_test_visibility_api.py:92:21: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1262:9: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1293:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1294:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1295:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1296:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1297:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1300:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1303:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1307:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1308:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1309:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1310:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1311:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1314:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1317:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1324:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1325:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1326:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1327:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1328:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1331:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1334:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1338:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1339:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1340:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1341:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1342:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1345:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1348:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1353:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1354:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1355:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1356:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1357:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1360:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1363:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1366:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1367:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1368:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1369:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1370:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1373:16: Type `&lt;module 'ddtrace.internal'&gt;` has no attribute `test_visibility`
+- error[unresolved-attribute] tests/ci_visibility/test_ci_visibility.py:1376:16: Type `&lt;...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 15:25</div>
+            <div class="timeline-body"><p>Looks like I messed something up 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-16 16:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 17:27</div>
+            <div class="timeline-body"><p>Rotki: The output looks correct. There's a local folder called <a href="https://github.com/rotki/rotki/tree/develop/packaging"><code>packaging</code></a> that doesn't contain any python files (docker image).</p>
+<p>The problem for <code>psycopg</code> is that its <code>src.root</code> is <a href="https://github.com/psycopg/psycopg/tree/master/psycopg"><code>psycopg</code></a> (the code is in <code>psycopg/psycopg</code>). This obviously confuses the module resolver a good deal because it now assumes that <code>psycopg</code> is a namespace package. This isn't worse than before where all imports simply failed. The solution here is to teach mypy primer to pass the <code>src.root</code> config (CC: @sharkdp ?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 17:36</div>
+            <div class="timeline-body"><p>Mypy primer now hangs :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-05-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 17:38</div>
+            <div class="timeline-body"><p>Something we could try is to change <code>src.root</code> to default to <code>.</code> and <code>&lt;project-name&gt;</code> if such a folder exists (and contains a <code>__init__.py</code>?), given that this isn't an entirely uncommon project structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support `import <namespace>` and `from <namespace> import module`"" to "[ty] Support `import <namespace>` and `from <namespace> import module`" by @MichaReiser on 2025-05-16 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-19 11:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:72 on 2025-05-19 11:54</div>
+            <div class="timeline-body"><p>For a more meaningful mypy primer result (pulls in https://github.com/hauntsaninja/mypy_primer/pull/171)</p>
+<p>TODO: Revert before landing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-19 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>.github/workflows/mypy_primer.yaml</code>:72 on 2025-05-19 14:24</div>
+            <div class="timeline-body"><p><a href="https://github.com/hauntsaninja/mypy_primer/pull/171">PR</a> has been merged:</p>
+<pre><code class="language-suggestion">            --from=&quot;git+https://github.com/hauntsaninja/mypy_primer@01a7ca325f674433c58e02416a867178d1571128&quot; \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-05-19 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-19 19:48</div>
+            <div class="timeline-body"><p>The <code>schema_salad</code> primer hits are because we do not currently model that when an import like this occurs:</p>
+<pre><code class="language-py">import foo
+from foo.bar import baz
+</code></pre>
+<p>then an implicit <code>foo.bar = &lt;module foo.bar&gt;</code> assignment occurs as a result of the second import. This is indeed unrelated to your PR -- a similar issue is discussed in https://github.com/astral-sh/ty/issues/133.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-19 19:56</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">+ error[unresolved-attribute] examples/contrib/test_jsondump.py:10:15: Type `&lt;module 'mitmproxy.test.tutils'&gt;` has no attribute `test_data`
+</code></pre>
+</blockquote>
+<p>This seems like a true positive...?</p>
+<pre><code class="language-pycon">% uv run --no-project --with=mitmproxy python
+      Built pyperclip==1.9.0
+Installed 44 packages in 45ms
+Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from mitmproxy.test import tutils
+&gt;&gt;&gt; tutils.test_data
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    tutils.test_data
+AttributeError: module 'mitmproxy.test.tutils' has no attribute 'test_data'
+</code></pre>
+<p>I don't really understand what's (meant to be) going on in mitmproxy's <code>examples/</code> directory at all. I think it's okay to just ignore all the (many) primer hits that are coming out of that directory...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-19 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:110 on 2025-05-19 20:04</div>
+            <div class="timeline-body"><p>it's possible we might want namespace packages without <code>File</code>s to be recognized as <code>KnownModule</code>s in the future? But I can't think of a use case right now, so we can probably figure that out if and when it actually comes up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:787 on 2025-05-19 20:59</div>
+            <div class="timeline-body"><p>Excluding the standard library implicitly here implicitly depends on the invariant that there will never be any namespace packages added to the standard library. But it does seem very unlikely that CPython would ever add any namespace packages to the stdlib, so this is probably okay. Though I'd prefer it if we made it explicit in this comment that we're relying on that invariant.</p>
+<p>I'm also totally sure I understand why this exclusion is necessary, though. When you say &quot;the standard library [...] has conditional modules&quot;, do you mean something like this?</p>
+<p>https://github.com/astral-sh/ruff/blob/b302d89da3325c705f87a8343a16aad1723b67ab/crates/ty_vendored/vendor/typeshed/stdlib/VERSIONS#L293-L294</p>
+<p>I'm not sure I understand why we'd ever accidentally infer a module in the stdlib as being a namespace package... when single-file modules are converted to become packages with submodules in later versions, typeshed generally pretends that they were always non-namespace packages and marks the submodule as newly added in the <code>VERSIONS</code> file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-19 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-19 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:797 on 2025-05-19 21:06</div>
+            <div class="timeline-body"><p>we return <code>Ok()</code> here if the system is case-sensitive <em>or</em> the path exists according to a case-sensitive check...? That doesn't seem correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-19 21:07</div>
+            <div class="timeline-body"><p>The primer hits look great!! I left some comments in <code>resolver.rs</code> -- not sure about some of the details there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:110 on 2025-05-20 05:47</div>
+            <div class="timeline-body"><p>That's possible if we want to special case some library. I haven't looked at <code>KnownModule</code> itself but I suspect that it won't be too hard to add but I don't see a need to do it today (and agree with you that we can do it in the future)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-20 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:787 on 2025-05-20 05:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also totally sure I understand why this exclusion is necessary, though. When you say &quot;the standard library [...] has conditional modules&quot;, do you mean something like this?</p>
+</blockquote>
+<p>Sort of, but for a package, the problem is that the <code>resolve_file_module</code> calls for <code>__init__</code> may fail but only because the module isn't available for this Python version. We would need to repeat the version check for namespace packages to avoid classifying the folder as a namespace package. There's actually a test that fails if we remove this check where we test that you can't import <code>xml</code> on an older python version (or newer?) and it started succeeding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:797 on 2025-05-20 05:52</div>
+            <div class="timeline-body"><p>Can you tell me why you think this isn't correct?</p>
+<p>The check here ensures that we don't return <code>true</code> if the module name and the name on disk use different casing:</p>
+<ul>
+<li>If the file system is case sensitive: The <code>is_directory</code> call would have failed if the casing doesn't match. That's why we can skip the extra check</li>
+<li>If the file system is case sensitive: Perform a case sensitive lookup and only return <code>Ok</code> if the path exists too.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-20 16:30</div>
+            <div class="timeline-body"><p>Hmm, I just noticed that my comments are still pending</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-20 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:787 on 2025-05-20 17:44</div>
+            <div class="timeline-body"><p>I see, okay. It would be great if we could expand this comment a bit to make this clearer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 18:16</div>
+            <div class="timeline-body"><p>@AlexWaygood Is this good to go once I improved the comment or is there something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:797 on 2025-05-20 18:43</div>
+            <div class="timeline-body"><p>OK, I think I understand. Sorry for being dense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-20 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-20 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-21 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-21 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-21 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-05-26 14:24</div>
+            <div class="timeline-body"><p>I have what seems like a related issue -- tried with latest ty but seems like it's still happening.</p>
+<pre><code>$ uv add --dev 'ty @ https://github.com/astral-sh/ty.git'
+$ uv run ty version
+ty 0.0.1-alpha.6 (55b412037 2025-05-23)
+</code></pre>
+<p>Wondering, has this fix made it into <code>ty</code> git version/main branch? I guess ty reuses some of the core with ruff so perhaps it's not made it through the dependencies yet?</p>
+<p>Happy to file a separate issue in ty bugtracker if this is somehow unrelated!</p>
+<h1>What happens</h1>
+<p>Consider the following hierarchy:</p>
+<pre><code>$ find src/testty
+src/testty
+src/testty/b.py
+src/testty/a.py
+src/testty/py.typed
+</code></pre>
+<p>This is the only file with code:</p>
+<pre><code>$ cat src/testty/a.py 
+from testty import b
+from . import b
+</code></pre>
+<p>This results in:</p>
+<pre><code>$ uv run ty check src/
+error[unresolved-import]: Cannot resolve imported module `testty`
+ --&gt; src/testty/a.py:1:6
+  |
+1 | from testty import b
+  |      ^^^^^^
+2 | from . import b
+  |
+info: make sure your Python environment is properly configured: https://github.com/astral-sh/ty/blob/main/docs/README.md#python-environment
+info: rule `unresolved-import` is enabled by default
+
+error[unresolved-import]: Cannot resolve imported module `.`
+ --&gt; src/testty/a.py:2:1
+  |
+1 | from testty import b
+2 | from . import b
+  | ^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-import` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h1>Expected behaviour</h1>
+<ul>
+<li><p>this works under mypy:</p>
+<pre><code>$ uv run -m mypy -p testty 
+Success: no issues found in 3 source files
+</code></pre>
+</li>
+<li><p>this works in ty if we convert a package from a namespace to regular one by adding <code>__init__.py</code></p>
+<pre><code>$ touch src/testty/__init__.py
+$ uv run ty check src/
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+All checks passed!
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nojaf">@nojaf</a> on 2025-05-26 14:26</div>
+            <div class="timeline-body"><p>@karlicoss I don't believe a new version with this fix has been released yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 18:58</div>
+            <div class="timeline-body"><p>@karlicoss Should be available in <a href="https://github.com/astral-sh/ty/releases/tag/0.0.1-alpha.7">ty 0.0.1-alpha.7</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-05-26 21:24</div>
+            <div class="timeline-body"><p>Thank you, that was fast! Can confirm it works</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

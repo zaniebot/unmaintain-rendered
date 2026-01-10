@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Ensure that a function-literal type is always equivalent to itself - astral-sh/ruff #18227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Ensure that a function-literal type is always equivalent to itself</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18227">#18227</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-20 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-20 17:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a short-term fix to some of our type-equivalence logic for function-literal and bound-method types. The issue was that two <code>Callable</code> types will not be considered equivalent if any parameter in either type is unannotated (and it is obviously very common in methods for the <code>self</code> parameter to be unannotated!). Following https://github.com/astral-sh/ruff/commit/97058e80930969d63bc2cdc6fcff8f84a2d7de4e, equivalence of two <code>FunctionLiteral</code> types defers to equivalence of the <code>CallableType</code> supertypes of the two function-literal types.</p>
+<p>Long-term, we should clarify this situation by splitting <code>FunctionLiteral</code> into two separate variants, as described by @dcreager in https://github.com/astral-sh/ty/issues/459#issuecomment-2895084351 and https://github.com/astral-sh/ty/issues/462</p>
+<p>Closes https://github.com/astral-sh/ty/issues/459</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test -p ty_python_semantic</code></li>
+<li><code>QUICKCHECK_TESTS=100000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-20 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-20 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-20 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-20 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-20 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1 on 2025-05-20 17:42</div>
+            <div class="timeline-body"><p>The changes in this file are not actually necessary to fix the bug, just a driveby fix for something that I noticed while fixing the bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 17:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-20 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7169 on 2025-05-20 17:59</div>
+            <div class="timeline-body"><p>Discussed in person — I think both <code>is_subtype_of</code> and <code>is_equivalent_to</code> should follow the pattern above, using the normalized check as a fast path, but falling back on the body scope + callable check that was there previously.</p>
+<p>(I think a lot of this will hopefully be cleaned up as part of https://github.com/astral-sh/ty/issues/462)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-20 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-05-20 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-20 18:10</div>
+            <div class="timeline-body"><p>1% slowdown on the cold benchmark: https://codspeed.io/astral-sh/ruff/branches/alex%2Fproperty-test-failure.</p>
+<p>I think that's acceptable here. It might well be addressed when we do https://github.com/astral-sh/ty/issues/462.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-20 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-20 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-20 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

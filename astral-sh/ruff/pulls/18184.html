@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update astral-sh/setup-uv action to v6 - astral-sh/ruff #18184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update astral-sh/setup-uv action to v6</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18184">#18184</a>
+        opened by <a href="https://github.com/renovate">@renovate</a>
+        on 2025-05-19 06:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/renovate">@renovate</a> on 2025-05-19 06:16</div>
+            <div class="timeline-body"><p>This PR contains the following updates:</p>
+<p>| Package | Type | Update | Change |
+|---|---|---|---|
+| <a href="https://redirect.github.com/astral-sh/setup-uv">astral-sh/setup-uv</a> | action | major | <code>v5.4.2</code> -&gt; <code>v6.0.1</code> |</p>
+<hr />
+<blockquote>
+<p>[!WARNING]
+Some dependencies could not be looked up. Check the Dependency Dashboard for more information.</p>
+</blockquote>
+<hr />
+<h3>Release Notes</h3>
+<details>
+<summary>astral-sh/setup-uv (astral-sh/setup-uv)</summary>
+
+<h3><a href="https://redirect.github.com/astral-sh/setup-uv/releases/tag/v6.0.1"><code>v6.0.1</code></a>: 🌈 Fix default cache dependency glob</h3>
+<p><a href="https://redirect.github.com/astral-sh/setup-uv/compare/v6.0.0...v6.0.1">Compare Source</a></p>
+<h5>Changes</h5>
+<p>The new default in v6 used illegal patterns and therefore didn't match requirements files. This is now fixed.</p>
+<h5>🐛 Bug fixes</h5>
+<ul>
+<li>Fix default cache dependency glob <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/388">#​388</a>)</li>
+</ul>
+<h5>🧰 Maintenance</h5>
+<ul>
+<li>chore: update known checksums for 0.6.17 @​<a href="https://redirect.github.com/apps/github-actions">github-actions[bot]</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/384">#​384</a>)</li>
+</ul>
+<h5>⬆️ Dependency updates</h5>
+<ul>
+<li>Bump dependencies <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/389">#​389</a>)</li>
+</ul>
+<h3><a href="https://redirect.github.com/astral-sh/setup-uv/releases/tag/v6.0.0"><code>v6.0.0</code></a>: 🌈 activate-environment and working-directory</h3>
+<p><a href="https://redirect.github.com/astral-sh/setup-uv/compare/v5.4.2...v6.0.0">Compare Source</a></p>
+<h5>Changes</h5>
+<p>This version contains some breaking changes which have been gathering up for a while. Lets dive into them:</p>
+<ul>
+<li><a href="#activate-environment">Activate environment</a></li>
+<li><a href="#working-directory">Working Directory</a></li>
+<li><a href="#default-cache-dependency-glob">Default <code>cache-dependency-glob</code></a></li>
+<li><a href="#use-default-cache-dir-on-self-hosted-runners">Use default cache dir on self hosted runners</a></li>
+</ul>
+<h5>Activate environment</h5>
+<p>In previous versions using the input <code>python-version</code> automatically activated a venv at the repository root.
+This led to some unwanted side-effects, was sometimes unexpected and not flexible enough.</p>
+<p>The venv activation is now explicitly controlled with the new input <code>activate-environment</code> (false by default):</p>
+<pre><code class="language-yaml">- name: Install the latest version of uv and activate the environment
+  uses: astral-sh/setup-uv@v6
+  with:
+    activate-environment: true
+- run: uv pip install pip
+</code></pre>
+<p>The venv gets created by the <a href="https://docs.astral.sh/uv/pip/environments/"><code>uv venv</code></a> command so the python version is controlled by the <code>python-version</code> input or the files <code>pyproject.toml</code>, <code>uv.toml</code>, <code>.python-version</code> in the <code>working-directory</code>.</p>
+<h5>Working Directory</h5>
+<p>The new input <code>working-directory</code> controls where we look for <code>pyproject.toml</code>, <code>uv.toml</code> and <code>.python-version</code> files
+which are used to determine the version of uv and python to install.</p>
+<p>It can also be used to control where the venv gets created.</p>
+<pre><code class="language-yaml">- name: Install uv based on the config files in the working-directory
+  uses: astral-sh/setup-uv@v6
+  with:
+    working-directory: my/subproject/dir
+</code></pre>
+<blockquote>
+<p>[!CAUTION]</p>
+<p>The inputs <code>pyproject-file</code> and <code>uv-file</code> have been removed.</p>
+</blockquote>
+<h5>Default <code>cache-dependency-glob</code></h5>
+<p><a href="https://redirect.github.com/ssbarnea">@​ssbarnea</a> found out that the default <code>cache-dependency-glob</code> was not suitable for a lot of users.</p>
+<p>The old default</p>
+<pre><code class="language-yaml">cache-dependency-glob: |
+  **/requirements*.txt
+  **/uv.lock
+</code></pre>
+<p>is changed and should cover over 99.5% of use cases:</p>
+<pre><code class="language-yaml">cache-dependency-glob: |
+  **/*(requirements|constraints)*.(txt|in)
+  **/pyproject.toml
+  **/uv.lock
+</code></pre>
+<blockquote>
+<p>[!NOTE]</p>
+<p>This shouldn't be a breaking change. The only thing you may notice is that your caches get invalidated once.</p>
+</blockquote>
+<h5>Use default cache dir on self hosted runners</h5>
+<p>The directory where uv stores its cache was always set to a directory in <code>RUNNER_TEMP</code>. For self-hosted runners this made no sense as this gets cleaned after every run and led to slower runs than necessary.</p>
+<p>On self-hosted runners <code>UV_CACHE_DIR</code> is no longer set and the <a href="https://docs.astral.sh/uv/concepts/cache/#cache-directory">default cache directory</a> is used instead.</p>
+<h5>🚨 Breaking changes</h5>
+<ul>
+<li>Change default cache-dependency-glob <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/352">#​352</a>)</li>
+<li>No default UV_CACHE_DIR on selfhosted runners <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/380">#​380</a>)</li>
+<li>new inputs activate-environment and working-directory <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/381">#​381</a>)</li>
+</ul>
+<h5>🧰 Maintenance</h5>
+<ul>
+<li>chore: update known checksums for 0.6.16 @​<a href="https://redirect.github.com/apps/github-actions">github-actions[bot]</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/378">#​378</a>)</li>
+<li>chore: update known checksums for 0.6.15 @​<a href="https://redirect.github.com/apps/github-actions">github-actions[bot]</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/377">#​377</a>)</li>
+</ul>
+<h5>📚 Documentation</h5>
+<ul>
+<li>bump to v6 in README <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/382">#​382</a>)</li>
+<li>log info on venv activation <a href="https://redirect.github.com/eifinger">@​eifinger</a> (<a href="https://redirect.github.com/astral-sh/setup-uv/issues/375">#​375</a>)</li>
+</ul>
+</details>
+
+<hr />
+<h3>Configuration</h3>
+<p>📅 <strong>Schedule</strong>: Branch creation - &quot;before 4am on Monday&quot; (UTC), Automerge - At any time (no schedule defined).</p>
+<p>🚦 <strong>Automerge</strong>: Disabled by config. Please merge this manually once you are satisfied.</p>
+<p>♻ <strong>Rebasing</strong>: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.</p>
+<p>🔕 <strong>Ignore</strong>: Close this PR and you won't be reminded about this update again.</p>
+<hr />
+<ul>
+<li>[ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box</li>
+</ul>
+<hr />
+<p>This PR was generated by <a href="https://mend.io/renovate/">Mend Renovate</a>. View the <a href="https://developer.mend.io/github/astral-sh/ruff">repository job log</a>.</p>
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0MC4xMS4xOCIsInVwZGF0ZWRJblZlciI6IjQwLjExLjE4IiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCJdfQ==-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @renovate[bot] on 2025-05-19 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-19 06:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-19 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-05-19 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-19 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-19 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-19 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-19 06:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `Checker::report_diagnostics` - astral-sh/ruff #18206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>Checker::report_diagnostics</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18206">#18206</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-05-19 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-19 20:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I thought that emitting multiple diagnostics at once would be difficult to port to a diagnostic construction model closer to ty's <code>InferContext::report_lint</code>, so as a first step toward that, this PR removes <code>Checker::report_diagnostics</code>.</p>
+<p>In many cases I was able to do some related refactoring to avoid allocating a <code>Vec&lt;Diagnostic&gt;</code> at all, often by adding a <code>Checker</code> field to a <code>Visitor</code> or by passing a <code>Checker</code> instead of a <code>&amp;mut Vec&lt;Diagnostic&gt;</code>.</p>
+<p>In other cases, I had to fall back on something like</p>
+<pre><code class="language-rust">for diagnostic in diagnostics {
+    checker.report_diagnostic(diagnostic);
+}
+</code></pre>
+<p>which I guess is a bit worse than the <code>extend</code> call in <code>report_diagnostics</code>, but hopefully it won't make too much of a difference.</p>
+<p>I'm still not quite sure what to do with the remaining loop cases. The two main use cases for collecting a sequence of diagnostics before emitting any of them are:</p>
+<ol>
+<li>Applying a single <code>Fix</code> to a group of diagnostics</li>
+<li>Avoiding an earlier diagnostic if something goes wrong later</li>
+</ol>
+<p>I was hoping we could get away with just a <code>DiagnosticGuard</code> that reported a <code>Diagnostic</code> on drop, but I guess we will still need a <code>DiagnosticGuardBuilder</code> that can be collected in these cases and produce a <code>DiagnosticGuard</code> once we know we actually want the diagnostics.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-19 20:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-05-19 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-05-19 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-05-19 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-05-19 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-05-19 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-05-19 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs</code>:917 on 2025-05-20 05:42</div>
+            <div class="timeline-body"><p>This will be interesting to replace but I suspect will have to make this entire check earlier (or use an internal intermediate representation for the diagnostics, or have a separate <code>report_diagnostic</code> API for cases where diagnostics are created first and then maybe dropped later, sort of a defuse method)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/hardcoded_password_func_arg.rs</code>:55 on 2025-05-20 05:43</div>
+            <div class="timeline-body"><p>Here, and some other faces where we use <code>filter_map</code>: I think it's easier by calling <code>report_diagnostic</code> instead of returning <code>Some</code> and iterating over the filtered diagnostics</p>
+<pre><code class="language-rust">for keyword in keywords {
+	...
+	checker.report_diagnostic(Diagnostic::new(...))
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/hardcoded_password_string.rs</code>:79 on 2025-05-20 05:44</div>
+            <div class="timeline-body"><pre><code class="language-rust">for `comp` in comperators {
+	...
+	checker.report_diagnostic(Diagnostic::new(...))
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/assertion.rs</code>:598 on 2025-05-20 05:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    for handler in handlers {
+    	match handler {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-20 05:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-20 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/hardcoded_password_func_arg.rs</code>:55 on 2025-05-20 12:46</div>
+            <div class="timeline-body"><p>I left some of these because they used <code>?</code> to return early, but I can do another pass. <code>let</code>-<code>else</code>-<code>continue</code> isn't too bad either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-20 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-20 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-20 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

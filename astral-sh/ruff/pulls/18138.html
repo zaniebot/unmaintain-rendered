@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix assignability checks for invariant generics parameterized by gradual types - astral-sh/ruff #18138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix assignability checks for invariant generics parameterized by gradual types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18138">#18138</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-16 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-16 16:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/424. All the examples in that issue work correctly with this PR branch.</p>
+<p><code>bool | Any</code> is not gradually equivalent to <code>int</code>, because <code>bool | Any</code> could materialize to many possible fully static types that would not be equivalent to <code>int</code>: the set of possible sets represented by <code>bool | Any</code> is not the same as the (length-1) set of possible sets represented by <code>int</code>. Yet <code>bool | Any</code> is assignable to <code>int</code>, and <code>int</code> is assignable to <code>bool | Any</code>. The mutual assignability of both is all that is necessary for <code>list[bool | Any]</code> to be assignable to <code>list[int]</code> and for <code>list[int]</code> to be assignable to <code>list[bool | Any]</code>.</p>
+<h2>Test Plan</h2>
+<p>mdtests added courtesy of @JelleZijlstra!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-16 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-16 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-16 16:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">nionutils (https://github.com/nion-software/nionutils)
+- error[invalid-argument-type] nion/utils/Stream.py:550:53: Argument to bound method `__init__` is incorrect: Expected `Queue[ValueChange[Unknown]]`, found `Queue[ValueChange[T]]`
+- Found 21 diagnostics
++ Found 20 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-assignment] strawberry/types/type_resolver.py:74:5: Object of type `dict[Unknown, type[Any]]` is not assignable to `dict[str, type]`
+- Found 436 diagnostics
++ Found 435 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-argument-type] src/trio/testing/_raises_group.py:1019:70: Argument to function `possible_match` is incorrect: Expected `set[int] | None`, found `set[int | Unknown] | set[Unknown]`
+- Found 1091 diagnostics
++ Found 1090 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[invalid-return-type] pydantic/json_schema.py:2461:12: Return type does not match returned value: expected `tuple[dict[tuple[type[BaseModel] | type[PydanticDataclass], @Todo(Inference of subscript on special form)], dict[str, Any]], dict[str, Any]]`, found `tuple[dict[tuple[Unknown, Unknown], Unknown | dict[str, Any]], dict[Unknown, Unknown]]`
+- error[invalid-return-type] pydantic/type_adapter.py:727:16: Return type does not match returned value: expected `tuple[dict[tuple[JsonSchemaKeyT, Unknown], Unknown | dict[str, Any]], Unknown | dict[str, Any]]`, found `tuple[dict[tuple[Unknown, Unknown], Unknown | dict[str, Any]], dict[Unknown, Unknown]]`
+- Found 765 diagnostics
++ Found 763 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[invalid-argument-type] mkosi/__init__.py:687:21: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- error[invalid-argument-type] mkosi/__init__.py:4193:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown] | Unknown`
+- error[no-matching-overload] mkosi/config.py:1795:16: No overload of function `asdict` matches arguments
+- error[no-matching-overload] mkosi/config.py:2347:13: No overload of function `asdict` matches arguments
+- error[invalid-argument-type] mkosi/initrd.py:417:13: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[str | Unknown, str | Unknown]`
+- Found 288 diagnostics
++ Found 283 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[invalid-argument-type] porcupine/plugins/langserver.py:706:38: Argument to bound method `__init__` is incorrect: Expected `LoggerAdapter[Logger]`, found `LoggerAdapter[Unknown | Logger]`
+- Found 84 diagnostics
++ Found 83 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[invalid-return-type] src/werkzeug/datastructures/accept.py:205:12: Return type does not match returned value: expected `list[str]`, found `Unknown | list[str | @Todo(Support for `typing.TypeAlias`)]`
+- error[invalid-return-type] src/werkzeug/datastructures/accept.py:277:12: Return type does not match returned value: expected `list[str]`, found `Unknown | list[str | @Todo(Support for `typing.TypeAlias`)]`
+- Found 460 diagnostics
++ Found 458 diagnostics
+
+black (https://github.com/psf/black)
+- error[invalid-assignment] src/black/linegen.py:1185:9: Object of type `set[int]` is not assignable to `set[Unknown | int]`
+- Found 135 diagnostics
++ Found 134 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-assignment] torchvision/models/_api.py:235:13: Object of type `set[Unknown | str]` is not assignable to `set[str]`
+- Found 2048 diagnostics
++ Found 2047 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-return-type] expression/collections/array.py:548:12: Return type does not match returned value: expected `TypedArray[tuple[int, _TSource]]`, found `TypedArray[tuple[int, Unknown]]`
+- error[invalid-return-type] expression/collections/block.py:696:12: Return type does not match returned value: expected `Block[tuple[int, _TSource]]`, found `Block[tuple[int, Unknown]]`
+- error[invalid-return-type] expression/collections/block.py:1036:12: Return type does not match returned value: expected `Block[tuple[_TSource, _TResult]]`, found `Block[tuple[Unknown, Unknown]]`
+- error[invalid-return-type] expression/collections/map.py:143:16: Return type does not match returned value: expected `Block[tuple[_Key, _Value]]`, found `Block[tuple[Unknown, Unknown]]`
+- error[invalid-argument-type] expression/collections/map.py:177:25: Argument to function `of_block` is incorrect: Expected `Block[tuple[Unknown, Unknown]]`, found `Block[tuple[_Key, _Value]]`
+- error[invalid-return-type] expression/collections/map.py:466:12: Return type does not match returned value: expected `Block[tuple[_Key, _Value]]`, found `Block[tuple[Unknown, Unknown]]`
+- error[invalid-return-type] expression/collections/maptree.py:438:24: Return type does not match returned value: expected `Block[tuple[Key, Value]]`, found `Block[tuple[Unknown, Unknown]]`
+- error[invalid-argument-type] expression/collections/maptree.py:438:47: Argument to function `loop` is incorrect: Expected `Block[tuple[Unknown, Unknown]]`, found `Block[tuple[Key, Value]]`
+- error[invalid-return-type] expression/collections/maptree.py:444:12: Return type does not match returned value: expected `Block[tuple[Key, Value]]`, found `Block[tuple[Unknown, Unknown]]`
+- error[invalid-return-type] expression/extra/parser.py:76:16: Return type does not match returned value: expected `Parser[Option[_A]]`, found `Parser[Option[Unknown]]`
+- error[invalid-argument-type] expression/extra/parser.py:247:24: Argument to function `apply` is incorrect: Expected `Parser[(Unknown, /) -&gt; Unknown]`, found `Parser[(_A, /) -&gt; (_B, /) -&gt; _C]`
+- error[invalid-return-type] expression/extra/parser.py:262:20: Return type does not match returned value: expected `Parser[Block[_A]]`, found `Parser[Block[Any]]`
+- error[invalid-return-type] expression/extra/parser.py:335:12: Return type does not match returned value: expected `Parser[Block[_A]]`, found `Parser[Block[Unknown]]`
+- error[invalid-assignment] expression/extra/parser.py:349:5: Object of type `Parser[Option[Any]]` is not assignable to `Parser[Option[_A]]`
+- Found 315 diagnostics
++ Found 301 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[invalid-assignment] mkdocs/utils/__init__.py:266:5: Object of type `dict[Unknown, Any | None]` is not assignable to `dict[Unknown, None]`
+- Found 342 diagnostics
++ Found 341 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[invalid-argument-type] cwltool/pathmapper.py:87:26: Argument to function `dedup` is incorrect: Expected `list[MutableMapping[str, @Todo(Inference of subscript on special form) | None]]`, found `list[Unknown | MutableMapping[str, @Todo(Inference of subscript on special form) | None]]`
+- Found 305 diagnostics
++ Found 304 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[invalid-argument-type] schema_salad/avro/schema.py:738:54: Argument to bound method `__init__` is incorrect: Expected `list[dict[str, @Todo(Inference of subscript on special form)]]`, found `list[Unknown | dict[str, @Todo(Inference of subscript on special form)]]`
+- error[invalid-argument-type] schema_salad/codegen.py:39:38: Argument to function `extend_and_specialize` is incorrect: Expected `list[dict[str, Any]]`, found `list[dict[str, str]]`
+- error[invalid-argument-type] schema_salad/main.py:330:13: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_codegen_errors.py:215:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_cpp_codegen.py:120:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_dlang_codegen.py:32:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_dotnet_codegen.py:79:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_java_codegen.py:45:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_python_codegen.py:70:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- error[invalid-argument-type] schema_salad/tests/test_typescript_codegen.py:81:9: Argument to function `codegen` is incorrect: Expected `list[dict[str, str]]`, found `list[dict[str, Any]]`
+- Found 265 diagnostics
++ Found 255 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[invalid-argument-type] dulwich/cli.py:132:31: Argument to bound method `fetch` is incorrect: Expected `((dict[bytes, bytes], int | None, /) -&gt; list[bytes]) | None`, found `Unknown | (bound method PackBasedObjectStore.determine_wants_all(refs: dict[Unknown | bytes, Unknown | bytes], depth: int | None = None) -&gt; list[Unknown | bytes]) | (def determine_wants(refs: dict[Unknown | bytes, Unknown | bytes], depth: int | None = None) -&gt; list[Unknown | bytes])`
+- error[invalid-assignment] dulwich/client.py:959:13: Object of type `Unknown | (bound method PackBasedObjectStore.determine_wants_all(refs: dict[Unknown | bytes, Unknown | bytes], depth: int | None = None) -&gt; list[Unknown | bytes])` is not assignable to `((dict[bytes, bytes], int | None, /) -&gt; list[bytes]) | None`
+- error[invalid-return-type] dulwich/client.py:2487:28: Return type does not match returned value: expected `tuple[dict[Unknown | bytes, bytes], set[bytes], str, dict[Unknown | bytes, Unknown | bytes], dict[Unknown | bytes, bytes]]`, found `tuple[dict[bytes, bytes], Unknown, Unknown | str, dict[bytes, bytes], dict[bytes, bytes]]`
+- error[invalid-return-type] dulwich/client.py:2528:28: Return type does not match returned value: expected `tuple[dict[Unknown | bytes, bytes], set[bytes], str, dict[Unknown | bytes, Unknown | bytes], dict[Unknown | bytes, bytes]]`, found `tuple[dict[bytes, bytes] | Unknown, Unknown | set[bytes], Unknown | str, dict[bytes, bytes] | Unknown, dict[bytes, bytes] | Unknown]`
+- Found 143 diagnostics
++ Found 139 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- error[invalid-assignment] comtypes/automation.py:848:17: Object of type `_Pointer[Unknown | c_long]` is not assignable to attribute `rgdispidNamedArgs` on type `Unknown | tagDISPPARAMS`
+- error[invalid-assignment] comtypes/automation.py:865:13: Object of type `_Pointer[Unknown | c_long]` is not assignable to attribute `rgdispidNamedArgs` on type `Unknown | tagDISPPARAMS`
+- Found 609 diagnostics
++ Found 607 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[invalid-argument-type] mypy/types_utils.py:67:43: Argument to function `is_invalid_recursive_alias` is incorrect: Expected `set[TypeAlias]`, found `set[TypeAlias | Unknown]`
+- error[invalid-return-type] mypyc/analysis/attrdefined.py:298:12: Return type does not match returned value: expected `set[str]`, found `Unknown | set[str | Unknown] | set[str]`
+- Found 3319 diagnostics
++ Found 3317 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-assignment] ddtrace/_trace/provider.py:18:1: Object of type `ContextVar[None]` is not assignable to `ContextVar[@Todo(Inference of subscript on special form) | None]`
+- Found 8723 diagnostics
++ Found 8722 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[invalid-argument-type] tests/visualization_tests/test_rank.py:283:35: Argument to function `_get_nested_list_shape` is incorrect: Expected `list[list[Any]]`, found `list[list[_RankSubplotInfo]]`
+- error[invalid-argument-type] tests/visualization_tests/test_rank.py:301:35: Argument to function `_get_nested_list_shape` is incorrect: Expected `list[list[Any]]`, found `list[list[_RankSubplotInfo]]`
+- error[invalid-argument-type] tests/visualization_tests/test_rank.py:484:35: Argument to function `_get_nested_list_shape` is incorrect: Expected `list[list[Any]]`, found `list[list[_RankSubplotInfo]]`
+- Found 1185 diagnostics
++ Found 1182 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/python.py:1302:17: Argument to bound method `setdefault` is incorrect: Expected `StashKey[dict[Unknown, Unknown]]`, found `Unknown | StashKey[dict[str, FixtureDef[Any]]]`
+- error[invalid-argument-type] src/_pytest/raises.py:1519:67: Argument to function `possible_match` is incorrect: Expected `set[int] | None`, found `set[int | Unknown] | set[Unknown]`
+- error[invalid-argument-type] src/_pytest/tmpdir.py:312:27: Argument to bound method `setdefault` is incorrect: Expected `StashKey[dict[Unknown, Unknown]]`, found `Unknown | StashKey[dict[str, bool]]`
+- error[invalid-argument-type] testing/test_pytester.py:318:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] testing/test_pytester.py:329:29: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
+- error[invalid-argument-type] testing/test_pytester.py:342:33: Argument to bound method `setitem` is incorrect: Expected `Mapping[str | Unknown, ModuleType]`, found `dict[str, ModuleType]`
+- error[invalid-assignment] testing/test_terminal.py:1972:5: Object of type `dict[str, list[object]]` is not assignable to attribute `stats` of type `dict[str, list[Any]]`
+- Found 922 diagnostics
++ Found 915 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- error[invalid-return-type] sphinx/domains/python/__init__.py:731:16: Return type does not match returned value: expected `tuple[list[tuple[str, list[IndexEntry]]], bool]`, found `tuple[list[tuple[Unknown, Unknown]], bool]`
+- error[invalid-assignment] sphinx/environment/adapters/indexentries.py:154:9: Object of type `list[tuple[Unknown, Unknown]]` is not assignable to `list[tuple[str, @Todo(Support for `typing.TypeAlias`)]]`
+- error[invalid-assignment] sphinx/ext/intersphinx/_resolve.py:151:5: Object of type `dict[Unknown, Any | None]` is not assignable to `dict[str, None]`
+- Found 673 diagnostics
++ Found 670 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[invalid-return-type] openlibrary/plugins/openlibrary/lists.py:829:16: Return type does not match returned value: expected `dict[str, list[Unknown]]`, found `dict[str, list[dict[Unknown, Unknown]]]`
+- Found 751 diagnostics
++ Found 750 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[invalid-assignment] sympy/core/symbol.py:816:13: Object of type `Unknown | list[str | @Todo(Support for `typing.TypeAlias`)]` is not assignable to `list[str]`
+- error[invalid-assignment] sympy/parsing/sympy_parser.py:641:17: Object of type `list[tuple[@Todo(Generic tuple specializations), ...]]` is not assignable to `list[Unknown | tuple[@Todo(Generic tuple specializations), ...]]`
+- error[invalid-assignment] sympy/parsing/sympy_parser.py:643:17: Object of type `list[tuple[@Todo(Generic tuple specializations), ...]]` is not assignable to `list[Unknown | tuple[@Todo(Generic tuple specializations), ...]]`
+- error[invalid-assignment] sympy/parsing/sympy_parser.py:832:9: Object of type `list[tuple[@Todo(Generic tuple specializations), ...]]` is not assignable to `list[Unknown | tuple[@Todo(Generic tuple specializations), ...]]`
+- error[invalid-argument-type] sympy/polys/puiseux.py:146:38: Argument to bound method `from_dict` is incorrect: Expected `dict[tuple[Any, ...], Any]`, found `dict[tuple[int, ...], Any]`
+- Found 17160 diagnostics
++ Found 17155 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[invalid-assignment] zerver/actions/create_user.py:154:13: Object of type `list[Unknown | Stream]` is not assignable to `list[Stream]`
+- error[invalid-argument-type] zerver/actions/message_send.py:1593:13: Argument to function `check_any_user_has_permission_by_role` is incorrect: Expected `set[UserProfile]`, found `set[UserProfile | Unknown]`
+- error[invalid-return-type] zerver/lib/presence.py:241:12: Return type does not match returned value: expected `tuple[dict[str, dict[str, dict[str, Any]]], int]`, found `tuple[dict[str, dict[str, Any]], int]`
+- error[invalid-return-type] zerver/lib/user_agent.py:18:12: Return type does not match returned value: expected `dict[str, str]`, found `@Todo(map_with_boundness: intersections with negative contributions) | dict[str, str | @Todo(Support for `typing.TypeAlias`)]`
+- error[invalid-return-type] zerver/lib/users.py:840:12: Return type does not match returned value: expected `list[int]`, found `list[Unknown | int]`
+- error[invalid-return-type] zerver/lib/users.py:1053:12: Return type does not match returned value: expected `list[int]`, found `list[Unknown | int]`
+- error[invalid-assignment] zerver/lib/webhooks/git.py:428:5: Object of type `list[tuple[Unknown, Unknown]]` is not assignable to `list[tuple[str, int]]`
+- error[invalid-return-type] zerver/tests/test_markdown.py:485:16: Return type does not match returned value: expected `tuple[list[str], list[str]]`, found `tuple[list[str], list[str | @Todo(Support for `typing.TypeAlias`)]]`
+- error[invalid-argument-type] zerver/webhooks/beanstalk/view.py:37:70: Argument to function `get_push_commits_event_message` is incorrect: Expected `list[dict[str, Any]]`, found `list[dict[str, str]]`
+- error[invalid-argument-type] zerver/webhooks/gitlab/view.py:116:9: Argument to function `get_issue_event_message` is incorrect: Expected `list[dict[str, Any]] | None`, found `list[dict[str, str]]`
+- error[invalid-argument-type] zerver/webhooks/gitlab/view.py:182:9: Argument to function `get_pull_request_event_message` is incorrect: Expected `list[dict[str, Any]] | None`, found `list[dict[str, str]]`
+- error[invalid-argument-type] zerver/webhooks/gogs/view.py:46:9: Argument to function `get_push_commits_event_message` is incorrect: Expected `list[dict[str, Any]]`, found `list[dict[str, str]]`
+- Found 8177 diagnostics
++ Found 8165 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- error[invalid-return-type] misc/python/materialize/file_util.py:34:12: Return type does not match returned value: expected `set[str]`, found `set[Unknown] | set[Unknown | str]`
+- Found 3272 diagnostics
++ Found 3271 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-16 17:03</div>
+            <div class="timeline-body"><p>I half-expected a perf regression here, but codspeed is entirely neutral: https://codspeed.io/astral-sh/ruff/branches/alex%2Fvariance-assignability.</p>
+<p>But that might be just because tomllib doesn't use many generic types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-05-16 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-16 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-16 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-16 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-16 17:33</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-16 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-16 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-16 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

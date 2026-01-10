@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Allow classes to inherit from `type[Any]` or `type[Unknown]` - astral-sh/ruff #18060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Allow classes to inherit from <code>type[Any]</code> or <code>type[Unknown]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18060">#18060</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-13 00:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 00:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This continues our recent work to pay more respect to the gradual guarantee when inferring the MROs of classes. Classes are now permitted to inherit from <code>type[Any]</code> and <code>type[Unknown]</code>: since these are <a href="https://github.com/astral-sh/ty/issues/222">actually intersection types</a>, the same principle applies to these types as was established in https://github.com/astral-sh/ruff/pull/18055.</p>
+<h2>Test Plan</h2>
+<p>mdtests added.</p>
+<p>I wish I could tell you why the order of the diagnostics in the snapshot is changing as a result of these changes, but -- alas! -- I cannot. It doesn't seem like a massive problem, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-13 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-13 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-13 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-13 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 00:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">ignite (https://github.com/pytorch/ignite)
++ warning[unused-ignore-comment] ignite/distributed/auto.py:351:75: Unused blanket `type: ignore` directive
+- Found 2276 diagnostics
++ Found 2277 diagnostics
+
+operator (https://github.com/canonical/operator)
+- error[invalid-base] ops/_private/harness.py:430:26: Invalid class base with type `type[Unknown]` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 203 diagnostics
++ Found 202 diagnostics
+
+mypy (https://github.com/python/mypy)
++ warning[unused-ignore-comment] mypy/stubtest.py:435:35: Unused blanket `type: ignore` directive
+- Found 3371 diagnostics
++ Found 3372 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-super-argument] ddtrace/settings/_config.py:768:20: `type[Unknown]` is not a valid class
+- error[invalid-super-argument] ddtrace/settings/_config.py:773:20: `type[Unknown]` is not a valid class
+- Found 8604 diagnostics
++ Found 8602 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[invalid-super-argument] scipy/stats/_continuous_distns.py:68:20: `type[Unknown]` is not a valid class
+- error[invalid-super-argument] scipy/stats/_continuous_distns.py:6765:20: `type[Unknown]` is not a valid class
+- error[invalid-super-argument] scipy/stats/_continuous_distns.py:8568:20: `type[Unknown]` is not a valid class
+- error[invalid-super-argument] scipy/stats/tests/test_distributions.py:295:21: `type[Unknown]` is not a valid class
+- Found 7733 diagnostics
++ Found 7729 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 00:20</div>
+            <div class="timeline-body"><p>That's quite interesting -- a lot of the primer reports are to do with <code>super()</code> rather than inheritance, as our <code>BoundSuper</code> type also users <code>ClassBase</code> as its inner data:</p>
+<p>https://github.com/astral-sh/ruff/blob/41fa082414c7277082d7e19b307baea0a4771d4c/crates/ty_python_semantic/src/types.rs#L8100-L8106</p>
+<p>I think the same arguments about the gradual guarantee apply to <code>super()</code> usage on <code>type[Any]</code> as they do to inheritance from <code>type[Any]</code>, though. So this doesn't seem like a problem to me.</p>
+<p>(The hits in operator and mypy are both inheritance-related; not <em>all</em> the primer hits are <code>super()</code>-related.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-13 00:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-13 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-13 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-13 00:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

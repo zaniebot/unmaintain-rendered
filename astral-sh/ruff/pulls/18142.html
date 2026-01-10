@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attach a `SourceFile` to `Diagnostic` - astral-sh/ruff #18142</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attach a <code>SourceFile</code> to <code>Diagnostic</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18142">#18142</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-05-16 20:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-16 20:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As the title says, this PR adds a <code>SourceFile</code> field to <code>ruff_diagnostics::Diagnostic</code>. After https://github.com/astral-sh/ruff/pull/18051, this will be the main piece of information present in <code>Message</code> and not in <code>ruff_diagnostics::Diagnostic</code>, so this PR will facilitate replacing <code>ruff_diagnostics::Diagnostic</code> with <code>Message</code>.</p>
+<p>The essential code changes are very small:</p>
+<ul>
+<li>Adding a <code>source_file: SourceFile</code> field to <code>ruff_diagnostics::Diagnostic</code></li>
+<li>Adding a <code>source_file: SourceFile</code> field to <code>Checker</code></li>
+</ul>
+<p>Other than that, the changes are just plumbing <code>SourceFile</code> arguments through functions to get them to <code>ruff_diagnostics::Diagnostic::new</code> calls.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-05-16 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-05-16 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-16 20:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-05-16 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-05-16 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-05-16 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-05-16 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-17 15:04</div>
+            <div class="timeline-body"><p>The PR summary is a bit confusing because it isn't clear to me when/if you're speaking about the ruff or linter <code>Diagnostic</code> type. Maybe rewrite it to <code>DiagnosticOld</code> and clarify at the beginning what <code>Diagnostic</code> points to.</p>
+<p>(It may be too late for this but I liked what @BurntSushi did early on in his refactor: He renamed the old <code>Diagnostic</code> type to <code>OldDiagnostic</code>. This helped clarify a lot in his PRs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:157 on 2025-05-17 15:11</div>
+            <div class="timeline-body"><p>Can't we pass the file by reference instead of cloning everywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-17 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-17 15:16</div>
+            <div class="timeline-body"><p>Oh sorry, this PR is all about the old <code>ruff_diagnostics::Diagnostic</code>. I guess I only typed that out once and then dropped the prefix. The new <code>ruff_db::Diagnostic</code>s also have a file attached, so the old <code>ruff_diagnostics::Diagnostic</code> type is the only one of the three (including <code>Message</code>) without an associated file.</p>
+<p>I think you might be right about it being a bit late. My plan after this and #18051 is to delete <code>ruff_diagnostics::Diagnostic</code> (<code>OldDiagnostic</code>) entirely. I had a branch stacked on #18051 doing that when I realized I needed the file, which seemed good to split off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-17 15:16</div>
+            <div class="timeline-body"><p>I feel bad saying this because this must have taken you a lot of time but I feel a bit concerned about introducing a new required argument for every lint rule.</p>
+<p>Could we take inspiration from <code>InferContext::report_lint</code> and e.g. introduce a <code>checker.report_violation(violation, range)</code> that returns a <code>DiagnosticGuard</code> that automatically injects the file and pushes the diagnostic on drop?</p>
+<p>I didn't review all call sites to get a good sense if this works in all cases but it would avoid passing file everywhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-17 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel bad saying this because this must have taken you a lot of time but I feel a bit concerned about introducing a new required argument for every lint rule.</p>
+<p>Could we take inspiration from <code>InferContext::report_lint</code> and e.g. introduce a <code>checker.report_violation(violation, range)</code> that returns a <code>DiagnosticGuard</code> that automatically injects the file and pushes the diagnostic on drop?</p>
+<p>I didn't review all call sites to get a good sense if this works in all cases but it would avoid passing file everywhere</p>
+</blockquote>
+<p>No worries, I was concerned about that too. I'll take a look at <code>InferContext::report_lint</code>!</p>
+<p>It definitely won't work everywhere, at least as a method on <code>Checker</code>, because we don't have a <code>Checker</code> available in a surprising number of cases. However, we still <em>can</em> pass a <code>Checker</code> to some subset of those. That's actually what I did first before switching to pass only the <code>SourceFile</code>. So I think it will still be useful in the vast majority of cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-17 15:30</div>
+            <div class="timeline-body"><blockquote>
+<p>It definitely won't work everywhere, at least as a method on Checker, because we don't have a Checker available in a surprising number of cases. However, we still can pass a Checker to some subset of those. That's actually what I did first before switching to pass only the SourceFile. So I think it will still be useful in the vast majority of cases.</p>
+</blockquote>
+<p>I'm fine passing <code>SourceFile</code> in places where we don't have a <code>Checker</code>. I think some of those have a <code>context</code> parameter on which we can store it instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-19 17:38</div>
+            <div class="timeline-body"><p>I'm going to go ahead and close this one instead of trying to rebase onto #18051. I'll put up a second attempt with a new <code>Checker</code> method for constructing diagnostics after I study <code>InferContext</code> a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-19 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-19 17:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

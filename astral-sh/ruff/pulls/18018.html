@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement `DataClassInstance` protocol for dataclasses. - astral-sh/ruff #18018</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement <code>DataClassInstance</code> protocol for dataclasses.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18018">#18018</a>
+        opened by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a>
+        on 2025-05-11 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-11 19:18</div>
+            <div class="timeline-body"><p>Fixes: https://github.com/astral-sh/ty/issues/92</p>
+<h2>Summary</h2>
+<p>We currently get a <code>invalid-argument-type</code> error when using <code>dataclass.fields</code> on a dataclass, because we do not synthesize the <code>__dataclass_fields__</code> member.</p>
+<p>This PR fixes this diagnostic.</p>
+<p>Note that we do not yet model the <code>Field</code> type correctly. After that is done, we can assign a more precise <code>tuple[Field, ...]</code> type to this new member.</p>
+<h2>Test Plan</h2>
+<p>New mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @abhijeetbodas2001 on 2025-05-11 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @abhijeetbodas2001 on 2025-05-11 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @abhijeetbodas2001 on 2025-05-11 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @abhijeetbodas2001 on 2025-05-11 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-11 19:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
+- error[invalid-argument-type] psycopg/psycopg/errors.py:233:21: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `&lt;class 'FinishedPGconn'&gt;`
+- Found 1241 diagnostics
++ Found 1240 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any]`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any] | (dict[Any, Any] &amp; list[Unknown])`
++ error[type-assertion-failure] tests/annotations/declarations.py:951:5: Actual type `FullBuilds[Unknown] | StdBuilds[Unknown]` is not the same as asserted type `FullBuilds[@Todo(Support for `typing.TypeAlias`)] | StdBuilds[@Todo(Support for `typing.TypeAlias`)]`
+- Found 649 diagnostics
++ Found 650 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- error[invalid-argument-type] rotkehlchen/tests/api/test_settings.py:144:39: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `&lt;class 'DBSettings'&gt;`
+- error[invalid-argument-type] rotkehlchen/tests/api/test_users.py:52:39: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `&lt;class 'DBSettings'&gt;`
+- error[invalid-argument-type] rotkehlchen/tests/db/test_db.py:523:57: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `&lt;class 'DBSettings'&gt;`
+- Found 2107 diagnostics
++ Found 2104 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-11 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses.md</code>:636 on 2025-05-11 19:24</div>
+            <div class="timeline-body"><p>The stub for <code>fields</code> is:</p>
+<pre><code class="language-py">def fields(class_or_instance: DataclassInstance | type[DataclassInstance]) -&gt; tuple[Field[Any], ...]: ...
+</code></pre>
+<p>However, once we do model <code>Field</code> correctly, I think we can just return a fixed length tuple of <code>Field</code>s? Then, this will not have to depend on support for unbounded tuples, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-11 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses.md</code>:636 on 2025-05-11 19:27</div>
+            <div class="timeline-body"><p>FTR, both <code>pyright</code> and <code>mypy</code> consider the type of <code>fields()</code> to be an unbounded tuple:</p>
+<pre><code class="language-shell">(code) [~/code/ruff] $ bat /tmp/foo.py
+───────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: /tmp/foo.py
+───────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ from dataclasses import dataclass, fields
+   2   │
+   3   │ @dataclass
+   4   │ class A:
+   5   │     x: int
+   6   │
+   7   │ reveal_type(fields(A))
+───────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+(code) [~/code/ruff] $ pyright /tmp/foo.py
+/tmp/foo.py
+  /tmp/foo.py:7:13 - information: Type of &quot;fields(A)&quot; is &quot;tuple[Field[Any], ...]&quot;
+0 errors, 0 warnings, 1 information
+</code></pre>
+<p>... while, they <em>could</em> have inferred a more precise type. Is that correct, or am I missing something here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-11 19:30</div>
+            <div class="timeline-body"><p>This PR does silence the false positives mentioned in the original issue, but does not fully model the return type of <code>dataclasses.fields</code>, because <code>ty</code> does not yet understand the <code>dataclasses.Field</code> class (https://github.com/astral-sh/ty/issues/111).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dylwil3 on 2025-05-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3002 on 2025-05-12 07:38</div>
+            <div class="timeline-body"><p>Shouldn't this be <code>dict[str, Field[Any]]</code>? If we can't spell this out yet, maybe make it a <code>todo_type!(&quot;…&quot;)</code> for now?</p>
+<p>Also, I think we should make this a <code>ClassVar</code>. Instead of calling <code>.into()</code>, you can add the corresponding type qualifier here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses.md</code>:636 on 2025-05-12 07:44</div>
+            <div class="timeline-body"><blockquote>
+<p>However, once we do model <code>Field</code> correctly, I think we can just return a fixed length tuple of <code>Field</code>s?</p>
+</blockquote>
+<p>I think we could do that, but I'm not sure it's necessary. It might be nice for writing <code>ty</code> tests, but otherwise, it's probably not that useful. Keeping this as a <code>@Todo</code> for homogenous tuple support is fine for the moment, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-05-12 07:45</div>
+            <div class="timeline-body"><p>Thank you very much! This looks good.. just a minor question regarding the return type and the type qualifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3002 on 2025-05-12 15:17</div>
+            <div class="timeline-body"><p>Oh, I did not know about <code>todo_type</code>! I've updated the type to <code>dict[str, todo_type(&quot;dataclass.Field&quot;)]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-12 15:21</div>
+            <div class="timeline-body"><p>Thanks for reviewing. I've changed the type as you mentioned. I've also added a <code>reveal_type</code> test for <code>__dataclass_fields__</code>.</p>
+<p>I do have one question though. I wanted to add another assertion to the tests, something like this:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_subtype_of
+from _typeshed import DataclassInstance
+
+@dataclass
+class Foo:
+    x: int
+
+static_assert(is_subtype_of(Foo, DataclassInstance))
+</code></pre>
+<p>This assertion however, failed. I am not sure why. I grepped for any other examples of <code>from _typeshed import ...</code> in the mdtests, but could not find any.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3002 on 2025-05-12 15:29</div>
+            <div class="timeline-body"><p>We should be able to do something like</p>
+<pre><code class="language-rs">KnownClass::Dict.to_specialized_instance(db, [KnownClass::Str.to_instance(db), todo_type(&quot;dataclass.Field&quot;)])
+</code></pre>
+<p>Or, even better:</p>
+<pre><code class="language-rs">KnownClass::Dict.to_specialized_instance(db, [KnownClass::Str.to_instance(db), KnownClass::Field.to_specialized_instance(db, Type::any())])
+</code></pre>
+<p>but that requires adding a <code>KnownClass::Field</code> variant, which I think is fine to defer to a followup for now if you don't want to do it here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3002 on 2025-05-12 15:38</div>
+            <div class="timeline-body"><p>Yup, the first one is what I've pushed here.
+I can add a new <code>KnownClass::Field</code> variant in a follow up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3002 on 2025-05-12 17:08</div>
+            <div class="timeline-body"><p>Adding <code>Field</code> did not seem too difficult, so I added it in this PR itself. Thanks for the suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1978 on 2025-05-12 17:10</div>
+            <div class="timeline-body"><p>This should go in the third branch (the <code>Truthiness::Ambiguous</code> branch) because <code>Field</code> is not declared as a <code>@final</code> class. See the comment at the top of this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2648 on 2025-05-12 17:11</div>
+            <div class="timeline-body"><p>This isn't correct -- the module of <code>Field</code> is <code>KnownModule::Dataclasses</code>, never <code>KnownModule::Typing</code> or <code>KnownModule::TypingExtensions</code>. You should add it to the first branch of this <code>match</code> instead (the <code>module == self.canonical_module(db)</code> branch)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2648 on 2025-05-12 17:22</div>
+            <div class="timeline-body"><p>(this should fix the failing test on your PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2648 on 2025-05-12 17:28</div>
+            <div class="timeline-body"><p>Indeed. Apologies for the noise -- I should have made it clear that this was not ready for another review, while I was investigating the test failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1978 on 2025-05-12 17:40</div>
+            <div class="timeline-body"><p>So, <code>Field</code> itself does not implement <code>__bool__</code>, and should by truthy, but a subclass of <code>Field</code> can implement <code>__bool__</code> and have it return False -- is that why we need <code>@final</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1978 on 2025-05-12 17:40</div>
+            <div class="timeline-body"><p>(Pushed the fix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-12 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-12 17:43</div>
+            <div class="timeline-body"><p>Thanks for the review Alex! I've addressed your comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2648 on 2025-05-12 17:43</div>
+            <div class="timeline-body"><p>oh, no worries!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-12 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1978 on 2025-05-12 17:44</div>
+            <div class="timeline-body"><p>Exactly! If we said that the truthiness of <code>Field</code> was always true, then this would imply that all instances of <code>Field</code> <em>and all instances of possible <code>Field</code> subclasses</em> are all guaranteed to be truthy. This isn't necessarily the case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 08:25</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-python">from _typeshed import DataclassInstance
+</code></pre>
+</blockquote>
+<p>@AlexWaygood might know more about why we don't use/support this, so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 08:26</div>
+            <div class="timeline-body"><p>I updated the test assertion now that https://github.com/astral-sh/ruff/pull/17998 has been merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-05-13 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-13 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-13 08:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I updated the test assertion now that #17998 has been merged.</p>
+</blockquote>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-13 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 13:01</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<pre><code class="language-python">from _typeshed import DataclassInstance
+</code></pre>
+</blockquote>
+<p>@AlexWaygood might know more about why we don't use/support this, so far.</p>
+</blockquote>
+<p>It seems to be because we still incorrectly emit an error if the attribute is accessed on <em>instances</em> of dataclasses rather than dataclass class objects themselves:</p>
+<pre><code class="language-py">@dataclass
+class Foo: ...
+
+reveal_type(Foo.__dataclass_fields__)  # revealed: dict[str, Field[Any]]
+
+# error: Type `Foo` has no attribute `__dataclass_fields__`
+reveal_type(Foo().__dataclass_fields__)  # revealed: Unknown
+</code></pre>
+<p>https://play.ty.dev/b8c107d1-bc5c-4c7b-a71f-ab5991b9c53f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems to be because we still incorrectly emit an error if the attribute is accessed on <em>instances</em> of dataclasses rather than dataclass class objects themselves:</p>
+</blockquote>
+<p>Oh! I thought there was a problem with the <code>_typeshed</code> import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-13 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems to be because we still incorrectly emit an error if the attribute is accessed on instances of dataclasses rather than dataclass class objects themselves:</p>
+</blockquote>
+<p>Oh makes sense! I will dig into the code to understand more, but conceptually, why does <code>is_subtype_of</code> need to inspect instances of <code>Foo</code>? If it finds a class-var called <code>__dataclass_fields__</code> on <code>Foo</code> itself, can it not assume that instances will also have it (and claim the subtype relation to hold)? Maybe not inside the type checker (where we synthesize stuff), but in real code, this implication should hold?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 16:44</div>
+            <div class="timeline-body"><blockquote>
+<p>conceptually, why does <code>is_subtype_of</code> need to inspect instances of <code>Foo</code>? If it finds a class-var called <code>__dataclass_fields__</code> on <code>Foo</code> itself, can it not assume that instances will also have it (and claim the subtype relation to hold)? Maybe not inside the type checker (where we synthesize stuff), but in real code, this implication should hold?</p>
+</blockquote>
+<p>Yes, this is true at runtime, and ty should understand it too. Generally we do, but in this PR we do not, because the special case for a member lookup of <code>__dataclass_fields__</code> was added only for <code>Type::ClassLiteral</code> type, in <code>Type::member_lookup_with_policy</code>. Our general fallback from an instance to its class is implemented at a deeper layer, in methods on <code>ClassType</code>.</p>
+<p>So to fix this, either we also need a special case for <code>__dataclass_fields__</code> in the <code>NominalInstance</code> arm of <code>Type::member_lookup_with_policy</code>, or (probably better? but I haven't worked through the details) the entire handling of <code>__dataclass_fields__</code> should be moved out of <code>Type::member_lookup_with_policy</code> and into <code>ClassType</code> methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 16:53</div>
+            <div class="timeline-body"><p>On second look, I also think that the assertion made in the tests here is wrong: the class object <code>Foo</code> should <em>not</em> satisfy the <code>DataclassInstance</code> protocol, because the <code>__dataclass_fields__</code> attribute on <code>DataclassInstance</code> is marked as <code>ClassVar</code>, and the type of <code>Foo</code> (the builtin <code>type</code>) has no such attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-15 07:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I also think that the assertion made in the tests here is wrong</p>
+</blockquote>
+<p>I did not understand this. Which assertion specifically?</p>
+<p>Assuming we do add a synthesized member to <code>NominalInstance</code> like you mentioned above, the assertion: <code>static_assert(is_subtype_of(Foo, DataclassInstance))</code> should pass?</p>
+<p>I understand that the class object <code>Foo</code> shouldn't satisfy the protocol, but in the above check, we only care about the <em>type</em> <code>Foo</code> isn't it? What am I missing here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 08:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I did not understand this. Which assertion specifically?</p>
+</blockquote>
+<p>This one: <code>static_assert(is_subtype_of(Foo, DataclassInstance))</code>. This should not pass.</p>
+<blockquote>
+<p>Assuming we do add a synthesized member to <code>NominalInstance</code> like you mentioned above, the assertion: <code>static_assert(is_subtype_of(Foo, DataclassInstance))</code> should pass?</p>
+</blockquote>
+<p>I don't think so. The members and types match, but the type qualifiers do not:</p>
+<pre><code class="language-py">class DataclassInstance(Protocol):
+    __dataclass_fields__: ClassVar[dict[str, Field[Any]]]
+</code></pre>
+<p>I'm not sure where that is specified, but I assume the <code>ClassVar</code> annotation here means: <code>__dataclass_fields__</code> must be accessible <strong>on the <code>type</code></strong> of an instance of this protocol. For instances of a dataclass, this is true:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+@dataclass
+class C: ...
+
+c = C()
+type(c).__dataclass_fields__  # this exists
+</code></pre>
+<p>But for class objects, this is not true:</p>
+<pre><code class="language-py">type(C).__dataclass_fields  # this does not exist. `type(C)` is `type`.
+</code></pre>
+<p>Note that dataclass class objects can still be passed to <code>dataclasses.fields</code>, because they also accept <code>type[DataclassInstance]</code>:</p>
+<p>https://github.com/python/typeshed/blob/1063db7c15135c172f1f6a81d3aff6d1cb00a980/stdlib/dataclasses.pyi#L299</p>
+<p>I was already working on a fix (https://github.com/astral-sh/ruff/pull/18115) when I saw your message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-15 13:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure where that is specified, but I assume the ClassVar annotation here means: <strong>dataclass_fields</strong> must be accessible on the type of an instance of this protocol.</p>
+</blockquote>
+<p>This makes sense. I also could not find this anywhere, but is the reasoning here that, the  constraints:</p>
+<p>(1) members annotated with <code>ClassVar</code> cannot be set on instances
+(2) for <code>Foo</code> to be an instance of <code>DataclassInstance</code>, the member must be present</p>
+<p>.. together imply that it must be present in the type of <code>Foo</code>?</p>
+<hr />
+<p>But thanks for the explanation and the fix, and I'm sorry that you had to rework this :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 18:47</div>
+            <div class="timeline-body"><blockquote>
+<p>But thanks for the explanation and the fix, and I'm sorry that you had to rework this :(</p>
+</blockquote>
+<p>No worries! Thank you for the initial implementation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

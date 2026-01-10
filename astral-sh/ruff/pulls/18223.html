@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>remove unnecessary `__future__` import in `ruff.__main__` - astral-sh/ruff #18223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>remove unnecessary <code>__future__</code> import in <code>ruff.__main__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18223">#18223</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-05-20 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-20 15:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>__future__.annotations</code> import in <code>ruff.__main__</code> was not needed, as there are no forward references or type-check-only imports.</p>
+<p>Instead, I manually stringified the <code>list[str]</code> annotation, for compatibility with older Python versions.</p>
+<p>Since the <code>pyproject.toml</code> ruff config for <code>isort</code> requires <code>__future__.annotations</code> to be present everywhere, I assumed that there must be some reason for that, and did not change it. I instead used a local <code>.ruff.toml</code> to override it for the only the <code>ruff</code> python package.</p>
+<h2>Test Plan</h2>
+<p>Check that <code>python -m ruff</code> does not raise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 15:37</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>The future annotation was introduced in https://github.com/astral-sh/ruff/pull/15090 to fix a runtime error. Nothing has changed to this file since then, so I think it's still needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-20 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you.</p>
+<p>The future annotation was introduced in #15090 to fix a runtime error. Nothing has changed to this file since then, so I think it's still needed</p>
+</blockquote>
+<p>I can't see how a <code>from __future__ import annotations</code> would fix the <code>FileNotFoundError</code> reported in #15090 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-20 15:43</div>
+            <div class="timeline-body"><p>But either way, this indeed won't work now on older Python versions. Let me fix that real quick.</p>
+<p><strong>edit</strong>: I believe it should also work with older Python versions now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 15:51</div>
+            <div class="timeline-body"><p>I prefer keeping the future annotations because it protects against accidentially introducing backwards incompatible types and I don't see any harm to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-20 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't see any harm to it.</p>
+</blockquote>
+<p>Usually it's no problem. But it can make the life of runtime type-checkers more difficult, because it requires them to <code>eval</code> all annotations because of that. But in this case I doubt that it matters, so I can see how the additional complexity might not be worth it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-20 15:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

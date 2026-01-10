@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] add fix safety section (`RUF033`) - astral-sh/ruff #17760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] add fix safety section (<code>RUF033</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17760">#17760</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-05-01 07:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-05-01 07:24</div>
+            <div class="timeline-body"><p>The PR add the fix safety section for rule <code>RUF033</code> (https://github.com/astral-sh/ruff/issues/15584 ).</p>
+<p>It seems that the fix was always unsafe, see #13192. An example of unsafely can be found in the PR description of #13192 or in the next section.</p>
+<h2>Unsafety example</h2>
+<p>I took as an example the case</p>
+<pre><code class="language-python">from dataclasses import dataclass, InitVar
+
+@dataclass
+class User:
+    name: str
+
+    def __post_init__(self, greeting: str = &quot;Hello&quot;):
+        print(f&quot;{greeting}, {self.name}!&quot;)
+
+@dataclass
+class UserAfterFix:
+    name: str
+    greeting: InitVar[str] = &quot;Hello&quot;
+
+    def __post_init__(self, greeting: str):
+        print(f&quot;{greeting}, {self.name}!&quot;)
+
+User('Alice')  # print `Hello, Alice`
+UserAfterFix('Alice') # raise an error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-01 07:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-05-01 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-05-04 09:25</div>
+            <div class="timeline-body"><p>Hey @dylwil3</p>
+<p>I believe the PR is ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:67 on 2025-05-04 22:09</div>
+            <div class="timeline-body"><p>I don't really follow this as a justification - if the user didn't want this, they wouldn't select this lint rule to begin with. Does the fix ever cause a change in runtime behavior? Is it too likely that there are false positives, or are there known false positives? That's the sort of thing we're looking for here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-05-04 22:10</div>
+            <div class="timeline-body"><p>I could not reproduce the exception being raised in the example in your PR summary (but maybe I've done something wrong?), nor could I see why the example fix in the original PR was unsafe. The example in the docs for the rule of a suggested change <em>would</em> be an unsafe fix since it changes runtime behavior, but we don't actually offer an autofix in the situation where we would be overwriting a default like that. So I don't really see yet why this fix is unsafe (is it?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:67 on 2025-05-05 12:22</div>
+            <div class="timeline-body"><p>The fix is unsafe because, although switching to <code>InitVar</code> is usually correct, it is incorrect when the parameter is not meant to be a field exposed in the public API, or when the value should be shared between all instances. The examples below use a defaulted parameter as a class-level cache; the correct fix would be to switch to <code>ClassVar</code>.</p>
+<p>Here is an example where the fix changes runtime behavior:</p>
+<pre><code class="language-console">$ cat &gt;ruf033_1.py &lt;&lt;'# EOF'
+from dataclasses import dataclass, field
+@dataclass
+class Foo:
+    name: str
+    serial_number: int = field(init=False)
+    def __post_init__(self, cache: dict[str, int] = {}) -&gt; None:
+        self.serial_number = cache.setdefault(self.name, len(cache))
+print(Foo(&quot;A&quot;).serial_number)
+print(Foo(&quot;B&quot;).serial_number)
+print(Foo(&quot;A&quot;).serial_number)
+try:
+    print(Foo(&quot;A&quot;, cache={&quot;A&quot;: 10}).serial_number)
+except TypeError:
+    pass
+else:
+    print(&quot;Error: `cache` should not be accessible in the API&quot;)
+# EOF
+
+$ python ruf033_1.py
+0
+1
+0
+
+$ ruff --isolated check ruf033_1.py --select RUF033 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python ruf033_1.py                                                    
+0
+1
+0
+10
+Error: `cache` should not be accessible in the API
+</code></pre>
+<p>Here is another:</p>
+<pre><code class="language-console">$ cat &gt;ruf033_2.py &lt;&lt;'# EOF'
+from dataclasses import dataclass, field
+@dataclass
+class Foo:
+    name: str
+    serial_number: int = field(init=False)
+    def __post_init__(self, *, cache: dict[str, int] = {}) -&gt; None:
+        self.serial_number = cache.setdefault(self.name, len(cache))
+print(Foo(&quot;A&quot;).serial_number)
+print(Foo(&quot;B&quot;).serial_number)
+print(Foo(&quot;A&quot;).serial_number)
+# EOF
+
+$ python ruf033_2.py
+0
+1
+0
+
+$ ruff --isolated check ruf033_2.py --select RUF033 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python ruf033_2.py
+Traceback (most recent call last):
+  File &quot;ruf033.py&quot;, line 9, in &lt;module&gt;
+    print(Foo(&quot;A&quot;).serial_number)
+          ^^^^^^^^
+  File &quot;&lt;string&gt;&quot;, line 4, in __init__
+TypeError: Foo.__post_init__() takes 1 positional argument but 2 were given
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-05-05 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-05-05 18:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I could not reproduce the exception being raised in the example in your PR summary (but maybe I've done something wrong?), nor could I see why the example fix in the original PR was unsafe. The example in the docs for the rule of a suggested change <em>would</em> be an unsafe fix since it changes runtime behavior, but we don't actually offer an autofix in the situation where we would be overwriting a default like that. So I don't really see yet why this fix is unsafe (is it?).</p>
+</blockquote>
+<p>Ok, strange... It works on ruff playground, i.e., the rule is triggered.</p>
+<p><img width="547" alt="Screenshot 2025-05-05 at 20 38 53" src="https://github.com/user-attachments/assets/be4c9447-ab0d-4ee0-a72a-e71be000ecb8" /></p>
+<p>I had in mind the same reason of @dscorbett but I could not explain it so clear ;-)</p>
+<p>I will change the section accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @VascoSch92 on 2025-05-10 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-11 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, strange... It works on ruff playground, i.e., the rule is triggered.</p>
+</blockquote>
+<p>I agree that the rule is triggered, but when you actually run the code it does not raise an exception (both before and after the fix).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-05-11 16:14</div>
+            <div class="timeline-body"><p>Thank you! (and thanks @dscorbett !)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-05-11 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-05-11 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

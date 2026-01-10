@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Gracefully handle salsa cancellations and panics in background request handlers - astral-sh/ruff #18254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Gracefully handle salsa cancellations and panics in background request handlers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18254">#18254</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-22 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 13:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Run the request and notification handlers in a <code>catch_unwind</code> that ensures that a handler failure doesn't tear down the entire server process. ty now also responds with an appropriate error instead of just never responding to the client's request. This has the advantage that e.g. VS code stops sending new diangostic pull requests for a file on which the server crashed before.</p>
+<p>I considered wrapping local notifications handlers in <code>catch_unwind</code> but decided against it. Local notifications are used to update the server state. An out of date server state can lead to all sort of errors because the ranges are of. That's why I think it's better to still crash the server.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Tested that ty shows an error pop up and the backtrace when a background task panics. The server keeps running</li>
+<li>Tested that ty shows an error error pop up and the backtrace when a local task panics. the server crashes.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-22 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-22 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:79 on 2025-05-22 13:04</div>
+            <div class="timeline-body"><p>I decided to remove all <code>Result</code>s from here for now because the server already uses many salsa APIs that aren't wrapped in a <code>salsa::Cancelled::catch</code>. Instead, I decided that the server request handlers catch salsa cancellations (only necessary for background tasks because:</p>
+<ul>
+<li>Only local tasks can mutate the DB</li>
+<li>All local tasks run on the main loop thread.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api.rs</code>:111 on 2025-05-22 13:05</div>
+            <div class="timeline-body"><p>The span is very useful and tracing is just way too verbose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-22 13:05</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api.rs</code>:171 on 2025-05-22 13:05</div>
+            <div class="timeline-body"><p>I leave this for another PR, there's already enough going on in this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Abort process if worker thread panics" to "[ty] Gracefully handle salsa cancellations and panics in background handlers" by @MichaReiser on 2025-05-22 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-22 13:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-05-22 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-22 13:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Gracefully handle salsa cancellations and panics in background handlers" to "[ty] Gracefully handle salsa cancellations and panics in background requests" by @MichaReiser on 2025-05-23 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_server/src/server/api.rs</code>:16 on 2025-05-23 15:17</div>
+            <div class="timeline-body"><p>nit: This looks like it should go down in the next section with the <code>super</code> imports, since it's importing from the current crate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_project/src/db.rs</code>:79 on 2025-05-23 15:20</div>
+            <div class="timeline-body"><p>I'm not hugely familiar with this part of the code, but this rationale sounds reasonable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-05-23 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api.rs</code>:184 on 2025-05-26 10:21</div>
+            <div class="timeline-body"><p>nit: we could probably use <code>LSPResult::with_failure_code</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:125 on 2025-05-26 10:26</div>
+            <div class="timeline-body"><p>Can you make this change for <code>ruff_server</code> as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api.rs</code>:234 on 2025-05-26 10:28</div>
+            <div class="timeline-body"><p>I'd recommend updating the message to highlight this is related to the &quot;panic&quot; instead of an error. It would be useful when looking at the log messages to understand the origin of the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-26 10:41</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-26 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:125 on 2025-05-26 11:38</div>
+            <div class="timeline-body"><p>I plan to backport this entire stack to ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-26 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api.rs</code>:184 on 2025-05-26 12:05</div>
+            <div class="timeline-body"><p>Oh, I didn't know about this method. I'll leave it as is because I use the lsp_server <code>Error</code> type in https://github.com/astral-sh/ruff/pull/18273</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Gracefully handle salsa cancellations and panics in background requests" to "[ty] Gracefully handle salsa cancellations and panics in background request handlers" by @MichaReiser on 2025-05-26 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-26 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-26 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-26 12:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

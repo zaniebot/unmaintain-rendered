@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] improve diagnostics for failure to call overloaded function - astral-sh/ruff #18073</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] improve diagnostics for failure to call overloaded function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18073">#18073</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-05-13 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-13 17:18</div>
+            <div class="timeline-body"><p>This PR takes a crack at improving diagnostics for invalid overloaded
+function calls as a result of there being no matching overloads.</p>
+<p>I think this is a strict improvement on the status quo, but it's
+definitely not as good as we can do. In particular, this only
+adds sub-diagnostics that points to each unmatched overload, but
+doesn't say <em>why</em> each overload does not match. I didn't do this
+because 1) this seemed like an improvement we could merge as-is and
+2) I wasn't sure how to match up the overloaded <code>FunctionType</code>s
+returned by <code>FunctionType::to_overloaded</code> with the <code>overloads</code> in a
+<code>CallableBinding</code>. It seems like they are in correspondence with
+one another, but I'm not sure if this is an API guarantee.</p>
+<p>I guess ideally (from my uninformed perspective), it would be nice to
+have the overloaded <code>FunctionType</code> on the <code>Binding</code>. But I wasn't
+certain how best to go about that, or if that's the right thing to do.</p>
+<p>Fixes astral-sh/ty#274</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-05-13 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-05-13 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-05-13 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-05-13 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] ty_python_semantic: improve diagnostics for failure to call overloaded function" to "[ty] improve diagnostics for failure to call overloaded function" by @MichaReiser on 2025-05-13 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-05-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-05-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-05-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @BurntSushi on 2025-05-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-13 17:22</div>
+            <div class="timeline-body"><p>Here are screenshots showing before/after for this Python file:</p>
+<pre><code class="language-python">from typing import overload
+
+@overload
+def f(x: int) -&gt; int: ...
+
+@overload
+def f(x: str) -&gt; str: ...
+
+def f(x: int | str) -&gt; int | str:
+    return x
+
+f(b&quot;foo&quot;)
+</code></pre>
+<p>Before:</p>
+<p><img src="https://github.com/user-attachments/assets/fd546040-c1ec-4137-8c90-2eeb0ee2696e" alt="before" /></p>
+<p>After:</p>
+<p><img src="https://github.com/user-attachments/assets/85d2e07e-a44d-4d70-b200-198b9e5ccb12" alt="after" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 17:27</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 17:57</div>
+            <div class="timeline-body"><p>I'm not sure having a separate subdiagnostic for each overload definition scales well for functions with many overloads. Here's a single diagnostic I get for a bad <code>pow()</code> call with your branch:</p>
+<pre><code>error[no-matching-overload]: No overload of function `pow` matches arguments
+ --&gt; foo.py:3:1
+  |
+1 | class Foo: ...
+2 |
+3 | pow(Foo(), Foo())
+  | ^^^^^^^^^^^^^^^^^
+  |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1700:5
+     |
+1698 | # but adding a `NoReturn` overload isn't a good solution for expressing that (see #8566).
+1699 | @overload
+1700 | def pow(base: int, exp: int, mod: int) -&gt; int: ...
+     |     ^^^
+1701 | @overload
+1702 | def pow(base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1]: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1702:5
+     |
+1700 | def pow(base: int, exp: int, mod: int) -&gt; int: ...
+1701 | @overload
+1702 | def pow(base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1]: ...
+     |     ^^^
+1703 | @overload
+1704 | def pow(base: int, exp: _PositiveInteger, mod: None = None) -&gt; int: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1704:5
+     |
+1702 | def pow(base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1]: ...
+1703 | @overload
+1704 | def pow(base: int, exp: _PositiveInteger, mod: None = None) -&gt; int: ...
+     |     ^^^
+1705 | @overload
+1706 | def pow(base: int, exp: _NegativeInteger, mod: None = None) -&gt; float: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1706:5
+     |
+1704 | def pow(base: int, exp: _PositiveInteger, mod: None = None) -&gt; int: ...
+1705 | @overload
+1706 | def pow(base: int, exp: _NegativeInteger, mod: None = None) -&gt; float: ...
+     |     ^^^
+1707 |
+1708 | # int base &amp; positive-int exp -&gt; int; int base &amp; negative-int exp -&gt; float
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1711:5
+     |
+1709 | # return type must be Any as `int | float` causes too many false-positive errors
+1710 | @overload
+1711 | def pow(base: int, exp: int, mod: None = None) -&gt; Any: ...
+     |     ^^^
+1712 | @overload
+1713 | def pow(base: _PositiveInteger, exp: float, mod: None = None) -&gt; float: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1713:5
+     |
+1711 | def pow(base: int, exp: int, mod: None = None) -&gt; Any: ...
+1712 | @overload
+1713 | def pow(base: _PositiveInteger, exp: float, mod: None = None) -&gt; float: ...
+     |     ^^^
+1714 | @overload
+1715 | def pow(base: _NegativeInteger, exp: float, mod: None = None) -&gt; complex: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1715:5
+     |
+1713 | def pow(base: _PositiveInteger, exp: float, mod: None = None) -&gt; float: ...
+1714 | @overload
+1715 | def pow(base: _NegativeInteger, exp: float, mod: None = None) -&gt; complex: ...
+     |     ^^^
+1716 | @overload
+1717 | def pow(base: float, exp: int, mod: None = None) -&gt; float: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1717:5
+     |
+1715 | def pow(base: _NegativeInteger, exp: float, mod: None = None) -&gt; complex: ...
+1716 | @overload
+1717 | def pow(base: float, exp: int, mod: None = None) -&gt; float: ...
+     |     ^^^
+1718 |
+1719 | # float base &amp; float exp could return float or complex
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1723:5
+     |
+1721 | # as `float | complex` causes too many false-positive errors
+1722 | @overload
+1723 | def pow(base: float, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; Any: ...
+     |     ^^^
+1724 | @overload
+1725 | def pow(base: complex, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; complex: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1725:5
+     |
+1723 | def pow(base: float, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; Any: ...
+1724 | @overload
+1725 | def pow(base: complex, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; complex: ...
+     |     ^^^
+1726 | @overload
+1727 | def pow(base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-overlap]
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1727:5
+     |
+1725 | def pow(base: complex, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; complex: ...
+1726 | @overload
+1727 | def pow(base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-overlap]
+     |     ^^^
+1728 | @overload
+1729 | def pow(base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-ov...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1729:5
+     |
+1727 | def pow(base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-overlap]
+1728 | @overload
+1729 | def pow(base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-ov...
+     |     ^^^
+1730 | @overload
+1731 | def pow(base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -&gt; _T_co: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1731:5
+     |
+1729 | def pow(base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co: ...  # type: ignore[overload-ov...
+1730 | @overload
+1731 | def pow(base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -&gt; _T_co: ...
+     |     ^^^
+1732 | @overload
+1733 | def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -&gt; Any: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1733:5
+     |
+1731 | def pow(base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -&gt; _T_co: ...
+1732 | @overload
+1733 | def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -&gt; Any: ...
+     |     ^^^
+1734 | @overload
+1735 | def pow(base: _SupportsSomeKindOfPow, exp: complex, mod: None = None) -&gt; complex: ...
+     |
+info: Unmatched overload defined here
+    --&gt; stdlib/builtins.pyi:1735:5
+     |
+1733 | def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -&gt; Any: ...
+1734 | @overload
+1735 | def pow(base: _SupportsSomeKindOfPow, exp: complex, mod: None = None) -&gt; complex: ...
+     |     ^^^
+1736 |
+1737 | quit: _sitebuiltins.Quitter
+     |
+info: rule `no-matching-overload` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Does <code>pow()</code> have a lot of overloads? Yeah, it does. I've seen real-world functions out there in the wild with <em>hundreds</em> of overloads, though. (Usually generated code! But still code that we need to be able to handle!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 17:59</div>
+            <div class="timeline-body"><p>By comparison, here's mypy's diagnostic for the same bad <code>pow()</code> call. It's much more concise, but still tells me everything I need to know:</p>
+<pre><code>main.py:3: error: No overload variant of &quot;pow&quot; matches argument types &quot;Foo&quot;, &quot;Foo&quot;  [call-overload]
+main.py:3: note: Possible overload variants:
+main.py:3: note:     def pow(base: int, exp: int, mod: int) -&gt; int
+main.py:3: note:     def pow(base: int, exp: Literal[0], mod: None = ...) -&gt; Literal[1]
+main.py:3: note:     def pow(base: int, exp: Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], mod: None = ...) -&gt; int
+main.py:3: note:     def pow(base: int, exp: Literal[-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20], mod: None = ...) -&gt; float
+main.py:3: note:     def pow(base: int, exp: int, mod: None = ...) -&gt; Any
+main.py:3: note:     def pow(base: Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], exp: float, mod: None = ...) -&gt; float
+main.py:3: note:     def pow(base: Literal[-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20], exp: float, mod: None = ...) -&gt; complex
+main.py:3: note:     def pow(base: float, exp: int, mod: None = ...) -&gt; float
+main.py:3: note:     def pow(base: float, exp: complex | _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = ...) -&gt; Any
+main.py:3: note:     def pow(base: complex, exp: complex | _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = ...) -&gt; complex
+main.py:3: note:     def [_E, _T_co] pow(base: _SupportsPow2[_E, _T_co], exp: _E, mod: None = ...) -&gt; _T_co
+main.py:3: note:     def [_E, _T_co] pow(base: _SupportsPow3NoneOnly[_E, _T_co], exp: _E, mod: None = ...) -&gt; _T_co
+main.py:3: note:     def [_E, _M, _T_co] pow(base: _SupportsPow3[_E, _M, _T_co], exp: _E, mod: _M) -&gt; _T_co
+main.py:3: note:     def pow(base: _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any], exp: float, mod: None = ...) -&gt; Any
+main.py:3: note:     def pow(base: _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any], exp: complex, mod: None = ...) -&gt; complex
+Found 1 error in 1 file (checked 1 source file)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 18:00</div>
+            <div class="timeline-body"><p>What does rustc do if there's multiple possible methods to call (I think I saw this in the past). Does it use notes or sub diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-13 18:45</div>
+            <div class="timeline-body"><p>Notes are sub-diagnostics.</p>
+<p>@AlexWaygood Those don't include the surrounding context or line numbers of the function definitions though? I think that might be swinging too far in the concise direction?</p>
+<p>In any case, we don't have a way, today, of rendering concise single-line code snippets. One thing we could do, I think relatively easily, is add a way of specifying the context window size for code snippets. It's hard-coded to 2 lines (above and below), but we could shrink that down to 0. It won't be as concise as mypy, but it will be more concise than what we have today.</p>
+<p>I think this PR is an improvement over the status quo. I definitely do not claim it is the best we can do though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Those don't include the surrounding context or line numbers of the function definitions though? I think that might be swinging too far in the concise direction?</p>
+</blockquote>
+<p>Why are those useful in this situation? I find them distracting, personally; I think all I care about in this situation is the types, if I'm a user. I think you can get a pretty-printed version of the signature of each overload by calling <code>.signature(db).display(db)</code> on each overload, and then that could be easily incorporated into a note; we don't necessarily need an annotated snippet of the original source code here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 19:15</div>
+            <div class="timeline-body"><blockquote>
+<p>we don't necessarily need an annotated snippet of the original source code here.</p>
+</blockquote>
+<p>Two counter-arguments (even though I also partially agree with you @AlexWaygood):</p>
+<ul>
+<li>Not all overloads come from typeshed. The mistake might not be related to the call-site. The overload could be wrong as well. In this case, I might want to jump to the overload definition.</li>
+<li>An overload could theoretically include a (doc) comment with more information. In this case, showing the context might be useful.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 19:18</div>
+            <div class="timeline-body"><p>I agree that having <em>one</em> link back to the original source code is useful, for sure. But a separate snippet for each overload feels quite excessive to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>But a separate snippet for each overload feels quite excessive to me!</p>
+</blockquote>
+<p>Yes, maybe. But that <code>pow</code> example also shouldn't be our target to calibrate this, I think? I actually have the opposite problem in an example I just tried. This includes too little context. I can't even see the whole function signature, because only the function name seems to belong to the snippet range.</p>
+<pre><code>error[no-matching-overload]: No overload of function `dataclass` matches arguments
+  --&gt; /home/shark/pydantic_test/main.py:12:2
+   |
+12 | @dataclasses.dataclass(init=&quot;no&quot;)
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | class Config:
+14 |     name: str
+   |
+info: Unmatched overload defined here
+  --&gt; /home/shark/pydantic_test/.venv/lib/python3.13/site-packages/pydantic/dataclasses.py:32:9
+   |
+30 |     @dataclass_transform(field_specifiers=(dataclasses.field, Field, PrivateAttr))
+31 |     @overload
+32 |     def dataclass(
+   |         ^^^^^^^^^
+33 |         *,
+34 |         init: Literal[False] = False,
+   |
+info: Unmatched overload defined here
+  --&gt; /home/shark/pydantic_test/.venv/lib/python3.13/site-packages/pydantic/dataclasses.py:49:9
+   |
+47 |     @dataclass_transform(field_specifiers=(dataclasses.field, Field, PrivateAttr))
+48 |     @overload
+49 |     def dataclass(
+   |         ^^^^^^^^^
+50 |         _cls: type[_T],  # type: ignore
+51 |         *,
+   |
+info: Overload implementation defined here
+   --&gt; /home/shark/pydantic_test/.venv/lib/python3.13/site-packages/pydantic/dataclasses.py:98:5
+    |
+ 97 | @dataclass_transform(field_specifiers=(dataclasses.field, Field, PrivateAttr))
+ 98 | def dataclass(
+    |     ^^^^^^^^^
+ 99 |     _cls: type[_T] | None = None,
+100 |     *,
+    |
+info: rule `no-matching-overload` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>This includes too little context. I can't even see the whole function signature, because only the function name seems to belong to the snippet range.</p>
+</blockquote>
+<p>But this would also be solved by my proposal of printing the <em>signature</em> of each overload as a note rather than attempting to go back to the original <em>source code</em> of each overload as an annotation, I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-13 19:57</div>
+            <div class="timeline-body"><p>I think this is a huge improvement to what we have today. The only thing I would change (in this iteration) is to highlight the function up to all arguments so that the entire signature is visible</p>
+<p>I do agree with Alex that it would be nice to have a more compact representation. But I don't think this should be blocking for this improvement (and getting there is probably also easier because of what's implemented in this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1119 on 2025-05-13 20:31</div>
+            <div class="timeline-body"><p>nit: <code>function</code> / <code>function_literal</code> instead of <code>funty</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-13 20:38</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Currently, there are only a few reasons for why an overload might not match - arity mismatch for the arguments passed in to the required parameters or a non-assignable type. This excludes the reasons due to <code>Todo</code> type because ty doesn't support certain features like unpacking arguments.</p>
+<p>I'm thinking to either tackle that as part of https://github.com/astral-sh/ty/issues/104 or follow-up to that i.e., store the reason for why a certain overload is not matched. But, if you're planning to do this as a follow-up to this PR, I'm happy to just extend that when the full algorithm is implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 21:27</div>
+            <div class="timeline-body"><p>Here's a diff relative to this PR branch that would implement my suggestion:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/call/bind.rs b/crates/ty_python_semantic/src/types/call/bind.rs
+index 33fab5cc6a..7930b3c896 100644
+--- a/crates/ty_python_semantic/src/types/call/bind.rs
++++ b/crates/ty_python_semantic/src/types/call/bind.rs
+@@ -1113,34 +1113,37 @@ impl&lt;'db&gt; CallableBinding&lt;'db&gt; {
+                         String::new()
+                     }
+                 ));
+-                if let Some(overloaded_types) = self
+-                    .signature_type
+-                    .into_function_literal()
+-                    .and_then(|funty| funty.to_overloaded(context.db()))
+-                {
+-                    for overload_type in &amp;overloaded_types.overloads {
+-                        if let Some((name_span, _)) =
+-                            overload_type.parameter_span(context.db(), None)
++                if let Some(function) = self.signature_type.into_function_literal() {
++                    if let Some(overloaded_function) = function.to_overloaded(context.db()) {
++                        if let Some((first_overload_span, _)) =
++                            overloaded_function.overloads[0].parameter_span(context.db(), None)
++                        {
++                            let mut sub =
++                                SubDiagnostic::new(Severity::Info, &quot;First overload defined here&quot;);
++                            sub.annotate(Annotation::primary(first_overload_span));
++                            diag.sub(sub);
++                        }
++
++                        diag.info(format_args!(
++                            &quot;Possible overloads for function `{}`:&quot;,
++                            function.name(context.db())
++                        ));
++                        for overload in &amp;function.signature(context.db()).overloads.overloads {
++                            diag.info(format_args!(&quot;  {}&quot;, overload.display(context.db())));
++                        }
++
++                        if let Some((name_span, _)) = overloaded_function
++                            .implementation
++                            .and_then(|funty| funty.parameter_span(context.db(), None))
+                         {
+                             let mut sub = SubDiagnostic::new(
+                                 Severity::Info,
+-                                &quot;Unmatched overload defined here&quot;,
++                                &quot;Overload implementation defined here&quot;,
+                             );
+                             sub.annotate(Annotation::primary(name_span));
+                             diag.sub(sub);
+                         }
+                     }
+-                    if let Some((name_span, _)) = overloaded_types
+-                        .implementation
+-                        .and_then(|funty| funty.parameter_span(context.db(), None))
+-                    {
+-                        let mut sub = SubDiagnostic::new(
+-                            Severity::Info,
+-                            &quot;Overload implementation defined here&quot;,
+-                        );
+-                        sub.annotate(Annotation::primary(name_span));
+-                        diag.sub(sub);
+-                    }
+                 }
+                 if let Some(union_diag) = union_diag {
+                     union_diag.add_union_context(context.db(), &amp;mut diag);
+diff --git a/crates/ty_python_semantic/src/types/signatures.rs b/crates/ty_python_semantic/src/types/signatures.rs
+index 25169d3f57..182cce3eb4 100644
+--- a/crates/ty_python_semantic/src/types/signatures.rs
++++ b/crates/ty_python_semantic/src/types/signatures.rs
+@@ -123,7 +123,7 @@ pub(crate) struct CallableSignature&lt;'db&gt; {
+     ///
+     /// By using `SmallVec`, we avoid an extra heap allocation for the common case of a
+     /// non-overloaded callable.
+-    overloads: SmallVec&lt;[Signature&lt;'db&gt;; 1]&gt;,
++    pub(crate) overloads: SmallVec&lt;[Signature&lt;'db&gt;; 1]&gt;,
+ }
+</code></pre>
+<p>Here's what the diagnostic would look like for my example with that change applied:</p>
+<p><img src="https://github.com/user-attachments/assets/29ff390f-cd39-4a53-97a7-9e6026458f35" alt="image" /></p>
+<p>And here's what the diagnostic would look like on @sharkdp's example (in release mode, without the <code>Todo</code>-type messages):</p>
+<p><img src="https://github.com/user-attachments/assets/bf734e59-cf79-481f-84bb-2e69b912fdc9" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-14 00:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I've seen real-world functions out there in the wild with <em>hundreds</em> of overloads, though. (Usually generated code! But still code that we need to be able to handle!)</p>
+</blockquote>
+<p>Here's the project I was thinking of. Around 11,000 lines of overloads for a single function: https://github.com/henribru/google-api-python-client-stubs/blob/master/googleapiclient-stubs/discovery.pyi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1119 on 2025-05-14 12:33</div>
+            <div class="timeline-body"><p>I guess <code>function</code> is okay, but it does return a <code>FunctionType</code>:</p>
+<pre><code>pub const fn into_function_literal(self) -&gt; Option&lt;FunctionType&lt;'db&gt;&gt; {
+</code></pre>
+<p>I'll switch to <code>function</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-14 12:38</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<blockquote>
+<p>store the reason for why a certain overload is not matched</p>
+</blockquote>
+<p>Does this already happen as part of <code>errors</code> on <code>Binding</code>? (In my first example above, it has <code>BindingError::InvalidArgumentType</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-14 13:47</div>
+            <div class="timeline-body"><p>@AlexWaygood Thank you! I ended up taking your patch. I'm still a little worried about printing reformatted code, but given that it seems like &quot;tons of overloads&quot; is not altogether uncommon, maybe it does make sense to prioritize concision here.</p>
+<p>I did also tweak the spans (on the implementation and the first unmatched overload) to cover the entire parameter list, which should at least give good context to address @sharkdp's and @MichaReiser's concerns.</p>
+<p>I've also added snapshot tests to cover these cases (<code>pow</code> and something resembling @sharkdp's use case, i.e., a function with a lot of parameters).</p>
+<p>As for @dhruvmanila:</p>
+<blockquote>
+<p>store the reason for why a certain overload is not matched</p>
+</blockquote>
+<p>I think there are two challenges with surfacing this information at present. The first is information display. If there are a lot of unmatched overloads, then how do we preserve conciseness while also showing the <em>reason</em> why each overload didn't match? That seems tricky. The other challenge here, I think, is how to match up the overload bindings with the overload types returned by <code>FunctionType::to_overloaded</code>. (But you might know how to solve that challenge. It just isn't obvious to me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/no_matching_overload…_-_No_matching_overload…_-_Call_to_function_wit…_(dd80c593d9136f35).snap</code>:37 on 2025-05-14 13:56</div>
+            <div class="timeline-body"><p>nit: this would look more natural to me if the underline covered the function name too</p>
+<pre><code class="language-suggestion">1700 | def pow(base: int, exp: int, mod: int) -&gt; int: ...
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 13:57</div>
+            <div class="timeline-body"><p>we should maybe stop after 30 or something and print a note saying <code>&lt;number&gt; overloads omitted</code>? So that we don't print 3000 overloads if there actually are 3000 overloads?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-14 13:58</div>
+            <div class="timeline-body"><p>Thanks you -- this looks awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-14 13:59</div>
+            <div class="timeline-body"><p>I switched the snapshot test from using <code>pow</code> to something more custom, since it seems like some of the <code>pow</code> signatures get <code>Todo</code> types in them depending on whether <code>debug_assertions</code> are enabled. (Which makes snapshotting annoying.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:12</div>
+            <div class="timeline-body"><p>Yeah I was wondering about this. I think that seems sensible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-14 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:15</div>
+            <div class="timeline-body"><p>I don't know what a reasonable cutoff is. 30? 50? 100? It probably shouldn't be more than 100 -- I don't know why you'd want more than 100 signatures printed to the terminal. The cutoff number is easy to iterate on, though, so it's probably fine to pick an arbitrary number now and add a comment saying that it's arbitrary and we can change it if we need to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/no_matching_overload…_-_No_matching_overload…_-_Call_to_function_wit…_(dd80c593d9136f35).snap</code>:37 on 2025-05-14 14:15</div>
+            <div class="timeline-body"><p>I don't see a way to get a single span covering both of those. At least, it's not <code>StmtFunctionDef</code>: https://github.com/astral-sh/ruff/blob/97d7b4693684753139b15f86bc796df9ee25e76e/crates/ruff_python_ast/src/generated.rs#L6606-L6616</p>
+<p>I can annotate <em>both</em> the name and the parameter list, which will probably look fine in most cases, but could be a little weird if and when there is spacing between the name and the start of the parameter list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:19</div>
+            <div class="timeline-body"><p>I'm not sure what the right number here is, but I feel like 300 is excessive. I think I'd maybe start at... 50? I don't know if 50 is the right number precisely, but it's hard to imagine someone carefully scrutinizing a list much bigger than that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-14 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/no_matching_overload…_-_No_matching_overload…_-_Call_to_function_wit…_(dd80c593d9136f35).snap</code>:37 on 2025-05-14 14:19</div>
+            <div class="timeline-body"><p>can't you just do something similar to what we do to get the &quot;header span&quot; for classes?</p>
+<p>https://github.com/astral-sh/ruff/blob/97d7b4693684753139b15f86bc796df9ee25e76e/crates/ty_python_semantic/src/types/class.rs#L1835-L1862</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-14 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/no_matching_overload…_-_No_matching_overload…_-_Call_to_function_wit…_(dd80c593d9136f35).snap</code>:37 on 2025-05-14 14:19</div>
+            <div class="timeline-body"><p>You need to construct a new Text range starting at <code>name.start</code> and ending at <code>parameters.end</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-14 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:21</div>
+            <div class="timeline-body"><p>SGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-14 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:21</div>
+            <div class="timeline-body"><p>we link back to the source for the overloads in the annotation that shows you the first overload, so if you're a user and you need to look at the 51st overload it shouldn't be too hard to find it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/no_matching_overload…_-_No_matching_overload…_-_Call_to_function_wit…_(dd80c593d9136f35).snap</code>:37 on 2025-05-14 14:22</div>
+            <div class="timeline-body"><p>I guess that works. I'm always cautious about stitching together spans, but I think it works here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-14 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1144 on 2025-05-14 14:29</div>
+            <div class="timeline-body"><p>(Also, sorry, if my comments look like they ignore more recent comments from you. GitHub used to add updated comments automatically, but now it seems to require a hard refresh of the page for me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-14 15:11</div>
+            <div class="timeline-body"><p>Awesome work, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-05-14 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-05-14 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-14 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-14 19:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there are two challenges with surfacing this information at present. The first is information display. If there are a lot of unmatched overloads, then how do we preserve conciseness while also showing the <em>reason</em> why each overload didn't match? That seems tricky.</p>
+</blockquote>
+<p>Yeah, this is tricky. I haven't thought about how much information should be displayed for this case. One way would be to group overloads based on the reason. For example, if there are multiple overloads which are not matched because of arity mismatch, they can be grouped under a single sub-diagnostic. We can then have sub-diagnostics for each reason and each of those sub-diagnostics would indicate the overloads that have been excluded for that specific reason. Does that make sense?</p>
+<p>There are still open questions for the above approach like should we group multiple overloads which have invalid argument type at different positions and if so, how do we highlight the arguments in each of those overloads.</p>
+<p>If this isn't a feasible solution, we could move back to highlighting each of the overloads like in the first version of this PR and limit the number of overloads that are displayed. The current limit is 50 but that seems a lot as well if we display the code frame as well.</p>
+<blockquote>
+<p>The other challenge here, I think, is how to match up the overload bindings with the overload types returned by <code>FunctionType::to_overloaded</code>. (But you might know how to solve that challenge. It just isn't obvious to me.)</p>
+</blockquote>
+<p>I'm not exactly sure what do you mean here. Can you say more?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-14 19:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Fixes #274</p>
+</blockquote>
+<p>@BurntSushi -- we need to include the full link to the GitHub issue now that the issues are in a different repo (&quot;Fixes https://github.com/astral-sh/ty/issues/274&quot; rather than &quot;Fixes #274&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-14 21:24</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>The other challenge here, I think, is how to match up the overload bindings with the overload types returned by <code>FunctionType::to_overloaded</code>. (But you might know how to solve that challenge. It just isn't obvious to me.)</p>
+</blockquote>
+<p>I'm not exactly sure what do you mean here. Can you say more?</p>
+</blockquote>
+<p>There is a sequence of <a href="https://github.com/astral-sh/ruff/blob/466021d5e1793ca30e0d860cb1cd27e32f5233aa/crates/ty_python_semantic/src/types/call/bind.rs#L936-L940">overload bindings</a> and also a sequence of <a href="https://github.com/astral-sh/ruff/blob/466021d5e1793ca30e0d860cb1cd27e32f5233aa/crates/ty_python_semantic/src/types.rs#L6558-L6559">overload types</a>. They <em>might</em> be in correspondence, but it's unclear to me if that's true. (And maybe there is another way to match them up. This could very well be a problem of my own ignorance here!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-14 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>There is a sequence of <a href="https://github.com/astral-sh/ruff/blob/466021d5e1793ca30e0d860cb1cd27e32f5233aa/crates/ty_python_semantic/src/types/call/bind.rs#L936-L940">overload bindings</a> and also a sequence of <a href="https://github.com/astral-sh/ruff/blob/466021d5e1793ca30e0d860cb1cd27e32f5233aa/crates/ty_python_semantic/src/types.rs#L6558-L6559">overload types</a>. They <em>might</em> be in correspondence, but it's unclear to me if that's true.</p>
+</blockquote>
+<p>Thank you for the reference. Yes, I think those should be in correspondence. So, every overload should create a corresponding <code>Binding</code> while the <code>Binding::errors</code> field would signal whether the binding succeeded or not. (cc @dcreager who has more context on the call semantics.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

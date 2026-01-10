@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enh: introduce Rule Categories - astral-sh/ruff #13999</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enh: introduce Rule Categories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13999">#13999</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-10-30 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-10-30 13:59</div>
+            <div class="timeline-body"><p>PR to move the needle on the grouping of rules as in the original issue #1774.
+Groups are distinct from the re-categorisation of rules (see context)! - which I’d also like to help tackle if possible</p>
+<p>Categorisation is hard to undo and needs some executive decisions.
+Let’s thus not have the discussion here, but on discord/the existing issues.</p>
+<p>Context:</p>
+<ul>
+<li>Focusses on the effect of the change rather than on the pattern that is detected, e.g. performance, bugs, style</li>
+<li>Thus different angle at subsetting rule, additional to “linter” (which is currently the origin, and after the re-grouping is similar to “checks” in Pylint)</li>
+<li>Since categories group the motivations behind a change (i.e. the “Why is this bad section”), they can be used to document the general reasoning behind them and simplify rule documentation (e.g. why should developers write idiomatic code)</li>
+<li>Taking subsets of the rules in this way has proven effective, e.g. in clippy, but is not sufficient (e.g. it does not permit for subsetting of all “Docstring” or “Django” rules).</li>
+<li>Introducing categories is a preparation for re-grouping of rules (e.g. under “imports” the category should distinguish between “unused imports” and “isort”)</li>
+<li>Mixing both abstractions will not result in a single category per rule like we have now with grouping per origin (e.g. “performance” and “django” can go together).</li>
+</ul>
+<p>Implementation:</p>
+<ul>
+<li>Implementation is non-breaking, the category attribute is added on top of the existing functionality</li>
+<li>Rules can be incrementally assigned to categories. When uncategorised, the behaviour is identical as before.</li>
+<li>Implemented as one category per rule. A many-to-many should also be considered (e.g. some rules are both more idiomatic and more performant).</li>
+</ul>
+<p>Known limitations:</p>
+<ul>
+<li>Category assignment of 800+ rules will likely have a couple of misclassifications. This should not be a problem, rules can be re-assigned. As long as the category definitions are deterministic and objective.</li>
+<li>Sometimes rule effect is more readable and more performant, or a syntax upgrade allows for faster code  =&gt; so need to choose the most fitting. Which category would the user expect?</li>
+<li>Rule selection via combinations of categories/linters are not possible yet, this is worth considering as follow-up.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-30 14:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-18 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

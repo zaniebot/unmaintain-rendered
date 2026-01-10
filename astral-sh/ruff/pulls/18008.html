@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Don't warn `yield` not in function when `yield` is in function - astral-sh/ruff #18008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Don't warn <code>yield</code> not in function when <code>yield</code> is in function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18008">#18008</a>
+        opened by <a href="https://github.com/maxmynter">@maxmynter</a>
+        on 2025-05-10 19:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-10 19:03</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Closes: https://github.com/astral-sh/ty/issues/299</p>
+<h2>Summary</h2>
+<p>Don't warn <code>yield</code> not in function when <code>yield</code> is in function.</p>
+<p>This is achieved by iterating through the scope stack to check if it contains a function scope.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The issue was found when creating the semantic syntax <code>md</code> integration tests (https://github.com/astral-sh/ruff/pull/17748#discussion_r2082080479).</p>
+<h2>Test Plan</h2>
+<p>Updated integration tests to reflect this behavior.</p>
+<!-- How was it tested? -->
+
+<hr />
+<p>I don't know if I fully get how issues / PR's work across the boundaries of <code>ruff</code> and <code>ty</code>. Let me know if i'm doing something wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @maxmynter on 2025-05-10 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @maxmynter on 2025-05-10 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @maxmynter on 2025-05-10 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @maxmynter on 2025-05-10 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-10 19:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dylwil3 on 2025-05-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Don't warn `yield` not in function when `yield` is in function" to "[ty] Don't warn `yield` not in function when `yield` is in function" by @dylwil3 on 2025-05-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/resources/mdtest/diagnostics/semantic_syntax_errors.md</code>:309 on 2025-05-12 01:26</div>
+            <div class="timeline-body"><p>Can you move the class example down below into a function too? I think that should be the last one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2507 on 2025-05-12 01:36</div>
+            <div class="timeline-body"><p>I think we should also return false if we see a <code>ScopeKind::Class</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f():
+...     class C:
+...         yield 5
+...
+  File &quot;&lt;python-input-1&gt;&quot;, line 3
+    yield 5
+    ^^^^^^^
+SyntaxError: 'yield' outside function
+</code></pre>
+<p>I'm also realizing that I gave bad advice in my comment on the issue. The <code>in_*_scope</code> methods <em>are</em> supposed to refer to the directly-enclosing scope:</p>
+<p>https://github.com/astral-sh/ruff/blob/7a48477c6797ae817c33994e5cddb7f8375118bb/crates/ruff_python_parser/src/semantic_errors.rs#L1649-L1663</p>
+<p>We may just want to reuse <a href="https://github.com/astral-sh/ruff/blob/7a48477c6797ae817c33994e5cddb7f8375118bb/crates/ruff_python_parser/src/semantic_errors.rs#L1718"><code>in_await_allowed_context</code></a> for <a href="https://github.com/astral-sh/ruff/blob/7a48477c6797ae817c33994e5cddb7f8375118bb/crates/ruff_python_parser/src/semantic_errors.rs#L782">detecting</a> this syntax error and also possibly rename it to something like <code>in_function_context</code>.</p>
+<p>That should fix the ruff implementation of the rule too, which I guess I hadn't seen issues with either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-12 01:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-12 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-05-13 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @maxmynter on 2025-05-13 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 01:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-13 02:04</div>
+            <div class="timeline-body"><p>All right, this took longer than I thought for a quite small diff.</p>
+<ul>
+<li><p>Reverted the change to <code>in_function_scope</code> to only consider the immediate scope.</p>
+</li>
+<li><p>I'm on the fence with renaming <code>in_await_allowed_context</code>. Especially considering the contextual comment in the <code>trait</code> definition it seems the current name better conveys what the function does.</p>
+</li>
+<li><p>The upward scope stack traversal in <code>in_await_allowed_context</code> needs to be checked against generator and comprehensions to not give false positives/negatives.</p>
+</li>
+<li><p>Rename <code>in_sync_comprehension</code> to <code>in_sync_comprehension_scope</code> for consistency with other locator methods in scope.</p>
+</li>
+</ul>
+<h2>Questions:</h2>
+<ul>
+<li>How important is performance here? Specifically, how expensive is traversing the scope stack? We can avoid the duplicate call of <code>is_await_allowed_context</code> at some cost of readability with more nesting. I've already ordered the early returns in increasing expensiveness.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-13 02:08</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/openai/openai-cookbook/blob/main/examples/gpt4-1_prompting_guide.ipynb">notebook</a> in the ecosystem changes gives the same <code>Invalid JSON</code> error when seen through the Git web ui.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-13 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-05-13 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @maxmynter on 2025-05-13 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1737 on 2025-05-14 15:28</div>
+            <div class="timeline-body"><p>The implementations of this method traverse the parent scopes, which would make it a <code>_context</code> method rather than a <code>_scope</code> method based on the trait documentation. I think I thought <code>in_sync_comprehension_context</code> was a bit redundant when naming it originally (or it may have come before the context/scope convention), but if we really want to be consistent that's what it should be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:776 on 2025-05-14 15:29</div>
+            <div class="timeline-body"><p>I thought there was a reason I had this where it was before, but if all the tests are passing, it must be okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:792 on 2025-05-14 15:40</div>
+            <div class="timeline-body"><p>This seems a bit strange because <code>in_sync_comprehension_scope</code> and <code>in_await_allowed_context</code> both traverse the parent scopes, but <code>in_generator_scope</code> doesn't. Is there a way to break this check by nesting generators somehow?</p>
+<p>I think I would probably lean toward a separate context method anyway, just for clarity. Traversing scopes should be pretty cheap since it's just iterating backwards over a vector for both ruff and ty, but I think this whole check would be simplified if we had an <code>in_yield_allowed_context</code> method or similar. And then we can traverse the stack once anyway.</p>
+<p>Ah, actually I think that's the reason for the <code>else-if</code> on <code>kind.is_await</code>. If we don't return from there, we'll run all of these checks again, even though we already know we want a diagnostic for <code>await</code>. So I think I would put this whole section back to something like this:</p>
+<pre><code class="language-rust">if kind.is_await { 
+    // ...
+} else if ctx.in_yield_allowed_context() {
+    return
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-14 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-14 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>The <a href="https://github.com/openai/openai-cookbook/blob/main/examples/gpt4-1_prompting_guide.ipynb">notebook</a> in the ecosystem changes gives the same <code>Invalid JSON</code> error when seen through the Git web ui.</p>
+</blockquote>
+<p>Yeah no worries about this, I've been seeing it on every PR. If the issue persists we can ignore the file from the ecosystem check.</p>
+<p>Edit: looks like they fixed it 6 hours ago. Next time the ecosystem check runs it should update!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-05-14 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:792 on 2025-05-14 20:22</div>
+            <div class="timeline-body"><p>Makes sense. Adressed in <a href="https://github.com/astral-sh/ruff/pull/18008/commits/1d0e43b2a963df255c84e93e516657f1da2ca24e">1d0e43b</a></p>
+<p>I was shying away from adding a new method to the trait because then the implementation in <code>crates/ruff_linter/src/checkers/ast/mod.rs</code> isn't used.</p>
+<p>But I now agree it's not that bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-05-14 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1737 on 2025-05-14 20:23</div>
+            <div class="timeline-body"><p>Thanks for catching this. Must've been late.</p>
+<p>I get your point on redundancy and reverted in <a href="https://github.com/astral-sh/ruff/pull/18008/commits/a62a99078faa611cc0ee72578cc37179c792f578">a62a990</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-14 20:26</div>
+            <div class="timeline-body"><p>It seems that backticked parts were sliced out of the commit messages.</p>
+<p>They were supposed to be</p>
+<ul>
+<li><p>Drop <code>_scope</code> from <code>in_sync_comprehension_scope</code> (<a href="https://github.com/astral-sh/ruff/pull/18008/commits/a62a99078faa611cc0ee72578cc37179c792f578">a62a990</a>)</p>
+</li>
+<li><p>(refactor) Add <code>in_yield_allowed_context</code> to <code>SemanticSyntaxContext</code> trait (<a href="https://github.com/astral-sh/ruff/pull/18008/commits/1d0e43b2a963df255c84e93e516657f1da2ca24e">1d0e43b</a>)</p>
+</li>
+</ul>
+<p>But since we squash, i'll leave them as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @maxmynter on 2025-05-14 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-14 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:792 on 2025-05-14 21:23</div>
+            <div class="timeline-body"><p>We could also add a test case for ruff (is that what you mean by the <code>Checker</code> version not being used?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-14 21:27</div>
+            <div class="timeline-body"><p>Thanks, this looks good to me! The only additional thing would be adding a test in ruff. I think it could have been susceptible to the same, or at least similar, initial issue. But the existing tests should at least exercise the new context method anyway.</p>
+<p>It might be good to get a quick review from someone on the ty side too, but this is otherwise good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-15 03:26</div>
+            <div class="timeline-body"><p>Added tests in <a href="https://github.com/astral-sh/ruff/pull/18008/commits/7460049b27f8f7c82ce5fbf0c195c0cabb8496a8">7460049</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-15 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-17 00:35</div>
+            <div class="timeline-body"><p>Ping @carljm @dhruvmanila @MichaReiser (because Brent said it would be good if someone from the TY side would review and you're code owners and recent ty committers :) )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-21 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-21 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(fastapi): Handle unresolved Depends in FAST003 - astral-sh/ruff #18019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(fastapi): Handle unresolved Depends in FAST003</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18019">#18019</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-05-11 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-05-11 19:33</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>DISCLAIMER! This is one of my first times contributing to this repository so I am sure I am missing some steps. I would appreciate any guidance and feedback!</p>
+<hr />
+<p>This PR fixes an issue where the <code>FAST003</code> rule (<code>FastApiUnusedPathParameter</code>) would prematurely stop checking for missing path parameters if it encountered a <code>fastapi.Depends</code> with a dependency that could not be fully resolved (e.g., an imported function from an external, unanalyzed module).</p>
+<p>The original behavior caused the rule to miss genuinely missing path parameters if an unresolvable dependency appeared earlier in the function signature's parameter list.</p>
+<p>This change modifies the rule to ensure that it continues to process all declared path parameters against the main function's direct signature and any resolvable <code>Depends</code> parameters, even if some other <code>Depends</code> targets are unresolvable.</p>
+<p>Fixes #18009</p>
+<h2>Test Plan</h2>
+<ol>
+<li><p><strong>New Test Case for External Dependencies</strong>:</p>
+<ul>
+<li>Added <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003_external_dependency.py</code> which specifically replicates the scenario described in the issue, where an unresolvable <code>Depends</code> is present alongside a missing path parameter.</li>
+<li>Added a helper module <code>crates/ruff_linter/resources/test/fixtures/fastapi/external_module.py</code> for this test.</li>
+<li>The corresponding snapshot test (<code>ruff_linter__rules__fastapi__tests__fast-api-unused-path-parameter_FAST003_external_dependency.py.snap</code>) was generated and verified to correctly identify the missing path parameter despite the unresolvable dependency.</li>
+</ul>
+</li>
+<li><p><strong>Existing Test Case Update</strong>:</p>
+<ul>
+<li>The existing snapshot for <code>FAST003.py</code> (<code>ruff_linter__rules__fastapi__tests__fast-api-unused-path-parameter_FAST003.py.snap</code>) was updated. The changes show that the rule now correctly identifies additional missing path parameters in scenarios with complex local dependencies that might have previously caused an early exit. This indicates improved thoroughness of the rule.</li>
+</ul>
+</li>
+<li><p><strong>Manual Verification</strong>:</p>
+<ul>
+<li>The example code provided in issue #18009 was saved to an example file.</li>
+<li>Ran <code>cargo run -p ruff -- check example.py --select FAST003 --no-cache</code>.</li>
+<li>Verified that the command now correctly reports the <code>FAST003</code> violation for the missing <code>user_id</code>, as expected.</li>
+</ul>
+</li>
+<li><p><strong>Pre-commit checks</strong>:</p>
+<ul>
+<li><code>cargo test -p ruff_linter</code> was run, and snapshot tests were updated and pass.</li>
+<li><code>uvx pre-commit run --all-files --show-diff-on-failure</code> was run. <code>cargo fmt</code> applied necessary formatting changes, which are included in this PR. Other pre-commit checks passed.</li>
+<li><code>cargo clippy --workspace --all-targets --all-features -- -D warnings</code> was run.</li>
+</ul>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @danparizher on 2025-05-11 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @danparizher on 2025-05-11 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @danparizher on 2025-05-11 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @danparizher on 2025-05-11 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-11 19:37</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-12 00:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:16:</a> FAST003 Parameter `run_id` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:25:</a> FAST003 Parameter `task_id` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:35:</a> FAST003 Parameter `key` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:7:</a> FAST003 Parameter `dag_id` appears in route path, but not in `head_xcom` signature
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FAST003 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:16:</a> FAST003 Parameter `run_id` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:25:</a> FAST003 Parameter `task_id` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:35:</a> FAST003 Parameter `key` appears in route path, but not in `head_xcom` signature
++ <a href='https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L91'>airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py:91:7:</a> FAST003 Parameter `dag_id` appears in route path, but not in `head_xcom` signature
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FAST003 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @AlexWaygood on 2025-05-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2025-05-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @AlexWaygood on 2025-05-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 07:00</div>
+            <div class="timeline-body"><p>Thanks for your contribution.</p>
+<p>Unfortunately, we can't make this change because it will trade false-negatives with false-positives. You can see this by the ecosystem results: All airflow reports are now false positives because all missing parameters are actually handled the the shared function <a href="https://github.com/apache/airflow/blob/323cfb6e95fa52149b1cd804b7454e19019048f4/airflow-core/src/airflow/api_fastapi/execution_api/routes/xcoms.py#L71-L87"><code>xcom_query</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-12 07:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add hint if async context manager is used in non-async with statement - astral-sh/ruff #18299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add hint if async context manager is used in non-async with statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18299">#18299</a>
+        opened by <a href="https://github.com/lipefree">@lipefree</a>
+        on 2025-05-25 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-25 20:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Implements https://github.com/astral-sh/ty/issues/508, considering the following code :</p>
+<pre><code class="language-py">class Manager:
+    async def __aenter__(self): ...
+    async def __aexit__(self, *args): ...
+
+# error: [invalid-context-manager] &quot;Object of type `Manager` cannot be used with `with` because it does not implement `__enter__` and `__exit__`&quot;
+with Manager():
+    ...
+</code></pre>
+<p>The error naturally happens since <code>__enter__</code> and <code>__exit__</code> are not implemented but we observe that <code>__aenter__</code> and <code>__aexit__</code> are implemented. Using this information, the heuristic is that the user probably wanted to use <code>async with</code> which is now mentioned in the subdiagnostics as :</p>
+<pre><code>note: Objects of type `Manager` *can* be used as async context managers
+note: Consider using `async with` here
+</code></pre>
+<h2>Test Plan</h2>
+<p>I have create a mdtest with snapshot to capture the additional subdiagnostics. I can create more tests if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @lipefree on 2025-05-25 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @lipefree on 2025-05-25 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @lipefree on 2025-05-25 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @lipefree on 2025-05-25 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-25 20:09</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-25 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-25 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-25 21:08</div>
+            <div class="timeline-body"><p>When looking at the mdtest itself, it is hard to know that what is expected, is the additional information provided in the sub-diagnosis. I don't know if I can improve it so that it is clear how the sub-diagnosis should look like instead of having to look at the snap file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6071 on 2025-05-26 05:48</div>
+            <div class="timeline-body"><p>The CLI doesn't support markdown rendering. That's why I wouldn't use * for highlighting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-26 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 11:18</div>
+            <div class="timeline-body"><p>These <code>__aenter__</code> and <code>__aexit__</code> calls will fail if you modify/extend your test example and annotated the parameter types of these two methods on the <code>Manager</code> class accordingly. <code>None</code> will not generally be a valid type for all of the arguments.</p>
+<p>We do not necessarily need to be very strict with the passed argument types here (since we're only using it to add a diagnostic hint, and it seems fine to emit it even if that call would fail when passing the wrong parameters). So I guess it's fine to pass <code>Type::unknown()</code> here instead? Another option would be to allow not just <code>Ok(_)</code> results, but also <code>Err(CallDunderError::CallError(..))</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-26 11:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lipefree">@lipefree</a> reviewed on 2025-05-26 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lipefree">@lipefree</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 11:49</div>
+            <div class="timeline-body"><p>Hey ! Thank you for the review ! If I understand correctly you want to add the sub-diagnosis event if the code was not annotating the types correctly ?
+Example :</p>
+<pre><code class="language-py">class Foo:
+    async def __aenter__(self):
+        ...
+    
+    def __aexit__(self,
+                 exc_type: str, # &lt;= wrong type
+                 exc_value: str,
+                 traceback: str
+                ):
+        ...
+        
+with Foo():
+    ...
+
+</code></pre>
+<p>But even in this case, we should provide the sub-diagnosis even if the provided typing is incorrect. I guess it makes sense. I am just too unexperienced yet, should I implement it to take care of this case ? But then should we also provide the sub-diagnosis if the user is passing the wrong number of arguments ?</p>
+<pre><code class="language-py">class Foo:
+    async def __aenter__(self):
+        ...
+    
+    def __aexit__(self,
+                 exc_type,
+                 exc_value,
+                 traceback,
+                 extra_arg
+                ):
+        ...
+        
+with Foo():
+    ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-26 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 12:06</div>
+            <div class="timeline-body"><blockquote>
+<p>But then should we also provide the sub-diagnosis if the user is passing the wrong number of arguments ?</p>
+</blockquote>
+<p>Probably? I think you could achieve this by following this route:</p>
+<blockquote>
+<p>Another option would be to allow not just Ok(_) results, but also Err(CallDunderError::CallError(..))?</p>
+</blockquote>
+<p>I think we should pass <code>Type::unknown()</code> anyway. Passing <code>None</code> is just wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lipefree">@lipefree</a> reviewed on 2025-05-26 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lipefree">@lipefree</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 12:57</div>
+            <div class="timeline-body"><p>I will address this and add more testing then !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-26 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 17:47</div>
+            <div class="timeline-body"><p>Just to clarify, in case it was unintentional: you're still using <code>Type::none</code> in your latest commit, instead of <code>Type::unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lipefree">@lipefree</a> reviewed on 2025-05-26 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lipefree">@lipefree</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6068 on 2025-05-26 18:23</div>
+            <div class="timeline-body"><p>Sorry I just changed it in the last commit. Thank you very much for bearing with me !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6063 on 2025-05-26 19:20</div>
+            <div class="timeline-body"><p>This can be simplified to</p>
+<pre><code class="language-suggestion">        if let (
+            Ok(_) | Err(CallDunderError::CallError(..)),
+            Ok(_) | Err(CallDunderError::CallError(..)),
+        ) = (
+</code></pre>
+<p>I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-05-26 19:27</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I pushed one commit with a code simplification and some minor rewordings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Add subdiagnostic hint if async context manager is used in non-async with statement" to "[ty] Add hint if async context manager is used in non-async with statement" by @sharkdp on 2025-05-26 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-05-26 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-26 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lipefree">@lipefree</a> reviewed on 2025-05-26 21:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lipefree">@lipefree</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6063 on 2025-05-26 21:45</div>
+            <div class="timeline-body"><p>Thank you very much for all the reviews you gave, I really learned a lot during this PR about python, rust and ty !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:30 UTC
+    </footer>
+</body>
+</html>

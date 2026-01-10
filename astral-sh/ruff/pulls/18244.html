@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve `invalid-type-form` diagnostic where a module-literal type is used in a type expression and the module has a member which would be valid in a type expression - astral-sh/ruff #18244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve <code>invalid-type-form</code> diagnostic where a module-literal type is used in a type expression and the module has a member which would be valid in a type expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18244">#18244</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-21 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-21 16:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It's fairly common in Python do to something like this:</p>
+<pre><code class="language-py">import datetime
+
+x: datetime
+</code></pre>
+<p>when you actually meant to do this:</p>
+<pre><code class="language-py">import datetime
+
+x: datetime.datetime
+</code></pre>
+<p>This PR adds subdiagnostics to hint to the user what the cause of the <code>invalid-type-form</code> error might be in cases like this.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/373</p>
+<h2>Test Plan</h2>
+<p>Snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-21 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-21 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-21 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-21 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-21 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:46 on 2025-05-21 17:00</div>
+            <div class="timeline-body"><p>Nit: I'd remove the <code>Hint</code>. I think try is enough and it avoids the double-colon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-21 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-21 17:00</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-21 17:02</div>
+            <div class="timeline-body"><p>you have to leave some diagnostic improvements to contributors ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-21 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:46 on 2025-05-21 17:03</div>
+            <div class="timeline-body"><p>I think what I'd <em>actually</em> like here is</p>
+<pre><code class="language-suggestion">hint: try `datetime.datetime`
+</code></pre>
+<p>but we obviously don't have that right now :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-21 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:46 on 2025-05-21 17:11</div>
+            <div class="timeline-body"><p>I think this has come up before with the <em>rule is enabled by default</em>. It could make sense for us to have different sub-diagnostic severities. CC: @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-05-21 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 17:24</div>
+            <div class="timeline-body"><p>Not something directly related to this PR, but these <code>info</code> lines are inconsistent in their capitalizations and punctuations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-21 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:46 on 2025-05-21 17:29</div>
+            <div class="timeline-body"><p>Yeah I'd be in favor of adding a <code>hint</code> and/or even <code>note</code> severity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-21 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 17:29</div>
+            <div class="timeline-body"><p>yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-05-21 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 17:31</div>
+            <div class="timeline-body"><p>And I'd argue that the message is a bit awkwardly phrased. How about this?</p>
+<blockquote>
+<p>Did you mean to use its member <code>Image.Image</code> instead?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-21 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 17:32</div>
+            <div class="timeline-body"><p>That's a nice shortening, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-21 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 17:40</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/invalid.md_-_Tests_for_invalid_ty…_-_Diagnostics_for_comm…_-_Module-literal_used_…_(652fec4fd4a6c63a).snap</code>:62 on 2025-05-21 18:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Not something directly related to this PR, but these <code>info</code> lines are inconsistent in their capitalizations and punctuations.</p>
+</blockquote>
+<p>(I agree that this is inconsistent, but I don't plan to address it in this PR since it predates this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-21 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-21 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-21 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-21 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-21 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>

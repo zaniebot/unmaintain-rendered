@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Union of Literals as a Literal - astral-sh/ruff #14993</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display Union of Literals as a Literal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14993">#14993</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2024-12-15 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-12-15 20:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14988</p>
+<p>Display union of Literals like other type checkers do.</p>
+<p>With this change we lose the sorting behavior. And we show the types as they appeared. So it's deterministic and tests should not be flaky.
+This is similar to how Mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=51ad03b153bfca3b940d5084345e230f">reveals the type</a>.</p>
+<p>In some cases this makes it harder to know what is the order in revealed type when writing tests but since it's consistent after the test fails we know the order.</p>
+<h2>Test Plan</h2>
+<p>I adjusted mdtests for this change. Basically merged the int and string types of the unions.</p>
+<p>In cases where we have types other than numbers and strings like this <a href="https://github.com/astral-sh/ruff/pull/14993/files#diff-ac50bce02b9f0ad4dc7d6b8e1046d60dad919ac52d0aeb253e5884f89ea42bfeL51">one</a>. We only group the strings and numbers as the issue suggsted.</p>
+<pre><code>def _(flag: bool, flag2: bool):
+    if flag:
+        f = 1
+    elif flag2:
+        f = &quot;foo&quot;
+    else:
+        def f() -&gt; int:
+            return 1
+    # error: &quot;Object of type `Literal[1, &quot;foo&quot;, f]` is not callable (due to union elements Literal[1], Literal[&quot;foo&quot;])&quot;
+    # revealed: Unknown | int
+    reveal_type(f())
+</code></pre>
+<p><a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAySMApiAIYA2AUNQCYnBQD6AFMJeWgFxQBGYMJQA0UDlwBMvAUICU3alCWYm4nouWamAXigBGDUpKUkqzmimHNYqLoBEwQXavGAziQXXlDVa1lQAWgA%2BTBQYTy9rEBIYAFcQFH0rAGIoMnAQXjsAeT4AKxIAY3wwJngEEigAAyJSCkoAbT1RBydRYABdKsxXKBQwfEKqTj5KStY6WMqYMChYlCQwROMSCBIw3tqyKiaO0S36htawOw7ZZ01U6IA3EioSOl4AVRQAa36Ad0SAH1CYKxud0ozHKJHYflk1CAA">pyright example</a></p>
+<p><a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=31c8bdaa5521860cfeca4b92841cb3b7">mypy example</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Glyphack on 2024-12-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Glyphack on 2024-12-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Glyphack on 2024-12-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Glyphack on 2024-12-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @Glyphack on 2024-12-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-15 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-01-05 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:382 on 2025-01-05 15:59</div>
+            <div class="timeline-body"><p>IIRC we want to move unit tests that check revealed type to mdtests so I moved it to a new test called &quot;Display of heterogeneous unions of literals&quot; in literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-05 16:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Glyphack on 2025-01-05 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:226 on 2025-01-06 08:33</div>
+            <div class="timeline-body"><p>Is this still accurate or can we clarify how including <code>&quot;s&quot;</code> is different from displaying <code>LiteralString</code> as <code>Literal[LiteralString]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-06 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:382 on 2025-01-06 08:36</div>
+            <div class="timeline-body"><p>We don't necessarily want to move every red knot unit test to mdtest because unit tests are easier to debug, discover, and often faster, but moving this specific test makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-01-06 10:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:226 on 2025-01-06 10:00</div>
+            <div class="timeline-body"><p>I'm not sure. I'll add a test for it this evening.</p>
+<p>I didn't fully understood this comment can you help me understand it please?</p>
+<p>For example in case:</p>
+<pre><code>variable_annotation: LiteralString
+</code></pre>
+<p>Does this mean that we should not display <code>variable_annotation</code> as <code>Literal[LiteralString]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:226 on 2025-01-06 10:04</div>
+            <div class="timeline-body"><p>I don't fully understand it either. That's why I commented on this PR 😆 Maybe @Slyces can help us here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2025-01-07 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:226 on 2025-01-07 10:56</div>
+            <div class="timeline-body"><p>I agree that this comment isn't very clear :/</p>
+<p>I think my intention was following my understanding of &quot;known literals&quot; vs. &quot;unknown literals&quot; in the type enumeration:</p>
+<p>https://github.com/astral-sh/ruff/blob/0dc00e63f444985fc55c327332602c876a2ffd60/crates/red_knot_python_semantic/src/types.rs#L543</p>
+<pre><code>/// A string literal whose value is known
+StringLiteral(StringLiteralType&lt;'db&gt;),
+/// A string known to originate only from literal values, but whose value is not known (unlike
+/// `StringLiteral` above).
+LiteralString,
+</code></pre>
+<p>My idea was probably that <code>Literal[l1, l2, ...]</code> is displaying a <em>set of literal values</em>, whereas <code>LiteralString</code> is already a set of literal values (or rather, the set of all possible literal values).
+To me, displaying <code>Literal[LiteralString]</code> would be confusing and incorrect. But I can be wrong there.</p>
+<p>After looking at the current state of the type enumeration, it seems that <code>LiteralString</code> is the only occurence of unknown literals, so if you decide to keep this comment / behaviour, it can definitely be simplified to explain the behaviour only for <code>LiteralString</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:226 on 2025-01-08 00:51</div>
+            <div class="timeline-body"><blockquote>
+<p>My idea was probably that <code>Literal[l1, l2, ...]</code> is displaying a <em>set of literal values</em>, whereas <code>LiteralString</code> is already a set of literal values (or rather, the set of all possible literal values).
+To me, displaying <code>Literal[LiteralString]</code> would be confusing and incorrect. But I can be wrong there.</p>
+</blockquote>
+<p>I think this is exactly right. <code>Literal[...]</code> notation is for individual literal values, which need to be disambiguated from e.g. stringified annotations. That's how it's specified, and it's also what makes sense. It would be silly to display <code>Literal[LiteralString]</code> because it's redundant and unnecessarily verbose.</p>
+<p>To me the confusing part of this comment is where it says &quot;Not all <code>Literal</code> types are displayed using <code>Literal</code> slices&quot;, which implies that <code>LiteralString</code> is a &quot;<code>Literal</code> type&quot;. It is a type made up of literals, but it is not a &quot;<code>Literal</code>&quot; type (code quotes relevant): it never uses <code>Literal[...]</code> notation at all.</p>
+<p>I think this comment doesn't add value and it would be best to simply delete it.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-08 00:53</div>
+            <div class="timeline-body"><p>This looks good to me! Will delete the contentious comment and then merge :) Thank you !!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-01-08 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-01-08 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-21 20:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

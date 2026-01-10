@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Shorten snapshot names - astral-sh/ruff #18039</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Shorten snapshot names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18039">#18039</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-05-12 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-12 11:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The multiple segments of a snapshot filename are now contracted if they are longer than a predefined limit (currently 20). To disambiguate siblings with a long common prefix, the hash of the full name is appended to the contracted name. The hasher is <a href="https://docs.rs/rustc-stable-hash/latest/rustc_stable_hash/hashers/type.StableSipHasher128.html"><code>rustc_stable_hash</code>'s <code>StableSipHasher128</code></a>.</p>
+<p>Snapshot names as they are recorded in the snapshots themselves remain unchanged. The environment variable <code>MDTEST_TEST_FILTER</code> also continues to work as expected (it is checked against the full name).</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-12 11:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/1._attribute_assignment…_-_2._Attribute_assignment…_-_11._Setting_attributes_o….snap</code>:6 on 2025-05-12 11:36</div>
+            <div class="timeline-body"><p>It would be great if we can avoid truncating the test names here, considering that no path limit applies here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-12 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/1._overloads.md_-_2._Overloads_-_14._Invalid_-_21._Inconsistent_decorat…_-_24._`@final`.snap</code>:6 on 2025-05-12 11:45</div>
+            <div class="timeline-body"><p>I find the numbers confusing and would remove them</p>
+<ul>
+<li>Overloads: is the top level title, why is it 2nd?</li>
+<li>Invalid is the 7th or 8th level-2 heading. It's possible that it's the 14th test but that's not how other editors (e.g. word) number headings.</li>
+</ul>
+<p>Given that the headings aren't numbered in the markdown, I recommend removing the numbers again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-05-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-05-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-05-12 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/1._overloads.md_-_2._Overloads_-_14._Invalid_-_21._Inconsistent_decorat…_-_24._`@final`.snap</code>:6 on 2025-05-12 15:26</div>
+            <div class="timeline-body"><p>These numbers are the section IDs. I find them confusing too. They are, however, necessary to differentiate between sibling sections whose headers share a common prefix longer than the limit allows. Would it be better to use hashes instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-12 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/1._overloads.md_-_2._Overloads_-_14._Invalid_-_21._Inconsistent_decorat…_-_24._`@final`.snap</code>:6 on 2025-05-12 16:23</div>
+            <div class="timeline-body"><p>Hashes would be very unreadable. I think we could do:</p>
+<ul>
+<li>Use the index of the last section (24) as suffix? Meaning, only number the test sections but not every segment</li>
+<li>Truncate by using the first 20 and last 8 characters (assuming that the suffix is more likely to be different between tests)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 11:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any] | (dict[Any, Any] &amp; list[Unknown])`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any]`
++ error[type-assertion-failure] tests/annotations/declarations.py:951:5: Argument does not have asserted type `FullBuilds[@Todo(Support for `typing.TypeAlias`)] | StdBuilds[@Todo(Support for `typing.TypeAlias`)]`
++ error[type-assertion-failure] tests/annotations/declarations.py:956:5: Argument does not have asserted type `PBuilds[@Todo(Support for `typing.TypeAlias`)] | StdBuilds[@Todo(Support for `typing.TypeAlias`)]`
++ error[type-assertion-failure] tests/annotations/declarations.py:961:5: Argument does not have asserted type `PBuilds[@Todo(Support for `typing.TypeAlias`)] | StdBuilds[@Todo(Support for `typing.TypeAlias`)]`
+- Found 647 diagnostics
++ Found 650 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-13 11:38</div>
+            <div class="timeline-body"><p>@MichaReiser Now snapshots only have their names changed, and new filenames have an extra ID at the very end. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 11:41</div>
+            <div class="timeline-body"><p>I realised yesterday night that including the index in the snapshot change is problematic because it means that many snapshots will change when a new test gets added (because all their names change and insta won't recognize that these are still the same tests). I'm sorry I didn't realize this sooner. I'd expect that git should generally be able to recognize that the file was renamed.</p>
+<p>However, this makes me think if we could use a more stable id. E.g using the subheading index instead of the absolute index:</p>
+<pre><code class="language-md"># Main
+
+## Sub (1)
+
+### SubSub (1)
+
+### SubSub (2)
+
+## Sub (2)
+
+### SubSub (1)
+</code></pre>
+<p>This would limit the &quot;blast&quot; radius significantly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-13 11:46</div>
+            <div class="timeline-body"><p>...or we can use hexadecimal hashes of the uncontracted names, which doesn't require each test knowing about its index at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 11:49</div>
+            <div class="timeline-body"><p>We could do that too. It feels a bit more magic.</p>
+<p>As an alternative. Does the testing framework know about all tests upfront? If so, could we use a hashmap from <code>truncated</code> name to index and only append a disambiguator (the index) if the truncated name of two tests using snapshots collide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-13 11:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the testing framework know about all tests upfront?</p>
+</blockquote>
+<p>Yes, but I think a conditional disambiguator would complicate matters further. As you have pointed out, using an index-based disambiguator means new tests might involuntarily break old ones, whereas with hashes the only thing to worry about would be to pick a stable algorithm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 12:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, but I think a conditional disambiguator would complicate matters further. As you have pointed out, using an index-based disambiguator means new tests might involuntarily break old ones, whereas with hashes the only thing to worry about would be to pick a stable algorithm.</p>
+</blockquote>
+<p>I think that should be fine in that case because I assume requiring a disambiguator should be rare (and we should only do it for the first conflicting test). The nice thing about this is that there's the option to change the test title.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-13 15:10</div>
+            <div class="timeline-body"><p>I ended up using hashes because that seems to be the easier solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @InSyncWithFoo on 2025-05-13 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2025-05-13 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2025-05-13 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2025-05-13 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @InSyncWithFoo on 2025-05-13 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-13 15:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/gpt4-1_prompting_guide.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 580 column 29
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/gpt4-1_prompting_guide.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 580 column 29
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-05-13 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/parser.rs</code>:83 on 2025-05-13 16:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+<p>This code isn't performance sensitive and the compiler should know what's best</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/parser.rs</code>:99 on 2025-05-13 16:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-13 16:13</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-13 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-13 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-13 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

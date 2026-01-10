@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Apply function specialization to all overloads - astral-sh/ruff #18020</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Apply function specialization to all overloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18020">#18020</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-05-11 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 19:55</div>
+            <div class="timeline-body"><p>Function literals have an optional specialization, which is applied to the parameter/return type annotations lazily when the function's signature is requested. We were previously only applying this specialization to the final overload of an overloaded function.</p>
+<p>This manifested most visibly for <code>list.__add__</code>, which has an overloaded definition in the typeshed:</p>
+<p>https://github.com/astral-sh/ruff/blob/b398b8363104347fe80f1d5241718f90fb637f84/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L1069-L1072</p>
+<p>Closes https://github.com/astral-sh/ty/issues/314</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-05-11 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-11 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-11 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-11 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-11 19:58</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">com2ann (https://github.com/ilevkivskyi/com2ann)
++ error[invalid-argument-type] src/com2ann.py:164:32: Argument is incorrect: Expected `int`, found `int | None`
++ error[invalid-argument-type] src/com2ann.py:164:51: Argument is incorrect: Expected `int`, found `int | None`
++ error[unsupported-operator] src/com2ann.py:669:28: Operator `+` is unsupported between objects of type `Unknown | str` and `str | None`
+- Found 10 diagnostics
++ Found 13 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- error[invalid-argument-type] parso/__init__.py:57:28: Argument to function `load_grammar` is incorrect: Expected `str`, found `None`
+- Found 83 diagnostics
++ Found 82 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[call-non-callable] chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` is not callable on object of type `list[Unknown]`
++ error[call-non-callable] chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` is not callable on object of type `list[Unknown]`
+- error[call-non-callable] chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` is not callable on object of type `list[Unknown]`
++ error[call-non-callable] chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` is not callable on object of type `list[Unknown]`
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[unsupported-operator] pyinstrument/__main__.py:342:20: Operator `+` is unsupported between objects of type `list[Unknown]` and `Unknown | list[str]`
+- error[invalid-argument-type] pyinstrument/session.py:109:13: Argument to bound method `__init__` is incorrect: Expected `list[str]`, found `Unknown | None`
++ error[invalid-argument-type] pyinstrument/session.py:109:13: Argument to bound method `__init__` is incorrect: Expected `list[str]`, found `Any | None`
+- Found 101 diagnostics
++ Found 100 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[invalid-raise] beartype/typing/_typingcache.py:130:23: Cannot raise object of type `object` (must be a `BaseException` subclass or instance)
+- Found 556 diagnostics
++ Found 555 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ error[unresolved-attribute] docs/conf.py:19:20: Type `Self` has no attribute `resolve`
+- Found 602 diagnostics
++ Found 603 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
++ error[no-matching-overload] test_htmlgen/element.py:125:9: No overload of bound method `sort` matches arguments
++ error[no-matching-overload] test_htmlgen/element.py:153:9: No overload of bound method `sort` matches arguments
+- Found 26 diagnostics
++ Found 28 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- warning[unused-ignore-comment] pyp.py:450:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] pyp.py:511:58: Unused blanket `type: ignore` directive
+- Found 12 diagnostics
++ Found 10 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ error[unresolved-import] src/anyio/_backends/_asyncio.py:2305:20: Cannot resolve imported module `uvloop`
+- Found 129 diagnostics
++ Found 130 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[unresolved-attribute] src/check_jsonschema/parsers/yaml.py:65:28: Type `_T` has no attribute `load`
+- Found 68 diagnostics
++ Found 67 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[invalid-argument-type] kopf/_cogs/clients/auth.py:49:56: Argument to bound method `extended` is incorrect: Expected `(ConnectionInfo, /) -&gt; Unknown`, found `&lt;class 'APIContext'&gt;`
++ error[invalid-argument-type] kopf/_cogs/clients/auth.py:49:56: Argument to bound method `extended` is incorrect: Expected `(ConnectionInfo, /) -&gt; Unknown`, found `&lt;class 'APIContext'&gt;`
++ error[invalid-argument-type] kopf/_cogs/clients/auth.py:49:56: Argument to bound method `extended` is incorrect: Expected `(ConnectionInfo, /) -&gt; Unknown`, found `&lt;class 'APIContext'&gt;`
++ error[invalid-argument-type] kopf/_cogs/clients/auth.py:49:56: Argument to bound method `extended` is incorrect: Expected `(ConnectionInfo, /) -&gt; Unknown`, found `&lt;class 'APIContext'&gt;`
+- error[invalid-return-type] kopf/_core/actions/invocation.py:58:16: Return type does not match returned value: Expected `Mapping[str, Any]`, found `dict[_KT, _VT]`
+- error[invalid-return-type] kopf/_core/actions/invocation.py:63:16: Return type does not match returned value: Expected `Mapping[str, Any]`, found `dict[_KT, _VT]`
+- error[invalid-return-type] kopf/_core/actions/invocation.py:68:16: Return type does not match returned value: Expected `Mapping[str, Any]`, found `dict[_KT, _VT]`
+- error[invalid-assignment] kopf/_core/actions/invocation.py:113:9: Object of type `dict[_KT, _VT]` is not assignable to `Mapping[str, Any] | None`
+- error[invalid-assignment] kopf/_core/actions/invocation.py:116:9: Object of type `dict[_KT, _VT]` is not assignable to `Mapping[str, Any] | None`
+- Found 191 diagnostics
++ Found 190 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- warning[call-possibly-unbound-method] koda_validate/serialization/errors.py:179:16: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] koda_validate/serialization/errors.py:179:16: Method `__getitem__` of type `str | None` is possibly unbound
+
+kornia (https://github.com/kornia/kornia)
+- error[call-non-callable] kornia/augmentation/container/image.py:383:17: Method `__getitem__` of type `(bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -&gt; Unknown) | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `dict[Unknown, Unknown] | list[Unknown] | None`
++ error[call-non-callable] kornia/augmentation/container/image.py:383:17: Method `__getitem__` of type `(bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -&gt; Unknown) | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `dict[Unknown, Unknown] | list[Unknown] | None`
+- error[call-non-callable] kornia/augmentation/container/image.py:388:32: Method `__getitem__` of type `(bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -&gt; Unknown) | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `dict[Unknown, Unknown] | list[Unknown] | None`
++ error[call-non-callable] kornia/augmentation/container/image.py:388:32: Method `__getitem__` of type `(bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -&gt; Unknown) | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `dict[Unknown, Unknown] | list[Unknown] | None`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+
+isort (https://github.com/pycqa/isort)
+- error[unsupported-operator] isort/identify.py:161:21: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str]`
+- error[invalid-argument-type] isort/output.py:523:25: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[_T]`
++ error[invalid-argument-type] isort/output.py:523:25: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[Unknown]`
+- error[invalid-argument-type] isort/output.py:533:25: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[_T]`
++ error[invalid-argument-type] isort/output.py:533:25: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[Unknown]`
+- error[invalid-argument-type] isort/output.py:541:29: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[_T]`
++ error[invalid-argument-type] isort/output.py:541:29: Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Unknown | None | list[Unknown]`
+- error[unsupported-operator] isort/parse.py:377:21: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str] | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[unsupported-operator] isort/settings.py:590:48: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- Found 58 diagnostics
++ Found 55 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- warning[possibly-unbound-attribute] alerta/webhooks/prometheus.py:70:41: Attribute `upper` on type `Literal[&quot;warning&quot;, &quot;unknown&quot;] | Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] alerta/webhooks/prometheus.py:70:41: Attribute `upper` on type `Unknown | None | Literal[&quot;unknown&quot;]` is possibly unbound
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[unsupported-operator] strawberry/experimental/pydantic/error_type.py:128:26: Operator `+` is unsupported between objects of type `list[Field[Unknown]]` and `list[Field[Unknown]]`
+- warning[unused-ignore-comment] strawberry/experimental/pydantic/object_type.py:204:41: Unused blanket `type: ignore` directive
+- error[unsupported-operator] strawberry/experimental/pydantic/object_type.py:207:26: Operator `+` is unsupported between objects of type `list[Field[Unknown]]` and `list[Field[Unknown]]`
+- Found 463 diagnostics
++ Found 460 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[unsupported-operator] docs/tutorials/multilingual/add_tag_to_lines.py:39:22: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str] | @Todo(Support for `typing.TypeAlias`)`
+- error[invalid-argument-type] sockeye/translate.py:189:60: Argument to function `smart_open` is incorrect: Expected `str`, found `_T`
+- error[unsupported-operator] test/common.py:163:14: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- Found 402 diagnostics
++ Found 399 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
++ error[unresolved-attribute] pyi.py:539:19: Type `expr | None` has no attribute `value`
+- error[unsupported-operator] pyi.py:1777:28: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:1916:28: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:1947:28: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:1986:28: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
++ error[invalid-argument-type] pyi.py:1595:48: Argument to function `if_chain_ends_with_else` is incorrect: Expected `If`, found `stmt`
++ error[unresolved-attribute] pyi.py:1754:21: Type `expr` has no attribute `value`
++ error[invalid-argument-type] pyi.py:1840:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1840:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1840:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1858:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1858:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1858:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1871:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1871:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
++ error[invalid-argument-type] pyi.py:1871:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[unsupported-operator] pyi.py:2028:28: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:2096:31: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:2210:16: Operator `+` is unsupported between objects of type `list[arg]` and `list[arg]`
+- error[unsupported-operator] pyi.py:2211:20: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[expr]`
+- Found 23 diagnostics
++ Found 27 diagnostics
+
+nox (https://github.com/wntrblm/nox)
++ error[no-matching-overload] nox/command.py:160:22: No overload of function `fspath` matches arguments
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[unsupported-operator] pybind11/setup_helpers.py:155:27: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- Found 244 diagnostics
++ Found 243 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- error[unsupported-operator] src/pywinctl/_pywinctl_macos.py:1533:40: Operator `&gt;` is not supported for types `int` and `_T`
+- error[call-non-callable] src/pywinctl/_pywinctl_macos.py:1537:51: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | list[Unknown]`
+- error[invalid-argument-type] src/pywinctl/_pywinctl_macos.py:1545:85: Argument to function `subfillit` is incorrect: Expected `Sequence[int] | None`, found `list[_T]`
+- Found 41 diagnostics
++ Found 38 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[non-subscriptable] examples/notebooks/TextCNN.ipynb:40:17: Cannot subscript object of type `_T` with no `__getitem__` method
++ error[non-subscriptable] examples/notebooks/TextCNN.ipynb:41:17: Cannot subscript object of type `_T` with no `__getitem__` method
+- warning[possibly-unbound-attribute] ignite/distributed/auto.py:88:24: Attribute `rank` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] ignite/distributed/auto.py:88:24: Attribute `rank` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] ignite/distributed/auto.py:89:78: Attribute `rank` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] ignite/distributed/auto.py:89:78: Attribute `rank` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] ignite/distributed/auto.py:90:24: Attribute `num_replicas` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] ignite/distributed/auto.py:90:24: Attribute `num_replicas` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] ignite/distributed/auto.py:92:76: Attribute `num_replicas` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] ignite/distributed/auto.py:92:76: Attribute `num_replicas` on type `Any | None` is possibly unbound
+- error[call-non-callable] tests/ignite/metrics/test_accuracy.py:317:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_accuracy.py:317:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_accuracy.py:375:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_accuracy.py:375:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_accuracy.py:376:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_accuracy.py:376:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_accuracy.py:444:33: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_accuracy.py:444:33: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_classification_report.py:28:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_classification_report.py:28:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_classification_report.py:102:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_classification_report.py:102:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_classification_report.py:103:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_classification_report.py:103:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[unresolved-attribute] tests/ignite/metrics/test_epoch_metric.py:67:17: Type `_T` has no attribute `device`
+- error[unresolved-attribute] tests/ignite/metrics/test_epoch_metric.py:81:17: Type `_T` has no attribute `device`
+- error[call-non-callable] tests/ignite/metrics/test_epoch_metric.py:171:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_epoch_metric.py:171:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[unresolved-attribute] tests/ignite/metrics/test_epoch_metric.py:208:17: Type `_T` has no attribute `device`
+- error[call-non-callable] tests/ignite/metrics/test_fbeta.py:135:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_fbeta.py:135:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:68:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:68:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:69:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:69:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:90:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:90:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:91:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_mean_pairwise_distance.py:91:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:440:28: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:440:28: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:441:28: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:441:28: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:489:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_metrics_lambda.py:489:13: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_precision.py:351:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_precision.py:351:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_precision.py:403:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_precision.py:403:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_precision.py:404:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_precision.py:404:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_psnr.py:103:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_psnr.py:103:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_psnr.py:104:16: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_psnr.py:104:16: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_recall.py:354:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_recall.py:354:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_recall.py:406:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_recall.py:406:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_recall.py:407:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_recall.py:407:21: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_ssim.py:292:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_ssim.py:292:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_ssim.py:293:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_ssim.py:293:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- error[call-non-callable] tests/ignite/metrics/test_top_k_categorical_accuracy.py:72:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
++ error[call-non-callable] tests/ignite/metrics/test_top_k_categorical_accuracy.py:72:17: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]])` is not callable on object of type `Unknown | int | float | list[Unknown]`
+- Found 2281 diagnostics
++ Found 2280 diagnostics
+
+imagehash (https://github.com/JohannesBuchner/imagehash)
+- error[unsupported-operator] imagehash/__init__.py:441:39: Operator `/` is unsupported between objects of type `_T` and `Literal[1] | Any`
+- Found 14 diagnostics
++ Found 13 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[invalid-argument-type] porcupine/menubar.py:226:57: Argument to function `_walk_menu_contents` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[invalid-argument-type] porcupine/menubar.py:229:30: Argument to function `_join` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[invalid-return-type] porcupine/plugins/pastebin.py:192:16: Return type does not match returned value: Expected `str`, found `Unknown | None`
+- Found 112 diagnostics
++ Found 109 diagnostics
+
+black (https://github.com/psf/black)
+- error[invalid-assignment] src/black/linegen.py:931:17: Object of type `list[_T]` is not assignable to `list[Leaf]`
++ warning[possibly-unbound-attribute] src/black/lines.py:1010:17: Attribute `type` on type `Node | None` is possibly unbound
+- error[unsupported-operator] src/black/strings.py:319:20: Operator `+` is unsupported between objects of type `AnyStr | @Todo(Support for `typing.TypeAlias`)` and `AnyStr | @Todo(Support for `typing.TypeAlias`)`
+- error[unsupported-operator] src/black/strings.py:323:20: Operator `+` is unsupported between objects of type `str | bytes | @Todo(Support for `typing.TypeAlias`)` and `str | bytes | @Todo(Support for `typing.TypeAlias`)`
+- error[unsupported-operator] src/black/strings.py:326:20: Operator `+` is unsupported between objects of type `str | bytes | @Todo(Support for `typing.TypeAlias`)` and `str | bytes | @Todo(Support for `typing.TypeAlias`)`
+- error[unsupported-operator] src/black/strings.py:329:20: Operator `+` is unsupported between objects of type `str | bytes | @Todo(Support for `typing.TypeAlias`)` and `str | bytes | @Todo(Support for `typing.TypeAlias`)`
+- error[unsupported-operator] src/black/strings.py:333:20: Operator `+` is unsupported between objects of type `str | bytes | @Todo(Support for `typing.TypeAlias`)` and `str | bytes | @Todo(Support for `typing.TypeAlias`)`
++ warning[possibly-unbound-attribute] src/black/trans.py:895:21: Attribute `parent` on type `Node | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/black/trans.py:896:21: Attribute `parent` on type `Node | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/black/trans.py:896:21: Attribute `type` on type `Node | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/black/trans.py:950:29: Attribute `type` on type `Node | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/black/trans.py:1130:55: Attribute `children` on type `Node | None` is possibly unbound
+
+trio (https://github.com/python-trio/trio)
+- warning[unused-ignore-comment] src/trio/_core/_tests/test_asyncgen.py:115:71: Unused blanket `type: ignore` directive
+- error[unsupported-operator] src/trio/_core/_tests/test_exceptiongroup_gc.py:61:32: Operator `+` is unsupported between objects of type `StackSummary` and `StackSummary`
+- error[unsupported-operator] src/trio/_core/_tests/test_exceptiongroup_gc.py:64:32: Operator `+` is unsupported between objects of type `StackSummary` and `StackSummary`
+- error[unsupported-operator] src/trio/_core/_tests/test_instrumentation.py:86:25: Operator `+` is unsupported between objects of type `list[tuple[str, Task | None]]` and `list[tuple[str, Task | None]]`
++ error[not-iterable] src/trio/_core/_tests/test_instrumentation.py:209:43: Object of type `None` is not iterable
+- error[invalid-return-type] src/trio/_ssl.py:445:16: Return type does not match returned value: Expected `list[str]`, found `list[_T]`
+- error[type-assertion-failure] src/trio/_tests/type_tests/path.py:42:5: Actual type `Unknown` is not the same as asserted type `Path`
++ error[type-assertion-failure] src/trio/_tests/type_tests/path.py:42:5: Actual type `Self` is not the same as asserted type `Path`
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/task_status.py:24:31: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/task_status.py:26:39: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/task_status.py:27:39: Unused blanket `type: ignore` directive
+- Found 1086 diagnostics
++ Found 1079 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[invalid-argument-type] cki_lib/config_tree.py:31:46: Argument to function `_merged` is incorrect: Expected `str`, found `@Todo(map_with_boundness: intersections with negative contributions) | list[Unknown]`
+- error[invalid-argument-type] tests/test_yaml.py:244:31: Argument to function `main` is incorrect: Expected `list[str] | None`, found `list[_T]`
+- Found 182 diagnostics
++ Found 180 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ error[no-matching-overload] mkosi/__init__.py:431:27: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/__init__.py:431:27: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/__init__.py:433:62: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/__init__.py:433:62: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/__init__.py:436:59: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/__init__.py:436:59: No overload of bound method `get` matches arguments
+- error[invalid-argument-type] mkosi/__init__.py:616:21: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[_KT, _VT]`
+- error[invalid-argument-type] mkosi/__init__.py:1063:21: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `Unknown | dict[_KT, _VT]`
+- error[invalid-argument-type] mkosi/__init__.py:1369:35: Argument to function `parse_config` is incorrect: Expected `Sequence[str]`, found `list[_T]`
+- error[invalid-argument-type] mkosi/__init__.py:1369:35: Argument to function `parse_config` is incorrect: Expected `Sequence[str]`, found `list[_T]`
+- error[invalid-argument-type] mkosi/__init__.py:1369:35: Argument to function `parse_config` is incorrect: Expected `Sequence[str]`, found `list[_T]`
+- error[invalid-argument-type] mkosi/__init__.py:1369:35: Argument to function `parse_config` is incorrect: Expected `Sequence[str]`, found `list[_T]`
+- error[unsupported-operator] mkosi/__init__.py:2009:27: Operator `+` is unsupported between objects of type `list[Path]` and `list[Path]`
+- error[unsupported-operator] mkosi/__init__.py:2043:23: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str]`
+- error[invalid-argument-type] mkosi/__init__.py:4601:21: Argument to function `run` is incorrect: Expected `Mapping[str, str]`, found `dict[_KT, _VT]`
+- error[invalid-argument-type] mkosi/__init__.py:4973:26: Argument to function `show_docs` is incorrect: Expected `str`, found `Unknown | None | Literal[&quot;mkosi&quot;]`
+- error[invalid-assignment] mkosi/__init__.py:5182:5: Object of type `list[_T]` is not assignable to `Sequence[Config]`
+- error[invalid-return-type] mkosi/config.py:1233:16: Return type does not match returned value: Expected `dict[str, str] | None`, found `@Todo(map_with_boundness: intersections with negative contributions) | dict[_KT, _VT]`
+- error[invalid-argument-type] mkosi/config.py:5670:21: Argument is incorrect: Expected `str`, found `Unknown | None`
++ error[invalid-argument-type] mkosi/config.py:5670:21: Argument is incorrect: Expected `str`, found `Any | None`
++ error[no-matching-overload] mkosi/distributions/__init__.py:168:15: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/distributions/__init__.py:169:20: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/distributions/__init__.py:170:18: No overload of bound method `get` matches arguments
++ error[no-matching-overload] mkosi/distributions/__init__.py:171:24: No overload of bound method `get` matches arguments
+- error[invalid-return-type] mkosi/installer/__init__.py:61:16: Return type does not match returned value: Expected `dict[str, str]`, found `Unknown | dict[_KT, _VT]`
+- error[unsupported-operator] mkosi/qemu.py:446:21: Operator `+` is unsupported between objects of type `list[Unknown] | list[str]` and `list[str] | list[Unknown]`
+- error[unsupported-operator] mkosi/vmspawn.py:123:17: Operator `|` is unsupported between objects of type `dict[str, str]` and `dict[str, str]`
+- Found 357 diagnostics
++ Found 352 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[unsupported-operator] starlette/datastructures.py:262:21: Operator `+` is unsupported between objects of type `list[tuple[Unknown, Unknown]]` and `list[tuple[Unknown, Unknown]]`
++ warning[possibly-unbound-attribute] starlette/requests.py:114:20: Attribute `endswith` on type `Unknown | None` is possibly unbound
++ error[unsupported-operator] starlette/requests.py:115:17: Operator `+=` is unsupported between objects of type `None` and `Literal[&quot;/&quot;]`
+- Found 184 diagnostics
++ Found 185 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[no-matching-overload] pydantic/experimental/pipeline.py:235:16: No overload of bound method `constrain` matches arguments
+- error[unresolved-attribute] pydantic/mypy.py:1317:16: Type `_T` has no attribute `type_annotation`
+- error[unresolved-attribute] pydantic/mypy.py:1318:26: Type `_T` has no attribute `type_annotation`
+- error[unresolved-attribute] pydantic/mypy.py:1319:26: Type `_T` has no attribute `variable`
+- error[unresolved-attribute] pydantic/mypy.py:1320:26: Type `_T` has no attribute `kind`
+- error[no-matching-overload] pydantic/v1/datetime_parse.py:163:29: No overload of bound method `ljust` matches arguments
+- error[invalid-argument-type] pydantic/v1/datetime_parse.py:163:56: Argument to bound method `ljust` is incorrect: Expected `bytes | bytearray`, found `Literal[&quot;0&quot;]`
+- error[no-matching-overload] pydantic/v1/datetime_parse.py:201:29: No overload of bound method `ljust` matches arguments
+- error[invalid-argument-type] pydantic/v1/datetime_parse.py:201:56: Argument to bound method `ljust` is incorrect: Expected `bytes | bytearray`, found `Literal[&quot;0&quot;]`
+- error[unresolved-attribute] pydantic/v1/mypy.py:860:16: Type `_T` has no attribute `type_annotation`
+- error[unresolved-attribute] pydantic/v1/mypy.py:861:26: Type `_T` has no attribute `type_annotation`
+- error[unresolved-attribute] pydantic/v1/mypy.py:862:35: Type `_T` has no attribute `variable`
+- error[unresolved-attribute] pydantic/v1/mypy.py:863:26: Type `_T` has no attribute `kind`
+- error[invalid-argument-type] pydantic/v1/schema.py:1069:21: Argument to function `conlist` is incorrect: Expected `bool`, found `Unknown | None`
++ error[unresolved-attribute] pydantic/version.py:49:20: Type `Self` has no attribute `resolve`
+- Found 800 diagnostics
++ Found 787 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[invalid-assignment] src/websockets/extensions/permessage_deflate.py:488:9: Object of type `list[_T]` is not assignable to `Sequence[ClientExtensionFactory] | None`
+- error[invalid-return-type] src/websockets/extensions/permessage_deflate.py:493:12: Return type does not match returned value: Expected `Sequence[ClientExtensionFactory]`, found `Sequence[ClientExtensionFactory] | list[Unknown] | None`
+- error[invalid-assignment] src/websockets/extensions/permessage_deflate.py:690:9: Object of type `list[_T]` is not assignable to `Sequence[ServerExtensionFactory] | None`
+- error[invalid-return-type] src/websockets/extensions/permessage_deflate.py:697:12: Return type does not match returned value: Expected `Sequence[ServerExtensionFactory]`, found `Sequence[ServerExtensionFactory] | list[Unknown] | None`
+- error[invalid-assignment] src/websockets/legacy/client.py:459:13: Object of type `&lt;class 'WebSocketClientProtocol'&gt;` is not assignable to `((...) -&gt; WebSocketClientProtocol) | None`
++ error[invalid-assignment] src/websockets/legacy/client.py:459:13: Object of type `(Any &amp; ~None) | &lt;class 'WebSocketClientProtocol'&gt;` is not assignable to `((...) -&gt; WebSocketClientProtocol) | None`
+- error[invalid-assignment] src/websockets/legacy/server.py:1028:13: Object of type `&lt;class 'WebSocketServerProtocol'&gt;` is not assignable to `((...) -&gt; WebSocketServerProtocol) | None`
++ error[invalid-assignment] src/websockets/legacy/server.py:1028:13: Object of type `(Any &amp; ~None) | &lt;class 'WebSocketServerProtocol'&gt;` is not assignable to `((...) -&gt; WebSocketServerProtocol) | None`
+- Found 119 diagnostics
++ Found 115 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[unsupported-operator] asynq/tools.py:177:21: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- error[unsupported-operator] asynq/tools.py:229:21: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- error[unsupported-operator] asynq/tools.py:420:25: Operator `+` is unsupported between objects of type `list[str]` and `list[str]`
+- Found 224 diagnostics
++ Found 221 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[unsupported-operator] tornado/autoreload.py:231:16: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[Unknown] | list[str]`
+- error[unsupported-operator] tornado/autoreload.py:234:26: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[Unknown] | list[str] | Unknown`
+- error[unsupported-operator] tornado/autoreload.py:237:34: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[Unknown] | list[str] | Unknown`
+- error[unsupported-operator] tornado/autoreload.py:299:20: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str]`
+- error[no-matching-overload] tornado/test/web_test.py:414:26: No overload of function `parsedate_to_datetime` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:3091:26: No overload of function `parsedate_to_datetime` matches arguments
+- error[invalid-argument-type] tornado/testing.py:875:42: Argument to bound method `__init__` is incorrect: Expected `list[str] | None`, found `list[_T]`
++ warning[unused-ignore-comment] tornado/testing.py:873:58: Unused blanket `type: ignore` directive
+- Found 514 diagnostics
++ Found 508 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ error[no-matching-overload] src/urllib3/util/ssl_.py:280:35: No overload of bound method `get` matches arguments
++ error[no-matching-overload] src/urllib3/util/ssl_.py:283:35: No overload of bound method `get` matches arguments
+- error[non-subscriptable] test/test_util.py:413:53: Cannot subscript object of type `_T` with no `__getitem__` method
+- Found 462 diagnostics
++ Found 463 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ error[invalid-argument-type] mkdocs/commands/build.py:164:13: Argument to bound method `on_page_markdown` is incorrect: Expected `str`, found `Unknown | str | None`
++ error[invalid-argument-type] mkdocs/commands/build.py:172:13: Argument to bound method `on_page_content` is incorrect: Expected `str`, found `Unknown | str | None`
++ error[invalid-argument-type] mkdocs/commands/build.py:310:28: Argument to function `_populate_page` is incorrect: Expected `Page`, found `Unknown | Page | None`
++ error[invalid-argument-type] mkdocs/commands/build.py:338:17: Argument to function `_build_page` is incorrect: Expected `Page`, found `Unknown | Page | None`
++ warning[possibly-unbound-attribute] mkdocs/commands/build.py:344:13: Attribute `validate_anchor_links` on type `Unknown | Page | None` is possibly unbound
++ error[invalid-assignment] mkdocs/tests/build_tests.py:398:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:399:9: Object of type `Literal[&quot;page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:400:9: Object of type `Literal[&quot;&lt;p&gt;page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:401:27: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:413:17: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:432:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:433:9: Object of type `Literal[&quot;new page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:434:9: Object of type `Literal[&quot;&lt;p&gt;new page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:436:13: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:449:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:450:9: Object of type `Literal[&quot;page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:451:9: Object of type `Literal[&quot;&lt;p&gt;page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:453:13: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:465:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:466:9: Object of type `dict[Unknown, Unknown]` is not assignable to attribute `meta` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:467:9: Object of type `Literal[&quot;page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:468:9: Object of type `Literal[&quot;&lt;p&gt;page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:469:27: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:481:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:482:9: Object of type `Literal[&quot;page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:483:9: Object of type `Literal[&quot;&lt;p&gt;page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:486:35: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:505:9: Object of type `Literal[&quot;Title&quot;]` is not assignable to attribute `title` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:506:9: Object of type `Literal[&quot;page content&quot;]` is not assignable to attribute `markdown` on type `Page | None`
++ error[invalid-assignment] mkdocs/tests/build_tests.py:507:9: Object of type `Literal[&quot;&lt;p&gt;page content&lt;/p&gt;&quot;]` is not assignable to attribute `content` on type `Page | None`
++ error[invalid-argument-type] mkdocs/tests/build_tests.py:510:35: Argument to function `_build_page` is incorrect: Expected `Page`, found `Page | None`
+- error[type-assertion-failure] mkdocs/tests/plugin_tests.py:80:9: Actual type `Unknown` is not the same as asserted type `str | None`
++ error[type-assertion-failure] mkdocs/tests/plugin_tests.py:80:9: Actual type `Unknown | None` is not the same as asserted type `str | None`
+- Found 325 diagnostics
++ Found 356 diagnostics
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
+- error[unsupported-operator] pyppeteer/launcher.py:102:60: Operator `not in` is not supported for types `Unknown` and `Literal[False]`, in comparing `Unknown` with `Unknown | Literal[False]`
+- error[invalid-argument-type] pyppeteer/network_manager.py:269:29: Argument to bound method `__init__` is incorrect: Expected `bool`, found `Unknown | None`
+- error[invalid-argument-type] pyppeteer/network_manager.py:270:29: Argument to bound method `__init__` is incorrect: Expected `bool`, found `Unknown | None`
+- error[invalid-argument-type] pyppeteer/network_manager.py:271:29: Argument to bound method `__init__` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | None`
+- Found 171 diagnostics
++ Found 167 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- warning[possibly-unbound-attribute] src/poetry/factory.py:145:33: Attribute `upper` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/poetry/factory.py:145:33: Attribute `upper` on type `Any | None` is possibly unbound
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[unsupported-operator] boostedblob/azure_auth.py:486:26: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[SupportsRichComparisonT]`
+- Found 68 diagnostics
++ Found 67 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- error[invalid-argument-type] tests/test__cli.py:140:25: Argument to function `assert_returncode_0` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[invalid-argument-type] tests/test__cli.py:145:29: Argument to function `assert_returncode_0` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[unsupported-operator] tests/test__cli.py:255:32: Operator `|` is unsupported between objects of type `dict[str, Any]` and `dict[str, Any]`
+- error[invalid-argument-type] tests/test__cli.py:296:29: Argument to function `assert_argparsing_fails` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[invalid-argument-type] tests/test__cli.py:301:25: Argument to function `assert_returncode_0` is incorrect: Expected `list[str]`, found `list[_T]`
+- error[unsupported-operator] tests/test__cli.py:426:32: Operator `|` is unsupported between objects of type `dict[str, Any]` and `dict[str, Any]`
+- error[unsupported-operator] tests/test_serialize.py:92:20: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[PackageInfo]`
+- error[unsupported-operator] tests/test_serialize.py:136:20: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[PackageInfo]`
+- Found 48 diagnostics
++ Found 40 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[unsupported-operator] tests/test_seq.py:186:27: Operator `+` is unsupported between objects of type `list[int]` and `list[int]`
+- error[unsupported-operator] tests/test_seq.py:193:27: Operator `+` is unsupported between objects of type `list[int]` and `list[int]`
+- error[unsupported-operator] tests/test_seq.py:200:27: Operator `+` is unsupported between objects of type `list[int]` and `list[int]`
+- error[unsupported-operator] tests/test_seq.py:207:27: Operator `+` is unsupported between objects of type `list[int]` and `list[int]`
+- error[unsupported-operator] tests/test_seq.py:214:27: Operator `+` is unsupported between objects of type `list[int]` and `list[int]`
+- Found 339 diagnostics
++ Found 334 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[unsupported-operator] schema_salad/codegen.py:52:23: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str]`
+- error[unsupported-operator] schema_salad/makedoc.py:510:17: Operator `+=` is unsupported between objects of type `str` and `_T`
+- error[unsupported-operator] schema_salad/validate.py:86:9: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[str]`
+- Found 402 diagnostics
++ Found 399 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[division-by-zero] dulwich/contrib/diffstat.py:160:27: Cannot divide object of type `float` by zero
+- error[division-by-zero] dulwich/contrib/diffstat.py:161:27: Cannot divide object of type `float` by zero
+- Found 147 diagnostics
++ Found 145 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[non-subscriptable] test/common_utils.py:244:19: Cannot subscript object of type `object` with no `__getitem__` method
+- error[non-subscriptable] test/common_utils.py:244:44: Cannot subscript object of type `object` with no `__getitem__` method
++ warning[redundant-cast] torchvision/datasets/places365.py:135:21: Value is already of type `str`
+- error[unsupported-operator] torchvision/models/maxvit.py:664:23: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[int]`
++ warning[unused-ignore-comment] torchvision/models/video/resnet.py:448:51: Unused blanket `type: ignore` directive
+- error[invalid-assignment] torchvision/prototype/models/depth/stereo/crestereo.py:1025:5: Object of type `&lt;class 'LinearAttention'&gt;` is not assignable to `(...) -&gt; Unknown`
++ error[invalid-assignment] torchvision/prototype/models/depth/stereo/crestereo.py:1025:5: Object of type `(Unknown &amp; ~AlwaysFalsy) | &lt;class 'LinearAttention'&gt;` is not assignable to `(...) -&gt; Unknown`
+- error[invalid-assignment] torchvision/prototype/models/depth/stereo/crestereo.py:1033:5: Object of type `&lt;class 'LinearAttention'&gt;` is not assignable to `(...) -&gt; Unknown`
++ error[invalid-assignment] torchvision/prototype/models/depth/stereo/crestereo.py:1033:5: Object of type `(Unknown &amp; ~AlwaysFalsy) | &lt;class 'LinearAttention'&gt;` is not assignable to `(...) -&gt; Unknown`
++ error[call-non-callable] torchvision/transforms/transforms.py:575:16: Object of type `_T` is not callable
+- error[unsupported-operator] torchvision/transforms/transforms.py:2116:25: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[int]`
+- error[unsupported-operator] torchvision/transforms/transforms.py:2125:25: Operator `+` is unsupported between objects of type `list[Unknown]` and `list[int]`
+- Found 1968 diagnostics
++ Found 1966 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- error[unsupported-operator] colour/io/luts/lut.py:1966:12: Operator `&gt;` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[129]`
++ error[unsupported-operator] colour/io/luts/lut.py:1966:12: Operator `&gt;` is not supported for types `None` and `int`, in comparing `Any | None` with `Literal[129]`
+- warning[redundant-cast] colour/plotting/common.py:593:14: Value is already of type `Figure`
+- warning[redundant-cast] colour/plotting/common.py:701:14: Value is already of type `Figure`
+- warning[possibly-unbound-attribute] colour/plotting/common.py:824:9: Attribute `text` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] colour/plotting/common.py:824:9: Attribute `text` on type `Any | None` is possibly unbound
+- error[invalid-return-type] colour/plotting/common.py:836:12: Return type does not match returned value: Expected `tuple[Figure, Axes]`, found `tuple[Figure, Unknown | None]`
++ error[invalid-return-type] colour/plotting/common.py:836:12: Return type does not match returned value: Expected `tuple[Figure, Axes]`, found `tuple[Any, Any | None]`
+- warning[possibly-unbound-attribute] colour/plotting/common.py:862:9: Attribute `set_aspect` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] colour/plotting/common.py:862:9: Attribute `set_aspect` on type `Any | None` is possibly unbound
+- error[invalid-return-type] colour/plotting/common.py:872:12: Return type does not match returned value: Expected `tuple[Figure, Axes3D]`, found `tuple[Figure, Unknown | None]`
++ error[invalid-return-type] colour/plotting/common.py:872:12: Return type does not match returned value: Expected `tuple[Figure, Axes3D]`, found `tuple[Any, Any | None]`
+- error[invalid-argument-type] colour/plotting/temperature.py:513:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), _DType_co]`
++ error[invalid-argument-type] colour/plotting/temperature.py:513:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), dtype[_SCT]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:514:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), _DType_co]`
++ error[invalid-argument-type] colour/plotting/temperature.py:514:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), dtype[_SCT]]`
+- error[invalid-argument-type] colour/recovery/tests/test_otsu2018.py:867:13: Argument to function `sds_and_msds_to_msds` is incorrect: Expected `Sequence[SpectralDistribution | MultiSpectralDistributions] | SpectralDistribution | MultiSpectralDistributions | ValuesView[Unknown]`, found `list[_T]`
+- Found 667 diagnostics
++ Found 664 diagnost...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-12 14:48</div>
+            <div class="timeline-body"><p>Looks good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-05-12 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-12 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-12 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:28 UTC
+    </footer>
+</body>
+</html>

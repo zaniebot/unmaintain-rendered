@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Abort process if worker thread panics - astral-sh/ruff #18211</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Abort process if worker thread panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18211">#18211</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-20 06:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 06:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes how ty's LSP handles panics in background worker threads.</p>
+<p>Today, a panic in the worker thread pool gets logged (with tracing) but it tears down the worker thread on which the background task ran.
+The panic will only get surfaced once the thread pool shuts down (when <code>JoinHandle::join</code> is called). Eventually, <code>job_sender.send</code> panics
+because the thread pool ran out of worker threads and the job queue overflows.</p>
+<p>This PR aligns the behavior with rayon by aborting the entire process when any background task unexpectedly panics.
+My reasoning is that <em>containing</em> errors shouldn't be the responsibility of the thread pool. Instead, the
+request dispatching should be wrapped in a <code>catch_unwind</code> and handle any potential recovery there. This also
+reveals that we don't have the same recovery for tasks running locally (on the main thread).</p>
+<p>I plan on adding such recovery in the server dispatch logic as a follow up (which also adds retry logic).</p>
+<h2>Test Plan</h2>
+<p>I added a <code>panic</code> to the hover request handler and it aborted the process (which VS code then restarts up to 5 times).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-20 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-20 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/schedule/thread/pool.rs</code>:54 on 2025-05-20 06:19</div>
+            <div class="timeline-body"><p>The main motivation of the limit is to apply some form of back pressure. However, limiting the queue to 4 on e.g. a 12 core system feels overly strict because it means we'll drop messages as soon as 4 out of 12 threads have one message queued. We should at least allow a backlog of 2 tasks per thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-05-20 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 06:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 06:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/schedule/thread/pool.rs</code>:54 on 2025-05-20 12:13</div>
+            <div class="timeline-body"><p>For my own edification, can you say more about the relationship between the channel buffer size and dropping messages? Does that mean that if a channel send <em>would</em> block (i.e., there's no receiving ready and waiting to synchronize) then that message is ~~blocked~~ dropped?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-05-20 12:17</div>
+            <div class="timeline-body"><p>This makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-20 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/schedule/thread/pool.rs</code>:54 on 2025-05-20 13:58</div>
+            <div class="timeline-body"><p>You're right. I was wrong here.</p>
+<p>It's a crossbeam bounded channel that starts blocking the sender if the thread pool falls behind.</p>
+<p>I thought that this wouldn't be the case because the version on main starts to fail with Disconnected sender when all threads panicked (which drops all channel receivers). Let me revert this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-20 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Today, a panic in the worker thread pool gets logged (with tracing) but it tears down the worker thread on which the background task ran.
+The panic will only get surfaced once the thread pool shuts down (when <code>JoinHandle::join</code> is called). Eventually, <code>job_sender.send</code> panics
+because the thread pool ran out of worker threads and the job queue overflows.</p>
+</blockquote>
+<p>I'm a bit unsure of what this means in practice specifically the &quot;panic will only get surfaced once the thread pool shuts down&quot;. I tried adding a panic to the hover handler on main and it does surface the panic in the logs. Or, am I misunderstanding?</p>
+<blockquote>
+<p>I added a <code>panic</code> to the hover request handler and it aborted the process (which VS code then restarts up to 5 times).</p>
+</blockquote>
+<p>I'm still not sure why should we abort the process if there's a panic in a specific handler. Wouldn't that degrade the user experience? Like, today even if there's a panic the server keeps running and users can keep using other capabilities.</p>
+<p>Is there a way to handle it gracefully? I might need to spend some time understanding the scheduler but I don't want to block this PR for that. Happy to go ahead with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit unsure of what this means in practice specifically the &quot;panic will only get surfaced once the thread pool shuts down&quot;. I tried adding a panic to the hover handler on main and it does surface the panic in the logs. Or, am I misunderstanding?</p>
+</blockquote>
+<p>Thanks to our global panic handler, it does surface the panic in the logs, but it also aborts the thread and we'll eventually run out. The eror value of the panic will not be dropped until we join the threads (which can be problematic if it needs to release any resources).</p>
+<p>For that reason, I think it's the right decision to abort the process.</p>
+<blockquote>
+<p>I'm still not sure why should we abort the process if there's a panic in a specific handler. Wouldn't that degrade the user experience? Like, today even if there's a panic the server keeps running and users can keep using other capabilities.</p>
+</blockquote>
+<p>Sort of. It works for as long as there are still enough worker threads. Ruff/ty will abort once all threads are used up. But I agree that the experience is worse. I plan to add specific <code>catch_panic</code> handlers to the <code>request</code> / <code>notification</code> handlers which will give us the old behavior (except that we never run out of threads). The last step is then to also implement a retry logic if a thread unwinds due to a <code>salsa::Cancelled</code>, which also needs the <code>catch_unwind</code> in the <code>request</code> handler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 11:58</div>
+            <div class="timeline-body"><p>This is actually a more sever problem than I thought. Threads panicking has the result that the server never responds to that client request. The client might decide to <strong>not send</strong> any new request for the same method and parameters because there's already a pending request.</p>
+<p>I think we should backport my changes to ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-26 10:17</div>
+            <div class="timeline-body"><p>Thank you for the explanation. I think that makes sense and we should do the same for Ruff as well, it might be useful to do that after your planned follow-up work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-26 11:57</div>
+            <div class="timeline-body"><p>I plan to back port all changes of this stack to ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-26 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-26 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-26 12:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:51:29 UTC
+    </footer>
+</body>
+</html>
