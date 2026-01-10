@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix __setattr__ call check precedence during attribute assignment - astral-sh/ruff #18347</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix <strong>setattr</strong> call check precedence during attribute assignment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18347">#18347</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-05-28 06:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-05-28 06:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/111</li>
+<li>https://github.com/astral-sh/ruff/pull/17974#discussion_r2108527106</li>
+</ul>
+<p>Previously, when validating an attribute assignment, a <code>__setattr__</code> call check was only done if the attribute wasn't found as either a class member or instance member</p>
+<p>This PR changes the <code>__setattr__</code> call check to be attempted first, prior to the &quot;<a href="https://docs.python.org/3/reference/datamodel.html#object.__setattr__">normal mechanism</a>&quot;, as a defined <code>__setattr__</code> should take precedence over setting an attribute on the instance dictionary directly.</p>
+<p>if the return type of <code>__setattr__</code> is <code>Never</code>, an <code>invalid-assignment</code> diagnostic is emitted</p>
+<p>Once this is merged, a subsequent PR will synthesize a <code>__setattr__</code> method with a <code>Never</code> return type for frozen dataclasses.</p>
+<h3>Ecosystem changes</h3>
+<p>it looks like support needs to be added for <a href="https://docs.python.org/3/reference/datamodel.html#special-writable-attributes">writing special attributes</a> on <code>Callable</code>s (at least I wasn't able to find tests that asserted these are supported). These diagnostics are getting emitted due to a <code>CallDunderError::PossiblyUnbound</code>.</p>
+<p>This seems like an expected side-effect given the change in this PR - would it make sense to add a separate issue to track this?</p>
+<blockquote>
+<p>Function objects also support getting and setting arbitrary attributes,</p>
+</blockquote>
+<pre><code>+ error[unresolved-attribute] yarl/_url.py:140:5: Can not assign object of `Literal[&quot;yarl&quot;]` to attribute `__module__` on type `_T` with custom `__setattr__` method.
++ error[unresolved-attribute] optuna/_deprecated.py:185:17: Can not assign object of `Literal[&quot;&quot;]` to attribute `__doc__` on type `CT` with custom `__setattr__` method.
++ error[unresolved-attribute] optuna/_deprecated.py:193:13: Can not assign object of `str` to attribute `__doc__` on type `CT` with custom `__setattr__` method.
++ error[unresolved-attribute] optuna/_experimental.py:129:17: Can not assign object of `Literal[&quot;&quot;]` to attribute `__doc__` on type `CT` with custom `__setattr__` method.
++ error[unresolved-attribute] optuna/_experimental.py:133:13: Can not assign object of `str` to attribute `__doc__` on type `CT` with custom `__setattr__` method.
+</code></pre>
+<p>it's not obvious to me that the other ecosystem changes are related to this PR - would need to understand better how the comparison is happening</p>
+<h2>Test Plan</h2>
+<p>Existing tests + mypy_primer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-28 06:05</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- warning[possibly-unbound-attribute] beartype/_util/api/external/utilclick.py:108:5: Attribute `callback` on type `BeartypeableT` is possibly unbound
+- Found 557 diagnostics
++ Found 556 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ warning[unused-ignore-comment] comtypes/_post_coinit/misc.py:377:46: Unused blanket `type: ignore` directive
+- Found 472 diagnostics
++ Found 473 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ error[invalid-assignment] src/werkzeug/sansio/response.py:597:9: Object of type `def on_update(value: WWWAuthenticate) -&gt; None` is not assignable to attribute `_on_update` on type `(Unknown &amp; ~None) | WWWAuthenticate`
+- Found 385 diagnostics
++ Found 386 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-assignment] tests/test_extension_telnet.py:16:9: Implicit shadowing of function `_get_telnet_vars`
+- Found 1100 diagnostics
++ Found 1099 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ error[unresolved-attribute] tests/test_config.py:70:5: Can not assign object of type `float` to attribute `chop_threshold` on type `Display` with custom `__setattr__` method.
+- Found 2769 diagnostics
++ Found 2770 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- error[invalid-assignment] sphinx/builders/__init__.py:698:9: Object of type `None` is not assignable to attribute `record_dependencies` of type `DependencyList`
+- Found 607 diagnostics
++ Found 606 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[invalid-assignment] test/mitmproxy/addons/test_next_layer.py:374:17: Object of type `tuple[Literal[&quot;2001:db8::1&quot;], Literal[443], Literal[0], Literal[0]] | tuple[Literal[&quot;192.0.2.1&quot;], Literal[443]]` is not assignable to attribute `peername` of type `tuple[str, int] | None`
+- error[invalid-assignment] test/mitmproxy/addons/test_tlsconfig.py:439:17: Object of type `None` is not assignable to attribute `alpn_offers` on type `Unknown | Server`
+- Found 1804 diagnostics
++ Found 1802 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[invalid-assignment] lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:233:9: Implicit shadowing of function `_run_script`
+- Found 3301 diagnostics
++ Found 3300 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-assignment] tests/tracer/test_pin.py:76:13: Invalid assignment to data descriptor attribute `service` on type `Pin` with custom `__set__` method
+- Found 6845 diagnostics
++ Found 6844 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-28 06:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3362 on 2025-05-28 06:07</div>
+            <div class="timeline-body"><p>one issue here is <code>Never</code> got <a href="https://docs.python.org/3/library/typing.html#typing.Never">introduced in 3.11</a></p>
+<p>maybe match <code>NoReturn</code> as well? (3.6)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-28 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3301 on 2025-05-28 06:11</div>
+            <div class="timeline-body"><p>TODO figure out precedence of the setattr diagnostics vs the rest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-28 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-28 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3362 on 2025-05-28 08:14</div>
+            <div class="timeline-body"><p>You don't need to worry about that here. <code>Type::Never</code> is a version-independent representation of the bottom type (in Rust), and it includes both <code>typing.Never</code> and <code>typing.NoReturn</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Unconditional __setattr__ call check during attribute assignment" to "[ty] Fix __setattr__ call check precedence during attribute assignment" by @thejchap on 2025-05-31 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-05-31 01:59</div>
+            <div class="timeline-body"><p>@sharkdp this is ready for a look, left a few notes in the description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-05-31 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @thejchap on 2025-05-31 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-05-31 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @thejchap on 2025-05-31 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-06-01 05:52</div>
+            <div class="timeline-body"><p>re: this comment/example from #17974:</p>
+<blockquote>
+<p>So it seems reasonable to me to check the <strong>setattr</strong> call for both of these assignments. And because we see Never as a return type, emit a diagnostic for both of these assignments (which seems like the user intent).</p>
+</blockquote>
+<pre><code class="language-py">from typing import Never
+
+
+class Frozen:
+    existing: int = 1
+
+    def __setattr__(self, name, value) -&gt; Never:
+        raise AttributeError(&quot;Attributes can not be modified&quot;)
+
+
+instance = Frozen()
+instance.non_existing = 2  # fails at runtime
+instance.existing = 2  # also fails at runtime
+</code></pre>
+<p>i think this would be different if it were actually a frozen dataclass - in that case it should be:</p>
+<pre><code class="language-py">from typing import Never
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Frozen:
+    existing: int = 1
+
+instance = Frozen()
+instance.non_existing = 2  # unresolved attribute
+instance.existing = 2  # invalid assignment
+</code></pre>
+<p>or at least that's how mypy handles it</p>
+<p>if that's the case, then this first implementation won't work - we'd get back an invalid-assignment for <code>instance.non_existing = 2</code> instead of <code>unresolved-attribute</code></p>
+<p>seems like the logic would need to be something like:</p>
+<ul>
+<li>user-defined/overridden <code>__setattr__</code>?<ul>
+<li>frozen dataclass?<ul>
+<li>emit some diagnostic as this isn't allowed</li>
+</ul>
+</li>
+<li>else<ul>
+<li>attempt <code>__setattr__</code> call</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>else<ul>
+<li>found as instance member?<ul>
+<li>attempt <code>__setattr__</code> call</li>
+</ul>
+</li>
+<li>else<ul>
+<li><code>unresolved-attribute</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-03 14:21</div>
+            <div class="timeline-body"><p>Thank you for working on this!</p>
+<p>I think that we need to understand the ecosystem changes more closely and write some tests here. While taking a look at the <code>yarl</code> changes in particular, I found a bug which I fixed in https://github.com/astral-sh/ruff/pull/18439. I rebased your branch on top of that (so that we can see the updated ecosystem results), and also added an initial set of tests. I also took the liberty to rewrite the metadata in your first commit, as it seemed completely off, potentially from a rebase/squash (previous state: https://github.com/astral-sh/ruff/commit/22620d5c7ba79efcd5d2a8ac6faff040469f7c61).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-03 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3251 on 2025-06-03 16:10</div>
+            <div class="timeline-body"><p>I think this might be causing the changes in <code>beartype</code>, which look surprising to me. Do we need to change this branch, now that we call <code>__setattr__</code> unconditionally? We should probably add some tests with unions of classes that do/don't have a <code>__setattr__</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-06-04 22:42</div>
+            <div class="timeline-body"><p>@sharkdp</p>
+<blockquote>
+<p>I think that we need to understand the ecosystem changes more closely and write some tests here ... I rebased your branch on top of that</p>
+</blockquote>
+<p>sounds good! thanks - i will investigate the remaining changes after your rebase</p>
+<blockquote>
+<p>it seemed completely off, potentially from a rebase/squash</p>
+</blockquote>
+<p>🤦‍♂️ thanks - was a little hasty there - appreciate that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-06-04 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3251 on 2025-06-04 22:49</div>
+            <div class="timeline-body"><p>i will add some tests with unions and look into this a little more - but also, did this <a href="https://github.com/astral-sh/ruff/pull/18347#issuecomment-2926600351">comment/concern</a> make sense at all? i just want to confirm that this is the right approach generally (doing the unconditional call)</p>
+<p>doing the <code>__setattr__</code> call on every attribute assignment would result in (i think) the wrong diagnostics in this example:</p>
+<pre><code class="language-py">from typing import Never
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Frozen:
+    existing: int = 1
+
+instance = Frozen()
+instance.non_existing = 2  # would expect unresolved attribute, but unconditional call would result in invalid assignment
+instance.existing = 2  # invalid assignment as expected
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-05 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3251 on 2025-06-05 07:43</div>
+            <div class="timeline-body"><p>Yes, I think it's good to bring this up, but I think we can handle this.</p>
+<p>For an arbitrary class with a <code>__setattr__</code> method, we don't know what the body of that custom <code>__setattr__</code> method does. So I think it's fine to unconditionally call it, see if it returns <code>Never</code> (there could be multiple overloads and maybe it only returns <code>Never</code> conditionally — it would be nice to add a test for this), and show the invalid-assignment diagnostic if that's the case.</p>
+<p>On the other hand, for synthesized <code>__setattr__</code> methods of frozen dataclasses, we understand how the body looks like. It returns an <code>AttributeError</code> if the attribute doesn't exist, and it returns a <code>FrozenInstanceError</code> if it's an existing attribute. It seems reasonable to emit &quot;unresolved attribute&quot; for the first case, and invalid-assignment (potentially with a customized error message for frozen instances) in the second case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-06 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>sounds good! thanks - i will investigate the remaining changes after your rebase</p>
+</blockquote>
+<p>Please let me know if you need help with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @thejchap on 2025-06-11 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-16 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-08 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-08 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-08 13:33</div>
+            <div class="timeline-body"><p>Sorry that this took so long. I brought this up to date, made a few modifications and added some new tests. I also reviewed the ecosystem changes and except for the <code>beartype</code> thing which I don't fully understand, I think the changes are good.</p>
+<p>Thank you very much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-08 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-08 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-08 16:07</div>
+            <div class="timeline-body"><p>@sharkdp thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-08 18:40</div>
+            <div class="timeline-body"><blockquote>
+<p>@sharkdp thank you!</p>
+</blockquote>
+<p>Of course, thank you for your contribution. Are you interested in following this up with a modified version of https://github.com/thejchap/ruff/pull/2/files? If not, that's also completely fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-09 02:20</div>
+            <div class="timeline-body"><p>@sharkdp yep, I'll revisit that</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

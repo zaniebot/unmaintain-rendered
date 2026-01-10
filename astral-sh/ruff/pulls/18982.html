@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add builtins to completions derived from scope - astral-sh/ruff #18982</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add builtins to completions derived from scope</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18982">#18982</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-06-27 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-27 12:30</div>
+            <div class="timeline-body"><p>Most of the work here was doing some light refactoring to facilitate
+sensible testing. That is, we don't want to list every builtin included
+in most tests, so we add some structure to the completion type returned.
+Tests can now filter based on whether a completion is a builtin or not.</p>
+<p>Otherwise, builtins are found using the existing infrastructure for
+<code>object.attr</code> completions (where we hard-code the module name
+<code>builtins</code>).</p>
+<p>I did consider changing the sort order based on whether a completion
+suggestion was a builtin or not. In particular, it seemed like it might
+be a good idea to sort builtins after other scope based completions,
+but before the dunder and sunder attributes. Namely, it seems likely
+that there is an inverse correlation between the size of a scope and
+the likelihood of an item in that scope being used at any given point.
+So it <em>might</em> be a good idea to prioritize the likelier candidates in
+the completions returned.</p>
+<p>Additionally, the number of items introduced by adding builtins is quite
+large. So I wondered whether mixing them in with everything else would
+become too noisy.</p>
+<p>However, it's not totally clear to me that this is the right thing to
+do. Right now, I feel like there is a very obvious lexicographic
+ordering that makes &quot;finding&quot; the right suggestion to activate
+potentially easier than if the ranking mechanism is less clear.
+(Technically, the dunder and sunder attributes are not sorted
+lexicographically, but I'd put forward that most folks don't have an
+intuitive understanding of where <code>_</code> ranks lexicographically with
+respect to &quot;regular&quot; letters. Moreover, since dunder and sunder
+attributes are all grouped together, I think the ordering here ends up
+being very obvious after even a quick glance.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @BurntSushi on 2025-06-27 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-27 12:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-06-27 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-27 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:2261 on 2025-06-27 12:40</div>
+            <div class="timeline-body"><p>worth renaming this to <code>completions_sans_builtins</code>, or similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:76 on 2025-06-27 12:46</div>
+            <div class="timeline-body"><p>nit: we usually use this API for checking whether a module is a specific module from a given search path with a given name</p>
+<pre><code class="language-suggestion">                builtin: module.is_known(KnownModule::Builtins),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-27 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-27 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:76 on 2025-06-27 13:08</div>
+            <div class="timeline-body"><p>Oh nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-27 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:2261 on 2025-06-27 13:09</div>
+            <div class="timeline-body"><p>I renamed it to <code>completions_without_builtins</code>. Kinda unfortunate since it's used so much, but I think it will make the tests easier to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-27 13:24</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/ag%2Fcompletion-builtins?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18982 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>ag/completion-builtins</code> (67134b1) with <code>main</code> (a3c79d8)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-06-27 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-27 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-27 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 11:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I did consider changing the sort order based on whether a completion suggestion was a builtin or not. In particular, it seemed like it might be a good idea to sort builtins after other scope based completions, but before the dunder and sunder attributes. Namely, it seems likely that there is an inverse correlation between the size of a scope and the likelihood of an item in that scope being used at any given point. So it <em>might</em> be a good idea to prioritize the likelier candidates in the completions returned.</p>
+<p>Additionally, the number of items introduced by adding builtins is quite large. So I wondered whether mixing them in with everything else would become too noisy.</p>
+<p>However, it's not totally clear to me that this is the right thing to do. Right now, I feel like there is a very obvious lexicographic ordering that makes &quot;finding&quot; the right suggestion to activate potentially easier than if the ranking mechanism is less clear. (Technically, the dunder and sunder attributes are not sorted lexicographically, but I'd put forward that most folks don't have an intuitive understanding of where <code>_</code> ranks lexicographically with respect to &quot;regular&quot; letters. Moreover, since dunder and sunder attributes are all grouped together, I think the ordering here ends up being very obvious after even a quick glance.)</p>
+</blockquote>
+<p>I think I'd be in favour of making this change so that they're sorted below other candidates... in the playground here, it was slightly annoying that <code>Protocol</code> was sorted below <code>PendingDeprecationWarning</code> in the list of autocompletions. It seems obvious that it's the most likely candidate for what I want, given that I just imported it! 😆</p>
+<p><img src="https://github.com/user-attachments/assets/bce2fcbf-c0b7-40a7-adbb-b3521c1747e6" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:138 on 2025-07-01 08:26</div>
+            <div class="timeline-body"><p>nit: Should we use <code>label</code> here similar to the one in <code>lsp_types::CompletionItem</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-01 08:27</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-01 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:138 on 2025-07-01 12:19</div>
+            <div class="timeline-body"><p>I actually changed this to <code>name</code> since I thought it was clearer by matching the type <code>Name</code> that we use internally. I guess I don't feel strongly about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-01 12:21</div>
+            <div class="timeline-body"><p>@AlexWaygood I think if we were going to go that route, we'd need to be more thoughtful about our ranking. I'm pretty concerned about having an unpredictable order and that making it difficult for folks to scan the list quickly to find what they're looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 12:25</div>
+            <div class="timeline-body"><p>I definitely get that concern. I think having the likeliest attribute be as close to the top of the list as possible is quite high-value, but I definitely agree that having a consistent and predictable behaviour is also high-value. I'm fine with parking this for now and coming back to it later!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-02 02:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:138 on 2025-07-02 02:00</div>
+            <div class="timeline-body"><p>Yeah, me neither. It's fine to keep it as is.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

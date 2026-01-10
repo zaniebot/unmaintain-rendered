@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Initial support for workspace diagnostics - astral-sh/ruff #18939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Initial support for workspace diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18939">#18939</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-06-25 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-25 16:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds initial support for workspace diagnostics in the ty server.</p>
+<p>Reference spec: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_diagnostic</p>
+<p>This is currently implemented via the <strong>pull diagnostics method</strong> which was added in the current version (3.17) and the server advertises it via the <code>diagnosticProvider.workspaceDiagnostics</code> server capability.</p>
+<p><strong>Note:</strong> This might be a bit confusing but a workspace diagnostics is not for a single workspace but for all the workspaces that the server handles. These are the ones that the server received during initialization. Currently, the ty server doesn't support multiple workspaces so this capability is also limited to provide diagnostics only for a single workspace (the first one if the client provided multiple).</p>
+<p>A new <code>ty.diagnosticMode</code> server setting is added which can be either <code>workspace</code> (for workspace diagnostics) or <code>openFilesOnly</code> (for checking only open files) (default). This is same as <code>python.analysis.diagnosticMode</code> that Pyright / Pylance utilizes. In the future, we could use the value under <code>python.*</code> namespace as fallback to improve the experience on user side to avoid setting the value multiple times.</p>
+<p>Part of: astral-sh/ty#81</p>
+<h2>Test Plan</h2>
+<p>This capability was introduced in the current LSP version (~3 years) and the way it's implemented by various clients are a bit different. I've provided notes on what I've noticed and what would need to be done on our side to further improve the experience.</p>
+<h3>VS Code</h3>
+<p>VS Code sends the <code>workspace/diagnostic</code> requests every ~2 second:</p>
+<pre><code>[Trace - 12:12:32 PM] Sending request 'workspace/diagnostic - (403)'.
+[Trace - 12:12:32 PM] Received response 'workspace/diagnostic - (403)' in 2ms.
+[Trace - 12:12:34 PM] Sending request 'workspace/diagnostic - (404)'.
+[Trace - 12:12:34 PM] Received response 'workspace/diagnostic - (404)' in 2ms.
+[Trace - 12:12:36 PM] Sending request 'workspace/diagnostic - (405)'.
+[Trace - 12:12:36 PM] Received response 'workspace/diagnostic - (405)' in 2ms.
+[Trace - 12:12:38 PM] Sending request 'workspace/diagnostic - (406)'.
+[Trace - 12:12:38 PM] Received response 'workspace/diagnostic - (406)' in 3ms.
+[Trace - 12:12:40 PM] Sending request 'workspace/diagnostic - (407)'.
+[Trace - 12:12:40 PM] Received response 'workspace/diagnostic - (407)' in 2ms.
+...
+</code></pre>
+<p>I couldn't really find any resource that explains this behavior. But, this does mean that we'd need to implement the caching layer via the previous result ids sooner. This will allow the server to avoid sending all the diagnostics on every request and instead just send a response stating that the diagnostics hasn't changed yet. This could possibly be achieved by using the salsa ID.</p>
+<p>If we switch from workspace diagnostics to open-files diagnostics, the server would send the diagnostics only via the <code>textDocument/diagnostic</code> endpoint. Here, when a document containing the diagnostic is closed, the server would send a publish diagnostics notification with an empty list of diagnostics to clear the diagnostics from that document. The issue is the VS Code doesn't seem to be clearing the diagnostics in this case even though it receives the notification. (I'm going to open an issue on VS Code side for this today.)</p>
+<p>https://github.com/user-attachments/assets/b0c0833d-386c-49f5-8a15-0ac9133e15ed</p>
+<h3>Zed</h3>
+<p>Zed's implementation works by refreshing the workspace diagnostics whenever the content of the documents are changed. This seems like a very reasonable behavior and I was a bit surprised that VS Code didn't use this heuristic.</p>
+<p>https://github.com/user-attachments/assets/71c7b546-7970-434a-9ba0-4fa620647f6c</p>
+<h3>Neovim</h3>
+<p>Neovim only recently added support for workspace diagnostics (https://github.com/neovim/neovim/pull/34262, merged ~3 weeks ago) so it's only available on nightly versions.</p>
+<p>The initial support is limited and requires fetching the workspace diagnostics manually as demonstrated in the video. It doesn't support refreshing the workspace diagnostics either, so that would need to be done manually as well. I'm assuming that these are just a temporary limitation and will be implemented before the stable release.</p>
+<p>https://github.com/user-attachments/assets/25b4a0e5-9833-4877-88ad-279904fffaf9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-06-25 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-06-25 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 16:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">operator (https://github.com/canonical/operator)
+- TOTAL MEMORY USAGE: ~97MB
++ TOTAL MEMORY USAGE: ~106MB
+-     memo fields = ~80MB
++     memo fields = ~88MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~80MB
++ TOTAL MEMORY USAGE: ~88MB
+
+discord.py (https://github.com/Rapptz/discord.py)
+-     memo fields = ~189MB
++     memo fields = ~207MB
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- TOTAL MEMORY USAGE: ~117MB
++ TOTAL MEMORY USAGE: ~129MB
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+-     memo fields = ~207MB
++     memo fields = ~228MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-25 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-25 16:36</div>
+            <div class="timeline-body"><p>I think I'd prefer not to introduce this new method and instead:</p>
+<p>a) Remove the behavior that open files has today and make <code>check</code> always check all files (the LSP can call <code>check_file</code> if it only wants diagnostics for open files). The downside of this is that we may need another way to surface setting diagnostics
+b) Add a <code>CheckMode</code> field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-25 16:40</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fworkspace-diagnostics?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18939 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/workspace-diagnostics</code> (5cc62b0) with <code>main</code> (a95c18a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-26 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-26 05:09</div>
+            <div class="timeline-body"><p>I actually thought of changing the current logic something like (b). I don't think we should do (a) as the playground checks only the files that are marked open. The LSP already uses <code>check_file</code> for pull diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-26 12:35</div>
+            <div class="timeline-body"><p>I also realised that it's a bit more complicated because of virtual files... we can never discover them by walking the file try. That means we'll need to check the open files when calling <code>check</code> or we'll miss those files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-27 04:04</div>
+            <div class="timeline-body"><p>Oh good point. I think that'll require https://github.com/astral-sh/ty/issues/619 because currently the server uses the <code>check_file</code> method directly but to include the virtual files in the workspace diagnostics, we need to know the set of virtual files that are available. After #619, we can get the <code>open_files</code> set and filter based on virtual path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-27 04:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-27 04:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-27 04:09</div>
+            <div class="timeline-body"><p>Or, we could just ask the server index to get all the open virtual files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-27 06:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Or, we could just ask the server index to get all the open virtual files.</p>
+</blockquote>
+<p>I think that would work for workspace diagnostics but not necessarily how we use <code>open_files</code> in <code>check_file_impl</code> to determine if the file is open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] [WIP] Support workspace diagnostics" to "[ty] Initial support for workspace diagnostics" by @dhruvmanila on 2025-06-27 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-27 11:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:98 on 2025-06-27 14:19</div>
+            <div class="timeline-body"><p>Something else we would have to be careful about when moving it to <code>System</code> is that we can't use it in any salsa query because the result can change from the outside.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-06-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-06-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-06-30 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-30 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @dhruvmanila on 2025-06-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @dhruvmanila on 2025-06-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @dhruvmanila on 2025-06-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @dhruvmanila on 2025-06-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-06-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:48 on 2025-07-02 16:40</div>
+            <div class="timeline-body"><p>How come this doesn't need to be done when in workspace diagnostic mode?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-07-02 16:42</div>
+            <div class="timeline-body"><p>Nice! This looks sensible to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-03 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:48 on 2025-07-03 05:39</div>
+            <div class="timeline-body"><p>Because in workspace mode all diagnostics should be visible regardless of whether a document is open or close in an editor. So, we shouldn't clear the diagnostics when a user closes a file in the editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-07-03 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-03 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-03 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-03 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:48 on 2025-07-03 11:40</div>
+            <div class="timeline-body"><p>Ahhhh makes sense of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 13:31</div>
+            <div class="timeline-body"><p>This is great. We may want to iterate on how we handle the different check modes in <code>ty_project</code> but what you have here is a good solution to start from.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

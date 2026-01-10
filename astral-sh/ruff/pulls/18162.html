@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] feat: Add JSON output format to diagnostics - astral-sh/ruff #18162</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] feat: Add JSON output format to diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18162">#18162</a>
+        opened by <a href="https://github.com/agustif">@agustif</a>
+        on 2025-05-18 14:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/agustif">@agustif</a> on 2025-05-18 14:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><img src="https://github.com/user-attachments/assets/eca724e7-ad0a-4470-b261-9c64d1e07a2a" alt="ty_json_focused_demo" /></p>
+<p>This pull request (HEAD commit <code>241d861e0cf39e6668ac5d0413f6b421d1ea67d8</code>) introduces a <code>--output-format json</code> option to the <code>ty</code> CLI, enabling machine-readable diagnostic output. The core functionality for JSON serialization of diagnostics already existed within <code>ruff_db</code> and <code>ruff_linter</code>. These changes primarily focus on exposing this capability through <code>ty</code>'s command-line interface and internal type systems.</p>
+<p>Specifically, this involved:</p>
+<ul>
+<li>Extending <code>ruff.crates.ty.src.args.OutputFormat</code> with a <code>Json</code> variant and appropriate <code>clap</code> attributes.</li>
+<li>Extending <code>ruff.crates.ruff_db.src.diagnostic.mod.rs.DiagnosticFormat</code> with a corresponding <code>Json</code> variant.</li>
+<li>Updating the <code>Display</code> implementation in <code>ruff.crates.ruff_db.src.diagnostic.render.rs</code> to serialize diagnostics to JSON when the <code>Json</code> format is selected. This includes adding <code>serde_json</code> as an optional dependency to <code>ruff_db</code> activated by its <code>serde</code> feature.</li>
+<li>Modifying <code>ruff.crates.ty.src.lib.rs</code> in the <code>run_check</code> function's message handling loop to:<ul>
+<li>Correctly map <code>ty</code>'s <code>OutputFormat::Json</code> to <code>ruff_db</code>'s <code>DiagnosticFormat::Json</code>.</li>
+<li>Ensure that when no diagnostics are found and JSON output is selected, an empty JSON array (<code>[]</code>) is printed to stdout.</li>
+<li>Iterate through diagnostics and print them as a JSON array when the <code>Json</code> format is active.</li>
+</ul>
+</li>
+<li>Updating documentation (<code>docs/reference/configuration.md</code>), CLI help strings (<code>long_help</code> in <code>clap</code>), and <code>ty.schema.json</code> to include the new <code>json</code> output format option.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>The changes were tested through the following steps:</p>
+<ul>
+<li>Successfully built the <code>ty</code> package within the <code>ruff</code> workspace (<code>cargo build --package ty</code>).</li>
+<li><strong>Manual CLI Testing:</strong><ul>
+<li>Ran <code>ty check --output-format json path/to/file_with_type_errors.py | jq .</code> and verified that the output was a valid JSON array containing the expected diagnostic objects (code, severity, message, path, location).</li>
+<li>Ran <code>ty check --output-format json path/to/file_without_errors.py | jq .</code> and verified that the output was an empty JSON array (<code>[]</code>).</li>
+<li>Ran <code>ty check --output-format xml path/to/file.py</code> and confirmed it produced a <code>clap</code> error (exit code 2), indicating <code>xml</code> is an invalid value and listing <code>json</code> as a possible value.</li>
+</ul>
+</li>
+<li><strong>Automated Unit Testing:</strong><ul>
+<li>Added a new Rust unit test (<code>check_json_output</code>) to <code>ruff/crates/ty/tests/cli.rs</code>. This test:<ul>
+<li>Creates a temporary Python file with a known type error.</li>
+<li>Invokes the <code>ty</code> binary with <code>--output-format json</code> on this file.</li>
+<li>Asserts that the command exits with the expected status code (e.g., 1, due to the type error).</li>
+<li>Parses the standard output as a <code>Vec&lt;serde_json::Value&gt;</code> to confirm it's a valid JSON array.</li>
+<li>Asserts that the array is not empty and that the first diagnostic object contains the expected fields and values (code, severity, message, etc.).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comprehensive testing ensures that the new JSON output format is correctly implemented, handles both error and no-error cases, and integrates properly with the existing CLI infrastructure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @agustif on 2025-05-18 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @agustif on 2025-05-18 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @agustif on 2025-05-18 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @agustif on 2025-05-18 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @agustif on 2025-05-18 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty]feat: Add JSON output format" to "[ty] feat: Add JSON output format to diagnostics" by @agustif on 2025-05-18 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-18 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-18 15:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-05-18 15:21</div>
+            <div class="timeline-body"><p>Thanks for working on this. There are many changes that are unrelated to adding the new output format. Please revert any unrelated changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:1 on 2025-05-18 15:56</div>
+            <div class="timeline-body"><p>Can you revert all changes in the <code>Cargo.lock</code> and then run <code>cargo build</code>. There are some unrelated dependency upgrades in the lockfile changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/Cargo.toml</code>:56 on 2025-05-18 15:57</div>
+            <div class="timeline-body"><p>Hmm. This makes me wonder if we should move the diagnostic rendering out of <code>ruff_db</code> to avoid adding tons of dependnecies to it. Interested to hear what @BurntSushi thinks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:157 on 2025-05-18 15:59</div>
+            <div class="timeline-body"><p>Can you explain why it's necessary to store the resolver here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:154 on 2025-05-18 16:00</div>
+            <div class="timeline-body"><p>I'd prefer if the <code>JsonDiagnostic</code> mimics the <code>Diagnostic</code> structure almost 1:1. E.g. not all diagnostics have a <code>path</code> or even a <code>message</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/lib.rs</code>:298 on 2025-05-18 16:01</div>
+            <div class="timeline-body"><p>Can you explain why Json needs special handling compared to the rest of the diagnostic rendering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-18 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/agustif">@agustif</a> reviewed on 2025-05-18 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/agustif">@agustif</a> on <code>Cargo.lock</code>:1 on 2025-05-18 16:09</div>
+            <div class="timeline-body"><p>on it heh, thanks for the feedback/help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-05-18 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @agustif on 2025-05-18 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @agustif on 2025-05-18 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-18 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/Cargo.toml</code>:56 on 2025-05-20 13:29</div>
+            <div class="timeline-body"><p>It looks like it's just <code>serde_json</code> here? I think that probably doesn't move the needle for me here. Granted, there are perhaps some other dependencies that would be removed as a result of kicking rendering out (like <code>annotate-snippets</code> and <code>anstyle</code> and maybe others).</p>
+<p>I am certainly not opposed to the idea of splitting rendering out of this crate. Or perhaps even diagnostics themselves. But I'm not sure I'd argue in favor of it currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:116 on 2025-05-20 13:36</div>
+            <div class="timeline-body"><p>Nit: I think this should be <code>let json = serde_json::to_string(&amp;json_diagnostic).map_err(|_| std::fmt::Error)?;</code> and then <code>write!(f, &quot;{json}&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:157 on 2025-05-20 13:38</div>
+            <div class="timeline-body"><p>Yeah it looks like it can be removed from this struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:154 on 2025-05-20 13:39</div>
+            <div class="timeline-body"><p>Yeah I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:151 on 2025-05-20 13:40</div>
+            <div class="timeline-body"><p>Can we use <code>DiagnosticId</code> and <code>Severity</code> here instead of <code>String</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/src/lib.rs</code>:314 on 2025-05-20 13:45</div>
+            <div class="timeline-body"><p>I'd rather see this done by using <a href="https://docs.rs/serde/1.0.218/serde/ser/trait.Serializer.html#tymethod.serialize_seq"><code>Serializer::serialize_seq</code></a> and <a href="https://docs.rs/serde/1.0.218/serde/ser/trait.SerializeSeq.html#tymethod.serialize_element"><code>SerializeSeq::serialize_element</code></a> instead of hand-writing the JSON.</p>
+<p>And yeah, if we could push this down into a routine for rendering a sequence of diagnostics defined closer to the existing diagnostic rendering, that would be better.</p>
+<p>Finally, I'm a little skeptical of using a JSON array here. Using either arrays of primitives or arrays at the top-level has bitten be hard in the past when it comes to compatibility, because it's impossible to augment them in compatible ways. I'd much rather see, e.g., <code>{&quot;diagnostics&quot;: [ ... ]}</code> instead. That way, if we ever need to add any top-level information, we can do so in a non-breaking way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/tests/cli.rs</code>:1501 on 2025-05-20 13:45</div>
+            <div class="timeline-body"><p>I don't think I quite understand the diff above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2025-05-20 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-05-20 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 14:12</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this as it seems to have gone stale. Anyone interested in picking this up. Feel free to open a new PR which addresses the feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-10 14:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

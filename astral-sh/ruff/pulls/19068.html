@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Eagerly evaluate more constraints based on the raw AST - astral-sh/ruff #19068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Eagerly evaluate more constraints based on the raw AST</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19068">#19068</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-01 09:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 09:20</div>
+            <div class="timeline-body"><p>In particular, <code>while 1:</code> is a <a href="https://grep.app/search?f.lang=Python&amp;case=true&amp;q=while+1%3A">surprisingly common idiom</a> (due to the fact that the <code>bool</code> type was a surprisingly late addition to Python); and also, the truthiness of float literals and complex literals is actually easier to determine from the raw AST than the evaluated type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-01 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-01 09:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~97MB
+
+alerta (https://github.com/alerta/alerta)
+- TOTAL MEMORY USAGE: ~106MB
++ TOTAL MEMORY USAGE: ~117MB
+
+discord.py (https://github.com/Rapptz/discord.py)
+-     memo fields = ~207MB
++     memo fields = ~189MB
+
+mkosi (https://github.com/systemd/mkosi)
+- TOTAL MEMORY USAGE: ~129MB
++ TOTAL MEMORY USAGE: ~117MB
+-     memo fields = ~106MB
++     memo fields = ~97MB
+
+tornado (https://github.com/tornadoweb/tornado)
+-     memo fields = ~142MB
++     memo fields = ~129MB
+
+vision (https://github.com/pytorch/vision)
+-     memo fields = ~276MB
++     memo fields = ~304MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~156MB
++     memo fields = ~171MB
+
+static-frame (https://github.com/static-frame/static-frame)
+-     memo fields = ~334MB
++     memo fields = ~304MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Eagerly evaluate more constraints" to "[ty] Eagerly evaluate more constraints based on the raw AST" by @AlexWaygood on 2025-07-01 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 09:34</div>
+            <div class="timeline-body"><p>A bit of a wash on the benchmarks? A bunch of the instrumented ones are showing small slowdowns, but some of the walltime ones are showing small speedups. No changes bigger than 1%.</p>
+<p>Semantically, though, I do think it's confusing if <code>while True:</code> is understood differently to <code>while 1:</code>, even if that's only a temporary state we're in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-01 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-01 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-01 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-01 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:571 on 2025-07-01 10:09</div>
+            <div class="timeline-body"><p>Should we limit the complexity and the potential inconsistency between this and type inference here? For example, whether or not empty tuples should be considered always-falsy was a recent matter of debate. And it seems extremely unlikely that someone would use something like <code>if f&quot;&quot;</code> of <code>if 0j</code>.</p>
+<p>I would personally say the <code>ast::Number::Int(_)</code> change and <code>ast::Expr::NoneLiteral</code> seem like reasonable additions. Everything else, I would remove again. It only adds code complexity, and we do perform additional work for no gain (if those patterns are never used).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-01 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-01 10:09</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-01 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:571 on 2025-07-01 10:11</div>
+            <div class="timeline-body"><p>make sense, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-01 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-01 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-01 10:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

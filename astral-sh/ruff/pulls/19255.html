@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Make `check_file` a salsa query - astral-sh/ruff #19255</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Make <code>check_file</code> a salsa query</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19255">#19255</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-10 10:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 10:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We noticed that all files get reparsed when workspace diagnostics are enabled.</p>
+<p>I realised that this is because <code>check_file_impl</code> access the parsed module but itself isn't a salsa query.
+This pr makes <code>check_file_impl</code> a salsa query, so that we only access the <code>parsed_module</code> when the file actually changed. I decided to remove the salsa query from <code>check_types</code> because most functions it calls are salsa queries itself and having both <code>check_types</code> and <code>check_file</code> as salsa querise has the downside that we double cache the diagnostics.</p>
+<h2>Test Plan</h2>
+<p><strong>Before</strong></p>
+<pre><code>2025-07-10 12:54:16.620766000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0c))}: File `/Users/micha/astral/test/yaml/yaml-stubs/__init__.pyi` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.621942000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c13))}: File `/Users/micha/astral/test/ignore2 2/nested-repository/main.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.622107000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c09))}: File `/Users/micha/astral/test/notebook.ipynb` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.622357000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c04))}: File `/Users/micha/astral/test/no-trailing.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.622634000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c02))}: File `/Users/micha/astral/test/simple.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.623056000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c07))}: File `/Users/micha/astral/test/open/more.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.623254000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c11))}: File `/Users/micha/astral/test/ignore-bug/backend/src/subdir/log/some_logging_lib.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.623450000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0f))}: File `/Users/micha/astral/test/yaml/tomllib/__init__.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.624599000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c05))}: File `/Users/micha/astral/test/create.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.624784000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c00))}: File `/Users/micha/astral/test/lib.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.624911000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0a))}: File `/Users/micha/astral/test/sub/test.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625032000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c12))}: File `/Users/micha/astral/test/ignore2/nested-repository/main.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625101000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c08))}: File `/Users/micha/astral/test/open/test.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625227000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c03))}: File `/Users/micha/astral/test/pseudocode_with_bom.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625353000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0b))}: File `/Users/micha/astral/test/yaml/yaml-stubs/loader.pyi` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625543000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c01))}: File `/Users/micha/astral/test/test_trailing.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625616000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0d))}: File `/Users/micha/astral/test/yaml/tomllib/_re.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625667000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c06))}: File `/Users/micha/astral/test/yaml/main.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.625779000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c10))}: File `/Users/micha/astral/test/yaml/tomllib/_types.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.627526000  WARN request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check:check_file{file=file(Id(c0e))}: File `/Users/micha/astral/test/yaml/tomllib/_parser.py` was reparsed after being collected in the current Salsa revision
+2025-07-10 12:54:16.627959000 DEBUG request{id=19 method=&quot;workspace/diagnostic&quot;}:Project::check: Checking all files took 0.007s
+</code></pre>
+<p>Now, no more logs regarding reparsing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-10 10:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-10 13:15</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-07-10 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-10 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-10 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

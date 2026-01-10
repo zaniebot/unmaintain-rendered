@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add virtual files to the only project database - astral-sh/ruff #19322</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add virtual files to the only project database</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19322">#19322</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-07-14 08:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 08:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, the virtual files were being added to the default database that's present on the session. This is wrong because the default database is for any files that don't belong to any project i.e., they're outside of any projects managed by the server. Virtual files are neither part of the project nor it is outside the projects. This was not the intention as in the initial version, virtual files were being added to the only project database managed by the server.</p>
+<p>This PR fixes this by reverting back to the original behavior where virtual files will be added to the only project database present. When support for multiple workspace and project is added, this will require updating (https://github.com/astral-sh/ty/issues/794).</p>
+<p>This is required for #19264 because workspace diagnostics doesn't check the default project database yet. Ideally, the default db should be checked as well.</p>
+<p>The implementation of this PR means that virtual files are now being included for workspace diagnostics but it doesn't work completely e.g., if I save an untitled file the diagnostics disappears but it doesn't appear back for the (now) saved file on disk as shown in the following video demonstration:</p>
+<p>https://github.com/user-attachments/assets/123e8d20-1e95-4c7d-b7eb-eb65be8c476e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-14 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @dhruvmanila on 2025-07-14 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @dhruvmanila on 2025-07-14 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @dhruvmanila on 2025-07-14 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @dhruvmanila on 2025-07-14 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-14 08:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @dhruvmanila on 2025-07-14 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 08:52</div>
+            <div class="timeline-body"><p>Actually, this is not an &quot;internal&quot; change as the server now starts checking virtual files in workspace diagnostic mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 09:06</div>
+            <div class="timeline-body"><blockquote>
+<p>The implementation of this PR means that virtual files are now being included for workspace diagnostics but it doesn't work completely e.g., if I save an untitled file the diagnostics disappears but it doesn't appear back for the (now) saved file on disk as shown in the following video demonstration:</p>
+</blockquote>
+<p>I think the reason the other case isn't working is that the file doesn't exists on disk and so the <code>File</code>'s initial status is <code>NotFound</code>. This is based on the warning that I get in #19264:</p>
+<pre><code>2025-07-14 14:17:26.316681000  WARN notification{method=&quot;textDocument/didOpen&quot;}: Failed to create a salsa file for /Users/dhruv/playground/ty-server/src/ty_server/other.py
+</code></pre>
+<p>Now, the linked PR does fix the issue here which I'm not exactly sure how.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>This is required for https://github.com/astral-sh/ruff/pull/19264 because workspace diagnostics doesn't check the default project database yet. Ideally, the default db should be checked as well.</p>
+</blockquote>
+<p>I don't think this will be necessary. We only use the default database so that we can provide basic LSP features for those files. I don't think we have to provide diagnostics.</p>
+<blockquote>
+<p>I think the reason the other case isn't working is that the file doesn't exists on disk and so the File's initial status is NotFound. This is based on the warning that I get in https://github.com/astral-sh/ruff/pull/19264:</p>
+</blockquote>
+<p>I'm not sure where this message is logged which makes it difficult to help. It probably makes sense to add a log statement to <code>system_path_to_file</code> to see why it returns <code>None</code> and if it's because the status is <code>NotFound</code>, why <code>apply_changes</code> doesn't update the file status.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-14 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 14:36</div>
+            <div class="timeline-body"><p>Somehow, this change is also initializing the default database when I open a virtual file and select the Python language for that virtual file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-07-14 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-14 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-14 14:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:39 UTC
+    </footer>
+</body>
+</html>

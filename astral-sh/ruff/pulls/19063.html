@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Support non-context-manager calls in `B017` - astral-sh/ruff #19063</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Support non-context-manager calls in <code>B017</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19063">#19063</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-07-01 02:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-01 02:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19050</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-01 02:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/c5a75f2498c86850c4ce13bcf10d56efc92394a4/testing/code/test_code.py#L91'>testing/code/test_code.py:91:15:</a> B017 Do not assert blind exception: `Exception`
++ <a href='https://github.com/pytest-dev/pytest/blob/c5a75f2498c86850c4ce13bcf10d56efc92394a4/testing/example_scripts/fixtures/fill_fixtures/test_conftest_funcargs_only_available_in_subdir/sub2/conftest.py#L9'>testing/example_scripts/fixtures/fill_fixtures/test_conftest_funcargs_only_available_in_subdir/sub2/conftest.py:9:5:</a> B017 Do not assert blind exception: `Exception`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| B017 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:111 on 2025-07-01 14:48</div>
+            <div class="timeline-body"><p>Would it help to destructure the whole <code>ExprCall</code> here? I think we could use <code>func</code>, <code>arguments</code>, and even <code>range</code> down below.</p>
+<pre><code class="language-suggestion">    let ast::ExprCall { func, arguments, range, .. } = call;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:144 on 2025-07-01 14:52</div>
+            <div class="timeline-body"><p>Do you think we could reuse the code from <code>assert_raises_exception</code> for this? This looks correct and pretty similar, but I think we want to keep the two in sync. I could be missing a bigger difference, but intuitively it seems like once we've destructured the <code>Call</code> in <code>assert_raises_exception</code>, the logic should be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 14:56</div>
+            <div class="timeline-body"><p>Thanks! This looks good overall, just a couple of minor suggestions. Can you also gate this behind preview since it's an expansion of a stable rule? Here's an example:</p>
+<p>https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/preview.rs#L44</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-01 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-07-01 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-01 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:111 on 2025-07-01 15:44</div>
+            <div class="timeline-body"><p>Good idea — done. <code>assert_raises_exception_call</code> now takes it so we can use it directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-01 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:144 on 2025-07-01 15:44</div>
+            <div class="timeline-body"><p>Absolutely. I pulled the shared checks into a helper, <code>detect_blind_exception</code>, which both the context-manager path and the new call-form path now invoke. This keeps the two in sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-01 15:46</div>
+            <div class="timeline-body"><p>Preview flag added. The call-form check only runs when <code>is_assert_raises_exception_call_enabled(settings)</code> is <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-01 16:01</div>
+            <div class="timeline-body"><p>Great, thanks! Could you also add a preview test? You can just make a copy of the <code>rules</code> function and the <code>B017</code> <code>test_case</code> and set <code>LinterSettings::preview</code> to <code>PreviewMode::Enabled</code>.</p>
+<p>https://github.com/astral-sh/ruff/blob/48366a7bbb5e555b288b4a00e5bc862670e8dbc1/crates/ruff_linter/src/rules/flake8_bugbear/mod.rs#L73-L81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-01 16:34</div>
+            <div class="timeline-body"><p>Added!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:77 on 2025-07-01 21:12</div>
+            <div class="timeline-body"><p>I think this is supposed to be <code>is_none</code> like before right?</p>
+<pre><code class="language-suggestion">    if is_pytest_raises &amp;&amp; arguments.find_keyword(&quot;match&quot;).is_none() {
+</code></pre>
+<p>It's a little hard to tell because the diff shifted around, but I'm pretty sure one of the snapshots is showing a different result.</p>
+<p>I think this <code>is_some</code> is actually correct and the existing <code>is_none</code> is a bug unless I'm misunderstanding something, but I'd rather handle that separately, I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B017.py</code>:46 on 2025-07-01 21:15</div>
+            <div class="timeline-body"><p>I know it would mess up the nice sections here, but it would be easier for reviewing the test diff if these were at the bottom with the other new tests. If you put enough blank lines, the non-preview snapshot should be unchanged, and only the new preview snapshot will be different. Alternatively, you could rename this file to B017_0.py and add B017_1.py with the new tests.</p>
+<p>I was fine with this layout before, but I'd like to be sure we're not changing any logic with the <code>is_none</code> vs <code>is_some</code> thing, and this will make that easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:140 on 2025-07-01 21:18</div>
+            <div class="timeline-body"><p>I don't think this <code>find_argument</code> call will ever succeed. If we have fewer than 2 arguments, there won't be an argument in position 1, only a maximum of 1 argument in position 0. Should this be an <code>||</code>? If so, we might need a test exercising this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:134 on 2025-07-01 21:20</div>
+            <div class="timeline-body"><p>I think this is supposed to be the <code>call</code> range to match the <code>with</code> version.</p>
+<pre><code class="language-suggestion">        checker.report_diagnostic(AssertRaisesException { exception }, range);
+</code></pre>
+<p>with <code>range</code> from the <code>ExprCall</code> above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 21:21</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>I noticed a few more things here, but it's looking good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-01 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:140 on 2025-07-01 22:07</div>
+            <div class="timeline-body"><p>My understanding is that <code>Arguments::find_argument</code> doesn’t just look at positional arguments – it first looks for a keyword with the given name and only falls back to the positional slot if that keyword isn’t present:</p>
+<pre><code class="language-rust">pub fn find_argument(&amp;self, name: &amp;str, position: usize) -&gt; Option&lt;ArgOrKeyword&gt; {
+    self.find_keyword(name)              // ← check `func=…`
+        .map(ArgOrKeyword::from)
+        .or_else(|| self.find_positional(position).map(ArgOrKeyword::from))
+}
+</code></pre>
+<p>So in a call such as</p>
+<pre><code class="language-python">pytest.raises(Exception, func=my_func)
+</code></pre>
+<ul>
+<li><code>arguments.args.len()</code> is <code>1</code> (the <code>Exception</code>), so <code>len() &lt; 2</code> is <code>true</code>.</li>
+<li><code>find_argument(&quot;func&quot;, 1)</code> does return <code>Some(...)</code> because it finds the keyword <code>func=…</code>.</li>
+</ul>
+<p>If we changed the guard to <code>||</code>, we would exit early whenever either condition is true, and we’d wrongly skip the check in the keyword-argument case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-01 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:77 on 2025-07-01 22:12</div>
+            <div class="timeline-body"><p>Unless I'm missing something, I believe <code>is_some()</code> is the right test here. <code>pytest.raises(..., match=&quot;pattern&quot;)</code> is a form that already narrows the check to a specific exception message (equivalent to the <code>assertRaisesRegex</code> case for <code>unittest</code>), so when that <code>match=</code> keyword is present we want to <em>skip</em> B017, because it’s no longer a “blind” exception assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:140 on 2025-07-01 22:13</div>
+            <div class="timeline-body"><p>Ahh, I think you're right. <code>arguments.args.len()</code> is only the positional arguments. I was thinking of <code>arguments.len()</code>, which includes both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/assert_raises_exception.rs</code>:77 on 2025-07-01 22:31</div>
+            <div class="timeline-body"><p>Hmm, maybe I got confused by the logic here. The snapshot on <code>main</code> looks correct. Let's regroup the test cases and make sure none of the stable results change, but I think you may be right.</p>
+<p><code>is_some</code> definitely makes sense intuitively, I guess the condition was negated in the original code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-01 23:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B017.py</code>:46 on 2025-07-01 23:33</div>
+            <div class="timeline-body"><p>I split up the test cases, let me know if that's what you were looking for. Feel free to commit directly if there is another format that makes more sense 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-02 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/snapshots/ruff_linter__rules__flake8_bugbear__tests__B017_B017_0.py.snap</code>:47 on 2025-07-02 13:10</div>
+            <div class="timeline-body"><p>I pushed a couple of commits to minimize the diff a bit more. I think something <em>is</em> slightly off with the new logic because it looks like this is getting flagged now when it should be allowed, but I haven't pinned down where it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-07-02 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/snapshots/ruff_linter__rules__flake8_bugbear__tests__B017_B017_0.py.snap</code>:47 on 2025-07-02 16:23</div>
+            <div class="timeline-body"><p>I found the issue—we weren't considering the second positional string/bytes literal argument. I added in that additional check so now it's not registering as a false positive anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-08 19:02</div>
+            <div class="timeline-body"><p>This looks good, thank you!</p>
+<p>Unrelated to your changes, from looking at the code while reviewing the PR, I've noticed some other issues with the rule. For example, the rule has false negatives when the exceptions are provided as keyword arguments:</p>
+<pre><code class="language-python">import pytest
+import unittest
+
+with pytest.raises(Exception):
+    pass
+
+with pytest.raises(expected_exception=Exception):  # false negative
+    pass
+
+class TestClass(unittest.TestCase):
+    def test_okay(self):
+        with self.assertRaises(Exception):
+            pass
+
+    def test_false_negative(self):
+        with self.assertRaises(exception=Exception):  # false negative
+            pass
+</code></pre>
+<p>We can go ahead and land this, though, and I'll open a follow-up issue for these.</p>
+<p><a href="https://play.ruff.rs/e1ad5948-95f6-43bd-b687-b3dd95e6429f">playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-bugbear`] support non-`with` calls in `B017`" to "[`flake8-bugbear`] Support non-context-manager calls in `B017`" by @ntBre on 2025-07-08 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-08 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-08 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-08 19:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

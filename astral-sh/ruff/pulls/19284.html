@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix server version - astral-sh/ruff #19284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix server version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19284">#19284</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-11 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-11 13:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/ty/issues/814</p>
+<p>cargo-dist only sets the version of the ty crate. That means, the <code>CARGO_PKG_VERSION</code> is always 0.0.0 for the ty_server.</p>
+<p>This PR works around this by adding the <code>program_version</code> to <code>ruff_db</code> which gets initialized by the ty crate (where the version is correct)
+and the server can read from. This has the nice side effect that the same version can be used in the type checking panic handler (in <code>ty_project</code>).</p>
+<p>An alternative would have been to pass the version to <code>ty_server</code> but we then couldn't use it in the catch handler in <code>ty_project</code>.</p>
+<p>I made some changes to ty's build script to take the commit from the ruff repository when not built inside the ty repository.
+This gives us at least some meaningful version identifier for debug builds.</p>
+<h2>Test Plan</h2>
+<p>Version in <code>initialize</code> response:</p>
+<pre><code>    &quot;serverInfo&quot;: {
+        &quot;name&quot;: &quot;ty&quot;,
+        &quot;version&quot;: &quot;ruff/0.12.2+87 (426fa4bb1 2025-07-11)&quot;
+    }
+</code></pre>
+<p>Version logged during startup</p>
+<pre><code>2025-07-11 15:19:23.122004000 DEBUG Version: ruff/0.12.2+87 (426fa4bb1 2025-07-11)
+2025-07-11 15:19:23.127378000  INFO Defaulting to python-platform `darwin`
+2025-07-11 15:19:23.127599000 DEBUG Discovering virtual environment in `/Users/micha/astral/test`
+</code></pre>
+<p>Version in panic handler</p>
+<pre><code>error[panic]: Panicked at crates/ty_python_semantic/src/types.rs:97:5 when checking `/Users/micha/astral/test/create.py`: `Test`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;../test/create.py&quot;]
+info: Version: ruff/0.12.2+88 (0f58920fc 2025-07-11)
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:474
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 13:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 13:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-11 14:00</div>
+            <div class="timeline-body"><p>Hmm... isn't showing the ruff version in the ty server even more confusing than showing 0.0.0? Sure, the commit hash is useful for us, but most users won't know that the ty codebase lives inside the ruff repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-11 14:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm... isn't showing the ruff version in the ty server even more confusing than showing 0.0.0? Sure, the commit hash is useful for us, but most users won't know that the ty codebase lives inside the ruff repo?</p>
+</blockquote>
+<p>We only use the ruff commit version when you build ty from within the Ruff repository. Only developers should really be doing this. The builds that we release are all built from within the ty repository and, therefore, they use the version from the <code>dist-workspace.toml</code> and the commit from the ty repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-11 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 04:05</div>
+            <div class="timeline-body"><blockquote>
+<p>cargo-dist only sets the version of the ty crate. That means, the <code>CARGO_PKG_VERSION</code> is always 0.0.0 for the ty_server.</p>
+</blockquote>
+<p>Should we use the <code>CARGO_PKG_VERSION</code> from the <code>ty</code> crate? This is what the <code>ruff_server</code> crate does as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/lib.rs</code>:134 on 2025-07-14 04:09</div>
+            <div class="timeline-body"><p>Why is this required? Isn't this the entrypoint for the Ruff CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-14 04:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-14 07:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/lib.rs</code>:134 on 2025-07-14 07:05</div>
+            <div class="timeline-body"><p>This is more a precaution that we don't introduce a panic in ruff when we add a new path accessing <code>version</code> (Both the diagnostics and <code>ruff analzye</code> use the <code>ruff_db</code> crate).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 07:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we use the CARGO_PKG_VERSION from the ty crate? This is what the ruff_server crate does as well.</p>
+</blockquote>
+<p>I think it's important that the server version matches the output of <code>ty version</code>. That's why I went with using that version string instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-07-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-14 07:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

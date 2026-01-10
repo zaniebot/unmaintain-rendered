@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] detect cycles in Type::is_disjoint_from - astral-sh/ruff #19139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] detect cycles in Type::is_disjoint_from</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19139">#19139</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-07-04 06:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-07-04 06:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Detect and prevent cycles in <code>Type::is_disjoint_from</code>, which can now occur with recursive protocols.</p>
+<h2>Test Plan</h2>
+<p>Added mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-07-04 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-07-04 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-07-04 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-07-04 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-04 06:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~80MB
+
+pydantic (https://github.com/pydantic/pydantic)
+- TOTAL MEMORY USAGE: ~142MB
++ TOTAL MEMORY USAGE: ~156MB
+
+mkosi (https://github.com/systemd/mkosi)
+-     memo fields = ~106MB
++     memo fields = ~97MB
+
+tornado (https://github.com/tornadoweb/tornado)
+- TOTAL MEMORY USAGE: ~171MB
++ TOTAL MEMORY USAGE: ~156MB
+
+psycopg (https://github.com/psycopg/psycopg)
+- TOTAL MEMORY USAGE: ~228MB
++ TOTAL MEMORY USAGE: ~207MB
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- TOTAL MEMORY USAGE: ~276MB
++ TOTAL MEMORY USAGE: ~304MB
+
+paasta (https://github.com/yelp/paasta)
+- TOTAL MEMORY USAGE: ~189MB
++ TOTAL MEMORY USAGE: ~207MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~304MB
++ TOTAL MEMORY USAGE: ~276MB
+
+scipy (https://github.com/scipy/scipy)
+- TOTAL MEMORY USAGE: ~1271MB
++ TOTAL MEMORY USAGE: ~1156MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-04 06:40</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/cyclic.rs</code>:16 on 2025-07-04 10:42</div>
+            <div class="timeline-body"><p>Implementing <code>Default</code> for a type alias like this means that you can do this -- but falling back to <code>Any</code> might not be what you want for an arbitrary <code>CycleDetector</code> instance; it only really makes sense for type transformers:</p>
+<pre><code class="language-rs">fn foo() {
+    let x = CycleDetector::&lt;Type, Type&gt;::default();
+}
+</code></pre>
+<p>Would it be better to implement <code>TypeTransformer</code> as a newtype rather than a type alias and implement <code>Deref</code>/<code>DerefMut</code>/<code>Default</code> for the newtype?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/cyclic.rs</code>:21 on 2025-07-04 10:44</div>
+            <div class="timeline-body"><p>you can provide the bounds on the <code>impl</code> block without specifying them for the struct itself -- it's less noisy in terms of the syntax and also makes the struct definition more flexible (it would allow us to add <code>impl</code> blocks for instances of <code>CycleDetector</code> where <code>T: !Hash</code>, for example, if there was ever a need for those instances).</p>
+<pre><code class="language-suggestion">pub(crate) struct CycleDetector&lt;T, R&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-04 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-04 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/cyclic.rs</code>:16 on 2025-07-04 13:21</div>
+            <div class="timeline-body"><p>A CycleDetector that visits single types and returns a single type <em>is</em> inherently a type transformer, simply by filling in the type parameters that way. So I think a type alias is better here (and a lot simpler).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/cyclic.rs</code>:16 on 2025-07-04 13:23</div>
+            <div class="timeline-body"><p>OK!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-04 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-04 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/cyclic.rs</code>:21 on 2025-07-04 13:23</div>
+            <div class="timeline-body"><p>Since a cycle detector contains a hashset of T, I don't think there's a realistic flexibility argument here (if we had a cycle detector with <code>T: !Hash</code> it could never populate <code>seen</code> at all.)</p>
+<p>But I don't mind removing these for brevity anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-07-04 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-04 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-04 13:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

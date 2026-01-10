@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter private symbols from stubs if they are internal types - astral-sh/ruff #19121</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter private symbols from stubs if they are internal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19121">#19121</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-03 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 13:57</div>
+            <div class="timeline-body"><p>This implements filtering of private symbols from stub files based on type information as discussed in https://github.com/astral-sh/ruff/pull/19102. It extends the previous implementation to apply to all stub files, instead of just the <code>builtins</code> module, and uses type information to retain private names that are may be relevant at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @zanieb on 2025-07-03 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @zanieb on 2025-07-03 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 14:00</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~45MB
++     memo fields = ~41MB
+
+Expression (https://github.com/cognitedata/Expression)
+-     memo fields = ~54MB
++     memo fields = ~49MB
+
+werkzeug (https://github.com/pallets/werkzeug)
+-     memo fields = ~142MB
++     memo fields = ~129MB
+
+trio (https://github.com/python-trio/trio)
+-     memo fields = ~156MB
++     memo fields = ~142MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~80MB
++ TOTAL MEMORY USAGE: ~88MB
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+vision (https://github.com/pytorch/vision)
+- TOTAL MEMORY USAGE: ~368MB
++ TOTAL MEMORY USAGE: ~334MB
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+-     memo fields = ~106MB
++     memo fields = ~97MB
+
+tornado (https://github.com/tornadoweb/tornado)
+- TOTAL MEMORY USAGE: ~156MB
++ TOTAL MEMORY USAGE: ~171MB
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+-     memo fields = ~228MB
++     memo fields = ~207MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~156MB
++     memo fields = ~171MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 14:03</div>
+            <div class="timeline-body"><p>I'd appreciate suggestions for more test cases, if people know of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:445 on 2025-07-03 14:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Internal sunder items should be filtered out
+        test.assert_completions_do_not_include(&quot;_T&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:1 on 2025-07-03 14:26</div>
+            <div class="timeline-body"><p>I think it would be great to include a multifile test that doesn't depend on typeshed. You can see an example here of how to write a multifile completions test:</p>
+<p>https://github.com/astral-sh/ruff/blob/4f36f0677f09b0ed1ba20f583b6f017c4f7d26c8/crates/ty_ide/src/completion.rs#L2180-L2195</p>
+<p>Tests that depend on exactly what symbols typeshed defines in specific files are quite likely to either break unexpectedly or silently stop testing what they were meant to be testing.</p>
+<p>It would be great to have that test check that none of the following are included in autocomplete suggestions:</p>
+<ul>
+<li>A private TypeVar definition</li>
+<li>A private TypeVarTuple definition</li>
+<li>A private ParamSpec definition</li>
+<li>A private protocol definition</li>
+<li>A private type alias that is explicitly annotated with <code>typing.TypeAlias</code> (like this one: <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stdlib/builtins.pyi#L240">https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stdlib/builtins.pyi#L240</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-03 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:1 on 2025-07-03 14:50</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/19121/commits/74af9ee50b3a4702e72f2319c4cf63352c2f4351</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:523 on 2025-07-03 14:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">__mangled_name = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:537 on 2025-07-03 14:52</div>
+            <div class="timeline-body"><p>@AlexWaygood why &quot;A private type alias that is explicitly annotated with typing.TypeAlias&quot;? It looks like the behavior doesn't change either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:550 on 2025-07-03 14:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        test.assert_completions_include(&quot;__mangled_name&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-03 14:52</div>
+            <div class="timeline-body"><p>nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:568 on 2025-07-03 14:53</div>
+            <div class="timeline-body"><p>It could be nice to avoid the repetition here, but I don't love optimizing tests for that early. Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:568 on 2025-07-03 14:53</div>
+            <div class="timeline-body"><p>We could also just test a few of the &quot;do not include&quot; cases here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:537 on 2025-07-03 14:54</div>
+            <div class="timeline-body"><p>i.e., the naive alternative passes</p>
+<pre><code class="language-diff">diff --git a/crates/ty_ide/src/completion.rs b/crates/ty_ide/src/completion.rs
+index 9a6190cb5..0ee759051 100644
+--- a/crates/ty_ide/src/completion.rs
++++ b/crates/ty_ide/src/completion.rs
+@@ -536,6 +536,9 @@ _private_type_var_tuple = TypeVarTuple(&quot;_private_type_var_tuple&quot;)
+ public_explicit_type_alias: TypeAlias = Literal[1]
+ _private_explicit_type_alias: TypeAlias = Literal[1]
+ 
++public_implicit_type_alias = Literal[1]
++_private_implicit_type_alias = Literal[1]
++
+ class PublicProtocol(Protocol):
+     def method(self) -&gt; None: ...
+ 
+@@ -558,6 +561,8 @@ class _PrivateProtocol(Protocol):
+         test.assert_completions_do_not_include(&quot;_private_type_var_tuple&quot;);
+         test.assert_completions_include(&quot;public_explicit_type_alias&quot;);
+         test.assert_completions_include(&quot;_private_explicit_type_alias&quot;);
++        test.assert_completions_include(&quot;public_implicit_type_alias&quot;);
++        test.assert_completions_include(&quot;_private_implicit_type_alias&quot;);
+         test.assert_completions_include(&quot;PublicProtocol&quot;);
+         test.assert_completions_do_not_include(&quot;_PrivateProtocol&quot;);
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-03 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:568 on 2025-07-03 15:06</div>
+            <div class="timeline-body"><p>For just two tests, I think this is fine to be honest. (And it seems like two cases is what we want.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-07-03 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @zanieb on 2025-07-03 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @zanieb on 2025-07-03 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @zanieb on 2025-07-03 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2025-07-03 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-07-03 15:13</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-03 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:537 on 2025-07-03 15:14</div>
+            <div class="timeline-body"><p>oh whoops -- for some reason I thought that my patch excluded explicitly declared type aliases with private names. But you're quite right -- it doesn't do that. We'd probably need to add a new variant to the <code>DynamicType</code> enum to distinguish type-alias <code>Todo</code> types from other <code>Todo</code> types in order to get that working. (Shouldn't be too hard to do as a followup, I can pick it up.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-03 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:537 on 2025-07-03 15:19</div>
+            <div class="timeline-body"><p>I'll leave it to you then :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-03 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-03 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-03 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-11 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:537 on 2025-07-11 14:42</div>
+            <div class="timeline-body"><p>(I picked this up in https://github.com/astral-sh/ruff/pull/19282)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

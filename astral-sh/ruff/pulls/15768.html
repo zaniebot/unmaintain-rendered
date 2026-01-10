@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Bare `ClassVar` annotations - astral-sh/ruff #15768</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Bare <code>ClassVar</code> annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15768">#15768</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-27 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-27 10:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It was recently clarified in the <a href="https://typing.python.org/en/latest/spec/class-compat.html#classvar">typing spec</a> that bare <code>ClassVar</code> annotations are allowed. For annotated assignments with a right hand side value, the spec requires type checkers to infer the type as something &quot;to which [the] value is assignable&quot;. For a value of <code>2</code>, the spec suggests <code>int</code>, <code>Literal[2]</code>, or <code>Any</code> as examples. Here, we choose <code>Unknown | Literal[2]</code> instead, conforming with out usual treatment of attribute types.</p>
+<p>closes https://github.com/astral-sh/ty/issues/211</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-27 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Treat bare `ClassVar` annotation as `ClassVar[Unknown]`" to "[red-knot] Bare `ClassVar` annotations" by @sharkdp on 2025-07-07 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-07 11:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
+-     memo fields = ~17MB
++     memo fields = ~15MB
+
+parso (https://github.com/davidhalter/parso)
+-     memo fields = ~54MB
++     memo fields = ~49MB
+
+black (https://github.com/psf/black)
+- TOTAL MEMORY USAGE: ~142MB
++ TOTAL MEMORY USAGE: ~129MB
+
+porcupine (https://github.com/Akuli/porcupine)
+-     memo fields = ~106MB
++     memo fields = ~97MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~97MB
++ TOTAL MEMORY USAGE: ~88MB
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+-     memo fields = ~129MB
++     memo fields = ~142MB
+
+flake8 (https://github.com/pycqa/flake8)
+-     memo fields = ~60MB
++     memo fields = ~66MB
+
+jinja (https://github.com/pallets/jinja)
+-     memo fields = ~80MB
++     memo fields = ~88MB
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+-     memo fields = ~80MB
++     memo fields = ~72MB
+
+rich (https://github.com/Textualize/rich)
+-     memo fields = ~106MB
++     memo fields = ~117MB
+
+altair (https://github.com/vega/altair)
+-     memo fields = ~228MB
++     memo fields = ~251MB
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+-     memo fields = ~171MB
++     memo fields = ~189MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-07 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-07 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-07 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-07 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 12:03</div>
+            <div class="timeline-body"><p>What's our behaviour for, e.g.</p>
+<pre><code class="language-py">from typing import Final, ClassVar
+
+class Foo:
+    X: Final[ClassVar] = 1
+</code></pre>
+<p>Do we have any tests for that? Does the spec say anything about it? What are mypy/pyright's behaviour there?</p>
+<p>It would be pretty unusual to see something like that since a <code>Final</code> declaration in a class body usually implies that it is also a <code>ClassVar</code>. But there are a few edge cases, for e.g. dataclasses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 12:05</div>
+            <div class="timeline-body"><p>Regarding dataclasses: this is what <a href="https://typing.python.org/en/latest/spec/dataclasses.html">the spec</a> says:</p>
+<blockquote>
+<ul>
+<li><p><code>ClassVar</code> attributes are not considered dataclass fields and are <a href="https://docs.python.org/3/library/dataclasses.html#class-variables">ignored by dataclass mechanisms</a>.</p>
+</li>
+<li><p>A dataclass field may be annotated with <code>Final[...]</code>. For example, <code>x: Final[int]</code> in a dataclass body specifies a dataclass field <code>x</code>, which will be initialized in the generated <code>__init__</code> and cannot be assigned to thereafter. A <code>Final</code> dataclass field initialized in the class body is not a class attribute unless explicitly annotated with <code>ClassVar</code>. For example, <code>x: Final[int] = 3</code> is a dataclass field named <code>x</code> with a default value of <code>3</code> in the generated <code>__init__</code> method. A final class variable on a dataclass must be explicitly annotated as e.g. <code>x: ClassVar[Final[int]] = 3</code>.</p>
+</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Bare `ClassVar` annotations" to "[ty] Bare `ClassVar` annotations" by @MichaReiser on 2025-07-07 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 12:25</div>
+            <div class="timeline-body"><blockquote>
+<p>What's our behaviour for, e.g.</p>
+<pre><code class="language-python">from typing import Final, ClassVar
+
+class Foo:
+    X: Final[ClassVar] = 1
+</code></pre>
+</blockquote>
+<blockquote>
+<p>What are mypy/pyright's behaviour there?</p>
+</blockquote>
+<p>Mypy infers <code>Any</code>. Pyright and pyrefly say that <code>ClassVar</code> is not allowed in that context(?).</p>
+<p>When we change that to <code>X: ClassVar[Final] = 1</code>, Mypy still infers <code>Any</code>. And Pyright and pyrefly infer <code>Literal[1]</code>.</p>
+<p>We infer <code>Literal[1]</code> in both cases, which seems reasonable to me. <code>Final</code> should take precedence and we should not union with <code>Unknown</code> here.</p>
+<blockquote>
+<p>Do we have any tests for that?</p>
+</blockquote>
+<p>No, added! Thanks.</p>
+<blockquote>
+<p>Does the spec say anything about it?</p>
+</blockquote>
+<p>According to the <a href="https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions">type annotation syntax</a>, both forms should be allowed.</p>
+<blockquote>
+<p>It would be pretty unusual to see something like that since a <code>Final</code> declaration in a class body usually implies that it is also a <code>ClassVar</code></p>
+</blockquote>
+<p>... because you would expect to see the assignment right there in the class body? Right..</p>
+<blockquote>
+<p>Regarding dataclasses: this is what <a href="https://typing.python.org/en/latest/spec/dataclasses.html">the spec</a> says:</p>
+</blockquote>
+<p>Interesting! This behavior is certainly not yet implemented, so this will require some more changes. I'll add tests for this (and an implementation, if it's easy) in another PR. It's not really related to the change here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 12:27</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Regarding dataclasses: this is what <a href="https://typing.python.org/en/latest/spec/dataclasses.html">the spec</a> says:</p>
+</blockquote>
+<p>Interesting! This behavior is certainly not yet implemented, so this will require some more changes. I'll add tests for this (and an implementation, if it's easy) in another PR. It's not really related to the change here.</p>
+</blockquote>
+<p>I know -- but this PR reminded me of it, and it's certainly related to the theme of your work today ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-07 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-07 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-07 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-07 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-08 11:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>Regarding dataclasses: this is what <a href="https://typing.python.org/en/latest/spec/dataclasses.html">the spec</a> says:</p>
+</blockquote>
+<p>Interesting! This behavior is certainly not yet implemented, so this will require some more changes. I'll add tests for this (and an implementation, if it's easy) in another PR. It's not really related to the change here.</p>
+</blockquote>
+<p>I know -- but this PR reminded me of it, and it's certainly related to the theme of your work today ;)</p>
+</blockquote>
+<p>I don't know what I read yesterday, but now that I read it again, that all seems very logical — and in fact we already implement everything correctly. Added some tests here: https://github.com/astral-sh/ruff/pull/19202</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] Make example error out-of-the-box (`SIM116`) - astral-sh/ruff #19111</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] Make example error out-of-the-box (<code>SIM116</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19111">#19111</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-07-03 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-03 01:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Part of #18972</p>
+<p>This PR makes <a href="https://docs.astral.sh/ruff/rules/if-else-block-instead-of-dict-lookup/#if-else-block-instead-of-dict-lookup-sim116">if-else-block-instead-of-dict-lookup (SIM116)</a>'s example error out-of-the-box</p>
+<p><a href="https://play.ruff.rs/718f17ee-fbe2-4520-97c6-153bc0f4502d">Old example</a></p>
+<pre><code class="language-py">if x == 1:
+    return &quot;Hello&quot;
+elif x == 2:
+    return &quot;Goodbye&quot;
+else:
+    return &quot;Goodnight&quot;
+</code></pre>
+<p><a href="https://play.ruff.rs/8a9b47b4-da46-4a50-8576-362cdd707cee">New example</a></p>
+<pre><code class="language-py">def find_phrase(x):
+    if x == 1:
+        return &quot;Hello&quot;
+    elif x == 2:
+        return &quot;Goodbye&quot;
+    elif x == 3:
+        return &quot;Good morning&quot;
+    else:
+        return &quot;Goodnight&quot;
+</code></pre>
+<p>The &quot;Use instead&quot; section was also updated to reflect the new case. I also changed it to use an intermediary variable since I find the <code>return &lt;long dict&gt;.get</code> very ugly and hard to read.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>N/A, no functionality/tests affected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-simplify`] Make example error out-of-the-box (SIM116)" to "[`flake8-simplify`] Make example error out-of-the-box (`SIM116`)" by @MeGaGiGaGon on 2025-07-03 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 01:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-07-03 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_dict_lookup.rs</code>:28 on 2025-07-03 14:03</div>
+            <div class="timeline-body"><p>Should we wrap these in functions? Otherwise the <code>return</code>s should be syntax errors. I was alarmed that we weren't flagging the syntax error, but that semantic error is still associated with the F706 lint rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-07-03 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_dict_lookup.rs</code>:28 on 2025-07-03 14:50</div>
+            <div class="timeline-body"><p>That would probably be a good idea. I ran my tool again looking for that, and I got only this rule and <code>UP028</code> as having examples that raised one of F701-F706 (Aside from those rule's examples themselves).</p>
+<p>Should the tests also be updated? Since they have the same problem as the example. I also did a ruff run on the tests itself, and found a few other rules that run into these in their tests:</p>
+<pre><code>crates\ruff_linter\resources\test\fixtures\flake8_bandit\S112.py: F702 `continue` not properly in loop
+crates\ruff_linter\resources\test\fixtures\flake8_bugbear\B031.py: F706 `return` statement outside of a function/method
+crates\ruff_linter\resources\test\fixtures\flake8_pie\PIE804.py: F704 `yield` statement outside of a function
+crates\ruff_linter\resources\test\fixtures\flake8_simplify\SIM115.py: F704 `await` statement outside of a function
+crates\ruff_linter\resources\test\fixtures\flake8_simplify\SIM116.py: F706 `return` statement outside of a function/method
+crates\ruff_linter\resources\test\fixtures\pycodestyle\E27.py: F704 `yield` statement outside of a function
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-07-03 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_dict_lookup.rs</code>:28 on 2025-07-03 14:55</div>
+            <div class="timeline-body"><p>I got a couple more hits adding the &quot;Use instead&quot; sections to the search, <code>SIM110</code> and <code>PLW1501</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_dict_lookup.rs</code>:28 on 2025-07-03 14:55</div>
+            <div class="timeline-body"><p>Sure, that seems like a good idea! I think the plan is still to make those rules into true <code>SyntaxError</code>s eventually, so these snapshots would change then anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-07 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-07 21:16</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-07 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-07 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-07 21:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

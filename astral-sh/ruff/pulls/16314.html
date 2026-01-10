@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support `TypeGuard` and `TypeIs` - astral-sh/ruff #16314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support <code>TypeGuard</code> and <code>TypeIs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16314">#16314</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-22 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-22 12:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #13694.</p>
+<p>This PR's description is currently empty. See <a href="https://github.com/astral-sh/ruff/pull/16314#issuecomment-2676178735">this comment</a> for a list of unresolved major issues.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-22 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4377 on 2025-02-22 12:30</div>
+            <div class="timeline-body"><p>It seems that the two types are exactly identical except for the name. Could we use a shared type (similar to <code>Class</code>) or make this type only thin wrapper types around a shared type? It would avoid the need for a macro</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-22 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-22 12:30</div>
+            <div class="timeline-body"><p>This PR is incomplete (hence the empty description). Some major issues (all reflected in tests):</p>
+<ul>
+<li><p>Invalid definitions are supposed to be reported.
+I thought the logic could be added to <code>.infer_function_definition()</code>, but calling <code>.infer_type_expression()</code>/<code>.infer_type_expression_no_store()</code> there (on <code>returns</code>) leads to panic.</p>
+</li>
+<li><p><code>if b</code> where <code>b</code> is a bound guard is not recognized correctly.
+<code>.evaluate_expr_name()</code> needs some changes. However, I'm not sure if this approach scales, since <code>b</code> might not be a name.</p>
+</li>
+<li><p><code>TypeGuard[]</code>-based constraints should overrule all other constraints
+I have yet to find out a way to do this. It seems that constraints are considered always invertible and compatible with one another.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-22 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type_guards.md</code>:44 on 2025-02-22 12:32</div>
+            <div class="timeline-body"><p>I'm not sure if it's possible or reasonable here but I found many very specific mdtests much more helpful when debugging regression than a few tests that have many unrelated assertions.</p>
+<p>There are also fewer trade-offs when using smaller tests compared to Ruff because it doesn't require you to create a new file. A single header is enough to create an isolated test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-22 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4377 on 2025-02-22 12:33</div>
+            <div class="timeline-body"><p>I started with that, but the various <code>match</code>/<code>case</code> function ended up quite unreadable, not to mention the subtle differences (e.g., <code>TypeGuard[]</code> is covariant, but <code>TypeIs[]</code> is invariant). All in all, I think the current approach is the best, despite being a little bit non-DRY.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-22 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type_guards.md</code>:44 on 2025-02-22 12:38</div>
+            <div class="timeline-body"><p>Aren't all of these about function arity? I think this test is pretty small already, unless you mean the second file below (which is for subtype relation in <code>TypeIs</code> functions)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-18 16:34</div>
+            <div class="timeline-body"><p>I think this PR has become stale or do you plan on continue working on this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-18 17:03</div>
+            <div class="timeline-body"><p>@MichaReiser I'm awaiting @carljm's reply at <a href="https://github.com/astral-sh/ty/issues/117">#117</a>. In the meanwhile, I think I can at least split the working <code>TypeIs</code> parts into a separate PR; I'll do that next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-18 18:24</div>
+            <div class="timeline-body"><p>Thanks for the update :) I just went through some older PRs and it wasn't clear to me what we're waiting on for this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 03:40</div>
+            <div class="timeline-body"><p>@InSyncWithFoo sorry I lost track of that! Replied now, let me know if you have other questions. Thanks for your work on this, and sorry we let it get stale!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-25 01:18</div>
+            <div class="timeline-body"><p>Opened #18294 as a replacement for this one, since rebasing this would take too much effort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @InSyncWithFoo on 2025-05-25 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-09 20:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

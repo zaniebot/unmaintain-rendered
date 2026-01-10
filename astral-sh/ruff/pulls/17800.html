@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Check overloaded function implementation consistency - astral-sh/ruff #17800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Check overloaded function implementation consistency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17800">#17800</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-05-02 21:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-02 21:45</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I've separated the implementation of <code>is_assignable_to</code> into <code>is_parameters_assignable_to</code> and <code>is_return_type_assignable_to</code> as discussed in Discord, that solved the problem I was having.  But, there are still a few issues that I need some help with.</p>
+<p>The first one is, some tests are failing in <code>dataclass_transform.md</code>, specifically when the function is annotated with <code>dataclass_transform</code> like this one:</p>
+<pre><code class="language-python">@overload
+@dataclass_transform()
+def versioned_class(
+    cls: T,
+    *,
+    version: int = 1,
+) -&gt; T: ...
+@overload
+def versioned_class(
+    *,
+    version: int = 1,
+) -&gt; Callable[[T], T]: ...
+def versioned_class(
+    cls: T | None = None,
+    *,
+    version: int = 1,
+) -&gt; T | Callable[[T], T]:
+    raise NotImplementedError
+</code></pre>
+<p>I guess this is related to this part of the spec:</p>
+<blockquote>
+<p>When a type checker checks the implementation for consistency with overloads, it should first apply any transforms that change the effective type of the implementation including the presence of a yield statement in the implementation body, the use of async def, and the presence of additional decorators.</p>
+<p>https://typing.python.org/en/latest/spec/overload.html#implementation-consistency</p>
+</blockquote>
+<p>Not sure how these transforms should be handled.</p>
+<p>~~The second issue I have is that in this python code:~~</p>
+<pre><code class="language-python">@overload
+def x(y: None = ...) -&gt; None: ...
+@overload
+def x(y: int) -&gt; str: ...
+
+
+def x(y: int | None = None): ...
+</code></pre>
+<p>~~My implementation is not creating the diagnostic for the function implementation when it's missing the return type.~~</p>
+<p>I'll add more tests after I solve these issues.</p>
+<p>Closes astral-sh/ty#109</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Markddown tests.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-02 21:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- warning[lint:unused-ignore-comment] beartype/_decor/decormain.py:100:20: Unused blanket `type: ignore` directive
+- Found 554 diagnostics
++ Found 553 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ error[lint:invalid-overload] src/anyio/_core/_tempfile.py:538:11: Overloaded implementation is not consistent with signature of overload 1 `(suffix: str | None = None, prefix: str | None = None, dir: str | None = None, text: bool = Literal[False]) -&gt; @Todo(generic types.CoroutineType)`
++ error[lint:invalid-overload] src/anyio/_core/_tempfile.py:538:11: Overloaded implementation is not consistent with signature of overload 2 `(suffix: bytes | None = None, prefix: bytes | None = None, dir: bytes | None = None, text: bool = Literal[False]) -&gt; @Todo(generic types.CoroutineType)`
++ error[lint:invalid-overload] src/anyio/_core/_tempfile.py:576:11: Overloaded implementation is not consistent with signature of overload 1 `(suffix: str | None = None, prefix: str | None = None, dir: str | None = None) -&gt; @Todo(generic types.CoroutineType)`
++ error[lint:invalid-overload] src/anyio/_core/_tempfile.py:576:11: Overloaded implementation is not consistent with signature of overload 2 `(suffix: bytes | None = None, prefix: bytes | None = None, dir: bytes | None = None) -&gt; @Todo(generic types.CoroutineType)`
+- Found 128 diagnostics
++ Found 132 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ error[lint:invalid-overload] pydantic/config.py:1157:5: Overloaded implementation is not consistent with signature of overload 1 `(*, config: ConfigDict) -&gt; (_TypeT, /) -&gt; _TypeT`
++ error[lint:invalid-overload] pydantic/config.py:1157:5: Overloaded implementation is not consistent with signature of overload 2 `(**config: @Todo(`Unpack[]` special form)) -&gt; (_TypeT, /) -&gt; _TypeT`
++ error[lint:invalid-overload] pydantic/fields.py:1385:5: Overloaded implementation is not consistent with signature of overload 1 `(*, alias: str | None = None, alias_priority: int | None = None, title: str | None = None, field_title_generator: ((str, ComputedFieldInfo, /) -&gt; str) | None = None, description: str | None = None, deprecated: deprecated | str | bool | None = None, examples: @Todo(specialized non-generic class) | None = None, json_schema_extra: @Todo(Support for `typing.TypeAlias`) | ((@Todo(Support for `typing.TypeAlias`), /) -&gt; None) | None = None, repr: bool = Literal[True], return_type: Any = PydanticUndefinedType) -&gt; (PropertyT, /) -&gt; PropertyT`
++ error[lint:invalid-overload] pydantic/functional_serializers.py:346:5: Overloaded implementation is not consistent with signature of overload 1 `(*, mode: Literal[&quot;wrap&quot;], when_used: Unknown = Literal[&quot;always&quot;], return_type: Any = ellipsis) -&gt; (_ModelWrapSerializerT, /) -&gt; _ModelWrapSerializerT`
++ error[lint:invalid-overload] pydantic/functional_serializers.py:346:5: Overloaded implementation is not consistent with signature of overload 2 `(*, mode: Literal[&quot;plain&quot;] = ellipsis, when_used: Unknown = Literal[&quot;always&quot;], return_type: Any = ellipsis) -&gt; (_ModelPlainSerializerT, /) -&gt; _ModelPlainSerializerT`
++ error[lint:invalid-overload] pydantic/validate_call_decorator.py:82:5: Overloaded implementation is not consistent with signature of overload 1 `(*, config: ConfigDict | None = None, validate_return: bool = Literal[False]) -&gt; (AnyCallableT, /) -&gt; AnyCallableT`
+- Found 781 diagnostics
++ Found 787 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ error[lint:invalid-overload] src/werkzeug/http.py:584:5: Overloaded implementation is not consistent with signature of overload 1 `(value: str | None) -&gt; Accept`
++ error[lint:invalid-overload] src/werkzeug/http.py:655:5: Overloaded implementation is not consistent with signature of overload 1 `(value: str | None, on_update: ((Unknown, /) -&gt; None) | None = None) -&gt; RequestCacheControl`
++ error[lint:invalid-overload] src/werkzeug/http.py:703:5: Overloaded implementation is not consistent with signature of overload 1 `(value: str | None, on_update: ((ContentSecurityPolicy, /) -&gt; None) | None = None) -&gt; ContentSecurityPolicy`
+- Found 449 diagnostics
++ Found 452 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- warning[lint:unused-ignore-comment] expression/extra/result/catch.py:28:13: Unused blanket `type: ignore` directive
+- Found 507 diagnostics
++ Found 506 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ error[lint:invalid-overload] src/_pytest/fixtures.py:1302:5: Overloaded implementation is not consistent with signature of overload 1 `(fixture_function: (...) -&gt; object, *, scope: Unknown | ((str, Config, /) -&gt; Unknown) = ellipsis, params: @Todo(specialized non-generic class) | None = ellipsis, autouse: bool = ellipsis, ids: @Todo(specialized non-generic class) | ((Any, /) -&gt; object) | None = ellipsis, name: str | None = ellipsis) -&gt; FixtureFunctionDefinition`
+- Found 737 diagnostics
++ Found 738 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ error[lint:invalid-overload] scrapy/utils/defer.py:380:5: Overloaded implementation is not consistent with signature of overload 1 `(o: _CT) -&gt; Unknown`
+- Found 1388 diagnostics
++ Found 1389 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
++ error[lint:invalid-overload] arviz/data/inference_data.py:1992:5: Overloaded implementation is not consistent with signature of overload 1 `(ids: @Todo(specialized non-generic class), dim: str | None = None, *, copy: bool = Literal[True], inplace: Literal[False], reset_dim: bool = Literal[True]) -&gt; InferenceData`
++ error[lint:invalid-overload] arviz/data/inference_data.py:1992:5: Overloaded implementation is not consistent with signature of overload 2 `(ids: @Todo(specialized non-generic class), dim: str | None = None, *, copy: bool = Literal[True], inplace: Literal[True], reset_dim: bool = Literal[True]) -&gt; None`
++ error[lint:invalid-overload] arviz/data/inference_data.py:1992:5: Overloaded implementation is not consistent with signature of overload 3 `(ids: @Todo(specialized non-generic class), dim: str | None = None, *, copy: bool = Literal[True], inplace: bool = Literal[False], reset_dim: bool = Literal[True]) -&gt; InferenceData | None`
+- Found 835 diagnostics
++ Found 838 diagnostics
+
+pyodide (https://github.com/pyodide/pyodide)
++ error[lint:invalid-overload] src/py/_pyodide/_core_docs.py:1298:5: Overloaded implementation is not consistent with signature of overload 1 `(obj: (...) -&gt; Unknown, *, /, capture_this: bool = Literal[False], roundtrip: bool = Literal[True]) -&gt; @Todo(specialized non-generic class)`
+- Found 1046 diagnostics
++ Found 1047 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[lint:invalid-overload] lib/streamlit/runtime/connection_factory.py:205:5: Overloaded implementation is not consistent with signature of overload 1 `(name: Literal[&quot;sql&quot;], max_entries: int | None = None, ttl: int | float | timedelta | None = None, autocommit: bool = Literal[False], **kwargs) -&gt; Unknown`
++ error[lint:invalid-overload] lib/streamlit/runtime/connection_factory.py:205:5: Overloaded implementation is not consistent with signature of overload 2 `(name: str, type: Literal[&quot;sql&quot;], max_entries: int | None = None, ttl: int | float | timedelta | None = None, autocommit: bool = Literal[False], **kwargs) -&gt; Unknown`
++ error[lint:invalid-overload] lib/streamlit/runtime/connection_factory.py:205:5: Overloaded implementation is not consistent with signature of overload 3 `(name: Literal[&quot;snowflake&quot;], max_entries: int | None = None, ttl: int | float | timedelta | None = None, autocommit: bool = Literal[False], **kwargs) -&gt; Unknown`
++ error[lint:invalid-overload] lib/streamlit/runtime/connection_factory.py:205:5: Overloaded implementation is not consistent with signature of overload 4 `(name: str, type: Literal[&quot;snowflake&quot;], max_entries: int | None = None, ttl: int | float | timedelta | None = None, autocommit: bool = Literal[False], **kwargs) -&gt; Unknown`
++ error[lint:invalid-overload] lib/streamlit/runtime/connection_factory.py:205:5: Overloaded implementation is not consistent with signature of overload 5 `(name: Literal[&quot;snowpark&quot;], max_entries: int | None = None, ttl: int | float | timedelta | None = None, **kwargs) -&gt; Unknown`
+- Found 3275 diagnostics
++ Found 3280 diagnostics
+
+jax (https://github.com/google/jax)
++ error[lint:invalid-overload] jax/experimental/pallas/ops/tpu/splash_attention/splash_attention_kernel.py:148:5: Overloaded implementation is not consistent with signature of overload 2 `(mask: Array, q: Array, k: Array, v: Array, segment_ids: SegmentIds | None, save_residuals: Literal[True], mask_value: int | float, custom_type: str, attn_logits_soft_cap: int | float | None) -&gt; tuple[Array, tuple[Array]]`
++ error[lint:invalid-overload] jax/experimental/pallas/ops/tpu/splash_attention/splash_attention_kernel.py:148:5: Overloaded implementation is not consistent with signature of overload 1 `(mask: Array, q: Array, k: Array, v: Array, segment_ids: SegmentIds | None, save_residuals: Literal[False], mask_value: int | float, custom_type: str, attn_logits_soft_cap: int | float | None) -&gt; Array`
++ error[lint:invalid-overload] jax/experimental/pallas/ops/tpu/splash_attention/splash_attention_kernel.py:873:5: Overloaded implementation is not consistent with signature of overload 1 `(fwd_mask_info: MaskInfo, q: Array, k: Array, v: Array, segment_ids: SegmentIds | None, mask_value: int | float, is_mqa: bool, block_sizes: BlockSizes, residual_checkpoint_name: str | None, mask_function: @Todo(Inference of subscript on special form) | None, save_residuals: Literal[False] = Literal[False], attn_logits_soft_cap: int | float | None = None) -&gt; Array`
++ error[lint:invalid-overload] jax/experimental/pallas/ops/tpu/splash_attention/splash_attention_kernel.py:873:5: Overloaded implementation is not consistent with signature of overload 2 `(fwd_mask_info: MaskInfo, q: Array, k: Array, v: Array, segment_ids: SegmentIds | None, mask_value: int | float, is_mqa: bool, block_sizes: BlockSizes, residual_checkpoint_name: str | None, mask_function: @Todo(Inference of subscript on special form) | None, save_residuals: Literal[True], attn_logits_soft_cap: int | float | None = None) -&gt; @Todo(Inference of subscript on special form)`
+- Found 3216 diagnostics
++ Found 3220 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- warning[lint:unused-ignore-comment] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:60:19: Unused blanket `type: ignore` directive
+- Found 7370 diagnostics
++ Found 7369 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-02 22:01</div>
+            <div class="timeline-body"><p>The second &quot;issue&quot; looks like correct behavior to me. A missing annotation is equivalent to an annotation of <code>Unknown/Any</code>, which is assignable to any type, and any type is assignable to it. So there should not be any diagnostic emitted on that code. <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=a76906b41281d1ab44728a5f396f0d75">Mypy</a> does not emit any diagnostic; <a href="https://pyright-play.net/?pyrightVersion=1.1.352&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFC0ACRpFNt1xwUAHgBRwAuKADkwKYlAC8UAHRyAlFAC0APhFjiQuTMbNyVOhy59BmFDEWqoAZxggtc%2Bu049%2BQ1PgA%2B68VJ-F5Bx0gA">pyright</a> does emit one, but it doesn't make any sense to me; it looks like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-02 22:04</div>
+            <div class="timeline-body"><blockquote>
+<p>The second &quot;issue&quot; looks like correct behavior to me. A missing annotation is equivalent to an annotation of <code>Unknown/Any</code>, which is assignable to any type, and any type is assignable to it. So there should not be any diagnostic emitted on that code. <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=a76906b41281d1ab44728a5f396f0d75">Mypy</a> does not emit any diagnostic; <a href="https://pyright-play.net/?pyrightVersion=1.1.352&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFC0ACRpFNt1xwUAHgBRwAuKADkwKYlAC8UAHRyAlFAC0APhFjiQuTMbNyVOhy59BmFDEWqoAZxggtc%2Bu049%2BQ1PgA%2B68VJ-F5Bx0gA">pyright</a> does emit one, but it doesn't make any sense to me; it looks like a bug.</p>
+</blockquote>
+<p>Ah okay, I was checking with <code>pyright</code>  forgot to mention that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-02 22:10</div>
+            <div class="timeline-body"><p>I don't know off the top of my head why the <code>dataclass_transform</code> tests are failing. I don't think <code>@dataclass_transform</code> changes the signature of the function it's applied to, so I doubt there's an issue of us failing to apply decorator transforms, it seems more like something going wrong in the handling of the special <code>DataclassTransformer</code> type that results from usage of <code>@dataclass_transform</code>? It will probably just require more step-by-step debugging of those tests to understand what's happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-05-02 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-03 18:01</div>
+            <div class="timeline-body"><p>@LaBatata101 I went ahead and rebased your PR passed the Red Knot renaming change. Make sure you pull (force) before trying to push new changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-03 18:50</div>
+            <div class="timeline-body"><blockquote>
+<p>@LaBatata101 I went ahead and rebased your PR passed the Red Knot renaming change. Make sure you pull (force) before trying to push new changes.</p>
+</blockquote>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-05 14:26</div>
+            <div class="timeline-body"><p>@carljm could it be that tests failing for <code>dataclass_transform</code> are related to astral-sh/ruff#17541 not being implemented yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-06 00:07</div>
+            <div class="timeline-body"><blockquote>
+<p>could it be that tests failing for <code>dataclass_transform</code> are related to astral-sh/ruff#17541 not being implemented yet?</p>
+</blockquote>
+<p>I don't think so. I don't think the use of <code>@dataclass_transform</code> is even related to why these tests are failing. It looks to me like the signatures used in these tests are triggering a possible bug in our signature assignability checking. I added this debug code:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 543d8ea060..8fc98276c9 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -1251,6 +1251,13 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+         for (idx, overloaded_signature) in overloaded_signatures
+             .iter()
+             .filter(|overloaded_signature| {
++                eprintln!(
++                    &quot;{} -- {}&quot;,
++                    impl_signature.display(self.db()),
++                    overloaded_signature.display(self.db())
++                );
++                dbg!(impl_signature.is_parameters_assignable_to(self.db(), overloaded_signature));
++                dbg!(overloaded_signature.is_return_type_assignable_to(self.db(), impl_signature));
+                 !(impl_signature.is_parameters_assignable_to(self.db(), overloaded_signature)
+                     &amp;&amp; overloaded_signature.is_return_type_assignable_to(self.db(), impl_signature))
+             })
+</code></pre>
+<p>And got this output on a failing test:</p>
+<pre><code>(cls: T | None = None, *, version: int = Literal[1]) -&gt; T | ((T, /) -&gt; T) -- (cls: T, *, version: int = Literal[1]) -&gt; T
+[crates/ty_python_semantic/src/types/infer.rs:1259:17] impl_signature.is_parameters_assignable_to(self.db(), overloaded_signature) = false
+[crates/ty_python_semantic/src/types/infer.rs:1260:17] overloaded_signature.is_return_type_assignable_to(self.db(), impl_signature) = true
+(cls: T | None = None, *, version: int = Literal[1]) -&gt; T | ((T, /) -&gt; T) -- (*, version: int = Literal[1]) -&gt; (T, /) -&gt; T
+[crates/ty_python_semantic/src/types/infer.rs:1259:17] impl_signature.is_parameters_assignable_to(self.db(), overloaded_signature) = true
+[crates/ty_python_semantic/src/types/infer.rs:1260:17] overloaded_signature.is_return_type_assignable_to(self.db(), impl_signature) = true
+</code></pre>
+<p>What this shows is that we are getting accurate signatures off of all the callables involved (and once we have a <code>Signature</code>, it's just like any other <code>Signature</code> -- there's no trace of <code>@dataclass_transform</code> left), but for some reason we do not consider the parameters <code>(cls: T | None = None, *, version: int = Literal[1])</code> assignable to the parameters <code>(cls: T, *, version: int = Literal[1])</code>. Which looks wrong to me, unless I'm missing something.</p>
+<p>And I can reproduce this behavior without involving <code>dataclass_transform</code>: https://types.ruff.rs/c1777070-e36c-4859-9796-6f32d34fe056</p>
+<p>So I think the next step here is to debug that minimal test case and fix it in <code>is_assignable_to_impl</code> (maybe even in a separate PR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-06 00:42</div>
+            <div class="timeline-body"><blockquote>
+<p>What this shows is that we are getting accurate signatures off of all the callables involved (and once we have a Signature, it's just like any other Signature -- there's no trace of @dataclass_transform left), but for some reason we do not consider the parameters (cls: T | None = None, *, version: int = Literal[1]) assignable to the parameters (cls: T, *, version: int = Literal[1]). Which looks wrong to me, unless I'm missing something.</p>
+</blockquote>
+<blockquote>
+<p>And I can reproduce this behavior without involving dataclass_transform: https://types.ruff.rs/c1777070-e36c-4859-9796-6f32d34fe056</p>
+</blockquote>
+<blockquote>
+<p>So I think the next step here is to debug that minimal test case and fix it in is_assignable_to_impl (maybe even in a separate PR).</p>
+</blockquote>
+<p>I will look into that this week</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-06 05:17</div>
+            <div class="timeline-body"><p>I don't think the issue is in the logic of <code>is_assignable_to_impl</code> because using concrete types in place of the generic <code>T</code> seems to work correctly (https://types.ruff.rs/a10c8ac9-76a6-447d-965f-af23d1fa468a). There must be somewhere where the specialization is not taking place? The <code>internal_signature</code> method that's used to get the <code>Signature</code> for each of the overloads and implementation does seem to apply the specializations though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dhruvmanila on 2025-05-06 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-06 23:41</div>
+            <div class="timeline-body"><p>I don't think there should be any specialization happening here? These functions are unspecialized generics (as seen by the fact that the signatures printed out in my debugging above still have <code>T</code> in them), and they should be compared for assignability as unspecialized generics; they would only be specialized in the context of a call.</p>
+<p>You're right that it looks like the issue is specific to typevars; it also looks like it's specific to a bound typevar: https://play.ty.dev/7bca2116-a4f4-4e07-a518-b1077403aec4</p>
+<p>And it looks like it's specific to comparing <code>T | None</code> vs <code>T</code>: https://play.ty.dev/1c1e1872-163b-4661-b2fd-cea0434e7e61</p>
+<p>Ok, I just figured out what I think it is. Pushed the fix in https://github.com/astral-sh/ruff/pull/17901</p>
+<p>Rebasing this PR on top of that should fix the dataclass-transform tests, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-07 20:30</div>
+            <div class="timeline-body"><p>So, I've pulled the new changes made in #17910, but this case still failing</p>
+<pre><code class="language-python">@overload
+def func() -&gt; None: ...
+@overload
+def func[T](x: T) -&gt; T: ...
+def func[T](x: T | None = None) -&gt; T | None:
+    return x
+</code></pre>
+<p>I've printed the output of <code>is_parameters_assignable_to</code> and it's returning <code>false</code> for these signatures: <code>x: T</code>, <code>x: T | None = None</code>. Wasn't #17910 supposed to fix that issue? Or did I misunderstand?</p>
+<p>https://play.ty.dev/0fc474f1-7189-4a71-92ad-5f0cd6b5e123</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-07 23:06</div>
+            <div class="timeline-body"><p>Ugh, sorry, this is https://github.com/astral-sh/ty/issues/95 -- it impacts the PEP 695 version but not the legacy-typevar version, because in this case we consider them different typevars.</p>
+<p>I'm a little hesitant to land this overload consistency check without fixing that bug first, since it will cause more false positives than we currently do. Sorry... any chance you're interested in trying to tackle that bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-07 23:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Ugh, sorry, this is <a href="https://github.com/astral-sh/ty/issues/95">astral-sh/ty#95</a> -- it impacts the PEP 695 version but not the legacy-typevar version, because in this case we consider them different typevars.</p>
+<p>I'm a little hesitant to land this overload consistency check without fixing that bug first, since it will cause more false positives than we currently do. Sorry... any chance you're interested in trying to tackle that bug?</p>
+</blockquote>
+<p>I can try, but I don't understand much about type theory or the python type system, do you have any resources that I can take a look at? Much of the stuff you guys talk about goes over my head.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 00:25</div>
+            <div class="timeline-body"><p>Probably the most useful written resource I can recommend (and this isn't saying a great deal) is the typing spec, particularly starting with the &quot;core concepts&quot; section. But that issue may not be the simplest place to start. Hopefully one of us can get to it before long, because I would like to land this PR -- your work here looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Check overloaded function implementation consistency" to "[ty] Check overloaded function implementation consistency" by @MichaReiser on 2025-05-08 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 14:12</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this as it seems to have gone stale. Anyone interested in picking this up. Feel free to open a new PR which addresses the feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-10 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-07-10 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for your contribution. I'll close this as it seems to have gone stale. Anyone interested in picking this up. Feel free to open a new PR which addresses the feedback.</p>
+</blockquote>
+<p>This PR is just waiting for https://github.com/astral-sh/ruff/pull/18634 to get merged. I've been a little busy the last couple of days, but I'll start working on https://github.com/astral-sh/ruff/pull/18634 again soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-07-10 20:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

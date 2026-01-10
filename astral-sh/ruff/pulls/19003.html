@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Normalize recursive types using Any - astral-sh/ruff #19003</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Normalize recursive types using Any</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19003">#19003</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-27 22:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 22:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This just replaces one temporary solution to recursive protocols (the <code>SelfReference</code> mechanism) with another one (track seen types when recursively descending in <code>normalize</code> and replace recursive references with <code>Any</code>). But this temporary solution can handle mutually-recursive types, not just self-referential ones, and it's sufficient for the primer ecosystem and some other projects we are testing on to no longer stack overflow.</p>
+<p>The follow-up here will be to properly handle these self-references instead of replacing them with <code>Any</code>.</p>
+<p>We will also eventually need cycle detection on more recursive-descent type transformations and tests.</p>
+<h2>Test Plan</h2>
+<p>Existing tests (including recursive-protocol tests) and primer.</p>
+<p>Added mdtest for mutually-recursive protocols that stack-overflowed before this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-06-27 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-27 22:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">black (https://github.com/psf/black)
+- TOTAL MEMORY USAGE: ~142MB
++ TOTAL MEMORY USAGE: ~129MB
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-argument-type] strawberry/schema_codegen/__init__.py:199:34: Argument to function `_get_directives` is incorrect: Expected `HasDirectives`, found `FieldDefinitionNode | InputValueDefinitionNode`
+- error[invalid-argument-type] strawberry/schema_codegen/__init__.py:387:34: Argument to function `_get_directives` is incorrect: Expected `HasDirectives`, found `ObjectTypeDefinitionNode | ObjectTypeExtensionNode | InterfaceTypeDefinitionNode | InputObjectTypeDefinitionNode`
+- Found 366 diagnostics
++ Found 364 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- TOTAL MEMORY USAGE: ~117MB
++ TOTAL MEMORY USAGE: ~129MB
+-     memo fields = ~97MB
++     memo fields = ~106MB
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+-     memo fields = ~304MB
++     memo fields = ~276MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- TOTAL MEMORY USAGE: ~652MB
++ TOTAL MEMORY USAGE: ~717MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-06-27 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-06-27 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-06-27 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-06-27 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1082 on 2025-06-28 06:33</div>
+            <div class="timeline-body"><p>Can we avoid inserting for types that are known not to be recursive (eg literals) or can all types be recursive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1084 on 2025-06-28 06:36</div>
+            <div class="timeline-body"><p>Should this be a todo type instead of any</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-28 06:36</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7263 on 2025-06-28 13:15</div>
+            <div class="timeline-body"><p>what's the reason for dropping the doc-comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1141 on 2025-06-28 13:17</div>
+            <div class="timeline-body"><p>we do a similar thing in the <code>inheritance_cycle</code> query in <code>class.rs</code> but there we use an <code>IndexSet</code> so that we can just pop the most recently added item off the end of the set:</p>
+<p>https://github.com/astral-sh/ruff/blob/90cb0d3a7b0d1b9528854dad64dd17330bfd5f36/crates/ty_python_semantic/src/types/class.rs#L2148</p>
+<p>I don't know if that's actually more efficient than using <code>FxHashSet::remove</code>, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5764 on 2025-06-28 13:21</div>
+            <div class="timeline-body"><p>do we also need to create a <code>TypeAliasType::normalized_impl</code> method that passes down <code>seen_types</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-28 13:26</div>
+            <div class="timeline-body"><p>This looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-28 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1084 on 2025-06-28 14:10</div>
+            <div class="timeline-body"><p>I think the issue here might be that <code>Todo</code> types themselves are normalized to <code>Any</code>, because they are all equivalent to <code>Any</code> (and the idea of normalization is that all equivalent types share the same Salsa ID after being normalized).</p>
+<p>Normalized types should pretty rarely show up in user-facing messages, so there's probably no practical difference between <code>Todo</code> and <code>Any</code> here anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-28 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1084 on 2025-06-28 14:10</div>
+            <div class="timeline-body"><p>If that is the reason, though, it might be good to add a comment about it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 14:21</div>
+            <div class="timeline-body"><p>Does this unblock the work on protocols?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-28 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5764 on 2025-06-28 15:51</div>
+            <div class="timeline-body"><p>Yes, good catch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-28 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1082 on 2025-06-28 15:52</div>
+            <div class="timeline-body"><p>We can. It will require a more complex structure for this function, and I think it will require two matches on <code>self</code> instead of one. That should still be worth it, if we can avoid extra hashset inserts and removes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-28 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1082 on 2025-06-28 16:23</div>
+            <div class="timeline-body"><p>You could change <code>SeenType</code> to have a <code>SeenType::visit(ty, |ty| ....)</code> method. Not sure if that's more annoying though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-30 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1141 on 2025-06-30 17:38</div>
+            <div class="timeline-body"><p>The follow up PR (WIP) switches this to an <code>FxOrderSet</code> anyway, so we can calculate the right de Bruijn index. I'll just change it in this PR for less churn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-30 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/primer/bad.txt</code>:22 on 2025-06-30 18:23</div>
+            <div class="timeline-body"><p>Thanks, forgot that since it had a different description than the other one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-30 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1082 on 2025-06-30 18:51</div>
+            <div class="timeline-body"><p>I made this change (and also renamed <code>SeenTypes</code> to <code>TypeVisitor</code>). I think it works out ok, not too annoying. Thanks for the suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-30 19:07</div>
+            <div class="timeline-body"><p>Will go ahead and merge this, but post-land review of the TypeVisitor change is welcome.</p>
+<p>(The callback accepted by <code>TypeVisitor::visit</code> has to itself take the visitor as argument, because otherwise it would have to be closed-over at the callsite, and this would cause conflicting mutable borrows of the visitor, one for the <code>visitor.visit</code> call itself and the other for the closure.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-06-30 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-30 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-30 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-01 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>post-land review of the TypeVisitor change is welcome</p>
+</blockquote>
+<p>Looks good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 12:43</div>
+            <div class="timeline-body"><blockquote>
+<p>The callback accepted by <code>TypeVisitor::visit</code> has to itself take the visitor as argument, because otherwise it would have to be closed-over at the callsite, and this would cause conflicting mutable borrows of the visitor, one for the <code>visitor.visit</code> call itself and the other for the closure.</p>
+</blockquote>
+<p>You might be able to get around that by having the <code>seen</code> field on the visitor struct be <code>RefCell&lt;FxOrderSet&lt;Type&lt;'db&gt;&gt;&gt;</code> rather than <code>FxOrderSet&lt;Type&lt;'db&gt;&gt;</code>. Then the <code>visit</code> method would only need to take <code>&amp;self</code> rather than <code>&amp;mut self</code>.</p>
+<p>Not a big deal either way, though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>You might be able to get around that by having the <code>seen</code> field on the visitor struct be <code>RefCell&lt;FxOrderSet&lt;Type&lt;'db&gt;&gt;&gt;</code> rather than <code>FxOrderSet&lt;Type&lt;'db&gt;&gt;</code>. Then the <code>visit</code> method would only need to take <code>&amp;self</code> rather than <code>&amp;mut self</code>.</p>
+</blockquote>
+<p>Yes, I considered interior mutability, but I don't think that's a good tradeoff. It sacrifices some performance (by adding the runtime reference tracking overhead of <code>RefCell</code>) for a fairly minor ergonomic win.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

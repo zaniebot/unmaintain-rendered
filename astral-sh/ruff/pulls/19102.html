@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter private `builtins` members from completions - astral-sh/ruff #19102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter private <code>builtins</code> members from completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19102">#19102</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-02 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 20:30</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/ty/issues/757</p>
+<p>A few thoughts here</p>
+<ol>
+<li>This doesn't explicitly filter from the typeshed builtins as discussed in the issue, is that equivalent to the builtins module for our purposes or do we need to distinguish between them?</li>
+<li>~This doesn't distinguish between sunder and dunder, but probably should.~ There are dunder methods in the builtins stubs, but not at the top-level? It doesn't seem like the completions distinguish between these concepts though, as it'll suggest me <code>__annotations__</code> in the test? I added a test case around this for clarity. It'd be trivial to retain dunder completions, we'd just need to decide if we want to pull the nice <code>Kind</code> sorter out of the classification code for re-use. <strong>N.B.</strong>: See <a href="https://github.com/astral-sh/ruff/pull/19102#discussion_r2180951944">thread</a> — I changed this in https://github.com/astral-sh/ruff/commit/fc3b1ed523e319c7d291b0c35aea804cf4472453.</li>
+</ol>
+<p>And as pointed out by @AlexWaygood</p>
+<ol start="3">
+<li>This is really a problem for all stub files, not just the builtins</li>
+<li>This should probably just filter names that wouldn't exist at runtime, which would be &quot;all private typevars/ParamSpecs/typevartuples in stubs, all private type aliases in stubs, and any classes decorated with @type_check_only&quot; but not necessarily all private names in stubs</li>
+</ol>
+<p>There is some context in the internal Discord, <a href="https://discord.com/channels/1039017663004942429/1343690517745111081/1381233188114010135">here</a> and <a href="https://discord.com/channels/1039017663004942429/1343690517745111081/1390079232780271658">here</a>.</p>
+<p>It seems plausible and reasonable to perform (3) and (4) as follow-ups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @zanieb on 2025-07-02 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @zanieb on 2025-07-02 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @zanieb on 2025-07-02 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @zanieb on 2025-07-02 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-02 20:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~45MB
++     memo fields = ~41MB
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+-     memo fields = ~72MB
++     memo fields = ~66MB
+
+trio (https://github.com/python-trio/trio)
+-     memo fields = ~156MB
++     memo fields = ~142MB
+
+discord.py (https://github.com/Rapptz/discord.py)
+- TOTAL MEMORY USAGE: ~228MB
++ TOTAL MEMORY USAGE: ~251MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~80MB
+
+pydantic (https://github.com/pydantic/pydantic)
+- TOTAL MEMORY USAGE: ~142MB
++ TOTAL MEMORY USAGE: ~156MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+-     memo fields = ~228MB
++     memo fields = ~207MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~276MB
++ TOTAL MEMORY USAGE: ~304MB
+
+meson (https://github.com/mesonbuild/meson)
+-     memo fields = ~334MB
++     memo fields = ~304MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:77 on 2025-07-02 20:53</div>
+            <div class="timeline-body"><p>We could also filter <em>after</em> constructing the <code>Completion</code>, or filter <em>elsewhere</em> in the file. I'm not familiar enough to gauge the trade-offs here, but this spot seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:476 on 2025-07-02 20:53</div>
+            <div class="timeline-body"><p>Note I'm guessing we do not want this last assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:77 on 2025-07-02 20:53</div>
+            <div class="timeline-body"><p>Regarding <code>_</code> vs <code>__</code>, see https://github.com/astral-sh/ruff/pull/19102/files#r2180951944 and the OP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_ide/src/completion.rs</code>:476 on 2025-07-02 22:01</div>
+            <div class="timeline-body"><p>I took the time to do this https://github.com/astral-sh/ruff/pull/19102/commits/fc3b1ed523e319c7d291b0c35aea804cf4472453 as it seems wrong as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 12:04</div>
+            <div class="timeline-body"><p>I'm interested in landing the incremental change given there was significant discussion around the alternative pattern and it'll take a bit longer to do.</p>
+<p>@BurntSushi can you give this an early look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2025-07-03 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-03 13:00</div>
+            <div class="timeline-body"><p>This is the change you'd need to apply to <code>main</code> to do this in a generalized way that fixes the problem for <code>builtins</code> but also other stub files too:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/ide_support.rs b/crates/ty_python_semantic/src/types/ide_support.rs
+index 7cf05fa57f..aac637c561 100644
+--- a/crates/ty_python_semantic/src/types/ide_support.rs
++++ b/crates/ty_python_semantic/src/types/ide_support.rs
+@@ -1,10 +1,10 @@
+ use crate::Db;
+-use crate::place::{imported_symbol, place_from_bindings, place_from_declarations};
++use crate::place::{Place, imported_symbol, place_from_bindings, place_from_declarations};
+ use crate::semantic_index::place::ScopeId;
+ use crate::semantic_index::{
+     attribute_scopes, global_scope, imported_modules, place_table, semantic_index, use_def_map,
+ };
+-use crate::types::{ClassBase, ClassLiteral, KnownClass, Type};
++use crate::types::{ClassBase, ClassLiteral, KnownClass, KnownInstanceType, Type};
+ use ruff_python_ast::name::Name;
+ use rustc_hash::FxHashSet;
+ 
+@@ -144,13 +144,39 @@ impl AllMembers {
+                     let Some(symbol_name) = place_table.place_expr(symbol_id).as_name() else {
+                         continue;
+                     };
+-                    if !imported_symbol(db, file, symbol_name, None)
+-                        .place
+-                        .is_unbound()
++                    let Place::Type(ty, _) = imported_symbol(db, file, symbol_name, None).place
++                    else {
++                        continue;
++                    };
++
++                    // Filter out names in stub files that are almost certain to be private to the stub.
++                    if symbol_name.starts_with('_')
++                        &amp;&amp; !symbol_name.starts_with(&quot;__&quot;)
++                        &amp;&amp; file.path(db).extension() == Some(&quot;pyi&quot;)
+                     {
+-                        self.members
+-                            .insert(place_table.place_expr(symbol_id).expect_name().clone());
++                        match ty {
++                            Type::NominalInstance(instance) =&gt; {
++                                if matches!(
++                                    instance.class.known(db),
++                                    Some(
++                                        KnownClass::TypeVar
++                                            | KnownClass::TypeVarTuple
++                                            | KnownClass::ParamSpec
++                                    )
++                                ) {
++                                    continue;
++                                }
++                            }
++                            Type::ClassLiteral(class) if class.is_protocol(db) =&gt; continue,
++                            Type::KnownInstance(
++                                KnownInstanceType::TypeVar(_) | KnownInstanceType::TypeAliasType(_),
++                            ) =&gt; continue,
++
++                            _ =&gt; {}
++                        }
+                     }
++                    self.members
++                        .insert(place_table.place_expr(symbol_id).expect_name().clone());
+                 }
+
+</code></pre>
+<p>Local testing from running the playground seems to show everything working as expected, and it doesn't result in us doing any more work since we already have the type right there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-03 13:08</div>
+            <div class="timeline-body"><p>I think @AlexWaygood's approach would also include <code>_IncompleteInputError</code>, which is the only sunder attribute (on my system) in the standard <code>builtins</code> module:</p>
+<pre><code>&gt;&gt;&gt; [b for b in dir(builtins) if b.startswith('_') and not b.endswith('__')]
+['_', '_IncompleteInputError']
+</code></pre>
+<p>And I think that's generally consistent with how we do completions elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 13:16</div>
+            <div class="timeline-body"><p>I'll pick that up then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 16:28</div>
+            <div class="timeline-body"><p>Replaced by https://github.com/astral-sh/ruff/pull/19121</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-03 16:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

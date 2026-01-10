@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combine `OldDiagnostic` and `Diagnostic` - astral-sh/ruff #19053</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combine <code>OldDiagnostic</code> and <code>Diagnostic</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19053">#19053</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-30 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 19:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a collaboration with @AlexWaygood from our pairing session last Friday.</p>
+<p>The main goal here is removing <code>ruff_linter::message::OldDiagnostic</code> in favor of
+using <code>ruff_db::diagnostic::Diagnostic</code> directly. This involved a few major steps:</p>
+<ul>
+<li>Transferring the fields</li>
+<li>Transferring the methods and trait implementations, where possible</li>
+<li>Converting some constructor methods to free functions</li>
+<li>Moving the <code>SecondaryCode</code> struct</li>
+<li>Updating the method names</li>
+</ul>
+<p>I'm hoping that some of the methods, especially those in the <code>expect_ruff_*</code>
+family, won't be necessary long-term, but I avoided trying to replace them
+entirely for now to keep the already-large diff a bit smaller.</p>
+<h3>Related refactors</h3>
+<p>Alex and I noticed a few refactoring opportunities while looking at the code,
+specifically the very similar implementations for <code>create_parse_diagnostic</code>,
+<code>create_unsupported_syntax_diagnostic</code>, and <code>create_semantic_syntax_diagnostic</code>.
+We combined these into a single generic function, which I then copied into
+<code>ruff_linter::message</code> with some small changes and a TODO to combine them in the
+future.</p>
+<p>I also deleted the <code>DisplayParseErrorType</code> and <code>TruncateAtNewline</code> types for
+reporting parse errors. These were added in #4124, I believe to work around the
+error messages from LALRPOP. Removing these didn't affect any tests, so I think
+they were unnecessary now that we fully control the error messages from the
+parser.</p>
+<p>On a more minor note, I factored out some calls to the <code>OldDiagnostic::filename</code>
+(now <code>Diagnostic::expect_ruff_filename</code>) function to avoid repeatedly allocating
+<code>String</code>s in some places.</p>
+<h3>Snapshot changes</h3>
+<p>The <code>show_statistics_syntax_errors</code> integration test changed because the
+<code>OldDiagnostic::name</code> method used <code>syntax-error</code> instead of <code>invalid-syntax</code>
+like in ty. I think this (<code>--statistics</code>) is one of the only places we actually
+use this name for syntax errors, so I hope this is okay. An alternative is to
+use <code>syntax-error</code> in ty too.</p>
+<p>The other snapshot changes are from removing this code, as discussed on
+<a href="https://discord.com/channels/1039017663004942429/1228460843033821285/1388252408848847069">Discord</a>:</p>
+<p>https://github.com/astral-sh/ruff/blob/34052a1185392963c465737e9647f404abdfe8d5/crates/ruff_linter/src/message/mod.rs#L128-L135</p>
+<p>I think both of these are technically breaking changes, but they only affect
+syntax errors and are very narrow in scope, while also pretty substantially
+simplifying the refactor, so I hope they're okay to include in a patch release.</p>
+<h2>Test plan</h2>
+<p>Existing tests, with the adjustments mentioned above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-30 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-06-30 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-30 19:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~45MB
++     memo fields = ~41MB
+
+aioredis (https://github.com/aio-libs/aioredis)
+-     memo fields = ~54MB
++     memo fields = ~60MB
+
+Expression (https://github.com/cognitedata/Expression)
+-     memo fields = ~54MB
++     memo fields = ~49MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~80MB
+
+isort (https://github.com/pycqa/isort)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~80MB
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+-     memo fields = ~66MB
++     memo fields = ~72MB
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+-     memo fields = ~97MB
++     memo fields = ~106MB
+
+tornado (https://github.com/tornadoweb/tornado)
+- TOTAL MEMORY USAGE: ~156MB
++ TOTAL MEMORY USAGE: ~171MB
+-     memo fields = ~129MB
++     memo fields = ~142MB
+
+psycopg (https://github.com/psycopg/psycopg)
+- TOTAL MEMORY USAGE: ~207MB
++ TOTAL MEMORY USAGE: ~228MB
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- TOTAL MEMORY USAGE: ~189MB
++ TOTAL MEMORY USAGE: ~171MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~276MB
++ TOTAL MEMORY USAGE: ~304MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-30 19:58</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex-brent%2Fcombine-diagnostics?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19053 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>alex-brent/combine-diagnostics</code> (46d690c) with <code>main</code> (352b896)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-30 19:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 21:00</div>
+            <div class="timeline-body"><p>I'm not too sure about the failing benchmark, but I think this is ready for review otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-06-30 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-06-30 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-06-30 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-06-30 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-06-30 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 21:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not too sure about the failing benchmark, but I think this is ready for review otherwise.</p>
+</blockquote>
+<p>That one's been very flaky; I wouldn't worry about it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__ISC002_ISC_syntax_error.py.snap</code>:124 on 2025-07-01 08:46</div>
+            <div class="timeline-body"><p>I know you mentioned this on Discord but for this specific error, I'm worried that the user experience will be bad because for a large file, all of the lines in the editor starting from the f-string start token will be underlined. I don't think we need to do anything here but just wanted to point this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-01 08:48</div>
+            <div class="timeline-body"><p>This looks like a pretty straightforward change to me but I'd prefer if someone else who's more familiar can take a look as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__ISC002_ISC_syntax_error.py.snap</code>:124 on 2025-07-01 13:03</div>
+            <div class="timeline-body"><p>Oh wow, that's a good point, I didn't realize this continued to the end of the file. I'm realizing that we could actually revert these since I couldn't combine the two <code>create_snapshot_diagnostic</code> functions anyway. That seems better for now, even if this matches ty's behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__ISC002_ISC_syntax_error.py.snap</code>:124 on 2025-07-01 13:08</div>
+            <div class="timeline-body"><p>Oh, never mind. The current version is shared between error types, so adding this back would truncate other error ranges too. I guess I'll leave this as is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-01 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1393 on 2025-07-02 17:16</div>
+            <div class="timeline-body"><p>It's interesting to me here that the name of this function is very specific, but the parameters are very generic. That is, there is really nothing specific about the parameters here that ties this to creating a syntax error diagnostic specifically. Does it make sense to rename this? Or even put it as a convenience constructor on <code>Diagnostic</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1391 on 2025-07-02 17:17</div>
+            <div class="timeline-body"><p>Should this be named <code>span</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1393 on 2025-07-02 17:17</div>
+            <div class="timeline-body"><p>Oh I see, this is still using <code>DiagnosticId::InvalidSyntax</code>. So maybe it's fine as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:50 on 2025-07-02 17:21</div>
+            <div class="timeline-body"><p>Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-07-02 17:24</div>
+            <div class="timeline-body"><p>This all looks reasonable to me. I'm impressed at how few snapshot changes there are here. Nice work. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1393 on 2025-07-03 04:14</div>
+            <div class="timeline-body"><p>Ah I see what you mean. It's just a <code>DiagnosticId</code> and <code>Severity</code> away from constructing any diagnostic. I think I'll leave the arguments as-is for now if that's good with you, but it does sound nice to make it a constructor!</p>
+<p>Do you think it would still be better to implement this on the syntax errors themselves, or should I delete this part of the comment too?</p>
+<pre><code class="language-rust">/// This should _probably_ be a method on the syntax errors, but
+/// at time of writing, `ruff_db` depends on `ruff_python_parser` instead of
+/// the other way around. And since we want to do this conversion in a couple
+/// places, it makes sense to centralize it _somewhere_. So it's here for now.
+</code></pre>
+<p>(It originally referred to <code>ParseError</code>s specifically, so I may have mangled it a bit already by making it refer to &quot;syntax errors&quot; instead)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-03 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1393 on 2025-07-03 11:39</div>
+            <div class="timeline-body"><p>I <em>think</em> so, yeah. But I don't feel strongly at all. And doing that I think requires some refactoring of the module structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1393 on 2025-07-03 13:08</div>
+            <div class="timeline-body"><p>Sounds good, I'll keep the comment. Thanks for the review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-03 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-03 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-03 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/check.rs</code>:132 on 2025-07-07 08:59</div>
+            <div class="timeline-body"><p>Not as part of this PR: But we should probably change the diagnostic here to use a <code>LintId::IOError</code> rather than a <code>LintName</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:368 on 2025-07-07 09:03</div>
+            <div class="timeline-body"><p>We should alignt he naming here to <code>invalid_syntax</code>. This otherwise feels inconsistent. The same applies for the <code>syntax_error</code> constructor (we should probalby use <code>invalid_syntax</code> everywhere or rename <code>invalid_syntax</code> to <code>syntax_error</code> but I sort of prefer the former)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:383 on 2025-07-07 09:04</div>
+            <div class="timeline-body"><p>This method should have a <code>ruff</code> prefix or does it work for ty too? If not, I'm sort of inclined to make it a standalone function instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:465 on 2025-07-07 09:06</div>
+            <div class="timeline-body"><p>I think this implementation is different from ty's ordering. I'd suggest to remove the <code>Ord</code> implementation and instead add a <code>start_ordering(&amp;self, other: &amp;Diagnostic)</code> method that returns an <code>Ordering</code> which you can use in places where you used <code>Ord</code> before.</p>
+<p>For example, there's <code>RenderingSortKey</code> below and it's unclear to users now why/how the two sortings differ</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:454 on 2025-07-07 09:08</div>
+            <div class="timeline-body"><p>Assuming that two diagnostics are Equal that have no range but come from different files seems incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/Cargo.toml</code>:16 on 2025-07-07 09:10</div>
+            <div class="timeline-body"><p>I think we should move <code>Fix</code> and <code>Edit</code> (and remove <code>ruff_diagnostics</code>?). But it was the right move to not do this as part of this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3161 on 2025-07-07 09:12</div>
+            <div class="timeline-body"><p>I think I'd find it more idiomatic if <code>Violation</code> has a <code>into_diagnostic(TextRange, &amp;SourceFile)</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/mod.rs</code>:774 on 2025-07-07 09:18</div>
+            <div class="timeline-body"><p>I'm slightly worried by all the <code>expect_range</code> calls because we'll very likely start adding diagnostics that don't have a start range (e.g. IOError!). I think it was the right call to use <code>expect_range</code> as part of this PR but it would be great if we could make (at least the production code) more forgiving if the source file or range is missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters_syntax_error.py.snap</code>:19 on 2025-07-07 09:18</div>
+            <div class="timeline-body"><p>These are nice improvements!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/Cargo.toml</code>:18 on 2025-07-07 09:21</div>
+            <div class="timeline-body"><p>Huh, what's the reason for changing to the version (I can't comment on line 3 for whatever reason)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 09:22</div>
+            <div class="timeline-body"><p>This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-07 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/Cargo.toml</code>:18 on 2025-07-07 12:28</div>
+            <div class="timeline-body"><p>I'm not seeing a diff on line 3 of this file. Both versions have <code>0.12.1</code>. Is that what you mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/Cargo.toml</code>:18 on 2025-07-07 12:29</div>
+            <div class="timeline-body"><p>Weird, maybe a bug in the online VS code diff viewer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-07 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:454 on 2025-07-07 13:25</div>
+            <div class="timeline-body"><p>I agree, I just wasn't sure what to do about missing files/ranges. I took your other suggestion about <code>start_ordering</code>. Is it okay to <code>unwrap</code> those calls in Ruff, or should I still fall back to <code>Equal</code> just in case?</p>
+<p>I also tried using <code>RenderingSortKey</code> directly, but I'm not sure we want to fall back to comparing the diagnostic IDs in Ruff. It changed a handful of snapshots when many diagnostics were on the same line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-07 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:383 on 2025-07-07 14:17</div>
+            <div class="timeline-body"><p>I'll try to resolve this one in my revisions to #19133.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

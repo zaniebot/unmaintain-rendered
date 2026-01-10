@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treat form feed as valid whitespace before a line continuation - astral-sh/ruff #19220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Treat form feed as valid whitespace before a line continuation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19220">#19220</a>
+        opened by <a href="https://github.com/soundsonacid">@soundsonacid</a>
+        on 2025-07-08 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/soundsonacid">@soundsonacid</a> on 2025-07-08 21:39</div>
+            <div class="timeline-body"><p>Fixes #19175</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-08 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-08 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-08 21:50</div>
+            <div class="timeline-body"><p>Thanks for working on this! Could you add a regression test based on the example in the issue?</p>
+<p>I'm slightly concerned that <code>is_whitespace</code> is too permissive, but I'm also not quite sure why it was only limited to spaces and tabs before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-08 21:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/soundsonacid">@soundsonacid</a> on 2025-07-08 21:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for working on this! Could you add a regression test based on the example in the issue?</p>
+<p>I'm slightly concerned that <code>is_whitespace</code> is too permissive, but I'm also not quite sure why it was only limited to spaces and tabs before.</p>
+</blockquote>
+<p>No problem!  I had a similar thought about the is_whitespace check, but I couldn't find (with admittedly not a ton of time searching) a comprehensive list of all valid whitespace Python characters.  If you have one handy, I'm happy to make the change to that -- in the meantime I'll keep looking for one myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-08 22:03</div>
+            <div class="timeline-body"><p><a href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">Section 2.1.9 “Whitespace between tokens”</a> says:</p>
+<blockquote>
+<p>Except at the beginning of a logical line or in string literals, the whitespace characters space, tab and formfeed can be used interchangeably to separate tokens. Whitespace is needed between two tokens only if their concatenation could otherwise be interpreted as a different token (e.g., ab is one token, but a b is two tokens).</p>
+</blockquote>
+<p>Those are the only three characters Python treats as white space within a line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(fix): detect continuations with is_whitespace instead of hardcoded chars" to "(fix): treat unicode formfeed as valid whitespace within match_continuation" by @soundsonacid on 2025-07-08 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/insertion.rs</code>:309 on 2025-07-08 22:53</div>
+            <div class="timeline-body"><p>tiny nit: I think we generally try to wrap comments like this:</p>
+<pre><code class="language-suggestion">            // space, tab, &amp; formfeed (respectively) are the only three valid whitespace characters
+            // within a line:
+            // https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/whitespace.py</code>:1 on 2025-07-08 22:54</div>
+            <div class="timeline-body"><p>We might want to include a small note about form feeds being present in the file. Something like this from another test case:</p>
+<p>https://github.com/astral-sh/ruff/blob/24799f10c4079d61dadcdbdca9f375c9f0ca09fb/crates/ruff_python_formatter/resources/test/fixtures/black/cases/form_feeds.py#L1-L2</p>
+<p>We could probably go with something a bit shorter here just indicating that there's a form feed before the <code>\</code>. I see a nice <code>^L</code> in Emacs, but I don't see it at all in my browser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-08 23:00</div>
+            <div class="timeline-body"><p>Thanks, this looks great!</p>
+<p>And thanks @dscorbett for the report and for the whitespace reference.</p>
+<p>I just had a couple of  very small suggestions, but this is good to go otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/soundsonacid">@soundsonacid</a> reviewed on 2025-07-09 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/soundsonacid">@soundsonacid</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/whitespace.py</code>:1 on 2025-07-09 00:15</div>
+            <div class="timeline-body"><p>done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/importer/insertion.rs</code>:312 on 2025-07-09 07:03</div>
+            <div class="timeline-body"><p>We could use https://github.com/astral-sh/ruff/blob/9f3a38d408f473df7a6b3574c5d1389bef303dd5/crates/ruff_python_trivia/src/whitespace.rs#L40-L46</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/soundsonacid">@soundsonacid</a> reviewed on 2025-07-09 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/soundsonacid">@soundsonacid</a> on <code>crates/ruff_linter/src/importer/insertion.rs</code>:312 on 2025-07-09 13:57</div>
+            <div class="timeline-body"><p>thanks for lmk about this, updated to use this fn</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-09 15:07</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 15:11</div>
+            <div class="timeline-body"><p>Looks like we need to update the snapshot for the new comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(fix): treat unicode formfeed as valid whitespace within match_continuation" to "Treat form feed as valid whitespace before a line continuation" by @ntBre on 2025-07-09 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/soundsonacid">@soundsonacid</a> on 2025-07-10 04:52</div>
+            <div class="timeline-body"><p>Weird, i ran cargo insta review and it said no changes, also ran cargo test on my local and it was fine</p>
+<p>Happy to do whatever it takes here just let me know what to do, not super familiar with how the tests work yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 06:28</div>
+            <div class="timeline-body"><p>Can you verify that you have no uncommited changes (<code>git status</code>, <code>git diff</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 12:48</div>
+            <div class="timeline-body"><p>I checked out the branch locally and see the same test failures, so it might be something with git as Micha said.</p>
+<p>I can push a commit if you'd like but wanted to give you the solo credit for the PR if possible :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/soundsonacid">@soundsonacid</a> on 2025-07-10 13:37</div>
+            <div class="timeline-body"><p>yep, nothing unstaged, no diffs, no snapshots to review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-07-10 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-10 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

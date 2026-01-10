@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bandit`] Fix `S412` false negative - astral-sh/ruff #19009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bandit</code>] Fix <code>S412</code> false negative</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19009">#19009</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-28 06:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-28 06:21</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Part of #18972</p>
+<p>This PR fixes a false negative in <a href="https://docs.astral.sh/ruff/rules/suspicious-httpoxy-import/#suspicious-httpoxy-import-s412">suspicious-httpoxy-import (S412)</a> if the suspicious import is imported directly, ie <code>import wsgiref.handlers.CGIHandler</code> and <code>import twisted.web.twcgi.CGIScript</code></p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Added additional cases to test file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-28 06:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 14:06</div>
+            <div class="timeline-body"><p>I think the documentation might just be wrong. I tried importing the <code>twisted</code> example directly, and it didn't work:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import twisted.web.twcgi.CGIScript
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    import twisted.web.twcgi.CGIScript
+ModuleNotFoundError: No module named 'twisted.web.twcgi.CGIScript'; 'twisted.web.twcgi' is not a package
+&gt;&gt;&gt; import twisted.web.twcgi
+&gt;&gt;&gt; twisted.web.twcgi.CGIScript
+&lt;class 'twisted.web.twcgi.CGIScript'&gt;
+</code></pre>
+<p>I didn't try <code>wsgiref</code>, but I don't think you can directly import it either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-30 17:11</div>
+            <div class="timeline-body"><p>Looking at the docs, it looks like you are right:
+<a href="https://docs.twisted.org/en/stable/api/twisted.web.twcgi.html"><code>twisted.web.twcgi</code></a> lists <a href="https://docs.twisted.org/en/stable/api/twisted.web.twcgi.CGIScript.html"><code>CGIScript</code></a> as a class
+<a href="https://docs.python.org/3/library/wsgiref.html#module-wsgiref.handlers"><code>wsgiref.handlers</code></a> also lists <a href="https://docs.python.org/3/library/wsgiref.html#wsgiref.handlers.CGIHandler"><code>CGIHandler</code></a> as a class
+So these two rules still have a false positive, just a different one than I first thought: https://play.ruff.rs/d56653d2-80ff-4af4-adfa-390008cc39b4</p>
+<pre><code class="language-py">from twisted.web.twcgi import CGIScript  # S412
+
+import twisted.web.twcgi
+twisted.web.twcgi.CGIScript  # no lint
+
+from wsgiref.handlers import CGIHandler  # S412
+
+import wsgiref.handlers
+wsgiref.handlers.CGIHandler  # no lint
+</code></pre>
+<blockquote>
+<p>[!NOTE]
+This only applies to <code>S409</code>, the rest of the lints in <code>suspicious_imports</code> are for modules, so they can't be used like this</p>
+</blockquote>
+<p>For fixing this, I see two possible paths:</p>
+<ul>
+<li>Move the lint from targeting the classes to their parent modules<ul>
+<li>This looks like a good option for <code>twisted.web.twcgi.CGIScript</code>, since in the docs all of <code>twisted.web.twcgi</code>'s members are <code>CGI</code>-related</li>
+<li>I'm not sure how good of an option this is for <code>wsgiref.handlers.CGIHandler</code>, since <code>wsgiref.handlers</code> also has stuff for <code>WSGI</code>, and I don't know if that's the same thing as <code>CGI</code>.</li>
+</ul>
+</li>
+<li>Keep the lints as they are, but also add a check for the usage of these classes as well<ul>
+<li>Might want to move the lint in this case? Since it wouldn't fit in that well with the rest of the <code>suspicious_imports</code> then</li>
+<li>Might also want to add more classes to the lint in this case, since I see more <code>CGI</code> related things in the docs for both <code>twisted.web.twcgi</code> and <code>wsgiref.handlers</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 17:33</div>
+            <div class="timeline-body"><p>Could you check what the upstream linter does? It's not the most satisfying answer because I think we could be more robust here by using either of your suggestions, but I'm tempted just to update the docs and leave the code alone if this is how the upstream linter works.</p>
+<p>I think checking the qualified name at the usage site rather than at the import is how the airflow rules work, for example, which I think aligns with your second suggestion. That would probably be the best solution, but I think we'd need to apply it to all of these rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-06-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-30 17:58</div>
+            <div class="timeline-body"><p>In <code>flake8-bandit</code>, it doesn't have any of the actual checking code, but the tests are pretty clear that they do support the non-direct-import version:
+https://github.com/tylerwince/flake8-bandit/blob/main/tests/httpoxy_cgihandler.py</p>
+<pre><code class="language-py">import requests
+import wsgiref.handlers
+
+def application(environ, start_response):
+    r = requests.get('https://192.168.0.42/private/api/foobar', timeout=30)
+    start_response('200 OK', [('Content-Type', 'text/plain')])
+    return [r.content]
+
+if __name__ == '__main__':
+    wsgiref.handlers.CGIHandler().run(application)
+</code></pre>
+<p>https://github.com/tylerwince/flake8-bandit/blob/main/tests/httpoxy_twisted_script.py</p>
+<pre><code class="language-py">from twisted.internet import reactor
+from twisted.web import static, server, twcgi
+
+root = static.File(&quot;/root&quot;)
+root.putChild(&quot;login.cgi&quot;, twcgi.CGIScript(&quot;/var/www/cgi-bin/login.py&quot;))
+reactor.listenTCP(80, server.Site(root))
+reactor.run()
+</code></pre>
+<p>I think the functionality is coming from https://github.com/PyCQA/bandit, where it defines <code>B412</code> here (<code>flake8-bandit</code> changes the prefix from <code>B</code> to <code>S</code> since <code>flake8-bugbear</code> was first):
+https://github.com/PyCQA/bandit/blob/main/bandit/blacklists/imports.py#L375-L389</p>
+<pre><code class="language-py">    sets.append(
+        utils.build_conf_dict(
+            &quot;import_httpoxy&quot;,
+            &quot;B412&quot;,
+            issue.Cwe.IMPROPER_ACCESS_CONTROL,
+            [
+                &quot;wsgiref.handlers.CGIHandler&quot;,
+                &quot;twisted.web.twcgi.CGIScript&quot;,
+                &quot;twisted.web.twcgi.CGIDirectory&quot;,
+            ],
+            &quot;Consider possible security implications associated with &quot;
+            &quot;{name} module.&quot;,
+            &quot;HIGH&quot;,
+        )
+    )
+</code></pre>
+<p>And checks for it in imports, import froms, and calls: <code>return {&quot;Import&quot;: sets, &quot;ImportFrom&quot;: sets, &quot;Call&quot;: sets}</code>. It also has the same tests as <code>flake8-bandit</code>. I couldn't figure how how it actually does the config -&gt; test generation for use inside the actual runner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 18:09</div>
+            <div class="timeline-body"><p>Ah nice, I made it to <code>imports.py</code> but didn't see how it did the config to actual check transform either. It sounds like we may need a bigger update to these rules.</p>
+<p>Testing empirically, it looks like they do flag both imports and calls:</p>
+<pre><code class="language-shell">$ cat &lt;&lt;EOF | uvx --with flake8-bandit flake8 --select S -
+from twisted.web.twcgi import CGIScript  # S412
+import twisted.web.twcgi  # ok
+from wsgiref.handlers import CGIHandler  # S412
+import wsgiref.handlers  # ok
+
+
+twisted.web.twcgi.CGIScript()  # S412
+wsgiref.handlers.CGIHandler()  # S412
+CGIScript()  # S412
+EOF
+Unable to find qualified name for module: stdin
+stdin:1:1: S412 Consider possible security implications associated with CGIScript module.
+stdin:3:1: S412 Consider possible security implications associated with CGIHandler module.
+stdin:7:1: S412 Consider possible security implications associated with twisted.web.twcgi.CGIScript module.
+stdin:8:1: S412 Consider possible security implications associated with wsgiref.handlers.CGIHandler module.
+stdin:9:1: S412 Consider possible security implications associated with twisted.web.twcgi.CGIScript module.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-30 18:56</div>
+            <div class="timeline-body"><p>It looks like <code>flake8-bandit</code> does lint on the module &quot;uses&quot;, but only if you structure it as the module itself being called.</p>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Get-Content issue.py
+import xml.dom
+
+xml.dom.minidom()
+PS ~\Desktop\New_folder\ruff&gt;uvx --with flake8-bandit flake8 --select S issue.py
+Unable to find qualified name for module: issue.py
+issue.py:3:1: S408 Using xml.dom.minidom to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+PS ~\Desktop\New_folder\ruff&gt;py issue.py
+Traceback (most recent call last):
+  File &quot;~\Desktop\New_folder\ruff\issue.py&quot;, line 3, in &lt;module&gt;
+    xml.dom.minidom()
+    ^^^^^^^^^^^^^^^
+AttributeError: module 'xml.dom' has no attribute 'minidom'
+</code></pre>
+<p>Using things from inside the module don't get the lint (assuming they aren't part of another lint)</p>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Get-Content issue.py
+import xml.dom.minidom
+
+xml.dom.minidom.Node()
+PS ~\Desktop\New_folder\ruff&gt;uvx --with flake8-bandit flake8 --select S issue.py
+Unable to find qualified name for module: issue.py
+issue.py:1:1: S408 Using xml.dom.minidom to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+PS ~\Desktop\New_folder\ruff&gt;py issue.py
+PS ~\Desktop\New_folder\ruff&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-07 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 17:19</div>
+            <div class="timeline-body"><p>My read of the thread here is that the changes in this PR aren't really correct, and we should instead revise the rule more thoroughly. Is that right?</p>
+<p>If that's the case, we might want to close this PR and open a follow-up issue summarizing our findings here, unless you'd rather repurpose this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-09 17:31</div>
+            <div class="timeline-body"><p>Sounds good, do you want to open it or should I? I don't think I have the capacity/understanding to make the needed changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MeGaGiGaGon on 2025-07-09 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 17:34</div>
+            <div class="timeline-body"><p>I'll try to write one up, but let me know if I get anything wrong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-09 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

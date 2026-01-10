@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Make sure to always respond to client requests - astral-sh/ruff #19277</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Make sure to always respond to client requests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19277">#19277</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-07-11 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-11 10:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug that didn't return a response to the client if the document snapshotting failed.</p>
+<p>This is resolved by making sure that the server always creates the document snapshot and embed the any failures inside the snapshot.</p>
+<p>Closes: astral-sh/ty#798</p>
+<h2>Test Plan</h2>
+<p>Using the test case as described in the linked issue:</p>
+<p>https://github.com/user-attachments/assets/f32833f8-03e5-4641-8c7f-2a536fe2e270</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-07-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 10:58</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-11 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 11:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/index.rs</code>:147 on 2025-07-11 11:14</div>
+            <div class="timeline-body"><p>I think we can simplify this by changing <code>DocumentQuery</code> to store an <code>AnySystemPath</code> (file_path) instead of <code>file_url</code>. I quickly tried this locally and it seems we don't really need the URL anywhere and a path is fine. This allows us to remove this <code>Err</code> branch entirely and hopefully simplifies things overall.</p>
+<pre><code class="language-patch">Subject: [PATCH] Rename `knot_benchmark` to `ty_benchmark`
+---
+Index: crates/ty_server/src/system.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/system.rs b/crates/ty_server/src/system.rs
+--- a/crates/ty_server/src/system.rs	(revision 08c2c695a2006cf2d141478a76822f0ce755fc0d)
++++ b/crates/ty_server/src/system.rs	(date 1752232570580)
+@@ -46,7 +46,7 @@
+ 
+ /// Represents either a [`SystemPath`] or a [`SystemVirtualPath`].
+ #[derive(Clone, Debug, Hash, PartialEq, Eq)]
+-pub(crate) enum AnySystemPath {
++pub enum AnySystemPath {
+     System(SystemPathBuf),
+     SystemVirtual(SystemVirtualPathBuf),
+ }
+Index: crates/ty_server/src/session/index.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/session/index.rs b/crates/ty_server/src/session/index.rs
+--- a/crates/ty_server/src/session/index.rs	(revision 08c2c695a2006cf2d141478a76822f0ce755fc0d)
++++ b/crates/ty_server/src/session/index.rs	(date 1752232576248)
+@@ -142,18 +142,8 @@
+             DocumentKey::NotebookCell {
+                 cell_url,
+                 notebook_path,
+-            } =&gt; {
+-                let Some(notebook_url) = notebook_path.to_url() else {
+-                    return Err(DocumentQueryError::InvalidSystemPath(notebook_path));
+-                };
+-                (Some(cell_url), notebook_url)
+-            }
+-            DocumentKey::Notebook(path) | DocumentKey::Text(path) =&gt; {
+-                let Some(file_url) = path.to_url() else {
+-                    return Err(DocumentQueryError::InvalidSystemPath(path));
+-                };
+-                (None, file_url)
+-            }
++            } =&gt; (Some(cell_url), notebook_path),
++            DocumentKey::Notebook(path) | DocumentKey::Text(path) =&gt; (None, path),
+         };
+         Ok(controller.make_ref(cell_url, file_url))
+     }
+@@ -230,15 +220,15 @@
+         Self::Notebook(Arc::new(document))
+     }
+ 
+-    fn make_ref(&amp;self, cell_url: Option&lt;Url&gt;, file_url: Url) -&gt; DocumentQuery {
++    fn make_ref(&amp;self, cell_url: Option&lt;Url&gt;, file_path: AnySystemPath) -&gt; DocumentQuery {
+         match &amp;self {
+             Self::Notebook(notebook) =&gt; DocumentQuery::Notebook {
+                 cell_url,
+-                file_url,
++                file_path,
+                 notebook: notebook.clone(),
+             },
+             Self::Text(document) =&gt; DocumentQuery::Text {
+-                file_url,
++                file_path,
+                 document: document.clone(),
+             },
+         }
+@@ -279,14 +269,14 @@
+ #[derive(Debug, Clone)]
+ pub enum DocumentQuery {
+     Text {
+-        file_url: Url,
++        file_path: AnySystemPath,
+         document: Arc&lt;TextDocument&gt;,
+     },
+     Notebook {
+         /// The selected notebook cell, if it exists.
+         cell_url: Option&lt;Url&gt;,
+         /// The URL of the notebook.
+-        file_url: Url,
++        file_path: AnySystemPath,
+         notebook: Arc&lt;NotebookDocument&gt;,
+     },
+ }
+@@ -309,9 +299,9 @@
+     }
+ 
+     /// Get the URL for the document selected by this query.
+-    pub(crate) fn file_url(&amp;self) -&gt; &amp;Url {
++    pub(crate) fn file_path(&amp;self) -&gt; &amp;AnySystemPath {
+         match self {
+-            Self::Text { file_url, .. } | Self::Notebook { file_url, .. } =&gt; file_url,
++            Self::Text { file_path, .. } | Self::Notebook { file_path, .. } =&gt; file_path,
+         }
+     }
+ 
+@@ -332,7 +322,7 @@
+     }
+ 
+     pub(crate) fn file(&amp;self, db: &amp;dyn Db) -&gt; Option&lt;File&gt; {
+-        match AnySystemPath::try_from_url(self.file_url()).ok()? {
++        match self.file_path() {
+             AnySystemPath::System(path) =&gt; system_path_to_file(db, path).ok(),
+             AnySystemPath::SystemVirtual(virtual_path) =&gt; db
+                 .files()
+@@ -348,6 +338,4 @@
+     InvalidUrl(Url),
+     #[error(&quot;document not found for key: {0}&quot;)]
+     NotFound(DocumentKey),
+-    #[error(&quot;invalid system path: {0}&quot;)]
+-    InvalidSystemPath(AnySystemPath),
+ }
+Index: crates/ty_server/src/server/api/diagnostics.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/server/api/diagnostics.rs b/crates/ty_server/src/server/api/diagnostics.rs
+--- a/crates/ty_server/src/server/api/diagnostics.rs	(revision 08c2c695a2006cf2d141478a76822f0ce755fc0d)
++++ b/crates/ty_server/src/server/api/diagnostics.rs	(date 1752232433054)
+@@ -122,7 +122,7 @@
+     };
+ 
+     let Some(file) = document.file(db) else {
+-        tracing::info!(&quot;No file found for snapshot for `{}`&quot;, document.file_url());
++        tracing::info!(&quot;No file found for snapshot for `{}`&quot;, document.file_path());
+         return None;
+     };
+ 
+Index: crates/ty_server/src/session.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/session.rs b/crates/ty_server/src/session.rs
+--- a/crates/ty_server/src/session.rs	(revision 08c2c695a2006cf2d141478a76822f0ce755fc0d)
++++ b/crates/ty_server/src/session.rs	(date 1752232547360)
+@@ -471,14 +471,14 @@
+         };
+         document
+             .file(db)
+-            .ok_or_else(|| FileLookupError::NotFound(document.file_url().clone()))
++            .ok_or_else(|| FileLookupError::NotFound(document.file_path().clone()))
+     }
+ }
+ 
+ #[derive(Debug, thiserror::Error)]
+ pub(crate) enum FileLookupError {
+-    #[error(&quot;file not found for url `{0}`&quot;)]
+-    NotFound(Url),
++    #[error(&quot;file not found for path `{0}`&quot;)]
++    NotFound(AnySystemPath),
+     #[error(transparent)]
+     DocumentQuery(DocumentQueryError),
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api.rs</code>:222 on 2025-07-11 11:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            tracing::warn!(&quot;Ignoring request id={id} method={} because the URL `{url}` isn't a valid path&quot;, R::METHOD);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:87 on 2025-07-11 11:22</div>
+            <div class="timeline-body"><p>I suggest passing the document in addition to the snapshot so that <code>compute_diagnostic</code> doesn't have to repeat the <code>document</code> dance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/signature_help.rs</code>:41 on 2025-07-11 11:25</div>
+            <div class="timeline-body"><p>I don't have a good sense for it but it would be nice if getting the file wouldn't require as much boilerplate. Should we add a <code>file_with_tracing</code> (<code>file_ok</code>) method that returns an <code>Option</code> and has the tracing call internally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-11 11:26</div>
+            <div class="timeline-body"><p>Nice find and thanks for fixing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-11 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:87 on 2025-07-11 14:16</div>
+            <div class="timeline-body"><p>This function is used in https://github.com/astral-sh/ruff/blob/08c2c695a2006cf2d141478a76822f0ce755fc0d/crates/ty_server/src/server/api/requests/diagnostic.rs#L42-L42 as well which would mean that the <code>snapshot &gt; document &gt; file</code> would need to be done somewhere - either in the document diagnostic handler or inside compute diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-11 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/signature_help.rs</code>:41 on 2025-07-11 14:17</div>
+            <div class="timeline-body"><p>Yeah, <code>file_ok</code> sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-07-11 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-11 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-11 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

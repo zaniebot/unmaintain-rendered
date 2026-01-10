@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Initial implementation of signature help provider - astral-sh/ruff #19194</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Initial implementation of signature help provider</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19194">#19194</a>
+        opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a>
+        on 2025-07-08 02:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-08 02:26</div>
+            <div class="timeline-body"><p>This PR includes:</p>
+<ul>
+<li>Implemented core signature help logic</li>
+<li>Added new docstring method on Definition that returns a docstring for function and class definitions</li>
+<li>Modified the display code for Signature that allows a signature string to be broken into text ranges that correspond to each parameter in the signature</li>
+<li>Augmented Signature struct so it can track the Definition for a signature when available; this allows us to find the docstring associated with the signature</li>
+<li>Added utility functions for parsing parameter documentation from three popular docstring formats (Google, NumPy and reST)</li>
+<li>Implemented tests for all of the above</li>
+</ul>
+<p>&quot;Signature help&quot; is displayed by an editor when you are typing a function call expression. It is typically triggered when you type an open parenthesis. The language server provides information about the target function's signature (or multiple signatures), documentation, and parameters.</p>
+<p>Here is how this appears:</p>
+<p><img src="https://github.com/user-attachments/assets/40dce616-ed74-4810-be62-42a5b5e4b334" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @UnboundVariable on 2025-07-08 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @UnboundVariable on 2025-07-08 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @UnboundVariable on 2025-07-08 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @UnboundVariable on 2025-07-08 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @UnboundVariable on 2025-07-08 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-08 02:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+-     memo fields = ~152MB
++     memo fields = ~159MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-08 03:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dhruvmanila on 2025-07-08 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-08 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-08 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:18 on 2025-07-08 07:30</div>
+            <div class="timeline-body"><p>Rust has explicit syntax for module documentation</p>
+<pre><code class="language-suggestion">//! This module handles the &quot;signature help&quot; request in the language server
+//! protocol. This request is typically issued by a client when the user types
+//! an open parenthesis and starts to enter arguments for a function call.
+//! The signature help provides information that the editor displays to the
+//! user about the target function signature including parameter names,
+//! types, and documentation. It supports multiple signatures for union types
+//! and overloads.
+
+use crate::{Db, docstring::get_parameter_documentation, find_node::covering_node};
+use ruff_db::files::File;
+use ruff_db::parsed::parsed_module;
+use ruff_python_ast::{self as ast, AnyNodeRef};
+use ruff_text_size::{Ranged, TextRange, TextSize};
+use ty_python_semantic::semantic_index::definition::Definition;
+use ty_python_semantic::types::{
+    CallSignatureDetails, ParameterLabelOffset, call_signature_details,
+    get_docstring_for_definition,
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:43 on 2025-07-08 07:31</div>
+            <div class="timeline-body"><p>Can we document what the offsets are? Are those byte offsets? An index offset?</p>
+<p>If they're byte offsets, I recommend using <code>TextSize</code> which is what we use for all byte offsets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:72 on 2025-07-08 07:32</div>
+            <div class="timeline-body"><p>What's the reason that this field is necessary when it's already present on <code>SignatureInfo</code>. Can we remove one of the two?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:171 on 2025-07-08 07:39</div>
+            <div class="timeline-body"><p>Nit, I think you can simplify this to</p>
+<pre><code class="language-suggestion">    for (i, arg) in call_expr.arguments.arguments_source_order().enumerate() {
+        if offset &lt;= arg.end() {
+            return i;
+        }
+        current_arg = i + 1;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:186 on 2025-07-08 07:41</div>
+            <div class="timeline-body"><p>Nit: Unlike Python, Rust doesn't require forward declarations. That's why we often put helper/utility functions later in the file (often called newspaper style). In this case, <code>get_callable_documentation</code> would come after <code>create_signature_info_from_details</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:286 on 2025-07-08 07:47</div>
+            <div class="timeline-body"><p>Our intended split between the <code>ide</code> and <code>server</code> crates are:</p>
+<ul>
+<li><code>ide</code> implements the semantic analysis and returns a general purpose data structure</li>
+<li>The <code>server</code> crate maps the result to whatever datastructure is required by the LSP specification. Respects client capabilities etc.</li>
+<li>The <code>wasm</code> crate maps the data structure to whatever data structure we want to expose (often a simplified representation of the LSP's representation)</li>
+</ul>
+<p>That's why I think that the mapping from <code>SignatureDetails</code> to <code>SignatureInfo</code> should be moved to the <code>server</code> crate (we may want a <code>ParameterDetails</code> intermediate struct. I also think that we should move all the client capability handling out of the <code>ide</code> crate into the `server crate (e.g. WASM doesn't care about capabilities)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:297 on 2025-07-08 07:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let Some(first) = signature_details.first() else {
+        return None;
+    }
+
+    // If there are no arguments in the mapping, just return the first signature.
+    if first
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/signature_help.rs</code>:304 on 2025-07-08 07:49</div>
+            <div class="timeline-body"><p>Nit: I would probalby use an inline snapshot for this as it seems cumbersome to write those expected docstrings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/call/argument_matcher.rs</code>:1 on 2025-07-08 07:51</div>
+            <div class="timeline-body"><p>Are there any changes to this module or is this a simple move?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:747 on 2025-07-08 07:53</div>
+            <div class="timeline-body"><p>Could we use <code>TextRange</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:646 on 2025-07-08 07:57</div>
+            <div class="timeline-body"><p>I would probably use an enum here over a trait with two structs because the number of implementations is closed (we don't want to allow arbitrary implementations of <code>SignatureWriterTrait</code>).</p>
+<pre><code>enum SignatureWriter&lt;'a, 'b&gt; {
+	Formatter(&amp;'a mut Formatter&lt;'b&gt;),
+	Details(SiagnatureDetailsWriter)
+}
+
+impl SignatureWriter&lt;'_, '_&gt; {
+	fn write_char(...) { ... }
+	...
+}
+</code></pre>
+<p>The advantage of an enum over a trait is that it doesn't lead to monomorphizing <code>write_signature</code>, resulting in a smaller binary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:293 on 2025-07-08 07:58</div>
+            <div class="timeline-body"><p>Can we use <code>TextRange</code> here instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:400 on 2025-07-08 08:00</div>
+            <div class="timeline-body"><p>I wonder if this should be a method on <code>FunctionType</code> on <code>CallableType</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:420 on 2025-07-08 08:39</div>
+            <div class="timeline-body"><p>Is it necessary that <code>argument_forms</code> and <code>conflicting_forms</code> have exactly the length of <code>call_arguments.len</code>? If so, this API seems very fragile as this contract escapes <code>ArgumentMatcher::new</code>. It would be great if this could be isolated more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:445 on 2025-07-08 08:41</div>
+            <div class="timeline-body"><p>This seems to be identical to what we have in <code>TypeInferenceBuilder::parse_arguments</code>. Should we make this a method on <code>CallArguments</code> instead (e.g. <code>CallArguments::from_arguments</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:489 on 2025-07-08 08:42</div>
+            <div class="timeline-body"><p>I'd be inclined to make this a method on <code>Definition</code> instead. It should be easier to discover than having this standalone function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:933 on 2025-07-08 08:46</div>
+            <div class="timeline-body"><p>Looking at the usage, the following seems to be a more convenient API</p>
+<pre><code class="language-suggestion">    /// Create a new signature with the given definition.
+    pub(crate) fn with_definition(
+    		self, 
+        definition: Option&lt;Definition&lt;'db&gt;&gt;,
+    ) -&gt; Self {
+        Self {
+            definition: Some(definition),
+            ..self
+        }
+</code></pre>
+<p>The call in <code>ClassType</code> then becomes:</p>
+<pre><code class="language-rust">let new_signature = Signature::new(signature.parameters().clone(), Some(correct_return_type))
+	.with_definition(signautre.definition())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:668 on 2025-07-08 08:50</div>
+            <div class="timeline-body"><p>Do we need to set the definition for regular function definitions too?</p>
+<p>E.g. is the definition tracked for</p>
+<pre><code class="language-rust">def test(): pass
+
+
+test(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:363 on 2025-07-08 08:54</div>
+            <div class="timeline-body"><p>Could this be moved to the <code>ty_ide</code> crate. It feels a bit misplaced or would that require making some APIs public that we rather don't make public? If so, could we expose higher level APIs for those operations instead of having the entire signature details in the semantic crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:1 on 2025-07-08 09:03</div>
+            <div class="timeline-body"><p>I suggest to add docstring support in a separate PR and we should check if there's any infrastructure in Ruff that can be reused https://github.com/astral-sh/ruff/blob/815a074ccc9c0094fead9d56926973421e44632f/crates/ruff_linter/src/rules/pydocstyle/helpers.rs#L73-L148</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:41 on 2025-07-08 09:04</div>
+            <div class="timeline-body"><p>Building the regex-automate is somewhat expensive. That's why regex should be instantiated exactly once and then be reused.</p>
+<p>https://docs.rs/regex/latest/regex/#avoid-re-compiling-regexes-especially-in-a-loop</p>
+<p>We should also double check if any of the other performance recommendations apply</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:43 on 2025-07-08 09:04</div>
+            <div class="timeline-body"><p>Rust's <code>lines</code> iterator doesn't handle <code>\r</code>. We should use the <code>UniversalNewlinesIterator</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:43 on 2025-07-08 09:05</div>
+            <div class="timeline-body"><p>Can we avoid collecting the lines here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-08 09:06</div>
+            <div class="timeline-body"><p>Nice. I think it makes sense to split the docstring support out of this PR to reduce (the already large scope) and have the main feature landed sooner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-08 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/signature_help.rs</code>:72 on 2025-07-08 16:49</div>
+            <div class="timeline-body"><p>This is related to the way the language server protocol exposes this information. Some clients do not support per-signature &quot;active parameters&quot;, which was added in later versions of the LSP. However, I agree that this could be removed from the IDE structure. The server logic doesn't need this field to build the final value returned to the client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-08 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/call/argument_matcher.rs</code>:1 on 2025-07-08 16:56</div>
+            <div class="timeline-body"><p>It's mostly a cut-and-paste move, but I needed to do some minor renames for the separation to make sense. The <code>MatchArgumentsError</code> was previously named <code>BindingError</code>, but its functionality didn't change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-08 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:420 on 2025-07-08 16:58</div>
+            <div class="timeline-body"><p>I agree, but I'd prefer to leave that change to someone who is more familiar with the existing ArgumentMatcher logic. If it's OK with you, we could leave that as a follow-on to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-08 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:363 on 2025-07-08 17:02</div>
+            <div class="timeline-body"><p>This is a discussion I wanted to have with you. It depends on the design philosophy. I initially started down the path of writing this logic in <code>ty_ide</code>, but I found that I needed to expose many private APIs as public (I was up to six by the time I changed course and moved the logic into a single new public API).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-08 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/docstring.rs</code>:1 on 2025-07-08 17:05</div>
+            <div class="timeline-body"><p>Before writing this, I looked in the ruff sources (or, rather had an AI agent scan through the sources), but I didn't uncover any logic that extracted parameter information from docstrings. Perhaps one of the ruff maintainers would know definitively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 07:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:420 on 2025-07-09 07:29</div>
+            <div class="timeline-body"><p>I think my concern here is that we expose an API that's considered to be internal. It also seems that we aren't prepending <code>self</code> which might be necessary for methods. And I think this also skips any overload selection.</p>
+<p>I feel like <code>Binding</code> should give you the information you need. You can create a binding from <code>Binding::single(callable_type.into(), signature.clone())</code> and you can then call <code>Binding::match_parameters</code>. The argument mapping is then stored on <code>argument_parameters</code>.</p>
+<p>This doesn't resolve the issue that we need to pass some unnecessary vecs. Maybe @dhruvmanila has an idea on how we can avoid this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:363 on 2025-07-09 08:07</div>
+            <div class="timeline-body"><p>My initial aim was to have as much as possible in <code>ty_ide</code> and avoid LSP/IDE specific types in <code>ty_python_semantic</code>. However, I haven't implemented enough to have a good sense to what degree this is possible. think there's an established pattern yet and this is something you can help us shape.</p>
+<p>My general thinking is that the APIs in <code>ty_python_semantic</code> shouldn't be tight to the LSP and be useful in other contexts too. E.g. getting the docstring from a definition is not only useful in the LSP case but also something that's useful in a linter.</p>
+<p>I also expect this to be something that evolves over time as we learn more about how to slice and dice the API and keeping concerns separate.</p>
+<p>So I don't think we have to push it too hard here to move this out of <code>ty_python_semantic</code>. I mainly wanted to raise the question if parts of it could be moved to <code>ty_ide</code> or if we could return more generic data that then gets restructured into something that the LSP needs.</p>
+<p>Note: This is pre-existing and not related to your PR but I think that <code>ide_support</code> is probably not the best module name to encourage this distinction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:385 on 2025-07-09 08:09</div>
+            <div class="timeline-body"><p>I find this field somewhat unexpected as it isn't specific about a signature, but a particular call to that signature.</p>
+<p>I wonder if we should make this a method instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:129 on 2025-07-09 08:12</div>
+            <div class="timeline-body"><p>Nit: You could use https://github.com/astral-sh/ruff/blob/9f3a38d408f473df7a6b3574c5d1389bef303dd5/crates/ruff_python_trivia/src/whitespace.rs#L49-L52</p>
+<p>unless you want to account for unicode whitespace characters too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:150 on 2025-07-09 08:13</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">            if lines.get(i + 1).is_some_and(|next| underline_regex.is_match(next) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:356 on 2025-07-09 08:14</div>
+            <div class="timeline-body"><p>Does rest require a 4 character indent or are 2-spaces or tab indents valid too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-09 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:1 on 2025-07-09 08:15</div>
+            <div class="timeline-body"><p>You know what. Let's leave this in but add a TODO that we should see if we can share some infrastructure with Ruff. The person working on docstrings can then pick th is up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-09 17:43</div>
+            <div class="timeline-body"><p>I had a second look. I think the only thing that would be great to address before merging is if we could avoid calling <code>ArgumentsMatcher</code> directly and instead use <code>Binding</code> (or see if @dhruvmanila has an idea what we could do instead) which is a slightly higher abstraction.</p>
+<p>The rest are mostly nits</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-10 03:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:400 on 2025-07-10 03:11</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure about that. It seems weird to me that a method on <code>FunctionType</code> or <code>CallableType</code> would accept a file and <code>ExprCall</code> ast node. This strikes me more as a higher-level utility function.</p>
+<p>I'm going to leave it as is now, but if you feel strongly about it, we can move the logic separately from this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-10 03:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/docstring.rs</code>:43 on 2025-07-10 03:37</div>
+            <div class="timeline-body"><p>I'm not sure what you mean by <code>UniversalNewlinesIterator</code>. I can't find any reference to this in the code base or in the Rust documentation. Does this come from some other crate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-10 03:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/docstring.rs</code>:43 on 2025-07-10 03:44</div>
+            <div class="timeline-body"><p>For now, I'll include a custom implementation of <code>UniversalNewlinesIterator</code>. We can replace it in the future if there's a library that provides the same functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-10 04:11</div>
+            <div class="timeline-body"><p>(Going to look at this today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-10 04:26</div>
+            <div class="timeline-body"><p>@MichaReiser, thanks for the feedback. I've incorporated the recommended changes.</p>
+<p>I think the PR is looking pretty good at this point, so I think it's ready to merge. @dhruvmanila, if you want to do another round of reviews, I'll hold off until you're done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/docstring.rs</code>:62 on 2025-07-10 05:04</div>
+            <div class="timeline-body"><p>Is this the same as</p>
+<p>https://github.com/astral-sh/ruff/blob/1ddda241f69d6e1aa651d279983a9738ddb2f892/crates/ruff_source_file/src/newlines.rs#L18-L40</p>
+<p>?</p>
+<p>If so, we should re-use that if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/docstring.rs</code>:119 on 2025-07-10 05:04</div>
+            <div class="timeline-body"><p>And the trait implementation:</p>
+<p>https://github.com/astral-sh/ruff/blob/1ddda241f69d6e1aa651d279983a9738ddb2f892/crates/ruff_source_file/src/newlines.rs#L7-L16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/docstring.rs</code>:1 on 2025-07-10 05:11</div>
+            <div class="timeline-body"><p>We do have docstring related infrastructure in Ruff at https://github.com/astral-sh/ruff/tree/1ddda241f69d6e1aa651d279983a9738ddb2f892/crates/ruff_linter/src/docstrings but I think it's very tailored towards Ruff usage. I'm not sure if it could be used here (probably not).</p>
+<p>I'll create a tracking issue for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/signature_help.rs</code>:30 on 2025-07-10 05:13</div>
+            <div class="timeline-body"><p>In your example, is the label value &quot;str&quot; or &quot;param1: str&quot;? If it's the former, it might be useful to reword it as such: &quot;(e.g., &quot;str&quot; in &quot;param1: str&quot;)&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2275 on 2025-07-10 05:22</div>
+            <div class="timeline-body"><p>Can we just return the <code>Box</code> instead of allocating a new vector? That would be a bit cheaper instead: <code>self.argument_parameters.clone()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/signature_help.rs</code>:26 on 2025-07-10 05:42</div>
+            <div class="timeline-body"><p>I'm not exactly sure why do we need this? Can we directly query the resolve client capabilities instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:396 on 2025-07-10 05:54</div>
+            <div class="timeline-body"><p>Is a one-dimensional vector enough to represent everything that's required (unions, overloads, etc.)?</p>
+<p>Related to my other comment on using <code>Bindings</code>, if one-dimensional vector is enough and we just need a list of all the signature details, we would just loop over each of the <code>CallableBinding</code> (in <code>Bindings</code>) and then the individual <code>Binding</code> (in <code>CallableBinding</code>) by flattening the iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:494 on 2025-07-10 05:57</div>
+            <div class="timeline-body"><p>I don't think we should be doing this manually as <code>binding.match_parameters</code> is a private API which is meant to be used via <code>Bindings::match_parameters</code> (notice the <code>s</code> in <code>Bindings</code>) which is the top-level entry point to matching parameters against the arguments and it will take care of unions and overloads.</p>
+<p>In the above match expression where you're matching against <code>func_type.into_callable(db)</code>, we should be doing:</p>
+<pre><code class="language-rs">if let Some(callable_type) = func_type.into_callable(db) {
+	let call_arguments = CallArguments::from_arguments(arguments);
+	let bindings = callable_type.bindings(db).match_parameters(&amp;call_arguments);
+}
+</code></pre>
+<p>And, access the match results from <code>bindings</code> instead. This provides access to the individual <code>CallableBinding</code> via the iterator protocol but we could possibly expose it as <code>&amp;[CallableBinding]</code> as well. And, similarly the information from a single <code>Binding</code> can be accessed from the <code>CallableBinding</code>.</p>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-10 06:07</div>
+            <div class="timeline-body"><p>This looks great, thanks!</p>
+<p>My only suggestion, which could be done in a follow-up, is to use the <code>Bindings</code> API and not the low-level <code>Binding</code> API to perform parameter matching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-10 06:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/docstring.rs</code>:1 on 2025-07-10 06:12</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/19250</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:122 on 2025-07-10 06:56</div>
+            <div class="timeline-body"><p>It seems this only returns <code>None</code> if the <code>HashMap</code> is empty. I suggest directly returning the <code>HashMap</code> here and let the caller check if it is empty. It avoids the ambiguity that <code>Some(HashMap)</code> could also contain an empty <code>HashMap</code> (not clear to the caller). Creating an empty <code>HashMap</code> doesn't allocate, so there's no cost to it.</p>
+<pre><code class="language-suggestion">fn extract_google_style_params(docstring: &amp;str) -&gt; HashMap&lt;String, String&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:213 on 2025-07-10 06:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn extract_numpy_style_params(docstring: &amp;str) -&gt; HashMap&lt;String, String&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:381 on 2025-07-10 06:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn extract_rest_style_params(docstring: &amp;str) -&gt; HashMap&lt;String, String&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2273 on 2025-07-10 06:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) fn argument_to_parameter_mapping(&amp;self) -&gt; &amp;[Option&lt;usize&gt;] {
+</code></pre>
+<p>This leaves the decision whether it's necessary to copy this over into a owned <code>Vec</code> to the caller but makes it &quot;free&quot; for cases where this isn't needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/signature_help.rs</code>:95 on 2025-07-10 07:02</div>
+            <div class="timeline-body"><p>The offset here are byte offsets. It isn't entirely clear to me after reading the specification what the supposed encoding of the range is:</p>
+<blockquote>
+<p>The offsets are based on a UTF-16 string representation as <code>Position</code> and <code>Range</code> does.</p>
+</blockquote>
+<p>because the encoding of <code>Position</code> and <code>Range</code> depends on the negogiated position encoding. That's why I suspect that we need to honor the position encoding here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-10 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-11 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_server/src/server/api/requests/signature_help.rs</code>:95 on 2025-07-11 02:08</div>
+            <div class="timeline-body"><p>Good catch. Yes, the spec isn't clear here, but looking at other language server implementations, it appears that your assumption is correct. The pyright language server doesn't handle this correctly; it assumes UTF-16 encoding offsets here even if that's different from what was negotiated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @UnboundVariable on 2025-07-11 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @UnboundVariable on 2025-07-11 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-11 02:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

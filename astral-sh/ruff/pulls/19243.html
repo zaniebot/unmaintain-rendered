@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve and document equivalence for module-literal types - astral-sh/ruff #19243</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve and document equivalence for module-literal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19243">#19243</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-09 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 18:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/790. For single-file modules (that could never have submodules), we no longer store which file imported the module on the <code>ModuleLiteralType</code> struct itself. This means that <code>&lt;module 'typing'&gt;</code> is always equivalent to <code>&lt;module 'typing'&gt;</code>, and <code>&lt;module 'typing'&gt; | int | str</code> is always equivalent to <code>int | str | &lt;module 'typing'&gt;</code>.</p>
+<p>Module-literal types representing packages are still not considered equivalent types if they were originally imported in different modules, because we would not treat the types equivalently! Tests are added demonstrating why this needs to be the case.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>mdtests</li>
+<li>Ran <code>QUICKCHECK_TESTS=100000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-09 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-09 18:31</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">meson (https://github.com/mesonbuild/meson)
+- error[invalid-assignment] unittests/failuretests.py:49:5: Object of type `def new_which(cmd, *kwargs) -&gt; Unknown` is not assignable to attribute `which` on type `&lt;module 'shutil'&gt; | &lt;module 'shutil'&gt;`
++ error[invalid-assignment] unittests/failuretests.py:49:5: Implicit shadowing of function `which`
+
+</code></pre>
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+-     memo metadata = ~21MB
++     memo metadata = ~20MB
+-     memo fields = ~159MB
++     memo fields = ~152MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     struct fields = ~15MB
++     struct fields = ~14MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct metadata = ~25MB
++     struct metadata = ~23MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 18:33</div>
+            <div class="timeline-body"><p>Mypy_primer indicates that this leads to a small reduction in memory usage and fewer error messages that mention confusing types such as <code>&lt;module 'shutil'&gt; | &lt;module 'shutil'&gt;</code> 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-09 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-09 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-09 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-09 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-10 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7511 on 2025-07-10 05:54</div>
+            <div class="timeline-body"><p>Do we need to store this on <code>ModuleLiteralType</code>, given that the kind is also available as <code>self.module.kind().is_package()</code> (and said enum is exactly the same).</p>
+<p>Oh, I see you attach the <code>importing_file</code> if it's a package. I wonder if it would make more sense to make the field an <code>Option&lt;File&gt;</code> instead and document when the field is initialized. I think that makes it less confusing because it doesn't look like we store the same information twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7511 on 2025-07-10 06:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, I see you attach the <code>importing_file</code> if it's a package. I wonder if it would make more sense to make the field an <code>Option&lt;File&gt;</code> instead and document when the field is initialized. I think that makes it less confusing because it doesn't look like we store the same information twice.</p>
+</blockquote>
+<p>I considered that. I went with this way because I thought it made it easier to see in which situations we store <code>importing_file</code> and why. But I agree it's confusing in its own way; I'll switch to your suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-10 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-07-10 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7534 on 2025-07-10 09:01</div>
+            <div class="timeline-body"><p>I'm not sure this debug assertion is worth it. It's more complicated than the actual code and it's not like the initialization is spread over many places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7534 on 2025-07-10 09:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_eq!(
+            self._importing_file(db).is_some(), self.module(db).kind().is_package()
+        );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-10 09:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-10 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-10 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-10 09:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

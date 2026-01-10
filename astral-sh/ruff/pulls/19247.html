@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8_bandit`] Fix S412 false negatives for any imports from `wsgiref.handlers` and `twisted.web.twcgi` - astral-sh/ruff #19247</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8_bandit</code>] Fix S412 false negatives for any imports from <code>wsgiref.handlers</code> and <code>twisted.web.twcgi</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19247">#19247</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-07-09 22:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-09 22:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-09 22:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-10 15:29</div>
+            <div class="timeline-body"><p>Thanks, this looks like what I had in mind in #19242. My only hesitations are that this is a bit of a divergence from the upstream linter and also an expansion of the rule. However, I think we might diverge in the general implementation of these rules, and we could gate the expansion behind <code>preview</code> if we're worried about that part.</p>
+<p>I also think these are probably pretty niche modules to import, so I'm not sure how much impact this will have either way.</p>
+<p>@MichaReiser what do you think? To summarize the issue:</p>
+<ul>
+<li>S412 only flags <code>from wsgiref.handlers import CGIHandler</code>, not other ways of importing</li>
+<li>The upstream linter also flags calls to the insecure code (<code>wsgiref.handlers.CGIHandler()</code>)</li>
+</ul>
+<p>I suggested flagging the whole module import (this PR) as an easy fix that looks to be in line with our other S rules, but a more robust fix might be flagging calls like upstream. That could be a bigger change that might also affect our other S rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-10 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-10 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-11 16:18</div>
+            <div class="timeline-body"><blockquote>
+<p>and we could gate the expansion behind preview if we're worried about that part.</p>
+</blockquote>
+<p>The rule itself is still preview</p>
+<p>Hmm not sure. Does the same security concern exist for <code>IISCGIHandler</code>, <code>BaseCGIHandler</code>, <code>SimpleHandler</code>, .... If not, restricting the entire <code>handlers</code> import is too restrictive.</p>
+<blockquote>
+<p>The upstream linter also flags calls to the insecure code (wsgiref.handlers.CGIHandler())</p>
+</blockquote>
+<p>We should rename the rule if we do so because it then flags the usages and not the imports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-11 16:22</div>
+            <div class="timeline-body"><p>What claude thinks:</p>
+<details>
+I'll fetch the specific wsgiref handlers documentation to analyze each handler individually.Based on the wsgiref.handlers documentation and my HTTPoxy research, here's a specific analysis of each handler's vulnerability status:
+
+<h2><strong>VULNERABLE Handlers:</strong></h2>
+<h3><strong>wsgiref.handlers.CGIHandler</strong></h3>
+<p><strong>VULNERABLE</strong> - This is explicitly mentioned in the HTTPoxy documentation as vulnerable. Python code must be deployed under CGI to be vulnerable, and this usually means using wsgiref.handlers.CGIHandler. This handler uses <code>sys.stdin</code>, <code>sys.stdout</code>, <code>sys.stderr</code> and <code>os.environ</code>, making it directly susceptible to environment variable pollution from HTTP headers.</p>
+<h3><strong>wsgiref.handlers.IISCGIHandler</strong></h3>
+<p><strong>VULNERABLE</strong> - This is a specialized subclass of <code>CGIHandler</code> designed for Microsoft's IIS web server. Since it inherits from <code>CGIHandler</code> and operates in the same CGI environment where <code>os.environ</code> gets polluted by HTTP headers, it has the same vulnerability.</p>
+<h3><strong>wsgiref.handlers.BaseCGIHandler</strong></h3>
+<p><strong>VULNERABLE</strong> - This is the base class for CGI handlers that <code>CGIHandler</code> inherits from. The documentation states it's &quot;intended for use with software other than HTTP origin servers&quot; and is designed for &quot;gateway protocol implementation (such as CGI, FastCGI, SCGI, etc.)&quot;. Since it operates in CGI-like environments where HTTP headers become environment variables, it's vulnerable.</p>
+<h2><strong>NOT VULNERABLE Handlers:</strong></h2>
+<h3><strong>wsgiref.handlers.SimpleHandler</strong></h3>
+<p><strong>NOT VULNERABLE</strong> - The documentation specifically states this is &quot;designed for use with HTTP origin servers&quot; and &quot;If you are writing an HTTP server implementation, you will probably want to subclass this instead of BaseCGIHandler.&quot; Since regular WSGI environments keep user-supplied values in a separate WSGI 'environ' map, they are not vulnerable. The os.environ['HTTP_PROXY'] remains unchanged when a Proxy header is sent.</p>
+<h3><strong>wsgiref.handlers.BaseHandler</strong></h3>
+<p><strong>NOT VULNERABLE</strong> - This is an abstract base class for running WSGI applications. It's designed for HTTP origin servers, not CGI environments. The documentation shows it maintains separate environment handling and doesn't directly expose <code>os.environ</code> to HTTP header pollution.</p>
+<h2><strong>Key Distinction:</strong></h2>
+<p>The vulnerability comes down to whether the handler operates in a <strong>CGI environment</strong> where:</p>
+<ul>
+<li>HTTP headers are mixed into environment variables</li>
+<li><code>os.environ['HTTP_PROXY']</code> can be set by a malicious <code>Proxy:</code> header</li>
+</ul>
+<p><strong>CGI-based handlers</strong> (CGIHandler, IISCGIHandler, BaseCGIHandler) are vulnerable because they operate in environments where this header-to-environment variable mapping occurs.</p>
+<p><strong>HTTP origin server handlers</strong> (SimpleHandler, BaseHandler) are not vulnerable because they maintain proper separation between HTTP headers and environment variables, keeping user-supplied data in separate WSGI environ dictionaries.</p>
+</details>
+
+<p>So I think outright banning the package isn't the right fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>The rule itself is still preview</p>
+</blockquote>
+<p>:facepalm: My mistake, didn't notice that</p>
+<p>This is the <a href="https://github.com/python/cpython/blob/252e2f710ea376a38c4545dd758e03d331c1eaad/Lib/wsgiref/handlers.py#L487-L508">implementation</a> of <code>BaseCGIHandler</code>:</p>
+<pre><code class="language-python">class BaseCGIHandler(SimpleHandler):
+    origin_server = False
+</code></pre>
+<p>but I guess the <code>origin_server</code> might make all the difference. I'm not too familiar with CGI, so I'm happy to defer to Claude.</p>
+<p>I think we may need to rename and reimplement the rule to catch calls in that case. I suspect, but still haven't confirmed, that this is the case for the other <code>flake8-bandit</code> rules too.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

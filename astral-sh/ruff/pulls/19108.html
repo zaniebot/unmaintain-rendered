@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] First cut at semantic token provider - astral-sh/ruff #19108</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] First cut at semantic token provider</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19108">#19108</a>
+        opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a>
+        on 2025-07-02 22:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-02 22:45</div>
+            <div class="timeline-body"><p>This PR implements a basic semantic token provider for ty's language server. This allows for more accurate semantic highlighting / coloring within editors that support this LSP functionality.</p>
+<p>Here are screen shots that show how code appears in VS Code using the &quot;rainbow&quot; theme both before and after this change.</p>
+<p><img src="https://github.com/user-attachments/assets/f963b55b-3195-41d1-ba38-ac2e7508d5f5" alt="461737617-15630625-d4a9-4ec5-9886-77b00eb7a41a" /></p>
+<p><img src="https://github.com/user-attachments/assets/111ca2c5-bb4f-4c8a-a0b5-6c1b2b6f246b" alt="461737624-d6dcf5f0-7b9b-47de-a410-e202c63e2058" /></p>
+<p>The token types and modifier tags in this implementation largely mirror those used in Microsoft's default language server for Python.</p>
+<p>The implementation supports two LSP interfaces. The first provides semantic tokens for an entire document, and the second returns semantic tokens for a requested range within a document.</p>
+<p>The PR includes unit tests. It also includes comments that document known limitations and areas for future improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @UnboundVariable on 2025-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @UnboundVariable on 2025-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @UnboundVariable on 2025-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @UnboundVariable on 2025-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @UnboundVariable on 2025-07-02 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-02 22:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-02 22:57</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/UnboundVariable%3Asemantic_tokens?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19108 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>UnboundVariable:semantic_tokens</code> (3be32e1) with <code>main</code> (4dd2c03)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 7</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "First cut at semantic token provider." to "[ty] First cut at semantic token provider" by @UnboundVariable on 2025-07-02 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:18 on 2025-07-03 01:37</div>
+            <div class="timeline-body"><p>We would often make a function like this a Salsa query, by annotating it with <code>#[salsa::tracked]</code>. This means its results are automatically cached and don't have to be re-generated unless the underlying file contents or type inference changes.</p>
+<p>(Though I suppose it's possible this is sufficiently fast to generate that it's not worth the memory to cache it? Not sure.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-03 01:37</div>
+            <div class="timeline-body"><p>Thanks for the PR! I'd prefer for Micha or Dhruv (who know the LSP and our plans in that area better) to review this; just one initial comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-03 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:18 on 2025-07-03 02:56</div>
+            <div class="timeline-body"><p>Interesting idea. However, I think it's unlikely that an editor would request semantic tokens in a redundant manner, so it's not clear that the caching would result in any savings in practice.</p>
+<p>Also, it's worth noting that this function's output can change based on the requested text range. Is salsa smart enough to memoize results based on function inputs, or does it assume that the function will be called with the same arguments every time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-03 03:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:18 on 2025-07-03 03:23</div>
+            <div class="timeline-body"><p>It is smart enough to memoize results based on all function arguments, as well as on all other Salsa queries called while the function executes (so e.g. in this case, all queried types for nodes), and only re-execute if any of those &quot;inputs&quot; (function arguments and otherwise) change.</p>
+<p>But if it is the case that clients are unlikely to query this multiple times on an unchanged file, then I agree it may not make sense to memoize it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:56 on 2025-07-03 06:02</div>
+            <div class="timeline-body"><p>Any specific reason for manually setting these discriminant values? The default values are going to be the same as the ones mentioned here.</p>
+<p>I see that the client will look up the token types by index to this vector which makes it important that these are in the correct order. I think we can rely on the default values but I leave this up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:61 on 2025-07-03 06:05</div>
+            <div class="timeline-body"><p>We can use a <code>[&amp;'static str; 15]</code> as the return type to avoid allocating here. The caller can then do the allocation if it's required. This will also allow us to make this function a <code>const</code>.</p>
+<pre><code class="language-suggestion">    pub const fn all() -&gt; [&amp;'static str; 15] {
+        [
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:88 on 2025-07-03 06:06</div>
+            <div class="timeline-body"><p>Same as above, we can remove the discriminant values and use the default which should be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:93 on 2025-07-03 06:06</div>
+            <div class="timeline-body"><p>Same as above</p>
+<pre><code class="language-suggestion">    pub const fn all() -&gt; [&amp;'static str; 3] {
+        [&quot;definition&quot;, &quot;readonly&quot;, &quot;async&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:113 on 2025-07-03 06:21</div>
+            <div class="timeline-body"><p>Should we use <code>Option&lt;TextRange&gt;</code> instead where <code>None</code> indicates the full file range? This would allow us to avoid doing any range operations which for now is only intersection. The operation can then be changed to the following which skips the intersection checks if it's <code>None</code> and defaults to <code>false</code></p>
+<pre><code class="language-rs">if self.range_filter.is_some_and(|range_filter| range.intersect(range_filter)) { ... }
+</code></pre>
+<p>This would also simplify the tests where we can directly pass in <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:396 on 2025-07-03 06:25</div>
+            <div class="timeline-body"><p>Curious to know the reason to allow this lint? I think we can remove the <code>'db</code> lifetime here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:113 on 2025-07-03 06:33</div>
+            <div class="timeline-body"><p>Is it intentional that the return type is <code>Option&lt;SemanticTokens&gt;</code>? I'm asking because the <code>None</code> variant is not being returned in any control flow path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:109 on 2025-07-03 06:36</div>
+            <div class="timeline-body"><p>Do you expect that there could be other fields that would be required in the future?</p>
+<p>I think we could implement the <a href="https://doc.rust-lang.org/stable/std/ops/trait.Deref.html"><code>Deref</code></a> trait here to directly reference the inner <code>Vec</code> and avoid making the field public and thus the vector cannot be mutated outside this module.</p>
+<pre><code class="language-rs">#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SemanticTokens {
+    tokens: Vec&lt;SemanticToken&gt;,
+}
+
+impl Deref for SemanticTokens {
+    type Target = [SemanticToken];
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.tokens
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:88 on 2025-07-03 06:47</div>
+            <div class="timeline-body"><p>The <code>modifiers</code> field could be represented using <a href="https://docs.rs/bitflags/2.9.1/bitflags/"><code>bitflags</code></a> as multiple modifiers can be present for a single token and then it can directly be used in the server response as <code>u32</code>.</p>
+<pre><code class="language-rs">use bitflags::bitflags;
+
+bitflags! {
+    /// Bitset representing semantic token modifiers.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub struct SemanticTokenModifiers: u32 {
+        const DEFINITION = 1 &lt;&lt; 0;
+        const READONLY = 1 &lt;&lt; 1;
+        const ASYNC = 1 &lt;&lt; 2;
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:438 on 2025-07-03 06:48</div>
+            <div class="timeline-body"><p>Can we move this logic in <code>SourceOrderVisitor::visit_parameters</code> and use that instead? This will benefit the parameters defined in a <code>lamdba</code> expression as well as that's the other node which will use <code>visit_parameters</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:446 on 2025-07-03 06:56</div>
+            <div class="timeline-body"><p>Should this be visited first as decorators appear before the function definition in source order? This would avoid doing the sort at a later stage. Refer to my other comment where the tokens are being sorted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:35 on 2025-07-03 06:56</div>
+            <div class="timeline-body"><p>Should we instead make sure that the tokens are being pushed in sorted order as we're already using <code>SourceOrderVisitor</code>? That would be a good optimization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:162 on 2025-07-03 07:02</div>
+            <div class="timeline-body"><p>If we decide to maintain the sort order during insertion, we should add a <code>debug_assert</code> here that makes sure that the start position of the new token is after the previous semantic token. We could do this by storing the start value of the previous token and using that only under <code>#[cfg(debug_assertions)]</code>. We've this invariant in our lexer:</p>
+<p>https://github.com/astral-sh/ruff/blob/28ab61d8850af9abe7f5b3f0406008b8abde4f8c/crates/ruff_python_parser/src/lexer/cursor.rs#L19-L21</p>
+<p>This doesn't affect the release build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:481 on 2025-07-03 07:03</div>
+            <div class="timeline-body"><p>Same comment as the one for function definition, we should move this at the first of this match branch to maintain the sort order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:512 on 2025-07-03 07:10</div>
+            <div class="timeline-body"><p>This <code>walk_stmt</code> call seems redundant as visiting an import statement in source order is only about visiting the aliases which is already happening above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:533 on 2025-07-03 07:10</div>
+            <div class="timeline-body"><p>Same here, this <code>walk_stmt</code> call seems redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:553 on 2025-07-03 07:11</div>
+            <div class="timeline-body"><p>The <code>walk_expr</code> here seems redundant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:563 on 2025-07-03 07:13</div>
+            <div class="timeline-body"><p>Should we explicitly walk the base expression here instead of the attribute expression as we've already handled the <code>attr</code> field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:571 on 2025-07-03 07:14</div>
+            <div class="timeline-body"><p>Would this not add duplicate tokens? The <code>call.func</code> as a name expression is being added here and then inside the <code>walk_expr</code> it will call <code>visit_expr(call.func)</code> again which will add this token using the above <code>ast::Expr::Name</code> branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:576 on 2025-07-03 07:17</div>
+            <div class="timeline-body"><p>The <code>walk_expr</code> call seems redundant here as it'll just visit the individual string literal parts.</p>
+<p>Is it correct to send a single token for implicitly concatenated strings or should it be separate tokens for each string literals that are present in the concatenation? For example, in <code>&quot;foo&quot; &quot;bar&quot;</code> should it be a single token for both the strings or two tokens?</p>
+<p>If we need to have separate tokens for individual string literals, then we could use <code>SourceOrderVisitor::visit_string_literal</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:588 on 2025-07-03 07:18</div>
+            <div class="timeline-body"><p>These <code>walk_expr</code> calls seems redundant as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-03 07:19</div>
+            <div class="timeline-body"><p>This is a great start, thank you for doing this!</p>
+<p>I've been reviewing this for an hour and I need to take a lunch break but here are my initial comments. I'll look at the remaining parts after the lunch break</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-07-03 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-03 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:217 on 2025-07-03 08:13</div>
+            <div class="timeline-body"><p>Can we spell out the type similar to other match arms?</p>
+<pre><code class="language-suggestion">            Type::FunctionLiteral(_) =&gt; {
+                // Check if this is a method based on current scope
+                if self.in_class_scope {
+                    (SemanticTokenType::Method, modifiers)
+                } else {
+                    (SemanticTokenType::Function, modifiers)
+                }
+            }
+            Type::BoundMethod(_) =&gt; (SemanticTokenType::Method, modifiers),
+            Type::ModuleLiteral(_) =&gt; (SemanticTokenType::Namespace, modifiers),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:251 on 2025-07-03 08:14</div>
+            <div class="timeline-body"><p>Same here, can we use <code>match</code> expression instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:414 on 2025-07-03 08:17</div>
+            <div class="timeline-body"><p>Is this pattern to support <code>builtins.classmethod</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:416 on 2025-07-03 08:20</div>
+            <div class="timeline-body"><p>I think this is good enough for the initial implementation but we could make use of the <code>FunctionType</code> which contains the information about which decorator exists on the function. The way that would work is that we would need to get the <code>Definition</code> from the <code>SemanticIndex</code> that's corresponding to the function this parameter belongs to and use <code>infer_definition_types</code>. The <code>infer_definition_types</code> is a salsa query which means it will be cached or should be already cached.</p>
+<p>And, similarly for <code>@staticmethod</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:307 on 2025-07-03 08:23</div>
+            <div class="timeline-body"><p><code>Identifier</code> implements <code>Ranged</code> :)</p>
+<pre><code class="language-suggestion">        let name_start = name.start();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:322 on 2025-07-03 08:29</div>
+            <div class="timeline-body"><p>I think we can simplify this by using operations available on <code>TextSize</code> and <code>TextRange</code> like so:</p>
+<pre><code class="language-rs">        let mut current_offset = TextSize::default();
+        for part in name_str.split('.') {
+            if !part.is_empty() {
+                self.add_token(
+                    TextRange::at(name_start + current_offset, part.text_len()),
+                    token_type,
+                    vec![],
+                );
+            }
+            // Move past this part and the dot
+            current_offset += part.text_len() + '.'.text_len();
+		}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:379 on 2025-07-03 08:31</div>
+            <div class="timeline-body"><p>Can we use <code>SourceOrderVisitor::visit_decorator</code> instead i.e., implement the <code>visit_decorator</code> on <code>SourceOrderVisitor</code> and use that instead of <code>visit_decorators</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:346 on 2025-07-03 08:32</div>
+            <div class="timeline-body"><p>Same as the above comment for these two methods, we could implement it via <code>SourceOrderVisitor</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:653 on 2025-07-03 08:36</div>
+            <div class="timeline-body"><p>Should we instead assert the number of tokens because we know how many it's going to be for each test cases? Using the count also has the benefit that when it fails we would know what was the expected value and how many did we get when using <code>assert_eq!(class_tokens.len(), expected)</code></p>
+<p>This applies to other test cases as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:657 on 2025-07-03 08:37</div>
+            <div class="timeline-body"><p>Can we add a test case for implicitly concatenated string expression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:694 on 2025-07-03 08:38</div>
+            <div class="timeline-body"><p>Let's add a couple of test cases where the first parameter isn't <code>self</code> / <code>cls</code> when <code>@classmethod</code> / <code>@staticmethod</code> / no decorators are involved. This will make sure that the implementation doesn't special case the word &quot;self&quot; and &quot;cls&quot; (which it doesn't).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:725 on 2025-07-03 08:41</div>
+            <div class="timeline-body"><p>We can use multi-line string here and similarly for other test cases:</p>
+<pre><code class="language-suggestion">        let test =
+            cursor_test(
+            	&quot;\
+class MyClass:
+    @classmethod
+    def method(cls, x): 
+    	pass&lt;CURSOR&gt;
+&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:898 on 2025-07-03 08:43</div>
+            <div class="timeline-body"><p>nit: <code>r</code> isn't required because the test case doesn't use any escape character and <code>#</code> isn't required because it doesn't use any nested quotes</p>
+<pre><code class="language-suggestion">            &quot;
+import sys
+class MyClass:
+    pass
+
+def my_function():
+    return 42
+
+x = MyClass()
+y = my_function()
+z = sys.version&lt;CURSOR&gt;
+&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:940 on 2025-07-03 08:44</div>
+            <div class="timeline-body"><p>I think it might be useful to assert the exact number of these tokens for which we can use <code>assert_eq</code> macro. Refer to my other comment around this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:971 on 2025-07-03 08:46</div>
+            <div class="timeline-body"><p>I think we can extract these assertions in a separate function that would take in a parameter that says how many of the semantic tokens are expected and the function would then assert that only those tokens are present with the exact same quantity. For example, for this test case the call could look like:</p>
+<pre><code class="language-rs">assert_token_count([
+    (SemanticTokenType::BuiltinConstant, 3),
+    (SemanticTokenType::Variable, 3),
+]);
+</code></pre>
+<p>And, same for other test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:1052 on 2025-07-03 08:48</div>
+            <div class="timeline-body"><p>I'd probably just use the playground (https://play.ty.dev/4aeb6053-197e-49a7-9117-fd9589ea062e) and hard code these values :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:1570 on 2025-07-03 08:52</div>
+            <div class="timeline-body"><p>Do you see any benefit of using <code>&gt;=</code> instead of <code>assert_eq</code>? It might be useful to assert for equality to avoid any future change to go unnoticed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:18 on 2025-07-03 08:57</div>
+            <div class="timeline-body"><p>The convention that we've established is to keep each handler corresponding to either a request or notification to be in a single file. Do you mind moving either the <code>SemanticTokensRequestHandler</code> or <code>SemanticTokensRangeRequestHandler</code> in a separate file? We can use a common <code>crates/ty_server/src/server/api/semantic_tokens.rs</code> file to contain the <code>generate_semantic_tokens</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:18 on 2025-07-03 09:02</div>
+            <div class="timeline-body"><p>It might be useful to do a quick check on how does different clients implement this in addition to VS Code. I usually go for Zed and Neovim (my main editor) in addition to VS Code. I can check them out as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:103 on 2025-07-03 09:05</div>
+            <div class="timeline-body"><p>We should implement the <code>Ranged</code> trait for this so that it's easier to access the start and end values.</p>
+<pre><code class="language-rs">impl Ranged for SemanticToken { ... }
+</code></pre>
+<p>And, later we can directly use:</p>
+<pre><code class="language-rs">token.start();
+token.end();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:154 on 2025-07-03 09:10</div>
+            <div class="timeline-body"><p>We can directly convert the range here using https://github.com/astral-sh/ruff/blob/28ab61d8850af9abe7f5b3f0406008b8abde4f8c/crates/ty_server/src/document/range.rs#L89-L101:</p>
+<pre><code class="language-suggestion">        let requested_range = params.range.to_text_range(...);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:45 on 2025-07-03 09:16</div>
+            <div class="timeline-body"><p>The spec says:</p>
+<blockquote>
+<p>The <code>deltaStart</code> and the <code>length</code> values must be encoded using the encoding the client and server agrees on during the <code>initialize</code> request (see also <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocuments">TextDocuments</a>).</p>
+</blockquote>
+<p>So, I think we would need to convert them to the LSP values and use them instead.</p>
+<p>For that, we've</p>
+<p>https://github.com/astral-sh/ruff/blob/28ab61d8850af9abe7f5b3f0406008b8abde4f8c/crates/ty_server/src/document/range.rs#L42-L52</p>
+<p>So, I think this should be:</p>
+<pre><code class="language-suggestion">        let start_position = token.start().to_position(...);
+</code></pre>
+<p>And, then you can access the <code>line</code> and <code>character</code> values directly like <code>start_position.line</code> and <code>start_position.character</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:51 on 2025-07-03 09:20</div>
+            <div class="timeline-body"><p>This could be removed if we use <code>bitflags</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> requested changes on 2025-07-03 09:23</div>
+            <div class="timeline-body"><p>Ok, my review is finally done, this is an awesome PR!</p>
+<p>The test cases are extremely thorough, thank you for writing them!</p>
+<p>I think the only required change would be to make sure that we convert the ty location values back to the LSP values in the common function for the semantic tokens handler. And, around the visitor implementation where some of the calls that might lead to duplicate tokens could be removed.</p>
+<p>A lot of my review comments could be considered as suggestions so feel free to either apply them or discard them. It's totally fine if those are done as follow-up. I can also own them as follow-up to this PR if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-03 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-04 22:08</div>
+            <div class="timeline-body"><p>@dhruvmanila, thanks for the thorough and insightful code review comments! I think I've addressed them all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:111 on 2025-07-07 05:42</div>
+            <div class="timeline-body"><p>I don't really understand why do we need this method. Can we not just use the contained <code>u32</code> directly which is what the LSP response is expecting? The usage of <code>to_lsp_indices</code> is constructing the same <code>u32</code> as the one that's contained in <code>SemanticTokenModifier</code>:</p>
+<pre><code class="language-rs">        let token_modifiers = token
+            .modifiers
+            .to_lsp_indices()
+            .into_iter()
+            .fold(0u32, |acc, modifier_index| acc | (1 &lt;&lt; modifier_index));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:431 on 2025-07-07 05:53</div>
+            <div class="timeline-body"><p>This isn't required because the <code>SourceOrderVisitor</code> already has the <code>visit_body</code> method with the same logic as this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:644 on 2025-07-07 06:07</div>
+            <div class="timeline-body"><p>I think we should be implementing the <code>visit_string_literal</code> and <code>visit_bytes_literal</code> method which are part of the <code>SourceOrderVisitor</code> trait here instead because otherwise this is going to miss adding the string literal tokens which are inside an f-string. For example, in <code>f&quot;foo {'nested'}&quot;</code>, the <code>'nested'</code> is a <code>StringLiteral</code> but this logic won't emit the string token as it's not part of the <code>Expr::StringLiteral</code> but <code>Expr::FString</code></p>
+<pre><code class="language-rs">    fn visit_string_literal(&amp;mut self, string_literal: &amp;ast::StringLiteral) {
+        self.add_token(
+            string_literal.range(),
+            SemanticTokenType::String,
+            SemanticTokenModifier::empty(),
+        );
+    }
+
+    fn visit_bytes_literal(&amp;mut self, bytes_literal: &amp;ast::BytesLiteral) {
+        self.add_token(
+            bytes_literal.range(),
+            SemanticTokenType::String,
+            SemanticTokenModifier::empty(),
+        );
+    }
+</code></pre>
+<p>Can we also add a test case using f-strings if it's not already present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:668 on 2025-07-07 06:13</div>
+            <div class="timeline-body"><p>These <code>walk_expr</code> calls looks redundant as there are no expressions that are nested inside any of these expression variants.</p>
+<pre><code class="language-suggestion">            ast::Expr::NumberLiteral(_) =&gt; {
+                self.add_token(
+                    expr.range(),
+                    SemanticTokenType::Number,
+                    SemanticTokenModifier::empty(),
+                );
+            }
+            ast::Expr::BooleanLiteral(_) =&gt; {
+                self.add_token(
+                    expr.range(),
+                    SemanticTokenType::BuiltinConstant,
+                    SemanticTokenModifier::empty(),
+                );
+            }
+            ast::Expr::NoneLiteral(_) =&gt; {
+                self.add_token(
+                    expr.range(),
+                    SemanticTokenType::BuiltinConstant,
+                    SemanticTokenModifier::empty(),
+                );
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:900 on 2025-07-07 06:18</div>
+            <div class="timeline-body"><p>Sorry, I totally missed this in my first review and it would've probably saved you some time. We've been using snapshot based testing for individual IDE capabilities like the hover example below:</p>
+<p>https://github.com/astral-sh/ruff/blob/28ab61d8850af9abe7f5b3f0406008b8abde4f8c/crates/ty_ide/src/hover.rs#L168-L202</p>
+<p>The <code>assert_snapshot!</code> macro is important here. What happens is that we create an output format for these requests which are human readable and use <code>assert_snapshot!(test.hover(), &quot;&quot;)</code>. Then, running the tests will automatically replace the <code>&quot;&quot;</code> (second argument) with the generated content from <code>test.hover()</code> call. And, finally we'd verify that those are correct. The output format is decided by us and is based on what information is required to verify the implementation.</p>
+<p>I don't think we need to change anything in this PR but it'd be useful to convert these tests into snapshots instead. I'll open a new issue to keep track of it and it would be a good &quot;help wanted&quot; issue a contributor could pick up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:220 on 2025-07-07 06:20</div>
+            <div class="timeline-body"><p>Should we instead have a strict <code>&lt;</code> check instead of <code>&lt;=</code>? I'm asking because adding duplicate tokens (same range) wouldn't raise an assertion here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-07 06:22</div>
+            <div class="timeline-body"><p>This is great! Thank you for taking this on and addressing all the review comments!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:62 on 2025-07-07 10:49</div>
+            <div class="timeline-body"><p>While it's mentioned in the comment, it wasn't immediately clear to me that the names here need to match the names from the LSP specification. I think I would split this method into two, to make this more clear:</p>
+<ol>
+<li>Change the <code>all</code> method to return a slice over all known <code>SemanticTokenType</code>s</li>
+<li>Add a <code>as_lsp_concept</code> method (and link to https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/) that takes <code>&amp;self</code> and returns a <code>&amp;'static str</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:40 on 2025-07-07 10:50</div>
+            <div class="timeline-body"><p>It seems we don't rely on the <code>u32</code> representation and can let Rust pick the best representation instead.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:85 on 2025-07-07 10:51</div>
+            <div class="timeline-body"><p>We use the <a href="https://docs.rs/bitflags/latest/bitflags/">bitflags</a> crate for bitflag datastructures. Is there a reason why we can't use it here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:83 on 2025-07-07 10:52</div>
+            <div class="timeline-body"><p>I'd find a link to the LSP specification useful https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#semanticTokenModifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:93 on 2025-07-07 10:53</div>
+            <div class="timeline-body"><p>I also recommend changing <code>all</code> to return a <code> &amp;'static [SemanticTokenModifier]</code> and instead have a <code>to_lsp_key</code> (or similar) method instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:176 on 2025-07-07 10:56</div>
+            <div class="timeline-body"><p>You can get the <code>db</code> using <code>semantic_model.db()</code> if it turns out to be necessary</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:177 on 2025-07-07 10:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[expect(dead_code)]
+</code></pre>
+<p>or remove the field for now (and add it when it becomes necessary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:447 on 2025-07-07 11:02</div>
+            <div class="timeline-body"><p>I suggest overriding <code>enter_node</code> instead and return <code>TraverseSignal::Skip</code> if a node shouldn't be visisted. This has the benefit that it also works for non-statements and avoids that nodes get (deeply) visited for which you don't override the <code>visit_</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:203 on 2025-07-07 11:04</div>
+            <div class="timeline-body"><p>Nit: You could change this to take an <code>impl Ranged</code> so that you don't need to call <code>.range</code> when e.g. adding a token for <code>Name</code> node</p>
+<pre><code class="language-suggestion">        ranged: impl Ranged,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:216 on 2025-07-07 11:05</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">            self.tokens.last().is_none_or(|last| last.start() &lt;= range.start()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:754 on 2025-07-07 11:08</div>
+            <div class="timeline-body"><p>This will ensure that Rust shows the callsite of <code>assert_token_counts</code> if the assertion fails instead of this function in a stacktrace, which is probably more useful (because it helps narrow down which test failed)</p>
+<pre><code class="language-suggestion">    #[track_caller]
+    fn assert_token_counts(
+        tokens: &amp;SemanticTokens,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:900 on 2025-07-07 11:10</div>
+            <div class="timeline-body"><p>Agree. I think it would make the tests more readable and also assert that all computed ranges are correct. It shouldn't be too hard to change. All that is needed is to transform each token into a <code>Diagnostic</code> and then render all diagnostics (the annotation could be the kind and maybe modifier?)</p>
+<p>Here's an example on how this is done in the go to type definition tests:</p>
+<p>https://github.com/astral-sh/ruff/blob/29927f2b594c4af5c470419754342ff33cc65d8b/crates/ty_ide/src/goto.rs#L843-L848</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/semantic_tokens.rs</code>:21 on 2025-07-07 11:14</div>
+            <div class="timeline-body"><p>I would prefer passing <code>None</code> for the <code>requested_range</code> instead of a range covering the full document. It's more what I would expect, given that the <code>semantic_tokens</code> API already takes an <code>Option</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/semantic_tokens.rs</code>:32 on 2025-07-07 11:16</div>
+            <div class="timeline-body"><p>I think the <code>length</code> here must respect the <code>encoding</code>. The value you get here is the byte length of the token, but that's only correct if the negogiated encoding is UTF8.</p>
+<p>Is there a reason why you can't use <code>text_range.to_lsp_range</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-07 11:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 12:11</div>
+            <div class="timeline-body"><p>This can be done in a sepreate PR, but it would be great to add semantic highlighting to the playground too. It should be &quot;as easy as&quot; implementing the necessary provider and registering them here:</p>
+<p>https://github.com/astral-sh/ruff/blob/a6637964d200cc0f1a7a0f89454e4976212d2693/playground/ty/src/Editor/Editor.tsx#L143-L180</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 16:11</div>
+            <div class="timeline-body"><p>I'll leave it up to you if this PR should close https://github.com/astral-sh/ty/issues/260</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-07 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:111 on 2025-07-07 17:40</div>
+            <div class="timeline-body"><p>Good catch. That was left over from my earlier implementation. As you point out, it's no longer needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-07 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:644 on 2025-07-07 18:00</div>
+            <div class="timeline-body"><p>Nice. I didn't realize there were visitor methods specifically for string and bytes literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-07 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:900 on 2025-07-07 21:10</div>
+            <div class="timeline-body"><p>Good suggestion! I wasn't previously familiar with insta, but I really like the snapshot test framework it provides. This makes the tests much more readable and maintainable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-07 22:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @UnboundVariable on 2025-07-07 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @UnboundVariable on 2025-07-07 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-07 22:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

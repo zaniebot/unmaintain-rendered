@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pydoclint`] Fix `SyntaxError` from fixes with line continuations (`D201`, `D202`) - astral-sh/ruff #19246</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pydoclint</code>] Fix <code>SyntaxError</code> from fixes with line continuations (<code>D201</code>, <code>D202</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19246">#19246</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-07-09 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-09 21:13</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR fixes #7172 by suppressing the fixes for <a href="https://docs.astral.sh/ruff/rules/docstring-missing-returns/#docstring-missing-returns-doc201">docstring-missing-returns (DOC201)</a> / <a href="https://docs.astral.sh/ruff/rules/docstring-extraneous-returns/#docstring-extraneous-returns-doc202">docstring-extraneous-returns (DOC202)</a> if there is a surrounding line continuation character <code>\</code> that would make the fix cause a syntax error.</p>
+<p>To do this, the lints are changed from <code>AlwaysFixableViolation</code> to <code>Violation</code> with <code>FixAvailability::Sometimes</code>.</p>
+<p>In the case of <code>DOC201</code>, the fix is not given if the non-break line ends in a line continuation character <code>\</code>. Note that lines are iterated in reverse from the docstring to the function definition.</p>
+<p>In the case of <code>DOC202</code>, the fix is not given if the docstring ends with a line continuation character <code>\</code>.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Added a test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-09 21:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-10 14:55</div>
+            <div class="timeline-body"><p>Thanks, this looks reasonable to me. Could the same happen with classes? I noticed <code>blank_before_after_class.rs</code> in the same directory, and the implementation looks similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-10 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-10 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 14:59</div>
+            <div class="timeline-body"><p>I do wonder if something like iterating over the <code>LogicalLines</code> could be a better solution here:</p>
+<p>https://github.com/astral-sh/ruff/blob/49d72273d3471168883643ada9e3a47fe2b7c5b5/crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/mod.rs#L61-L62</p>
+<p>but I'm not totally sure if that's how it works. That might also skip the diagnostic entirely, which could also be reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-10 18:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, this looks reasonable to me. Could the same happen with classes? I noticed <code>blank_before_after_class.rs</code> in the same directory, and the implementation looks similar.</p>
+</blockquote>
+<p>It looks like the same can happen with the before check (<code>D211</code>) since it works the same, but not the after check since it enforces 1 blank line https://play.ruff.rs/a2fac120-588a-4a1d-9287-0663cd0242e3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 17:31</div>
+            <div class="timeline-body"><p>Sorry I left this in kind of an ambiguous state. I'll merge this now and we can follow up on classes and the <code>LogicalLines</code> idea separately (if at all, especially in the <code>LogicalLines</code> case). Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-14 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-14 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-14 19:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

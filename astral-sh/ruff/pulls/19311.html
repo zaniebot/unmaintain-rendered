@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Provide docstrings for stdlib APIs when hovering over them in an IDE - astral-sh/ruff #19311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Provide docstrings for stdlib APIs when hovering over them in an IDE</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19311">#19311</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-13 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-13 21:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I made a codemod that will auto-add docstrings to stub files by dynamically inspecting the value of the docstrings at runtime. This PR adds a step to our typeshed-sync workflow that applies the codemod, so that we always have docstrings for the stdlib checked into our vendored stubs for the standard library. This will allow us to display the docstrings when users hover over stdlib symbols in their IDE.</p>
+<p>The source code for the codemod is <a href="https://github.com/AlexWaygood/docstring-adder">here</a>. The changes the codemod makes can be viewed <a href="https://github.com/python/typeshed/compare/main...AlexWaygood:typeshed:docstrings?expand=1">here</a>.</p>
+<p>~~The only issue I <em>know</em> of is that if you have version-dependent method definitions, e.g.~~</p>
+<pre><code class="language-py">class Foo:
+    if sys.version_info &gt;= (3, 13):
+        def method(self): ...
+    else:
+        def method(self, arg): ...
+</code></pre>
+<p>~~then the codemod will only add a docstring to the definition in the first <code>sys.version_info</code> branch, not the second. This issue only exists for nested scopes, however; version-dependent class or function definitions in the global scope should have docstrings added to all definitions without issue.~~</p>
+<p>^EDIT: I fixed this issue.</p>
+<p>Codemodding docstrings into the stubs increases the size of the vendored-typeshed zipfile that we include as part of the ty binary. Locally, a release build of the ty binary increases in size from 38.7MB to 39.9MB. I think that's probably worth it, given that there's no other way to provide docstrings for C-extension modules in the stdlib. Even modules that are nominally written in Python, such as the <code>typing</code> module, often have several classes in them that are actually written in C (<code>typing.TypeVar</code>, for example); it would be impossible for ty to obtain docstrings for these classes by inspecting the runtime source code of the stdlib, so codemodding the docstrings into the stub seems to be a more resilient strategy here.</p>
+<p>Codemodding docstrings into the stubs at typeshed-sync time is preferable to attempting to maintain these docstrings upstream in typeshed, because docstrings are constantly changing upstream in CPython, and it would be extremely difficult to keep the copies of these docstrings in typeshed up to date. An automated codemod solves this issue.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>This has been mostly tested by eyeballing the <a href="https://github.com/python/typeshed/compare/main...AlexWaygood:typeshed:docstrings?expand=1">output</a> of the codemod, and checking that there wasn't anything unexpectedly present or unexpectedly missing from the output.</li>
+<li>The script also has an assertion built into it which checks that every function name and class name in the AST appears the same number of times before and after the codemod</li>
+<li>Mypy is run on the script in CI over at https://github.com/AlexWaygood/docstring-adder/blob/main/.github/workflows/check.yaml</li>
+<li>There's a CI check in https://github.com/AlexWaygood/docstring-adder/blob/main/.github/workflows/check.yaml that ensures that the script never adds a docstring to a class or function that already has a docstring</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-13 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>.github/workflows/sync_typeshed.yaml</code>:51 on 2025-07-14 06:10</div>
+            <div class="timeline-body"><p>Is the order of running these dependent on the Python version? i.e., is it required that we run it from latest to oldest Python version? If so, let's document that as a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>.github/workflows/sync_typeshed.yaml</code>:71 on 2025-07-14 06:10</div>
+            <div class="timeline-body"><p>Use <code>ruff format</code> ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-14 06:15</div>
+            <div class="timeline-body"><p>Thanks! This is great</p>
+<p>Is there a reason that this is in a separate repository? As it's a script, can it be added / moved to the Ruff repository mainly so that it's easier to maintain?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-14 06:17</div>
+            <div class="timeline-body"><p>Do we know if the script (or something else) that Pylance is using to fetch these docstrings is open-sourced and available? If so, can it be used by us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 06:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Locally, a release build of the ty binary increases in size from 38.7MB to 39.9MB.</p>
+</blockquote>
+<p>The published ty artifact (built with uv build in the ty repository) increases from 3187088 (3.18MB) to 3218280 (3.21MB). I think that's neglectable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-14 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/sync_typeshed.yaml</code>:51 on 2025-07-14 06:57</div>
+            <div class="timeline-body"><p>Does typeshed not support Python 3.8. If that's the case, it probably doesn't make sense for ty to still support Python 3.8 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-14 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/sync_typeshed.yaml</code>:45 on 2025-07-14 06:58</div>
+            <div class="timeline-body"><p>I think we should create an issue for this instead of this ominous TODO comment where it isn't directly clear what hte issue is with platform specific APIs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 07:01</div>
+            <div class="timeline-body"><p>It's good to know that our parser is fast enough that the size increase in code to parse doesn't impact runtime performance in a meaningful way</p>
+<p>Do you know why this isn't something that has been done before?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-14 07:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-14 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:51 on 2025-07-14 07:38</div>
+            <div class="timeline-body"><p>That's correct, it only supports 3.9+ these days</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-14 12:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:51 on 2025-07-14 12:12</div>
+            <div class="timeline-body"><p>Yes: the codemod will only add docstrings to functions/classes that do not already have docstrings. We run with Python 3.14 before running with any other Python version so that we get the Python 3.14 version of the docstring for a definition that exists on all Python versions: if we ran with Python 3.9 first, then the later runs with Python 3.10+ would not modify the docstring that had already been added using the old version of Python.</p>
+<p>I'll add a comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-14 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:71 on 2025-07-14 12:14</div>
+            <div class="timeline-body"><p>Hehe. Here I'm just invoking typeshed's pre-commit file to make sure the changes we've codemodded in are formatted roughly the same way as the rest of typeshed's code. Typeshed still uses black; ruff-format isn't listed in their pre-commit file. I <em>could</em> invoke ruff-format on the typeshed stdlib directory, but (1) that might reformat other parts of the stdlib (not just the bits we've codemodded), and (2) Ruff's formatter still moves <code>type: ignore</code> comments around more than Black, which could mean that typeshed's tests would no longer pass on the reformatted code.</p>
+<p>I'll add a comment explaining this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we know if the script (or something else) that Pylance is using to fetch these docstrings is open-sourced and available? If so, can it be used by us?</p>
+</blockquote>
+<p>I believe it's closed-source. An early open-source prototype is available at https://github.com/gramster/stubsplit, but note that the README for that project says:</p>
+<blockquote>
+<p>It would be better to rewrite this at some point using libcst</p>
+</blockquote>
+<p>which is basically what I've done ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a reason that this is in a separate repository? As it's a script, can it be added / moved to the Ruff repository mainly so that it's easier to maintain?</p>
+</blockquote>
+<p>One reason why I'd be interested in keeping it separate is that I'd like to explore running this script at build time in https://github.com/typeshed-internal/stub_uploader when uploading typeshed's third-party stubs packages to PyPI. This would also be really beneficial to ty users, as well as users of other type checkers.</p>
+<p>I'd be interested in moving the repo to the <code>astral</code> organisation, though, and giving other people commit access?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-14 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:45 on 2025-07-14 12:24</div>
+            <div class="timeline-body"><p>The issue is that we get the runtime docstrings by inspecting the docstrings at runtime, so if an API doesn't exist at runtime (because e.g. it's Windows-specific and we're running on Linux), then we won't add a docstring to it.</p>
+<p>This is probably solvable, but it might require complicating the GitHub workflow a bit. I'll add a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 12:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd be interested in moving the repo to the astral organisation, though, and giving other people commit access?</p>
+</blockquote>
+<p>I think that would be great. You should have the necessary permissions to create a new repository</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>It's good to know that our parser is fast enough that the size increase in code to parse doesn't impact runtime performance in a meaningful way</p>
+</blockquote>
+<p>I'm not sure we actually know that from this PR, because this PR itself doesn't actually add docstrings (it just adds the workflow that means they'll be auto-added in the next typeshed sync). I was going to trigger the workflow manually immediately after landing this, but I can open a draft PR now with all the docstrings added to check performance doesn't degrade on Codspeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 12:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure we actually know that from this PR, because this PR itself doesn't actually add docstrings (it just adds the workflow that means they'll be auto-added in the next typeshed sync). I was going to trigger the workflow manually immediately after landing this, but I can open a draft PR now with all the docstrings added to check performance doesn't degrade on Codspeed.</p>
+</blockquote>
+<p>Whooops. I didn't realize this. That also means that my binary size measurement is off because what I did is checkout this PR. Can you measure the binary size increase of the released ty artifact (use <code>uv build</code> in the ty repository).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:39</div>
+            <div class="timeline-body"><p>Screenshot of signature help in the playground for a builtin function when the stubs have docstrings:</p>
+<p><img width="1232" height="618" alt="image" src="https://github.com/user-attachments/assets/9de6c6d7-9994-4ad4-9f8d-09e5b883bf66" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you measure the binary size increase of the released ty artifact (use <code>uv build</code> in the ty repository).</p>
+</blockquote>
+<p>For the latest release of ty, I have these numbers:</p>
+<ul>
+<li>Wheel: 6,700,111 bytes (6.7 MB on disk)</li>
+<li>Sdist: 3,186,425 bytes (3.2 MB on disk)</li>
+</ul>
+<p>Updating the submodule to https://github.com/astral-sh/ruff/pull/19327, I have:</p>
+<ul>
+<li>Wheel: 7,453,238 bytes (7.5 MB on disk)</li>
+<li>Sdist: 3,848,622 bytes (3.9 MB on disk)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 12:55</div>
+            <div class="timeline-body"><p>The <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fadd-docstrings">Codspeed report</a> on https://github.com/astral-sh/ruff/pull/19327 reports some regressions, but these appear most pronounced on the microbenchmarks (which makes sense, as parsing the vendored typeshed stubs takes up a much higher percentage of the total execution time for smaller projects). There are regressions of up to 4% on the microbenchmarks, a 2% regression on the cold tomllib benchmark, and regressions of 1% or lower for all other benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 13:02</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood for getting all those numbers. The binary size increase makes way more sense than the numbers I shared.</p>
+<p>I think those regressions are fine, considering the value they provide in an IDE context and in-stubs documentation has much better ergonomics when reading a builtin-stub file in the IDE over an external JSON file. I also don't think that it justifies shipping typeshed twice.</p>
+<p>The long-term solution here is to pre-process typeshed so that we don't need to parse the files in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 13:08</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'd be interested in moving the repo to the astral organisation, though, and giving other people commit access?</p>
+</blockquote>
+<p>I think that would be great. You should have the necessary permissions to create a new repository</p>
+</blockquote>
+<p>Okay, the repo is now at https://github.com/astral-sh/docstring-adder !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-14 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-14 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-14 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 16:23</div>
+            <div class="timeline-body"><p>I manually triggered the workflow, and it created https://github.com/astral-sh/ruff/pull/19334 -- everything seems to be working as expected 🥳</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:38 UTC
+    </footer>
+</body>
+</html>

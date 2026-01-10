@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use all reachable bindings for instance attributes and deferred lookups - astral-sh/ruff #18955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use all reachable bindings for instance attributes and deferred lookups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18955">#18955</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-06-26 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 11:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Remove a hack in control flow modeling that was treating <code>return</code> statements at the end of function bodies in a special way (basically considering the state <em>just before</em> the <code>return</code> statement as the end-of-scope state). This is not needed anymore now that #18750 has been merged.</p>
+<p>In order to make this work, we now use <em>all reachable bindings</em> for purposes of finding implicit instance attribute assignments as well as for deferred lookups of symbols. Both would otherwise be affected by this change:</p>
+<pre><code class="language-py">def C:
+    def f(self):
+        self.x = 1  # a reachable binding that is not visible at the end of the scope
+        return
+</code></pre>
+<pre><code class="language-py">def f():
+    class X: ...  # a reachable binding that is not visible at the end of the scope
+    x: &quot;X&quot; = X()  # deferred use of `X`
+    return
+</code></pre>
+<p>Implicit instance attributes also required another change. We previously kept track of possibly-unbound instance attributes in some cases, but we now give up on that completely and always consider <em>implicit</em> instance attributes to be bound if we see a reachable binding in a reachable method. The previous behavior was somewhat inconsistent anyway because we also do not consider attributes possibly-unbound in other scenarios: we do not (and can not) keep track of whether or not methods are called that define these attributes.</p>
+<p>closes https://github.com/astral-sh/ty/issues/711</p>
+<h2>Ecosystem analysis</h2>
+<p>I think this looks very positive!</p>
+<ul>
+<li>We see an unsurprising drop in <code>possibly-unbound-attribute</code> diagnostics (599), mostly for classes that define attributes in <code>try … except</code> blocks, <code>for</code> loops, or <code>if … else: raise …</code> constructs. There might obviously also be true positives that got removed, but the vast majority should be false positives.</li>
+<li>There is also a drop in <code>possibly-unresolved-reference</code> / <code>unresolved-reference</code> diagnostics (279+13) from the change to deferred lookups.</li>
+<li>Some <code>invalid-type-form</code> false positives got resolved (13), because we can now properly look up the names in the annotations.</li>
+<li>There are some new <em>true</em> positives in <code>attrs</code>, since we understand the <code>Attribute</code> annotation that was previously inferred as <code>Unknown</code> because of a re-assignment after the class definition.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>The existing attributes.md test suite has sufficient coverage here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-06-26 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-26 11:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- TOTAL MEMORY USAGE: ~45MB
++ TOTAL MEMORY USAGE: ~49MB
+
+attrs (https://github.com/python-attrs/attrs)
+- error[invalid-assignment] src/attr/_make.py:1559:5: Object of type `tuple[@Todo(generator type), ...]` is not assignable to `list[Unknown]`
++ error[invalid-assignment] src/attr/_make.py:1559:5: Object of type `tuple[@Todo(generator type), ...]` is not assignable to `list[Attribute | Unknown]`
++ warning[possibly-unbound-attribute] src/attr/_make.py:1560:29: Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1560:48: Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1560:67: Attribute `eq` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1598:16: Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1599:32: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1600:35: Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1602:57: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:1605:62: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2139:12: Attribute `validator` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2142:21: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2143:26: Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2144:13: Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2148:20: Attribute `alias` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2150:34: Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2151:48: Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2153:12: Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2153:55: Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2154:35: Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2156:25: Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2158:12: Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2160:58: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2170:66: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2181:56: Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2191:62: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2202:14: Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2204:16: Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2215:62: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2223:16: Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2229:54: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2247:62: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2263:52: Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2265:16: Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2276:62: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2282:12: Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2283:16: Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2284:41: Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2320:33: Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] src/attr/_make.py:2320:60: Attribute `init` on type `Attribute | Unknown` is possibly unbound
+- Found 602 diagnostics
++ Found 640 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[invalid-type-form] tests/test_routing.py:771:57: Variable of type `Never` is not allowed in a type expression
+- Found 170 diagnostics
++ Found 169 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- warning[possibly-unresolved-reference] alerta/app.py:102:46: Name `Celery` used when possibly not defined
+- Found 448 diagnostics
++ Found 447 diagnostics
+- TOTAL MEMORY USAGE: ~117MB
++ TOTAL MEMORY USAGE: ~106MB
+
+comtypes (https://github.com/enthought/comtypes)
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:24:7: Name `StructRecordParamTest` used when possibly not defined
+- Found 485 diagnostics
++ Found 484 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- warning[possibly-unresolved-reference] jwt/algorithms.py:104:25: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:105:24: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:106:25: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:109:22: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:111:29: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:118:28: Name `TypeAlias` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/utils.py:74:50: Name `EllipticCurve` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/utils.py:83:50: Name `EllipticCurve` used when possibly not defined
+- Found 37 diagnostics
++ Found 29 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-type-form] src/trio/_core/_io_windows.py:51:14: Variable of type `Never` is not allowed in a type expression
+- error[call-non-callable] src/trio/_core/_io_windows.py:328:16: Object of type `object` is not callable
+- error[call-non-callable] src/trio/_core/_io_windows.py:373:24: Object of type `object` is not callable
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:35:21: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:41:24: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:48:21: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:69:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:109:29: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:109:54: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:143:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:231:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:231:42: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:242:40: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:242:65: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:268:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:268:42: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:287:57: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:298:45: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:335:41: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:354:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:370:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:371:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:392:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:506:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:506:74: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:550:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:594:47: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:627:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:627:42: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:681:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:709:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:709:42: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:739:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:740:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:773:57: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:867:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:867:74: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:889:49: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:917:17: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:937:54: Name `SSL` used when possibly not defined
+- error[invalid-type-form] src/trio/_tests/test_highlevel_open_tcp_stream.py:41:8: Variable of type `Never` is not allowed in a type expression
+- Found 882 diagnostics
++ Found 841 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:389:37: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:432:20: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
+- Found 54 diagnostics
++ Found 56 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[possibly-unresolved-reference] pymongo/asynchronous/encryption.py:552:50: Name `MongoCryptOptions` used when possibly not defined
++ warning[unused-ignore-comment] pymongo/ssl_support.py:87:54: Unused blanket `type: ignore` directive
+- warning[possibly-unresolved-reference] pymongo/synchronous/encryption.py:549:50: Name `MongoCryptOptions` used when possibly not defined
+- Found 456 diagnostics
++ Found 455 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[possibly-unresolved-reference] rich/live.py:368:29: Name `Dict` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/live.py:368:34: Name `Tuple` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/pretty.py:65:45: Name `_attr_module` used when possibly not defined
+- Found 328 diagnostics
++ Found 325 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:23:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:30:35: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:37:38: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:44:33: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:51:33: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:58:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:65:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:72:37: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:79:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_quoting_benchmarks.py:86:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:49:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:58:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:66:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:74:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:83:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:91:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:99:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:110:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:120:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:130:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:140:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:149:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:157:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:165:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:174:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:183:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:192:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:201:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:210:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:219:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:228:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:237:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:248:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:258:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:268:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:278:46: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:285:46: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:293:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:302:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:311:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:320:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:329:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:340:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:348:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:357:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:365:39: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:372:38: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:379:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:387:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:396:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:404:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:411:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:418:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:426:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:435:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:444:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:452:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:459:46: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:467:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:475:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:482:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:489:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:496:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:503:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:510:38: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:517:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:524:36: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:531:33: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:541:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:551:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:560:45: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:567:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:577:31: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:584:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:592:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:602:35: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:610:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:618:35: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:627:31: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:637:38: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:645:33: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:657:35: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:666:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:676:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:686:28: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:695:34: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:705:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:719:33: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:728:42: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:737:38: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:747:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:757:32: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:766:41: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:775:40: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:785:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:795:34: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:804:43: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:813:45: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:823:17: Name `BenchmarkFixture` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_url_benchmarks.py:834:43: Name `BenchmarkFixture` used when possibly not defined
+- Found 152 diagnostics
++ Found 52 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- warning[possibly-unresolved-reference] ignite/distributed/auto.py:18:76: Name `_MpDeviceLoader` used when possibly not defined
+- warning[possibly-unresolved-reference] ignite/distributed/comp_models/__init__.py:17:44: Name `_NativeDistModel` used when possibly not defined
+- warning[possibly-unresolved-reference] ignite/distributed/comp_models/__init__.py:17:64: Name `_XlaDistModel` used when possibly not defined
+- warning[possibly-unresolved-reference] ignite/distributed/comp_models/__init__.py:17:81: Name `_HorovodDistModel` used when possibly not defined
+- warning[possibly-unresolved-reference] ignite/handlers/visdom_logger.py:200:47: Name `ThreadPoolExecutor` used when possibly not defined
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_ssim.py:176:12: Attribute `device` on type `Unknown | None` is possibly unbound
+- Found 2143 diagnostics
++ Found 2137 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[unresolved-reference] tests/test_multiple_interpreters.py:33:21: Name `interpreters` used when not defined
+- Found 212 diagnostics
++ Found 211 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:72:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:104:47: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:186:13: Name `Contour` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:186:24: Name `Scatter` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:186:35: Name `Scatter` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_contour.py:238:71: Name `Scatter` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_edf.py:43:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_hypervolume_history.py:33:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_hypervolume_history.py:68:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_intermediate_values.py:56:48: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_intermediate_values.py:72:61: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_optimization_history.py:178:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_optimization_history.py:209:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_parallel_coordinate.py:56:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_parallel_coordinate.py:88:70: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_param_importances.py:120:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_param_importances.py:164:82: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_pareto_front.py:45:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_pareto_front.py:109:56: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_pareto_front.py:353:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_pareto_front.py:353:22: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_rank.py:72:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_rank.py:262:7: Name `Scatter` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_rank.py:305:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_slice.py:149:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_slice.py:176:47: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_slice.py:222:70: Name `Scatter` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_terminator_improvement.py:44:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_terminator_improvement.py:140:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_terminator_improvement.py:157:7: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_terminator_improvement.py:191:74: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_timeline.py:33:73: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_timeline.py:140:49: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/_timeline.py:171:74: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:40:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:75:47: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:119:40: Name `Colormap` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:240:33: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:240:47: Name `Colormap` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:241:7: Name `ContourSet` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_edf.py:27:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_hypervolume_history.py:23:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_hypervolume_history.py:62:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_intermediate_values.py:17:48: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_intermediate_values.py:41:61: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_optimization_history.py:32:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_optimization_history.py:72:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_parallel_coordinate.py:28:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_parallel_coordinate.py:63:70: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:37:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:80:68: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:115:51: Name `Figure` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:115:65: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:29:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:94:56: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:103:54: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:143:54: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:28:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:61:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:105:10: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:106:7: Name `PathCollection` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:33:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:62:47: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:105:10: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:106:12: Name `Colormap` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:109:7: Name `PathCollection` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_terminator_improvement.py:33:7: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_terminator_improvement.py:74:74: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_timeline.py:23:73: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_timeline.py:60:49: Name `Axes` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/visualization_tests/test_edf.py:35:31: Name `go` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/visualization_tests/test_edf.py:35:43: Name `Axes` used when possibly not defined
+- Found 810 diagnostics
++ Found 738 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- warning[possibly-unbound-attribute] test/test_attach_http.py:422:5: Attribute `detected_name` on type `AttachHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:274:9: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:277:16: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:284:9: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:287:16: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:294:9: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:297:16: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:301:5: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_config_http.py:304:12: Attribute `default_config_format` on type `ConfigHTTP` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:494:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:495:12: Attribute `secure` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:496:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:753:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:776:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:798:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:828:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:862:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:863:12: Attribute `host` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:864:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:883:16: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:884:16: Attribute `host` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1110:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1113:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1138:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1138:25: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1141:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1141:25: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1166:12: Attribute `user` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1169:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1250:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1294:12: Attribute `port` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1462:12: Attribute `host` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1513:12: Attribute `host` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_email.py:1629:12: Attribute `host` on type `NotifyEmail` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:155:5: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:213:12: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:219:5: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:225:12: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:338:5: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_emby.py:432:5: Attribute `port` on type `NotifyEmby` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_twist.py:124:12: Attribute `user` on type `NotifyTwist` is possibly unbound
+- warning[possibly-unbound-attribute] test/test_plugin_twist.py:125:12: Attribute `host` on type `NotifyTwist` is possibly unbound
+- Found 4346 diagnostics
++ Found 4304 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[invalid-assignment] tests/test_psql.py:40:9: Object of type `Literal[0]` is not assignable to attribute `closed` on type `Unknown | None`
+- error[invalid-assignment] tests/test_psql.py:50:9: Object of type `Literal[2]` is not assignable to attribute `closed` on type `Unknown | None`
+- error[invalid-assignment] tests/test_psql.py:83:9: Object of type `Literal[0]` is not assignable to attribute `closed` on type `Unknown | None`
+- Found 147 diagnostics
++ Found 144 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:22:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:26:29: Name `Router` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:32:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:97:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:101:29: Name `Router` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/asyncio/router.py:205:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:22:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:26:29: Name `Router` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:32:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:97:18: Name `Map` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:101:29: Name `Router` used when possibly not defined
+- warning[possibly-unresolved-reference] src/websockets/sync/router.py:199:18: Name `Map` used when possibly not defined
+- Found 84 diagnostics
++ Found 72 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- warning[possibly-unresolved-reference] mkdocs/localization.py:68:6: Name `Translations` used when possibly not defined
+- Found 192 diagnostics
++ Found 191 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job.py:61:12: Attribute `update_model` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job.py:73:12: Attribute `update_model` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job.py:76:45: Attribute `end_error_state` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job.py:78:33: Attribute `end_error_state` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job_utest.py:106:30: Attribute `update_model` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job_utest.py:116:27: Attribute `update_model` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job_utest.py:127:27: Attribute `update_model` on type `ContractJob` is possibly unbound
+- warning[possibly-unbound-attribute] dragonchain/job_processor/contract_job_utest.py:499:30: Attribute `update_model` on type `ContractJob` is possibly unbound
+- Found 310 diagnostics
++ Found 302 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:150:25: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:151:25: Attribute `stdin` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:152:15: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:153:9: Attribute `stdin` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:154:22: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:157:15: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:158:9: Attribute `stdin` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:159:22: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:172:15: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:173:9: Attribute `stdin` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:174:22: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:186:22: Attribute `stderr` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:189:9: Attribute `stderr` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:216:25: Attribute `stdout` on type `Subprocess` is possibly unbound
+- warning[possibly-unbound-attribute] tornado/test/process_test.py:236:19: Attribute `stdout` on type `Subprocess` is possibly unbound
+- Found 260 diagnostics
++ Found 245 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:233:6: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:384:18: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:389:6: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:402:18: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:407:6: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:419:18: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:424:6: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:510:18: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] src/urllib3/util/ssl_.py:513:6: Name `ssl` used when possibly not defined
+- Found 488 diagnostics
++ Found 479 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:221:13: Attribute `_shape` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:222:13: Attribute `_cmfs` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:222:24: Attribute `_sd_D65` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:223:13: Attribute `_XYZ_D65` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:224:13: Attribute `_xy_D65` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:226:13: Attribute `_RGB_colourspace` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:228:13: Attribute `_LUT` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unbound-attribute] colour/recovery/tests/test_jakob2019.py:231:16: Attribute `_LUT` on type `type[TestLUT3D_Jakob2019]` is possibly unbound
+- warning[possibly-unresolved-reference] colour/utilities/common.py:1110:56: Name `array` used when possibly not defined
+- Found 500 diagnostics
++ Found 491 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- warning[possibly-unbound-attribute] testing/test_parseopt.py:55:16: Attribute `type` on type `Argument` is possibly unbound
+- warning[possibly-unbound-attribute] testing/test_parseopt.py:57:16: Attribute `type` on type `Argument` is possibly unbound
+- warning[possibly-unbound-attribute] testing/test_parseopt.py:59:16: Attribute `type` on type `Argument` is possibly unbound
+- warning[possibly-unbound-attribute] testing/test_parseopt.py:63:16: Attribute `type` on type `Argument` is possibly unbound
+- warning[possibly-unbound-attribute] testing/test_parseopt.py:67:9: Attribute `default` on type `Argument` is possibly unbound
+- Found 542 diagnostics
++ Found 537 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- warning[possibly-unbound-attribute] freqtrade/freqai/RL/BaseReinforcementLearningModel.py:278:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BaseClassifierModel.py:127:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BaseClassifierModel.py:129:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BasePyTorchClassifier.py:97:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BasePyTorchClassifier.py:99:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BasePyTorchRegressor.py:59:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BasePyTorchRegressor.py:60:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BaseRegressionModel.py:121:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/base_models/BaseRegressionModel.py:123:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/freqai_interface.py:298:13: Attribute `training_timeranges` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/freqai_interface.py:298:37: Attribute `backtesting_timeranges` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/freqai_interface.py:302:32: Attribute `backtesting_timeranges` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/freqai_interface.py:1044:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/prediction_models/PyTorchTransformerRegressor.py:148:9: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/prediction_models/PyTorchTransformerRegressor.py:155:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/prediction_models/SKLearnRandomForestClassifier.py:84:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/prediction_models/XGBoostClassifier.py:88:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- warning[possibly-unbound-attribute] freqtrade/freqai/prediction_models/XGBoostRFClassifier.py:88:26: Attribute `do_predict` on type `FreqaiDataKitchen` is possibly unbound
+- Found 418 diagnostics
++ Found 400 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- warning[possibly-unbound-attribute] schema_salad/ref_resolver.py:133:17: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] schema_salad/schema.py:250:61: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] schema_salad/tests/test_ref_resolver.py:45:23: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] schema_salad/tests/test_ref_resolver.py:56:23: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] schema_salad/tests/test_ref_resolver.py:67:23: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] schema_salad/tests/test_ref_resolver.py:72:23: Attribute `session` on type `Loader` is possibly unbound
+- Found 163 diagnostics
++ Found 157 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- warning[possibly-unbound-attribute] paasta_tools/cli/cmds/secret.py:469:13: Attribute `secret_dir` on type `SecretProvider` is possibly unbound
+- Found 906 diagnostics
++ Found 905 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- warning[possibly-unbound-attribute] cwltool/resolver.py:75:20: Attribute `session` on type `Loader` is possibly unbound
+- warning[possibly-unbound-attribute] cwltool/resolver.py:80:20: Attribute `session` on type `Loader` is possibly unbound
+- Found 163 diagnostics
++ Found 161 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[possibly-unbound-attribute] static_frame/core/container_util.py:1628:31: Attribute `index_types` on type `IndexBase | IMTOAdapter | Unknown` is possibly unbound
+- warning[possibly-unbound-attribute] static_frame/core/container_util.py:1667:39: Attribute `index_types` on type `IndexBase | IMTOAdapter | Unknown` is possibly unbound
+- Found 1808 diagnostics
++ Found 1806 diagnostics
+-     memo fields = ~334MB
++     memo fields = ~304MB
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+-     memo fields = ~142MB
++     memo fields = ~156MB
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ error[invalid-return-type] mitmproxy/contentviews/_view_wbxml.py:15:16: Return type does not match returned value: expected `str`, found `Unknown | None`
+- Found 1817 diagnostics
++ Found 1818 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:561:54: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:567:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:591:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:616:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:626:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:639:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:648:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:661:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] lib/streamlit/dataframe_util.py:670:22: Variable of type `Never` is not allowed in a type expression
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:420:25: Name `pd` used when not defined
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:420:43: Name `pd` used when not defined
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:445:21: Name `pd` used when not defined
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:445:42: Name `pd` used when not defined
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:471:25: Name `pl` used when not defined
+- error[unresolved-reference] lib/streamlit/runtime/caching/hashing.py:493:25: Name `pl` used when not defined
+- Found 3322 diagnostics
++ Found 3307 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1745:63: Attribute `vala_header` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1755:66: Attribute `vala_vapi` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1758:51: Attribute `vala_vapi` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1766:27: Attribute `vala_gir` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1767:69: Attribute `vala_gir` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/backend/ninjabackend.py:1768:54: Attribute `vala_gir` on type `BuildTarget` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/build.py:1980:43: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/build.py:1981:29: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/build.py:3212:13: Attribute `coredata` on type `Unknown | Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/build.py:3213:5: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/build.py:3218:9: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/cmake/common.py:56:21: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/cmake/common.py:57:20: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/cmake/common.py:58:12: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/cmake/common.py:63:21: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/cmake/common.py:109:20: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:230:15: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:240:13: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:256:13: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:257:14: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:258:14: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:263:13: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:264:14: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:265:14: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:271:12: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:280:18: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:286:20: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:300:19: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:308:12: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:320:19: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:322:21: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:338:12: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:339:16: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:357:21: Attribute `coredata` on type `Environment` is possibly unbound
+- warning[possibly-unbound-attribute] mesonbuild/compilers/compilers.py:371:19: Attribute `coredata` on type...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-26 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-27 08:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-27 08:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-27 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-27 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-27 10:25</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fremove-return-statement-hack?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18955 will <strong>improve performances by ×12</strong></h3>
+<p><sub>Comparing <code>david/remove-return-statement-hack</code> (ba32908) with <code>main</code> (7d468ee)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 38</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>ty_micro[complex_constrained_attributes_2]</code> | 649 ms | 54.9 ms | ×12 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-27 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:153 on 2025-06-27 10:28</div>
+            <div class="timeline-body"><p>:question:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Remove 'return'-hack in control flow modeling" to "[ty] Use all reachable bindings for instance attributes and deferred lookups" by @sharkdp on 2025-06-27 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-30 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:153 on 2025-06-30 14:54</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/728 is the cause for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-01 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:153 on 2025-07-01 09:07</div>
+            <div class="timeline-body"><p>This is now fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-01 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-01 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-01 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-01 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-01 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-01 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-01 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-01 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-01 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-01 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-01 12:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>

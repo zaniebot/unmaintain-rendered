@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Salsa - astral-sh/ruff #19020</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update Salsa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19020">#19020</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-28 20:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 20:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates Salsa to pull in Ibraheems multithreading improvements</p>
+<p>https://github.com/salsa-rs/salsa/pull/921</p>
+<h2>Performance</h2>
+<p>A small regression for single-threaded benchmarks is expected because papaya is slightly slower than a <code>Mutex&lt;FxHashMap&gt;</code> in the uncontested case (~10%). However, this shouldn't matter as much in practice because:</p>
+<ol>
+<li>Salsa has a fast-path when only using 1 DB instance which is the common case in production. This fast-path is not impacted by the changes but we measure the slow paths in our benchmarks (because we use multiple db instances)</li>
+<li>Fixing the 10x slowdown for the congested case (multi threading) outweights the downsides of a 10% perf regression for single threaded use cases, especially considering that ty is heavily multi threaded.</li>
+</ol>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-28 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-06-28 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @MichaReiser on 2025-06-28 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 20:22</div>
+            <div class="timeline-body"><p>@ibraheemdev can you take over this PR. It seems something broke the heap size feature upstream (maybe https://github.com/salsa-rs/salsa/pull/927?)</p>
+<p>Edit: I pinned the commit to before said commit for now but that also means that the papaya commit is missing too. We should add a test in upstream salsa that catches the regression and fix it before merging this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @MichaReiser on 2025-06-28 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-28 20:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- TOTAL MEMORY USAGE: ~49MB
++ TOTAL MEMORY USAGE: ~45MB
+
+beartype (https://github.com/beartype/beartype)
+- TOTAL MEMORY USAGE: ~88MB
++ TOTAL MEMORY USAGE: ~97MB
+
+discord.py (https://github.com/Rapptz/discord.py)
+-     memo fields = ~189MB
++     memo fields = ~207MB
+
+alerta (https://github.com/alerta/alerta)
+- TOTAL MEMORY USAGE: ~117MB
++ TOTAL MEMORY USAGE: ~106MB
+
+isort (https://github.com/pycqa/isort)
+- TOTAL MEMORY USAGE: ~80MB
++ TOTAL MEMORY USAGE: ~88MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~156MB
++     memo fields = ~171MB
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+-     memo fields = ~156MB
++     memo fields = ~142MB
+
+static-frame (https://github.com/static-frame/static-frame)
+-     memo fields = ~304MB
++     memo fields = ~334MB
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+-     memo fields = ~171MB
++     memo fields = ~189MB
+
+rotki (https://github.com/rotki/rotki)
+-     memo fields = ~445MB
++     memo fields = ~490MB
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- TOTAL MEMORY USAGE: ~717MB
++ TOTAL MEMORY USAGE: ~652MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-28 20:34</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-update?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19020 will <strong>degrade performances by 7.34%</strong></h3>
+<p><sub>Comparing <code>micha/salsa-update</code> (baee7c3) with <code>main</code> (ebc70a4)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions<br />
+<code>✅ 38</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-update?runnerMode=Instrumentation">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>ty_micro[many_tuple_assignments]</code> | 128.9 ms | 139.2 ms | -7.34% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-28 20:36</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-update?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19020 will <strong>improve performances by ×8.5</strong></h3>
+<p><sub>Comparing <code>micha/salsa-update</code> (baee7c3) with <code>main</code> (ebc70a4)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 7</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>multithreaded[pydantic]</code> | 2,947.7 ms | 346.6 ms | ×8.5 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-28 20:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 20:37</div>
+            <div class="timeline-body"><p>Hmm, the memory usage changes here must be noise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ibraheemdev on 2025-07-02 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-07-02 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-07-02 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-02 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:33:37 UTC
+    </footer>
+</body>
+</html>
