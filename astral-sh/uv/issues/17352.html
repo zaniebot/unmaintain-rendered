@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using extras to manually toggle dependency variants - astral-sh/uv #17352</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using extras to manually toggle dependency variants</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17352">#17352</a>
+        opened by <a href="https://github.com/Oddball777">@Oddball777</a>
+        on 2026-01-07 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Oddball777">@Oddball777</a> on 2026-01-07 21:36</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a project where I’d like to manually toggle between variants of a dependency using extras. Here is a minimal example of what I currently do:</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;jax&gt;=0.8.0&quot;,
+]
+
+[project.optional-dependencies]
+usecuda = [
+    &quot;jax[cuda]&quot;,
+]
+</code></pre>
+<p>And then I run either <code>uv sync</code> or <code>uv sync --extras usecuda</code>, depending on whether I want CUDA support or not. This <em>seems to work</em>, but I haven’t found documentation that explicitly confirms this is a supported or intended pattern. Is uv explicitly designed to handle this kind of dependency override via extras?</p>
+<p>I also wondered whether this same approach works for version switching, not just feature extras. For example:</p>
+<pre><code>[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;numpy&gt;=1.0.0,&lt;2.0.0&quot;,
+]
+
+[project.optional-dependencies]
+usenumpy2 = [
+    &quot;numpy&gt;=2.0.0&quot;,
+]
+</code></pre>
+<p>This feels related to prior discussions about environment markers (e.g. conditioning on architecture or platform, usually for PyTorch), but my use case is different:</p>
+<ul>
+<li>I do not want to condition on architecture (for example, I want to be able to install the non-CUDA variant on a CUDA-capable machine)</li>
+<li>The NumPy example shows that this is not inherently tied to hardware at all</li>
+</ul>
+<p>Questions:</p>
+<ol>
+<li>In the first case, does this actually toggle between <code>jax</code> and <code>jax[cuda]</code> in a way that is explicitly supported?</li>
+<li>In the second example, does this actually allow toggling between numpy major versions, or is this relying on undefined / unintended resolver behavior?</li>
+<li>Is there a more idiomatic or recommended uv approach for achieving this kind of manual dependency variant selection?</li>
+</ol>
+<h3>Platform</h3>
+<p>macOS 26.2, Darwin 25.2.0 arm64 (main computer) and Linux 5.14.0-570.51.1.el9_6.aarch64+64k aarch64 GNU/Linux (CUDA-capable machine)</p>
+<h3>Version</h3>
+<p>uv 0.9.17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Oddball777 on 2026-01-07 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-07 23:13</div>
+            <div class="timeline-body"><ol>
+<li>Yes, to my understanding that is supported.</li>
+<li>I'm not sure you can declare dependencies in extra that conflict with the main project requirements. I'd expect that to fail based on Python standards, not for uv-specific reasons.</li>
+<li>I'd expect the downstream user to specify the number version constraint if they want numpy 1 vs 2 instead? Can you say more about your use-case here?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Oddball777">@Oddball777</a> on 2026-01-08 00:37</div>
+            <div class="timeline-body"><p>My real life use case is mostly 1, just thought I'd ask about 2 at the same time since it seemed related and I was curious. Case 2 does fail when I try it.</p>
+<p>For case 1, Poetry provides a way to make the separation between the base dependency and the CUDA-enabled variant explicit, for example:</p>
+<pre><code>dependencies = [
+    &quot;jax (&gt;=0.4.36,&lt;0.7) ; extra != 'cuda'&quot;,
+]
+
+[project.optional-dependencies]
+cuda = [
+    &quot;jax[cuda] (&gt;=0.4.36,&lt;0.7)&quot;,
+]
+</code></pre>
+<p>Is there an equivalent in uv or is it not necessary?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 03:18:13 UTC
+    </footer>
+</body>
+</html>

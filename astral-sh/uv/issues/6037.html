@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feature request: `uv describe` showing metadata and entry points of any pypi package. - astral-sh/uv #6037</title>
+    <title>Feature request: `uv metadata` showing metadata and entry points of any pypi package. - astral-sh/uv #6037</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Feature request: `uv describe` showing metadata and entry points of any pypi package.</h1>
+    <h1>Feature request: `uv metadata` showing metadata and entry points of any pypi package.</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,48 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header">Issue opened by <a href="https://github.com/zsimic">@zsimic</a> on 2024-08-12 14:30</div>
-            <div class="timeline-body"><p>It would be great if <code>uv</code> provided a command that could briefly describe any pypi package reference, similar to <code>uv pip show</code>, but virtual environment agnostic. The entry points of the package (when present) should be shown, this would be awesome info for tools such as <code>pickley</code>.</p>
-<p>The fields shown would be similar to <code>uv pip show</code>, with no <code>Location:</code> nor <code>Required-By:</code> (since those are venv-specific). I propose showing the following fields:</p>
+            <div class="timeline-body"><p>It would be great if <code>uv</code> provided a command that could describe the metadata of a given python package. The output would be json, similar to how <code>cargo metadata</code> does it.</p>
+<p>A proof of concept written in python is available in https://github.com/zsimic/uv-metadata</p>
+<p>For example:</p>
+<pre><code>~: uv metadata cowsay
+{
+    &quot;author&quot;: &quot;Vaasudevan Srinivasan&quot;,
+    &quot;author_email&quot;: &quot;vaasuceg.96@gmail.com&quot;,
+    &quot;classifiers&quot;: [
+        &quot;Operating System :: OS Independent&quot;,
+        &quot;Programming Language :: Python :: 3.8&quot;,
+        &quot;Programming Language :: Python :: 3.9&quot;,
+        &quot;Programming Language :: Python :: 3.10&quot;,
+        &quot;Programming Language :: Python :: 3.11&quot;,
+        &quot;Programming Language :: Python :: 3.12&quot;
+    ],
+    &quot;description_content_type&quot;: &quot;text/markdown&quot;,
+    &quot;entry_points&quot;: {
+        &quot;console_scripts&quot;: {
+            &quot;cowsay&quot;: &quot;cowsay.__main__:cli&quot;
+        }
+    },
+    &quot;home_page&quot;: &quot;https://github.com/VaasuDevanS/cowsay-python&quot;,
+    &quot;license&quot;: &quot;GNU-GPL&quot;,
+    &quot;license_file&quot;: &quot;LICENSE.txt&quot;,
+    &quot;metadata_version&quot;: &quot;2.1&quot;,
+    &quot;name&quot;: &quot;cowsay&quot;,
+    &quot;requires_python&quot;: &quot;&gt;=3.8&quot;,
+    &quot;summary&quot;: &quot;The famous cowsay for GNU/Linux is now available for python&quot;,
+    &quot;top_level&quot;: [
+        &quot;cowsay&quot;
+    ],
+    &quot;version&quot;: &quot;6.1&quot;
+}
+</code></pre>
+<p>Any valid package spec that would be accepted in a <code>requirements.txt</code> for example is accepted here as argument. For <code>cowsay</code> one could refer to it via its project url, or with a constraint and get the same outcome, for example:</p>
 <ul>
-<li><code>Name</code>: canonical pypi package name</li>
-<li><code>Version</code>: the version the pypi reference resolved to (latest by default)</li>
-<li><code>Summary</code>: the one-liner summary from pypi package metadata</li>
-<li><code>Requires-Python</code>: if defined, the minimum python (as stated in package metadata)</li>
-<li><code>Requires</code>: from metadata <code>Requires-Dist:</code> (similar to <code>uv pip show</code>), optional</li>
-<li><code>Entry-Points</code>: packages declared console entry points (when present)</li>
+<li><code>uv metdata https://github.com/VaasuDevanS/cowsay-python.git</code></li>
+<li><code>uv metdata cowsay~=6.0</code></li>
 </ul>
-<p>Additionally, a <code>--format json</code> output would be supported as well.</p>
-<p>Some example runs would be:</p>
-<pre><code>~: uv describe cowsay
-Name: cowsay
-Version: 6.1
-Summary: The famous cowsay for GNU/Linux is now available for python
-Requires-Python: &gt;=3.8
-Requires:
-Entry-Points: cowsay
-</code></pre>
-<p>Similarly for:</p>
-<ul>
-<li><code>uv describe https://github.com/VaasuDevanS/cowsay-python.git</code></li>
-<li>or <code>uv describe cowsay~=6.0</code></li>
-</ul>
-<p>Example with multiple entry points:</p>
-<pre><code>~: uv describe awscli
-Name: awscli
-Version: 1.33.40
-Summary: Universal Command Line Environment for AWS.
-Requires-Python: &gt;=3.8
-Requires: botocore, colorama, docutils, pyyaml, rsa, s3transfer
-Entry-Points: aws, aws.cmd, aws_bash_completer, aws_completer, aws_zsh_completer.sh
-</code></pre>
-<p>Example output for a library (that has no entry points), the <code>Entry-Points:</code> field could be shown either empty, or missing altogether (probably cleaner if missing altogether)</p>
-<pre><code>~: uv describe requests
-Name: requests
-Version: 2.32.3
-Summary: Python HTTP for Humans.
-Requires-Python: &gt;=3.8
-Requires: certifi, charset-normalizer, idna, urllib3
-</code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,10 +90,53 @@ Entry-points:
 <p>Any pytest plugin also serves as a good example of a non-console-script entry point.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Niedzwiedzw">@Niedzwiedzw</a> on 2026-01-08 12:40</div>
+            <div class="timeline-body"><p>Hey, I'm willing to work on this issue - would the proposed structure work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-08 14:44</div>
+            <div class="timeline-body"><p>That's too big of a feature for us to currently accept as a contribution, there's a bunch of questions around this such as fitting with the rest of the CLI interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsimic">@zsimic</a> on 2026-01-08 17:53</div>
+            <div class="timeline-body"><p>I think it would be an awesome fit. A better name for the command is actually <code>uv metadata</code>, and it would output json only, similar (in a sense) to <code>cargo metadata</code>.</p>
+<p>I have written a proof of concept in python here: https://github.com/zsimic/uv-metadata
+It's one standalone script that uses <code>uv</code> in order to show metadata of a project (folder or pypi package name, or a constrained package name like <code>'urllib3&lt;2.6'</code>).</p>
+<p>I will update the description of this issue to mention <code>uv metadata</code> instead of <code>uv describe</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: `uv describe` showing metadata and entry points of any pypi package." to "Feature request: `uv metadata` showing metadata and entry points of any pypi package." by @zsimic on 2026-01-08 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsimic">@zsimic</a> on 2026-01-08 18:05</div>
+            <div class="timeline-body"><p>@mikenerone I've updated the description to focus on json only. Yes I agree this <code>uv metadata</code> command would show the package metadata ideally, so it would show all entry points (ideally:).</p>
+<p>For <code>black</code> that would be:</p>
+<pre><code>~: uv metadata black
+{
+    &quot;author_email&quot;: &quot;\u0141ukasz Langa &lt;lukasz@langa.pl&gt;&quot;,
+...
+    &quot;entry_points&quot;: {
+        &quot;console_scripts&quot;: {
+            &quot;black&quot;: &quot;black:patched_main&quot;,
+            &quot;blackd&quot;: &quot;blackd:patched_main [d]&quot;
+        },
+        &quot;validate_pyproject.tool_schema&quot;: {
+            &quot;black&quot;: &quot;black.schema:get_schema&quot;
+        }
+    },
+}
+...
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:30:32 UTC
+        Synced at 2026-01-10 03:17:03 UTC
     </footer>
 </body>
 </html>

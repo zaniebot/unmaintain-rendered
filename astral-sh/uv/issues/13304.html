@@ -53,18 +53,28 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/16289.html">astral-sh/uv#16289</a> on 2025-10-13 23:07</div>
-        </div>
-        <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tingerrr">@tingerrr</a> on 2025-11-25 09:58</div>
             <div class="timeline-body"><p>I think the downloaded archive would be in structure the same as a <a href="https://docs.astral.sh/uv/concepts/indexes/#flat-indexes">flat index</a>, so, all that's needed for installing it is a flat index pointing at that directory, right? Can a flat index be specified on the CLI?</p>
 <p>Separately, as noted in the linked <code>pip downlaod</code> discussion, is it perhaps more appropriate to provide the equivalent of <code>pip wheel</code> (or at least a flag for it) since it builds wheels for packages which don't come with a pre-built one.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/euank">@euank</a> on 2025-12-12 04:13</div>
+            <div class="timeline-body"><p>Currently, you can sorta create such a directory with:</p>
+<p>(note using <a href="https://github.com/cryptaliagy/tomlq">tomlq</a> and jq)</p>
+<pre><code>indexDir=$(mktemp -d)
+tq -f uv.lock --output json '.' | jq '.. | objects | .url | select(. != null)' -cr | \
+    xargs curl -sL --output-dir &quot;$indexDir&quot; --create-dirs --remote-name-all
+</code></pre>
+<p>This misses build deps (https://github.com/astral-sh/uv/issues/5190), but otherwise seems to work okay with <code>--find-links</code> and <code>uv pip install</code> I think.</p>
+<p>I think it'd be nice for <code>uv</code> itself to support something like this though since it feels a little wrong to parse through <code>uv.lock</code> like that, and I wouldn't be surprised if there's edge cases this misses.</p>
+<p>The above's what I ended up with over in <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/update.sh#L64-L66">nixpkgs's anki pkg</a> (and used <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/package.nix#L186">here</a>), so that hack did work in at least one case 😀</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:33:05 UTC
+        Synced at 2026-01-10 03:17:33 UTC
     </footer>
 </body>
 </html>

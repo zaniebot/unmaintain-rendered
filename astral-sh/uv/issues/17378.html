@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` incorrectly rolls back dependency between build-time and run-time - astral-sh/uv #17378</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` incorrectly rolls back dependency between build-time and run-time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17378">#17378</a>
+        opened by <a href="https://github.com/AlexanderWells-diamond">@AlexanderWells-diamond</a>
+        on 2026-01-09 14:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexanderWells-diamond">@AlexanderWells-diamond</a> on 2026-01-09 14:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv pip</code> is choosing a build-time dependency correctly, compiling the package, but then falls back to an older version of the build-time dependency for the final run-time installation. This causes the compiled package to be unable to locate its shared objects, as they are version-stamped.</p>
+<p>This behaviour is different to raw <code>pip</code>, which correctly keeps the build-time dependency at run-time.</p>
+<p>The problematic dependency in the below example is <code>epicscorelibs</code>. It should be <code>epicscorelibs==7.0.10.99.0.0</code>, the most recent released version at time of writing, but version <code>epicscorelibs==7.0.7.99.1.2</code> is being mistakenly installed at run-time, despite the right version being used at build-time.</p>
+<p><strong>Reproducing the failure</strong></p>
+<pre><code>$ uv venv --seed --python 3.11
+Using CPython 3.11.13 interpreter at: /usr/bin/python3.11
+Creating virtual environment with seed packages at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+ + pip==25.3
+ + setuptools==80.9.0
+ + wheel==0.45.1
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ uv pip install -vv --no-cache --only-binary numpy --no-binary softioc softioc==4.6.1
+&lt;output cut for brevity, see excerpts below or full log in attached file&gt;
+
+$ uv pip freeze
+epicscorelibs==7.0.7.99.1.2
+epicsdbbuilder==1.5
+numpy==2.4.0
+pip==25.3
+pvxslibs==1.4.1
+pyyaml==6.0.3
+setuptools==80.9.0
+setuptools-dso==2.12.2
+softioc==4.6.1
+wheel==0.45.1
+
+$ uv pip check
+Checked 10 packages in 0.50ms
+Found 1 incompatibility
+The package `softioc` requires `epicscorelibs&gt;=7.0.10.99.0.0,&lt;7.0.10.99.1`, but `7.0.7.99.1.2` is installed
+
+$ python -c &quot;import softioc&quot;
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/scratch/eyh46967/dev/temp/uvtest/.venv/lib64/python3.11/site-packages/softioc/__init__.py&quot;, line 14, in &lt;module&gt;
+    from .imports import dbLoadDatabase, registerRecordDeviceDriver
+  File &quot;/scratch/eyh46967/dev/temp/uvtest/.venv/lib64/python3.11/site-packages/softioc/imports.py&quot;, line 10, in &lt;module&gt;
+    from . import _extension
+ImportError: libdbRecStd.so.7.0.10.99.0: cannot open shared object file: No such file or directory
+
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/24528448/uv_pip_install_output.txt">uv_pip_install_output.txt</a></p>
+<p>The traceback at the end shows Python attempting to access the 7.0.10 versions of various shared objects, but the ones that are installed are version 7.0.7 - visible with <code>ls .venv/lib/python3.11/site-packages/epicscorelibs/lib/</code>.</p>
+<p>The interesting excepts of this logfile, to me, are line 654:</p>
+<pre><code>TRACE Assigned packages: root==0a0.dev0, setuptools==80.9.0, wheel==0.45.1, setuptools-dso==2.12.2, epicscorelibs==7.0.10.99.0.0, numpy==2.4.0
+</code></pre>
+<p>Here we see that the system correctly picks up <code>epicscorelibs==7.0.10.99.0.0</code>, and installs it into the build-time environment.</p>
+<p>And then line 1256 shows that the run-time dependency has a lower version of <code>epicscorelibs</code> installed, although there seems to be no log explaining why this occurred:</p>
+<pre><code>Installed 7 packages in 72ms
+ + epicscorelibs==7.0.7.99.1.2
+ + epicsdbbuilder==1.5
+ + numpy==2.4.0
+ + pvxslibs==1.4.1
+ + pyyaml==6.0.3
+ + setuptools-dso==2.12.2
+ + softioc==4.6.1
+</code></pre>
+<p>Finally, we can see that even <code>uv</code> knows something is wrong as the output of <code>uv pip check</code> reveals that the wrong version of <code>epicscorelibs</code> has been installed.</p>
+<p><strong>Working version with pip</strong></p>
+<pre><code>$ uv venv --seed --python 3.11
+Using CPython 3.11.13 interpreter at: /usr/bin/python3.11
+Creating virtual environment with seed packages at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+ + pip==25.3
+ + setuptools==80.9.0
+ + wheel==0.45.1
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ pip install -vv --no-cache --only-binary numpy --no-binary softioc softioc==4.6.1
+&lt;output cut for brevity, see excerpts below or full log in attached file&gt;
+
+$ pip freeze
+epicscorelibs==7.0.10.99.0.0
+epicsdbbuilder==1.5
+numpy==2.4.0
+pvxslibs==1.5.0
+PyYAML==6.0.3
+setuptools_dso==2.12.2
+softioc==4.6.1
+$ pip check
+No broken requirements found.
+
+$ python -c &quot;import softioc&quot;
+&lt;silent return is correct behaviour&gt;
+
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/24528611/pip_install_output.txt">pip_install_output.txt</a></p>
+<p>Interesting lines include line 6834, which lists the installed build-time dependencies (the same as for <code>uv pip install</code>, except for the listed order:</p>
+<pre><code>  Successfully installed epicscorelibs-7.0.10.99.0.0 numpy-2.4.0 setuptools-80.9.0 setuptools_dso-2.12.2 wheel-0.45.1
+</code></pre>
+<p>And line 14219, which is when it installs the run-time dependencies:</p>
+<pre><code>Successfully installed epicscorelibs-7.0.10.99.0.0 epicsdbbuilder-1.5 numpy-2.4.0 pvxslibs-1.5.0 pyyaml-6.0.3 setuptools-dso-2.12.2 softioc-4.6.1
+</code></pre>
+<p>This list is similar to <code>uv pip install</code>, with the notably different change of <code>epicscorelibs-7.0.10.99.0.0</code>. Also of note is <code>pvxslibs-1.5.0</code> (compared to <code>pvxslibs-1.4.1</code> from <code>uv pip</code>). This change is understandable as <code>pvxslibs</code> has a dependency on <code>epicscorelibs</code>, and these versions are the expected ones for the given version of <code>epicscorelibs</code>.</p>
+<p><strong>References</strong>
+This issue was originally reported in the<a href="https://github.com/DiamondLightSource/pythonSoftIOC/issues/197"> pythonSoftIOC repo here</a></p>
+<p>The <code>epicscorelibs</code> dependency referenced can <a href="https://github.com/epics-base/epicscorelibs">be found here</a></p>
+<h3>Platform</h3>
+<p>Linux 4.18.0-553.64.1.el8_10.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.21</p>
+<h3>Python version</h3>
+<p>Python 3.11, 3.12, 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexanderWells-diamond on 2026-01-09 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coretl">@coretl</a> on 2026-01-09 16:22</div>
+            <div class="timeline-body"><p>I can take a guess at the steps uv is taking from the log file:</p>
+<ul>
+<li>Sees a request to install softioc-4.6.1</li>
+<li>Gets the <a href="https://files.pythonhosted.org/packages/8f/46/689554640712513ddffdedd452b5ba6627f4fcd78844dd4a489c32bdd22d/softioc-4.6.1-cp310-cp310-macosx_10_9_x86_64.whl.metadata">wheel metadata from the release targetted at a different version of python</a></li>
+<li>Sees it needs <code>Requires-Dist: epicscorelibs&lt;7.0.7.99.2,&gt;=7.0.7.99.1.2a1</code> and installs <code>epicscorelibs==7.0.7.99.1.2</code> into the venv</li>
+<li>Gets the sdist for <code>softioc-4.6.1</code> and unpacks it</li>
+<li>Sees it needs <code>epicscorelibs&gt;=7.0.7.99.1.1a3</code> in <a href="https://github.com/DiamondLightSource/pythonSoftIOC/blob/98a76301f4e960d7a7db238ad72db72c5c10f492/pyproject.toml#L2">pyproject.toml</a> then installs <code>7.0.10.99.0.0</code> into the temporary build env</li>
+<li>Builds <code>softioc</code> from source, compiling against <code>epicscorelibs-7.0.10.99.0.0</code>, which writes this dependency into the created wheel metadata according to its <a href="https://github.com/DiamondLightSource/pythonSoftIOC/blob/98a76301f4e960d7a7db238ad72db72c5c10f492/setup.py#L106">setup.py</a></li>
+<li>Installs the newly built wheel into the venv <strong>without checking its wheel metadata for dependencies</strong></li>
+</ul>
+<p>I am guessing that pip re-checks the newly built wheel for dependencies before installing it into the venv. If that is right, could uv do the same?</p>
+<p>I guess it is pretty rare for <code>setup.py</code> to calculate the install time dependencies based on what was present in the build environment, which would explain why this hasn't been noticed before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 16:38</div>
+            <div class="timeline-body"><p>From your description, my first guess is that this is related to metadata inconsistency. We require that metadata across wheels is consistent https://docs.astral.sh/uv/reference/internals/resolver/#metadata-consistent — so if the metadata changes between wheels, we indeed will not respect it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coretl">@coretl</a> on 2026-01-09 16:58</div>
+            <div class="timeline-body"><p>From reading that section, I agree with your conclusion. I also agree that all published wheels on PyPI of a particular version of a library should have the same metadata (which is the case for <code>softioc</code>). I think this section of the docs is relevant here:</p>
+<blockquote>
+<p>There are packages that have native code that links against the native code in another package, such as torch. These package may support building against a range of torch versions, but once built, they are constrained to a specific torch version, and the runtime torch version must match the build-time version. These are currently a pain point across all package managers, as all major package managers from pip to uv cache source distribution builds. uv supports multiple builds depending on the version of the already installed package using tool.uv.extra-build-dependencies with match-runtime = true.</p>
+</blockquote>
+<p>This is the case we are hitting here, if <code>softioc</code> is built from source, then the built wheel will depend on the version of <code>epicscorelibs</code> in the build environment.</p>
+<p>Is there any chance that uv could re-invoke its resolver if it has fetched metadata for a library but then finds it has to do a source build of that library?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 17:11</div>
+            <div class="timeline-body"><p>It seems pretty unlikely, this is a fairly fundamental constraint. You might be able to declare it as an extra build dependency and use <code>match-runtime = true</code> so our resolver uses a matching version in both environments?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 03:18:13 UTC
+    </footer>
+</body>
+</html>

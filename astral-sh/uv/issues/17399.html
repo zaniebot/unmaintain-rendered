@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to avoid environment creation race conditions? - astral-sh/uv #17399</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to avoid environment creation race conditions?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17399">#17399</a>
+        opened by <a href="https://github.com/colobas">@colobas</a>
+        on 2026-01-10 00:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/colobas">@colobas</a> on 2026-01-10 00:30</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm using uv with inline scripts in a nextflow pipeline, which involves running certain tasks many times in parallel. When two tasks implemented by the same script land on the same cluster node, I'm seeing an error which I believe is caused by a race condition in the environment creation:</p>
+<pre><code>  error: The directory `/tmp/gpires-uv-cache/environments-v2/build-parquet-0118330146dbc8a9` exists, but it's not a virtual environment
+</code></pre>
+<p>My interpretation of this is that one of the processes sees that the environment doesn't exist yet and starts creating it, the other process(es) arrive(s) a little bit later and see(s) the folder exists but isn't (yet) a valid environment.</p>
+<p>This happens because the environment path is just based on a hash of the script path, as far as I can tell from <a href="https://github.com/astral-sh/uv/blob/c10c84a588fa91ab52e54ea353f2c928356a9e1b/crates/uv/src/commands/project/mod.rs#L653-L674">here</a></p>
+<p>Likely I just have to avoid using inline scripts but I was wondering if you had other recommendations?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @colobas on 2026-01-10 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-10 01:37</div>
+            <div class="timeline-body"><p>I'd expect us to handle this race condition.</p>
+<p>We should probably lock the directory while creating and mutating it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 03:18:13 UTC
+    </footer>
+</body>
+</html>

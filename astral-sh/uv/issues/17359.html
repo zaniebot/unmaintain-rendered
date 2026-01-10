@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `uv version` bumping `post` and `dev` together at the same time - astral-sh/uv #17359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `uv version` bumping `post` and `dev` together at the same time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17359">#17359</a>
+        opened by <a href="https://github.com/jvacek">@jvacek</a>
+        on 2026-01-08 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jvacek">@jvacek</a> on 2026-01-08 13:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv version --bump post --bump dev=123</code> is not allowed.</p>
+<p>Gankra <a href="https://discord.com/channels/1039017663004942429/1207998321562619954/1458491307080159386">mentioned</a> that this could be specifically allowed</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jvacek on 2026-01-08 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 14:39</div>
+            <div class="timeline-body"><p>Hm I think the test case at https://github.com/astral-sh/uv/pull/17361/files#diff-72580d6331315274e60910416c0770d25ad03c437e39ad6571ddafc046d7e759R1754-R1779 is a good reason why this maybe shouldn't be allowed? I'm not sure if that bump is correct?</p>
+<p>cc @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-08 14:58</div>
+            <div class="timeline-body"><p>The combination is semantically odd: Post releases exist mainly fixup an existing release, they shouldn't be used for new releases, only to fix e.g. a build problem in an other production release. dev and other prereleases on the other hand exist for testing new releases that aren't production ready.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-08 15:23</div>
+            <div class="timeline-body"><p><a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#post-releases">This section and the next of the versioning spec</a> are at least pretty clear that post-releases are intended to work with beta and dev. We can draw a line and say &quot;this is a silly-antipattern&quot; but also it's not like it's a maintenance burden or footgun (especially since we still validate Number Go Up after applying all the operations).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-08 15:24</div>
+            <div class="timeline-body"><p>I suppose we can appeal to:</p>
+<blockquote>
+<p>While they may be useful for continuous integration purposes, publishing developmental releases of pre-releases to general purpose public index servers is strongly discouraged, as it makes the version identifier difficult to parse for human readers. If such a release needs to be published, it is substantially clearer to instead create a new pre-release by incrementing the numeric component.</p>
+<p>Developmental releases of post-releases are also strongly discouraged, but they may be appropriate for projects which use the post-release notation for full maintenance releases which may include code changes.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 15:24</div>
+            <div class="timeline-body"><p>Yeah &quot;strongly discouraged&quot; is a little discouraging :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 15:25</div>
+            <div class="timeline-body"><p>@jvacek can you explain more about the use-case again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2026-01-08 16:13</div>
+            <div class="timeline-body"><p>My usecase is having a workflow for (on-demand) pushing dev versions to our private index from the feature branch's CI.</p>
+<p>I'd like to essentially make a &quot;dev version&quot; of the current release, but just taking <code>X.Y.dev1</code> is technically a downgrade from <code>X.Y</code> so I cannot really do a <code>uv version --bump dev</code>.</p>
+<p>I can't make the assumption about whether the branch is a maj/min/patch bump, or whether or not it's been bumped yet, so my thought process is that doing a post+dev bump is &quot;a dev version of the upcoming release&quot;.</p>
+<p>As mentioned in DC, if you have a better suggestion for this workflow, I'm all ears</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 16:58</div>
+            <div class="timeline-body"><p>I think the problem is that combining post and pre means it's a post version of the prerelease not the other way around?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2026-01-08 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the problem is that combining post and pre means it's a post version of the prerelease not the other way around?</p>
+</blockquote>
+<p>Yes, I think combining post and pre is unlikely to make sense for bump mechanism, but combining post and dev as OP requests is probably fine?</p>
+<p>The strongly discouraged  statement is interesting... I'm not sure the intent of it. If a project uses dev versions in source control to represent everything prior to a release, and they publish post releases, there must be dev release of a post releases prior to publishing said post release. I don't see how you can get around that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-08 17:21</div>
+            <div class="timeline-body"><p>The document is suggesting that a post-release is expected to be so trivial that such a dev release is pointless fluff (their canonical example is &quot;fixing the changelog&quot;). Like, if you're doing non-trivial work that's not a post-release, that's, just a release.</p>
+<p>I think if you want to represent &quot;development of the next release&quot; you should be doing <code>--bump patch --bump dev</code> (no one should ever care if you actually go from <code>1.0.0</code> to <code>1.0.1-dev1</code> to <code>1.1.0</code>. You didn't like, gaslight someone by doing that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2026-01-08 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>The document is suggesting that a post-release is expected to be so trivial that such a dev release is pointless fluff (their canonical example is &quot;fixing the changelog&quot;). Like, if you're doing non-trivial work that's not a post-release, that's, just a release.</p>
+</blockquote>
+<p>That makes opinionated assumptions about how a users release processes work which I would have been -1 if I was involved when PEP 440 was written .</p>
+<p>For example pip's release process works like:</p>
+<ol>
+<li>Always use a dev release</li>
+<li>Run automated step that:
+a. Removes the dev and commits
+b. Publishes the release
+c. Bumps the release number, makes dev, and commits</li>
+</ol>
+<p>So there is only ever a single commit that isn't dev and it controlled by automation, not manual, so it doesn't matter how trivial the fix is if we wanted to make it automated we'd have to have a dev of a post release.</p>
+<p>That's my two cents anyway, this bump mechanism is ultimately uv's call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 17:46</div>
+            <div class="timeline-body"><p>Oh sorry, I didn't realize a <code>dev</code> release was a non-prerelease segment — i.e., that it was distinct. That makes sense then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-08 18:01</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/17361</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-08 18:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh sorry, I didn't realize a <code>dev</code> release was a non-prerelease segment — i.e., that it was distinct. That makes sense then.</p>
+</blockquote>
+<p>To make this even more complicated, dev release are prereleases, but they are still separate from alpha/beta/rc.</p>
+<blockquote>
+<p>I can't make the assumption about whether the branch is a maj/min/patch bump, or whether or not it's been bumped yet, so my thought process is that doing a post+dev bump is &quot;a dev version of the upcoming release&quot;.</p>
+</blockquote>
+<p>That's a kind of unsupported use case, PEP 440 assumes there is always a target version the dev version is a prerelease of (similar to the pip case), i.e. there's an intentional decision what the next version is. If you don't know the bump yet, imo updating the patch version works semantically better than a post version. I'm trying to nudge people away from post versions as they seem to be the same version, but we have to treat them as entirely distinct versions in the resolver. That makes them usually the worse compromise than just bumping the release version proper (There's also some projects who used post versions for uploading extract builds for additional platforms, which works with pip, but fails as soon as you have an universal lockfile).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2026-01-08 18:13</div>
+            <div class="timeline-body"><p>I think if uv wants to discourage users from using post releases, which seems fine to me, it would help to document that somewhere and/or warn when bumping to a post release.</p>
+<p>Post releases do have special rules, like pre release, that are annoying when doing comparison and resolving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2026-01-09 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I think if you want to represent &quot;development of the next release&quot; you should be doing --bump patch --bump dev (no one should ever care if you actually go from 1.0.0 to 1.0.1-dev1 to 1.1.0. You didn't like, gaslight someone by doing that).</p>
+</blockquote>
+<p>My issue with that proposal is the following:</p>
+<ul>
+<li>Master is on 0.0.1</li>
+<li>Feature branch gets made</li>
+<li>Dev bumps feature branch to 0.0.2</li>
+<li>Dev runs CI to push dev version to index, which auto-bumps the version before build and creates 0.0.3.dev1</li>
+<li>Dev makes further changes on feature branch but does not push new version to CI</li>
+<li>Dev merges feature branch (0.0.2) to master</li>
+<li>CI pushes 0.0.2 to index</li>
+</ul>
+<p>This means that at the end, the index has the following versions:</p>
+<ul>
+<li>0.0.1</li>
+<li>0.0.2</li>
+<li>0.0.3.dev1</li>
+</ul>
+<p>For me this is an issue as 0.0.3.dev1 is actually <em>behind</em> 0.0.2.</p>
+<hr />
+<p>However, I suppose if the CI makes a 0.0.2.post1.dev1 instead of a 0.0.3.dev1, it is kinda just as incorrect, just in a smaller magnitude?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 03:18:13 UTC
+    </footer>
+</body>
+</html>

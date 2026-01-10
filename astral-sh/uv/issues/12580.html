@@ -68,9 +68,6 @@ Password for 'https://gitlab.placeholder.com':
             <div class="event">Label <span class="label">bug</span> added by @sipa-echo-zaoa on 2025-03-31 09:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/12581.html">astral-sh/uv#12581</a> on 2025-03-31 09:42</div>
-        </div>
-        <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-31 13:30</div>
             <div class="timeline-body"><p>I don't know if we should be writing out credentials in a plaintext file. We generally don't do that.</p>
 </div>
@@ -118,10 +115,26 @@ Written here in error, please ignore.</p>
             <div class="timeline-body"><p>@zanieb my apologies, too many tabs open 🙏</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sipa-echo-zaoa">@sipa-echo-zaoa</a> on 2026-01-09 14:27</div>
+            <div class="timeline-body"><p>For anyone else running into this (especially on AWS Elastic Beanstalk or similar CI/CD environments), I found a workaround that solves the issue without needing to expose credentials in requirements.txt.</p>
+<p>Since uv keeps the generated URLs &quot;clean&quot; (stripping the secrets), we can use Git's url.<base>.insteadOf configuration in the deployment environment to re-inject the credentials at runtime. This allows pip install -r requirements.txt to succeed using the clean URLs.</p>
+<pre><code># Configure Git to substitute the clean URL with the authenticated URL automatically
+git config --global url.&quot;https://${GIT_USER}:${GIT_TOKEN}@gitlab.example.com/group/repo.git&quot;.insteadOf &quot;https://gitlab.example.com/group/repo.git&quot;
+</code></pre>
+<h3>Why this works:</h3>
+<ol>
+<li>uv export generates a secure requirements.txt with: package @ git+https://gitlab.example.com/group/repo.git@hash</li>
+<li>When pip passes that URL to Git, the configuration above intercepts it.</li>
+<li>Git transparently swaps the URL to include the username/token defined in your environment variables.</li>
+</ol>
+<p>@zanieb Regarding the <code>--unsafe-emit-credentials</code> flag discussed above: while the workaround effectively solves my specific deployment blocker on Elastic Beanstalk, I still believe there is value in having an option to explicitely emit credentials for simpler use cases or environments where configuring global git hooks is not feasible. It would be great to know if this is still on the roadmap, but for now, I am unblocked</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:33:03 UTC
+        Synced at 2026-01-10 03:17:31 UTC
     </footer>
 </body>
 </html>

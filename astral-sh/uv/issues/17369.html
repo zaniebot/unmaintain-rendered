@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv Python symlink bug - astral-sh/uv #17369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv Python symlink bug</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17369">#17369</a>
+        opened by <a href="https://github.com/devinbarry">@devinbarry</a>
+        on 2026-01-08 22:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devinbarry">@devinbarry</a> on 2026-01-08 22:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On macOS (Apple Silicon) with Python 3.14 installed via Homebrew in <code>/opt/homebrew</code>, <code>uv run</code> creates a project <code>.venv</code> whose <code>pyvenv.cfg</code> records <code>home = /usr/local/bin</code> and whose <code>.venv/bin/python</code> symlinks to <code>/usr/local/bin/python3.14</code> (non-existent). As a result, <code>uv</code> considers the venv broken and repeatedly deletes/recreates it on subsequent <code>uv run</code> invocations.</p>
+<p>This looks like incorrect venv metadata/symlink generation, since <code>uv python find --system</code> correctly discovers the interpreter under <code>/opt/homebrew</code>.</p>
+<h3>Repro steps</h3>
+<ol>
+<li>On Apple Silicon macOS, install Python 3.14 with Homebrew (prefix <code>/opt/homebrew</code>).</li>
+<li>Ensure there is no <code>/usr/local/bin/python3.14</code> on the system.</li>
+<li>In a project directory, run <code>uv run which python</code> (or <code>uv run python --version</code>) to let uv create <code>.venv</code>.</li>
+<li>Inspect <code>.venv/bin/python</code> and <code>.venv/pyvenv.cfg</code>.</li>
+<li>Run <code>uv run which python</code> again; uv warns the existing <code>.venv</code> is linked to a non-existent interpreter and recreates it.</li>
+</ol>
+<h3>Expected behavior</h3>
+<p><code>.venv</code> should be created pointing at the discovered Homebrew Python interpreter:</p>
+<ul>
+<li><code>.venv/bin/python</code> should resolve to <code>/opt/homebrew/opt/python@3.14/bin/python3.14</code> (or similar)</li>
+<li><code>.venv/pyvenv.cfg</code> should not contain <code>home = /usr/local/bin</code> on an Apple Silicon Homebrew setup.</li>
+</ul>
+<p>Subsequent <code>uv run ...</code> should reuse the existing <code>.venv</code> without warning or recreation.</p>
+<h3>Actual behavior</h3>
+<p><code>.venv/bin/python</code> and <code>.venv/pyvenv.cfg</code> point at <code>/usr/local/bin</code> even though the interpreter is in <code>/opt/homebrew</code>, and <code>/usr/local/bin/python3.14</code> does not exist. <code>uv</code> then warns and recreates <code>.venv</code> repeatedly.</p>
+<h3>Environment</h3>
+<ul>
+<li>macOS: 15.7.3</li>
+<li>CPU/arch:<ul>
+<li><code>uname -m</code>: <code>arm64</code></li>
+<li><code>arch</code>: <code>arm64</code></li>
+</ul>
+</li>
+<li>Homebrew:<ul>
+<li><code>brew --prefix</code>: <code>/opt/homebrew</code></li>
+<li><code>brew --prefix python@3.14</code>: <code>/opt/homebrew/opt/python@3.14</code></li>
+</ul>
+</li>
+<li>uv:<ul>
+<li><code>uv --version</code>: <code>uv 0.9.22 (82a6a66b8 2026-01-06)</code></li>
+<li>binary: <code>Mach-O 64-bit executable arm64</code> (installed to <code>~/.local/bin/uv</code>)</li>
+</ul>
+</li>
+<li>Python:<ul>
+<li><p><code>command -v python3.14</code>: <code>/opt/homebrew/bin/python3.14</code></p>
+</li>
+<li><p><code>/opt/homebrew/opt/python@3.14/bin/python3.14 -c 'import sys; print(sys.executable); print(getattr(sys,&quot;_base_executable&quot;,None)); print(sys.prefix); print(sys.base_prefix)'</code> prints:</p>
+<pre><code>/opt/homebrew/opt/python@3.14/bin/python3.14
+/opt/homebrew/opt/python@3.14/bin/python3.14
+/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14
+/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Python location</h3>
+<p><code>uv python find --system</code>:</p>
+<pre><code>/opt/homebrew/opt/python@3.14/bin/python3.14
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.22 (82a6a66b8 2026-01-06)</p>
+<h3>Python version</h3>
+<p>3.14.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @devinbarry on 2026-01-08 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devinbarry">@devinbarry</a> on 2026-01-09 00:50</div>
+            <div class="timeline-body"><p>A solution to this problem is to use <code>uv python pin /opt/homebrew/opt/python@3.14/bin/python3.14</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @devinbarry on 2026-01-09 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-09 11:01</div>
+            <div class="timeline-body"><p>CC @woodruffw Is that a bug in the homebrew Python builds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 13:40</div>
+            <div class="timeline-body"><p>What does <code>&lt;python&gt; -c &quot;import sys; print(sys._base_executable)&quot;</code> show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-09 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>CC <a href="https://github.com/woodruffw">@woodruffw</a> Is that a bug in the homebrew Python builds?</p>
+</blockquote>
+<p>Potentially, I'll take a look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-09 15:46</div>
+            <div class="timeline-body"><p>Hmm, I don't see anything obvious in the <code>python@3.14.rb</code> formula that would cause the pyenv config to receive the wrong <code>home</code> prefix. Everything should be correctly located relative to the actual <code>brew --prefix</code>.</p>
+<p>@devinbarry could you share the result of running <code>brew doctor</code>? Also, did you ever have an earlier Homebrew installation installed under <code>/usr/local</code>, e.g. an x64 installation via Rosetta?</p>
+<p>Ref: https://github.com/Homebrew/homebrew-core/blob/fc1a970a29a1facbd92d2fb748cd97da9010716f/Formula/p/python%403.14.rb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2026-01-09 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2026-01-09 16:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 03:18:13 UTC
+    </footer>
+</body>
+</html>
