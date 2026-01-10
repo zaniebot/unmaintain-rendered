@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove some Clap-level conflicts in argument groups - astral-sh/uv #3001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove some Clap-level conflicts in argument groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3001">#3001</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-11 22:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 22:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that if you have an environment variable set, Clap will consider that equivalent to passing the flag, even if it's set to (e.g.) something falsy or the default value.</p>
+<p>So, e.g., this fails:</p>
+<pre><code class="language-shell">UV_SYSTEM=false uv pip install --python ./.venv/bin/python flask
+</code></pre>
+<p>Worse, this fails, because it thinks <code>--no-index</code> and <code>--index-url</code> are conflicting:</p>
+<pre><code class="language-shell">export UV_INDEX_URL=https://google.com
+uv pip install flask --no-index
+</code></pre>
+<p>This PR removes some of the conflicts, namely those related to environment variables, such that:</p>
+<ul>
+<li>You <em>can</em> pass mixes of <code>--no-index</code>, <code>--index-url</code>, etc. If <code>--no-index</code> is provided, all the index URLs will be ignored (but we won't error).</li>
+<li>Passing <code>--pre</code> will always enable prereleases, even if <code>--prerelease</code> is also provided. (We could warn here, although honestly it's not trivial because we'd need to make <code>--prerelease</code> take an optional, then we'd lose the default argument from the <code>--help</code>.)</li>
+<li>You <em>can</em> pass <code>--system</code> and <code>--python</code>. If <code>--python</code> is provided, we use that, and ignore <code>--system</code>. (We could warn here.)</li>
+</ul>
+<p>I guess the underlying problem here is that we can't differentiate between arguments passed on the CLI and those set as environment variables. But making bigger changes here seems out-of-scope.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/3000.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-11 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-04-11 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-11 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-11 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-11 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-12 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-12 13:40</div>
+            <div class="timeline-body"><p>This seems like an improvement to me.</p>
+<p>Does this take the order of flags into account? e.g., Are <code>--no-index --index-url ...</code> and <code>--index-url ... --no-index</code> the same? I think arguably the order should determine which one &quot;wins.&quot; IIRC, this was difficult to do in Clap unfortunately. (Or at least, difficult to do in Clap 2. I'm unsure about Clap 4.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-12 13:42</div>
+            <div class="timeline-body"><p>It doesn't, though in that specific case I actually think <code>--no-index</code> should still win...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-12 13:43</div>
+            <div class="timeline-body"><p>In general though, I agree that taking order into account would help here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-12 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-12 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-12 19:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

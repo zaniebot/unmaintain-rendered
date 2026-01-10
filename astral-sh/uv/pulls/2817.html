@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade `reqwest` to v0.12.3 - astral-sh/uv #2817</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade <code>reqwest</code> to v0.12.3</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2817">#2817</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-04 01:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 01:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #2814.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-04-04 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-04 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/base_client.rs</code>:144 on 2024-04-04 02:05</div>
+            <div class="timeline-body"><p>This is a big win. We can remove all the custom TLS logic because they added granular cert settings to the builder (below).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-04 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 02:07</div>
+            <div class="timeline-body"><p>Oh, also need to look at https://github.com/astral-sh/uv/issues/2814#issuecomment-2035914083.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-04 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:144 on 2024-04-04 02:12</div>
+            <div class="timeline-body"><p>Is it granular enough for #1339?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-04 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/base_client.rs</code>:144 on 2024-04-04 02:17</div>
+            <div class="timeline-body"><p>The only change I'm referencing here is that you can selectively enable native certs or the bundled certs, rather than having to enable <em>both</em> or none.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-04 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/base_client.rs</code>:144 on 2024-04-04 02:20</div>
+            <div class="timeline-body"><p>(So, I'm not sure.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-04 02:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:144 on 2024-04-04 02:24</div>
+            <div class="timeline-body"><p>Ah okay nevermind</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-04-04 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/user_agent_version.rs</code>:72 on 2024-04-04 11:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Wait for the server task to complete, to be a good citizen.
+    server_task.await?;
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn test_user_agent_has_linehaul() -&gt; Result&lt;()&gt; {
+    // Set up the TCP listener on a random available port
+    let listener = TcpListener::bind(&quot;127.0.0.1:0&quot;).await?;
+    let addr = listener.local_addr()?;
+
+    // Spawn the server loop in a background task
+    let server_task = tokio::spawn(async move {
+        let svc = service_fn(move |req: Request&lt;hyper::body::Incoming&gt;| {
+            // Get User Agent Header and send it back in the response
+            let user_agent = req
+                .headers()
+                .get(USER_AGENT)
+                .and_then(|v| v.to_str().ok())
+                .map(|s| s.to_string())
+                .unwrap_or_default(); // Empty Default
+            future::ok::&lt;_, hyper::Error&gt;(Response::new(Full::new(Bytes::from(user_agent))))
+        });
+        // Start Server (not wrapped in loop {} since we want a single response server)
+        // If you want server to accept multiple connections, wrap it in loop {}
+        let (socket, _) = listener.accept().await.unwrap();
+        let socket = TokioIo::new(socket);
+        tokio::task::spawn(async move {
+            http1::Builder::new()
+                .serve_connection(socket, svc)
+                .with_upgrades()
+                .await
+                .expect(&quot;Server Started&quot;);
+        });
+    });
+
+    // Add some representative markers for an Ubuntu CI runner
+    let markers = MarkerEnvironment {
+        implementation_name: &quot;cpython&quot;.to_string(),
+        implementation_version: StringVersion {
+            string: &quot;3.12.2&quot;.to_string(),
+            version: &quot;3.12.2&quot;.parse()?,
+        },
+        os_name: &quot;posix&quot;.to_string(),
+        platform_machine: &quot;x86_64&quot;.to_string(),
+        platform_python_implementation: &quot;CPython&quot;.to_string(),
+        platform_release: &quot;6.5.0-1016-azure&quot;.to_string(),
+        platform_system: &quot;Linux&quot;.to_string(),
+        platform_version: &quot;#16~22.04.1-Ubuntu SMP Fri Feb 16 15:42:02 UTC 2024&quot;.to_string(),
+        python_full_version: StringVersion {
+            string: &quot;3.12.2&quot;.to_string(),
+            version: &quot;3.12.2&quot;.parse()?,
+        },
+        python_version: StringVersion {
+            string: &quot;3.12&quot;.to_string(),
+            version: &quot;3.12&quot;.parse()?,
+        },
+        sys_platform: &quot;linux&quot;.to_string(),
+    };
+
+    // Initialize uv-client
+    let cache = Cache::temp()?;
+    let mut builder = RegistryClientBuilder::new(cache).markers(&amp;markers);
+
+    let linux = Platform::new(
+        Os::Manylinux {
+            major: 2,
+            minor: 38,
+        },
+        Arch::X86_64,
+    );
+    let macos = Platform::new(
+        Os::Macos {
+            major: 14,
+            minor: 4,
+        },
+        Arch::Aarch64,
+    );
+    if cfg!(target_os = &quot;linux&quot;) {
+        builder = builder.platform(&amp;linux);
+    } else if cfg!(target_os = &quot;macos&quot;) {
+        builder = builder.platform(&amp;macos);
+    }
+    let client = builder.build();
+
+    // Send request to our dummy server
+    let res = client
+        .cached_client()
+        .uncached()
+        .get(format!(&quot;http://{addr}&quot;))
+        .send()
+        .await?;
+
+    // Check the HTTP status
+    assert!(res.status().is_success());
+
+    // Check User Agent
+    let body = res.text().await?;
+
+    // Wait for the server task to complete, to be a good citizen.
+    server_task.await?;
+
+    // Unpack User-Agent with linehaul
+    let (uv_version, uv_linehaul) = body
+        .split_once(' ')
+        .expect(&quot;Failed to split User-Agent header.&quot;);
+
+    // Deserializing Linehaul
+    let linehaul: LineHaul = serde_json::from_str(uv_linehaul)?;
+
+    // Assert uv version
+    assert_eq!(uv_version, format!(&quot;uv/{}&quot;, version()));
+
+    // Assert linehaul
+    let installer_info = linehaul.installer.unwrap();
+    let system_info = linehaul.system.unwrap();
+    let impl_info = linehaul.implementation.unwrap();
+
+    assert_eq!(installer_info.name.unwrap(), &quot;uv&quot;.to_string());
+    assert_eq!(installer_info.version.unwrap(), version());
+
+    assert_eq!(system_info.name.unwrap(), markers.platform_system);
+    assert_eq!(system_info.release.unwrap(), markers.platform_release);
+
+    assert_eq!(
+        impl_info.name.unwrap(),
+        markers.platform_python_implementation
+    );
+    assert_eq!(
+        impl_info.version.unwrap(),
+        markers.python_full_version.version.to_string()
+    );
+
+    assert_eq!(
+        linehaul.python.unwrap(),
+        markers.python_full_version.version.to_string()
+    );
+    assert_eq!(linehaul.cpu.unwrap(), markers.platform_machine);
+
+    assert_eq!(linehaul.openssl_version, None);
+    assert_eq!(linehaul.setuptools_version, None);
+    assert_eq!(linehaul.rustc_version, None);
+
+    if cfg!(windows) {
+        assert_eq!(linehaul.distro, None);
+    } else if cfg!(target_os = &quot;linux&quot;) {
+        // Using `os_info` to confirm our values are as expected in Linux
+        let info = os_info::get();
+        let Some(distro_info) = linehaul.distro else {
+            panic!(&quot;got no distro, but expected one in linehaul&quot;)
+        };
+        assert_eq!(distro_info.id.as_deref(), info.codename());
+        if let Some(ref name) = distro_info.name {
+            assert_eq!(name, &amp;info.os_type().to_string());
+        }
+        if let Some(ref version) = distro_info.version {
+            assert_eq!(version, &amp;info.version().to_string());
+        }
+        assert!(distro_info.libc.is_some());
+    } else if cfg!(target_os = &quot;macos&quot;) {
+        // We mock the macOS version
+        let distro_info = linehaul.distro.unwrap();
+        assert_eq!(distro_info.id, None);
+        assert_eq!(distro_info.name.unwrap(), &quot;macOS&quot;);
+        assert_eq!(distro_info.version, Some(&quot;14.4&quot;.to_string()));
+        assert_eq!(distro_info.libc, None);
+    }
+</code></pre>
+<p>This re-adds back the linehaul test below using the new hyper changes.</p>
+<p>These are the imports as well</p>
+<pre><code>use pep508_rs::{MarkerEnvironment, StringVersion};
+use platform_tags::{Arch, Os, Platform};
+use uv_client::LineHaul;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:153 on 2024-04-05 22:03</div>
+            <div class="timeline-body"><p>(No longer necessary, 0.12.3 was released.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/tests/user_agent_version.rs</code>:72 on 2024-04-05 23:45</div>
+            <div class="timeline-body"><p>Thx!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-04-06 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/Cargo.toml</code>:57 on 2024-04-06 01:40</div>
+            <div class="timeline-body"><p>@charliermarsh I noticed this got updated to <code>3.8.2</code> in the lock file, causing the error in ubuntu. This should probably be switched to <code>os_info = { version = &quot;=3.7.0&quot;, default-features = false }</code> in the mean time as 3.8 has had some breaking changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-04-06 01:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/Cargo.toml</code>:57 on 2024-04-06 01:45</div>
+            <div class="timeline-body"><p>I'll do a follow-on PR after this to improve these tests and hopefully remove this dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-06 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/Cargo.toml</code>:57 on 2024-04-06 01:47</div>
+            <div class="timeline-body"><p>Thank you so much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-06 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/Cargo.toml</code>:57 on 2024-04-06 01:48</div>
+            <div class="timeline-body"><p>Updated...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-04-06 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/Cargo.toml</code>:57 on 2024-04-06 02:29</div>
+            <div class="timeline-body"><p>Awesome, tests passing 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-06 15:02</div>
+            <div class="timeline-body"><p>Let me know if you want my review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-06 15:03</div>
+            <div class="timeline-body"><p>I'm waiting on a reqwest-middleware release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Upgrade `reqwest` to v0.12.2" to "Upgrade `reqwest` to v0.12.3" by @charliermarsh on 2024-04-10 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-10 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-10 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-10 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

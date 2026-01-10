@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace Python bootstrapping script with Rust implementation - astral-sh/uv #2842</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace Python bootstrapping script with Rust implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2842">#2842</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-05 22:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-05 22:08</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/2617</p>
+<p>Note this also includes:</p>
+<ul>
+<li>#2918</li>
+<li>#2931 (pending)</li>
+</ul>
+<p>A first step towards Python toolchain management in Rust.</p>
+<p>First, we add a new crate to manage Python download metadata:</p>
+<ul>
+<li>Adds a new <code>uv-toolchain</code> crate</li>
+<li>Adds Rust structs for Python version download metadata</li>
+<li>Duplicates the script which downloads Python version metadata</li>
+<li>Adds a script to generate Rust code from the JSON metadata</li>
+<li>Adds a utility to download and extract the Python version</li>
+</ul>
+<p>I explored some alternatives like a build script using things like <code>serde</code> and <code>uneval</code> to automatically construct the code from our structs but deemed it to heavy. Unlike Rye, I don't generate the Rust directly from the web requests and have an intermediate JSON layer to speed up iteration on the Rust types.</p>
+<p>Next, we add add a <code>uv-dev</code> command <code>fetch-python</code> to download Python versions per the bootstrapping script.</p>
+<ul>
+<li>Downloads a requested version or reads from <code>.python-versions</code></li>
+<li>Extracts to <code>UV_BOOTSTRAP_DIR</code></li>
+<li>Links executables for path extension</li>
+</ul>
+<p>This command is not really intended to be user facing, but it's a good PoC for the <code>uv-toolchain</code> API. Hash checking (via the sha256) isn't implemented yet, we can do that in a follow-up.</p>
+<p>Finally, we remove the <code>scripts/bootstrap</code> directory, update CI to use the new command, and update the CONTRIBUTING docs.</p>
+<img width="1023" alt="Screenshot 2024-04-08 at 17 12 15" src="https://github.com/astral-sh/uv/assets/2586601/57bd3cf1-7477-4bb8-a8e9-802a00d772cb">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-04-05 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-05 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/fetch-version-metadata.py</code>:132 on 2024-04-05 22:11</div>
+            <div class="timeline-body"><p>This is the only change from the standard bootstrap script</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-05 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/fetch-version-metadata.py</code>:1 on 2024-04-05 22:12</div>
+            <div class="timeline-body"><p>Nearly unchanged from the <code>scripts/boostrap</code> script which will be deleted in the near future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-05 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/python_versions.inc.mustache</code>:4 on 2024-04-05 22:13</div>
+            <div class="timeline-body"><p>Maybe I should generate this header fully in Python so there's not a DO NOT EDIT line in the template itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-05 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:57 on 2024-04-05 22:13</div>
+            <div class="timeline-body"><p>Not sure what we'll need here. Just using the same representation we have in the JSON for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-04-05 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:9 on 2024-04-08 11:07</div>
+            <div class="timeline-body"><p>These should be <code>u_</code> types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:143 on 2024-04-08 11:08</div>
+            <div class="timeline-body"><p>windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:15 on 2024-04-08 11:09</div>
+            <div class="timeline-body"><p>Can we sync the names with https://github.com/astral-sh/uv/blob/c296da34bffd19d41b895bd5aa06e78d79c71bd4/crates/platform-tags/src/platform.rs#L75 and uses aliases where they don't match? So that we have consistent names across uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:163 on 2024-04-08 11:11</div>
+            <div class="timeline-body"><p>Shared?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:160 on 2024-04-08 11:12</div>
+            <div class="timeline-body"><p>Is there a reason this is called <code>.inc</code> and not <code>.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-08 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-08 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:160 on 2024-04-08 14:23</div>
+            <div class="timeline-body"><p>Coping Rye, but it seems clearer that it's generated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-08 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:15 on 2024-04-08 14:24</div>
+            <div class="timeline-body"><p>Yeah I plan on syncing with other crates, just didn't start with that yet. Thanks for the link.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-08 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:143 on 2024-04-08 14:24</div>
+            <div class="timeline-body"><p>Maybe there's a parsing problem with the &quot;windows-shared&quot; builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-04-08 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-08 14:25</div>
+            <div class="timeline-body"><p>Switching back to a draft because I've made a lot of changes in follow-ups already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add Python version metadata to new `uv-toolchain` crate" to "Replace Python bootstrapping script with Rust implementation" by @zanieb on 2024-04-08 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-08 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:15 on 2024-04-08 21:36</div>
+            <div class="timeline-body"><p>I'd like to address this in a follow-up so we can have these in a consistent location? I'm unsure what the best way to go about it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-08 22:13</div>
+            <div class="timeline-body"><p>I need to fix Windows yeesh gosh it's a thorn in my side to have proper Python discovery in Windows tests.</p>
+<p>Regardless... this is roughly ready for review. I'll either fix Windows before merging or revert CI and fix afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-04-08 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-04-08 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-08 23:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:15 on 2024-04-08 23:35</div>
+            <div class="timeline-body"><p>Working on this in https://github.com/astral-sh/uv/pull/2918</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:51 on 2024-04-09 09:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        .map(|version| {
+            PythonDownloadRequest::from_str(version).and_then(PythonDownloadRequest::fill)
+        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:86 on 2024-04-09 09:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                info!(&quot;Downloaded v{} to {}&quot;, version, path.user_display());
+                downloaded += 1;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:160 on 2024-04-09 09:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let lines: Vec&lt;String&gt; = fs::tokio::read_to_string(&quot;.python-versions&quot;)
+        .await?
+        .lines()
+        .map(ToString::to_string)
+        .collect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-09 09:14</div>
+            <div class="timeline-body"><p><code>bin\python3.8.exe</code> and <code>bin\python3.12.exe</code> work on windows, while 3.9 - 3.11 don't work, you run them but they just exit immediately without any message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-09 09:16</div>
+            <div class="timeline-body"><p>Code looks good but the windows launchers need fixing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:86 on 2024-04-09 13:34</div>
+            <div class="timeline-body"><p>Why this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-09 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-09 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-09 13:35</div>
+            <div class="timeline-body"><p>Like you tested this PR and that's the case? Or that was what you observed with the previous hard link bootstrapping?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-09 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:86 on 2024-04-09 14:14</div>
+            <div class="timeline-body"><p>The <code>&amp;</code> is not required, <code>format!</code> always borrows the value. Normally clippy would flag this (<code>needless_borrow</code>), but apparently it can't look through this macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-09 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-09 14:21</div>
+            <div class="timeline-body"><p>I tested this PR only. The ones with the previous script don't have <code>.exe</code> suffixes and don't seem to work at all. The strategy of populating the PATH this way doesn't really work on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-09 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-09 14:23</div>
+            <div class="timeline-body"><p>On windows, normally all pythons are <code>python.exe</code> and we either add each folder to PATH or us the <code>py</code> launcher, which is a very different approach from the unix one of adding version suffixes to executable and putting them all in the same directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-09 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-09 14:28</div>
+            <div class="timeline-body"><p>👍 makes sense, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-09 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:86 on 2024-04-09 16:38</div>
+            <div class="timeline-body"><p>Thanks! Got confused by the <code>downloaded</code> removal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-10 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 10:46</div>
+            <div class="timeline-body"><p>Related to the other windows comment, i think this line doesn't work as intended on windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-10 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 13:55</div>
+            <div class="timeline-body"><p>I think it actually is working otherwise the tests would fail to find Python 3.12 when a test does not request specific executables (because we no longer setup a default Python in the runner)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:97 on 2024-04-10 13:56</div>
+            <div class="timeline-body"><p>This is addressed in #2931</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-10 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-10 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:02</div>
+            <div class="timeline-body"><p>We will find <code>python.exe</code> in this directory, i'd have to double check, i don't think this applies equally to the other launcher we create, while they work fine on unix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-10 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:06</div>
+            <div class="timeline-body"><p>Actually I removed the hard-linking entirely so I just think this is a no-op on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-10 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:08</div>
+            <div class="timeline-body"><p>Like here are all the links</p>
+<pre><code>2024-04-10T14:06:10.657299Z  INFO run: Linked `bin\python@3.10.13` to `bin\cpython-3.10.13-windows-x86_64-none`
+2024-04-10T14:06:10.657361Z  INFO run: Linked `bin\python@3.11.7` to `bin\cpython-3.11.7-windows-x86_64-none`
+2024-04-10T14:06:10.657382Z  INFO run: Linked `bin\python@3.12.1` to `bin\cpython-3.12.1-windows-x86_64-none`
+2024-04-10T14:06:10.657399Z  INFO run: Linked `bin\python@3.8.12` to `bin\cpython-3.8.12-windows-x86_64-none`
+2024-04-10T14:06:10.657415Z  INFO run: Linked `bin\python@3.8.18` to `bin\cpython-3.8.18-windows-x86_64-none`
+2024-04-10T14:06:10.657431Z  INFO run: Linked `bin\python@3.9.18` to `bin\cpython-3.9.18-windows-x86_64-none`
+</code></pre>
+<p>There are no executables in here on Windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-10 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:11</div>
+            <div class="timeline-body"><p>Can you add a comment that this is unix only and why we need it there but not on windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-10 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:14</div>
+            <div class="timeline-body"><p>Yeah I'll investigate, it was needed but maybe not anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-10 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:86 on 2024-04-10 14:16</div>
+            <div class="timeline-body"><p>I think i moved all the PATH handling to explicit overwrites when adding windows support</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-10 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-10 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-10 16:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

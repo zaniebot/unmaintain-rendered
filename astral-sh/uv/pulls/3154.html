@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--python-platform` to `sync` and `install` commands - astral-sh/uv #3154</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--python-platform</code> to <code>sync</code> and <code>install</code> commands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3154">#3154</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-20 00:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 00:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>pip supports providing a <code>--platform</code> to <code>pip install</code>, which can be used to seed an environment (e.g., for use in a container or otherwise). This PR adds <code>--python-platform</code> to our commands to support a similar workflow. It has some caveats, which are documented on the CLI.</p>
+<p>Closes #2079.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-22 12:11</div>
+            <div class="timeline-body"><p>I think this was mentioned in #3111, but how can we provide end users with a list of valid triples they can use? I don't think we should just link to the Rust docs unless we specifically want to guarantee a correspondence there. Basically, my concern here is that users won't know what they're allowed to put here.</p>
+<p>Honestly, I have a similar concern with pip's <code>--platform</code> flag. Its docs are:</p>
+<pre><code>  --platform &lt;platform&gt;       Only use wheels compatible with &lt;platform&gt;.
+                              Defaults to the platform of the running system.
+                              Use this option multiple times to specify
+                              multiple platforms supported by the target
+                              interpreter.
+</code></pre>
+<p>After reading that, I have no clue whatsoever what I'm allowed or even supposed to use as a value for this flag.</p>
+<p>(And now I'm wondering what the difference is between pip's <code>--platform</code> flag and our <code>--python-platform</code> flag...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-22 12:14</div>
+            <div class="timeline-body"><p>I was having deja vu here, because I thought I had reviewed a change like this already. I did some digging and:</p>
+<ul>
+<li>#3111 added initial support. It added it as <code>--platform</code> to <em>only</em> <code>uv pip compile</code>.</li>
+<li>#3146 renamed the flag from <code>--platform</code> to <code>--python-platform</code>, since <code>pip</code> also has a <code>--platform</code> flag and it doesn't match how ours behaves.</li>
+<li>#3147 adds <code>--python-platform</code> to the configuration.</li>
+<li><em>This</em> PR adds <code>--python-platform</code> to the <code>uv pip sync</code> and <code>uv pip install</code> commands.</li>
+</ul>
+<p>So with all that context, I think this change makes sense, but:</p>
+<ul>
+<li>Can we add a test covering this flag for the <code>uv pip sync</code> and <code>uv pip install</code> commands? I think we have a test for <code>uv pip compile</code>, but it would be good to cover the other two as well.</li>
+<li>I mentioned this in a review comment, but what is the difference between pip's <code>--platform</code> and this <code>--python-platform</code> flag? And does there need to be a difference? Can we match what <code>pip</code> does instead?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-22 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-22 14:53</div>
+            <div class="timeline-body"><p>We already do! Clap shows all the variants automatically along with their Rustdoc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-22 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-22 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Can we add a test covering this flag for the uv pip sync and uv pip install commands? I think we have a test for uv pip compile, but it would be good to cover the other two as well.</p>
+</blockquote>
+<p>Fwiw we've been intentionally <em>not</em> covering flags across every command. No comment on whether or not that's best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-22 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-22 14:56</div>
+            <div class="timeline-body"><p>Oh sweet. Perfect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 15:01</div>
+            <div class="timeline-body"><p>(I'll answer your other question after goal setting, it's a good one to record in GitHub.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 23:31</div>
+            <div class="timeline-body"><blockquote>
+<p>...but what is the difference between pip's --platform and this --python-platform flag? And does there need to be a difference? Can we match what pip does instead?</p>
+</blockquote>
+<p>Okay, so pip supports <code>--platform</code>, <code>--abi</code>, and <code>--python-version</code>. When provided, it basically takes those, and generates all the compatible target tags by generating combinations of the tree. If you provide <code>--platform</code>, you <em>must</em> either run with <code>--no-deps</code> or <code>--only-binary :all:</code>. And as far as I can tell, pip's <code>--platform</code> does not affect <em>resolution</em> (i.e., it does not change the markers; only the wheel tags).</p>
+<p>So our <code>--python-platform</code> argument is slightly different. It's &quot;higher-level&quot;, in that you describe a platform and then we generate the relevant wheel tags and markers. And we ship with fewer limitations, but with the risk that users may misuse the flag and create broken environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-22 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-22 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-22 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danielhollas">@danielhollas</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-23 01:36</div>
+            <div class="timeline-body"><p>This last sentence is confusing given the preceding paragraph, perhaps you meant</p>
+<pre><code class="language-suggestion">    /// platform. This option is not intended for cross-compilation and other advanced use cases.
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielhollas">@danielhollas</a> reviewed on 2024-04-23 01:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 01:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-23 01:45</div>
+            <div class="timeline-body"><p>I think &quot;cross-compilation&quot; is the wrong term. It <em>is</em> intended for advanced use-cases, but &quot;cross-compilation&quot; emphasizes building from source in the wrong way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielhollas">@danielhollas</a> reviewed on 2024-04-23 01:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danielhollas">@danielhollas</a> on <code>crates/uv/src/cli.rs</code>:866 on 2024-04-23 01:49</div>
+            <div class="timeline-body"><p>Ah, okay. Yeah, I was definitely also mislead by the preceding sentence that specifically talks about building from source.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

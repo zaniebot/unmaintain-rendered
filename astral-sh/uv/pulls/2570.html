@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use URL-encoded username for keyring if no URL-encoded password - astral-sh/uv #2570</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use URL-encoded username for keyring if no URL-encoded password</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2570">#2570</a>
+        opened by <a href="https://github.com/BakerNet">@BakerNet</a>
+        on 2024-03-20 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-20 18:55</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Currently, the middleware will not check keyring or netrc if there is any URL-encoded credentials.  <code>pip</code> will check keyring and netrc if there is no URL-encoded password, and use the URL-encoded username for keyring.  This updates the middleware to match <code>pip</code> functionality in this way.</p>
+<p>See issue:</p>
+<ul>
+<li>#2563</li>
+</ul>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>See included unit tests</p>
+<p>Note:  Introduced <code>cfg</code>-branching functionality to <code>get_keyring_subprocess_auth</code> in order to bypass subprocess calls in unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-03-20 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-20 19:50</div>
+            <div class="timeline-body"><p>Flaky tests? Only change in my branch was a comment and failing tests are in unrelated parts of the codebase.
+Unable to rerun failed checks on my end, btw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 19:50</div>
+            <div class="timeline-body"><p>I think GitHub has been having issues today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-25 17:58</div>
+            <div class="timeline-body"><p>This is on my to-do list, it's been slow because of all the cfg changes for testing — we've generally avoided doing something like this so far. Without an in-depth review, I'd say some sort of pluggable <code>Provider</code> interface is preferable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-03-26 11:58</div>
+            <div class="timeline-body"><p>@BakerNet Thanks for the PR. I can confirm that this resolved the direct issue. If I try to install a package it will now call keyring with the correct username allowing me to get a token as expected. However, it seems to hit a code path where this still fails when downloading transitive dependencies.</p>
+<p>E.g. installing numpy works but installing scipy (that depends on numpy) fails like this:</p>
+<pre><code>DEBUG Adding transitive dependency: numpy&gt;=1.22.4, &lt;1.29.0
+DEBUG No cache entry for: https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/
+DEBUG Request already has an authorization header with URL-encoded password: https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/
+error: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-26 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>@BakerNet Thanks for the PR. I can confirm that this resolved the direct issue. If I try to install a package it will now call keyring with the correct username allowing me to get a token as expected. However, it seems to hit a code path where this still fails when downloading transitive dependencies.</p>
+<p>E.g. installing numpy works but installing scipy (that depends on numpy) fails like this:</p>
+<pre><code>DEBUG Adding transitive dependency: numpy&gt;=1.22.4, &lt;1.29.0
+DEBUG No cache entry for: https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/
+DEBUG Request already has an authorization header with URL-encoded password: https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/
+error: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/someorg/_packaging/somefeed/pypi/simple/numpy/)
+</code></pre>
+</blockquote>
+<p>Thanks for testing and sharing!  I'm pretty sure I know what's going on here and will get a fix in later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-26 22:03</div>
+            <div class="timeline-body"><blockquote>
+<p>This is on my to-do list, it's been slow because of all the cfg changes for testing — we've generally avoided doing something like this so far. Without an in-depth review, I'd say some sort of pluggable <code>Provider</code> interface is preferable.</p>
+</blockquote>
+<p>I have an idea to propose:
+We could make the keyring check function a method on the <code>KeyringProvider</code> enum, and add a <code>clap</code>-skipped enum variant for test suite.
+So instead of using <code>cfg(test)</code> we would <code>match self</code></p>
+<pre><code class="language-rust">#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = &quot;clap&quot;, derive(clap::ValueEnum))]
+pub enum KeyringProvider {
+    /// Will not use keyring for authentication
+    #[default]
+    Disabled,
+    /// Will use keyring CLI command for authentication
+    Subprocess,
+    // /// Not yet implemented
+    // Auto,
+    // /// Not implemented yet.  Maybe use &lt;https://docs.rs/keyring/latest/keyring/&gt; for this?
+    // Import,
+    #[cfg_attr(feature = &quot;clap&quot;, clap(skip))]
+    TestStub,
+}
+</code></pre>
+<p>in method:</p>
+<pre><code class="language-rust">let output = match self {
+    Self::Subprocess =&gt; match Command::new(&quot;keyring&quot;)
+        ... ,
+    Self::Disabled =&gt; Ok(None),
+    Self::TestStub =&gt; Ok(Some(&quot;mypassword&quot;.to_string())),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-26 22:04</div>
+            <div class="timeline-body"><p>@jenshnielsen would you mind testing this again to check if my fix works on your end when you have time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-03-27 06:08</div>
+            <div class="timeline-body"><p>@BakerNet Thanks this does seem to resolve the issue. I can install packages including their dependencies now. I am still seeing intermittent 401 errors that go away if I rerun the same command. I have not been able to figure out exactly which code path triggers it or if its even related</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 19:56</div>
+            <div class="timeline-body"><p>I'm tackling this in a more comprehensive overhaul over in https://github.com/astral-sh/uv/pull/2976 if you're interested in looking at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 16:50</div>
+            <div class="timeline-body"><p>Thanks for taking the time to put up a pull request, this was really helpful for understanding the desired behavior. I'm closing in favor of https://github.com/astral-sh/uv/pull/2976 which makes some other changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-16 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

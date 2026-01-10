@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make the junction crate dependency Windows-only - astral-sh/uv #3043</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make the junction crate dependency Windows-only</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3043">#3043</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2024-04-15 20:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-04-15 20:46</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Since the <a href="https://crates.io/crates/junction"><code>junction</code> crate</a> implements Windows-only functionality, and since the only place it is used is guarded by <code>#[cfg(windows)]</code>,</p>
+<p>https://github.com/astral-sh/uv/blob/1f626bfc7300a700257348e1890af90837c740e6/crates/uv-fs/src/lib.rs#L65-L86</p>
+<p>it makes sense not to depend on this crate at all on non-Windows platforms.</p>
+<p>If nothing else, this makes Linux distribution packagers’ lives just a <em>tiny</em> bit easier.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>On Fedora Linux 39:</p>
+<pre><code># To avoid an error when /tmp and the working directory are on different filesystems:
+$ mkdir _tmp
+$ TMPDIR=&quot;${PWD}/tmp&quot; cargo run -p uv-dev -- fetch-python
+$ cargo test
+</code></pre>
+<p>I don’t have access to a Windows system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-15 20:47</div>
+            <div class="timeline-body"><p>(Cool with me as long as it passes CI.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-04-15 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Make the junction crate dependency Windows-only" to "[DRAFT] Make the junction crate dependency Windows-only" by @musicinmybrain on 2024-04-15 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-04-15 20:50</div>
+            <div class="timeline-body"><p>Hold on, I’m still getting the <code>junction</code> crate pulled in. Let me double-check this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-04-15 20:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Hold on, I’m still getting the <code>junction</code> crate pulled in. Let me double-check this.</p>
+</blockquote>
+<p>Looks like that’s a downstream issue in my experimental RPM spec file. I think a dependencies is getting generated unconditionally from</p>
+<p>https://github.com/astral-sh/uv/blob/f6b1580d8bd5388d80592701a02d0e77a199ddd5/Cargo.toml#L95</p>
+<p>but when I <code>cargo build</code> or <code>cargo test</code> directly, the <code>junction</code> crate isn’t compiled, so I’m going to say that’s a downstream issue and this PR is still good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[DRAFT] Make the junction crate dependency Windows-only" to "Make the junction crate dependency Windows-only" by @musicinmybrain on 2024-04-15 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 21:01</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-15 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-15 21:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for embedded Python on Windows - astral-sh/uv #3161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for embedded Python on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3161">#3161</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-20 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 15:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>References:</p>
+<ul>
+<li>https://github.com/pypa/virtualenv/blob/cad550030ae77e181a1d7c328742a97f2880ef9b/src/virtualenv/create/via_global_ref/builtin/cpython/cpython3.py#L58-L68</li>
+<li>https://github.com/pypa/virtualenv/pull/2353</li>
+<li>https://github.com/pypa/virtualenv/issues/2368</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/1656.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-04-20 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-04-20 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-20 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-20 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-20 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:285 on 2024-04-20 21:58</div>
+            <div class="timeline-body"><p>Virtualenv is stricter on what it matches here, but I don't see other <code>.zip</code> files anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:148 on 2024-04-20 21:59</div>
+            <div class="timeline-body"><p>(Just moved this up because I need it for symlinking.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-20 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:227 on 2024-04-22 12:27</div>
+            <div class="timeline-body"><p>nit: can we de-nest this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:225 on 2024-04-22 13:20</div>
+            <div class="timeline-body"><p>I think this should be a custom variant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-22 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-22 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:227 on 2024-04-22 16:28</div>
+            <div class="timeline-body"><p>Like, de-nest the entire <code>if</code> hierarchy? Or de-nest the error message in some way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-22 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:227 on 2024-04-22 16:42</div>
+            <div class="timeline-body"><p>Either way that doesn't get us to indentation level 14, i tried and denesting the entire thing seems the easiest</p>
+<pre><code class="language-rust">    // No symlinking on Windows, at least not on a regular non-dev non-admin Windows install.
+    if cfg!(windows) {
+        copy_launcher_windows(interpreter, &amp;base_python, &amp;scripts, python_home)?;
+    }
+</code></pre>
+<pre><code class="language-rust">/// &lt;https://github.com/python/cpython/blob/d457345bbc6414db0443819290b04a9a4333313d/Lib/venv/__init__.py#L261-L267&gt;
+/// &lt;https://github.com/pypa/virtualenv/blob/d9fdf48d69f0d0ca56140cf0381edbb5d6fe09f5/src/virtualenv/create/via_global_ref/builtin/cpython/cpython3.py#L78-L83&gt;
+/// There's two kinds of applications on windows: Those that allocate a console (python.exe)
+/// and those that don't because they use window(s) (pythonw.exe).
+fn copy_launcher_windows(
+    interpreter: &amp;Interpreter,
+    base_python: &amp;Path,
+    scripts: &amp;Path,
+    python_home: &amp;Path,
+) -&gt; Result&lt;(), Error&gt; {
+    // First priority: the `python.exe` and `pythonw.exe` shims.
+    for python_exe in [&quot;python.exe&quot;, &quot;pythonw.exe&quot;] {
+        let shim = interpreter
+            .stdlib()
+            .join(&quot;venv&quot;)
+            .join(&quot;scripts&quot;)
+            .join(&quot;nt&quot;)
+            .join(python_exe);
+        match fs_err::copy(shim, scripts.join(python_exe)) {
+            Ok(_) =&gt; return Ok(()),
+            Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {}
+            Err(err) =&gt; {
+                return Err(err.into());
+            }
+        }
+
+        // Second priority: the `venvlauncher.exe` and `venvwlauncher.exe` shims.
+        // These are equivalent to the `python.exe` and `pythonw.exe` shims, which were
+        // renamed in Python 3.13.
+        let launcher = match python_exe {
+            &quot;python.exe&quot; =&gt; &quot;venvlauncher.exe&quot;,
+            &quot;pythonw.exe&quot; =&gt; &quot;venvwlauncher.exe&quot;,
+            _ =&gt; unreachable!(),
+        };
+        let shim = interpreter
+            .stdlib()
+            .join(&quot;venv&quot;)
+            .join(&quot;scripts&quot;)
+            .join(&quot;nt&quot;)
+            .join(launcher);
+
+        match fs_err::copy(shim, scripts.join(python_exe)) {
+            Ok(_) =&gt; return Ok(()),
+            Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {}
+            Err(err) =&gt; {
+                return Err(err.into());
+            }
+        }
+
+        // Third priority: on Conda at least, we can look for the launcher shim next to
+        // the Python executable itself.
+        let shim = base_python.with_file_name(launcher);
+        match fs_err::copy(shim, scripts.join(python_exe)) {
+            Ok(_) =&gt; {}
+            Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {}
+            Err(err) =&gt; {
+                return Err(err.into());
+            }
+        }
+
+        // Fourth priority: if the launcher shim doesn't exist, assume this is
+        // an embedded Python. Copy the Python executable itself, along with
+        // the DLLs, `.pyd` files, and `.zip` files in the same directory.
+        match fs_err::copy(
+            base_python.with_file_name(python_exe),
+            scripts.join(python_exe),
+        ) {
+            Ok(_) =&gt; {}
+            Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {
+                return Err(Error::IO(io::Error::new(
+                    io::ErrorKind::NotFound,
+                    format!(
+                        &quot;Could not find a suitable Python executable for the virtual environment (tried: {}, {}, {}, {})&quot;,
+                        interpreter
+                            .stdlib()
+                            .join(&quot;venv&quot;)
+                            .join(&quot;scripts&quot;)
+                            .join(&quot;nt&quot;)
+                            .join(python_exe)
+                            .user_display(),
+                        interpreter
+                            .stdlib()
+                            .join(&quot;venv&quot;)
+                            .join(&quot;scripts&quot;)
+                            .join(&quot;nt&quot;)
+                            .join(launcher)
+                            .user_display(),
+                        base_python.with_file_name(launcher).user_display(),
+                        base_python
+                            .with_file_name(python_exe)
+                            .user_display(),
+                    )
+                )));
+            }
+            Err(err) =&gt; {
+                return Err(err.into());
+            }
+        }
+
+        // Copy `.dll` and `.pyd` files from the top-level, and from the
+        // `DLLs` subdirectory (if it exists).
+        for directory in [
+            python_home,
+            interpreter.base_prefix().join(&quot;DLLs&quot;).as_path(),
+        ] {
+            let entries = match fs_err::read_dir(directory) {
+                Ok(read_dir) =&gt; read_dir,
+                Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {
+                    continue;
+                }
+                Err(err) =&gt; {
+                    return Err(err.into());
+                }
+            };
+            for entry in entries {
+                let entry = entry?;
+                let path = entry.path();
+                if path.extension().is_some_and(|ext| {
+                    ext.eq_ignore_ascii_case(&quot;dll&quot;) || ext.eq_ignore_ascii_case(&quot;pyd&quot;)
+                }) {
+                    if let Some(file_name) = path.file_name() {
+                        fs_err::copy(&amp;path, scripts.join(file_name))?;
+                    }
+                }
+            }
+        }
+
+        // Copy `.zip` files from the top-level.
+        let entries = match fs_err::read_dir(python_home) {
+            Ok(read_dir) =&gt; read_dir,
+            Err(err) if err.kind() == io::ErrorKind::NotFound =&gt; {
+                continue;
+            }
+            Err(err) =&gt; {
+                return Err(err.into());
+            }
+        };
+
+        for entry in entries {
+            let entry = entry?;
+            let path = entry.path();
+            if path
+                .extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case(&quot;zip&quot;))
+            {
+                if let Some(file_name) = path.file_name() {
+                    fs_err::copy(&amp;path, scripts.join(file_name))?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-22 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:227 on 2024-04-22 16:54</div>
+            <div class="timeline-body"><p>Yup seems good! Will do. I assumed this is what you meant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-22 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-22 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-22 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pixel-Minions">@Pixel-Minions</a> on 2024-04-22 21:04</div>
+            <div class="timeline-body"><p>Hi @charliermarsh It works great! Thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

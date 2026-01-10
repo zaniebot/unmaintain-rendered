@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewrite `AuthMiddleware` and credential caching - astral-sh/uv #2984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rewrite <code>AuthMiddleware</code> and credential caching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2984">#2984</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-11 00:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-11 00:09</div>
+            <div class="timeline-body"><p>Further work based on #2976 with a focus on improving the correctness of our <code>AuthMiddleware</code>.</p>
+<p>I ended up needing to make significant changes to ensure we properly populate passwords on requests that already have a username attached.</p>
+<p>The behavior can be summarized as follows:</p>
+<ul>
+<li>Credentials are always parsed from the request, including inspection of the Authorization header contents<ul>
+<li>This is necessary to extract the username</li>
+<li>We only support HTTP Basic Authentication at this time, I can't think of a way other Authorization headers would show up</li>
+</ul>
+</li>
+<li>Fully authenticated (username and password) request credentials are respected over all other methods<ul>
+<li>Cache lookups are avoided in this case</li>
+</ul>
+</li>
+<li>The cache is keyed on realm and username instead of just realm</li>
+<li>Subsequent attempts to fetch credentials from the netrc file and keyring in the middleware are no longer prevented<ul>
+<li>Previously we would use the cache to indicate if we should attempt to fetch credentials</li>
+<li>The netrc file is in-memory and it seems fine to do a lookup per unauthenticated request</li>
+<li>The keyring provider includes an internal cache to avoid repeated subprocess calls</li>
+</ul>
+</li>
+<li>If the credentials do not include a password, we will attempt to find a password in the cache, netrc, and keyring</li>
+<li>When performing lookups, we will respect the username attached to the request (fixes <a href="https://github.com/astral-sh/uv/pull/2563">#2563</a>)</li>
+<li>Credentials are only added to the cache if a request is successful<ul>
+<li>Cache entries are always overwritten on insertion</li>
+<li>When we insert a cache entry for credentials with a username, we also fill the cache entry for a null username</li>
+</ul>
+</li>
+<li>A bunch of logs are added and some are changed to <code>trace</code> levels</li>
+</ul>
+<p>We also add some changes to keyring authentication:</p>
+<ul>
+<li>We attempt a keyring lookup for the full URL <em>and</em> the host<ul>
+<li>Previously, we only attempted the URL</li>
+</ul>
+</li>
+<li>We still cache by host, so we <em>could</em> use the wrong credentials if the keyring is inconsistent per host</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/pull/2570
+Closes https://github.com/astral-sh/uv/pull/2563</p>
+<p>Partially address:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/2465</li>
+<li>https://github.com/astral-sh/uv/issues/2464</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-04-11 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:82 on 2024-04-11 00:17</div>
+            <div class="timeline-body"><p>This should mean we do not need to &quot;pre-populate&quot; the store from the URLs beforehand. I wonder if we still should?</p>
+<p>This should be the only behavioral change here. I don't think it's user-facing, but we'll extract and store authentication from the headers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-11 00:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor `AuthMiddleware` and improve authentication coverage" to "Refactor `AuthMiddleware` and credential caching" by @zanieb on 2024-04-11 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor `AuthMiddleware` and credential caching" to "Rewrite `AuthMiddleware` and credential caching" by @zanieb on 2024-04-12 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-12 18:36</div>
+            <div class="timeline-body"><p>I think I should bench this for performance regressions in request-heavy workloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-04-12 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-12 21:19</div>
+            <div class="timeline-body"><p>Benchmarks not showing change when there's not authentication involved</p>
+<pre><code>❯ python -m scripts.bench \
+    --uv-path ./target/release/uv-main \
+    --uv-path ./target/release/uv-branch-ii \
+    ./scripts/requirements/home-assistant.in --min-runs 15
+Benchmark 1: ./target/release/uv-main (resolve-cold)
+  Time (mean ± σ):     17.239 s ±  0.432 s    [User: 74.618 s, System: 28.660 s]
+  Range (min … max):   16.588 s … 18.125 s    15 runs
+ 
+Benchmark 2: ./target/release/uv-branch-ii (resolve-cold)
+  Time (mean ± σ):     17.266 s ±  0.511 s    [User: 74.233 s, System: 28.381 s]
+  Range (min … max):   16.875 s … 19.033 s    15 runs
+
+Summary
+  ./target/release/uv-main (resolve-cold) ran
+    1.00 ± 0.04 times faster than ./target/release/uv-branch-ii (resolve-cold)
+
+Benchmark 1: ./target/release/uv-main (resolve-warm)
+  Time (mean ± σ):     166.7 ms ±   2.5 ms    [User: 156.2 ms, System: 248.2 ms]
+  Range (min … max):   163.4 ms … 173.9 ms    17 runs
+ 
+Benchmark 2: ./target/release/uv-branch-ii (resolve-warm)
+  Time (mean ± σ):     166.5 ms ±   2.6 ms    [User: 155.2 ms, System: 253.2 ms]
+  Range (min … max):   162.3 ms … 172.6 ms    17 runs
+ 
+Summary
+  ./target/release/uv-branch-ii (resolve-warm) ran
+    1.00 ± 0.02 times faster than ./target/release/uv-main (resolve-warm)
+
+❯ python -m scripts.bench \
+    --uv-path ./target/release/uv-main \
+    --uv-path ./target/release/uv-branch \
+    ./scripts/requirements/trio.in
+Benchmark 1: ./target/release/uv-main (resolve-cold)
+  Time (mean ± σ):     708.4 ms ±  52.7 ms    [User: 140.5 ms, System: 103.9 ms]
+  Range (min … max):   629.5 ms … 793.2 ms    10 runs
+ 
+Benchmark 2: ./target/release/uv-branch (resolve-cold)
+  Time (mean ± σ):     727.3 ms ±  50.1 ms    [User: 145.7 ms, System: 108.8 ms]
+  Range (min … max):   673.0 ms … 808.1 ms    10 runs
+ 
+Summary
+  ./target/release/uv-main (resolve-cold) ran
+    1.03 ± 0.10 times faster than ./target/release/uv-branch (resolve-cold)
+
+❯ python -m scripts.bench \
+    --uv-path ./target/release/uv-main \
+    --uv-path ./target/release/uv-branch \
+    --min-runs 30 \
+    ./scripts/requirements/boto3.in
+
+Benchmark 1: ./target/release/uv-main (resolve-cold)
+  Time (mean ± σ):      4.154 s ±  0.793 s    [User: 1.279 s, System: 0.938 s]
+  Range (min … max):    2.657 s …  5.486 s    30 runs
+ 
+Benchmark 2: ./target/release/uv-branch (resolve-cold)
+  Time (mean ± σ):      4.007 s ±  0.886 s    [User: 1.230 s, System: 0.913 s]
+  Range (min … max):    2.606 s …  6.562 s    30 runs
+ 
+Summary
+  ./target/release/uv-branch (resolve-cold) ran
+    1.04 ± 0.30 times faster than ./target/release/uv-main (resolve-cold)
+
+❯ python -m scripts.bench \
+    --uv-path ./target/release/uv-main \
+    --uv-path ./target/release/uv-branch-ii \
+    ./scripts/requirements/trio.in \
+  --benchmark install-cold \
+   --min-runs 30
+Benchmark 1: ./target/release/uv-main (install-cold)
+  Time (mean ± σ):      1.843 s ±  0.505 s    [User: 0.244 s, System: 0.466 s]
+  Range (min … max):    0.781 s …  3.285 s    30 runs
+ 
+Benchmark 2: ./target/release/uv-branch-ii (install-cold)
+  Time (mean ± σ):      1.995 s ±  0.507 s    [User: 0.269 s, System: 0.531 s]
+  Range (min … max):    0.872 s …  2.945 s    30 runs
+ 
+Summary
+  ./target/release/uv-main (install-cold) ran
+    1.08 ± 0.40 times faster than ./target/release/uv-branch-ii (install-cold)
+</code></pre>
+<p>I want to craft a bench that uses the keyring so we can ensure we're good there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:87 on 2024-04-13 23:14</div>
+            <div class="timeline-body"><p>I think we should avoid putting effects in optional chains like this. I'd suggest something like:</p>
+<pre><code class="language-rust">if let Some(username) = credentials.as_ref().and_then(...) {
+  let _ = url.set_username(username);
+}
+</code></pre>
+<p>It took me a bit to see that this was mutating the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:81 on 2024-04-13 23:16</div>
+            <div class="timeline-body"><p>Not a huge fan of code that only runs in debug. Maybe we just do this every time (or never)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:134 on 2024-04-13 23:18</div>
+            <div class="timeline-body"><p>Just confirming: if we have both netrc and keyring enabled, and the URL isn't in the netrc, we subsequently check the keyring, right? (That's my read of the code. Confirming my understanding + that it's intended.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:19 on 2024-04-13 23:19</div>
+            <div class="timeline-body"><p>You could probably make this <code>Option&lt;Box&lt;str&gt;&gt;</code> if you were excited about shrinking the struct size :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-13 23:20</div>
+            <div class="timeline-body"><p>Should we <code>.expect</code> these, like below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:105 on 2024-04-13 23:20</div>
+            <div class="timeline-body"><p>Wonder if this should <code>.expect</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:128 on 2024-04-13 23:22</div>
+            <div class="timeline-body"><p>What is this case exactly -- you provided a username but no password, and we want to lookup in the netrc based on the username?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:81 on 2024-04-14 15:50</div>
+            <div class="timeline-body"><p>It's just for display, I wanted to avoid the extra clone on every request. It's really helpful for seeing what username we're processing and if there's a password. I think it's worth having for debugging and I'd want it on-always rather than removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:134 on 2024-04-14 15:50</div>
+            <div class="timeline-body"><p>Yep! and that's the same as the behavior on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:19 on 2024-04-14 15:51</div>
+            <div class="timeline-body"><p>I made it <code>Option</code> for clarity because it's passed around as an empty string (<code>&quot;&quot;</code>) a lot in reqwest and it simplified the logic to encode that as <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:128 on 2024-04-14 15:55</div>
+            <div class="timeline-body"><p>If you provide a username, it needs to match the one in the netrc. If you don't, the full credential can be retrieve from the netrc (username and password).</p>
+<p>https://github.com/astral-sh/uv/blob/65ac2607b6b0f26a9d88022832e43807b9d533e2/crates/uv-auth/src/credentials.rs#L44-L47</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:87 on 2024-04-14 15:56</div>
+            <div class="timeline-body"><p>Okay no problem, just felt verbose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-14 15:57</div>
+            <div class="timeline-body"><p>No it's valid for <code>username</code> to be <code>None</code> and default to an empty string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:105 on 2024-04-14 15:58</div>
+            <div class="timeline-body"><p>Right now if we see anything we don't recognize we just give up. I'm not sure if basic authentication is <em>guaranteed</em> to always be base64 encoded, I could look that up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-14 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:19 on 2024-04-14 16:10</div>
+            <div class="timeline-body"><p>Yeah <code>Option</code> is cool, this makes sense. (Maybe document that it's guaranteed to be non-empty?) I was commenting on <code>String</code> vs. <code>Box&lt;str&gt;</code> but it doesn't really matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-14 16:10</div>
+            <div class="timeline-body"><p>I meant <code>.expect</code> on the result of <code>write!</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-14 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-14 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-14 16:10</div>
+            <div class="timeline-body"><p>Right now it's being dropped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-14 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-14 16:11</div>
+            <div class="timeline-body"><p>But maybe that's fine? <code>write!</code> can return an error and <code>let _ = ...</code> just drops the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-14 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:126 on 2024-04-14 18:47</div>
+            <div class="timeline-body"><p>Oh I see what you mean. It does seem weird to drop the error here, I think we to know if we failed to write the credentials. I guess I'll add <code>expect</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-15 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-15 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-15 19:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

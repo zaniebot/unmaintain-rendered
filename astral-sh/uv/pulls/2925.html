@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace PyPI-internal Hashes representation with flat vector - astral-sh/uv #2925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace PyPI-internal Hashes representation with flat vector</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2925">#2925</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-09 03:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-09 03:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Right now, we have a <code>Hashes</code> representation that looks like:</p>
+<pre><code class="language-rust">/// A dictionary mapping a hash name to a hex encoded digest of the file.
+///
+/// PEP 691 says multiple hashes can be included and the interpretation is left to the client.
+#[derive(Debug, Clone, Eq, PartialEq, Default, Deserialize)]
+pub struct Hashes {
+    pub md5: Option&lt;Box&lt;str&gt;&gt;,
+    pub sha256: Option&lt;Box&lt;str&gt;&gt;,
+    pub sha384: Option&lt;Box&lt;str&gt;&gt;,
+    pub sha512: Option&lt;Box&lt;str&gt;&gt;,
+}
+</code></pre>
+<p>It stems from the PyPI API, which returns a dictionary of hashes.</p>
+<p>We tend to pass these around as a vector of <code>Vec&lt;Hashes&gt;</code>. But it's a bit strange because each entry in that vector could contain multiple hashes. And it makes it difficult to ask questions like &quot;Is <code>sha256:ab21378ca980a8</code> in the set of hashes&quot;?</p>
+<p>This PR instead treats <code>Hashes</code> as the PyPI-internal type, and uses a new <code>Vec&lt;HashDigest&gt;</code> everywhere in our own APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-09 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-04-09 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-09 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-09 03:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:28 on 2024-04-09 03:16</div>
+            <div class="timeline-body"><p>I also changed this because it relies on <code>Hashes</code> internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-09 03:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:293 on 2024-04-09 03:17</div>
+            <div class="timeline-body"><p>@BurntSushi - Do you agree with this TODO? I'm sort of undecided on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-09 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache/src/lib.rs</code>:601 on 2024-04-09 12:38</div>
+            <div class="timeline-body"><p>Nice, I was looking for this. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pypi-types/src/simple_json.rs</code>:293 on 2024-04-09 12:41</div>
+            <div class="timeline-body"><p>Hmmm. Say more? This is a digest right? A digest is a human readable alphanumeric representation of the actual hash value. So if that's what you're storing, then making it a string seems sensible to me. But you could instead store the hash value itself, in which case it would <em>have</em> to be a <code>Vec&lt;u8&gt;</code> (or perhaps a <code>Box&lt;[u8]&gt;</code> in this case). Whether you want a digest or the hash value itself isn't totally clear to me, but it may not matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pypi-types/src/simple_json.rs</code>:141 on 2024-04-09 13:03</div>
+            <div class="timeline-body"><p>Does inserting this first cause a change in behavior? It looks like <code>as_str()</code> previously preferred <code>sha512</code> for example, but I think I saw some calls to <code>hashes.first()</code> above which would prefer <code>md5</code> I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-09 13:06</div>
+            <div class="timeline-body"><p>Seems sensible to me!</p>
+<p>There are perhaps other possible abstractions to use here. For example, as long as there is at most one digest per hash type, you could use a map:</p>
+<pre><code class="language-rust">enum HashAlgorithm { Md5 = 0, Sha256 = 1, Sha384 = 2, Sha512 = 3 }
+
+struct HashDigests {
+    map: [Option&lt;Box&lt;str&gt;&gt;; 4],
+}
+</code></pre>
+<p>Then asking whether a particular hash digests is something like <code>digests.map[HashAlgorithm::Md5 as usize].is_some()</code>.</p>
+<p>But, I like your representation better because it seems simpler to me.</p>
+<p>One final thought:</p>
+<blockquote>
+<p>This PR instead treats Hashes as the PyPI-internal type, and uses a new <code>Vec&lt;HashDigest&gt;</code> everywhere in our own APIs.</p>
+</blockquote>
+<p>if instead we defined a new <code>HashDigests</code> type that encapsulates the representation and exposes just the ops you need, then it'd be easier to change the representation in the future. And <em>maybe</em> make some caller code simpler. But I don't have any real issue with just using <code>Vec&lt;HashDigest&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-09 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:141 on 2024-04-09 15:22</div>
+            <div class="timeline-body"><p>Hmm, I guess it <em>could</em> yes. I'll change it to put the highest-security hashes first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-09 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:293 on 2024-04-09 15:22</div>
+            <div class="timeline-body"><p>Yeah it's a digest. I guess using the human-readable value is nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-09 16:16</div>
+            <div class="timeline-body"><p>Yeah the benefit of the current <code>Hashes</code> representation is that it automatically deserializes from the JSON. Ultimately, we'll have a set of hashes for which there could be multiple digests with the same algorithm, each corresponding to a different distribution, so we do need some kind of <code>HashSet&lt;HashDigest&gt;</code> rather than a fixed list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-09 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-09 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-09 16:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

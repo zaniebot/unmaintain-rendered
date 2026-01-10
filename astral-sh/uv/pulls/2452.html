@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed up cold cache urllib3/boto3/botocore with batched prefetching - astral-sh/uv #2452</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Speed up cold cache urllib3/boto3/botocore with batched prefetching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2452">#2452</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-03-14 11:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-03-14 11:01</div>
+            <div class="timeline-body"><p>With pubgrub being fast for complex ranges, we can now compute the next n candidates without taking a performance hit. This speeds up cold cache <code>urllib3&lt;1.25.4</code> <code>boto3</code> from maybe 40s - 50s to ~2s. See docstrings for details on the heuristics.</p>
+<p><strong>Before</strong></p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/b7b06950-e45b-4c49-b65e-ae19fe9888cc" alt="image" /></p>
+<p><strong>After</strong></p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/1c749248-850e-49c1-9d57-a7d78f87b3aa" alt="image" /></p>
+<hr />
+<p>We need two parts of the prefetching, first looking for compatible version and then falling back to flat next versions. After we selected a boto3 version, there is only one compatible botocore version remaining, so when won't find other compatible candidates for prefetching. We see this as a pattern where we only prefetch boto3 (stack bars), but not botocore (sequential requests between the stacked bars).</p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/e5186800-23ac-4ed1-99b9-4d1046fbd03a" alt="image" /></p>
+<p>The risk is that we're completely wrong with the guess and cause a lot of useless network requests. I think this is acceptable since this mechanism only triggers when we're already on the bad path and we should simply have fetched all versions after some seconds (assuming a fast index like pypi).</p>
+<hr />
+<p>It would be even better if the pubgrub state was copy-on-write so we could simulate more progress than we actually have; currently we're guessing what the next version is which could be completely wrong, but i think this is still a valuable heuristic.</p>
+<p>Fixes #170.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-03-14 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albertferras-vrf">@albertferras-vrf</a> on 2024-03-21 18:31</div>
+            <div class="timeline-body"><p>thanks for working on this @konstin , looking forward for this massive speed improvement :) . We're currently waiting for <code>uv</code> to be able to resolve boto3 faster before being able to use it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 18:40</div>
+            <div class="timeline-body"><p>You might want to consider pinning or bounding boto3 or urllib3, regardless of what you use to resolve / install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-05 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:225 on 2024-04-05 14:45</div>
+            <div class="timeline-body"><p>Once again making windows happy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-04-05 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-04-05 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-08 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:97 on 2024-04-08 13:47</div>
+            <div class="timeline-body"><p>I think we should probably <em>only</em> do this prefetching when the candidate has a wheel. Otherwise, we risk building tons and tons of source distributions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:112 on 2024-04-08 13:48</div>
+            <div class="timeline-body"><p>I feel like this risks being quadratic, because we iterate over <code>total_prefetch</code>, and then <code>select_no_preference</code> is also linear, right? Is there any way to improve that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-08 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-08 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:112 on 2024-04-08 13:58</div>
+            <div class="timeline-body"><p>I did an attempt turning <code>select_candidate</code> into an iterator but then looked at the profiles for urllib3/boto3/botocore and i think it's not worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-08 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:97 on 2024-04-08 14:14</div>
+            <div class="timeline-body"><p>Good catch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-08 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "POC: Speed up cold cache boto3/urllib3 with batched prefetching" to "Speed up cold cache urllib3/boto3/botocore with batched prefetching" by @konstin on 2024-04-08 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-04-08 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-04-08 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-08 14:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

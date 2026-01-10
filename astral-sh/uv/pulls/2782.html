@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify sorting of site package entries - astral-sh/uv #2782</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify sorting of site package entries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2782">#2782</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-02 20:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 20:20</div>
+            <div class="timeline-body"><p>per https://github.com/astral-sh/uv/pull/2780#discussion_r1548340373</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-04-02 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-02 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:22</div>
+            <div class="timeline-body"><p>I think this is losing <code>file_type</code> errors because they're being cast to <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-02 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:26</div>
+            <div class="timeline-body"><p>Ah yeah that is what I was having trouble avoiding.</p>
+<p>cc @snowsignal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-02 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:29</div>
+            <div class="timeline-body"><pre><code class="language-rust">let directories: BTreeSet&lt;_&gt; = site_packages
+    .filter_map(|read_dir| match read_dir {
+        Ok(entry) =&gt; {
+            let file_type = match entry.file_type() {
+                Ok(file_type) =&gt; file_type,
+                Err(err) =&gt; return Some(Err(err)),
+            };
+            file_type.is_dir().then_some(Ok(entry.path()))
+        }
+        Err(err) =&gt; Some(Err(err)),
+    })
+    .collect::&lt;Result&lt;_, std::io::Error&gt;&gt;()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-02 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:31</div>
+            <div class="timeline-body"><p>Haha you beat me to it 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-02 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:33</div>
+            <div class="timeline-body"><p>Okay yuck though is this actually easier to read than before this pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-02 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/uv-installer/src/site_packages.rs</code>:54 on 2024-04-02 20:41</div>
+            <div class="timeline-body"><p>I tried to clean it up a bit:</p>
+<pre><code class="language-rust">let directories: BTreeSet&lt;_&gt; = site_packages
+    .filter_map(|read_dir| match read_dir {
+        Ok(entry) =&gt; match entry.file_type() {
+                Ok(file_type) =&gt; file_type.is_dir().then_some(Ok(entry.path())),
+                Err(err) =&gt; Some(Err(err)),
+            }
+        Err(err) =&gt; Some(Err(err)),
+    })
+    .collect::&lt;Result&lt;_&gt;&gt;()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-03 02:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> approved on 2024-04-03 04:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-03 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-03 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-03 04:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

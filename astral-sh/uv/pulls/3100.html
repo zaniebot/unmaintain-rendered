@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a proxy layer for extras - astral-sh/uv #3100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a proxy layer for extras</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3100">#3100</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-17 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 17:15</div>
+            <div class="timeline-body"><p>Given requirements like:</p>
+<pre><code>black==23.1.0
+black[colorama]
+</code></pre>
+<p>The resolver will (on <code>main</code>) add a dependency on Black, and then try to use the most recent version of Black to satisfy <code>black[colorama]</code>. For sake of example, assume <code>black==24.0.0</code> is the most recent version. Once the selects this most recent version, it'll fetch the metadata, then return the dependencies for <code>black==24.0.0</code> with the <code>colorama</code> extra enabled. Finally, it will tack on <code>black==24.0.0</code> (a dependency on the base package). The resolver will then detect a conflict between <code>black==23.1.0</code> and <code>black==24.0.0</code>, and throw out <code>black[colorama]==24.0.0</code>, trying to next most-recent version.</p>
+<p>This is both wasteful and can cause problems, since we're fetching metadata for versions that will <em>never</em> satisfy the resolver. In the <code>apache-airflow[all]</code> case, I also ran into an issue whereby we were attempting to build very old versions of <code>apache-airflow</code> due to <code>apache-airflow[pandas]</code>, which in turn led to resolution failures.</p>
+<p>The solution proposed here is that we create a new proxy package with exactly two dependencies: one on <code>black</code> and one of <code>black[colorama]</code>. Both of these packages must be at the same version as the proxy package, so the resolver knows much <em>earlier</em> that (in the above example) the extra variant <em>must</em> match <code>23.1.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 17:17</div>
+            <div class="timeline-body"><p>I like where this is going</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 18:39</div>
+            <div class="timeline-body"><p>I think the ideas here are sound but need a packse test and more documentation around the concepts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-17 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-17 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:934 on 2024-04-17 21:28</div>
+            <div class="timeline-body"><p>Epic</p>
+<blockquote>
+<p>Because only package-a[extra-c]==1.0.0 is available and package-a[extra-c]==1.0.0 depends on package-a[extra-c]==1.0.0, we can conclude that all versions of package-a[extra-c] depend on package-a[extra-c]==1.0.0.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-17 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:934 on 2024-04-17 21:49</div>
+            <div class="timeline-body"><p>Yeah this is a real regression. Will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1025 on 2024-04-18 12:36</div>
+            <div class="timeline-body"><p>Nice. I like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-18 12:37</div>
+            <div class="timeline-body"><p>This is awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-18 12:42</div>
+            <div class="timeline-body"><p>nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eh2406">@Eh2406</a> on 2024-04-18 13:29</div>
+            <div class="timeline-body"><p>This looks like a clever lowering. I'd love to talk it over to see if it helps with a similar problem with &quot;features&quot; in cargo. I was planing to use https://github.com/pubgrub-rs/pubgrub/pull/124 for the &quot;features&quot; problem, and would love to compare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-19 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-19 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-19 01:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

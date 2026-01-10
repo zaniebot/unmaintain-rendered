@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIP: feat: uv pip list --outdated - astral-sh/uv #2582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>WIP: feat: uv pip list --outdated</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2582">#2582</a>
+        opened by <a href="https://github.com/timleslie">@timleslie</a>
+        on 2024-03-21 05:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-21 05:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for <code>uv pip list --outdated</code></p>
+<p>https://pip.pypa.io/en/stable/cli/pip_list/#cmdoption-o</p>
+<p>Fixes https://github.com/astral-sh/uv/issues/2150</p>
+<h2>WIP</h2>
+<p>This PR is currently a work in progress, and I am seeking feedback on the approach 🙏</p>
+<p>I have left some comments in the code and would appreciate feedback on both the large scale approach and also any small-scale implementation details.</p>
+<p>I have got to the point where running the command correctly identifies those packages which have an update available.</p>
+<pre><code class="language-sh">➜  uv git:(feat/pip-list-outdated) cargo r --bin uv -- pip list --outdated
+Resolved 370 packages in 2.33s
+Package                           Version
+--------------------------------- --------------
+aenum                             3.1.11
+aiodns                            3.0.0
+...
+</code></pre>
+<ul>
+<li>[ ] The output formatting needs updating in order to match <code>pip</code></li>
+</ul>
+<pre><code class="language-sh">➜  uv git:(timl/pip-list-outdated) pip list --outdated                    
+Package                           Version        Latest         Type
+--------------------------------- -------------- -------------- -----
+aenum                             3.1.11         3.1.15         wheel
+aiodns                            3.0.0          3.1.1          wheel
+...
+</code></pre>
+<h2>Test Plan</h2>
+<p>WIP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/timleslie">@timleslie</a> on <code>crates/uv/src/commands/pip_list.rs</code>:108 on 2024-03-21 05:35</div>
+            <div class="timeline-body"><p>We build up a list of requirements by taking all the currently installed packages and constructing <code>RequirementsSource::Package(name)</code> with no further version information, implying we want to resolve the latest version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timleslie">@timleslie</a> reviewed on 2024-03-21 05:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timleslie">@timleslie</a> reviewed on 2024-03-21 05:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/timleslie">@timleslie</a> on <code>crates/uv/src/commands/pip_list.rs</code>:266 on 2024-03-21 05:36</div>
+            <div class="timeline-body"><p>Finally, we filter <code>results</code> based on whether there is a more recent version of the package available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timleslie">@timleslie</a> reviewed on 2024-03-21 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/timleslie">@timleslie</a> on <code>crates/uv/src/commands/pip_list.rs</code>:115 on 2024-03-21 05:37</div>
+            <div class="timeline-body"><p>We crib a large chunk of code from <code>pip_install</code> in order to resolve our list of requirements down to a list of packages which are available to install. This is the part where I'm not sure if this is the best approach, or if there's a way to achieve this without so much cribbed/duplicated code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timleslie">@timleslie</a> reviewed on 2024-03-21 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/timleslie">@timleslie</a> on <code>crates/uv/src/commands/pip_list.rs</code>:101 on 2024-03-21 05:39</div>
+            <div class="timeline-body"><p>In order to run the package resolver, we set up quite a lot of defaults. In <code>pip_install</code>, these are all available as arguments on the command line. If we go with the approach of using the pip-install style resolve it implies we should probably add all of these as options for <code>pip list</code> 🤔 This strikes me as perhaps less than ideal.</p>
+<p>I wonder if that's the path we want to go down?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip_list.rs</code>:101 on 2024-03-21 14:36</div>
+            <div class="timeline-body"><p>Yeah that seems less than ideal.</p>
+<p>I wonder if <code>pip install --upgrade --report</code> should be used instead of <code>pip list --outdated</code> for your use-case... hm.</p>
+<p>In general it seems weird to run a resolver in <code>pip list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-23 01:02</div>
+            <div class="timeline-body"><p>Awesome to see this coming!</p>
+<p>One small general though on this one. Feel free to ignore.</p>
+<p>I believe this is one command that could use an enhancement over what pip currently has.</p>
+<ol>
+<li>Supporting uv's <code>--resolution</code> modes on this,  I think would be fantastic to leverage this pre-existing functionality.<ul>
+<li>Right now I only see support only for <code>highest</code>.</li>
+</ul>
+</li>
+<li>Supporting semver-like matching, I think we can leverage the existing versioning spec for this. (see below)</li>
+</ol>
+<p>For point <code>#2</code>, I'm thinking something like <code>--target major,minor,patch</code> very similar to what <a href="https://github.com/zehengl/pip-check-updates">pip-check-updates</a> does. These could be even incorporated into <code>--resolution</code> itself in the future if it's deemed stable enough.</p>
+<p>Rationale, I often find myself wondering what are the &quot;patch&quot;, &quot;minor&quot;, or &quot;major&quot; updates available (for packages that follow semver conventions). In many cases, I might want to update to the latest minor even if there's a major available. In the same vein, I also find myself often wanting to know this answer to direct dependencies over trasitive so <code>direct</code> support plays a major role in such situations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-23 02:29</div>
+            <div class="timeline-body"><p>It sounds like this deserves its own dedicated command — it doesn't really feel like it deserves to be tacked on as a <code>pip list</code> feature. I feel weird about adding all the resolver options to command intended to list the current environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-23 02:32</div>
+            <div class="timeline-body"><p>@samypr100 I like the <code>--target</code> idea, could you open a new issue describing that functionality? I don't see why we wouldn't add that to <code>pip compile</code> and <code>pip install</code>. We should probably discuss it in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-24 22:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It sounds like this deserves its own dedicated command — it doesn't really feel like it deserves to be tacked on as a <code>pip list</code> feature. I feel weird about adding all the resolver options to command intended to list the current environment.</p>
+</blockquote>
+<p>I agree. The sketch of that approach in this PR I think highlights how out of place this command is under <code>pip list</code>. I think the overall use case still stands. I tried a few of the things you suggested and they come close, but have slightly different semantics to what I'm after (I want to know what the latest version of my packages are, whether or not those packages are consistent with my current pyproject.toml/requirements.txt).</p>
+<p>I'll not take this PR any further for now. @zanieb Not sure of the protocol, but feel free to close the PR when appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-24 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>@samypr100 I like the --target idea, could you open a new issue describing that functionality? I don't see why we wouldn't add that to pip compile and pip install. We should probably discuss it in general</p>
+</blockquote>
+<p>@zanieb Good point, I'll re-post as an enhancement issue once I'm able, currently struck down with the flu 😷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-03-25 09:38</div>
+            <div class="timeline-body"><blockquote>
+<p>It sounds like this deserves its own dedicated command — it doesn't really feel like it deserves to be tacked on as a <code>pip list</code> feature. I feel weird about adding all the resolver options to command intended to list the current environment.</p>
+</blockquote>
+<p>@zanieb I agree, for the current approach, where it's reusing the package resolver.</p>
+<p>The real way this is supposed to work however, it does make sense for it to be a part of <code>pip list</code>, since you are not using a resolver at all (you may be reusing the part of the resolver that talks to the package index however, pip is calling this a <code>PackageFinder</code> internally), you are listing the currently installed version of all the packages in the environment alongside the latest version available on the package index (ignoring all pins/overrides), unless the package is already up to date. It's thus just a different way to list the current environment.</p>
+<p>This is important information for evaluating your current dependencies. Some of this information would be available in the compiled <code>requirements.txt</code>, but it's easier to work with (especially for humans) with output from this command.</p>
+<p>At first glance, it looks like here it might be possible to leverage <code>DistFinder</code> from <code>uv-resolver</code> to accomplish something similar, although it would need a different, more simplistic <code>select</code> strategy, that just takes a small list of preferences into account (like e.g. whether you want to prefer wheels over sdists, or whether you want to allow wheels/sdists at all or whether you want to allow pre-releases or yanked releases or want to ignore <code>requires-python</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rainzee">@rainzee</a> on 2024-04-04 05:37</div>
+            <div class="timeline-body"><p>What is the progress so far? ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anudit">@anudit</a> on 2024-04-04 18:52</div>
+            <div class="timeline-body"><p>Looking forward to this getting merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:56</div>
+            <div class="timeline-body"><p>Please just upvote the issue if you are interested in this feature. Comments should be reserved for substantive discussion.</p>
+<p>As we've noted in the discussion here, we're not sure this is a good path forward for this feature. We will need to do design work to determine a new way to fulfill this use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 14:51</div>
+            <div class="timeline-body"><p>Going to close for book-keeping. Thanks for the poc! I'll be working on a design for this in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-09 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rpodgorny">@rpodgorny</a> on 2024-04-09 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Going to close for book-keeping. Thanks for the poc! I'll be working on a design for this in the future.</p>
+</blockquote>
+<p>please be sure to post link when you start working on this one. i'm really interested in this feature and i don't want to miss any progress on this. ;-) thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

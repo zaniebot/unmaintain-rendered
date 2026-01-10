@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv run` command - astral-sh/uv #3074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv run</code> command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3074">#3074</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-16 20:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 20:50</div>
+            <div class="timeline-body"><p>Adds <code>uv run</code> which executes a command in your current virtual environment.</p>
+<p>This is a simple first milestone, lots of remaining work and behavior. The command is hidden.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-04-16 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-04-16 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-04-16 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/cli.rs</code>:1315 on 2024-04-17 09:34</div>
+            <div class="timeline-body"><p>This needs some explanation what command means and some examples, esp. compared to</p>
+<pre><code>usage: python [option] ... [-c cmd | -m mod | file | -] [arg] ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/run.rs</code>:53 on 2024-04-17 09:35</div>
+            <div class="timeline-body"><p>Can you use <code>.status()</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/run.rs</code>:57 on 2024-04-17 09:42</div>
+            <div class="timeline-body"><p>This is important for scripts that check the output status of the python code (e.g. exit status 1 vs exit status 2)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-17 09:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-17 09:43</div>
+            <div class="timeline-body"><p>Some things i learned i'm gonna dump here:</p>
+<p>You can load dlopen libpython and use the c api to load libpython, and run <code>Py_Main</code>. This is more efficient and has a better integration than a subprocess, but it requires that uv and python have the same libc, which we can't assume.</p>
+<p>Again on unix, you use <code>execv</code> to have the current process been taken over by a new one (instead of nested and handling subprocess status). This is apparently not supported on windows, where you always spawn a new process (https://github.com/konstin/poc-monotrail/blob/810f7e1ff43c1f95c96d318691241225352357d1/crates/monotrail/src/monotrail.rs#L759-L794)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/cli.rs</code>:1315 on 2024-04-17 14:22</div>
+            <div class="timeline-body"><p>I'm going to reserve the real documentation for when it's a little more nailed down what the interface is. I think I extend these a bit in the next pull request though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:53 on 2024-04-17 14:22</div>
+            <div class="timeline-body"><p>I could switch yeah, I thought I might need to do something while it's running but perhaps not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:57 on 2024-04-17 14:22</div>
+            <div class="timeline-body"><p>Yeah agree that's just not built into our exit system so I want to do it separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 14:24</div>
+            <div class="timeline-body"><p>Thanks for the notes! Do you see a strong benefit to doing <code>execv</code> I feel like we might <em>want</em> to be able to take action after the command? I'll include a note about that somewhere regardless as it does seem kind of nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-17 14:53</div>
+            <div class="timeline-body"><p>Not really, <code>execv</code> just seemed more elegant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-17 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-17 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-17 16:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>

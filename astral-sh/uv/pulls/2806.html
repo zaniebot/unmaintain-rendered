@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow symbolic links in installed packages - astral-sh/uv #2806</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Follow symbolic links in installed packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2806">#2806</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-03 14:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 14:31</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/2798</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-03 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:56 on 2024-04-03 14:50</div>
+            <div class="timeline-body"><p>What about deduplicating in <code>venv.site_packages()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-03 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-03 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:56 on 2024-04-03 14:57</div>
+            <div class="timeline-body"><p>Seems like it would be faster, yeah. I guess both might make sense. Do you see a downside to this approach?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-03 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:56 on 2024-04-03 15:26</div>
+            <div class="timeline-body"><p>I can think of contrived cases where this would be wrong. Imagine, e.g., that you symlink <code>anyio-4.0.0.dist-info</code> to <code>anyio-3.7.0.dist-info</code>. I don't know why this would happen. But then we'd resolve them to the same package, which would be wrong. Or imagine you have a symlink to a dist-info directory, like <code>foo</code> symlinks to <code>anyio-4.0.0.dist-info</code>. Then it would appear to be installed twice, when it's not. I don't know, these are weird, but following symlinks on the site-packages directory seems a bit more true to the spirit of what's happening. (I don't really understand why they're symlinked in the first place though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-04-03 15:42</div>
+            <div class="timeline-body"><p>@zanieb Unfortunately that doesn't appear to have fixed the problem:</p>
+<pre><code>&gt; ~/.cargo/bin/uv --version
+uv 0.1.28 (192b214dc 2024-04-03)
+&gt; ~/.cargo/bin/uv pip install pip
+Resolved 1 package in 1ms
+warning: Failed to uninstall package at venv/lib/python3.10/site-packages/pip-23.0.1.dist-info due to missing RECORD file. Installation may result in an incomplete environment.
+Installed 1 package in 15ms
+ - pip==23.0.1
+ - pip==23.0.1
+ + pip==23.0.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 16:02</div>
+            <div class="timeline-body"><p>Gahh... that's why we write tests. Thanks for trying it! Will investigate further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-03 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:56 on 2024-04-03 18:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Then it would appear to be installed twice, when it's not</p>
+</blockquote>
+<p>It wouldn't appear twice in this cause because they'd resolve to the same directory and be de-duplicated?</p>
+<blockquote>
+<p>you symlink anyio-4.0.0.dist-info to anyio-3.7.0.dist-info... then we'd resolve them to the same package</p>
+</blockquote>
+<p>True, but insane haha. I'm not sure if we should account for that.</p>
+<p>I'm okay with a more limited implementation, but I'm worried not resolving links here could cause problems in the future too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-12 13:52</div>
+            <div class="timeline-body"><p>Superseded by https://github.com/astral-sh/uv/pull/3002.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-12 13:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

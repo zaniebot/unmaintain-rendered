@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create virtualenv by default in `pip install` and `pip sync` - astral-sh/uv #2665</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create virtualenv by default in <code>pip install</code> and <code>pip sync</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2665">#2665</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-26 02:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 02:58</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/2661.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-26 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 02:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:135 on 2024-03-26 02:59</div>
+            <div class="timeline-body"><p>Weird, this test was passing but with the &quot;wrong&quot; failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-26 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-26 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-03-26 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-26 08:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 10:28</div>
+            <div class="timeline-body"><p>...I feel like I'd find it quite annoying if I had a virtual environment already in a project saved in an <code>env</code> (not <code>.venv</code>) folder, and I forgot to activate it, and rather than telling me off for not activating it, <code>uv</code> then proceeded to create a second virtual environment and installed my huge <code>requirements.txt</code> file into <em>that</em> virtual environment rather than the one I wanted to use.</p>
+<p>Could there maybe be a quick &quot;Create and activate a new virtual environment? [y/n]&quot; prompt before creating one and going ahead with the installation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 13:22</div>
+            <div class="timeline-body"><p>Is it really so bad if <code>uv</code> installs into a newly-created environment, if installation is ~free?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 13:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it really so bad if <code>uv</code> installs into a newly-created environment, if installation is ~free?</p>
+</blockquote>
+<p>It's going to create me more hassle though, right, because now I have two virtual environments when I only need one, so now I have to delete one of them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 13:28</div>
+            <div class="timeline-body"><p>Yes! But today, you have to re-run two commands anyway in this failure path. And this way, it's (1) right some of the time, but more importantly (2) encourages users to follow the happy path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 13:37</div>
+            <div class="timeline-body"><p>Today if I'm in a repo locally on the command line, I run <code>uv pip install -r requirements.txt</code>, and <code>uv</code> complains I don't have a venv activated, I do the following:</p>
+<ol>
+<li>Run <code>source env/bin/activate</code> (I usually call my venvs <code>env</code> rather than <code>.venv</code>, don't judge me)</li>
+<li>Press the &quot;up&quot; arrow twice and hit enter to rerun the <code>uv pip install</code> command</li>
+</ol>
+<p>With this PR, I'd have to do the following:</p>
+<ol>
+<li><code>uv</code> starts creating a new virtual environment and installing deps into it. If for some reason it's taking longer than expected, I might hit CTRL-C to cancel it.</li>
+<li>I then have to type <code>rm -rf .venv</code> to delete the new virtual environment it created that I didn't want</li>
+<li>I then run <code>source env/bin/activate</code></li>
+<li>I then press the &quot;up&quot; arrow twice and hit enter to rerun the <code>uv pip install</code> command</li>
+</ol>
+<p>That's one, possibly two more steps by my reckoning ;)</p>
+<blockquote>
+<p>And this way, it's (1) right some of the time, but more importantly (2) encourages users to follow the happy path.</p>
+</blockquote>
+<p>I agree, and I like the idea of making this easier! I'm just asking that we refuse the temptation to guess, and ask users to type &quot;y&quot; to confirm that this is really what they wanted before we proceed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-26 14:37</div>
+            <div class="timeline-body"><p>I'm not a fan of interactive prompts at all. It sounds like what you want is #1422 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 15:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not a fan of interactive prompts at all.</p>
+</blockquote>
+<p>I'm not a fan at all of tools guessing what the user wanted to do when it's not explicit :/</p>
+<blockquote>
+<p>It sounds like what you want is #1422 :)</p>
+</blockquote>
+<p>eh, I'm not sure that's what I want. I actually only learned today that <code>uv</code> searches for a virtual environment named <code>.venv</code> if no virtual environment is specified or activated, and assumes that's the environment you wanted the dependencies installed into. Honestly, I'm not sure I love that assumption either -- I'd much rather the tool explicitly checked with me that that's what I wanted before it proceeded :/</p>
+<p>But I know we've had that behaviour for a while now. Perhaps I'm being too curmudgeonly :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-26 15:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not a fan at all of tools guessing what the user wanted to do when it's not explicit :/</p>
+</blockquote>
+<p>:) Yeah we've gone back and forth on this. If we think know what you want to do should we just do it? Should we prompt? Should we error and tell you how to fix it? I think we should have a consistent policy here but we haven't come to one yet. @MichaReiser has had a different opinion than me in the past so it might be worth hearing what he thinks.</p>
+<p>I think that we want to hide the virtual environment abstraction — things should &quot;just work&quot; in a project directory. We also want to innovate on the idea that &quot;virtual environments are disposable and free&quot;. Previously, they were not free and that they are is a big part of our value proposition. What happens now that they are cheap? How can workflows evolve? What can we do to push boundaries based on this idea? I find these questions motivating me to explore things I would otherwise find surprising.</p>
+<blockquote>
+<p>uv searches for a virtual environment named .venv if no virtual environment is specified or activated</p>
+</blockquote>
+<p>I find this a very strong argument for the behavior proposed in this pull request. It's a continuation of our existing philosophy. Whether or not we should have done that in the first place is another discussion I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip_install.rs</code>:138 on 2024-03-26 15:39</div>
+            <div class="timeline-body"><p>As noted by Damian, we should definitely not create this when <code>--dry-run</code> is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> requested changes on 2024-03-26 15:40</div>
+            <div class="timeline-body"><p>Needs a test case with <code>pip install --dry-run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-26 15:49</div>
+            <div class="timeline-body"><p>I'll also add maybe I use conda environments, not virtual environments, to install my packages. uv will always do the wrong thing in that case.</p>
+<p>As I said in the issue, as a non beginner I would definitely want some way to switch the behavior back, I would want it to error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 15:51</div>
+            <div class="timeline-body"><p>Yeah, this wouldn't happen when you have a Conda environment active, just as we don't error today if you have a Conda environment active.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-26 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, this wouldn't happen when you have a Conda environment active, just as we don't error today if you have a Conda environment active.</p>
+</blockquote>
+<p>Sorry I wasn't clear, the scenario I was thinking of is you have conda installed, but you have set conda to not activate any conda environment by default (not even base), and you use uv to install.</p>
+<p>uv will not see an activated conda environment, so presumably will create a virtual environment, but as the user only uses conda environments this will be the wrong behavior for the user.</p>
+<p>This was another example where I would like to be able to set a switch somewhere for uv to not do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>we've gone back and forth on this. If we think know what you want to do should we just do it? Should we prompt? Should we error and tell you how to fix it?</p>
+</blockquote>
+<p>I'm personally a big fan of prompts, because they force the user to be explicit about what they wanted, and you generally only have to hit a single key on the keyboard to get the behaviour that you were probably trying to get all along :)</p>
+<blockquote>
+<p>I think that we want to hide the virtual environment abstraction</p>
+</blockquote>
+<p>I love that as a goal, and I'm very much in favour of us trying to innovate new workflows for Python packaging. But right now, where the virtual environment is located seems pretty relevant and unabstracted. You still need to run <code>source .venv/bin/activate</code> (or run Python using <code>.venv/bin/python &lt;whatever&gt;</code> rather than simply <code>python &lt;whatever&gt;</code>) to actually use the dependencies that have been installed into the virtual environment. With uv's current capabilities, the user still needs to know exactly what their virtual environment is called and where it is located in order to actually use it.</p>
+<blockquote>
+<p>It's a continuation of our existing philosophy. Whether or not we should have done that in the first place is another discussion I guess.</p>
+</blockquote>
+<p>Yeah, agreed that it's consistent with some of the decisions that have already been taken. It does feel like another step down that road, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-26 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it really so bad if <code>uv</code> installs into a newly-created environment, if installation is ~free?</p>
+</blockquote>
+<p>Btw, it might actually be very costly to write to the currently directory structure, the user could have set their current directory to a magnetic tape device, or a NAS that's on the opposite side of the world, or a write once disk.</p>
+<p>I'm pro the defaults being beginner friendly, I would just like users to have an option to turn them off once they are burnt by those defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-26 16:06</div>
+            <div class="timeline-body"><p>The experience i'm interested in is one where you git clone and <code>uv run</code> (or even just run <code>python</code> we shim), without any setup or even knowing what a venv is. Standardizing on <code>.venv</code> is an intermediate step for that; it follows a wider trend in the ecosystem (PEP 704 tried to standardize on it). With a single venv name, all tools know where to look without <code>source</code>ing manually and notably, all teaching material can use <code>.venv</code> instead of relying that the user knows their venv names. I see the point where we're basically picking a color for the bikeshed and making things more difficult for people who picked the now wrong color back when this was being explained as a free choice (where we e.g. use the wrong <code>../.venv</code> instead of the correct <code>./env</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-26 16:14</div>
+            <div class="timeline-body"><p>Also, as you're picking a single color. When I'm testing a open source project I often have to create 5 virtual environments, one for each major version of Python the project supports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-26 16:18</div>
+            <div class="timeline-body"><p>I agree with the goal of attempting to standardise virtual environment names somewhat, and I think <code>.venv</code> was the correct default to choose here.</p>
+<p>For me personally, it would not be possible for me to call <em>all</em> my virtual environments <code>.venv</code>, as I usually have more than one virtual environment in any given project directory. This is so that I can easily flit between Python versions for testing/REPL sessions/whatever. Maybe now that uv has made virtualenv creation extremely cheap, I shouldn't have so many virtual environments in each project directory anymore -- maybe I should just spin them up on the fly if I want to do tests or REPL sessions like that. But it's still not <em>free</em> to create a new virtual environment -- even if uv is extremely fast, I still need to manually run <code>uv venv &amp;&amp; source .venv/bin/activate &amp;&amp; uv pip install -r test-requirements.txt</code>, which is a lot to type! It's much easier to just activate a pre-existing virtual environment for Python 3.8 (or whatever) that still has all my dependencies installed from last time I needed to test with Python 3.8 for this project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-26 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser has had a different opinion than me in the past so it might be worth hearing what he thinks.</p>
+</blockquote>
+<p>I don't think I have a strong opinion on this. To me this seems like a logical next step from how <code>uv venv</code> and <code>uv pip install</code> already work today: <code>venv</code> uses a default name and <code>pip install</code> installs even when the environment isn't activated.</p>
+<p>My only concern, but that's a pre-existing one with how <code>uv pip install</code> works today, is that the error message when running a binary fails because the venv isn't active  is worse than when I get an error message during installation where pip tells me what the problem is. That's where it would be nice if the venv would be automatically activated.</p>
+<p>I feel like a middle ground here would be if we have our own configuration file and uv could be configured to opt in of this behavior. That might still be confusing because said configuration is unlikely to exist in CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-27 21:48</div>
+            <div class="timeline-body"><p>I wrote it before in other discussions, but let me rehash it here again.</p>
+<p>If I may suggest - I think it's quite bad idea to create such venv dynamically in current working directory.  This might lead to a numer of problems and a little magical experience for the user - where for example they can end up with multiple such venvs created in different directories semi-randomly and where various<code>uv</code> commands produce different results depending on what the <code>cwd</code> is. All those extremely difficult to debug and reason about.</p>
+<p>IMHO it's a good idea to create such venv dynamically, but it should be created in a well-known place in the HOME directory (or equivalent on windows). My initial proposal was to use the same directory that is currently used by <code>--user</code> flag in <code>pip</code> - basically compliant with https://peps.python.org/pep-0370/ (~/.local). While this PEP does not make the <code>~/.local</code> a virtualenv - it's merely a &quot;user-site&quot; directory, it's ALMOST the same as a venv created in <code>~/.local</code> . It even has the right <code>bin</code> directory that is on the PATH for a number of users, so any script installed there will also be immediately runnable for such users (plus if you do not have ~/.local/bin on the PATH, uv could print a warning to do so, every time it gets to do something with it.</p>
+<p>I think also that it is very much in line with the spirit of PEP-0370 - the whole reason for the PEP:</p>
+<pre><code>It’s not the goal of the PEP to replace the tools or to implement isolated installations of Python. 
+It only implements the most common use case of an additional site-packages directory for each user.
+</code></pre>
+<p>I can't think of any bad side effect of choosing such venv as the &quot;default&quot; one (and BTW. I already applied it for the &quot;production&quot; image of Airflow where we install airflow in <code>~/.local</code> and it has a number of interesting properties (for example when you create venv with <code>--site-packages</code>, all packages installed in <code>~/.local</code> will also be available in the new venv, which is pretty much what users would expect.</p>
+<p>My 3 cents.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-28 09:39</div>
+            <div class="timeline-body"><p>Also for some cross reference the other suggestion to suport <code>--user</code> flag might be not needed in this case https://github.com/astral-sh/uv/issues/2077, so those two might be related.</p>
+<p>If you go the path I propose you will simply treat all installations that have no venv nor <code>--python</code> specified as <code>--user</code> installations.  I think - again - it fulfills the intent of PEP 0370 much better than <code>--user</code> flag where - if you read it in detail - the intent was to make life easier for those who are mostly casual users who do not want to care about creating and managing the venvs. Those are roughly the same users who don't know or care which working directory they are in. I personalyl consider having per directory .venv is more of a power-user setting who really understands what venv is and wants to switch between them easily and automated choosing of the venv by the directory, should rather be done at <code>prompt</code> level than by the tooling.</p>
+<p>Of course it wwould have to be somehow synchronized with <code>PEP 668</code> https://peps.python.org/pep-0668/ - because there are some <code>complications</code> of the <code>--user</code> folder and way how distros use it sometimes - mostly about deleting the packages  rather than installing them - but I think once (if?) PEP-668 will be implemented by the distros, some variations of the behaviours might be implemented depending on the information provided by the &quot;externally managed&quot; packages.</p>
+<p>But of course - those are just suggestions, and feel free to ignore them @charliermarsh :).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-03-30 19:26</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv searches for a virtual environment named .venv if no virtual environment is specified or activated</code></p>
+</blockquote>
+<p>This is the wrong behaviour, it should look for a <code>pyvenv.cfg</code> which is the real marker of a venv.
+<code>.venv</code> is a sensible default, but it should not become a hardcoded bible.
+Basically uv  stops working when you don't use that default.</p>
+<p>And &quot;activating&quot; is a anti-pattern that creates state in a single shell-window.</p>
+<blockquote>
+<p>Is it really so bad if uv installs into a newly-created environment, if installation is ~free?</p>
+</blockquote>
+<p>Yes, the location of all your executables change, breaking everything else downstream.</p>
+<p>I have over 100 venv-based app on my system,
+only some of them are development projects:</p>
+<pre><code>/opt/venv-foo/bin/foo
+/opt/venv-bar/bin/bar
+</code></pre>
+<p>would become with uv, with zero benefit, and many disadvantages:</p>
+<pre><code>/opt/venv-foo/.venv/bin/foo
+/opt/venv-bar/.venv/bin/bar
+</code></pre>
+<p>So now my users see an empty dir in /opt/venv-xxx.</p>
+<p>When supporting junior devs or non-technical users,
+my main task is usually to help find them their own executables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 20:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Basically uv stops working when you don't use that default.</p>
+</blockquote>
+<p>I’m not sure how you came to this conclusion but it seems like a significant exaggeration, and candidly the use of phrasing like this makes me less likely to spend time working through the rest of your comment. I don’t think this change has anything (?) to do with where your binaries get stored and your ability to use multiple disparate virtual environments vis-a-vis main. It changes almost nothing vis-a-vis main, apart from that what was previously an error would now fallback to a different behavior. So any workflows that “work” today would not be impacted at all.</p>
+<p>I’m not planning to make this change now given how strongly people have replied here (I appreciate the input, thanks all) so I likely won’t spend much time debating it, but we may revisit in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-04-01 01:41</div>
+            <div class="timeline-body"><p>Late to the party, but this discussion is definitely worthy of the classic <a href="https://xkcd.com/1172/">xkcd</a>.</p>
+<p>I liked @AlexWaygood suggestion on prompting  (I think it benefits both sides of the argument). We'd prompt the user if one isn't found in the predetermined locations and ask if they'd like for uv to create it for them with <code>y</code> preselected by default. This will still automate running <code>uv venv</code> for them and proceed with the install when they choose <code>y</code>.</p>
+<p>This guides a beginner user into understanding venv's and the crucial role they play in the ecosystem (no magic). Similarly, this prompting could be disabled via an env var or if <code>uv</code> can detect there's no interactive prompt, getting the best of both worlds.</p>
+<p>For perspective, poetry already creates venvs by default unless you set <code>POETRY_VIRTUALENVS_CREATE=false</code>. It also checks for venv's in a couple of locations such as <code>.venv</code> and <code>venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-05 01:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:50 UTC
+    </footer>
+</body>
+</html>

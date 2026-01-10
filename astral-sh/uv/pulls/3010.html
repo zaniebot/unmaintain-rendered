@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid cache invalidation on credentials renewal - astral-sh/uv #3010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid cache invalidation on credentials renewal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3010">#3010</a>
+        opened by <a href="https://github.com/jvdw-synth">@jvdw-synth</a>
+        on 2024-04-12 07:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jvdw-synth">@jvdw-synth</a> on 2024-04-12 07:14</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h1>Avoid cache invalidation on credentials renewal</h1>
+<p>Addresses</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/3009#issue-2239221126</li>
+</ul>
+<h2>Summary</h2>
+<p>Some private package registries (e.g. AWS CodeArtifact) use short-lived credentials. Since they are short-lived, the exact URL that is assigned to <code>UV_INDEX_URL</code> changes frequently and with that the cache key / hashes of these URLs. This causes the cache to be missed on token renewal.</p>
+<p>This PR attempts to fix this by hashing URLs for cache keys without their user credentials.</p>
+<h2>Test Plan</h2>
+<p>I added a test that validates that:</p>
+<ol>
+<li>Changing user credentials returns the same hash</li>
+<li>Setting no user credentials yields the same as some user credentials</li>
+</ol>
+<h2>Question</h2>
+<p>I'm not sure if we should also change the <code>hash</code> implementation of <code>CanonicalUrl</code> / <code>RepositoryUrl</code>. They also run <code>.hash</code> within.</p>
+<p>PS. this is the first time I'm writing <code>rust</code> so if I'm wasting your precious time, let me know and I'll try to up my skills before I ask again. Anyway, I figured it's good to get this issue on your radar :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-04-12 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-12 13:36</div>
+            <div class="timeline-body"><p>This makes sense to me... I think we probably <em>do</em> need to change the <code>Hash</code> implementation of those structs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-12 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/cache-key/src/canonical_url.rs</code>:32 on 2024-04-12 18:44</div>
+            <div class="timeline-body"><p>Is there any reason to do these checks? Should we just perform the <code>set</code> calls?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-12 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/cache-key/src/canonical_url.rs</code>:26 on 2024-04-12 18:44</div>
+            <div class="timeline-body"><p>I'd just have this take <code>self</code> instead of hiding the clone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/cache-key/src/canonical_url.rs</code>:32 on 2024-04-13 18:22</div>
+            <div class="timeline-body"><p>I think we could plausibly make this method return <code>Cow&lt;'_, Url&gt;</code> to avoid a clone in the event that there are no credentials. (It would need to continue taking <code>&amp;self</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-13 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-13 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-13 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-13 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvdw-synth">@jvdw-synth</a> on 2024-04-14 17:14</div>
+            <div class="timeline-body"><p>Thank you for taking this over! ❤️ Keep up the great work 💪</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:43:51 UTC
+    </footer>
+</body>
+</html>
