@@ -1,0 +1,236 @@
+```yaml
+number: 1363
+title: "Server panic on every letter of pkg in `import pkg` completion (not just #1277)"
+type: issue
+state: closed
+author: Danielkonge
+labels:
+  - server
+  - fatal
+  - completions
+assignees: []
+created_at: 2025-10-15T21:11:04Z
+updated_at: 2025-10-16T14:23:04Z
+url: https://github.com/astral-sh/ty/issues/1363
+synced_at: 2026-01-10T02:06:25Z
+```
+
+# Server panic on every letter of pkg in `import pkg` completion (not just #1277)
+
+---
+
+_Issue opened by @Danielkonge on 2025-10-15 21:11_
+
+### Summary
+
+I keep encountering server panics on every letter of completions of the first part (package name) when writing imports. I.e. on every letter in numpy when writing `import numpy` or `from numpy import ...` (in the from statement, I also get panics on every letter of import), but no letter of typing causes panic in `import numpy.typing` or `from numpy import typing`. 
+
+I originally though the panic was an edge case caused by my weirdly setup venv, but even just creating a new empty folder (`tmp` below) with an empty python file (`tmp.py`), I still get the panic. See the log below.
+
+```log
+2025-10-15 22:52:49.552877000 DEBUG main ty_server::server: Initialization options: InitializationOptions { log_level: Some(Trace), log_file: None, options: ClientOptions { global: GlobalOptions { diagnostic_mode: None, experimental: None }, workspace: WorkspaceOptions { disable_language_services: None, inlay_hints: None, python_extension: None }, unknown: {} } }
+2025-10-15 22:52:49.552969000  INFO main ty_server::server: Version: 0.0.1-alpha.22 (2f3190d09 2025-10-10)
+
+2025-10-15 22:52:49.561667000  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /Users/daniel/personal/tmp
+2025-10-15 22:52:49.561756000  INFO No workspace options found for file:///Users/daniel/personal/tmp, using default options
+2025-10-15 22:52:49.562807000  INFO Registering workspace: /Users/daniel/personal/tmp
+
+2025-10-15 22:52:49.563021000  WARN main ty_server::server: No workspace(s) were provided during initialization. Using the current working directory from the fallback system as a default workspace: /Users/daniel/personal/tmp
+2025-10-15 22:52:49.563120000 DEBUG ty:main ty_server::server::main_loop: Requesting workspace configuration for workspaces
+2025-10-15 22:52:49.563392000 DEBUG ty:main ty_server::session: Deferring `workspace/didChangeConfiguration` notification until all workspaces are initialized
+2025-10-15 22:52:49.563404000 DEBUG ty:main ty_server::session: Deferring `textDocument/didOpen` notification until all workspaces are initialized
+
+2025-10-15 22:52:49.566203000 DEBUG ty:main ty_server::session: Deferring `textDocument/diagnostic` request until all workspaces are initialized
+
+2025-10-15 22:52:49.568433000 DEBUG ty:main ty_server::session: Deferring `textDocument/documentSymbol` request until all workspaces are initialized
+
+2025-10-15 22:52:49.571342000  INFO Configuration file watcher successfully registered
+
+2025-10-15 22:52:49.571454000 DEBUG ty:main client_response{id=0 method=\"workspace/configuration\"}: ty_server::server::main_loop: Received workspace configurations, initializing workspaces
+2025-10-15 22:52:49.571475000 DEBUG ty:main ty_server::session: Initializing workspace `file:///Users/daniel/personal/tmp`
+2025-10-15 22:52:49.571484000 DEBUG ty:main ty_project::metadata: Searching for a project in '/Users/daniel/personal/tmp'
+2025-10-15 22:52:49.571511000 DEBUG ty:main ty_project::metadata: The ancestor directories contain no `pyproject.toml`. Falling back to a virtual project.
+2025-10-15 22:52:49.571519000 DEBUG ty:main ty_project::metadata::configuration_file: Searching for a user-level configuration at `/Users/daniel/.config/ty/ty.toml`
+
+2025-10-15 22:52:49.571887000  INFO ty:main ty_project::metadata::options: Defaulting to python-platform `darwin`
+2025-10-15 22:52:49.571894000 DEBUG ty:main ty_python_semantic::site_packages: Discovering virtual environment in `/Users/daniel/personal/tmp`
+2025-10-15 22:52:49.571924000 DEBUG ty:main ty_python_semantic::site_packages: Resolving `CONDA_PREFIX` environment variable: /opt/anaconda3
+2025-10-15 22:52:49.571933000 DEBUG ty:main ty_python_semantic::site_packages: Attempting to parse virtual environment metadata at '/opt/anaconda3/pyvenv.cfg'
+2025-10-15 22:52:49.571937000 DEBUG ty:main ty_python_semantic::site_packages: Searching for site-packages directory in sys.prefix /opt/anaconda3
+
+2025-10-15 22:52:49.573086000 DEBUG ty:main ty_python_semantic::site_packages: Could not find a `<sys.prefix>/lib64` directory; continuing
+2025-10-15 22:52:49.573090000 DEBUG ty:main ty_python_semantic::site_packages: Resolved site-packages directories for this environment are: SitePackagesPaths({"/opt/anaconda3/lib/python3.10/site-packages"})
+2025-10-15 22:52:49.573094000 DEBUG ty:main ty_python_semantic::site_packages: Searching for real stdlib directory in sys.prefix /opt/anaconda3
+'
+2025-10-15 22:52:49.573626000 DEBUG ty:main ty_python_semantic::site_packages: Resolved real stdlib directory for this environment is: "/opt/anaconda3/lib/python3.10"
+2025-10-15 22:52:49.573646000 DEBUG ty:main ty_project::metadata::options: Including `.` in `environment.root`
+'
+2025-10-15 22:52:49.573659000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Adding first-party search path `/Users/daniel/personal/tmp`
+2025-10-15 22:52:49.573664000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Using vendored stdlib
+
+2025-10-15 22:52:49.573805000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Adding site-packages search path `/opt/anaconda3/lib/python3.10/site-packages`
+2025-10-15 22:52:49.573815000  INFO ty:main ty_project::metadata::options: Python version: Python 3.10, platform: darwin
+
+2025-10-15 22:52:49.574071000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Resolving dynamic module resolution paths
+
+2025-10-15 22:52:49.575276000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Adding editable installation to module resolution path /Users/daniel/work/SECRET
+2025-10-15 22:52:49.575304000 DEBUG ty:main ty_python_semantic::module_resolver::resolver: Adding editable installation to module resolution path /opt/anaconda3/lib/python3.10/site-packages/aeosa
+
+2025-10-15 22:52:49.575332000 DEBUG ty:main ty_server::server::main_loop: Processing deferred notification `workspace/didChangeConfiguration`
+2025-10-15 22:52:49.575337000  WARN ty:main ty_server::server::api: Received notification workspace/didChangeConfiguration which does not have a handler.
+2025-10-15 22:52:49.575342000 DEBUG ty:main ty_server::server::main_loop: Processing deferred notification `textDocument/didOpen`
+
+2025-10-15 22:52:49.579864000 DEBUG ty:main notification{method="textDocument/didOpen"}:apply_changes: ty_project: Adding file `/Users/daniel/personal/tmp/tmp.py` to project `tmp`
+2025-10-15 22:52:49.579897000 DEBUG ty:main notification{method="textDocument/didOpen"}: ty_project: Opening file `/Users/daniel/personal/tmp/tmp.py`
+2025-10-15 22:52:49.579899000 DEBUG ty:main notification{method="textDocument/didOpen"}: ty_project: Take open project files
+'
+2025-10-15 22:52:49.579925000 DEBUG ty:main notification{method="textDocument/didOpen"}:set_open_files{open_files={file(Id(1000))}}: ty_project: Set open project files (count: 1)
+2025-10-15 22:52:49.579932000 DEBUG ty:main ty_server::server::main_loop: Processing deferred request `textDocument/diagnostic`
+2025-10-15 22:52:49.579951000 DEBUG ty:main ty_server::server::main_loop: Processing deferred request `textDocument/documentSymbol`
+2025-10-15 22:52:49.579969000 DEBUG ty:main client_response{id=1 method="client/registerCapability"}: ty_server::session: Registered dynamic capabilities
+'
+2025-10-15 22:52:49.582874000  INFO ty:worker:0 request{id=2 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}:Project::index_files{project=tmp}: ty_project: Indexed 1 file(s) in 0.003s
+2025-10-15 22:52:49.582993000 DEBUG ty:worker:0 request{id=2 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:49.909204000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:49.910351000 DEBUG ty:worker:1 request{id=6 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:49.925786000 DEBUG ty:worker:3 request{id=5 method="textDocument/completion"}:map_stub_definition: ty_python_semantic::module_resolver::resolver: Resolving dynamic module resolution paths
+'
+2025-10-15 22:52:49.927762000 DEBUG ty:worker:3 request{id=5 method="textDocument/completion"}:map_stub_definition: ty_python_semantic::module_resolver::resolver: Adding editable installation to module resolution path /Users/daniel/work/SECRET
+'
+2025-10-15 22:52:49.927818000 DEBUG ty:worker:3 request{id=5 method="textDocument/completion"}:map_stub_definition: ty_python_semantic::module_resolver::resolver: Adding editable installation to module resolution path /opt/anaconda3/lib/python3.10/site-packages/aeosa
+2025-10-15 22:52:49.927829000 DEBUG ty:worker:3 request{id=5 method="textDocument/completion"}:map_stub_definition: ty_python_semantic::module_resolver::resolver: Module `builtins` not found in search paths
+'
+2025-10-15 22:52:49.949295000 DEBUG ty:worker:3 request{id=5 method="textDocument/completion"}: ty_server::server::api::requests::completion: Completions request returned 180 suggestions in 40.001958ms
+'
+2025-10-15 22:52:50.077373000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.078455000 DEBUG ty:worker:0 request{id=7 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:50.259475000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.261111000 DEBUG ty:worker:2 request{id=8 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:50.442667000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.445437000 DEBUG ty:worker:1 request{id=9 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:50.592238000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.592531000 DEBUG ty:worker:3 request{id=10 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:50.744637000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.745169000 DEBUG ty:worker:0 request{id=11 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:50.869225000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:50.871309000 DEBUG ty:worker:2 request{id=12 method="textDocument/completion"}: ty_server::server::api::requests::completion: Completions request returned 180 suggestions in 1.982875ms
+'
+2025-10-15 22:52:50.871628000 DEBUG ty:worker:1 request{id=13 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.018601000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.018726000 DEBUG ty:worker:3 request{id=14 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.169167000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.169235000 DEBUG ty:worker:0 request{id=15 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.318492000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.318677000 DEBUG ty:worker:2 request{id=16 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.467343000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.467539000 DEBUG ty:worker:1 request{id=17 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.616667000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.616971000 DEBUG ty:worker:3 request{id=18 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.746446000 DEBUG     ty:main notification{method="textDocument/didChange"}:apply_changes: ruff_db::files: Updating the revision of `/Users/daniel/personal/tmp/tmp.py`
+'
+2025-10-15 22:52:51.747365000 DEBUG ty:worker:2 request{id=20 method=\"textDocument/diagnostic\"}:check_file{file=file(Id(1000))}: ty_python_semantic::types: Checking file '/Users/daniel/personal/tmp/tmp.py'
+
+2025-10-15 22:52:51.747861000 DEBUG ty:worker:2 request{id=20 method="textDocument/diagnostic"}:check_file{file=file(Id(1000))}: ty_python_semantic::module_resolver::resolver: Module `a` not found in search paths
+'
+2025-10-15 22:52:51.763160000 ERROR ty:worker:0 request{id=19 method="textDocument/completion"}: ty_server::server::api: An error occurred with request ID 19: request handler panicked at crates/ty_python_semantic/src/module_resolver/list.rs:78:18:
+System search path should have a registered rootquery stacktrace:
+   0: DatabaseKeyIndex(IngredientIndex(83), Id(ec03))
+   1: DatabaseKeyIndex(IngredientIndex(81), Id(e800))
+
+
+Backtrace:    0: __mh_execute_header
+   1: __mh_execute_header
+   2: __mh_execute_header
+   3: __mh_execute_header
+   4: __mh_execute_header
+   5: __mh_execute_header
+   6: __mh_execute_header
+   7: __mh_execute_header
+   8: __mh_execute_header
+   9: __mh_execute_header
+  10: __mh_execute_header
+  11: __mh_execute_header
+  12: __mh_execute_header
+  13: __mh_execute_header
+  14: __mh_execute_header
+  15: __mh_execute_header
+  16: __mh_execute_header
+  17: __mh_execute_header
+  18: __mh_execute_header
+  19: __mh_execute_header
+  20: __mh_execute_header
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: __mh_execute_header
+  24: __mh_execute_header
+  25: __mh_execute_header
+  26: __pthread_deallocate
+
+
+'
+```
+
+Note: I have spent quite a bit of time trying to track this down more, but I am giving up for now and hope that someone else might better understand the issue. Let me know if a non-release build or some additional tracing logs will be useful when debugging this. I can just build locally and run again with more tracing (I already did that when looking at the problem).
+
+Also, I am pretty sure this is not just a copy of #1277, since the problem is still present in alpha22 (or up to date local builds).
+
+### Version
+
+ty 0.0.1-alpha.22 (2f3190d09 2025-10-10)
+
+---
+
+_Label `server` added by @AlexWaygood on 2025-10-15 21:12_
+
+---
+
+_Label `fatal` added by @AlexWaygood on 2025-10-15 21:12_
+
+---
+
+_Label `completions` added by @AlexWaygood on 2025-10-15 21:12_
+
+---
+
+_Comment by @Danielkonge on 2025-10-15 21:37_
+
+Here is a very large log from a local build of ty if it is somehow useful:
+
+[tmp_lsp.tar.gz](https://github.com/user-attachments/files/22936711/tmp_lsp.tar.gz)
+
+---
+
+_Comment by @MichaReiser on 2025-10-16 09:16_
+
+I think the issue here is that we don't register roots for editable installs. Which isn't an issue if the editable install is within the project, but it is if the editable points somewhere else
+
+---
+
+_Closed by @MichaReiser on 2025-10-16 14:23_
+
+---

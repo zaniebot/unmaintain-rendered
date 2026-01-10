@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-05T18:45:30Z
 updated_at: 2025-11-18T16:10:22Z
 url: https://github.com/astral-sh/ty/issues/204
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-10T02:06:24Z
 ```
 
 # consider fixing spans related to relative imports
@@ -70,8 +70,28 @@ Namely, it normalizes the level based on the preceding dots. But in doing so, th
 
 ---
 
+_Label `bug` added by @BurntSushi on 2025-02-05 18:45_
+
+---
+
 _Comment by @BurntSushi on 2025-02-05 18:46_
 
 An alternative is to change the diagnostic message to make it in sync with the range. The range isn't arguably _wrong_ per se, but I would guess that including the dots is more semantically correct? (Because the dots may be what leads to a module import being unresolvable.)
+
+---
+
+_Label `diagnostics` added by @BurntSushi on 2025-02-05 18:46_
+
+---
+
+_Renamed from "[red-knot] consider fixing spans related to relative imports" to "consider fixing spans related to relative imports" by @MichaReiser on 2025-05-07 15:26_
+
+---
+
+_Added to milestone `Z post-stable` by @carljm on 2025-11-13 16:01_
+
+---
+
+_Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
 
 ---
