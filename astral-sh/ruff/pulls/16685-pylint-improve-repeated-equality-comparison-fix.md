@@ -1,0 +1,251 @@
+```yaml
+number: 16685
+title: "[`pylint`] Improve `repeated-equality-comparison` fix to use a `set` when all elements are hashable (`PLR1714`)"
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - fixes
+assignees: []
+merged: true
+base: micha/ruff-0.10
+head: micha/repeated-equality-fix
+created_at: 2025-03-12T16:35:08Z
+updated_at: 2025-03-13T08:22:33Z
+url: https://github.com/astral-sh/ruff/pull/16685
+synced_at: 2026-01-10T19:49:02Z
+```
+
+# [`pylint`] Improve `repeated-equality-comparison` fix to use a `set` when all elements are hashable (`PLR1714`)
+
+---
+
+_Pull request opened by @MichaReiser on 2025-03-12 16:35_
+
+## Summary
+
+This PR promotes the fix improvements for `PLR1714` that were introduced in https://github.com/astral-sh/ruff/pull/14372/ to stable. 
+
+The improvement is that the fix now proposes to use a set if all elements are hashable:
+
+```
+foo == "bar" or foo == "baz" or foo == "qux"
+```
+
+Gets fixed to 
+
+```py
+foo in {"bar", "baz", "qux"}
+```
+
+where it previously always got fixed to a tuple.
+
+The new fix was first released in ruff 0.8.0 (Nov last year). This is not a breaking change. The change was preview gated only to get some extra test coverage. 
+
+
+There are no open issues or PRs related to this changed fix behavior.
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-03-12 16:37_
+
+---
+
+_Added to milestone `v0.10` by @MichaReiser on 2025-03-12 16:37_
+
+---
+
+_Review requested from @ntBre by @MichaReiser on 2025-03-12 16:37_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-03-12 16:40_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/micha%2Frepeated-equality-fix)
+
+### Merging #16685 will **degrade performances by 4.61%**
+
+<sub>Comparing <code>micha/repeated-equality-fix</code> (b13b4d6) with <code>micha/ruff-0.10</code> (5a40aee)</sub>
+
+
+
+### Summary
+
+`❌ 1` regressions  
+`✅ 31` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/micha%2Frepeated-equality-fix)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` red_knot_check_file[incremental] `` | 5.2 ms | 5.5 ms | -4.61% |
+
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pylint/rules/repeated_equality_comparison.rs`:31 on 2025-03-12 16:49_
+
+I think the part below this "and continue to suggest the use of a `set`" was also part of the preview behavior.
+
+---
+
+_@ntBre approved on 2025-03-12 16:52_
+
+---
+
+_Comment by @github-actions[bot] on 2025-03-12 16:54_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+31 -31 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+20 -20 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/airflow/api_fastapi/logging/decorators.py#L66'>airflow/api_fastapi/logging/decorators.py:66:27:</a> PLR1714 Consider merging multiple comparisons: `k in ("val", "value")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/airflow/api_fastapi/logging/decorators.py#L66'>airflow/api_fastapi/logging/decorators.py:66:27:</a> PLR1714 Consider merging multiple comparisons: `k in {"val", "value"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3070'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3070:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("sdist", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3070'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3070:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"sdist", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3072'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3072:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("wheel", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3072'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3072:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"wheel", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3088'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3088:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("sdist", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3088'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3088:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"sdist", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3090'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3090:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("wheel", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L3090'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:3090:8:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"wheel", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L659'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:659:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("sdist", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L659'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:659:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"sdist", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L661'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:661:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("wheel", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L661'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:661:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"wheel", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L676'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:676:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("sdist", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L676'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:676:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"sdist", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L678'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:678:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in ("wheel", "both")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L678'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:678:12:</a> PLR1714 Consider merging multiple comparisons: `package_format in {"wheel", "both"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L39'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:39:8:</a> PLR1714 Consider merging multiple comparisons: `os in ("linux", "darwin")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L39'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:39:8:</a> PLR1714 Consider merging multiple comparisons: `os in {"linux", "darwin"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L49'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:49:8:</a> PLR1714 Consider merging multiple comparisons: `os in ("linux", "darwin")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L49'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:49:8:</a> PLR1714 Consider merging multiple comparisons: `os in {"linux", "darwin"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/packages.py#L737'>dev/breeze/src/airflow_breeze/utils/packages.py:737:12:</a> PLR1714 Consider merging multiple comparisons: `ex.returncode in (128, 2)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/packages.py#L737'>dev/breeze/src/airflow_breeze/utils/packages.py:737:12:</a> PLR1714 Consider merging multiple comparisons: `ex.returncode in {128, 2}`.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/selective_checks.py#L994'>dev/breeze/src/airflow_breeze/utils/selective_checks.py:994:16:</a> PLR1714 Consider merging multiple comparisons.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/dev/breeze/src/airflow_breeze/utils/selective_checks.py#L994'>dev/breeze/src/airflow_breeze/utils/selective_checks.py:994:16:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/helm_tests/airflow_aux/test_basic_helm_chart.py#L82'>helm_tests/airflow_aux/test_basic_helm_chart.py:82:12:</a> PLR1714 Consider merging multiple comparisons: `version in ("2.3.2", "default")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/helm_tests/airflow_aux/test_basic_helm_chart.py#L82'>helm_tests/airflow_aux/test_basic_helm_chart.py:82:12:</a> PLR1714 Consider merging multiple comparisons: `version in {"2.3.2", "default"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py#L2015'>providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py:2015:12:</a> PLR1714 Consider merging multiple comparisons: `provider in ("github", "githublocal")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py#L2015'>providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py:2015:12:</a> PLR1714 Consider merging multiple comparisons: `provider in {"github", "githublocal"}`.
+- <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/providers/google/src/airflow/providers/google/common/hooks/base_google.py#L114'>providers/google/src/airflow/providers/google/common/hooks/base_google.py:114:16:</a> PLR1714 Consider merging multiple comparisons: `exception.resp.status in (429, 409)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/5fc18124341a0a0e34c342ca8387bcbdb392d06d/providers/google/src/airflow/providers/google/common/hooks/base_google.py#L114'>providers/google/src/airflow/providers/google/common/hooks/base_google.py:114:16:</a> PLR1714 Consider merging multiple comparisons: `exception.resp.status in {429, 409}`.
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+4 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/migrations/versions/2023-03-17_13-24_b5ea9d343307_bar_chart_stack_options.py#L82'>superset/migrations/versions/2023-03-17_13-24_b5ea9d343307_bar_chart_stack_options.py:82:16:</a> PLR1714 Consider merging multiple comparisons: `stack in ("Stack", "Stream")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/migrations/versions/2023-03-17_13-24_b5ea9d343307_bar_chart_stack_options.py#L82'>superset/migrations/versions/2023-03-17_13-24_b5ea9d343307_bar_chart_stack_options.py:82:16:</a> PLR1714 Consider merging multiple comparisons: `stack in {"Stack", "Stream"}`.
+- <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/migrations/versions/2024-05-10_18-02_f84fde59123a_update_charts_with_old_time_comparison.py#L204'>superset/migrations/versions/2024-05-10_18-02_f84fde59123a_update_charts_with_old_time_comparison.py:204:13:</a> PLR1714 Consider merging multiple comparisons: `Slice.viz_type in ("pop_kpi", "table")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/migrations/versions/2024-05-10_18-02_f84fde59123a_update_charts_with_old_time_comparison.py#L204'>superset/migrations/versions/2024-05-10_18-02_f84fde59123a_update_charts_with_old_time_comparison.py:204:13:</a> PLR1714 Consider merging multiple comparisons: `Slice.viz_type in {"pop_kpi", "table"}`.
+- <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/utils/core.py#L314'>superset/utils/core.py:314:13:</a> PLR1714 Consider merging multiple comparisons: `standalone_param not in ("false", "0")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/superset/utils/core.py#L314'>superset/utils/core.py:314:13:</a> PLR1714 Consider merging multiple comparisons: `standalone_param not in {"false", "0"}`.
+- <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/tests/integration_tests/databases/commands_tests.py#L1187'>tests/integration_tests/databases/commands_tests.py:1187:12:</a> PLR1714 Consider merging multiple comparisons: `database.backend in ("postgresql", "mysql")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/superset/blob/29b4c40e439997d13aa5fcd883f8fd099d78a1df/tests/integration_tests/databases/commands_tests.py#L1187'>tests/integration_tests/databases/commands_tests.py:1187:12:</a> PLR1714 Consider merging multiple comparisons: `database.backend in {"postgresql", "mysql"}`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/publish/publish_app_integ_base.py#L60'>tests/integration/publish/publish_app_integ_base.py:60:16:</a> PLR1714 Consider merging multiple comparisons: `f.suffix in (".yaml", ".json")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/publish/publish_app_integ_base.py#L60'>tests/integration/publish/publish_app_integ_base.py:60:16:</a> PLR1714 Consider merging multiple comparisons: `f.suffix in {".yaml", ".json"}`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L280'>src/bokeh/core/has_props.py:280:24:</a> PLR1714 Consider merging multiple comparisons: `head in ("bokeh", "__main__")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L280'>src/bokeh/core/has_props.py:280:24:</a> PLR1714 Consider merging multiple comparisons: `head in {"bokeh", "__main__"}`.
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/tornado.py#L622'>src/bokeh/server/tornado.py:622:12:</a> PLR1714 Consider merging multiple comparisons: `mode in ("server", "server-dev")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/tornado.py#L622'>src/bokeh/server/tornado.py:622:12:</a> PLR1714 Consider merging multiple comparisons: `mode in {"server", "server-dev"}`.
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_server__embed.py#L215'>tests/unit/bokeh/embed/test_server__embed.py:215:16:</a> PLR1714 Consider merging multiple comparisons: `r in ("&foo=10&bar=baz", "&bar=baz&foo=10")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_server__embed.py#L215'>tests/unit/bokeh/embed/test_server__embed.py:215:16:</a> PLR1714 Consider merging multiple comparisons: `r in {"&foo=10&bar=baz", "&bar=baz&foo=10"}`.
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_server__embed.py#L222'>tests/unit/bokeh/embed/test_server__embed.py:222:16:</a> PLR1714 Consider merging multiple comparisons: `r in ("&foo=10&bar=baz", "&bar=baz&foo=10")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_server__embed.py#L222'>tests/unit/bokeh/embed/test_server__embed.py:222:16:</a> PLR1714 Consider merging multiple comparisons: `r in {"&foo=10&bar=baz", "&bar=baz&foo=10"}`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+2 -2 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/services/stop_pod.py#L22'>src/latch_cli/services/stop_pod.py:22:8:</a> PLR1714 Consider merging multiple comparisons: `res.status_code in (403, 404)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/services/stop_pod.py#L22'>src/latch_cli/services/stop_pod.py:22:8:</a> PLR1714 Consider merging multiple comparisons: `res.status_code in {403, 404}`.
+- <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/snakemake/single_task_snakemake.py#L362'>src/latch_cli/snakemake/single_task_snakemake.py:362:8:</a> PLR1714 Consider merging multiple comparisons: `parsed.scheme not in ("", "docker")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/snakemake/single_task_snakemake.py#L362'>src/latch_cli/snakemake/single_task_snakemake.py:362:8:</a> PLR1714 Consider merging multiple comparisons: `parsed.scheme not in {"", "docker"}`.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR1714 | 62 | 31 | 31 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/pylint/rules/repeated_equality_comparison.rs`:31 on 2025-03-13 07:55_
+
+Nice catch, yeah. I should have removed the *continue*
+
+---
+
+_@MichaReiser reviewed on 2025-03-13 07:55_
+
+---
+
+_Merged by @MichaReiser on 2025-03-13 08:22_
+
+---
+
+_Closed by @MichaReiser on 2025-03-13 08:22_
+
+---
+
+_Branch deleted on 2025-03-13 08:22_
+
+---

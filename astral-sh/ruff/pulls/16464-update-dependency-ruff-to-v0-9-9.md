@@ -1,0 +1,133 @@
+```yaml
+number: 16464
+title: Update dependency ruff to v0.9.9
+type: pull_request
+state: merged
+author: renovate
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: renovate/ruff-0.x
+created_at: 2025-03-03T03:19:57Z
+updated_at: 2025-03-03T07:41:14Z
+url: https://github.com/astral-sh/ruff/pull/16464
+synced_at: 2026-01-10T19:49:01Z
+```
+
+# Update dependency ruff to v0.9.9
+
+---
+
+_Pull request opened by @renovate on 2025-03-03 03:19_
+
+This PR contains the following updates:
+
+| Package | Change | Age | Adoption | Passing | Confidence |
+|---|---|---|---|---|---|
+| [ruff](https://docs.astral.sh/ruff) ([source](https://redirect.github.com/astral-sh/ruff), [changelog](https://redirect.github.com/astral-sh/ruff/blob/main/CHANGELOG.md)) | `==0.9.7` -> `==0.9.9` | [![age](https://developer.mend.io/api/mc/badges/age/pypi/ruff/0.9.9?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![adoption](https://developer.mend.io/api/mc/badges/adoption/pypi/ruff/0.9.9?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![passing](https://developer.mend.io/api/mc/badges/compatibility/pypi/ruff/0.9.7/0.9.9?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![confidence](https://developer.mend.io/api/mc/badges/confidence/pypi/ruff/0.9.7/0.9.9?slim=true)](https://docs.renovatebot.com/merge-confidence/) |
+
+---
+
+> [!WARNING]
+> Some dependencies could not be looked up. Check the Dependency Dashboard for more information.
+
+---
+
+### Release Notes
+
+<details>
+<summary>astral-sh/ruff (ruff)</summary>
+
+### [`v0.9.9`](https://redirect.github.com/astral-sh/ruff/blob/HEAD/CHANGELOG.md#099)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff/compare/0.9.8...0.9.9)
+
+##### Preview features
+
+-   Fix caching of unsupported-syntax errors ([#&#8203;16425](https://redirect.github.com/astral-sh/ruff/pull/16425))
+
+##### Bug fixes
+
+-   Only show unsupported-syntax errors in editors when preview mode is enabled ([#&#8203;16429](https://redirect.github.com/astral-sh/ruff/pull/16429))
+
+### [`v0.9.8`](https://redirect.github.com/astral-sh/ruff/blob/HEAD/CHANGELOG.md#098)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff/compare/0.9.7...0.9.8)
+
+##### Preview features
+
+-   Start detecting version-related syntax errors in the parser ([#&#8203;16090](https://redirect.github.com/astral-sh/ruff/pull/16090))
+
+##### Rule changes
+
+-   \[`pylint`] Mark fix unsafe (`PLW1507`) ([#&#8203;16343](https://redirect.github.com/astral-sh/ruff/pull/16343))
+-   \[`pylint`] Catch `case np.nan`/`case math.nan` in `match` statements (`PLW0177`) ([#&#8203;16378](https://redirect.github.com/astral-sh/ruff/pull/16378))
+-   \[`ruff`] Add more Pydantic models variants to the list of default copy semantics (`RUF012`) ([#&#8203;16291](https://redirect.github.com/astral-sh/ruff/pull/16291))
+
+##### Server
+
+-   Avoid indexing the project if `configurationPreference` is `editorOnly` ([#&#8203;16381](https://redirect.github.com/astral-sh/ruff/pull/16381))
+-   Avoid unnecessary info at non-trace server log level ([#&#8203;16389](https://redirect.github.com/astral-sh/ruff/pull/16389))
+-   Expand `ruff.configuration` to allow inline config ([#&#8203;16296](https://redirect.github.com/astral-sh/ruff/pull/16296))
+-   Notify users for invalid client settings ([#&#8203;16361](https://redirect.github.com/astral-sh/ruff/pull/16361))
+
+##### Configuration
+
+-   Add `per-file-target-version` option ([#&#8203;16257](https://redirect.github.com/astral-sh/ruff/pull/16257))
+
+##### Bug fixes
+
+-   \[`refurb`] Do not consider docstring(s) (`FURB156`) ([#&#8203;16391](https://redirect.github.com/astral-sh/ruff/pull/16391))
+-   \[`flake8-self`] Ignore attribute accesses on instance-like variables (`SLF001`) ([#&#8203;16149](https://redirect.github.com/astral-sh/ruff/pull/16149))
+-   \[`pylint`] Fix false positives, add missing methods, and support positional-only parameters (`PLE0302`) ([#&#8203;16263](https://redirect.github.com/astral-sh/ruff/pull/16263))
+-   \[`flake8-pyi`] Mark `PYI030` fix unsafe when comments are deleted ([#&#8203;16322](https://redirect.github.com/astral-sh/ruff/pull/16322))
+
+##### Documentation
+
+-   Fix example for `S611` ([#&#8203;16316](https://redirect.github.com/astral-sh/ruff/pull/16316))
+-   Normalize inconsistent markdown headings in docstrings ([#&#8203;16364](https://redirect.github.com/astral-sh/ruff/pull/16364))
+-   Document MSRV policy ([#&#8203;16384](https://redirect.github.com/astral-sh/ruff/pull/16384))
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS4xNzYuMiIsInVwZGF0ZWRJblZlciI6IjM5LjE3Ni4yIiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCJdfQ==-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2025-03-03 03:19_
+
+---
+
+_Merged by @dhruvmanila on 2025-03-03 07:41_
+
+---
+
+_Closed by @dhruvmanila on 2025-03-03 07:41_
+
+---
+
+_Branch deleted on 2025-03-03 07:41_
+
+---

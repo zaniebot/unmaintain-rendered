@@ -1,0 +1,117 @@
+```yaml
+number: 16593
+title: Update dependency ruff to v0.9.10
+type: pull_request
+state: merged
+author: renovate
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: renovate/ruff-0.x
+created_at: 2025-03-10T01:41:55Z
+updated_at: 2025-03-10T08:24:26Z
+url: https://github.com/astral-sh/ruff/pull/16593
+synced_at: 2026-01-10T19:49:01Z
+```
+
+# Update dependency ruff to v0.9.10
+
+---
+
+_Pull request opened by @renovate on 2025-03-10 01:41_
+
+This PR contains the following updates:
+
+| Package | Change | Age | Adoption | Passing | Confidence |
+|---|---|---|---|---|---|
+| [ruff](https://docs.astral.sh/ruff) ([source](https://redirect.github.com/astral-sh/ruff), [changelog](https://redirect.github.com/astral-sh/ruff/blob/main/CHANGELOG.md)) | `==0.9.9` -> `==0.9.10` | [![age](https://developer.mend.io/api/mc/badges/age/pypi/ruff/0.9.10?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![adoption](https://developer.mend.io/api/mc/badges/adoption/pypi/ruff/0.9.10?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![passing](https://developer.mend.io/api/mc/badges/compatibility/pypi/ruff/0.9.9/0.9.10?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![confidence](https://developer.mend.io/api/mc/badges/confidence/pypi/ruff/0.9.9/0.9.10?slim=true)](https://docs.renovatebot.com/merge-confidence/) |
+
+---
+
+> [!WARNING]
+> Some dependencies could not be looked up. Check the Dependency Dashboard for more information.
+
+---
+
+### Release Notes
+
+<details>
+<summary>astral-sh/ruff (ruff)</summary>
+
+### [`v0.9.10`](https://redirect.github.com/astral-sh/ruff/blob/HEAD/CHANGELOG.md#0910)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff/compare/0.9.9...0.9.10)
+
+##### Preview features
+
+-   \[`ruff`] Add new rule `RUF059`: Unused unpacked assignment ([#&#8203;16449](https://redirect.github.com/astral-sh/ruff/pull/16449))
+-   \[`syntax-errors`] Detect assignment expressions before Python 3.8 ([#&#8203;16383](https://redirect.github.com/astral-sh/ruff/pull/16383))
+-   \[`syntax-errors`] Named expressions in decorators before Python 3.9 ([#&#8203;16386](https://redirect.github.com/astral-sh/ruff/pull/16386))
+-   \[`syntax-errors`] Parenthesized keyword argument names after Python 3.8 ([#&#8203;16482](https://redirect.github.com/astral-sh/ruff/pull/16482))
+-   \[`syntax-errors`] Positional-only parameters before Python 3.8 ([#&#8203;16481](https://redirect.github.com/astral-sh/ruff/pull/16481))
+-   \[`syntax-errors`] Tuple unpacking in `return` and `yield` before Python 3.8 ([#&#8203;16485](https://redirect.github.com/astral-sh/ruff/pull/16485))
+-   \[`syntax-errors`] Type parameter defaults before Python 3.13 ([#&#8203;16447](https://redirect.github.com/astral-sh/ruff/pull/16447))
+-   \[`syntax-errors`] Type parameter lists before Python 3.12 ([#&#8203;16479](https://redirect.github.com/astral-sh/ruff/pull/16479))
+-   \[`syntax-errors`] `except*` before Python 3.11 ([#&#8203;16446](https://redirect.github.com/astral-sh/ruff/pull/16446))
+-   \[`syntax-errors`] `type` statements before Python 3.12 ([#&#8203;16478](https://redirect.github.com/astral-sh/ruff/pull/16478))
+
+##### Bug fixes
+
+-   Escape template filenames in glob patterns in configuration ([#&#8203;16407](https://redirect.github.com/astral-sh/ruff/pull/16407))
+-   \[`flake8-simplify`] Exempt unittest context methods for `SIM115` rule ([#&#8203;16439](https://redirect.github.com/astral-sh/ruff/pull/16439))
+-   Formatter: Fix syntax error location in notebooks ([#&#8203;16499](https://redirect.github.com/astral-sh/ruff/pull/16499))
+-   \[`pyupgrade`] Do not offer fix when at least one target is `global`/`nonlocal` (`UP028`) ([#&#8203;16451](https://redirect.github.com/astral-sh/ruff/pull/16451))
+-   \[`flake8-builtins`] Ignore variables matching module attribute names (`A001`) ([#&#8203;16454](https://redirect.github.com/astral-sh/ruff/pull/16454))
+-   \[`pylint`] Convert `code` keyword argument to a positional argument in fix for (`PLR1722`) ([#&#8203;16424](https://redirect.github.com/astral-sh/ruff/pull/16424))
+
+##### CLI
+
+-   Move rule code from `description` to `check_name` in GitLab output serializer ([#&#8203;16437](https://redirect.github.com/astral-sh/ruff/pull/16437))
+
+##### Documentation
+
+-   \[`pydocstyle`] Clarify that `D417` only checks docstrings with an arguments section ([#&#8203;16494](https://redirect.github.com/astral-sh/ruff/pull/16494))
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS4xODUuNCIsInVwZGF0ZWRJblZlciI6IjM5LjE4NS40IiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCJdfQ==-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2025-03-10 01:41_
+
+---
+
+_Merged by @MichaReiser on 2025-03-10 08:24_
+
+---
+
+_Closed by @MichaReiser on 2025-03-10 08:24_
+
+---
+
+_Branch deleted on 2025-03-10 08:24_
+
+---

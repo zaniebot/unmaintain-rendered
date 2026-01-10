@@ -1,0 +1,344 @@
+```yaml
+number: 16449
+title: "Add new rule RUF059: Unused unpacked assignment"
+type: pull_request
+state: merged
+author: JelleZijlstra
+labels:
+  - rule
+  - preview
+assignees: []
+merged: true
+base: main
+head: ruf059
+created_at: 2025-03-01T01:40:29Z
+updated_at: 2025-03-03T15:34:22Z
+url: https://github.com/astral-sh/ruff/pull/16449
+synced_at: 2026-01-10T19:49:01Z
+```
+
+# Add new rule RUF059: Unused unpacked assignment
+
+---
+
+_Pull request opened by @JelleZijlstra on 2025-03-01 01:40_
+
+Split from F841 following discussion in #8884.
+
+Fixes #8884.
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+Add a new rule for unused assignments in tuples. Remove similar behavior from F841.
+
+## Test Plan
+
+Adapt F841 tests and move them over to the new rule.
+
+<!-- How was it tested? -->
+
+
+---
+
+_@JelleZijlstra reviewed on 2025-03-01 01:50_
+
+---
+
+_Review comment by @JelleZijlstra on `crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs`:51 on 2025-03-01 01:50_
+
+feedback/rant: took me forever to figure out that missing this line was why my tests weren't producing any lints. It makes sense in retrospect and I don't have a better idea for how to do it, but it was a bit frustrating.
+
+---
+
+_Comment by @github-actions[bot] on 2025-03-01 01:51_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+833 -1093 violations, +0 -0 fixes in 37 projects; 18 projects unchanged)
+
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+39 -39 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/telemetry.py#L594'>rasa/telemetry.py:594:30:</a> F841 Local variable `tb` is assigned to but never used
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/telemetry.py#L594'>rasa/telemetry.py:594:30:</a> RUF059 Unpacked variable `tb` is never used
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/telemetry.py#L594'>rasa/telemetry.py:594:9:</a> F841 Local variable `exc_type` is assigned to but never used
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/telemetry.py#L594'>rasa/telemetry.py:594:9:</a> RUF059 Unpacked variable `exc_type` is never used
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/cli/test_rasa_export.py#L278'>tests/cli/test_rasa_export.py:278:5:</a> F841 Local variable `events` is assigned to but never used
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/cli/test_rasa_export.py#L278'>tests/cli/test_rasa_export.py:278:5:</a> RUF059 Unpacked variable `events` is never used
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/evaluation/test_marker.py#L287'>tests/core/evaluation/test_marker.py:287:13:</a> F841 Local variable `expected` is assigned to but never used
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/evaluation/test_marker.py#L287'>tests/core/evaluation/test_marker.py:287:13:</a> RUF059 Unpacked variable `expected` is never used
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/evaluation/test_marker.py#L307'>tests/core/evaluation/test_marker.py:307:13:</a> F841 Local variable `expected` is assigned to but never used
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/evaluation/test_marker.py#L307'>tests/core/evaluation/test_marker.py:307:13:</a> RUF059 Unpacked variable `expected` is never used
+... 68 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+0 -20 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/computational_backends/feature_set.py#L113'>featuretools/computational_backends/feature_set.py:113:9:</a> F841 Local variable `node_needs_full_dataframe` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/primitives/utils.py#L122'>featuretools/primitives/utils.py:122:9:</a> F841 Local variable `trans_valid_inputs` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/primitives/utils.py#L123'>featuretools/primitives/utils.py:123:9:</a> F841 Local variable `trans_return_type` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/primitives/utils.py#L129'>featuretools/primitives/utils.py:129:9:</a> F841 Local variable `agg_valid_inputs` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/primitives/utils.py#L130'>featuretools/primitives/utils.py:130:9:</a> F841 Local variable `agg_return_type` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/tests/computational_backend/test_calculate_feature_matrix.py#L1562'>featuretools/tests/computational_backend/test_calculate_feature_matrix.py:1562:9:</a> F841 Local variable `client` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/tests/computational_backend/test_calculate_feature_matrix.py#L1601'>featuretools/tests/computational_backend/test_calculate_feature_matrix.py:1601:9:</a> F841 Local variable `client` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/tests/primitive_tests/test_agg_feats.py#L596'>featuretools/tests/primitive_tests/test_agg_feats.py:596:9:</a> F841 Local variable `features` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/tests/primitive_tests/test_agg_feats.py#L668'>featuretools/tests/primitive_tests/test_agg_feats.py:668:9:</a> F841 Local variable `features` is assigned to but never used
+- <a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/tests/primitive_tests/test_agg_feats.py#L793'>featuretools/tests/primitive_tests/test_agg_feats.py:793:9:</a> F841 Local variable `features` is assigned to but never used
+... 10 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+1 -81 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb:cell 16:11:5: F841 Local variable `fig` is assigned to but never used
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/src/plasmapy/analysis/fit_functions.py#L887'>src/plasmapy/analysis/fit_functions.py:887:22:</a> F841 Local variable `b` is assigned to but never used
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/src/plasmapy/analysis/nullpoint.py#L1384'>src/plasmapy/analysis/nullpoint.py:1384:17:</a> F841 Local variable `eigen_vectors` is assigned to but never used
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/src/plasmapy/analysis/nullpoint.py#L1384'>src/plasmapy/analysis/nullpoint.py:1384:5:</a> F841 Local variable `eigen_vals` is assigned to but never used
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/src/plasmapy/analysis/nullpoint.py#L461'>src/plasmapy/analysis/nullpoint.py:461:5:</a> F841 Local variable `ax` is assigned to but never used
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/src/plasmapy/analysis/nullpoint.py#L462'>src/plasmapy/analysis/nullpoint.py:462:5:</a> F841 Local variable `ay` is assigned to but never used
+... 75 additional changes omitted for rule F841
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/tests/diagnostics/test_thomson.py#L745'>tests/diagnostics/test_thomson.py:745:5:</a> PLR0914 Too many local variables (26/15)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0aaf93bfb53f770a6eb554c932770edff15fbe27/tests/diagnostics/test_thomson.py#L745'>tests/diagnostics/test_thomson.py:745:5:</a> PLR0914 Too many local variables (26/15)
+... 74 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+86 -86 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/configuration.py#L1576'>airflow/configuration.py:1576:22:</a> F841 Local variable `source` is assigned to but never used
++ <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/configuration.py#L1576'>airflow/configuration.py:1576:22:</a> RUF059 Unpacked variable `source` is never used
+- <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/configuration.py#L623'>airflow/configuration.py:623:25:</a> F841 Local variable `should_continue` is assigned to but never used
++ <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/configuration.py#L623'>airflow/configuration.py:623:25:</a> RUF059 Unpacked variable `should_continue` is never used
+- <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/executors/local_executor.py#L215'>airflow/executors/local_executor.py:215:25:</a> F841 Local variable `exc` is assigned to but never used
++ <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/executors/local_executor.py#L215'>airflow/executors/local_executor.py:215:25:</a> RUF059 Unpacked variable `exc` is never used
+- <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/jobs/scheduler_job_runner.py#L909'>airflow/jobs/scheduler_job_runner.py:909:9:</a> F841 Local variable `executor_class` is assigned to but never used
++ <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/jobs/scheduler_job_runner.py#L909'>airflow/jobs/scheduler_job_runner.py:909:9:</a> RUF059 Unpacked variable `executor_class` is never used
+- <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/providers_manager.py#L934'>airflow/providers_manager.py:934:13:</a> F841 Local variable `module` is assigned to but never used
++ <a href='https://github.com/apache/airflow/blob/f94174ac4e56c240ba0e71070e2f6df57feedc3a/airflow/providers_manager.py#L934'>airflow/providers_manager.py:934:13:</a> RUF059 Unpacked variable `module` is never used
+... 162 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+11 -11 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/scripts/check-env.py#L67'>scripts/check-env.py:67:24:</a> F841 Local variable `supported_max` is assigned to but never used
++ <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/scripts/check-env.py#L67'>scripts/check-env.py:67:24:</a> RUF059 Unpacked variable `supported_max` is never used
+- <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/superset/commands/report/alert.py#L172'>superset/commands/report/alert.py:172:13:</a> F841 Local variable `executor` is assigned to but never used
++ <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/superset/commands/report/alert.py#L172'>superset/commands/report/alert.py:172:13:</a> RUF059 Unpacked variable `executor` is never used
+- <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/core_tests.py#L299'>tests/integration_tests/core_tests.py:299:21:</a> F841 Local variable `tests` is assigned to but never used
++ <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/core_tests.py#L299'>tests/integration_tests/core_tests.py:299:21:</a> RUF059 Unpacked variable `tests` is never used
+- <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/dict_import_export_tests.py#L168'>tests/integration_tests/dict_import_export_tests.py:168:9:</a> F841 Local variable `table` is assigned to but never used
++ <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/dict_import_export_tests.py#L168'>tests/integration_tests/dict_import_export_tests.py:168:9:</a> RUF059 Unpacked variable `table` is never used
+- <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/dict_import_export_tests.py#L173'>tests/integration_tests/dict_import_export_tests.py:173:9:</a> F841 Local variable `table_over` is assigned to but never used
++ <a href='https://github.com/apache/superset/blob/5766c36372f221d1f4ee93d355a3e4c677f47c19/tests/integration_tests/dict_import_export_tests.py#L173'>tests/integration_tests/dict_import_export_tests.py:173:9:</a> RUF059 Unpacked variable `table_over` is never used
+... 12 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -46 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L1005'>tests/integration/init/test_init_command.py:1005:13:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L1045'>tests/integration/init/test_init_command.py:1045:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L1080'>tests/integration/init/test_init_command.py:1080:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L118'>tests/integration/init/test_init_command.py:118:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L150'>tests/integration/init/test_init_command.py:150:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L182'>tests/integration/init/test_init_command.py:182:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L214'>tests/integration/init/test_init_command.py:214:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L248'>tests/integration/init/test_init_command.py:248:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L282'>tests/integration/init/test_init_command.py:282:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+- <a href='https://github.com/aws/aws-sam-cli/blob/e3fa3417e8f5ef335eb29fa7831ade5e8ecee13b/tests/integration/init/test_init_command.py#L316'>tests/integration/init/test_init_command.py:316:17:</a> F841 Local variable `stdout_data` is assigned to but never used
+... 36 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+52 -52 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Conversation_To_File.py#L78'>crazy_functions/Conversation_To_File.py:78:9:</a> F841 Local variable `html` is assigned to but never used
++ <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Conversation_To_File.py#L78'>crazy_functions/Conversation_To_File.py:78:9:</a> RUF059 Unpacked variable `html` is never used
+- <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Latex_Function.py#L382'>crazy_functions/Latex_Function.py:382:18:</a> F841 Local variable `downloaded` is assigned to but never used
++ <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Latex_Function.py#L382'>crazy_functions/Latex_Function.py:382:18:</a> RUF059 Unpacked variable `downloaded` is never used
+- <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Social_Helper.py#L70'>crazy_functions/Social_Helper.py:70:17:</a> F841 Local variable `err_msg` is assigned to but never used
++ <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/Social_Helper.py#L70'>crazy_functions/Social_Helper.py:70:17:</a> RUF059 Unpacked variable `err_msg` is never used
+- <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/agent_fns/python_comment_agent.py#L216'>crazy_functions/agent_fns/python_comment_agent.py:216:9:</a> F841 Local variable `begin` is assigned to but never used
++ <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/agent_fns/python_comment_agent.py#L216'>crazy_functions/agent_fns/python_comment_agent.py:216:9:</a> RUF059 Unpacked variable `begin` is never used
+- <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/crazy_utils.py#L122'>crazy_functions/crazy_utils.py:122:21:</a> F841 Local variable `p_ratio` is assigned to but never used
++ <a href='https://github.com/binary-husky/gpt_academic/blob/4a79aa6a93ce52abfdedab3a1727618fdf2a9a7c/crazy_functions/crazy_utils.py#L122'>crazy_functions/crazy_utils.py:122:21:</a> RUF059 Unpacked variable `p_ratio` is never used
+... 94 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+25 -25 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:34:</a> F841 Local variable `arglist` is assigned to but never used
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:34:</a> RUF059 Unpacked variable `arglist` is never used
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:43:</a> F841 Local variable `retann` is assigned to but never used
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:43:</a> RUF059 Unpacked variable `retann` is never used
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:9:</a> F841 Local variable `name_prefix` is assigned to but never used
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:9:</a> RUF059 Unpacked variable `name_prefix` is never used
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:36:</a> F841 Local variable `arglist` is assigned to but never used
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:36:</a> RUF059 Unpacked variable `arglist` is never used
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:45:</a> F841 Local variable `retann` is assigned to but never used
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:45:</a> RUF059 Unpacked variable `retann` is never used
+... 40 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+0 -31 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/image.py#L401'>docker/api/image.py:401:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/image.py#L476'>docker/api/image.py:476:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/plugin.py#L132'>docker/api/plugin.py:132:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/plugin.py#L173'>docker/api/plugin.py:173:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/plugin.py#L199'>docker/api/plugin.py:199:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/plugin.py#L252'>docker/api/plugin.py:252:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/service.py#L166'>docker/api/service.py:166:19:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/api/service.py#L447'>docker/api/service.py:447:23:</a> F841 Local variable `repo_name` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/transport/npipesocket.py#L121'>docker/transport/npipesocket.py:121:9:</a> F841 Local variable `err` is assigned to but never used
+- <a href='https://github.com/docker/docker-py/blob/db7f8b8bb67e485a7192846906f600a52e0aa623/docker/transport/npipesocket.py#L143'>docker/transport/npipesocket.py:143:13:</a> F841 Local variable `err` is assigned to but never used
+... 21 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (4 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F841 | 1091 | 0 | 1091 | 0 | 0 |
+| RUF059 | 831 | 831 | 0 | 0 | 0 |
+| PLR0914 | 2 | 1 | 1 | 0 | 0 |
+| DOC201 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Label `preview` added by @MichaReiser on 2025-03-03 09:10_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-03 09:10_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/rules/unused_unpacked_variable.rs`:21 on 2025-03-03 09:12_
+
+```suggestion
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs`:51 on 2025-03-03 09:15_
+
+Sorry for that. Yeah, not sure what a good short-term fix for this is. My plan for Red Knot is to remove those manual checks entirely and instead have a more "formal" rule API that allows pre-computing in which phase a rule must run. This will hopefully help prevent such surprises
+
+---
+
+_@MichaReiser approved on 2025-03-03 09:19_
+
+Thanks for pushing this over the line. I'll make a few small nit improvements but this looks good.
+
+---
+
+_@MichaReiser reviewed on 2025-03-03 09:20_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/rules/unused_unpacked_variable.rs`:100 on 2025-03-03 09:20_
+
+It's a bit unfortunate that this repeats the entire check from F841 with only the unpack assignment being different. Let me see if we can make this more obvious
+
+---
+
+_Merged by @MichaReiser on 2025-03-03 09:51_
+
+---
+
+_Closed by @MichaReiser on 2025-03-03 09:51_
+
+---
+
+_Comment by @JelleZijlstra on 2025-03-03 15:34_
+
+Thanks for the review and merge!
+
+---
+
+_Branch deleted on 2025-03-03 15:34_
+
+---

@@ -1,0 +1,248 @@
+```yaml
+number: 16674
+title: "[`pylint`] Detect invalid default value type for `os.environ.get` (`PLW1508`)"
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - rule
+assignees: []
+merged: true
+base: micha/ruff-0.10
+head: micha/pylint-envvar-default-os-environ-get
+created_at: 2025-03-12T12:58:56Z
+updated_at: 2025-03-13T07:43:11Z
+url: https://github.com/astral-sh/ruff/pull/16674
+synced_at: 2026-01-10T19:49:02Z
+```
+
+# [`pylint`] Detect invalid default value type for `os.environ.get` (`PLW1508`)
+
+---
+
+_Pull request opened by @MichaReiser on 2025-03-12 12:58_
+
+## Summary
+This PR stabilizes the new behavior introduced in https://github.com/astral-sh/ruff/pull/14512 to also detect defalut value arguemnts to `os.environ.get` that have an invalid type (not `str`).
+There's an upstream issue for this behavior change https://github.com/pylint-dev/pylint/issues/10092 that was accepted and a PR, but it hasn't been merged yet. 
+
+This behavior change was first shipped with Ruff 0.8.1 (Nov 22). 
+
+There has only be one PR since the new behavior was introduced but it was unrelated to the scope increase (https://github.com/astral-sh/ruff/pull/14841).
+
+
+
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-12 12:59_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-03-12 13:03_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/micha%2Fpylint-envvar-default-os-environ-get)
+
+### Merging #16674 will **degrade performances by 10.5%**
+
+<sub>Comparing <code>micha/pylint-envvar-default-os-environ-get</code> (d561912) with <code>micha/ruff-0.10</code> (e9bfdfd)</sub>
+
+
+
+### Summary
+
+`❌ 1` regressions  
+`✅ 31` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/micha%2Fpylint-envvar-default-os-environ-get)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` red_knot_check_file[incremental] `` | 4.9 ms | 5.5 ms | -10.5% |
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-03-12 13:05_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+46 -0 violations, +0 -0 fixes in 9 projects; 46 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/airflow/api_fastapi/auth/managers/simple/simple_auth_manager.py#L245'>airflow/api_fastapi/auth/managers/simple/simple_auth_manager.py:245:47:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/airflow/api_fastapi/core_api/app.py#L59'>airflow/api_fastapi/core_api/app.py:59:43:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/providers/amazon/tests/system/amazon/aws/example_bedrock.py#L57'>providers/amazon/tests/system/amazon/aws/example_bedrock.py:57:70:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/providers/amazon/tests/system/amazon/aws/example_bedrock.py#L62'>providers/amazon/tests/system/amazon/aws/example_bedrock.py:62:86:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/providers/google/tests/system/google/cloud/storage_transfer/example_cloud_storage_transfer_service_aws.py#L76'>providers/google/tests/system/google/cloud/storage_transfer/example_cloud_storage_transfer_service_aws.py:76:91:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/providers/google/tests/system/google/marketing_platform/example_display_video.py#L53'>providers/google/tests/system/google/marketing_platform/example_display_video.py:53:53:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/providers/google/tests/system/google/marketing_platform/example_display_video.py#L60'>providers/google/tests/system/google/marketing_platform/example_display_video.py:60:51:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/scripts/in_container/update_quarantined_test_status.py#L216'>scripts/in_container/update_quarantined_test_status.py:216:47:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/airflow/blob/4acf93a4a6b9a79a4fecbeb11a9b2f3bead6febd/scripts/in_container/update_quarantined_test_status.py#L217'>scripts/in_container/update_quarantined_test_status.py:217:47:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/a0ea905a7a01fbe31c3c270c99450818eaac792a/superset/config.py#L1612'>superset/config.py:1612:77:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/superset/blob/a0ea905a7a01fbe31c3c270c99450818eaac792a/superset/migrations/shared/utils.py#L44'>superset/migrations/shared/utils.py:44:55:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/superset/blob/a0ea905a7a01fbe31c3c270c99450818eaac792a/superset/migrations/versions/2020-09-28_17-57_b56500de1855_add_uuid_column_to_import_mixin.py#L76'>superset/migrations/versions/2020-09-28_17-57_b56500de1855_add_uuid_column_to_import_mixin.py:76:55:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/apache/superset/blob/a0ea905a7a01fbe31c3c270c99450818eaac792a/superset/migrations/versions/2020-10-21_21-09_96e99fb176a0_add_import_mixing_to_saved_query.py#L54'>superset/migrations/versions/2020-10-21_21-09_96e99fb176a0_add_import_mixing_to_saved_query.py:54:55:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/samcli/local/docker/container.py#L42'>samcli/local/docker/container.py:42:93:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/samcli/local/lambdafn/remote_files.py#L33'>samcli/local/lambdafn/remote_files.py:33:93:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/buildcmd/test_build_terraform_applications.py#L177'>tests/integration/buildcmd/test_build_terraform_applications.py:177:69:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/package/package_integ_base.py#L51'>tests/integration/package/package_integ_base.py:51:77:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/package/package_integ_base.py#L55'>tests/integration/package/package_integ_base.py:55:78:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/integration/publish/publish_app_integ_base.py#L22'>tests/integration/publish/publish_app_integ_base.py:22:75:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/regression/package/regression_package_base.py#L24'>tests/regression/package/regression_package_base.py:24:75:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/testing_utils.py#L24'>tests/testing_utils.py:24:50:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/testing_utils.py#L26'>tests/testing_utils.py:26:50:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/testing_utils.py#L31'>tests/testing_utils.py:31:54:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/testing_utils.py#L31'>tests/testing_utils.py:31:94:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/aws/aws-sam-cli/blob/f59ddab9ff665559337500af15de60876dc380f7/tests/testing_utils.py#L32'>tests/testing_utils.py:32:45:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/settings.py#L338'>src/bokeh/settings.py:338:53:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/blinkapp/blinkapp.py#L12'>blinkapp/blinkapp.py:12:48:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/clickhouse/tests/conftest.py#L22'>ibis/backends/clickhouse/tests/conftest.py:22:67:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/clickhouse/tests/test_client.py#L221'>ibis/backends/clickhouse/tests/test_client.py:221:62:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/clickhouse/tests/test_client.py#L376'>ibis/backends/clickhouse/tests/test_client.py:376:60:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/exasol/tests/conftest.py#L22'>ibis/backends/exasol/tests/conftest.py:22:59:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/mssql/tests/conftest.py#L18'>ibis/backends/mssql/tests/conftest.py:18:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/mysql/tests/conftest.py#L19'>ibis/backends/mysql/tests/conftest.py:19:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/oracle/tests/conftest.py#L23'>ibis/backends/oracle/tests/conftest.py:23:59:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/postgres/tests/conftest.py#L37'>ibis/backends/postgres/tests/conftest.py:37:78:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/risingwave/tests/conftest.py#L22'>ibis/backends/risingwave/tests/conftest.py:22:80:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/backends/trino/tests/conftest.py#L31'>ibis/backends/trino/tests/conftest.py:31:73:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/ibis-project/ibis/blob/44151f00071c4d68a4355dab9789827be290b926/ibis/expr/tests/test_visualize.py#L19'>ibis/expr/tests/test_visualize.py:19:39:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/snakemake/single_task_snakemake.py#L38'>src/latch_cli/snakemake/single_task_snakemake.py:38:63:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/3c93d06d641621ff62453c9c7748eeec3d6d8a97/setup.py#L367'>setup.py:367:54:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/utils/xml/setup_package.py#L19'>astropy/utils/xml/setup_package.py:19:55:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/utils/xml/setup_package.py#L20'>astropy/utils/xml/setup_package.py:20:50:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/wcs/setup_package.py#L198'>astropy/wcs/setup_package.py:198:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/wcs/setup_package.py#L199'>astropy/wcs/setup_package.py:199:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/wcs/setup_package.py#L341'>astropy/wcs/setup_package.py:341:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
++ <a href='https://github.com/astropy/astropy/blob/f3e1013293a9a51d935a570b42ab33741d2611ab/astropy/wcs/setup_package.py#L342'>astropy/wcs/setup_package.py:342:57:</a> PLW1508 Invalid type for environment variable default; expected `str` or `None`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW1508 | 46 | 46 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @MichaReiser on 2025-03-12 13:17_
+
+The ecosystem changes all look correct to me
+
+---
+
+_Review requested from @ntBre by @MichaReiser on 2025-03-12 16:58_
+
+---
+
+_@ntBre approved on 2025-03-12 18:07_
+
+---
+
+_Merged by @MichaReiser on 2025-03-13 07:43_
+
+---
+
+_Closed by @MichaReiser on 2025-03-13 07:43_
+
+---
+
+_Branch deleted on 2025-03-13 07:43_
+
+---
