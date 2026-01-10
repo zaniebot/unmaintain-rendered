@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic on Type-Checking Recursive JSON - astral-sh/ty #297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic on Type-Checking Recursive JSON</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/297">#297</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2025-05-09 16:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2025-05-09 16:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A pretty simple example of a recursive type that's supported in other type-checkers such as Pyright is a JSON type:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+type Json = dict[str, Json] | list[Json] | str | int | float | bool | None
+
+
+def parse_json(j: Json) -&gt; Json:
+    if isinstance(j, dict):
+        return {k: parse_json(v) for k, v in j.items()}
+    elif isinstance(j, list):
+        return [parse_json(i) for i in j]
+    else:
+        return
+
+
+print(parse_json({&quot;a&quot;: {&quot;b&quot;: &quot;c&quot;}}))
+</code></pre>
+<p>This example yields a panic:</p>
+<pre><code>error: panic: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/f78a641/src/function/fetch.rs:131:25 when checking `/Users/maxmuoto/projects/ty-test/main.py`: `dependency graph cycle when querying value_type_(Id(3400)), set cycle_fn/cycle_initial to fixpoint iterate.
+Query stack:
+[
+    check_types(Id(800)),
+    infer_scope_types(Id(c00)),
+    signature_(Id(3800)),
+    infer_deferred_types(Id(1006)),
+    value_type_(Id(3400)),
+    infer_scope_types(Id(c01)),
+    symbol_by_id(Id(2c17)),
+    use_def_map(Id(c00)),
+    infer_definition_types(Id(134d)),
+    infer_expression_types(Id(1434)),
+    infer_definition_types(Id(4bc0)),
+    infer_expression_types(Id(1499)),
+    infer_definition_types(Id(4bc3)),
+    infer_expression_types(Id(149c)),
+    source_text(Id(202e)),
+    infer_deferred_types(Id(450c)),
+    infer_definition_types(Id(133a)),
+    member_lookup_with_policy_(Id(2809)),
+]`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D we'd be very appreciative!
+info: Platform: macos aarch64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;main.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(c01))
+             at crates/ty_python_semantic/src/types/infer.rs:120
+   1: value_type_(Id(3400))
+             at crates/ty_python_semantic/src/types.rs:7384
+   2: infer_deferred_types(Id(1006))
+             at crates/ty_python_semantic/src/types/infer.rs:185
+   3: signature_(Id(3800))
+             at crates/ty_python_semantic/src/types.rs:6622
+   4: infer_scope_types(Id(c00))
+             at crates/ty_python_semantic/src/types/infer.rs:120
+   5: check_types(Id(800))
+             at crates/ty_python_semantic/src/types.rs:83
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7 (905a3e1e5 2025-05-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-09 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-muoto">@max-muoto</a> on 2025-05-09 16:36</div>
+            <div class="timeline-body"><p>Apologies for the duplicate - missed that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-09 16:37</div>
+            <div class="timeline-body"><p>no problem!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:59 UTC
+    </footer>
+</body>
+</html>

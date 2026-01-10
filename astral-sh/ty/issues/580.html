@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using property in type expression - astral-sh/ty #580</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using property in type expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/580">#580</a>
+        opened by <a href="https://github.com/loicdiridollou">@loicdiridollou</a>
+        on 2025-06-04 02:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/loicdiridollou">@loicdiridollou</a> on 2025-06-04 02:33</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hey ty team,</p>
+<p>Thanks for the great work it is super imprecise!
+With all the traction we would like to integrate it into the <code>pandas-stubs</code> repo.
+We have been looking into it and I was wondering if there was some equivalent with <code>mypy</code> configuration, right now the repo is fully compliant with mypy but of course we have some config there.
+For example an issue that is raised by <code>ty</code> is the following:</p>
+<pre><code class="language-python">error[invalid-type-form]: Variable of type `property` is not allowed in a type expression
+   --&gt; pandas-stubs/core/series.pyi:550:45
+    |
+548 |     def to_json(
+549 |         self,
+550 |         path_or_buf: FilePath | WriteBuffer[str],
+    |                                             ^^^
+551 |         *,
+552 |         orient: Literal[&quot;records&quot;],
+    |
+info: rule `invalid-type-form` is enabled by default
+</code></pre>
+<p>while this is something that is totally fine with <code>pyright</code> and <code>mypy</code>, we are seeing similar issues for <code>list[str]</code>.</p>
+<p>Please let me know and thanks again for the work!</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @loicdiridollou on 2025-06-04 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-04 04:09</div>
+            <div class="timeline-body"><p>I think ty is correct here. The class contains an <code>@property def str</code> (<a href="https://github.com/pandas-dev/pandas-stubs/blob/4bf9af2c23e0165e6aa27d072040bc409f347d5d/pandas-stubs/core/series.pyi#L1174">here</a>), and since the annotation is in a class scope, ty is right to interpret str here as referring to the property, not to the builtin. This is in line with how Python 3.14 behaves at runtime.</p>
+<p>As a workaround, I would recommend using <code>import builtins</code> and then <code>builtins.str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 04:47</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I agree with @jelle-openai -- this is a case where we've chosen to model the consistent semantics of Python 3.14+ when it comes to resolving possibly-deferred names in annotations; mypy and pyright model older lookup semantics. I think the best option is to disambiguate, e.g. in the way Jelle proposes; by disambiguating the name you should be compatible with all checkers.</p>
+<p>It's awesome that you are looking into ty's behavior on pandas-stubs! It might be a little earlier to e.g. add ty as a blocker to your CI, as we are still in alpha stages and may still make breaking changes. But we definitely welcome reports like this one of things you see in ty that might be bugs. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-04 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loicdiridollou">@loicdiridollou</a> on 2025-06-04 11:48</div>
+            <div class="timeline-body"><p>Hey @carljm and @jelle-openai,
+Thanks a lot for the feedback it is super helpful, I faced the same issue with <code>T</code> that is a property of <code>Series</code> as well as a generic type. I understand that <code>ty</code> is raising the issue due to the ambiguity and would agree that it is a better behavior than leaving some doubts in the code.
+As a solution I remapped the builtin <code>str</code> to <code>_str</code> in the code and those issues just vanished, thanks for the suggestion.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

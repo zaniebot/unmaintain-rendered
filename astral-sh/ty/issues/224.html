@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simplify across intersections in a union - astral-sh/ty #224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>simplify across intersections in a union</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/224">#224</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-12-16 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-12-16 18:55</div>
+            <div class="timeline-body"><p>When we add multiple intersection types to a union, we miss some opportunities to simplify across those intersections.</p>
+<p>If two intersections in a union share the same <code>positive</code> elements, and they have negative elements that are disjoint from each other, the disjoint negative elements can be removed entirely.</p>
+<p>Assume that <code>X</code> and <code>Y</code> are disjoint types:</p>
+<p>We can transform <code>(A &amp; ~X) | (A &amp; ~Y)</code> to <code>A</code>.</p>
+<p>Similarly we can transform <code>(A &amp; B &amp; ~X) | (A &amp; B &amp; ~Y)</code> to <code>A &amp; B</code>.</p>
+<p>And if we have <code>(A &amp; ~X &amp; ~Z) | (A &amp; ~Y &amp; ~Z)</code>, this can become <code>A &amp; ~Z</code>.</p>
+<p>In some cases we can eliminate them and it doesn't result in simplifying the union away. For example (assuming <code>T</code> and <code>U</code> are not disjoint from each other) <code>(A &amp; ~X &amp; ~T) | (A &amp; ~Y &amp; ~U)</code> can become <code>(A &amp; ~T) | (A &amp; ~U)</code>.</p>
+<p>Here's a test:</p>
+<pre><code class="language-py">def f(x: int, y: int, flag: bool):
+    if x != 1 and y != 2:
+        reveal_type(x)  # revealed: int &amp; ~Literal[1]
+        reveal_type(y)  # revealed: int &amp; ~Literal[2]
+        z = x if flag else y
+        reveal_type(z)  # revealed: int
+</code></pre>
+<p>Currently on the last line we reveal <code>int &amp; ~Literal[1] | int &amp; ~Literal[2]</code>, when it should just be <code>int</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-12-16 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-16 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Similarly we can transform <code>A &amp; B &amp; ~X | A &amp; B &amp; ~Y</code> to <code>A &amp; B</code>.</p>
+</blockquote>
+<p>Could you possibly add some parentheses to these examples to clarify the operator precedence? I can never remember whether <code>|</code> binds more tightly than <code>&amp;</code>, or vice versa 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-16 19:16</div>
+            <div class="timeline-body"><blockquote>
+<p>add some parentheses</p>
+</blockquote>
+<p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-16 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>In some cases we can eliminate them and it doesn't result in simplifying the union away, e.g. <code>(A &amp; ~X &amp; ~T) | (A &amp; ~Y &amp; ~U)</code> can become <code>(A &amp; ~T) | (A &amp; ~U)</code>.</p>
+</blockquote>
+<p>Just to clarify: in this example <code>X</code>/<code>Y</code> are disjoint (so can be eliminated), but <code>T</code>/<code>U</code> are not disjoint (so cannot be eliminated)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-16 19:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Just to clarify: in this example <code>X</code>/<code>Y</code> are disjoint (so can be eliminated), but <code>T</code>/<code>U</code> are not disjoint (so cannot be eliminated)?</p>
+</blockquote>
+<p>Right, all of the examples are operating under the &quot;Assume that <code>X</code> and <code>Y</code> are disjoint types:&quot; header (with no other assumed disjointness).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-16 19:25</div>
+            <div class="timeline-body"><p>Yes, I saw that your writeup explicitly stated that <code>X</code> and <code>Y</code> should be assumed to be disjoint, but didn't see anything that explicitly stated whether <code>T</code> and <code>U</code> were supposed to also be disjoint from each other or not :-)</p>
+<p>just wanted to clarify that my understanding was correct for why <code>X</code>/<code>Y</code> were being treated differently to <code>T</code>/<code>U</code> in that example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-29 20:17</div>
+            <div class="timeline-body"><p>Can we describe this in terms of boolean logic? Could we reuse the SMT solver we have in uv for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-30 00:15</div>
+            <div class="timeline-body"><p>It's possible that all of our set-theoretic types could be represented as BDDs and we could use SMT to resolve subtyping, though I haven't worked through how that would look; the approaches I've seen rely on disjoint atomic types, which is an assumption we can't make because of inheritance. But this would be a whole-sale reworking of how we represent set-theoretic types, whereas the improvement suggested in this issue is more narrowly targeted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-01-10 16:17</div>
+            <div class="timeline-body"><p>I think this simplification is quite challenging, especially as the number of negative elements increases.</p>
+<p>Here's a counterexample for <code>(A &amp; ~X &amp; ~T) | (A &amp; ~Y &amp; ~U)</code>:</p>
+<p><code>(int &amp; ~Literal[False] &amp; ~AlwaysTruthy) | (int &amp; ~Literal[1] &amp; ~bool)</code></p>
+<p>This satisfies the following conditions:</p>
+<ul>
+<li><code>Literal[False]</code> is disjoint from <code>Literal[1]</code>.</li>
+<li><code>AlwaysTruthy</code> is not disjoint from <code>bool</code>.</li>
+</ul>
+<p>However, we cannot simplify this expression to <code>(int &amp; ~AlwaysTruthy) | (int &amp; ~bool)</code>.<br />
+Notably, <code>False</code> and <code>1</code> are not elements of <code>(int &amp; ~Literal[False] &amp; ~AlwaysTruthy) | (int &amp; ~Literal[1] &amp; ~bool)</code>, but they are members of <code>(int &amp; ~AlwaysTruthy) | (int &amp; ~bool)</code> (because <code>False</code> is in <code>(int &amp; ~AlwaysTruthy)</code> and <code>1</code> is in <code>(int &amp; ~bool)</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-01-10 17:09</div>
+            <div class="timeline-body"><p>In a more generalized form, consider the following set based on DNF:</p>
+<p>$$
+(A \cap \sim T_{11} \cap \sim T_{12} \cap \dots) \cup (A \cap \sim T_{21} \cap \dots) \cup \dots \cup (A \cap \sim T_{M1} \cap \dots)
+$$</p>
+<p>Actually, all $T$ that are disjoint from $\bigcap_{i=1}^{M} \bigcup_{j=1} T_{ij}$ can be ignored.</p>
+<p>It's because:</p>
+<p>$$
+(A \cap \sim T_{11} \cap \sim T_{12} \cap \dots) \cup (A \cap \sim T_{21} \cap \dots) \cup \dots \cup (A \cap \sim T_{M1} \cap \dots)
+= A - \bigcap_{i=1}^{M} \bigcup_{j=1} T_{ij}
+$$</p>
+<p>and a disjointed $T$ cannot affect $\bigcap_{i=1}^{M} \bigcup_{j=1} T_{ij}$</p>
+<p>NOTE: This generalization may not be practical for implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-10 17:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Here's a counterexample</p>
+</blockquote>
+<p>Good catch! Yes, the <code>(A &amp; ~X &amp; ~T) | (A &amp; ~Y &amp; ~U)</code> case is wrong as stated. I think that for the simplification to be valid, there is an additional requirement that <code>X</code> and <code>U</code> be disjoint, and <code>Y</code> and <code>T</code> be disjoint.</p>
+<p>I think a simpler way to put it is that the simplification is restricted to <code>(A &amp; ~X) | (A &amp; ~Y) -&gt; A</code> when <code>X</code> and <code>Y</code> are disjoint, but we can rewrite <code>(A &amp; ~X &amp; ~T) | (A &amp; ~Y &amp; ~U)</code> as <code>(A &amp; ~(X | T)) | (A &amp; ~(Y | U))</code>, in which case it fits the first form, as long as <code>(X | T)</code> is disjoint from <code>(Y | U)</code>. It may not be practical / worth it to check this transformation when there are multiple negative elements.</p>
+<p>Given that astral-sh/ruff#15400 already fixed the one actual observed case, I think this issue in general is low priority unless we see other cases crop up in realistic code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-01-11 06:40</div>
+            <div class="timeline-body"><p>Got it! Also, a hasty implementation might significantly impact the performance of the <code>UnionBuilder</code>. I agree that it would be better to lower its priority and implement it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @carljm on 2025-03-15 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] simplify across intersections in a union" to "simplify across intersections in a union" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-11 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:57 UTC
+    </footer>
+</body>
+</html>

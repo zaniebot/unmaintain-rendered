@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>improve diagnostics for C extension modules without stubs - astral-sh/ty #487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>improve diagnostics for C extension modules without stubs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/487">#487</a>
+        opened by <a href="https://github.com/johnniemorrow">@johnniemorrow</a>
+        on 2025-05-22 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnniemorrow">@johnniemorrow</a> on 2025-05-22 13:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi ty-team,</p>
+<p>I was trying to fix up some unresolved-attribute errors reported by ty related to lxml.etree in <a href="https://pypi.org/project/lxml/">lxml</a>.</p>
+<p>Reducing it down to just an import statement, ty doesn't seem to be able to see lxml.etree:</p>
+<pre><code class="language-bash">$ cat use_lxml.py 
+import lxml.etree
+
+</code></pre>
+<pre><code class="language-bash">$ ty check use_lxml.py 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-import]: Cannot resolve imported module `lxml.etree`
+ --&gt; use_lxml.py:1:8
+  |
+1 | import lxml.etree
+  |        ^^^^^^^^^^
+  |
+info: make sure your Python environment is properly configured: https://github.com/astral-sh/ty/blob/main/docs/README.md#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-22 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-22 14:10</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p><code>lxml.etree</code> is a C extension module. I wonder if we could detect this and show a better error?</p>
+<p>You probably want to fix this by installing <code>types-lxml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 14:15</div>
+            <div class="timeline-body"><blockquote>
+<p><code>lxml.etree</code> is a C extension module. I wonder if we could detect this and show a better error?</p>
+</blockquote>
+<p>Pyright does a fancy thing in its module resolver to distinguish between modules that are definitely unresolvable (no python or C-extension modules are available) and modules which might be resolvable but which it cannot inspect, because it's a C extension or similar and there are no stubs installed.</p>
+<p>Mypy does not have that feature, but it does have a hardcoded list of untyped packages for which it knows high-quality stubs are available, and issues a nice diagnostic suggesting to install the relevant stubs package if it issues an <code>unresolved-import</code> diagnostic on one of those packages.</p>
+<p>We don't have either feature right now; we could consider adding one or both. (The mypy one is easier to implement!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnniemorrow">@johnniemorrow</a> on 2025-05-22 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you for reporting this.</p>
+<p><code>lxml.etree</code> is a C extension module. I wonder if we could detect this and show a better error?</p>
+<p>You probably want to fix this by installing <code>types-lxml</code>?</p>
+</blockquote>
+<p><code>uv add types-lxml --dev</code> does the trick - thanks @sharkdp!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "cannot resolve lxml.etree" to "improve diagnostics for C extension modules without stubs" by @carljm on 2025-05-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-22 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 20:41</div>
+            <div class="timeline-body"><p>#715 includes some discussion on exactly which extensions should be recognized when resolving modules to C extensions, and some other details of the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-24 17:16</div>
+            <div class="timeline-body"><p>#1613 raises the same scenario, and also suggests that we might be able to automatically introspect the <code>.so</code> and generate some implicit default stubs automatically.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

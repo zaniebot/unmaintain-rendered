@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle SQLAlchemy fields without mapped_column() - astral-sh/ty #539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle SQLAlchemy fields without mapped_column()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/539">#539</a>
+        opened by <a href="https://github.com/johnniemorrow">@johnniemorrow</a>
+        on 2025-05-28 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnniemorrow">@johnniemorrow</a> on 2025-05-28 13:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi All,</p>
+<p>Something I noticed - I don't know if it's a bug, maybe more of a nice to have.</p>
+<p>In SQLAlchemy you can declare fields with type <code>Mapped[&lt;some type&gt;]</code> and it'll figure out the typing. Below is an example similar to ones in https://docs.sqlalchemy.org/en/20/orm/quickstart.html with <code>name</code> as a fixed-width string (mapping to postgres varchar(4)), and <code>fullname</code> as variable string (mapping to a postgres varchar). If you don't need any specific type customization, e.g. like <code>fullname</code>, you can omit the <code>mapped_column()</code> part as shown:</p>
+<pre><code class="language-python">from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+class Base(DeclarativeBase):
+    pass
+
+class User(Base):
+    __tablename__ = &quot;user_account&quot;
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    fullname: Mapped[str]
+
+
+def main():
+    user = User()
+    user.id = 1
+    user.name = &quot;Test&quot;
+    user.fullname = &quot;Case&quot;
+</code></pre>
+<p>ty is reporting an error for the <code>fullname</code> field assignment:</p>
+<pre><code class="language-bash">error[invalid-assignment]: Object of type `Literal[&quot;Case&quot;]` is not assignable to attribute `fullname` of type `Mapped[str | None]`
+  --&gt; src/scratch/sqla.py:20:5
+   |
+18 |     user.id = 1
+19 |     user.name = &quot;Test&quot;
+20 |     user.fullname = &quot;Case&quot;
+   |     ^^^^^^^^^^^^^
+   |
+info: rule `invalid-assignment` is enabled by default
+</code></pre>
+<p>I can get around it by adding this:</p>
+<pre><code class="language-python">fullname: Mapped[str] = mapped_column()
+</code></pre>
+<p>I'm not sure what the call to mapped_column() with no parameters is doing, but it would be great if ty could determine the type just from <code>Mapped[str]</code> alone, I think a lot of people will have fields defined like this in their models.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 13:15</div>
+            <div class="timeline-body"><p>I think this is the same as https://github.com/astral-sh/ty/issues/384</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnniemorrow">@johnniemorrow</a> on 2025-05-28 13:53</div>
+            <div class="timeline-body"><p>The root cause may be related, but this is a different error message - here it's giving an <code>invalid-assignment</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 13:54</div>
+            <div class="timeline-body"><p>the error code is different but the two issues definitely both have in common that they both involve SQLAlchemy doing something magical with its <code>Mapped</code> annotations. It would be interesting to know if mypy and pyright support this (and if mypy does -- does it only support it if the SQLAlchemy plugin is installed? Or does it support it &quot;out of the box&quot;?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnniemorrow">@johnniemorrow</a> on 2025-05-28 14:01</div>
+            <div class="timeline-body"><p>mypy is ok with it, it doesn't report any errors:</p>
+<pre><code class="language-bash">$ uv add mypy
+Resolved 12 packages in 135ms
+      Built scratch @ file:///home/johnnie/work/github/scratch
+Prepared 2 packages in 97ms
+Uninstalled 1 package in 0.78ms
+Installed 3 packages in 52ms
+ + mypy==1.15.0
+ + mypy-extensions==1.1.0
+ ~ scratch==0.1.0 (from file:///home/johnnie/work/github/scratch)
+scratchscratch (main #) $ mypy src/scratch/sqla.py 
+Success: no issues found in 1 source file
+scratchscratch (main #) $ uv pip list
+Package           Version Editable project location
+----------------- ------- ---------------------------------
+greenlet          3.2.2
+mypy              1.15.0
+mypy-extensions   1.1.0
+scratch           0.1.0   /home/johnnie/work/github/scratch
+sqlalchemy        2.0.41
+typing-extensions 4.13.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">metaprogramming</span> added by @AlexWaygood on 2025-05-28 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/am1ter">@am1ter</a> on 2025-05-29 04:08</div>
+            <div class="timeline-body"><p>I faced the same error during my <code>ty</code> tests. But I would like to add one more point here, just in case it could be helpful. Here is an example:</p>
+<pre><code class="language-python">from typing import Any
+
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.interfaces.orm_model import OrmModel
+
+type JsonDictAny = dict[str, Any]
+
+
+class TestOrmClass(OrmModel):
+    __tablename__ = &quot;test_orm_class&quot;
+
+    id: Mapped[int] = mapped_column()
+    json_col: Mapped[JsonDictAny]
+
+
+def main() -&gt; None:
+    session: TestOrmClass = TestOrmClass()
+    session.id = 1
+    session.json_col = {&quot;ping&quot;: &quot;pong&quot;}
+    print(len(session.json_col))
+</code></pre>
+<p><code>ty</code> results:</p>
+<pre><code>error[invalid-assignment]: Object of type `dict[Unknown, Unknown]` is not assignable to attribute `phase` of type `Mapped[dict[str, Any]]`
+  --&gt; test.py:20:5
+   |
+18 |     session: ValidationSessionOrm = ValidationSessionOrm()
+19 |     session.id = 1
+20 |     session.phase = {&quot;ping&quot;: &quot;pong&quot;}
+   |     ^^^^^^^^^^^^^
+21 |     print(len(session.phase))
+   |
+info: rule `invalid-assignment` is enabled by default
+
+error[invalid-argument-type]: Argument to function `len` is incorrect
+  --&gt; test.py:21:15
+   |
+19 |     session.id = 1
+20 |     session.phase = {&quot;ping&quot;: &quot;pong&quot;}
+21 |     print(len(session.phase))
+   |               ^^^^^^^^^^^^^ Expected `Sized`, found `Mapped[dict[str, Any]]`
+   |
+info: Function defined here
+    --&gt; stdlib/builtins.pyi:1500:5
+     |
+1498 | def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -&gt; bool: ...
+1499 | def issubclass(cls: type, class_or_tuple: _ClassInfo, /) -&gt; bool: ...
+1500 | def len(obj: Sized, /) -&gt; int: ...
+     |     ^^^ ---------- Parameter declared here
+1501 |
+1502 | license: _sitebuiltins._Printer
+     |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>In terms of pyright there are no errors:</p>
+<pre><code>0 errors, 0 warnings, 0 informations
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:23</div>
+            <div class="timeline-body"><p>I think the underlying issue here is the same as #384 -- that we don't consider a non-ClassVar annotated on the class but with nothing assigned to it, to be present on the class (only on instances). So we don't apply the descriptor protocol to it.</p>
+<p>Going to close this as duplicate, but the additional cases here are useful - thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-30 00:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

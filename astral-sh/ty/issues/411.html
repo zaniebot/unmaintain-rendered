@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relative imports report as unresolved. - astral-sh/ty #411</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relative imports report as unresolved.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/411">#411</a>
+        opened by <a href="https://github.com/AfterThunk">@AfterThunk</a>
+        on 2025-05-15 15:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AfterThunk">@AfterThunk</a> on 2025-05-15 15:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've looked through the existing issues and have found these, which are similar but don't seem exactly the same:
+https://github.com/astral-sh/ty/issues/257
+https://github.com/astral-sh/ty/issues/265
+https://github.com/astral-sh/ty/issues/320
+https://github.com/astral-sh/ty/issues/363
+https://github.com/astral-sh/ty/issues/375</p>
+<p>We have a project that has <em>no</em> external dependencies or packages, for security reasons.
+We use a standalone python executable (not installed).</p>
+<p>The project is structured like this.
+<code>ToolsAndServices</code> has a bunch of other languages and resources.
+The <code>python</code> subdirectory is setup like a module, with an <code>__init__.py</code> and all of our source code (no subfolders)</p>
+<pre><code>/ToolsAndServices
+    /python
+        /__init__.py
+        /build_helpers.py
+        /command_line.py
+        /main.py
+        /utils.py
+        /p4_utils.py
+        /etc.py
+    /non-python-stuff
+</code></pre>
+<p>We use simple batch and bash scripts to invoke it depending on platform:</p>
+<pre><code>@ECHO OFF
+
+set PYTHONVER=Python-3.13.2
+set &quot;PYTHONHOME=%~dp0..\..\executables\win64\%PYTHONVER%&quot;
+set &quot;PYTHONPATH=%~dp0..\..&quot;
+&quot;%PYTHONHOME%\python.exe&quot; -m python.main %*
+</code></pre>
+<p>I'm seeing a lot of errors like this:</p>
+<pre><code>error[unresolved-import]: Cannot resolve imported module `.command_line`
+  --&gt; D:\Builds\Depot\depot\ToolsAndServices\python\build_helpers.py:8:7
+   |
+ 6 | from pathlib import Path
+ 7 |
+ 8 | from .command_line import CommandLineError
+   |       ^^^^^^^^^^^^
+ 9 | from .utils import (get_workspace, get_command_path, load_env_file, get_env_checked)
+10 | from .p4_utils import (P4ClientContext, P4ChangelistContext, delete_changelist,
+   |
+info: `unresolved-import` is enabled by default
+
+error[unresolved-import]: Cannot resolve imported module `.utils`
+  --&gt; D:\Builds\Depot\depot\ToolsAndServices\python\build_helpers.py:9:7
+   |
+ 8 | from .command_line import CommandLineError
+ 9 | from .utils import (get_workspace, get_command_path, load_env_file, get_env_checked)
+   |       ^^^^^
+10 | from .p4_utils import (P4ClientContext, P4ChangelistContext, delete_changelist,
+   |
+info: `unresolved-import` is enabled by default
+</code></pre>
+<p>It's worth noting that <code>ruff</code> doesn't seem to have a problem with getting type hints, and we didn't have any problems with this setup in <code>mypy</code>.</p>
+<p>Because we have everything living in a single &quot;module&quot;, we end up just using package relative imports.
+https://docs.python.org/3/reference/import.html#package-relative-imports</p>
+<p>This is how I'm invoking ty:
+<code>ty.exe check /Path/To/ToolsAndServices/python</code></p>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.8 (0474b40e1 2025-05-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-15 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-16 02:42</div>
+            <div class="timeline-body"><p>Can you try either running <code>ty</code> from the <code>/Path/To/ToolsAndServices</code> directory, or adding <code>--project /Path/To/ToolsAndServices</code> to your command line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AfterThunk">@AfterThunk</a> on 2025-05-16 13:22</div>
+            <div class="timeline-body"><p>I'm not sure what's changed, but I can't seem to reproduce this today, even with the exact same commands I was using yesterday, when it was 100%.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AfterThunk on 2025-05-16 13:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

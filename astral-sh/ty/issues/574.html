@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type `&lt;module 'requests'&gt;` has no attribute `exceptions` - astral-sh/ty #574</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type `&lt;module 'requests'&gt;` has no attribute `exceptions`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/574">#574</a>
+        opened by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a>
+        on 2025-06-03 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-06-03 09:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi ty developers!</p>
+<p>I am trying ty out in my own projects. It is blazingly fast, but I get a lot of <code>unresolved-import</code> errors. I get these errors on a range of modules, both external dependencies and internal modules. I am not sure if this is due the early alpha stage ty is in, or because I am doing something wrong.</p>
+<p>A minimum working example is:</p>
+<ol>
+<li>Install the dependencies:</li>
+</ol>
+<pre><code class="language-sh">pip install ty requests
+</code></pre>
+<ol start="2">
+<li>Create main.py:</li>
+</ol>
+<pre><code class="language-py">import requests
+
+print(requests.exceptions.RequestException)
+</code></pre>
+<ol start="3">
+<li>Run ty:</li>
+</ol>
+<pre><code class="language-sh">ty check main.py
+
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
+ --&gt; main.py:3:7
+  |
+1 | import requests
+2 |
+3 | print(requests.exceptions.RequestException)
+  |       ^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<p>Am I making a very obvious mistake, or is this a known bug in ty that will be solved before the general release?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-03 09:51</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This looks like https://github.com/astral-sh/ty/issues/133? See also the last item in https://github.com/astral-sh/ty/issues/445.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-06-03 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-03 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-03 09:52</div>
+            <div class="timeline-body"><p>Thanks for the kind words!</p>
+<p>The issue here is that ty does not yet model some of the side effects of Python's import system. As @sharkdp says, this is #133 -- the <code>requests.exceptions</code> submodule is loaded as an attribute onto the <code>requests</code> module at import time due to this import in <code>requests/__init__.py</code>: https://github.com/psf/requests/blob/7341690e842a23cf18ded0abd9229765fa88c4e2/src/requests/<strong>init</strong>.py#L45</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2025-06-03 10:05</div>
+            <div class="timeline-body"><p>Hi @sharkdp and @AlexWaygood,</p>
+<p>Thanks for the quick response!</p>
+<p>It is indeed the same issue as #133. I came across that issue when looking for similar problems, but I did not read it carefully enough and thought it was unrelated. Apologies!</p>
+<p>For future readers, a summary of #133 is that <code>requests.exceptions.RequestException</code> completely works at runtime, but it uses a quirk in Python which is not a good practice. In my example, I could solve it by replacing it with <code>requests.RequestException</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

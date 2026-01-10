@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equality tests could narrow some types to Literals - astral-sh/ty #1176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Equality tests could narrow some types to Literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1176">#1176</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-09-13 00:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-09-13 00:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Sorry if this has already been reported/is being worked on, I could not find anything on it.</p>
+<pre><code class="language-py">x = int(input())
+if x == 0:
+    reveal_type(x)
+</code></pre>
+<p>In the <a href="https://pyright-play.net/?code=B4AgvCCWB2AuAUMAOBXBBKdBYAUJAZiKGBAAwBcuI1IATgKYBu9AhgDYD6sAnkvfMHRA">pyright playground</a> the revealed type is <code>Literal[0]</code>.</p>
+<p>In the <a href="https://play.ty.dev/ad4e7ba9-40ac-47b4-86a0-8b7892b36cee">ty playground</a> the revealed type is <code>int</code>.</p>
+<p>This would be a nice pattern to support, especially for exhaustedness checking/dead code analysis.</p>
+<p>It's also odd to me that this pattern isn't supported, when the case of <code>!=</code> is:</p>
+<pre><code class="language-py">x = int(input())
+if x != 0:
+    reveal_type(x)  # Revealed type: `int &amp; ~Literal[0]`
+</code></pre>
+<h3>Version</h3>
+<p>playground (174555480)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-13 01:04</div>
+            <div class="timeline-body"><p>We intentionally don't do this narrowing because it's unsound. The type <code>int</code> includes subtypes of <code>int</code>, which can override <code>__eq__</code> to do anything they like.</p>
+<p>The <code>!=</code> version is supported because it is sound. We know for sure that a literal zero cannot ever return true for <code>== 0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-09-13 01:40</div>
+            <div class="timeline-body"><p>I see, thank you for the explanation. So there is almost no situation where a narrowing with <code>==</code> or <code>in</code> is sound :(. Sorry for the churn</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MeGaGiGaGon on 2025-09-13 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-13 05:46</div>
+            <div class="timeline-body"><p>There are cases where we can narrow from equality checks, eg we can narrow <code>Literal[0, 1, 2] | str</code> to <code>Literal[1] | str</code> after <code>== 1</code>. We can eliminate literal types that we know can't be equal. But in general we can't narrow non-final types from equality checks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:29 UTC
+    </footer>
+</body>
+</html>

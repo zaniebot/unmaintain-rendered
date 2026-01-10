@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate diagnostic when there are multiple functions with same signatures - astral-sh/ty #1193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate diagnostic when there are multiple functions with same signatures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1193">#1193</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-09-17 05:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-09-17 05:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following source code:</p>
+<pre><code class="language-py">def f(x: int) -&gt; None: ...
+
+def _(x: str):
+    f(x)
+
+def f(x: int) -&gt; None: ...
+
+def f(x: int) -&gt; None: ...
+</code></pre>
+<p>I see the following diagnostics for the <code>f(x)</code> call:</p>
+<pre><code>    Argument to function `f` is incorrect: Expected `int`, found `str` (invalid-argument-type) [Ln 4, Col 7]
+    Argument to function `f` is incorrect: Expected `int`, found `str` (invalid-argument-type) [Ln 4, Col 7]
+    Argument to function `f` is incorrect: Expected `int`, found `str` (invalid-argument-type) [Ln 4, Col 7]
+</code></pre>
+<p>Playground: https://play.ty.dev/8b8a0d58-1ba4-4bec-bb87-32179a6fa8e5</p>
+<p>So, the number of diagnostics corresponds to the number of function definitions that exists which I think is because ty checks all function definitions. I think this is a bit confusing.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-09-17 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-09-17 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-17 16:15</div>
+            <div class="timeline-body"><p>Yes, we consider the type of <code>f</code> within the nested scope to be the union of all reachable definitions in the outer scope, since it isn't feasible to do a full analysis of where in the outer control flow <code>_</code> could possibly be called. So I think this is really about more intelligent presentation of redundant-seeming errors in calls to union types. Though I'm not sure this specific example should motivate prioritization of those improvements; it seems like an unusual case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

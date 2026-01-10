@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rename doesn't work for imports from third-party files - astral-sh/ty #1661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rename doesn't work for imports from third-party files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1661">#1661</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-28 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-28 02:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">import warnings as abc
+from warnings import deprecated as xyz
+x = abc
+y = xyz
+</code></pre>
+<p>The two instances of <code>abc</code> and <code>xyz</code> are completely unaware of eachother, the lsp just doesn't understand Alias nodes at all. goto-references, find-references, and rename are all broken (weirdly not entirely consistently between vscode and sandbox).</p>
+<p>goto-definition/declaration only works by virtue of resolving the aliases (i.e. not pointing at these symbols at all).</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-28 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-28 02:29</div>
+            <div class="timeline-body"><p>Once https://github.com/astral-sh/ruff/pull/21671 lands this will be basically a unique property of imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-28 02:35</div>
+            <div class="timeline-body"><p>I haven't tracked down the precise issue but I think the issue vaguely amounts to <code>ide_support.rs</code> being quite confused about what the different Import* Definitions actually Mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-28 02:40</div>
+            <div class="timeline-body"><p><img width="367" height="145" alt="Image" src="https://github.com/user-attachments/assets/db1e2e33-2cfb-43b3-8fe5-87d62e3836bc" /></p>
+<p>I'm also not a huge fan of the syntax highlighting on aliased symbols, especially because not all of the white-outted symbols are actually hidden! (Although this is something that has shifted in our semantics over time)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 11:25</div>
+            <div class="timeline-body"><p>Not sure if related.</p>
+<pre><code class="language-py">from pathlib import Path
+from typing import Any, Final, override
+
+import pytest
+from lsprotocol import types as lsp
+
+from benchmark.lsp_client import FileDiagnostics, LSPClient
+from benchmark.projects import ALL as ALL_PROJECTS
+from benchmark.projects import IncrementalEdit, Project
+</code></pre>
+<p>Find references works for <code>LSPClient</code> (first party file) but doesn't show any references for <code>Path</code> or <code>NamedTuple</code>. Finding references for <code>Final</code> works too</p>
+<p>Interesting, this works in the <a href="https://play.ty.dev/76349f55-b1ef-4ef1-914c-c5fc51e4b23d">playground</a> but not in Zed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 11:55</div>
+            <div class="timeline-body"><p>Oh interesting, this is a fairly spooky issue and I wonder what other issues this is causing.</p>
+<p>Go to definition on <code>Path</code> for the following example:</p>
+<pre><code class="language-py">from pathlib import Path
+
+a = Path(&quot;test&quot;)
+</code></pre>
+<ul>
+<li>Playground and in a project where find references works: Jumps to the definition in typeshed</li>
+<li>In <code>ty_benchmarks</code>: Jumps to <code>/opt/homebrew/Cellar/python@3.14/3.14.0_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py</code>, find references doesn't work</li>
+</ul>
+<p>Go to declaration correct jumps to typeshed in both cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 13:35</div>
+            <div class="timeline-body"><p>The issue with <code>Path</code> is that <code>find_references</code> looks up the <code>definitions</code> of the symbol under the cursor, whereas the visitor resolves the declarations. We need to make sure that both places resolve the same targets.</p>
+<p>@Gankra I'm not sure I understand the example from the issue summary. How are <code>abc</code> and <code>xyz</code> related to each other?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 14:10</div>
+            <div class="timeline-body"><p>It's just two separate examples I squished together, to show that both <code>import</code> and <code>from import</code> are independently broken (but likely for the same root cause). I worded it weird. What I meant is each <code>abc</code> doesn't see the other <code>abc</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 17:01</div>
+            <div class="timeline-body"><p>Finding references for <code>xyz</code> does work for me. It's only <code>abc</code> that returns an empty list of references (for reasons?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 17:15</div>
+            <div class="timeline-body"><p>The issue with <code>abc</code> is that we fail to resolve the <code>definition_targets</code> (it's an empty <code>Vec</code>) because it doesn't follow import aliases, which I think is correct. However <code>abc</code> also doesn't introduce its own definition (of <code>abc</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 17:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Finding references for xyz does work for me. It's only abc that returns an empty list of references (for reasons?)</p>
+</blockquote>
+<p>Hmm I possibly regressed this when I landed my PR that simplified <code>Definitions</code> to a newtype instead of an enum.
+Also notably I was seeing different behaviour in the playground vs vscode which was ???</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-02 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-02 15:36</div>
+            <div class="timeline-body"><p>While Micha made great improvements here, I'm reopening the issue because the <em>exact</em> case in my example still fails to <code>rename</code> because something gets freaked out and thinks we're trying to rename <code>warnings</code> itself and safety-blocks it.</p>
+<p>(It works fine if the import is from a module in the current workspace)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Gankra on 2025-12-02 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "find-references and rename doesn't work for imports" to "rename doesn't work for imports" by @MichaReiser on 2025-12-02 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rename doesn't work for imports" to "rename doesn't work for imports from third-party files" by @MichaReiser on 2025-12-02 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-05 18:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:45 UTC
+    </footer>
+</body>
+</html>

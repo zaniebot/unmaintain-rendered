@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>don't specialize &quot;private&quot; members - astral-sh/ty #1224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>don't specialize &quot;private&quot; members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1224">#1224</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-21 03:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-21 03:14</div>
+            <div class="timeline-body"><p>it's unsafe to specialize private members:</p>
+<pre><code class="language-py">class A[T]: # covariant
+    def __init__(self, t: T):
+         self._t = t
+
+    def get(self) -&gt; T:
+        return self._t
+
+    def f(self):
+        a = A(1)
+        b: A[object] = a
+        b._t = &quot;what?&quot;
+        a._t + 1 # runtime error
+</code></pre>
+<p>this can also manifest with annotated <code>self</code>:</p>
+<pre><code class="language-py">class A[T]:
+    def __init__(self, t: T):
+        self._t = t
+    
+    def get(self) -&gt; T:
+        return self._t
+
+    def set(self: A[object], value: str):
+        self._t = value  # expect error
+
+    
+a = A[int](1)
+a.set(&quot;a string???, i hope it doesn't set `_t`&quot;)
+a.get() + 1
+</code></pre>
+<p>this also applies to contravariant type parameters and private methods</p>
+<p>if we instead never specialize private members, then we can only interact them safely with generic values, preventing this unsoundness</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 09:25</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Can you please add some description here to explain why you expect there to be an error? I'm not arguing there shouldn't be none, but it would be easier to go through your reports if we wouldn't have to infer the intentions from the code.</p>
+<p>(I have not started to understand what's going on here, but mypy, pyright, pyrefly also see no problem here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 13:37</div>
+            <div class="timeline-body"><p>sure sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 14:16</div>
+            <div class="timeline-body"><p>It seems to me that the problem is the wrongly declared variance of <code>T</code>? If you declare <code>T</code> to be invariant or <a href="https://play.ty.dev/ec5b8c0f-fb21-4bdf-80c3-8a88dc726ae8">write this example with PEP 695 generics</a>, the error would be caught. So is the specific request here that we attempt to detect the inconsistency between the declared and the inferred variance of <code>T</code> in <code>A</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>wrongly declared variance of <code>T</code></p>
+</blockquote>
+<p>I don't understand, this class is covariant to <code>T</code></p>
+<p>no idea why using generic syntax incorrectly infers the variance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 18:34</div>
+            <div class="timeline-body"><p>There is a convention (implemented by other type checkers and ty) that underscore-prefixed (&quot;private&quot;) mutable attributes can be considered compatible with covariance. (This implicitly depends on the idea that such attributes are never mutated externally, which not all type checkers enforce, and ty doesn't - yet - either.)</p>
+<p>What this example demonstrates is that this convention is unsound when combined with a method that explicitly annotates <code>self</code> to a particular specialization of the containing generic class, and that method mutates the private attribute.</p>
+<p>Ty currently considers that explicitly-specialized annotation of <code>self</code> to make the class invariant in <code>T</code>. This does prevent the unsoundness (and would for legacy typevars too, when we error on uses of a legacy typevar incompatible with their declared variance), but it may be overly aggressive for cases where such a method doesn't mutate any private attributes?</p>
+<p>I think the choices are either that, or accept the unsoundness (as all other type checkers currently do), or implement some kind of more sophisticated approach. One possibility would be to error when methods annotated with an explicitly-specialized <code>self</code> type mutate private attributes (effectively consider the bodies of these methods to be &quot;external&quot; to the class.) This appears to be roughly what the OP is requesting (inferring from the location of the requested error.)</p>
+<p>Would like to re-emphasize this point:</p>
+<blockquote>
+<p>it would be easier to go through your reports if we wouldn't have to infer the intentions from the code</p>
+</blockquote>
+<p>If the point of a report is simply &quot;this is unsound, I'm not sure what the right fix is&quot;, it's useful even to say that much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 18:36</div>
+            <div class="timeline-body"><p>For some of these reports, where the unsoundness exists in all current type-checkers too, https://github.com/JelleZijlstra/unsoundness/ may be a better destination for the report. I'm not in principle opposed to having such issues open on ty, but they will likely be low priority for us as long as they are unsound in all other type checkers too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unsoundness</span> added by @carljm on 2025-09-22 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-23 00:02</div>
+            <div class="timeline-body"><p>i would expect that there would be an error on the assignment of a value of <code>int</code> to <code>self._t</code>, when <code>self</code> is not <code>cls[T]</code></p>
+<p>i understand that there are limitations and unsoundness in the type system (like how <code>FunctionType</code> is not a valid <code>Callable</code>), but this case is very straightforward imo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-23 00:05</div>
+            <div class="timeline-body"><blockquote>
+<p>i would expect that there would be an error on the assignment of a value of <code>int</code> to <code>self._t</code>, when <code>self</code> is not <code>cls[T]</code></p>
+</blockquote>
+<p>I don't think this is straightforward at all. What is the general principle by which a type checker should decide to emit this error?</p>
+<p>In normal code, assigning an <code>int</code> to an attribute typed as <code>T</code>, when the instance is specialized with <code>T = object</code>, would be valid. Why should a type checker consider it invalid in this particular case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-23 01:54</div>
+            <div class="timeline-body"><blockquote>
+<p>In normal code, assigning an int to an attribute typed as <code>T</code>, when the instance is specialized with <code>T = object</code>, would be valid. Why should a type checker consider it invalid in this particular case?</p>
+</blockquote>
+<p>because it's a so-called &quot;private&quot; variable, that has different interactions with variance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "variance not respected for annotated self method" to "don't materialize "private" members" by @KotlinIsland on 2025-10-01 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-10-01 01:32</div>
+            <div class="timeline-body"><p>@carljm i've updated the op with extra details to describe more cases and a potential solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "don't materialize "private" members" to "don't specialize "private" members" by @KotlinIsland on 2025-10-01 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-10-10 20:13</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>In normal code, assigning an int to an attribute typed as <code>T</code>, when the instance is specialized with <code>T = object</code>, would be valid. Why should a type checker consider it invalid in this particular case?</p>
+</blockquote>
+<p>because it's a so-called &quot;private&quot; variable, that has different interactions with variance</p>
+</blockquote>
+<p>There's even a conformance test for this:
+https://github.com/python/typing/blob/ecc212940ea9dd794604a5b5a68af38a95400d8f/conformance/tests/generics_variance_inference.py#L70-L80</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 22:26</div>
+            <div class="timeline-body"><p>@jorenham ty already implements the special covariance exception for private variables, and passes the conformance test you linked. What is requested in this issue is something beyond that, which is not specified and which no Python type checker currently implements, which is to add a new kind of check around modifications to private variables to help close some of the soundness loopholes resulting from that covariance exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-10-11 01:01</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/jorenham">@jorenham</a> ty already implements the special covariance exception for private variables, and passes the conformance test you linked. What is requested in this issue is something beyond that, which is not specified and which no Python type checker currently implements, which is to add a new kind of check around modifications to private variables to help close some of the soundness loopholes resulting from that covariance exception.</p>
+</blockquote>
+<p>Yea I was aware of that. I just wanted to elaborate on the reason for why it &quot;private&quot; attributes are special-cased in the context of variance inference, by showing that it's something defined in the typing spec, and therefore indeed not the point of this issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

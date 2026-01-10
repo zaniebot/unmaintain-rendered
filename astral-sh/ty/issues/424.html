@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect implementation of consistent-with for unions - astral-sh/ty #424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect implementation of consistent-with for unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/424">#424</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-05-16 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-16 14:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from typing import Any
+
+def f(x: list[int]):
+    g(x)
+    
+def g(x: list[bool | Any]):
+    f(x)
+</code></pre>
+<p>ty reports errors on both of these (playground as of today):</p>
+<pre><code>    Argument to function `g` is incorrect: Expected `list[bool | Any]`, found `list[int]` (invalid-argument-type) [Ln 4, Col 7]
+    Argument to function `f` is incorrect: Expected `list[int]`, found `list[bool | Any]` (invalid-argument-type) [Ln 7, Col 7]
+</code></pre>
+<p>I think this is wrong and both of these calls should be accepted:</p>
+<ul>
+<li>Invariant types are assignable if the type parameters are consistent with each other. (We don't say this explicitly in the spec, but I think that's how invariance should work.)</li>
+<li>Two gradual types are consistent with each other if there is some materialization that makes them equivalent.</li>
+<li>In <code>Any | bool</code>, we could materialize <code>Any</code> to <code>int</code>, which reduces to <code>int | bool</code> -&gt; <code>int</code> (as <code>bool</code> is a subtype of <code>int</code>).</li>
+<li>Therefore, <code>Any | bool</code> and <code>int</code> are consistent.</li>
+</ul>
+<p>Pyright also gets this wrong, though only in one direction (it accepts the <code>g(x)</code> call but not the <code>f(x)</code> call). Mypy gets it right.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-16 14:55</div>
+            <div class="timeline-body"><p>Another example where ty incorrectly reports an error in both directions:</p>
+<pre><code class="language-python">from typing import Any
+
+def f(x: list[list[Any]]):
+    g(x)
+    
+def g(x: list[list[int | str]]):
+    f(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-16 15:01</div>
+            <div class="timeline-body"><p>And another one where ty incorrectly reports two errors:</p>
+<pre><code class="language-python">from typing import Any
+
+def f(x: list[tuple[Any] | tuple[bool]]):
+    g(x)
+
+def g(x: list[tuple[int]]):
+    f(x)
+</code></pre>
+<p>(This is a counterexample to an implementation technique I was considering, where I'd special-case unions containing Any.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-05-16 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-16 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-16 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

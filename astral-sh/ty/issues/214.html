@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GC AST nodes - astral-sh/ty #214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>GC AST nodes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/214">#214</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-20 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-20 16:38</div>
+            <div class="timeline-body"><p>Red Knot currently loads and holds on to every analyzed file's AST and source code. For large projects, this can easily take up multiple GB of data.</p>
+<p>Persistent caching, which removes the need to analyze all files, should help with overall consumption but it won't help for the initial run or when many files changed.</p>
+<p>Salsa plans to add support for LRU garbage collection (or already has). It might be able to do exactly what we need but I'm not sure if it is limited to collecting stale values between revisions. I also suspect that it won't help in our case because collecting the cached results for <code>parsed_modules</code> isn't sufficient because <code>DefinitionKind</code> and <code>ExpressionKind</code> hold on to an <code>Arc</code>ed AST and the tracked structs don't get collected.</p>
+<p>One option would be to have a lazy representation for <code>AstNodeRef</code> (<code>WeakAstNodeRef</code>) that stores an identifier that uniquely identifies the node, a weak <code>Arc</code>, together with the node's reference. Resolving the node would re-parse the file if the <code>Arc</code> has been collected and finds the node in the tree (which could be expensive). On the other hand, it uses the <code>Ast</code> as is if the <code>Arc</code> is still materialized.</p>
+<p>We should look into ways on how we can drop no longer needed ASTs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-20 16:45</div>
+            <div class="timeline-body"><p>This might be something for @ibraheemdev in case you run out of work ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-25 12:56</div>
+            <div class="timeline-body"><p>@dcreager and I talked about this during our 1:1 and he brought up an interesting point: Changing our AST representation to a more data oriented design (https://github.com/astral-sh/ruff/issues/15657) could help us because the IDs could act as weak pointers.</p>
+<p>I still think that changing our AST representation now is too big a task to justify the benefits. However, we could consider doing something similar to rustc where we assign a unique u32 id to every AST node during parsing. We could then collect all nodes into an <code>IndexVec</code> in <code>parsed_module</code> or during semantic index building. Or decide that it's not worth it and simply do a binary search to find a node by id.</p>
+<p>https://github.com/rust-lang/rust/blob/dd436ae2a628c523c967a7876873a96c44b1e382/compiler/rustc_ast/src/node_id.rs#L5-L43</p>
+<p>Storing the nodes in a vec probably requires some lifetime hackery but could be done similar to <code>AstNodeRef</code> except that we only need a single <code>Arc</code> to <code>ParsedModule</code> instead of one <code>Arc</code> for each referenced node -&gt; should be cheaper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-19 13:51</div>
+            <div class="timeline-body"><p>One other possibility here is to add two new methods to <code>ParsedModule</code>:</p>
+<ul>
+<li><code>materialize(db)</code>: It returns the cached AST or performs a re-parse</li>
+<li><code>clear_cache</code>: Clears the internal cached AST</li>
+</ul>
+<p><code>check_file</code> could then call <code>clear_cache</code> because we now know that we inferred all public types. This still requires changes to <code>AstNodeRef</code>.</p>
+<p>CC: @ibraheemdev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Improve memory usage" to "Improve memory usage" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">memory</span> added by @AlexWaygood on 2025-05-21 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve memory usage" to "GC AST nodes" by @MichaReiser on 2025-05-28 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-24 10:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] too many cycle iterations - astral-sh/ty #1123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] too many cycle iterations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1123">#1123</a>
+        opened by <a href="https://github.com/furiousteabag">@furiousteabag</a>
+        on 2025-09-03 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/furiousteabag">@furiousteabag</a> on 2025-09-03 16:58</div>
+            <div class="timeline-body"><p>First of all, thanks for creating such a great tool!</p>
+<p>I am getting a panic error when running type checking on my project. Specifically, it fails on a file where I create a custom pytest logging message.</p>
+<p>Command I run:</p>
+<pre><code>RUST_BACKTRACE=1 uv run ty check
+</code></pre>
+<p>Error I get:</p>
+<pre><code>uts/salsa-e6f3bb7c2a062968/a3ffa22/src/function/execute.rs:228:25 when checking `&lt;REDACTED_PATH&gt;/tests/conftest.py`: `infer_definition_types(Id(a40a)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.20
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+
+info: query stacktrace:
+   0: infer_scope_types(Id(9800))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+   1: check_file_impl(Id(c02))
+             at crates/ty_project/src/lib.rs:522
+</code></pre>
+<p>File that triggers the error:</p>
+<pre><code class="language-python">from collections import defaultdict
+from typing import TypedDict, TypeGuard, Union, cast
+
+import pytest
+
+
+class TestFileStats(TypedDict):
+    passed: int
+    failed: int
+    scenarios: dict[str, str]
+
+
+# Tree can contain either subdirectories (Dict) or file stats (TestFileStats)
+TreeNode = dict[str, Union[&quot;TreeNode&quot;, TestFileStats]]
+
+
+def is_file_stats(content: TreeNode | TestFileStats) -&gt; TypeGuard[TestFileStats]:
+    &quot;&quot;&quot;Type guard to check if content is TestFileStats&quot;&quot;&quot;
+    return isinstance(content, dict) and &quot;passed&quot; in content and &quot;failed&quot; in content
+
+
+def get_color_for_percentage(pct: float) -&gt; str:
+    &quot;&quot;&quot;Get ANSI color code based on percentage - red to green via orange/yellow&quot;&quot;&quot;
+    if pct == 0:
+        return &quot;\033[91m&quot;  # Bright red
+    elif pct &lt;= 10:
+        return &quot;\033[31m&quot;  # Red
+    elif pct &lt;= 30:
+        return &quot;\033[31;1m&quot;  # Dark red/maroon
+    elif pct &lt;= 50:
+        return &quot;\033[38;5;208m&quot;  # Orange
+    elif pct &lt;= 70:
+        return &quot;\033[33m&quot;  # Yellow
+    elif pct &lt;= 90:
+        return &quot;\033[93m&quot;  # Bright yellow/yellow-green
+    elif pct &lt; 100:
+        return &quot;\033[32m&quot;  # Green
+    else:  # 100%
+        return &quot;\033[92m&quot;  # Bright green
+
+
+class TestResultCollector:
+    def __init__(self) -&gt; None:
+        # Structure: {file_path: {&quot;passed&quot;: int, &quot;failed&quot;: int, &quot;scenarios&quot;: {scenario_name: result}}}
+        self.results: defaultdict[str, TestFileStats] = defaultdict(lambda: {&quot;passed&quot;: 0, &quot;failed&quot;: 0, &quot;scenarios&quot;: {}})
+
+    def add_result(self, source_path: str, scenario_name: str, passed: bool) -&gt; None:
+        &quot;&quot;&quot;Add a test result for a specific scenario&quot;&quot;&quot;
+        self.results[source_path][&quot;scenarios&quot;][scenario_name] = &quot;PASSED&quot; if passed else &quot;FAILED&quot;
+        if passed:
+            self.results[source_path][&quot;passed&quot;] += 1
+        else:
+            self.results[source_path][&quot;failed&quot;] += 1
+
+    def get_directory_stats(self, dir_path: str) -&gt; tuple[int, int]:
+        &quot;&quot;&quot;Get aggregated stats for a directory&quot;&quot;&quot;
+        passed = 0
+        failed = 0
+        for file_path, stats in self.results.items():
+            if file_path.startswith(dir_path):
+                passed += stats[&quot;passed&quot;]
+                failed += stats[&quot;failed&quot;]
+        return passed, failed
+
+    def build_tree_structure(self) -&gt; TreeNode:
+        &quot;&quot;&quot;Build hierarchical tree structure from flat results&quot;&quot;&quot;
+        tree: TreeNode = {}
+
+        # Get all unique directory paths
+        all_paths = set()
+        for file_path in self.results:
+            parts = file_path.split(&quot;/&quot;)
+            for i in range(len(parts)):
+                all_paths.add(&quot;/&quot;.join(parts[: i + 1]))
+
+        # Build tree with directories and files
+        for path in sorted(all_paths):
+            parts = path.split(&quot;/&quot;)
+            current = tree
+
+            for part in parts[:-1]:
+                if part not in current:
+                    current[part] = {}
+                current = current[part]
+
+            final_part = parts[-1]
+            if path in self.results:
+                # This is a file
+                current[final_part] = self.results[path]
+            else:
+                # This is a directory
+                if final_part not in current:
+                    current[final_part] = {}
+
+        return tree
+
+    def print_tree(
+        self, terminalreporter: pytest.TerminalReporter, tree: TreeNode, prefix: str = &quot;&quot;, base_path: str = &quot;&quot;
+    ) -&gt; None:
+        &quot;&quot;&quot;Print the hierarchical tree with statistics&quot;&quot;&quot;
+        items = list(tree.items())
+        for i, (name, content) in enumerate(items):
+            current_path = f&quot;{base_path}/{name}&quot; if base_path else name
+            is_last = i == len(items) - 1
+            connector = &quot;└── &quot; if is_last else &quot;├── &quot;
+
+            if is_file_stats(content):
+                # This is a file
+                total = content[&quot;passed&quot;] + content[&quot;failed&quot;]
+                if total &gt; 0:
+                    pass_pct = (content[&quot;passed&quot;] / total) * 100
+                    color_code = get_color_for_percentage(pass_pct)
+                    stats_text = f&quot;({content['passed']}/{total} passed, {pass_pct:.1f}%)&quot;
+                    colored_stats = f&quot;{color_code}{stats_text}\033[0m&quot;
+                    terminalreporter.write(f&quot;{prefix}{connector}{name}.json &quot;)
+                    terminalreporter.write_line(colored_stats)
+                else:
+                    terminalreporter.write_line(f&quot;{prefix}{connector}{name}.json (0 tests)&quot;)
+            else:
+                # This is a directory - calculate aggregated stats
+                passed, failed = self.get_directory_stats(current_path)
+                total = passed + failed
+                if total &gt; 0:
+                    pass_pct = (passed / total) * 100
+                    color_code = get_color_for_percentage(pass_pct)
+                    stats_text = f&quot;({passed}/{total} passed, {pass_pct:.1f}%)&quot;
+                    colored_stats = f&quot;{color_code}{stats_text}\033[0m&quot;
+                    terminalreporter.write(f&quot;{prefix}{connector}{name}/ &quot;)
+                    terminalreporter.write_line(colored_stats)
+                else:
+                    terminalreporter.write_line(f&quot;{prefix}{connector}{name}/ (0 tests)&quot;)
+
+                # Recursively print subdirectories/files
+                if not is_file_stats(content) and content:
+                    new_prefix = prefix + (&quot;    &quot; if is_last else &quot;│   &quot;)
+                    self.print_tree(terminalreporter, cast(TreeNode, content), new_prefix, current_path)
+
+
+# Global collector instance
+collector = TestResultCollector()
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_logreport(report: pytest.TestReport) -&gt; None:
+    &quot;&quot;&quot;Hook to capture test results&quot;&quot;&quot;
+    if (
+        report.when == &quot;call&quot; and &quot;test_scenario[&quot; in report.nodeid
+    ):  # Only capture the actual test call, not setup/teardown
+        try:
+            # Extract the parametrized part
+            param_part = report.nodeid.split(&quot;test_scenario[&quot;)[1].rstrip(&quot;]&quot;)
+
+            # Split by &quot; | &quot; to get source and scenario name
+            if &quot; | &quot; in param_part:
+                source_path, scenario_name = param_part.split(&quot; | &quot;, 1)
+                collector.add_result(source_path, scenario_name, report.outcome == &quot;passed&quot;)
+        except Exception:
+            # If parsing fails, skip this result
+            pass
+
+
+def pytest_unconfigure(config: pytest.Config) -&gt; None:
+    &quot;&quot;&quot;Display custom summary at the absolute end&quot;&quot;&quot;
+    if not collector.results:
+        return
+
+    terminalreporter = config.pluginmanager.getplugin(&quot;terminalreporter&quot;)
+    if not terminalreporter:
+        return
+
+    # Cast to proper type since we know it's a TerminalReporter
+    tr = cast(pytest.TerminalReporter, terminalreporter)
+
+    # Force a newline and separator
+    tr.write_line(&quot;&quot;)
+    tr.write_sep(&quot;=&quot;, &quot;Test Results by Scenario File&quot;, bold=True)
+    tr.write_line(&quot;&quot;)
+
+    # Build and print the tree structure
+    tree = collector.build_tree_structure()
+    collector.print_tree(tr, tree)
+
+    # Print overall summary
+    total_passed = sum(stats[&quot;passed&quot;] for stats in collector.results.values())
+    total_failed = sum(stats[&quot;failed&quot;] for stats in collector.results.values())
+    total_tests = total_passed + total_failed
+
+    if total_tests &gt; 0:
+        overall_pass_pct = (total_passed / total_tests) * 100
+        tr.write_line(&quot;&quot;)
+        color_code = get_color_for_percentage(overall_pass_pct)
+        overall_stats = f&quot;{total_passed}/{total_tests} passed ({overall_pass_pct:.1f}%)&quot;
+        colored_overall = f&quot;{color_code}{overall_stats}\033[0m&quot;
+        tr.write(&quot;Overall: &quot;)
+        tr.write_line(colored_overall)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-03 17:06</div>
+            <div class="timeline-body"><p>Thanks for the clear report! Your <code>TreeNode</code> type alias is recursive, so this is a duplicate of #256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-03 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

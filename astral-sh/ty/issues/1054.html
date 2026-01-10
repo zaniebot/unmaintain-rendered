@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>goto-definition on vendored typeshed definitions doesn't work - astral-sh/ty #1054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>goto-definition on vendored typeshed definitions doesn't work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1054">#1054</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-08-19 17:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-19 17:19</div>
+            <div class="timeline-body"><p>This is a followup to #1004.</p>
+<p>It's exactly the same issue but specifically for when goto-declaration opens up a copy of our vendored typeshed in your IDE.</p>
+<pre><code class="language-python">from warnings import deprecated
+</code></pre>
+<p>If you goto-declaration on &quot;deprecated&quot; it will open up our vendored typeshed in the IDE.
+If you goto-definition on &quot;deprecated&quot; it will open up the actual stdlib in the IDE.
+...but if you goto-definition on <em>the vendored typeshed definition</em> it won't go anywhere.</p>
+<p>From initial debugging it seems like file_to_module doesn't recognize the opened file, and so stub mapping fails. I assume there's some trickery going on with vendored typeshed files that makes this file a different one from the one used normally in our stdlib analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-08-19 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-08-19 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @Gankra on 2025-08-19 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:27</div>
+            <div class="timeline-body"><blockquote>
+<p>From initial debugging it seems like file_to_module doesn't recognize the opened file, and so stub mapping fails. I assume there's some trickery going on with vendored typeshed files that makes this file a different one from the one used normally in our stdlib analysis.</p>
+</blockquote>
+<p>That makes sense to me. Does it, by chance work if we don't fallback to use the default database here and instead use the top-level project as fallback here</p>
+<p>https://github.com/astral-sh/ruff/blob/fc72ff4a946e4f044911ada12986a9f8731c812c/crates/ty_server/src/session.rs#L338-L343</p>
+<p>You might also need to change this in other places where we fall back to the default db</p>
+<p>My thinking here is that <code>file_to_module</code> might succeed if we use the correct set of search paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-08-19 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:29</div>
+            <div class="timeline-body"><p>The other possibility is that we need some form of reverse mapping for</p>
+<p>https://github.com/astral-sh/ruff/blob/53d795da6702427a64d45044290a9d226c4e97e4/crates/ty_server/src/system.rs#L28-L43</p>
+<p>Thinking about it more. I think my suggestion above is rubbish :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-19 17:37</div>
+            <div class="timeline-body"><p>Ah yeah that's exactly the kind of logic I was imagining might throw a spanner in the works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-10-21 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

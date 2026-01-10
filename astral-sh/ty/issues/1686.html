@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behaviour of Any subclasses when mocking final classes - astral-sh/ty #1686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Behaviour of Any subclasses when mocking final classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1686">#1686</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-11-30 07:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-11-30 07:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/758115b1-501a-4a59-9cff-5e4de80fab1c</p>
+<pre><code class="language-py">from typing import Any, final
+
+class Mock(Any): ...
+
+def takes_bool(x: bool): ...
+takes_bool(Mock())
+
+class AX: ...
+def takes_ax(x: AX): ...
+takes_ax(Mock())
+
+@final
+class FX: ...
+def takes_fx(x: FX): ...
+takes_fx(Mock())
+</code></pre>
+<p>I guess I understand why ty is doing the thing it is currently doing, but curious how you would spell this kind of pattern in a way that works for ty (maybe the answer is just pull out <code>if TYPE_CHECKING</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-12-01 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess I understand why ty is doing the thing it is currently doing</p>
+</blockquote>
+<p>Yes, it seems correct to insist that <code>Mock</code> could not possibly be a subclass of a final class.</p>
+<blockquote>
+<p>curious how you would spell this kind of pattern in a way that works for ty (maybe the answer is just pull out if TYPE_CHECKING?)</p>
+</blockquote>
+<p>I'm afraid something like</p>
+<pre><code class="language-py">class Mock: ...
+
+if TYPE_CHECKING:
+    Mock = cast(Any, Mock)
+</code></pre>
+<p>might be necessary at the moment. It would be cool if we could do something like:</p>
+<pre><code class="language-py">def mock_class[C](cls: C) -&gt; Intersection[C, Any]:
+    return cls
+
+@mock_class
+class Mock: ...
+</code></pre>
+<p>That would give you more precise types and would enable things like auto-completion on mock objects. Unfortunately, there are a few things that we do not support here:</p>
+<ul>
+<li>We do not support arbitrary class decorators (that should hopefully be easy to add)</li>
+<li>We do not support intersection types in the generics solver</li>
+<li>We do not support instantiation of intersection types, so you currently get a <code>@Todo</code> type if you instantiate a <code>Mock &amp; Any</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-12-02 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @carljm on 2025-12-02 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 03:00</div>
+            <div class="timeline-body"><p>Putting this in stable milestone with <code>needs-decision</code> tag. By stable we should either have a recommended pattern here (ideally one that doesn't require <code>cast</code>), or (if it seems this will impact a lot of people) we could decide to go for pragmatism and match other type checkers.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

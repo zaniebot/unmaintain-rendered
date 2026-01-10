@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unresolved-attribute error for Django model DoesNotExist exception - astral-sh/ty #1097</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unresolved-attribute error for Django model DoesNotExist exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1097">#1097</a>
+        opened by <a href="https://github.com/maver1ck">@maver1ck</a>
+        on 2025-08-26 09:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maver1ck">@maver1ck</a> on 2025-08-26 09:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty reports <code>unresolved-attribute</code> errors when trying to access Django model's dynamically generated <code>DoesNotExist</code> exception class. This is a common pattern in Django code where each model automatically gets a <code>DoesNotExist</code> exception class for handling object not found scenarios.</p>
+<h3>Steps to reproduce</h3>
+<p>I've created a minimal reproduction case at: https://github.com/maver1ck/ty-bug</p>
+<ol>
+<li>Create a Django model that extends <code>AbstractUser</code>:</li>
+</ol>
+<pre><code class="language-python">from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+</code></pre>
+<ol start="2">
+<li>Try to catch the model's <code>DoesNotExist</code> exception:</li>
+</ol>
+<pre><code class="language-python">try:
+    user = CustomUser.objects.get(username=username)
+except CustomUser.DoesNotExist:  # &lt;- ty reports error here
+    raise CommandError(f&quot;No user found!&quot;) from None
+</code></pre>
+<ol start="3">
+<li>Run <code>uvx ty check</code></li>
+</ol>
+<h3>Expected behavior</h3>
+<p>Ty should recognize that Django models automatically have a <code>DoesNotExist</code> exception class available as a class attribute.</p>
+<h3>Actual behavior</h3>
+<pre><code>error[unresolved-attribute]: Type `&lt;class 'CustomUser'&gt;` has no attribute `DoesNotExist`
+  --&gt; apps/users/management/commands/promote_user_to_superuser.py:16:16
+   |
+14 |         try:
+15 |             user = CustomUser.objects.get(username=username)
+16 |         except CustomUser.DoesNotExist:
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+17 |             raise CommandError(f&quot;No user with username/email {username} found!&quot;) from None
+18 |         user.is_superuser = True
+   |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<h3>Environment</h3>
+<ul>
+<li>Ty version: Latest (using <code>uvx ty check</code>)</li>
+<li>Python version: 3.12+</li>
+<li>Django version: 5.2.5</li>
+<li>OS: macOS</li>
+</ul>
+<h3>Additional context</h3>
+<p>This is related to issue #1018 but focuses specifically on the <code>DoesNotExist</code> exception class rather than model fields. In Django, every model class automatically gets:</p>
+<ul>
+<li>A <code>DoesNotExist</code> exception class</li>
+<li>A <code>MultipleObjectsReturned</code> exception class</li>
+<li>Various manager attributes like <code>objects</code></li>
+</ul>
+<p>These are created dynamically by Django's metaclass system and are fundamental to Django development patterns.</p>
+<p>The reproduction repository contains the minimal case to reproduce this specific issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burrscurr">@burrscurr</a> on 2025-08-26 12:01</div>
+            <div class="timeline-body"><p>I don't know whether <code>ty</code> should pick up that django models have a <code>DoesNotExist</code> attribute, and with</p>
+<pre><code class="language-py">from django.db import models
+
+
+class CustomUser(models.Model): ...
+
+
+CustomUser.DoesNotExist  # no error when using django-stubs
+</code></pre>
+<p>and <code>uv run --no-project --with django==5.2.5 --with ty==0.0.1a19 ty check</code> I can reproduce what you describe. As far as I know, django does not really use type hints in its code, and external type hints are provided by projects like <a href="https://pypi.org/project/django-stubs/"><code>django-stubs</code></a>. With <code>uv run --no-project --with django==5.2.5 --with django-stubs==5.2.2 --with ty==0.0.1a19 ty check</code> I don't get an unresolved attribute warning for the exception, so this might be a workaround for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maver1ck">@maver1ck</a> on 2025-08-26 12:54</div>
+            <div class="timeline-body"><p>Thanks @burrscurr.
+That's the solution :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @maver1ck on 2025-08-26 12:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:27 UTC
+    </footer>
+</body>
+</html>

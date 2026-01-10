@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] Panic when specifying self referential Type Variable. - astral-sh/ty #1244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] Panic when specifying self referential Type Variable.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1244">#1244</a>
+        opened by <a href="https://github.com/sakosha">@sakosha</a>
+        on 2025-09-24 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sakosha">@sakosha</a> on 2025-09-24 10:23</div>
+            <div class="timeline-body"><p>I tried using <code>typing.Self</code> as a TypeVar but got errors from mypy: <code>error: Self type is only allowed in annotations within class definition</code></p>
+<pre><code class="language-python">from typing import Any
+from typing import Protocol
+from typing import TypeVar
+
+from contextlib import AbstractAsyncContextManager
+
+UoWType_co = TypeVar('UoWType_co', bound='UnitOfWork[Any]', covariant=True)
+
+
+class UnitOfWork(AbstractAsyncContextManager[UoWType_co], Protocol):
+    async def commit(self) -&gt; None: ...
+
+    async def rollback(self) -&gt; None: ...
+</code></pre>
+<p>actual output:</p>
+<pre><code>ty check bugreport.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                                          error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/home/sanzhar/PythonProjects/assp/bugreport.py`: `infer_definition_types(Id(1404)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.21
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;bugreport.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:68
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:522
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+<p>expected output:
+<code>All checks passed!</code></p>
+<p>full backtrace:</p>
+<pre><code>RUST_BACKTRACE=1 ty check bugreport.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                                          error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/home/sanzhar/PythonProjects/assp/bugreport.py`: `infer_definition_types(Id(1404)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.21
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;bugreport.py&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+  34: &lt;unknown&gt;
+  35: &lt;unknown&gt;
+  36: &lt;unknown&gt;
+  37: &lt;unknown&gt;
+  38: &lt;unknown&gt;
+  39: &lt;unknown&gt;
+  40: start_thread
+             at ./nptl/pthread_create.c:447:8
+  41: clone3
+             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:78:0
+
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:68
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:522
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+<p>not sure why it's being shown as unknown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sakosha">@sakosha</a> on 2025-09-24 10:32</div>
+            <div class="timeline-body"><p>smaller repro:</p>
+<pre><code class="language-python">from typing import Any
+from typing import TypeVar
+from abc import ABC
+
+ChildT = TypeVar('ChildT', bound='Child[Any]')
+
+
+class GenericABC[Child_co](ABC):
+    pass
+
+
+class Child(GenericABC[ChildT]):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sakosha">@sakosha</a> on 2025-09-24 10:35</div>
+            <div class="timeline-body"><p>Most likely dup/variation of #256 and https://github.com/astral-sh/ty/issues/256#issuecomment-3140776680, but as I see https://github.com/astral-sh/ruff/pull/20359 did not fix either of those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-09-24 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-24 14:36</div>
+            <div class="timeline-body"><p>Yes, I think we can close this as a variation of https://github.com/astral-sh/ty/issues/256#issuecomment-3140776680. But thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-24 14:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>report an error when passing a tuple with `None` in an `isinstance` check - astral-sh/ty #620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>report an error when passing a tuple with `None` in an `isinstance` check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/620">#620</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-06-10 10:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-10 10:47</div>
+            <div class="timeline-body"><pre><code class="language-py">if isinstance(None, (int, None)): # no error, crashes at runtime
+    ...
+</code></pre>
+<pre><code>TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
+</code></pre>
+<p>https://play.ty.dev/678e67c5-5f1c-4221-aa90-ca9ed58d1136</p>
+<p>confusingly, it's valid if you use union syntax instead, but that's not supported by ty yet (#122):</p>
+<pre><code class="language-py">if isinstance(None, int | None):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-10 12:15</div>
+            <div class="timeline-body"><p>You can pass literally anything as the second argument to <code>isinstance()</code> right now, and ty won't complain 😆 https://play.ty.dev/998df323-c622-4ac8-8185-6f022627cd4e</p>
+<p>The reason is that typeshed <a href="https://github.com/python/typeshed/blob/0db0486fe6a0eb6b4ebf1256fe0afe0b95e2dc36/stdlib/builtins.pyi#L1527-L1533">uses an old-style type alias</a> for the annotation of the second parameter, and we don't support those yet -- so we incorrectly infer that the second parameter is annotated with <code>Any</code>, and allow all types to be passed into that parameter.</p>
+<p>In general, ty <a href="https://play.ty.dev/f386d0d9-c50e-469a-85ea-ceaf492243ae">is aware</a> that <code>None</code> is not an instance of <code>type</code> (we special-case <code>None</code> much less than some other type checkers), so I expect this issue to resolve itself naturally when we add support for type aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-10 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-21 00:08</div>
+            <div class="timeline-body"><p>This will not be fixed by https://github.com/astral-sh/ruff/pull/21394 because it also depends on full support for recursive type aliases; this is tracked in https://github.com/astral-sh/ty/issues/1604</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:10 UTC
+    </footer>
+</body>
+</html>

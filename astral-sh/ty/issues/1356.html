@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call expression type context should affect function argument inference - astral-sh/ty #1356</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Call expression type context should affect function argument inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1356">#1356</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-10-14 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-14 20:36</div>
+            <div class="timeline-body"><p>Currently, the only type context we have access to when inferring function arguments is the annotated parameter type. However, the call expression annotation is also relevant, e.g.,</p>
+<pre><code class="language-py">def id[T](x: T) -&gt; T:
+    return x
+
+def _(i: int):
+    x: list[int | None] = id([i])
+    reveal_type(x)   # revealed (main): list[int | None] | list[Unknown | int] 
+</code></pre>
+<p>The problem is that we currently infer function arguments before the specializing the function call, and so the type context when inferring the list expression is still a typevar. On the other hand, we use the inferred argument types to infer the specialization, so there's a bit of a circular dependency here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @ibraheemdev on 2025-10-14 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 03:34</div>
+            <div class="timeline-body"><p>Interestingly, this particular example would be resolved by https://github.com/astral-sh/ty/issues/136, but something like a <code>TypedDict</code> annotation would not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2025-10-17 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @ibraheemdev on 2025-10-17 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-11-12 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersections of multiple synthesized protocols should be merged together into a single synthesized protocol - astral-sh/ty #338</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intersections of multiple synthesized protocols should be merged together into a single synthesized protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/338">#338</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-12 23:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 23:31</div>
+            <div class="timeline-body"><p>Currently we reveal the following here:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def f(x: object):
+    if hasattr(x, &quot;foo&quot;) and hasattr(x, &quot;bar&quot;):
+        reveal_type(x)  # revealed: &lt;Protocol with members 'foo'&gt; &amp; &lt;Protocol with members 'bar'&gt;
+</code></pre>
+<p>https://play.ty.dev/6eba5550-5bb9-4481-a3e6-7a616a09c3a3</p>
+<p>What would be better would be if we merged the two synthesized protocols together into a single synthesized protocol:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def f(x: object):
+    if hasattr(x, &quot;foo&quot;) and hasattr(x, &quot;bar&quot;):
+        reveal_type(x)  # revealed: &lt;Protocol with members 'foo', 'bar'&gt;
+</code></pre>
+<p>This could be implemented as part of the logic in our <code>IntersectionBuilder</code>. We would only want to implement the change for synthesized protocols, not for class-based protocols.</p>
+<p>The reasons for merging them together are:</p>
+<ul>
+<li>the merged versions more readable in its display</li>
+<li>it will probably be better for our performance</li>
+</ul>
+<p>However, I don't think we should implement this change until we start considering the types of protocol members for assignability/subtyping/equivalence. That will lead to significant changes in the inner structure of synthesized protocols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-05-12 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-12 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-12 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-05-14 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-08-15 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @AlexWaygood on 2025-10-17 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

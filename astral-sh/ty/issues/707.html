@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attribute &quot;Problem&quot; [unresolved-attribute] - astral-sh/ty #707</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attribute &quot;Problem&quot; [unresolved-attribute]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/707">#707</a>
+        opened by <a href="https://github.com/Julian-J-S">@Julian-J-S</a>
+        on 2025-06-26 08:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Julian-J-S">@Julian-J-S</a> on 2025-06-26 08:51</div>
+            <div class="timeline-body"><p>I am getting a type error and I am not sure if its on <code>ty</code> or some fancy &quot;hacks&quot; in the library the <code>ty</code> does not understand (yet)  😆</p>
+<pre><code class="language-python">from databricks.connect import DatabricksSession
+
+spark = DatabricksSession.builder.getOrCreate()
+</code></pre>
+<h2>mypy &amp; pyright</h2>
+<p>They think its fine ✅</p>
+<h2>ty</h2>
+<pre><code>error[unresolved-attribute]: Attribute `builder` can only be accessed on instances, not on the class object `&lt;class 'DatabricksSession'&gt;` itself.
+ --&gt; zzz.py:4:9
+  |
+4 | spark = DatabricksSession.builder.getOrCreate()
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<h2>pyrefly</h2>
+<pre><code>ERROR Instance-only attribute `builder` of class `DatabricksSession` is not visible on the class [missing-attribute]
+ --&gt; /Users/juliansteden/work/databricks/dgdab/zzz.py:4:9
+  |
+4 | spark = DatabricksSession.builder.getOrCreate()
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+</code></pre>
+<h2>Pylance</h2>
+<p>seems to be fine with it, as I get normal autocomplete and also docstrings</p>
+<p><img width="526" alt="Image" src="https://github.com/user-attachments/assets/f2546c10-441e-4816-b5ff-bc475025f637" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 14:34</div>
+            <div class="timeline-body"><p>This is how <code>DatabricksSession</code> declares the attribute:</p>
+<pre><code class="language-py">class DatabricksSession:
+    # […]
+
+    # This is a class property used to create a new instance of :class:DatabricksSession.Builder.
+    # Autocompletion for VS Code breaks when usign the custom @classproperty decorator. Hence,
+    # we initialize this later, by explicitly calling the classproperty decorator.
+    builder: &quot;DatabricksSession.Builder&quot;
+    &quot;&quot;&quot;Create a new instance of :class:DatabricksSession.Builder&quot;&quot;&quot;
+
+
+DatabricksSession.builder = classproperty(lambda cls: cls.Builder())
+</code></pre>
+<p>From ty's perspective, the <code>builder</code> attribute is not bound on the class, only declared. We currently consider these attribute to only be available on instances.</p>
+<p>This is similar to https://github.com/astral-sh/ty/issues/384#issuecomment-2923413007 (see that specific comment for the planned resolution).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-26 14:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

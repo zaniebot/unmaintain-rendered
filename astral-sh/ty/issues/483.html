@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect `invalid-return-type` in type-preserving generic mapping function branching on runtime type - astral-sh/ty #483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect `invalid-return-type` in type-preserving generic mapping function branching on runtime type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/483">#483</a>
+        opened by <a href="https://github.com/shilch">@shilch</a>
+        on 2025-05-22 08:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shilch">@shilch</a> on 2025-05-22 08:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Following function is flagged incorrectly(?) my ty:</p>
+<pre><code class="language-python">def func[T](val: T) -&gt; T:
+    if type(val) is str:
+        return ''
+    return val
+</code></pre>
+<p>The following output is generated:</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+ --&gt; test.py:1:24
+  |
+1 | def func[T](val: T) -&gt; T:
+  |                        - Expected `T` because of return type
+2 |     if type(val) is str:
+3 |         return ''
+  |                ^^ expected `T`, found `Literal[&quot;&quot;]`
+4 |     return val
+  |
+info: rule `invalid-return-type` is enabled by default
+</code></pre>
+<p>This behavior is consistent with mypy but looks erroneous: https://github.com/python/mypy/issues/12989#issuecomment-1691226161</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-05-22 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-05-22 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 14:34</div>
+            <div class="timeline-body"><p>Thanks for the report! Our behavior here is consistent with both mypy and pyright.</p>
+<p>I think the requested behavior here is safe only if you do a &quot;type(...) is&quot; check (not e.g. an <code>isinstance</code> check which would permit subclasses). (This means it would also require that we add support for &quot;exact&quot; instance types which exclude subclasses.)</p>
+<p>It also requires ensuring that a generic function typevar can never be solved to a more precise type than what can be determined at runtime via <code>type(...) is</code>. For example, a typevar can never be solved to a literal type (currently we will). This also wouldn't work in any case involving a generic type instead of <code>str</code>, since generics are erased at runtime and thus can't be checked via <code>type(...) is</code>.</p>
+<p>All in all, I don't think it's out of the question that we might someday consider this, but I'm not sure we will ever support it, and it's certainly low priority for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

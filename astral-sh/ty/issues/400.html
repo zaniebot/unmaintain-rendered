@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: Type Checker Error: &quot;no-matching-overload&quot; for dataclasses.asdict with keyword argument unpacking - astral-sh/ty #400</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: Type Checker Error: &quot;no-matching-overload&quot; for dataclasses.asdict with keyword argument unpacking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/400">#400</a>
+        opened by <a href="https://github.com/jonathanreichhealthscope">@jonathanreichhealthscope</a>
+        on 2025-05-15 06:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonathanreichhealthscope">@jonathanreichhealthscope</a> on 2025-05-15 06:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The type checker incorrectly reports a &quot;no-matching-overload&quot; error for <code>dataclasses.asdict</code> when its result is used for keyword argument unpacking (<code>**asdict(params)</code>) during the instantiation of a class, even when the <code>params</code> object is a valid dataclass instance and <code>asdict</code> is imported correctly.</p>
+<h2>Steps to Reproduce</h2>
+<p>An MVE:</p>
+<pre><code class="language-python">import logging
+from dataclasses import asdict, dataclass
+
+class DummyModel:
+    def __init__(self, model_path: str, verbose: bool = False, **kwargs):
+        self.model_path = model_path
+        self.verbose = verbose
+        self.other_params = kwargs
+
+@dataclass
+class ModelParams:
+    max_tokens: int = 10
+    n_gpu_layers: int = -1
+    temperature: float = 0.0
+
+def init_dummy_model(model_path: str, **kwargs):
+    params = ModelParams(**kwargs)
+
+    try:
+        # The following line triggers the &quot;no-matching-overload&quot; error
+        # when checked with ty/Ruff
+        model_instance = DummyModel(model_path=model_path, verbose=True, **asdict(params))
+        print(&quot;Model initialized successfully.&quot;)
+    except Exception as e:
+        print(f&quot;Error during model initialization: {e}&quot;)
+        raise
+
+if __name__ == &quot;__main__&quot;:
+    dummy_path = &quot;dummy_model.gguf&quot;
+    with open(dummy_path, &quot;w&quot;) as f:
+        f.write(&quot;This is a dummy model file.&quot;)
+
+    init_dummy_model(model_path=dummy_path, max_tokens=100, temperature=0.7)
+</code></pre>
+<h2>Expected Behavior</h2>
+<p>The type checker should not report any errors, as <code>asdict(params)</code> returns a <code>dict[str, Any]</code>, which is valid for keyword argument unpacking (<code>**</code>) when instantiating <code>DummyModel</code> (or <code>LlamaCpp</code> in the original context). The <code>DummyModel</code> (and <code>LlamaCpp</code>) is designed to accept arbitrary keyword arguments.</p>
+<h2>Actual Behavior</h2>
+<p>The type checker reports a <code>no-matching-overload</code> error for the <code>asdict(params)</code> call on the line where <code>DummyModel</code> is instantiated:</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Type Checker Error: "no-matching-overload" for dataclasses.asdict with keyword argument unpacking" to "Bug: Type Checker Error: "no-matching-overload" for dataclasses.asdict with keyword argument unpacking" by @jonathanreichhealthscope on 2025-05-15 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-15 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @sharkdp on 2025-05-15 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-15 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 09:03</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<blockquote>
+<p>which is valid for keyword argument unpacking (<code>**</code>)</p>
+</blockquote>
+<p>The issue here is not with argument unpacking (although we also don't support this yet, see #247). The problem is that we didn't recognize that dataclass instances were instances of the <code>DataclassInstance</code> protocol (which is used for the parameter type of <code>dataclasses.asdict</code>). This should be fixed by https://github.com/astral-sh/ruff/pull/18115.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-15 12:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

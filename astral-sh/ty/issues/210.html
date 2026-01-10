@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rethink public types of symbols - astral-sh/ty #210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rethink public types of symbols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/210">#210</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-01-27 21:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-27 21:16</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/15676 currently has the following mdtest with incorrect results:</p>
+<pre><code class="language-py">def top_level_return(cond1: bool, cond2: bool):
+    x = 1
+
+    def g():
+        reveal_type(x)  # revealed: Unknown | Literal[1, 2, 3]
+
+    if cond1:
+        if cond2:
+            x = 2
+        else:
+            x = 3
+    return
+
+def return_from_if(cond1: bool, cond2: bool):
+    x = 1
+
+    def g():
+        reveal_type(x)  # revealed: Unknown | Literal[1]
+
+    if cond1:
+        if cond2:
+            x = 2
+        else:
+            x = 3
+        return
+
+def return_from_nested_if(cond1: bool, cond2: bool):
+    x = 1
+
+    def g():
+        reveal_type(x)  # revealed: Unknown | Literal[1, 3]
+
+    if cond1:
+        if cond2:
+            x = 2
+            return
+        else:
+            x = 3
+</code></pre>
+<p>We should determine how we want to handle the assignments in this scope.</p>
+<p>One possibility (which mimics our current behavior for module-level scopes) would be to reveal <code>Literal[1, 2, 3]</code> for all three.  (This would require changes to our terminal statement support: we currently purposefully resolve the <code>x</code> use in the nested function relative to the end of <code>f</code>'s scope, but the <code>return</code> statements are preventing some of the bindings from being visible there.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-27 21:58</div>
+            <div class="timeline-body"><p>Just to be clear, the &quot;should reveal&quot; assertions in the example above are based on what we would currently reveal for a similarly-defined symbol in a module level scope, if we don't consider the <code>return</code> statements. That doesn't mean they represent what we <em>should</em> reveal. It's a bit tricky to say what we should reveal, because it all depends on how much analysis we attempt of where the nested scope can possibly be called from. In all three examples above, a sufficiently powerful analysis would be able to declare that <code>g</code> is never called, and doesn't escape from the local scope to be called elsewhere, so we may as well consider the body of <code>g</code> itself to be unreachable code.</p>
+<p>Barring any attempt to analyze where the nested scope can be called from, I think the starting point has to be that all definitions are visible, regardless of control flow. (This is effectively modeling that <code>g</code> could be, perhaps transitively, called from anywhere, including e.g. after <code>x = 2</code> and before <code>return</code> in the third example, meaning even <code>Literal[2]</code> should be considered a possible value. Of course we can see that in fact <code>g</code> can't be called there, but that's starting to &quot;analyze where the nested scope can be called from&quot;.)</p>
+<p>Also, for symbols in function-like scopes, if we don't see a nested scope with a <code>nonlocal</code> statement for that symbol and assignment to it, we can remove the union with <code>Unknown</code>, because nothing outside the scope can reassign the symbol, even if it is not declared.</p>
+<p>All of that is to say: we have a lot of design work to do on types for closed-over variables, and &quot;the status quo before terminal support&quot;, as documented in the tests shown above, is not a very good guide to the desired eventual behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-28 21:32</div>
+            <div class="timeline-body"><blockquote>
+<p>All of that is to say: we have a lot of design work to do on types for closed-over variables, and &quot;the status quo before terminal support&quot;, as documented in the tests shown above, is not a very good guide to the desired eventual behavior.</p>
+</blockquote>
+<p>I've updated the issue description to not presume what behavior we'll want to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-08 06:38</div>
+            <div class="timeline-body"><p>Just adding a note here that the changes in https://github.com/astral-sh/ruff/pull/17169 can probably be reverted after we fixed this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 09:16</div>
+            <div class="timeline-body"><p>I think this public-types issue does not just affect function-like scopes. One false-positive example that I see relatively often is the following:</p>
+<pre><code class="language-py">def flag() -&gt; bool:
+    return True
+
+
+if flag():
+    x = 1
+
+    def f() -&gt; int:
+        return x  # Red Knot: Name `x` used when possibly not defined
+
+    # Function only used inside this branch
+    f()
+</code></pre>
+<p>It also requires a more sophisticated analysis of the location at which the inner function is defined and called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Rethink public types of symbols in function-like scopes" to "Rethink public types of symbols in function-like scopes" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 17:47</div>
+            <div class="timeline-body"><p>Great example case in #389 (closed as duplicate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rethink public types of symbols in function-like scopes" to "Rethink public types of symbols" by @carljm on 2025-05-28 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-10 09:48</div>
+            <div class="timeline-body"><p>a more simplified example:</p>
+<pre><code class="language-py">a = 1
+
+
+def foo():
+    reveal_type(a)  # Unknown | Literal[1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-10 10:55</div>
+            <div class="timeline-body"><blockquote>
+<p>a more simplified example:</p>
+<p>a = 1</p>
+<p>def foo():
+reveal_type(a)  # Unknown | Literal[1]</p>
+</blockquote>
+<p>The <code>Unknown | Literal[1]</code> here is intended, see https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @carljm on 2025-06-17 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-26 10:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:56 UTC
+    </footer>
+</body>
+</html>

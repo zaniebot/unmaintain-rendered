@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty fails on non-existing extra-paths - astral-sh/ty #1197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty fails on non-existing extra-paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1197">#1197</a>
+        opened by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a>
+        on 2025-09-17 12:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-09-17 12:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Context</h3>
+<p>I have a project which might run in 1 of 2 Docker containers:</p>
+<ul>
+<li>Ubuntu 22 with ROS2 Humble &amp; Python 3.10</li>
+<li>Ubuntu 24 with ROS2 Jazzy &amp; Python 3.12</li>
+</ul>
+<p>The relevant part of my configuration is as follows:</p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.ty.environment]
+extra-paths = [
+    &quot;/opt/ros/humble/lib/python3.10/site-packages&quot;,
+    &quot;/opt/ros/humble/local/lib/python3.10/dist-packages&quot;,
+    &quot;/opt/ros/jazzy/lib/python3.12/site-packages&quot;,
+    &quot;/opt/ros/jazzy/local/lib/python3.12/dist-packages&quot;,
+]
+</code></pre>
+<p>Depending on the image, the first or the last 2 paths will exist inside the container.</p>
+<h3>Problem</h3>
+<p>Ty fails because at least 1 of these paths does not exist. I think it would make more sense to print a warning and continue searching in the remaining directories.</p>
+<h3>Minimal reproducible example</h3>
+<pre><code class="language-bash">ty check --extra-search-path &quot;non_existing/path&quot;
+# ty failed
+#   Cause: non_existing/path does not point to a directory
+</code></pre>
+<p><em>I am also a bit confused as to why the name of the argument is <code>extra-search-path</code> in the CLI &amp; <code>extra-paths</code> in the configuration file.</em></p>
+<h3>Version</h3>
+<p>ty 0.0.1a20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-17 15:01</div>
+            <div class="timeline-body"><p>Yes, I agree that having a nonexistent extra-path in your config should not be a fatal error, just a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-09-17 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-09-17 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-17 15:08</div>
+            <div class="timeline-body"><p>I'd like to hear @AlexWaygood opinion here before we make any change. The concern here is that invalid configurations may be destructive when ty starts applying fixes.</p>
+<p>It also seems somewhat annoying to have warnings that are &quot;okay&quot; to ignore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-09-17 21:04</div>
+            <div class="timeline-body"><p>@MichaReiser, I agree that my suggested warning could be suppressed.</p>
+<p>I'm not quite sure how ty would apply destructive fixes here. Doesn't it only touch project src modules, and not the ones defined in the environment by extra-paths?</p>
+<p>To clarify, the Python modules under the ros folders are third-party dependencies of my project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-17 21:17</div>
+            <div class="timeline-body"><p>As a user, I don't think I'd want ty to guess about my intention if I made a mistake in my configuration. I think I'd want to have ty immediately exit and tell me that I probably made a typo.</p>
+<p>I'm confused about two things in this issue report:</p>
+<ol>
+<li>Why is the <code>extra-paths</code> setting being used to point to <code>site-packages</code>? Extra paths come before even the vendored stdlib stubs in module resolution; you shouldn't generally use <code>--extra-path</code> to point to the <code>site-packages</code> directory in your virtual environment. It would be better to use <code>--python</code> to add these paths to ty's list of search paths.</li>
+<li>Why is it necessary to have these extra search paths be encoded in ty's persistent configuration (pyproject.toml)? That seems like an odd choice if you need the extra paths to be different in different invocations of ty -- normally you'd use CLI flags or environment variables for the &quot;dynamic&quot; bits of your configuration that can vary depending on the situation in which a tool is invoked. Would a viable solution here be to pass these extra search paths to ty using CLI flags -- could you use <code>--extra-search-path=&quot;/opt/ros/humble/local/lib/python3.10/dist-packages&quot;</code> in the dockerfile for one image and <code>--extra-search-path=&quot;/opt/ros/jazzy/local/lib/python3.12/dist-packages&quot;</code> in the dockerfile if you're using the other image?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-09-18 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-09-18 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-09-18 15:05</div>
+            <div class="timeline-body"><p>@AlexWaygood, I did not set <code>--python</code> but <code>VIRTUAL_ENV</code> is pointing explicitly to the virtual environment, according to:</p>
+<blockquote>
+<p>If [<code>--python</code> is] not specified, ty will attempt to infer it from the <code>VIRTUAL_ENV</code> or <code>CONDA_PREFIX</code> environment variables, or discover a <code>.venv</code> directory in the project root or working directory.</p>
+</blockquote>
+<p>It is not possible to add multiple paths to the <code>--python</code> argument, right?</p>
+<p>The ROS packages are installed in the Docker image before adding uv and install project dependencies, so they do not show up with <code>uv pip list</code>. At runtime they can be found because the site/dist-packages are in <code>PYTHONPATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-18 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>It is not possible to add multiple paths to the <code>--python</code> argument, right?</p>
+</blockquote>
+<p>Not currently, but I'd be willing to consider that feature request! However...</p>
+<blockquote>
+<p>The ROS packages are installed in the Docker image before adding uv and install project dependencies, so they do not show up with <code>uv pip list</code>. At runtime they can be found because the site/dist-packages are in <code>PYTHONPATH</code>.</p>
+</blockquote>
+<p>We're just about to add support for reading <code>PYTHONPATH</code> (https://github.com/astral-sh/ruff/pull/20441) so maybe that helps your use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-09-18 15:26</div>
+            <div class="timeline-body"><p>That would help my case! 🎆</p>
+<p><em>Please note that the existence of a directory in the <code>PYTHONPATH</code> is <a href="https://github.com/astral-sh/ruff/pull/20441/files#diff-be0c7f11f9a2dc135ba797638026917e6316512e0a456a3a300370f99b0eec19R298">optional</a>, while for <code>extra_paths</code> it is required. So even though my environment variable only lists the 2 correct folders, it could contain all 4 and still succeed.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 15:46</div>
+            <div class="timeline-body"><p>We've now added support for <code>PYTHONPATH</code>, and we've also updated the <code>extra-paths</code> documentation to be clearer that it's not intended for you to point to a virtual environment using this option. I'd still be open to allowing <code>python</code> to take a list of paths, but IIUC adding support for <code>PYTHONPATH</code> fixes this specific issue. So let's wait on that until there's a need for it.</p>
+<p>We still need to improve our docs for <code>PYTHONPATH</code>, but that's tracked in https://github.com/astral-sh/ty/issues/1219</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-06 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-10-07 13:02</div>
+            <div class="timeline-body"><p>If I want to test this, do I need to wait for the next release (<code>ty==v0.0.1.a22</code>), or is this available with the latest Ruff version (<code>ruff==v0.13.3</code>)? I'm confused because ty is being developed in the ruff submodule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 13:09</div>
+            <div class="timeline-body"><p>Sorry for the confusion. You'll need to wait for the next release -- our last release was on September 19th, and support for <code>PYTHONPATH</code> was merged on September 20th. We should definitely be cutting a release this week -- sorry that it's been a while!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-10-07 13:24</div>
+            <div class="timeline-body"><p>No problem! I will keep an eye on the releases and come back to this issue if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GarbenTangheVintecc">@GarbenTangheVintecc</a> on 2025-10-10 15:54</div>
+            <div class="timeline-body"><p>@AlexWaygood, works like a charm with <code>ty==v0.0.1.a22</code>!
+I could remove all <code>extra-path</code> entries, since the ROS modules are found through <code>PYTHONPATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-10 15:55</div>
+            <div class="timeline-body"><p>Great to hear @GarbenTangheVintecc, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

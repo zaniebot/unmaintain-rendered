@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-argument-type` with `type[]` generic inside union  - astral-sh/ty #1712</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-argument-type` with `type[]` generic inside union </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1712">#1712</a>
+        opened by <a href="https://github.com/aidandj">@aidandj</a>
+        on 2025-12-01 23:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aidandj">@aidandj</a> on 2025-12-01 23:17</div>
+            <div class="timeline-body"><p>Starting in alpha 29 this code started erroring.</p>
+<p>https://play.ty.dev/45e470fd-853e-4d61-9cfa-655806adc789</p>
+<pre><code class="language-py">from typing import Union, Dict, Type, TypeGuard, TypeVar
+
+class Base: ...
+
+T = TypeVar(&quot;T&quot;, bound=Base)
+
+
+def is_class_dict(
+    val: Union[Dict[Type[T], str], Dict[str, str]],
+):
+    for k in val.keys(): # Argument to bound method `keys` is incorrect: Argument type `dict[type[T@is_class_dict], str]` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
+        pass
+</code></pre>
+<p><em>Originally posted by @aidandj in https://github.com/astral-sh/ty/issues/1685#issuecomment-3592196876</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-02 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-02 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 07:53</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I further minified this to</p>
+<pre><code class="language-py">def f[T](val: dict[type[T], str]):
+    val.keys()
+</code></pre>
+<p>https://play.ty.dev/7e20a0a6-a6a0-4296-832c-4792bc5be2bd</p>
+<p>We apparently fail to see that <code>type[T@f]</code> is assignable to the (inferable) <code>_KT@dict</code>.</p>
+<p>FYI @ibraheemdev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-12-02 17:26</div>
+            <div class="timeline-body"><p>Similar place in my code, wondering if this is related or separate. Assuming its caused by the failure to assign to the dict type again. Can file another issue if separate:</p>
+<p>https://play.ty.dev/5a17c0d8-10a9-41a4-9c46-0206c3904935</p>
+<pre><code>from typing import Union, Dict, Type, TypeGuard, TypeVar
+
+class Base: ...
+
+T = TypeVar(&quot;T&quot;, bound=Base)
+
+def iterate(d: Union[Dict[str, int] | Dict[Type[T], int]]):
+    for v in d: # Object of type `dict[str, int] | dict[type[T@iterate], int]` may not be iterable (not-iterable) [Ln 8, Col 14]
+        print(d)
+</code></pre>
+<p>And similarly minified to yours</p>
+<p>https://play.ty.dev/cbe7c333-eb94-47dc-8809-31808956eb45</p>
+<pre><code>def f[T](val: dict[type[T], str]):
+    for v in val: # Object of type `dict[type[T@f], str]` is not iterable (not-iterable) [Ln 2, Col 14]
+        print(v)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-12-02 23:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:47 UTC
+    </footer>
+</body>
+</html>

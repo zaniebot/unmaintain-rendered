@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go to Definition Missing correct path - astral-sh/ty #1397</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Go to Definition Missing correct path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1397">#1397</a>
+        opened by <a href="https://github.com/YoniChechik">@YoniChechik</a>
+        on 2025-10-19 09:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/YoniChechik">@YoniChechik</a> on 2025-10-19 09:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When using &quot;Go to Definition&quot; (Ctrl+Click) on a function in a Python project with git worktrees, ty navigates to the definition in a different worktree instead of the current worktree.</p>
+<h2>Repository Structure</h2>
+<p>We have a Python project using git worktrees. The issue occurs in both configurations:</p>
+<h3>Configuration 1: Worktrees in Separate Directory</h3>
+<pre><code>/workspace/
+├── my-project/                            (main repo, main branch)
+│   ├── .git/                              (main .git directory)
+│   │   └── worktrees/                     (git worktree metadata)
+│   │       ├── feature-branch-1/
+│   │       └── feature-branch-2/
+│   ├── mypackage/                         (Python package)
+│   │   ├── __init__.py
+│   │   ├── module.py
+│   │   └── utils.py
+│   └── tests/
+│
+└── worktrees/                             (worktrees directory)
+    ├── feature-branch-1/                  (worktree, feature branch)
+    │   ├── .git                           (file pointing to main repo)
+    │   ├── mypackage/
+    │   │   ├── __init__.py
+    │   │   ├── module.py                  (modified in this branch)
+    │   │   └── utils.py
+    │   └── tests/
+    │
+    └── feature-branch-2/                  (worktree, another feature branch)
+        ├── .git                           (file pointing to main repo)
+        ├── mypackage/
+        │   ├── __init__.py
+        │   ├── module.py                  (modified in this branch)
+        │   └── utils.py
+        └── tests/
+</code></pre>
+<h3>Configuration 2: Worktrees Inside Main Repo (also affected)</h3>
+<pre><code>/workspace/my-project/
+├── .git/                                  (main .git directory)
+├── mypackage/                             (main branch code)
+│   ├── __init__.py
+│   ├── module.py
+│   └── utils.py
+├── tests/
+└── worktrees/                             (worktrees inside main repo)
+    ├── feature-branch-1/
+    │   ├── .git                           (file pointing to main repo)
+    │   ├── mypackage/
+    │   │   ├── module.py                  (modified)
+    │   │   └── utils.py
+    │   └── tests/
+    └── feature-branch-2/
+        └── ...
+</code></pre>
+<h2>Steps to Reproduce</h2>
+<ol>
+<li>Open VS Code in a git worktree directory (e.g., <code>/workspace/worktrees/feature-branch-1/</code>)</li>
+<li>Open a Python file that imports and uses a function from your package (e.g., <code>from mypackage.module import some_function</code>)</li>
+<li>Ctrl+Click (or F12) on the function name to &quot;Go to Definition&quot;</li>
+</ol>
+<h2>Expected Behavior</h2>
+<p>ty should navigate to the function definition in the <strong>current worktree</strong> at:</p>
+<pre><code>/workspace/worktrees/feature-branch-1/mypackage/module.py
+</code></pre>
+<h2>Actual Behavior</h2>
+<p>ty sometimes navigates to the function definition in a <strong>different worktree</strong> or the main repo at:</p>
+<pre><code>/workspace/worktrees/feature-branch-2/mypackage/module.py
+</code></pre>
+<p>or</p>
+<pre><code>/workspace/my-project/mypackage/module.py
+</code></pre>
+<h2>Impact</h2>
+<p>This is problematic because:</p>
+<ol>
+<li>Different worktrees contain different branch implementations of the same functions</li>
+<li>Developers end up viewing/editing the wrong version of code</li>
+<li>It breaks the expected isolation between branches when using worktrees</li>
+</ol>
+<h2>Additional Context</h2>
+<ul>
+<li>All worktrees share the same <code>.git</code> directory structure (normal git worktree behavior)</li>
+<li>The issue occurs regardless of whether worktrees are in a separate directory or nested within the main repo</li>
+<li>Python environment is properly configured with the package installed in editable mode</li>
+</ul>
+<h2>Suggested Fix</h2>
+<p>ty should respect the currently open workspace folder and prioritize symbol resolution within that workspace, treating each worktree as an isolated environment.</p>
+<p>this also happens in pylance but I was hoping it will work properly in ty: https://github.com/microsoft/pylance-release/issues/7642</p>
+<p>example repo for reproduction and actual visual bug can be seen here: https://github.com/microsoft/pylance-release/issues/7642#issuecomment-3412364298</p>
+<h3>Version</h3>
+<p>ty vscode version 2025.47.12891834</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-19 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Go to Definition Mising correct path" to "Go to Definition Missing correct path" by @AlexWaygood on 2025-10-19 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @MichaReiser on 2025-11-14 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostics for invalid `await` expressions - astral-sh/ty #919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Diagnostics for invalid `await` expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/919">#919</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-31 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-31 10:55</div>
+            <div class="timeline-body"><p>We currently don't emit any errors in <code>await xyz</code> expressions if <code>xyz</code> is not awaitable. We should probably do something similar to what we do for iterators or context managers, where we emit helpful diagnostics if calls to respective dunder methods fail. For example:</p>
+<pre><code class="language-py">class NotAwaitable: ...
+
+class NotAwaitable2:
+    # not async!
+    def __await__(self):
+        pass
+
+async def main():
+    x = await 1  # should be an error
+    y = await NotAwaitable()  # should be an error
+    z = await NotAwaitable2()  # should be an error
+</code></pre>
+<p>The entrypoint to implement this is here: https://github.com/astral-sh/ruff/blob/27b03a9d7bf779049585bb6cfbf229f18352572d/crates/ty_python_semantic/src/types.rs#L4868</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @sharkdp on 2025-07-31 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @sharkdp on 2025-07-31 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-07-31 22:33</div>
+            <div class="timeline-body"><p>I'd love to tackle this one and see where it gets me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @theammir by @sharkdp on 2025-08-01 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-02 19:57</div>
+            <div class="timeline-body"><p>What lint do we actually report for awaiting an improperly <code>Awaitable</code> type?
+For context managers, everything technically falls under <code>invalid-context-manager</code> (possibly unbound or unimplemented <code>__(a)enter__</code>/<code>__(a)exit__</code>, or implemented incorrectly).</p>
+<p>As I see it, there are 3 erroneous cases for <code>__await__</code> as well: missing, possibly unbound, implemented incorrectly (cannot be called with no extra arguments, returns a type that is known not to be a generator).
+I couldn't find a dedicated lint for <code>await</code>-related errors, so does it make sense to use a combination of <code>unresolved-attribute</code>, <code>possibly-unbound-implicit-call</code> etc., or do we need a new lint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-02 23:06</div>
+            <div class="timeline-body"><p>Adding a new lint sounds like a good idea to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-15 07:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

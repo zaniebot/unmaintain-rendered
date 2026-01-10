@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic: Offset n is inside token FStringMiddle - astral-sh/ty #1828</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic: Offset n is inside token FStringMiddle</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1828">#1828</a>
+        opened by <a href="https://github.com/correctmost">@correctmost</a>
+        on 2025-12-09 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/correctmost">@correctmost</a> on 2025-12-09 21:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty crashes when checking this fuzzed code:</p>
+<pre><code class="language-python">(c: int = 1,f&quot;&quot;&quot;{d=[
+def a(
+class
+</code></pre>
+<pre><code>error[panic]: Panicked at crates/ruff_python_ast/src/token/tokens.rs:180:13 when checking `/home/user/fstring.py`: `Offset 28 is inside token `FStringMiddle 27..34 (flags = DOUBLE_QUOTES | TRIPLE_QUOTED_STRING | F_STRING)``
+</code></pre>
+<h3>Version</h3>
+<p>5c02e0b4 w/ astral-sh/ruff@0bec5c0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-12-09 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @AlexWaygood on 2025-12-09 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 21:51</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<p>The relevant bits from the stack trace</p>
+<pre><code>11: ruff_python_ast::token::tokens::Tokens::after
+             at /Users/micha/astral/ruff/crates/ruff_python_ast/src/token/tokens.rs:180:13
+  12: ruff_python_ast::token::parentheses::parentheses_iterator
+             at /Users/micha/astral/ruff/crates/ruff_python_ast/src/token/parentheses.rs:30:16
+  13: ty_python_semantic::types::diagnostic::report_invalid_assignment
+             at /Users/micha/astral/ruff/crates/ty_python_semantic/src/types/diagnostic.rs:2424:9
+  14: ty_python_semantic::types::infer::builder::TypeInferenceBuilder::add_declaration_with_binding
+             at /Users/micha/astral/ruff/crates/ty_python_semantic/src/types/infer/builder.rs:1828:21
+  15: ty_python_semantic::types::infer::builder::TypeInferenceBuilder::infer_annotated_assignment_definition
+             at /Users/micha/astral/ruff/crates/ty_python_semantic/src/types/infer/builder.rs:5846:22
+  16: ty_python_semantic::types::infer::builder::TypeInferenceBuilder::infer_region_definition
+             at /Users/micha/astral/ruff/crates/ty_python_semantic/src/types/infer/builder.rs:1274:22
+  17: ty_python_semantic::types::infer::builder::TypeInferenceBuilder::infer_region
+             at /Users/micha/astral/ruff/crates/ty_python_semantic/src/types/infer/builder.rs:520:61
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-09 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-09 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 22:00</div>
+            <div class="timeline-body"><p>AST</p>
+<pre><code>Module(
+    ModModule {
+        node_index: NodeIndex(None),
+        range: 0..33,
+        body: [
+            AnnAssign(
+                StmtAnnAssign {
+                    node_index: NodeIndex(None),
+                    range: 0..28,
+                    target: Name(
+                        ExprName {
+                            node_index: NodeIndex(None),
+                            range: 1..2,
+                            id: Name(&quot;c&quot;),
+                            ctx: Store,
+                        },
+                    ),
+                    annotation: Name(
+                        ExprName {
+                            node_index: NodeIndex(None),
+                            range: 4..7,
+                            id: Name(&quot;int&quot;),
+                            ctx: Load,
+                        },
+                    ),
+                    value: Some(
+                        Tuple(
+                            ExprTuple {
+                                node_index: NodeIndex(None),
+                                range: 10..28,
+                                elts: [
+                                    NumberLiteral(
+                                        ExprNumberLiteral {
+                                            node_index: NodeIndex(None),
+                                            range: 10..11,
+                                            value: Int(
+                                                1,
+                                            ),
+                                        },
+                                    ),
+                                    Subscript(
+                                        ExprSubscript {
+                                            node_index: NodeIndex(None),
+                                            range: 12..24,
+                                            value: FString(
+                                                ExprFString {
+                                                    node_index: NodeIndex(None),
+                                                    range: 12..19,
+                                                    value: FStringValue {
+                                                        inner: Single(
+                                                            FString(
+                                                                FString {
+                                                                    range: 12..19,
+                                                                    node_index: NodeIndex(None),
+                                                                    elements: [
+                                                                        Interpolation(
+                                                                            InterpolatedElement {
+                                                                                range: 16..19,
+                                                                                node_index: NodeIndex(None),
+                                                                                expression: Name(
+                                                                                    ExprName {
+                                                                                        node_index: NodeIndex(None),
+                                                                                        range: 17..18,
+                                                                                        id: Name(&quot;d&quot;),
+                                                                                        ctx: Load,
+                                                                                    },
+                                                                                ),
+                                                                                debug_text: Some(
+                                                                                    DebugText {
+                                                                                        leading: &quot;&quot;,
+                                                                                        trailing: &quot;=&quot;,
+                                                                                    },
+                                                                                ),
+                                                                                conversion: None,
+                                                                                format_spec: None,
+                                                                            },
+                                                                        ),
+                                                                    ],
+                                                                    flags: FStringFlags {
+                                                                        quote_style: Double,
+                                                                        prefix: Regular,
+                                                                        triple_quoted: true,
+                                                                        unclosed: true,
+                                                                    },
+                                                                },
+                                                            ),
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                            slice: Slice(
+                                                ExprSlice {
+                                                    node_index: NodeIndex(None),
+                                                    range: 21..24,
+                                                    lower: None,
+                                                    upper: Some(
+                                                        Name(
+                                                            ExprName {
+                                                                node_index: NodeIndex(None),
+                                                                range: 21..24,
+                                                                id: Name(&quot;def&quot;),
+                                                                ctx: Load,
+                                                            },
+                                                        ),
+                                                    ),
+                                                    step: None,
+                                                },
+                                            ),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 25..27,
+                                            func: Name(
+                                                ExprName {
+                                                    node_index: NodeIndex(None),
+                                                    range: 25..26,
+                                                    id: Name(&quot;a&quot;),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 26..27,
+                                                node_index: NodeIndex(None),
+                                                args: [],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                ],
+                                ctx: Load,
+                                parenthesized: false,
+                            },
+                        ),
+                    ),
+                    simple: false,
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+<p>Tokens</p>
+<pre><code>Lpar 0..1
+Name 1..2
+Colon 2..3
+Name 4..7
+Equal 8..9
+Int 10..11
+Comma 11..12
+FStringStart 12..16 (flags = DOUBLE_QUOTES | TRIPLE_QUOTED_STRING | F_STRING)
+Lbrace 16..17
+Name 17..18
+Equal 18..19
+Lsqb 19..20
+NonLogicalNewline 20..21
+Def 21..24
+Name 25..26
+Lpar 26..27
+FStringMiddle 27..33 (flags = DOUBLE_QUOTES | TRIPLE_QUOTED_STRING | F_STRING)
+Unknown 33..33
+Newline 33..33
+</code></pre>
+<p>What's interesting here is that we extend the assignment range to include the offset 28 but we skip offer the <code>FSTringMiddle</code> token. I'm not sure how we determine the offset 28, since there's no token at that offset. The assignment should either end at offset 27 or 33 but never in-between</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 07:29</div>
+            <div class="timeline-body"><p>I think the root cause here is that <code>TokenSource::re_lex_logical_token</code> edits tokens that the parser has already fully consumed.  I don't think we can do that because it inevitably leads to an inconsistency between the ranges the parser saw and the ranges in the new tokens. Not sure yet what the solution here is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 08:13</div>
+            <div class="timeline-body"><p>I think I know how to fix this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-11 10:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:51 UTC
+    </footer>
+</body>
+</html>

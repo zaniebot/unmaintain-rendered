@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic when building divergent tuple type for implicit instance attributes - astral-sh/ty #837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic when building divergent tuple type for implicit instance attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/837">#837</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2025-07-17 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2025-07-17 10:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>class PipelneStage(object:
+ def(  self
+ run,
+   if isinstance(run,PipelneStage) self._run_everywhere=  ,run._run_everywhere if r run
+</code></pre>
+<p>freeze ty, checked with normal default check command <code>ty check b.py</code></p>
+<p><a href="https://github.com/user-attachments/files/21293229/b.py.zip">b.py.zip</a></p>
+<h3>Version</h3>
+<p>ty unknown (39bcba418 2025-07-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> added by @AlexWaygood on 2025-07-17 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denivyruck">@denivyruck</a> on 2025-07-17 22:36</div>
+            <div class="timeline-body"><p>Hmmm it ran fine for me (no freeze):</p>
+<pre><code>cargo run -p ty -- check /Users/denivyruck/workspace/projects/ty/ruff/crates/ty_python_semantic/resources/mdtest/class/huehue.py
+   Compiling ty_python_semantic v0.0.0 (/Users/denivyruck/workspace/projects/ty/ruff/crates/ty_python_semantic)
+   Compiling ty_ide v0.0.0 (/Users/denivyruck/workspace/projects/ty/ruff/crates/ty_ide)
+   Compiling ty_project v0.0.0 (/Users/denivyruck/workspace/projects/ty/ruff/crates/ty_project)
+   Compiling ty_server v0.0.0 (/Users/denivyruck/workspace/projects/ty/ruff/crates/ty_server)
+   Compiling ty v0.0.0 (/Users/denivyruck/workspace/projects/ty/ruff/crates/ty)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.99s
+     Running `target/debug/ty check /Users/denivyruck/workspace/projects/ty/ruff/crates/ty_python_semantic/resources/mdtest/class/huehue.py`
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-syntax]
+ --&gt; crates/ty_python_semantic/resources/mdtest/class/huehue.py:1:26
+  |
+1 | class PipelneStage(object:
+  |                          ^ Expected ',', found ':'
+2 |     def(  self
+3 |         run,
+  |
+
+error[invalid-syntax]
+ --&gt; crates/ty_python_semantic/resources/mdtest/class/huehue.py:1:27
+  |
+1 | class PipelneStage(object:
+  |                           ^ Expected ')', found newline
+2 |     def(  self
+3 |         run,
+  |
+
+error[invalid-syntax]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-18 07:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmmm it ran fine for me (no freeze):</p>
+</blockquote>
+<p>I can reproduce the error.</p>
+<p>@qarmin Thank you for reporting this. Step by step (ensuring that it still hangs at every stage), I transformed your example into a valid-syntax program that shows the same effect:</p>
+<pre><code class="language-py">class C:
+    def f(self, other: &quot;C&quot;, flag: bool):
+        self.x = (1, other.x if flag else other)
+</code></pre>
+<p>Now we can see that this builds a divergent tuple type for <code>C.x</code>. So I am fairly confident that this is the same underlying issue as #765.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-18 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 16:29</div>
+            <div class="timeline-body"><p>The example in #765 no longer hangs on <code>main</code> (so the issue has been closed), but @sharkdp's example in https://github.com/astral-sh/ty/issues/837#issuecomment-3087582514 still does, so I'm reopening this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-07-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Freeze, when trying to check invalid python file" to "Hang when building divergent tuple type for implicit instance attributes" by @AlexWaygood on 2025-07-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2025-08-02 08:28</div>
+            <div class="timeline-body"><p>I'm not really able to determine the exact reason for the timeout, so I'm uploading this batch of files that are taking way too long to process, instead of creating new (potentially duplicate) issues - <a href="https://github.com/user-attachments/files/21571259/More.Freezes.zip">More Freezes.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-10 15:35</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">class C:
+    def f(self, other: &quot;C&quot;, flag: bool):
+        self.x = (1, other.x if flag else other)
+</code></pre>
+</blockquote>
+<p>The good news is that following https://github.com/astral-sh/ruff/commit/5a116e48c3dff2a52526258951785ff627d8fea2, we no longer hang forever when trying to check this snippet. The bad news is... we now panic:</p>
+<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/940f9c0/src/function/execute.rs:204:25 when checking `/Users/alexw/dev/ruff/bar.py`: `infer_expression_types(Id(1801)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: ruff/0.12.7+126 (8230b7982 2025-08-09)
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;bar.py&quot;, &quot;--python-version=3.13&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1002))
+             at crates/ty_python_semantic/src/types/infer.rs:134
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:527
+</code></pre>
+<p>In a way this feels like progress of a sort: a quick panic feels preferable to an indefinite execution time. It's obviously not an ideal end state, however 😆</p>
+<p>It still panics on the PR branches for https://github.com/astral-sh/ruff/pull/19669 and https://github.com/astral-sh/ruff/pull/19811.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hang when building divergent tuple type for implicit instance attributes" to "Panic when building divergent tuple type for implicit instance attributes" by @carljm on 2025-08-11 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @carljm on 2025-08-11 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> removed by @carljm on 2025-08-11 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @AlexWaygood on 2025-08-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 16:01</div>
+            <div class="timeline-body"><p>It looks like this was fixed in https://github.com/astral-sh/ruff/pull/20333 (and it looks like a regression test was added in that PR that is almost identical to @sharkdp's repro in https://github.com/astral-sh/ty/issues/837#issuecomment-3087582514). @carljm, is there any value in leaving this issue open at this point? Do we have plans to improve our type inference here over and above using <code>Type::Divergent</code>, or should we just close this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-01 16:05</div>
+            <div class="timeline-body"><p>I don't think (even in principle) there <em>is</em> a better way to handle this than <code>Type::Divergent</code>, so no, I don't think anything else is planned here; we can close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-01 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-10-21 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-21 13:07</div>
+            <div class="timeline-body"><p>When we work on this again, I think we should also consider a case like the following, where the tuple type is not directly created using a syntactic <code>(..)</code> construct:</p>
+<pre><code class="language-py">from typing import TypeVar, Literal
+
+T = TypeVar(&quot;T&quot;)
+
+def make_tuple(a: T) -&gt; tuple[T, Literal[1]]:
+    return (a, 1)
+
+class D:
+    def f(self, other: &quot;D&quot;):
+        self.x = make_tuple(other.x)
+
+reveal_type(D().x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-22 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-22 12:31</div>
+            <div class="timeline-body"><p>@sharkdp should we keep this open or do you want to open a new issue to solve this &quot;properly&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 12:40</div>
+            <div class="timeline-body"><p>I will open a new issue. It's not only related to this case, I think.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:18 UTC
+    </footer>
+</body>
+</html>

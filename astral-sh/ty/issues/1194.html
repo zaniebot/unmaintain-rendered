@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>report error when ambiguous `FunctionType` as `Enum` value - astral-sh/ty #1194</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>report error when ambiguous `FunctionType` as `Enum` value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1194">#1194</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-17 05:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-17 05:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from enum import Enum
+
+def f() -&gt; object:
+    return lambda: 1
+
+class E(Enum):
+    a = f()  # expect error: `object` can potentially be `FunctionType`, wrap this value with `enum.member` to enforce expected runtime behaviour
+
+E.a.name  # fails at runtime 
+</code></pre>
+<p><a href="https://play.ty.dev/fdd093de-9c24-4e1c-989d-a3cb5379deaa">playground</a></p>
+<p><code>FunctionType</code> becomes a non-member, but currently ty assumes a super type of <code>FunctionType</code> is a member, use <code>enum.member</code> to override this and make it a member</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "report error when ambigious `FunctionType` as `Enum` value" to "report error when ambiguous `FunctionType` as `Enum` value" by @AlexWaygood on 2025-09-17 06:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @AlexWaygood on 2025-09-17 06:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 07:08</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Our current distinction between members and non-members follows <a href="https://typing.python.org/en/latest/spec/enums.html#defining-members">this section of the typing spec</a> closely. For example, we do treat &quot;Methods, callables, descriptors (including properties), and nested classes&quot; as non-members. I don't see anything in the spec that would suggest that (proper) supertypes of <code>FunctionType</code> should also be treated as non-members. And if we change the body of <code>f</code> in your example to return <code>1</code> instead of <code>lambda: 1</code>, everything would work fine at runtime. So I'm not sure if <code>object</code> should really be excluded as a potential member type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-18 00:39</div>
+            <div class="timeline-body"><p>the issue is that it's ambigious if the value will be a member or not, we can't say with certainty what the behaviour will be at runtime, so it is a union of <code>member | non-member</code>, to be sound we should either:</p>
+<ol>
+<li>show a warning when the membership is ambigious</li>
+<li>derive a union of <code>member | T</code> (where <code>T</code> is the type)</li>
+</ol>
+<p>doing anything otherwise would be equivalent to saying:</p>
+<pre><code class="language-py">def f() -&gt; int | str
+    return &quot;f&quot;
+
+a: int = f()  # show no error?
+a + 1  # runtime error
+</code></pre>
+<ul>
+<li>If we change the body of <code>f</code> in this example to return <code>1</code> instead of <code>&quot;f&quot;</code>, everything would work fine at runtime</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-18 07:33</div>
+            <div class="timeline-body"><p>That makes sense, but I guess my stronger argument was that members-vs-non-members is described in great detail in the typing spec, but there is nothing that says that items of type <code>object</code> should not be considered members. Now that could be an oversight in the spec, in which case we should attempt to improve it. Or there might be a good reason why it's not included.</p>
+<p>I think I agree with you that an item of type <code>object</code> is more likely to be a mistake, so I guess we could try to see what happens (across the ecosystem) if we simply make <code>object</code> non-members?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-18 09:49</div>
+            <div class="timeline-body"><p>i think it is most certainly an oversight in the spec</p>
+<p>i think any super type of <code>FunctionType</code> should become either <code>Unknown</code> or <code>member | non-member</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-09-23 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

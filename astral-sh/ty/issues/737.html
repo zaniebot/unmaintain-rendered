@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect descriptor lookup for methods on types that are not disjoint from `None` - astral-sh/ty #737</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect descriptor lookup for methods on types that are not disjoint from `None`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/737">#737</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-01 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 10:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Other than <code>object</code>, all nominal instance types are disjoint from <code>None</code>. But... this is not true for instances of structural (<code>Protocol</code>) types -- and it turns out that this causes issues for our current implementation of the descriptor protocol.</p>
+<p>For example, compare and contrast the different behaviour of these two protocols. <code>SupportsFoo</code> is disjoint from <code>None</code>; <code>SupportsStr</code> is not:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class SupportsFoo(Protocol):
+    def foo(self) -&gt; str: ...
+
+class SupportsStr(Protocol):
+    def __str__(self) -&gt; str: ...
+
+def f(f: SupportsFoo, s: SupportsStr):
+    reveal_type(f.foo)       # revealed: `bound method SupportsFoo.foo() -&gt; str`
+    f.foo()                  # no diagnostic
+
+    reveal_type(s.__str__)   # revealed: `def __str__(self) -&gt; str`
+    s.__str__()              # error: No argument provided for required parameter `self` of function `__str__` (missing-argument)
+</code></pre>
+<p>https://play.ty.dev/09505473-95b5-4b51-b992-7784595bcf55</p>
+<p>Whether or not a type is disjoint from <code>None</code> impacts our understanding of the way the descriptor protocol is invoked when a method is accessed on that type. The type that a method is accessed on is passed to <code>FunctionType.__get__</code> when we invoke the descriptor protocol; if that type is not disjoint from <code>None</code>, we end up having to pick the first overload here, which means that the attribute access is (incorrectly!) evaluated as resolving to the original function object rather than a bound method:</p>
+<p>https://github.com/astral-sh/ruff/blob/c6fd11fe3694646c7b5667e37dfc67b114e2f50a/crates/ty_python_semantic/src/types.rs#L3526-L3575</p>
+<p>Many thanks to @sharkdp who helped me track this bug down over the last couple of days!</p>
+<h3>Version</h3>
+<p>c6fd11fe3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect descriptor lookup for methods on protocols that are not disjoint from `None`" to "Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`" by @AlexWaygood on 2025-07-01 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 15:28</div>
+            <div class="timeline-body"><p>The bug can also be reproduced when looking up methods on other structural types that are not disjoint from <code>None</code>, e.g.</p>
+<pre><code class="language-py">from ty_extensions import AlwaysFalsy
+
+def f(x: AlwaysFalsy):
+    x.__hash__()  # error: No argument provided for required parameter `self` of function `__hash__` (missing-argument)
+</code></pre>
+<p>https://play.ty.dev/5bb27bef-59f6-4af7-b017-5083aaaa4c33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 00:40</div>
+            <div class="timeline-body"><p>This can even repro with <code>None</code> itself, without any protocols involved: https://play.ty.dev/80e50768-24d9-4d36-a8dd-347a356f90a9</p>
+<p>I vaguely recall running into this in the runtime before, and realizing that even the runtime has to do some special-casing for accessing methods on <code>None</code> to avoid this problem.</p>
+<p>What this means is that I think everything we are doing is correct here; this is a fundamental issue with the descriptor protocol using <code>None</code> as a sentinel. I think it can probably only be fixed with some additional special-casing in the attribute lookup code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-07-02 13:32</div>
+            <div class="timeline-body"><p>I find it difficult to navigate the issues, my apologies if this is the wrong issue for my comment.</p>
+<blockquote>
+<p>This can even repro with <code>None</code> itself, without any protocols involved: https://play.ty.dev/80e50768-24d9-4d36-a8dd-347a356f90a9</p>
+</blockquote>
+<p>I'm guessing I have an instance of the None issue mentioned in the previous comment because I don't think there are any protocols involved in the minimized reproducer I have:</p>
+<pre><code class="language-python">from typing import Any
+
+def f(g: Any) -&gt; None:
+    try:
+        g()
+    except Exception as e:
+        print(e.__cause__.__str__())
+</code></pre>
+<p>As a side note, today was my first time trying ty and it looks great, can't wait to use it for real!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 17:06</div>
+            <div class="timeline-body"><p>@pjonsson Yes, that does look like an example of this issue! It also highlights the fact that &quot;union with None&quot; is another scenario that can trigger this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-03 11:51</div>
+            <div class="timeline-body"><p>Since this bug manifests for any type <em>not disjoint</em> from <code>None</code>, it even manifests for method calls on <code>object</code> instances:</p>
+<pre><code class="language-py">def f(x: object):
+    x.__str__()  # error: No argument provided for required parameter `self` of function `__str__` (missing-argument)
+</code></pre>
+<p>https://play.ty.dev/bb76c82a-6a33-43ce-99dd-a4bbca762c7e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`" to "Incorrect descriptor lookup for methods on types that are not disjoint from `None`" by @AlexWaygood on 2025-07-03 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-05 18:36</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/19120 fixed this for protocols that overlap with <code>None</code>, <code>object</code>, <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code>. The problem still exists for calling methods on <code>None</code> itself, however (and therefore also still exists for calling methods on unions that include <code>None</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

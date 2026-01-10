@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does not treat `pytest.fail` like `raise` - astral-sh/ty #1303</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Does not treat `pytest.fail` like `raise`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1303">#1303</a>
+        opened by <a href="https://github.com/chriscarrollsmith">@chriscarrollsmith</a>
+        on 2025-10-03 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chriscarrollsmith">@chriscarrollsmith</a> on 2025-10-03 20:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>ty</code> doesn't understand that after pytest.fail(), execution stops, so it still thinks <code>id</code> could be <code>None</code>:</p>
+<pre><code class="language-python">import pytest
+import random
+
+
+@pytest.fixture
+def id() -&gt; int | None:
+    return random.choice([42, None])
+
+
+def do_something_with_id(id: int) -&gt; None:
+    print(f&quot;Processing id: {id}&quot;)
+
+
+def test_do_something_with_id(id: int | None) -&gt; None:
+    if id is None:
+        pytest.fail(&quot;id cannot be None&quot;)
+    do_something_with_id(id)  # Type checker error: id could still be None
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-console">WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                  error[invalid-argument-type]: Argument to function `do_something_with_id` is incorrect
+  --&gt; tests/test_example.py:17:26
+   |
+15 |     if id is None:
+16 |         pytest.fail(&quot;id cannot be None&quot;)
+17 |     do_something_with_id(id)  # Type checker error: id could still be None
+   |                          ^^ Expected `int`, found `int | None`
+   |
+info: Function defined here
+  --&gt; tests/test_example.py:10:5
+   |
+10 | def do_something_with_id(id: int) -&gt; None:
+   |     ^^^^^^^^^^^^^^^^^^^^ ------- Parameter declared here
+11 |     print(f&quot;Processing id: {id}&quot;)
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1a21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-06 07:53</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>We already support unreachability-detection when calling functions (callables, in this case) that return <code>NoReturn</code> in control flow analysis, but we do not yet preserve narrowing constraints in these cases.</p>
+<p>This is already tracked in #690.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-06 07:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

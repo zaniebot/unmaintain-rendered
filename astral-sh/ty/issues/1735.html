@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow-sensitive narrowing fails for `type(a) is int` check in `if/else` on union types - astral-sh/ty #1735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flow-sensitive narrowing fails for `type(a) is int` check in `if/else` on union types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1735">#1735</a>
+        opened by <a href="https://github.com/5j9">@5j9</a>
+        on 2025-12-03 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/5j9">@5j9</a> on 2025-12-03 03:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Code sample:
+https://play.ty.dev/cc4b267b-5d4f-4915-a049-01ce6cc76728</p>
+<pre><code class="language-python">def f(a: int | str) -&gt; int | str:
+    if type(a) is int:
+        a //= 2
+    else:
+        # Error: Attribute 'strip' may be missing on object of type 'int | str'
+        a = a.strip() 
+    return a
+</code></pre>
+<p>The type checker fails to correctly narrow the type of variable a inside the else block when the initial check uses <code>type(a) is int</code> on a union type.</p>
+<p>Given the function signature <code>def f(a: int | str) -&gt; int | str:</code>, in the else block, <code>a</code> must be narrowed to str, but the type checker reports a <code>typossibly-missing-attribute</code> error, treating <code>a</code> as <code>int | str</code>.</p>
+<p>Expected Behavior / Workaround</p>
+<p>Using <code>isinstance</code> works correctly:</p>
+<pre><code class="language-python">def f(a: int | str) -&gt; int | str:
+    if isinstance(a, int): # Correctly narrows to 'int' here
+        a //= 2
+    else:
+        # Correctly narrows to 'str' here
+        a = a.strip()
+    return a
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 03:19</div>
+            <div class="timeline-body"><p>Hi! Thanks for trying out ty.</p>
+<p>This type error from ty is correct. The type <code>int</code> in the annotation <code>a: int | str</code> is inhabited by many possible objects whose <code>type()</code> is not <code>int</code> -- it includes instances of subclasses of <code>int</code>, as well as instances of <code>bool</code>. <code>f(True)</code> is a valid call which will enter the <code>else</code> clause in the body of <code>f</code>.</p>
+<p>This is precisely why <code>isinstance</code> works here but <code>type() is ...</code> does not. <code>isinstance(a, int)</code> will return <code>True</code> for all inhabitants of the type <code>int</code>; <code>type(a) is int</code> will not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-03 03:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

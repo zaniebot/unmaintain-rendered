@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect inferences for `.value` property for enum members that use `enum.auto()` - astral-sh/ty #1241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect inferences for `.value` property for enum members that use `enum.auto()`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1241">#1241</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-23 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-23 15:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty still has incorrect inferences for the <code>.value</code> property for enum members that use <code>enum.auto()</code> in at least two situations:</p>
+<ul>
+<li>Enums that use custom (non-integer) mixin types: for these enums, ty incorrectly infers that their values are all integers, when this is not the case</li>
+<li>Enums that have only a single member: for these enums, ty appears to infer the <code>.value</code> property as resolving to <code>Any</code> (if there is no mixin, or the mixin is <code>int</code>, it can safely infer a <code>Literal</code>-integer type for these, the same as if there are multiple enum members)</li>
+</ul>
+<pre><code class="language-py">import enum
+
+class A(str, enum.Enum):
+    X = enum.auto()
+    Y = enum.auto()
+
+reveal_type(A.X.value)  # ty: Literal[1]; runtime value: `&quot;1&quot;`. We should probably either infer `str` or `Any`?
+
+class B(bytes, enum.Enum):
+    X = enum.auto()
+    Y = enum.auto()
+
+reveal_type(B.X.value)  # ty: Literal[1]; runtime value: `b'\x00'`. We should probably either infer `bytes` or `Any`?
+
+class C(enum.Enum):
+    X = enum.auto()
+
+reveal_type(C.X.value)  # ty: Any; runtime value: `1`. We should probably infer `Literal[1]`?
+</code></pre>
+<p>https://play.ty.dev/6683ffc4-54d5-4fc0-b5d7-e4c05f023965</p>
+<p>@thejchap, you might be interested in taking this on! No pressure if you don't feel like it though :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-09-23 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-09-23 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-09-23 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-10 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

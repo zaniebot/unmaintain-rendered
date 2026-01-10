@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>subclass of dict won't specialize from constructor call - astral-sh/ty #588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>subclass of dict won't specialize from constructor call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/588">#588</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-05 23:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-05 23:19</div>
+            <div class="timeline-body"><pre><code class="language-python">from typing import TypeVar
+from typing_extensions import reveal_type
+
+_K = TypeVar(&quot;_K&quot;)
+_V = TypeVar(&quot;_V&quot;)
+
+class MyDict(dict[_K, _V]):
+    pass
+
+a = MyDict(foo=1)
+reveal_type(a)
+</code></pre>
+<p>which gives</p>
+<pre><code>error[no-matching-overload] mwe.py:13:5: No overload of bound method `__init__` matches arguments
+info[revealed-type] mwe.py:14:13: Revealed type: `MyDict[Unknown, Unknown]`
+</code></pre>
+<p>and works with mypy.</p>
+<p><em>Originally posted by @MarcinKonowalczyk in <a href="https://github.com/astral-sh/ty/issues/587#issuecomment-2946801679">#587</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-06-05 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-06-05 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2025-06-13 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 19:22</div>
+            <div class="timeline-body"><p>This seems to be the same issue as https://github.com/astral-sh/ruff/pull/18402#issuecomment-2997681949. Something about inheriting the <code>__init__</code> method causes our inference to fail, presumably because of the typevars being different in <code>dict</code> and <code>MyDict</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 19:23</div>
+            <div class="timeline-body"><p>(The linked issue also mentions the inherited <code>__init__</code> being a problem — but it's not that it's not <em>seen</em>, it's that typevar inference is failing when we try to call it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-24 20:17</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to be the same issue as <a href="https://github.com/astral-sh/ruff/pull/18402#issuecomment-2997681949">astral-sh/ruff#18402 (comment)</a>. Something about inheriting the <code>__init__</code> method causes our inference to fail, presumably because of the typevars being different in <code>dict</code> and <code>MyDict</code>.</p>
+</blockquote>
+<p>Yeah the generic context of the <code>MyDict.__init__</code> contains the dict typevar instead of _V.</p>
+<p>Simpler and standalone repro:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+
+class A(Generic[T]):
+    def __init__(self, x: T):
+        self.x = x
+
+
+V = TypeVar(&quot;V&quot;)
+
+
+class B(A[V]): ...
+
+
+b: B[Unknown] = B(1)
+a: A[int] = A(1)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-07-23 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-08-01 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:09 UTC
+    </footer>
+</body>
+</html>

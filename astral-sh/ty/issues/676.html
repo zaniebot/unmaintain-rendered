@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`match` over `Never` - astral-sh/ty #676</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`match` over `Never`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/676">#676</a>
+        opened by <a href="https://github.com/pfaion-soundhound">@pfaion-soundhound</a>
+        on 2025-06-18 12:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfaion-soundhound">@pfaion-soundhound</a> on 2025-06-18 12:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hey everyone,</p>
+<p>I was reading some of the issues around dealing with <code>Never</code> and decided to play around with it a bit myself on the playground to get an understanding of how <code>Never</code> is actually working.</p>
+<p>I came across the following example (<a href="https://play.ty.dev/8892b6bf-232e-4a5c-a62a-88e69fa677fe">playground link</a>):</p>
+<pre><code class="language-python">from typing import Never
+
+def f(v: Never):
+    match v:
+        case str():
+            x = input()
+        case _:
+            x = int(input())
+    reveal_type(x)     # Revealed type: `str` 
+</code></pre>
+<p>I'm not even sure what's supposed to happen here, but I feel somewhat confident that the current behavior is wrong? Apologies if it isn't, curious to learn what the intended behavior is here!</p>
+<p>I didn't find any other issue with <code>match</code> and <code>Never</code> in the title, I hope this is not yet already known!</p>
+<p>Very excited about <code>ty</code>, thanks everyone for working on this!</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`match` over Never" to "`match` over `Never`" by @pfaion-soundhound on 2025-06-18 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-18 12:30</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>A function which accepts an argument of type <code>Never</code> can not be called. So the function body here is unreachable. No matter which we would infer here, it could not be observed.</p>
+<p>The type inference result is somewhat defensible, I think? <code>Never</code> is assignable to everything, so in that sense, the first pattern &quot;matches&quot;, which leads to a result of <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-06-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @sharkdp on 2025-06-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion-soundhound">@pfaion-soundhound</a> on 2025-06-18 12:35</div>
+            <div class="timeline-body"><p>I think I would have expected that none of the cases matches against <code>Never</code> and that <code>x</code> would also be <code>Never</code>. Or like &quot;undefined&quot;? Not sure how <code>Never</code> relates to undefined...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-18 14:27</div>
+            <div class="timeline-body"><p>For comparison, on this sample:</p>
+<ul>
+<li>mypy emits <code>Cannot determine type of &quot;x&quot;</code> and reveals Any</li>
+<li>pyright treats the reveal_type as unreachable and doesn't emit anything</li>
+<li>pyrefly reveals <code>int | str</code></li>
+</ul>
+<p>I probably like mypy's behavior best but it doesn't feel important to enforce a particular behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

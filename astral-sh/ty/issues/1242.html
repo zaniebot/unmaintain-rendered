@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--output-format gitlab` fails in Gitlab CI environment - astral-sh/ty #1242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--output-format gitlab` fails in Gitlab CI environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1242">#1242</a>
+        opened by <a href="https://github.com/burrscurr">@burrscurr</a>
+        on 2025-09-23 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/burrscurr">@burrscurr</a> on 2025-09-23 18:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The recently added <code>--output-format gitlab</code> option works locally, but causes a panic in Gitlab CI environment:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+thread 'main' panicked at crates/ruff_db/src/diagnostic/render/gitlab.rs:173:14:
+Could not diff paths
+stack backtrace:
+   0:     0x5a07a266f993 - &lt;unknown&gt;
+   1:     0x5a07a232c153 - &lt;unknown&gt;
+   2:     0x5a07a266bc83 - &lt;unknown&gt;
+   3:     0x5a07a266f7f2 - &lt;unknown&gt;
+   4:     0x5a07a267136f - &lt;unknown&gt;
+   5:     0x5a07a2670eee - &lt;unknown&gt;
+   6:     0x5a07a2671bce - &lt;unknown&gt;
+   7:     0x5a07a26718aa - &lt;unknown&gt;
+   8:     0x5a07a266fe69 - &lt;unknown&gt;
+   9:     0x5a07a267155d - &lt;unknown&gt;
+  10:     0x5a07a2329880 - &lt;unknown&gt;
+  11:     0x5a07a232985b - &lt;unknown&gt;
+  12:     0x5a07a2511623 - &lt;unknown&gt;
+  13:     0x5a07a25766d2 - &lt;unknown&gt;
+  14:     0x5a07a232c153 - &lt;unknown&gt;
+  15:     0x5a07a2741bb4 - &lt;unknown&gt;
+  16:     0x5a07a273fad6 - &lt;unknown&gt;
+  17:     0x5a07a274b5ac - &lt;unknown&gt;
+  18:     0x5a07a274bea3 - &lt;unknown&gt;
+  19:     0x5a07a274be89 - &lt;unknown&gt;
+  20:     0x5a07a2660531 - &lt;unknown&gt;
+  21:     0x5a07a274bb35 - &lt;unknown&gt;
+  22:     0x7dc9a881924a - &lt;unknown&gt;
+  23:     0x7dc9a8819305 - __libc_start_main
+  24:     0x5a07a224b2e9 - &lt;unknown&gt;
+  25:                0x0 - &lt;unknown&gt;
+
+Cleaning up project directory and file based variables
+00:01
+ERROR: Job failed: exit code 1
+</code></pre>
+<p>Full output: https://gitlab.com/burrscurr/ty-output-format-gitlab/-/jobs/11462253464</p>
+<p>Gitlab CI Job config:</p>
+<pre><code class="language-yml">ty:
+  stage: build
+  script:
+    - RUST_BACKTRACE=full uv run ty check --output-format=gitlab --exit-zero
+</code></pre>
+<p>For the full setup, see this repo where I reproduced the panic: https://gitlab.com/burrscurr/ty-output-format-gitlab</p>
+<p>From preliminary research, this crash</p>
+<ul>
+<li>seems to occur only in CI environment, <code>uv run ty check --output-format gitlab</code> works as expected in locally</li>
+<li>does not occur with ruff (<code>ruff check --output-format gitlab</code> works fine in CI)</li>
+<li>seems to occur with common Gitlab Runner configurations (I also reproduced this with a private Gitlab instance)</li>
+<li>occurs independently from the specific <code>ty</code> diagnostic</li>
+</ul>
+<p>Pinging @ntBre since I think you worked on this recently.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burrscurr">@burrscurr</a> on 2025-09-23 18:18</div>
+            <div class="timeline-body"><p>(By the way, thank you for the <code>--output-format gitlab</code> option! I'm looking forward to actually integrating this into our Gitlab CI setup!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-09-23 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-23 19:43</div>
+            <div class="timeline-body"><p>Interesting, thanks for the report and the ping! I can reproduce this with my test gitlab repo too.</p>
+<p>It looks like the filenames in ty are already relative to the current directory, which explains why this isn't an issue for Ruff. I added a second call with <code>--output-format github</code>, which shows the path passed to <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/diagnostic/render/gitlab.rs#L169-L172"><code>relativize_path_to</code></a>:</p>
+<pre><code>::error title=ty (invalid-assignment),file=main.py,line=3,col=1,endLine=3,endColumn=2::main.py:3:1: invalid-assignment: Object of type `Literal[&quot;1&quot;]` is not
+</code></pre>
+<p>In Ruff, the first <code>file=...</code> is the full path, while the <code>main.py:3:1</code> filename should be relative to the current directory. In ty, we're passing an already-relative path to a path relativizing function, which is causing the error.</p>
+<p>A quick fix would be to fall back on the original path if this call fails instead of panicking, but removing <code>relativize_path_to</code> has other <a href="https://github.com/astral-sh/ruff/issues/20119">benefits</a>, so I'd kind of lean towards that if possible.</p>
+<p>@MichaReiser what do you think? I meant to follow up on this when you got back from PTO :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-23 19:51</div>
+            <div class="timeline-body"><p>This is probably a bad idea in general, but we only do this when the <code>CI_PROJECT_DIR</code> variable is set, so if you unset it, you can get CI to run, as a temporary workaround. Alternatively, you can also reproduce this locally by setting the variable too:</p>
+<pre><code class="language-shell">&gt; CI_PROJECT_DIR=/tmp uvx ty check try.py --output-format=gitlab
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files
+thread 'main' panicked at crates/ruff_db/src/diagnostic/render/gitlab.rs:173:14:
+Could not diff paths
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>That's a default CI variable on GitLab runners, which is why this only happens there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-23 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-24 08:03</div>
+            <div class="timeline-body"><p>It's not clear to me why <code>FileResolver.path</code> returns a relative path (it's only called by <code>UnifiedFile.path</code>) when we also have <code>UnifiedFile.relative_path</code>.</p>
+<p>I think the fix here is to make <code>path</code> return the absolute path and review all call sites whether they need to be changed to use <code>relative_path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-24 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

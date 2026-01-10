@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using hasattr gives an object type instead of Any - astral-sh/ty #396</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using hasattr gives an object type instead of Any</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/396">#396</a>
+        opened by <a href="https://github.com/skraeven">@skraeven</a>
+        on 2025-05-14 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skraeven">@skraeven</a> on 2025-05-14 20:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using hasattr on an unknown attribute, mypy will consider it an Any type, while ty considers it an object. This can give some errors when trying to use the attribute. Not sure if this is intended or a bug.</p>
+<p>Example:</p>
+<pre><code>from typing import reveal_type
+
+
+class Foo:
+    pass
+
+
+foo = Foo()
+
+if hasattr(foo, &quot;bar&quot;):
+    reveal_type(foo.bar)
+    print(foo.bar.upper())
+
+</code></pre>
+<p>Gives:</p>
+<pre><code>Revealed type: `object` (revealed-type) [Ln 11, Col 17]
+Type `object` has no attribute `upper` (unresolved-attribute) [Ln 12, Col 11]
+</code></pre>
+<p>https://play.ty.dev/c04860e6-d8fe-43d8-8f4a-a430e9e64bf2</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-15 00:42</div>
+            <div class="timeline-body"><p>This is an intentional choice. It's not clear why an <code>Any</code> type should be introduced here, giving up type checking, simply because the attribute's presence has been checked with <code>hasattr</code>. All we know from the <code>hasattr</code> check is that the attribute exists, and it must be some kind of Python object. From there further checks (e.g. <code>isinstance</code>) could be used to narrow the type of the attribute.</p>
+<p>We can consider changing this if there's a strong case to do so, but for now I think I'll close as &quot;not planned&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-15 00:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive `invalid-type-ignore` comment for a comment mentioning `type: ignore` comments - astral-sh/ty #881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive `invalid-type-ignore` comment for a comment mentioning `type: ignore` comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/881">#881</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-24 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-24 10:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty doesn't like this block of code in docstring-adder: https://github.com/astral-sh/docstring-adder/blob/1c87636f0f9b3a5f711c645a6cb0b181f7781464/add_docstrings.py#L234-L265</p>
+<p>It complains:</p>
+<pre><code>warning[invalid-ignore-comment]
+   --&gt; add_docstrings.py:243:47
+    |
+241 |             new_body = libcst.IndentedBlock(
+242 |                 body=[libcst.SimpleStatementLine(body=[docstring_node])],
+243 |                 # but preserve `# type: ignore` comments
+    |                                               ^ Invalid `type: ignore` comment: no whitespace after `ignore`
+244 |                 header=updated_node.body.trailing_whitespace,
+245 |             )
+    |
+</code></pre>
+<p>A minimal repro of this is:</p>
+<pre><code class="language-py"># make sure to preserve `# type: ignore` comments here:
+preserve_the_type_ignore_comments()
+</code></pre>
+<p>https://play.ty.dev/7a1ed259-ceb5-49cf-8643-bedec26f82f1</p>
+<p>from my perspective as a human, it feels obvious that this is not intended to be a <code>type: ignore</code> comment that a tool like ty is meant to parse and recognize :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-24 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @AlexWaygood on 2025-07-24 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 11:27</div>
+            <div class="timeline-body"><p>Hmm, that'a a bit tricky as it would require detecting balanced backticks. That's why I wouldn't necessarily consider this a bug. A work around here is to write this as</p>
+<pre><code class="language-py"># but preserve `type: ignore` comments.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-24 11:39</div>
+            <div class="timeline-body"><p>Neither mypy nor pyright considers the comment here an attempt to suppress type-checker diagnostics: neither tool complains that the comment is invalid, nor do they suppress diagnostics on that line if you add the comment</p>
+<pre><code># make sure to preserve `# type: ignore` comments here:
+</code></pre>
+<p>onto a line that has type errors in it.</p>
+<p>The <a href="https://typing.python.org/en/latest/spec/directives.html#type-ignore-comments">spec</a> says this:</p>
+<blockquote>
+<p>In some cases, linting tools or other comments may be needed on the same line as a type comment. In these cases, the type comment should be before other comments and linting markers:</p>
+<pre><code>   # type: ignore # &lt;comment or other marker&gt;
+</code></pre>
+</blockquote>
+<p>That obviously doesn't <em>forbid</em> type checkers from interpreting any <code>type: ignore</code> phrase in a comment as an attempt to suppress diagnostics, but it definitely doesn't <em>mandate</em> that either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-07-24 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p>That obviously doesn't forbid type checkers from interpreting any type: ignore phrase in a comment as an attempt to suppress diagnostics, but it definitely doesn't mandate that either.</p>
+</blockquote>
+<p>We intentionally allow this for <code>ty: ignore</code> comments and I don't see a reason to deviate for <code>type: ignore</code> comments.</p>
+<p>I think there's an argument whether the <code>invalid-type-ignore</code> should be less strict in those cases but I don't think it should.</p>
+<p>I also don't expect that many users will run into this issue. This is only a comment that toolin authors write.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-24 11:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:19 UTC
+    </footer>
+</body>
+</html>

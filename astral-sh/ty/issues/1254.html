@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A class with async constructor (__new__ + __init__) reported as not awaitable - astral-sh/ty #1254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A class with async constructor (__new__ + __init__) reported as not awaitable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1254">#1254</a>
+        opened by <a href="https://github.com/dm0">@dm0</a>
+        on 2025-09-25 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dm0">@dm0</a> on 2025-09-25 14:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following sample code:</p>
+<pre><code class="language-python">import asyncio
+
+class My:
+    async def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        await instance.__init__(*args, **kwargs)
+
+    async def __init__(self):
+        print('__init__')
+
+async def main():
+    my = await My()
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p>reports <code>invalid-await</code> when checked with <code>ty check</code>:</p>
+<pre><code>r[invalid-await]: `My` is not awaitable
+  --&gt; obj.py:12:16
+   |
+11 | async def main():
+12 |     my = await My()
+   |                ^^^^
+13 |
+14 | if __name__ == &quot;__main__&quot;:
+   |
+  ::: obj.py:3:7
+   |
+ 1 | import asyncio
+ 2 |
+ 3 | class My:
+   |       -- type defined here
+ 4 |     async def __new__(cls, *args, **kwargs):
+ 5 |         instance = super().__new__(cls)
+   |
+info: `__await__` is missing
+info: rule `invalid-await` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1-alpha.21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @carljm on 2025-09-25 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-09-25 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-25 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:33 UTC
+    </footer>
+</body>
+</html>

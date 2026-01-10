@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Output type of sorted() does not get properly evaluated - astral-sh/ty #326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Output type of sorted() does not get properly evaluated</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/326">#326</a>
+        opened by <a href="https://github.com/skraeven">@skraeven</a>
+        on 2025-05-12 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skraeven">@skraeven</a> on 2025-05-12 10:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm getting an unexpected diagnostic when using sorted() in python 3.11</p>
+<p>Minimal example:</p>
+<pre><code>def some_function() -&gt; list[str]:
+    some_list: list[str] = [&quot;3&quot;, &quot;1&quot;, &quot;2&quot;]
+    return sorted(some_list)
+</code></pre>
+<p>Gives the following error:</p>
+<pre><code>  |
+1 | def some_function() -&gt; list[str]:
+  |                        --------- Expected `list[str]` because of return type
+2 |     some_list: list[str] = [&quot;3&quot;, &quot;1&quot;, &quot;2&quot;]
+3 |     return sorted(some_list)
+  |            ^^^^^^^^^^^^^^^^^ Expected `list[str]`, found `list[SupportsRichComparisonT]`
+  |
+info: `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-12 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-05-12 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-12 12:50</div>
+            <div class="timeline-body"><p><code>sorted</code> is an <a href="https://github.com/astral-sh/ruff/blob/797eb709044d0a9edf02f2a974e2a2fb13f499d8/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L1768-L1773">overloaded definition</a> in the typeshed:</p>
+<pre><code class="language-py">@overload
+def sorted(
+    iterable: Iterable[SupportsRichComparisonT], /, *, key: None = None, reverse: bool = False
+) -&gt; list[SupportsRichComparisonT]: ...
+@overload
+def sorted(iterable: Iterable[_T], /, *, key: Callable[[_T], SupportsRichComparison], reverse: bool = False) -&gt; list[_T]: ...
+</code></pre>
+<p>So this has the same underlying cause as #314, and should be fixed by https://github.com/astral-sh/ruff/pull/18020</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-05-12 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 14:59</div>
+            <div class="timeline-body"><p>It looks to me like https://github.com/astral-sh/ruff/pull/18020 is not sufficient to fix this; because the uses of <code>SupportsRichComparisonT</code> in the signatures of the overloads of <code>sorted</code> are nested (in one case inside <code>Iterable</code>, and in the other case inside <code>Callable</code>), fixing this will also require a more complete solver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-12 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks to me like <a href="https://github.com/astral-sh/ruff/pull/18020">astral-sh/ruff#18020</a> is not sufficient to fix this; because the uses of <code>SupportsRichComparisonT</code> in the signatures of the overloads of <code>sorted</code> are nested (in one case inside <code>Iterable</code>, and in the other case inside <code>Callable</code>), fixing this will also require a more complete solver.</p>
+</blockquote>
+<p>Ah right, good catch!  <code>Iterable</code> should be handled by https://github.com/astral-sh/ruff/pull/18021 (or at least, by the proposed follow-on PR to <a href="https://github.com/astral-sh/ruff/pull/18021#discussion_r2083699336">support protocols too</a>).  <code>Callable</code> will be the tricky one, since it's not a simple 1:1 induction down both sides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 08:08</div>
+            <div class="timeline-body"><p>Closing this, as the original bug is not reproducible anymore: https://play.ty.dev/860ce801-a754-469e-a3db-5db726185272</p>
+<blockquote>
+<p><code>Callable</code> will be the tricky one, since it's not a simple 1:1 induction down both sides.</p>
+</blockquote>
+<p>I guess this should be tracked somewhere else, but feel free to reopen this, if it's easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-13 08:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect reporting of &quot;Module `typing` has no member `LiteralString`&quot; - astral-sh/ty #1620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect reporting of &quot;Module `typing` has no member `LiteralString`&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1620">#1620</a>
+        opened by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a>
+        on 2025-11-24 13:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2025-11-24 13:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running with Python == 3.14.0, ty reports that <code>LiteralString</code> not existing in the stdlib <code>typing</code> module when attempting to import it. This is very much untrue, as it has been within the <code>typing</code> module since Python 3.11.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.27</p>
+<h3>Reproducible Example</h3>
+<pre><code class="language-python">import random
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Final, LiteralString
+
+
+VALUE: Final[LiteralString] = random.choice((&quot;x&quot;, &quot;y&quot;))
+
+print(VALUE)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 13:56</div>
+            <div class="timeline-body"><p>Hi, thanks for the report! I can't reproduce this in the <a href="https://play.ty.dev/dcc4db83-c82a-47c3-b4b3-544610ace5f8">playground</a>, unfortunately. Could you paste the full diagnostic in here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2025-11-24 13:56</div>
+            <div class="timeline-body"><pre><code>error[unresolved-import]: Module `typing` has no member `LiteralString`
+ --&gt; local/sample.py:5:31
+  |
+4 | if TYPE_CHECKING:
+5 |     from typing import Final, LiteralString
+  |                               ^^^^^^^^^^^^^
+  |
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 13:59</div>
+            <div class="timeline-body"><p>Thank you! Would you be able to run ty with <code>-vv</code> and paste the output here? That should confirm which Python version ty has inferred for your project and tell us why it inferred that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2025-11-24 14:07</div>
+            <div class="timeline-body"><pre><code>2025-11-24 14:04:29.384168085 DEBUG Version: 0.0.1-alpha.27
+2025-11-24 14:04:29.389722105 DEBUG Architecture: x86_64, OS: linux, case-sensitive: case-sensitive
+2025-11-24 14:04:29.389819228 DEBUG Searching for a project in '/home/matt/PycharmProjects/typed_classproperties'
+2025-11-24 14:04:29.390357872 DEBUG Resolving requires-python constraint: `&gt;=3.10`
+2025-11-24 14:04:29.390405608 DEBUG Resolved requires-python constraint to: 3.10
+2025-11-24 14:04:29.390458002 DEBUG Project without `tool.ty` section: '/home/matt/PycharmProjects/typed_classproperties'
+2025-11-24 14:04:29.390474934 DEBUG Searching for a user-level configuration at `/home/matt/.config/ty/ty.toml`
+2025-11-24 14:04:29.392327454 INFO Defaulting to python-platform `linux`
+2025-11-24 14:04:29.392361755 DEBUG Resolving `VIRTUAL_ENV` environment variable: /home/matt/PycharmProjects/typed_classproperties/.venv
+2025-11-24 14:04:29.392430235 DEBUG Attempting to parse virtual environment metadata at '/home/matt/PycharmProjects/typed_classproperties/.venv/pyvenv.cfg'
+2025-11-24 14:04:29.392524918 DEBUG Searching for site-packages directory in sys.prefix /home/matt/PycharmProjects/typed_classproperties/.venv
+2025-11-24 14:04:29.392603076 DEBUG Resolved site-packages directories for this virtual environment are: [&quot;/home/matt/PycharmProjects/typed_classproperties/.venv/lib/python3.14/site-packages&quot;, &quot;/home/matt/PycharmProjects/typed_classproperties/.venv/lib64/python3.14/site-packages&quot;]
+2025-11-24 14:04:29.392682765 DEBUG Searching for real stdlib directory in sys.prefix /home/matt/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu
+2025-11-24 14:04:29.392715927 DEBUG Resolved real stdlib path for this virtual environment is: /home/matt/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14
+2025-11-24 14:04:29.392726301 DEBUG Including `.` in `environment.root`
+2025-11-24 14:04:29.392744418 DEBUG Adding first-party search path `/home/matt/PycharmProjects/typed_classproperties`
+2025-11-24 14:04:29.392752601 DEBUG Using vendored stdlib
+2025-11-24 14:04:29.393404216 DEBUG Adding site-packages search path `/home/matt/PycharmProjects/typed_classproperties/.venv/lib/python3.14/site-packages`
+2025-11-24 14:04:29.393424113 DEBUG Adding site-packages search path `/home/matt/PycharmProjects/typed_classproperties/.venv/lib64/python3.14/site-packages`
+2025-11-24 14:04:29.393466158 INFO Python version: Python 3.10, platform: linux
+2025-11-24 14:04:29.393516506 DEBUG Adding new file root '/home/matt/PycharmProjects/typed_classproperties/.venv/lib/python3.14/site-packages' of kind LibrarySearchPath
+2025-11-24 14:04:29.393627776 DEBUG Adding new file root '/home/matt/PycharmProjects/typed_classproperties/.venv/lib64/python3.14/site-packages' of kind LibrarySearchPath
+2025-11-24 14:04:29.39444143 DEBUG Adding new file root '/home/matt/PycharmProjects/typed_classproperties' of kind Project
+2025-11-24 14:04:29.394640495 DEBUG Setting included paths: 1
+2025-11-24 14:04:29.394650301 DEBUG Reloading files for project `typed-classproperties`
+2025-11-24 14:04:29.394745225 DEBUG Starting main loop
+2025-11-24 14:04:29.394772264 DEBUG Waiting for next main loop message.
+2025-11-24 14:04:29.394943215 DEBUG Checking all files in project 'typed-classproperties'
+2025-11-24 14:04:29.397462129 INFO Indexed 1 file(s) in 0.002s
+2025-11-24 14:04:29.397974347 DEBUG Checking file '/home/matt/PycharmProjects/typed_classproperties/local/sample.py'
+2025-11-24 14:04:29.427201689 DEBUG Resolving dynamic module resolution paths
+2025-11-24 14:04:29.427531253 DEBUG Module `typing.LiteralString` not found in search paths
+2025-11-24 14:04:29.434593266 DEBUG Checking all files took 0.037s
+error[unresolved-import]: Module `typing` has no member `LiteralString`
+ --&gt; local/sample.py:5:31
+  |
+4 | if TYPE_CHECKING:
+5 |     from typing import Final, LiteralString
+  |                               ^^^^^^^^^^^^^
+  |
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+2025-11-24 14:04:29.435044759 DEBUG Exiting main loo
+</code></pre>
+<p>Perhaps because my python version requirement is set to <code>&gt;=3.10</code> I have to guard behind a <code> if sys.version_info &gt;= (3, 11):</code> and import from <code>typing_extensions</code> if on 3.10?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps because my python version requirement is set to <code>&gt;=3.10</code> I have to guard behind a <code> if sys.version_info &gt;= (3, 11):</code> and import from <code>typing_extensions</code> if on 3.10?</p>
+</blockquote>
+<p>Yes, exactly! Because you haven't explicitly specified a Python version on the command line, we've assumed you'd like your project to type-check with the lowest version of Python you support, which according to your pyproject.toml file is Python 3.10.</p>
+<p>I wouldn't say our diagnostic is very good here, though. We can improve this, to make it clearer why we're complaining!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-11-24 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-24 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

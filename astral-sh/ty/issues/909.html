@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] try_iterate() should not fail on a type assignable to Iterable - astral-sh/ty #909</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] try_iterate() should not fail on a type assignable to Iterable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/909">#909</a>
+        opened by <a href="https://github.com/mermoldy">@mermoldy</a>
+        on 2025-07-28 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mermoldy">@mermoldy</a> on 2025-07-28 11:15</div>
+            <div class="timeline-body"><p>Hi, I found an issue while analyzing the <a href="https://github.com/coleifer/peewee">Peewee</a> ORM code. I’ve reduced it to a minimal example:</p>
+<pre><code class="language-python">import peewee
+from playhouse import mysql_ext
+
+
+class Model(peewee.Model):
+    field = mysql_ext.JSONField()
+
+
+m = Model()
+tuple(m.field)
+</code></pre>
+<details>
+
+<p>Peewee version:</p>
+<pre><code>&gt; pip show peewee
+Name: peewee
+Version: 3.16.2
+Summary: a little orm
+Home-page: https://github.com/coleifer/peewee/
+Author: Charles Leifer
+Author-email: coleifer@gmail.com
+License: MIT License
+Location: /Users/mermoldy/Projects/fatmouse/.venv/lib/python3.13/site-packages
+Requires:
+Required-by:
+</code></pre>
+<p>Ty traceback:</p>
+<pre><code>❯ RUST_BACKTRACE=1 ty check /Users/mermoldy/Projects/fatmouse/taco/app/workspace/service/configuration_version.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[panic]: Panicked at crates/ty_python_semantic/src/types/call/bind.rs:1010:75 when checking `/Users/mermoldy/Projects/fatmouse/taco/app/workspace/service/configuration_version.py`: `try_iterate() should not fail on a type assignable to `Iterable`: IterCallError(PossiblyNotCallable, Bindings { callable_type: Union(UnionType { elements: [Dynamic(Unknown), NominalInstance(NominalInstanceType { class: NonGeneric(ClassLiteral { name: Name(&quot;NoneType&quot;), body_scope: ScopeId { [salsa id]: Id(1143), file: File(Vendored(VendoredPathBuf(&quot;stdlib/types.pyi&quot;))), file_scope_id: FileScopeId(215) }, known: Some(NoneType), deprecated: None, dataclass_params: None, dataclass_transformer_params: None }), _phantom: PhantomData&lt;()&gt; })] }), elements: [CallableBinding { callable_type: Dynamic(Unknown), signature_type: Dynamic(Unknown), dunder_call_is_possibly_unbound: false, bound_type: None, overload_call_return_type: None, matching_overload_index: Some(0), overloads: [Binding { signature: Signature { generic_context: None, inherited_generic_context: None, definition: None, parameters: Parameters { value: [Parameter { annotated_type: Some(Dynamic(Any)), kind: Variadic { name: Name(&quot;args&quot;) }, form: Value }, Parameter { annotated_type: Some(Dynamic(Any)), kind: KeywordVariadic { name: Name(&quot;kwargs&quot;) }, form: Value }], is_gradual: true }, return_ty: Some(Dynamic(Unknown)) }, callable_type: Dynamic(Unknown), signature_type: Dynamic(Unknown), return_ty: Dynamic(Unknown), specialization: None, inherited_specialization: None, argument_matches: [], parameter_tys: [None, None], errors: [] }] }, CallableBinding { callable_type: NominalInstance(NominalInstanceType { class: NonGeneric(ClassLiteral { name: Name(&quot;NoneType&quot;), body_scope: ScopeId { [salsa id]: Id(1143), file: File(Vendored(VendoredPathBuf(&quot;stdlib/types.pyi&quot;))), file_scope_id: FileScopeId(215) }, known: Some(NoneType), deprecated: None, dataclass_params: None, dataclass_transformer_params: None }), _phantom: PhantomData&lt;()&gt; }), signature_type: NominalInstance(NominalInstanceType { class: NonGeneric(ClassLiteral { name: Name(&quot;NoneType&quot;), body_scope: ScopeId { [salsa id]: Id(1143), file: File(Vendored(VendoredPathBuf(&quot;stdlib/types.pyi&quot;))), file_scope_id: FileScopeId(215) }, known: Some(NoneType), deprecated: None, dataclass_params: None, dataclass_transformer_params: None }), _phantom: PhantomData&lt;()&gt; }), dunder_call_is_possibly_unbound: false, bound_type: None, overload_call_return_type: None, matching_overload_index: None, overloads: [] }], argument_forms: [], conflicting_forms: [] })`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: 0.0.1-alpha.16 (c452e53a0 2025-07-25)
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;/Users/mermoldy/Projects/fatmouse/taco/app/workspace/service/configuration_version.py&quot;]
+info: Backtrace:
+   0: __mh_execute_header
+   1: __mh_execute_header
+   2: __mh_execute_header
+   3: __mh_execute_header
+   4: __mh_execute_header
+   5: __mh_execute_header
+   6: __mh_execute_header
+   7: __mh_execute_header
+   8: __mh_execute_header
+   9: __mh_execute_header
+  10: __mh_execute_header
+  11: __mh_execute_header
+  12: __mh_execute_header
+  13: __mh_execute_header
+  14: __mh_execute_header
+  15: __mh_execute_header
+  16: __mh_execute_header
+  17: __mh_execute_header
+  18: __mh_execute_header
+  19: __mh_execute_header
+  20: __mh_execute_header
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: __mh_execute_header
+  24: __mh_execute_header
+  25: __mh_execute_header
+  26: __mh_execute_header
+  27: __mh_execute_header
+  28: __mh_execute_header
+  29: __mh_execute_header
+  30: __mh_execute_header
+  31: __mh_execute_header
+  32: __mh_execute_header
+  33: __mh_execute_header
+  34: __mh_execute_header
+  35: __mh_execute_header
+  36: __mh_execute_header
+  37: __mh_execute_header
+  38: __mh_execute_header
+  39: __mh_execute_header
+  40: __mh_execute_header
+  41: __mh_execute_header
+  42: __mh_execute_header
+  43: __mh_execute_header
+  44: __mh_execute_header
+  45: __pthread_cond_wait
+
+info: query stacktrace:
+   0: infer_scope_types(Id(1008))
+             at crates/ty_python_semantic/src/types/infer.rs:134
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:514
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-07-28 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2025-07-28 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-28 14:29</div>
+            <div class="timeline-body"><p>I thought this might be because of https://github.com/astral-sh/ruff/pull/19496, which touched the iterator protocol machinery recently. But it actually looks like it might be an issue with checking protocol assignability [<a href="https://play.ty.dev/428128f8-8979-4af4-8eb8-1cfbb9b7a078">playground</a>]:</p>
+<pre><code class="language-py">from typing import Iterable
+from typing_extensions import reveal_type
+from ty_extensions import is_assignable_to
+
+class NotIterable:
+    __iter__ = None
+
+reveal_type(is_assignable_to(NotIterable, Iterable))
+</code></pre>
+<p>@AlexWaygood, does that make this a duplicate of #889? I think this will be fixed once we consider the types of protocol members when checking assignability.</p>
+<p>In the meantime I can fix the panic by removing the <code>expect</code> call and falling back on <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-28 14:32</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/AlexWaygood">@AlexWaygood</a>, does that make this a duplicate of <a href="https://github.com/astral-sh/ty/issues/889">#889</a>? I think this will be fixed once we consider the types of protocol members when checking assignability.</p>
+</blockquote>
+<p>yup</p>
+<blockquote>
+<p>In the meantime I can fix the panic by removing the <code>expect</code> call and falling back on <code>Unknown</code>.</p>
+</blockquote>
+<p>yes, I think that makes sense in the meantime. But it would be good if we could at least emit a logging message, because this shouldn't be happening! Definitely a bug in our internals that it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-28 16:18</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/19602 replaces the panic with a debug log message. For the fix of the underlying issue, closing this as a dup of #889</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-07-28 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:20 UTC
+    </footer>
+</body>
+</html>

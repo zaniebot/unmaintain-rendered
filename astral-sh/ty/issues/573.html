@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`np.isclose` return value incorrectly inferred as `bool[bool]` - astral-sh/ty #573</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`np.isclose` return value incorrectly inferred as `bool[bool]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/573">#573</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2025-06-03 09:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2025-06-03 09:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <a href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html"><code>np.isclose</code></a>, ty infers the result as <code>bool[bool]</code>, causing it to report that the result is not iterable.</p>
+<h2>MRE</h2>
+<pre><code class="language-py">from typing import reveal_type
+
+import numpy as np
+import numpy.typing as npt
+
+x: npt.NDArray[np.bool_] = np.isclose([1e10, 1e-7], [1.00001e10, 1e-8])
+
+reveal_type(x)
+
+for val in x:
+    print(val)
+</code></pre>
+<h2>ty</h2>
+<pre><code>$ uvx --with numpy==2.2.6 ty check dev/ty.py 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+info[revealed-type]: Revealed type
+  --&gt; dev\ty.py:8:13
+   |
+ 6 | x: npt.NDArray[np.bool_] = np.isclose([1e10, 1e-7], [1.00001e10, 1e-8])
+ 7 |
+ 8 | reveal_type(x)
+   |             ^ `bool[bool]`
+ 9 |
+10 | for val in x:
+   |
+
+error[not-iterable]: Object of type `bool[bool]` is not iterable
+  --&gt; dev\ty.py:10:12
+   |
+ 8 | reveal_type(x)
+ 9 |
+10 | for val in x:
+   |            ^
+11 |     print(val)
+   |
+info: It doesn't have an `__iter__` method or a `__getitem__` method
+info: rule `not-iterable` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h2>mypy</h2>
+<pre><code>$ uvx --with numpy==2.2.6 mypy  dev/ty.py 
+dev\ty.py:8: note: Revealed type is &quot;numpy.ndarray[builtins.tuple[builtins.int, ...], numpy.dtype[numpy.bool[builtins.bool]]]&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-03 10:26</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Numpy's stubs for the <code>isclose()</code> function are here: https://github.com/numpy/numpy/blob/4c8fd85fbbd035d646bb3c54c47a16b31c1b3ce8/numpy/_core/numeric.pyi#L844-L859. We can see that the type checker is only meant to pick the first overload if the passed-in arguments match the type <code>_ScalarLike_co</code>. Otherwise, the type checker is meant to pick the second overload -- if we picked the second overload here, we would infer the correct type.</p>
+<p><code>_ScalarLike_co</code>, despite its <code>*_co</code> name that would imply it's a covariant TypeVar, is a type alias that uses <code>typing.TypeAlias</code>: https://github.com/numpy/numpy/blob/4c8fd85fbbd035d646bb3c54c47a16b31c1b3ce8/numpy/_typing/_scalars.py#L20. We currently do not support type aliases that use <code>typing.TypeAlias</code>, which is why we think that a type of <code>list[float]</code> is assignable to <code>_ScalarLike_co</code> even though it is not.</p>
+<p>TL;DR: this will be fixed by #544</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-03 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-28 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slow execution for attribute assignment and access with reachability constraints - astral-sh/ty #758</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Slow execution for attribute assignment and access with reachability constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/758">#758</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2025-07-02 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-07-02 20:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This was found by mypy primer in my <a href="https://github.com/astral-sh/ruff/pull/18473/">PR</a>.</p>
+<p>The following program has a high execution time:</p>
+<pre><code class="language-py">from typing import Self
+
+EMPTY = b&quot;&quot;
+
+
+class GridOut:
+    def __init__(self: Self) -&gt; None:
+        self._buffer_pos = 0
+        self._buffer = b&quot;&quot;
+
+    def readchunk(self: Self) -&gt; bytes:
+        if not len(self._buffer) - self._buffer_pos:
+            raise Exception(&quot;truncated chunk&quot;)
+        self._buffer_pos = 0
+        return EMPTY
+
+    def _read_size_or_line(self: Self, size: int = -1) -&gt; bytes:
+        if size &gt; self._position:
+            size = self._position
+        if size == 0:
+            return bytes()
+
+        received = 0
+        needed = size - received
+        while received &lt; size:
+            if self._buffer:
+                buf = self._buffer
+                chunk_start = self._buffer_pos
+                chunk_data = buf[self._buffer_pos :]
+                self._buffer = EMPTY
+            else:
+                buf = self.readchunk()
+                chunk_start = 0
+                chunk_data = buf
+
+            needed = buf.find(EMPTY, chunk_start, chunk_start + needed)
+            if len(chunk_data) &gt; needed:
+                self._buffer = buf
+                self._buffer_pos = chunk_start + needed
+                self._position -= len(self._buffer) - self._buffer_pos
+
+        return b&quot;&quot;
+</code></pre>
+<p>https://play.ty.dev/80ab85b0-a6d7-4aa2-8de4-b4404d6a5b4e</p>
+<p>Check time with release is around 1 sec and in debug  it's 16 seconds for me(if you start editing the code the delay visible.)</p>
+<p>Any line I remove reduces the check time significantly. So I left them in there.
+This is the original code that took 2 seconds in release and 40 seconds in debug:
+https://play.ty.dev/82349c52-7963-4388-9e45-a65a90032951</p>
+<p>From the traces I found that there is a cycle event on <code>member_lookup_with_policy</code>.
+TRACE ty_project::db: Salsa event: Event { thread_id: ThreadId(2), kind: WillIterateCycle { database_key: member_lookup_with_policy_(Id(f4e2)), iteration_count: IterationCount(1), fell_back: false } }</p>
+<p>I haven't done a good investigation yet, I'm creating this issue so it's not lost. I'll do more investigation in a few days.</p>
+<hr />
+<p>The original files that uncovered this issue:
+https://github.com/mongodb/mongo-python-driver/blob/65f7c542088356bba78bd70d68b7a4881cab7f8b/gridfs/synchronous/grid_file.py#L1622
+https://github.com/mongodb/mongo-python-driver/blob/65f7c542088356bba78bd70d68b7a4881cab7f8b/gridfs/asynchronous/grid_file.py#L1634</p>
+<h3>Version</h3>
+<p>f76d3f87c 2025-07-02</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @carljm on 2025-07-02 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @carljm on 2025-07-02 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 12:13</div>
+            <div class="timeline-body"><p>Thank you for reporting this! I am looking into this today. Just writing down what I have so far.</p>
+<p>I attempted to further minimize the example, but it's hard (see above: <em>&quot;Any line I remove reduces the check time significantly&quot;</em>). Here is what I have. I added a few more <code>if size == …</code> checks to make the execution times even longer:</p>
+<pre><code class="language-py">class GridOut:
+    def __init__(self: &quot;GridOut&quot;) -&gt; None:
+        self._buffer = b&quot;&quot;
+
+    def _read_size_or_line(self: &quot;GridOut&quot;, size: int = -1):
+        if size &gt; self._position:
+            size = self._position
+            pass
+        if size == 0:
+            return bytes()
+        if size == 1:
+            return bytes()
+        if size == 2:
+            return bytes()
+        if size == 3:
+            return bytes()
+
+        while size &gt; 0:
+            if self._buffer:
+                buf = self._buffer
+                self._buffer = b&quot;&quot;
+            else:
+                buf = b&quot;&quot;
+
+            if len(buf) &gt; size:
+                self._buffer = buf
+                self._position -= len(self._buffer)
+
+
+reveal_type(GridOut()._buffer)
+reveal_type(GridOut()._position)
+</code></pre>
+<p>What's very weird: if the order of the two <code>reveal_type</code> statements is changed, i.e. if we query the type of the <code>_position</code> member first, ty finishes instantly. However, if <code>_buffer</code> is accessed first (which depends on <code>_position</code> in complicated ways), we have this long execution time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 12:28</div>
+            <div class="timeline-body"><p>My current assumption is that this is very similar to the case that was patched in https://github.com/astral-sh/ruff/pull/18669; only that there are now actual bindings. Back then, I wrote …</p>
+<blockquote>
+<p>This is not a fix for cases where there are actual bindings in the method. When we add self.a = 1; self.b = 1 to that example above, we still see that combinatorial explosion of runtime. […] I will open a ticket to track that separately.</p>
+</blockquote>
+<p>… but then failed to create that ticket. I assume this ticket here is basically the same (just much more convoluted): implicit instance attributes whose definitions are guarded by complex reachability constraints involving those same instance attributes.</p>
+<p>So I guess the easier example to reproduce this is:</p>
+<pre><code class="language-py">class C:
+    def f(self: &quot;C&quot;):
+        if isinstance(self.a, str):
+            return
+
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+
+        self.a = 1
+        self.b = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Slow execution for attribute assignment and access with narrowing constraints" to "Slow execution for attribute assignment and access with reachability constraints" by @sharkdp on 2025-08-20 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-08-22 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-28 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

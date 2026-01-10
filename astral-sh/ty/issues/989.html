@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect parent Python interpreter that invoked ty as a candidate Python env - astral-sh/ty #989</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect parent Python interpreter that invoked ty as a candidate Python env</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/989">#989</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-08-14 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 16:28</div>
+            <div class="timeline-body"><p>This would make e.g. <code>uvx --with Foo ty check script_using_Foo_library.py</code> work as a one-liner. Today it doesn't work. uv creates an ephemeral env with Foo installed, and then invokes ty's Python shim from that env, but ty doesn't care about that. uv doesn't set <code>VIRTUAL_ENV</code>, and the ephemeral env isn't located anywhere ty's searching will find it, so ty never finds the env it was invoked from.</p>
+<p>I suspect this would also make things &quot;just work&quot; for a significant number of end-user cases, where they are running ty from the same Python installation their dependencies are installed in, without <code>VIRTUAL_ENV</code> set. (Either because they have a venv and are running its binary directly without shell activation, or because they aren't using a venv at all.)</p>
+<p>Uv has specific logic to do this (for itself), see https://github.com/astral-sh/uv/blob/a186fda2d27d74c631c50ffccb9413d31f95cc89/python/uv/<strong>main</strong>.py#L35 and https://github.com/astral-sh/uv/blob/2c54d3929c11fd9b5c8b0235ab201fe9d5501751/crates/uv-python/src/discovery.rs#L487-L493 -- we could borrow this approach.</p>
+<p>We would still need to decide where in the priority this would fall. I think it would probably be last in fallback order, after explicit config and <code>.venv</code> and <code>VIRTUAL_ENV</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @carljm on 2025-08-14 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-08-14 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 16:31</div>
+            <div class="timeline-body"><p>this used to work with previous versions of uv after a PR I made to uv, but I think they changed the way they layer ephemeral environments over the top in a recent version of uv which means that it no longer works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 16:32</div>
+            <div class="timeline-body"><p>CC: @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 16:33</div>
+            <div class="timeline-body"><p>for previous discussion, see https://github.com/astral-sh/ty/issues/320, https://github.com/astral-sh/uv/pull/13598 and https://github.com/astral-sh/ruff/pull/18335</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-14 16:48</div>
+            <div class="timeline-body"><p>That's for <code>uv run</code> not <code>uvx</code>, are you sure the behavior regressed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>That's for <code>uv run</code> not <code>uvx</code>, are you sure the behavior regressed here?</p>
+</blockquote>
+<p>Ah sorry, I'm getting mixed up between my uv executables -- yeah, I don't think <code>uvx</code> has ever worked to date; would be cool if it did!</p>
+<p>I thought something with the <code>uv run</code> invocation broke recently but now I can't seem to find a minimal repro... I'll post a separate issue if I come across it again.</p>
+<p>Sorry for the noise!! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 08:35</div>
+            <div class="timeline-body"><p>I think we also need this to allow users to <a href="https://github.com/astral-sh/ty/issues/691#issuecomment-2995041731">check their PEP 723 scripts</a> using <a href="https://github.com/astral-sh/uv/pull/12763">uv's new <code>--with-requirements</code> option</a> using</p>
+<pre><code class="language-bash">uvx --with-requirements script.py ty check script.py
+</code></pre>
+<p>This already works with pyright, mypy, pyrefly, but not yet with ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-08 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 13:19</div>
+            <div class="timeline-body"><p>This was discussed internally in <a href="https://discord.com/channels/1039017663004942429/1343690517745111081/1417965051549188277">Discord</a>.</p>
+<p>The reason pyright and mypy work is that they add the virtual environment they are <em>installed</em> in to the search path. ty does not do this, but should. There's some debate about which circumstances are appropriate for ty to do this, e.g.:</p>
+<ol>
+<li>If an environment cannot be found (i.e., neither <code>.venv</code> and <code>VIRTUAL_ENV</code>)</li>
+<li>If an environment is not active (i.e., only if <code>VIRTUAL_ENV</code> is unset)</li>
+<li>If ty is invoked with <code>python -m ty</code> (this matches uv's behavior for respecting its own environment)</li>
+<li>Always (with some opt-out)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @carljm on 2025-09-19 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @carljm on 2025-09-19 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-09-19 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-24 14:29</div>
+            <div class="timeline-body"><p>@zanieb is this something you're still planning to work on (asking because you're assigned to the issue)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv</span> added by @MichaReiser on 2025-11-05 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-06 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

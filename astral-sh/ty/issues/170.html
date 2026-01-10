@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-span diagnostics in the LSP - astral-sh/ty #170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multi-span diagnostics in the LSP</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/170">#170</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-14 10:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 10:52</div>
+            <div class="timeline-body"><p>Red Knot only highlights the primary diagnostic range today.</p>
+<p>Explore how to display multi-span diagnostics. This is something that r-a seems to support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-03-14 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-15 08:05</div>
+            <div class="timeline-body"><p>Do you mean something like this?</p>
+<p><img src="https://github.com/user-attachments/assets/d0878c0b-8fcb-498e-ab0f-7a23504e30e7" alt="" /></p>
+<p>Rust Analyzer does the same, as far as I see:</p>
+<p><img src="https://github.com/user-attachments/assets/3a852abd-1e91-4a8e-8c22-65352064d1ed" alt="" /></p>
+<p>RustRover has something fancier: it displays messages inline on focus (native feature).</p>
+<p><img src="https://github.com/user-attachments/assets/10aa95dd-af1d-4b46-8277-6e9ddf11db75" alt="" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-15 15:20</div>
+            <div class="timeline-body"><p>Yes, this is the kind of functionality we want to explore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-15 16:47</div>
+            <div class="timeline-body"><p>The property in question is <code>relatedInformation</code>:</p>
+<pre><code class="language-typescript">export interface Diagnostic {
+	/**
+	 * An array of related diagnostic information, e.g. when symbol-names within
+	 * a scope collide all definitions can be marked via this property.
+	 */
+	relatedInformation?: DiagnosticRelatedInformation[];
+}
+</code></pre>
+<p>...where <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#diagnosticRelatedInformation"><code>DiagnosticRelatedInformation</code></a> is defined as:</p>
+<pre><code class="language-typescript">/**
+ * Represents a related message and source code location for a diagnostic.
+ * This should be used to point to code locations that cause or are related to
+ * a diagnostics, e.g when duplicating a symbol in a scope.
+ */
+export interface DiagnosticRelatedInformation {
+	/**
+	 * The location of this related diagnostic information.
+	 */
+	location: Location;
+
+	/**
+	 * The message of this related diagnostic information.
+	 */
+	message: string;
+}
+</code></pre>
+<p>Currently, Red Knot <a href="https://github.com/astral-sh/ruff/blob/2de8455e43efc55b2ed302c0bdf4e59744338504/crates/red_knot_server/src/server/api/requests/diagnostic.rs#L103">always specifies <code>related_information: None</code></a>. This should be changed to use data from secondary messages instead.</p>
+<p>I'll submit a PR tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-15 23:36</div>
+            <div class="timeline-body"><p>Thank you, but We want to do sone design exploration first and we're also in the middle of rewriting the diagnostics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-15 23:42</div>
+            <div class="timeline-body"><p>In that case, here's the meat of the changes, just for the records:</p>
+<pre><code class="language-rs">let related_information = diagnostic
+    .secondary_messages()
+    .iter()
+    .filter_map(|info| {
+        let span = info.span();
+        let path = span.file().path(db).as_system_path()?;
+
+        let uri = Url::from_file_path(path).ok()?;
+        let range = span_to_range(span);
+
+        Some(DiagnosticRelatedInformation {
+            location: Location { uri, range },
+            message: info.message().to_string(),
+        })
+    })
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-16 09:07</div>
+            <div class="timeline-body"><p>Thanks, this is great. Sorry for being so defensive about it. The main purpose of this issue is to explore the different options that you list listed in your previous reply and decide what UX we want. I'm glad to see that the implementation might be much easier than I assumed it would be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 16:49</div>
+            <div class="timeline-body"><p>I think there are two things here:</p>
+<ol>
+<li>Use related information on LSPs that support it</li>
+<li>Add some textual rendering for LSPs that don't support related information.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-11 17:14</div>
+            <div class="timeline-body"><p>@MichaReiser That sounds about right. The &quot;textual rendering&quot; can then contain links that lead to certain source code locations instead of full-blown snippets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-05-07 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Multi-span diagnostics in the LSP" to "Multi-span diagnostics in the LSP" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-19 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:54 UTC
+    </footer>
+</body>
+</html>

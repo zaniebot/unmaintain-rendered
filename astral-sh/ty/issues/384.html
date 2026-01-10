@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declared-only attributes are not accessible on instances of the class - astral-sh/ty #384</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Declared-only attributes are not accessible on instances of the class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/384">#384</a>
+        opened by <a href="https://github.com/rowillia">@rowillia</a>
+        on 2025-05-14 14:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rowillia">@rowillia</a> on 2025-05-14 14:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using SQLAlchemy's declarative models with <code>Mapped</code> type annotations, ty incorrectly reports that model class attributes (which represent database columns) can only be accessed on instances, not on the class itself.</p>
+<h2>Example</h2>
+<pre><code class="language-python">from uuid import UUID
+from sqlalchemy import select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class Organization(Base):
+    __tablename__ = &quot;organizations&quot;
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    uuid: Mapped[UUID] = mapped_column(unique=True)
+    name: Mapped[str] = mapped_column()
+
+
+def get_organization(session: Session, org_uuid: UUID):
+    # ty incorrectly reports: &quot;Attribute `uuid` can only be accessed on instances&quot;
+    return session.scalar(
+        select(Organization).where(Organization.uuid == org_uuid)
+    )
+</code></pre>
+<p>See SQLAlchemy's documentation on <a href="https://docs.sqlalchemy.org/en/20/tutorial/data_select.html">querying</a> for more examples.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @sharkdp on 2025-05-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-05-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 15:08</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I have trouble reproducing this:</p>
+<pre><code>&gt; uv init
+&gt; uv add sqlalchemy
+&gt; uvx ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+All checks passed!
+</code></pre>
+<p>Can you please add more details how you ran <code>ty</code> and what the environment looks like?</p>
+<p>I can see how we would show that message if there was no right hand side in the attribute assignment (<code>uuid: Mapped[UUID]</code>), but with the <code>mapped_column(…)</code> right-hand-side, we should understand that this can also be accessed on the class itself.</p>
+<p>That said, we don't fully support dataclass fields yet, so I wouldn't expect support for sqlalchemy models to be complete (see #111)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rowillia">@rowillia</a> on 2025-05-14 15:59</div>
+            <div class="timeline-body"><p>@sharkdp sorry about that!  I made a mistake when trying to create a minimal repro 😄 - does this work better?</p>
+<pre><code class="language-python">from sqlalchemy import select
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class User(Base):
+    __tablename__ = &quot;users&quot;
+
+    id: Mapped[int]  # Primary key column
+    name: Mapped[str]  # String column
+    email: Mapped[str]  # Another string column
+
+
+def get_user_by_id(session: Session, user_id: int):
+    return session.scalar(select(User).where(User.id == user_id))
+
+
+def search_users_by_name(session: Session, name_pattern: str):
+    return session.scalars(
+        select(User).where(User.name.ilike(f&quot;%{name_pattern}%&quot;))
+    ).all()
+</code></pre>
+<pre><code class="language-bash">$ ty check --python $(which python) /tmp/sqlalchemy_mapped_minimal.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Attribute `id` can only be accessed on instances, not on the class object `&lt;class 'User'&gt;` itself.
+  --&gt; /tmp/sqlalchemy_mapped_minimal.py:18:46
+   |
+17 | def get_user_by_id(session: Session, user_id: int):
+18 |     return session.scalar(select(User).where(User.id == user_id))
+   |                                              ^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Attribute `name` can only be accessed on instances, not on the class object `&lt;class 'User'&gt;` itself.
+  --&gt; /tmp/sqlalchemy_mapped_minimal.py:28:28
+   |
+26 |     &quot;&quot;&quot;
+27 |     return session.scalars(
+28 |         select(User).where(User.name.ilike(f&quot;%{name_pattern}%&quot;))
+   |                            ^^^^^^^^^
+29 |     ).all()
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 17:55</div>
+            <div class="timeline-body"><p>Presumably there is some runtime magic in <code>DeclarativeBase</code> (a metaclass or <code>__init_subclass__</code> or something) which places an actual attribute on the class, based on those annotations? It feels unfortunate to have to let this pass silently in the vast majority of cases where the attribute wouldn't be available on the class (since, obviously, nothing is assigned on the class) in order to support this.</p>
+<p>Does it break the typing of this in some way to wrap those annotations in <code>typing.ClassVar</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-15 02:49</div>
+            <div class="timeline-body"><p>Wrapping the three <code>Mapped</code> annotations in <code>ClassVar</code> does make ty happy, without upsetting either mypy or pyright. I feel like that's the better annotation for this case, since it explicitly asserts &quot;this attribute is accessible on the class, even though it would apparently not seem to be.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaunhegarty">@shaunhegarty</a> on 2025-05-15 11:49</div>
+            <div class="timeline-body"><p>I'm seeing this issue as well. Adding ClassVar to every single attribute like this does indeed make ty happy, but will make unhappy developers because we would need to apply this to many attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-17 21:41</div>
+            <div class="timeline-body"><p>Yeah, understood that annotating all such attributes with <code>ClassVar</code> may not be appealing. I guess we could special-case some knowledge of SQLAlchemy's DeclarativeBase? Seems like our options are basically that, or relaxing this rule entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-17 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess we could special-case some knowledge of SQLAlchemy's DeclarativeBase?</p>
+</blockquote>
+<p>I don't love the idea that these classes will have different semantics to all other possible classes, but this feels like our best option right now. It doesn't close the door to relaxing the rule entirely in the future if we find other common cases where this rule causes problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2025-05-27 07:51</div>
+            <div class="timeline-body"><p>Something similar happens for mongoengine which is an ORM for MongoDB. I tried to copy the relevant parts from the mongoengine code to get a minimal example: https://play.ty.dev/b625af2d-5c85-40b5-841e-c8ff6b14c4ba
+I cannot say that I really understand this code but indeed it seems like the attribute is added by a metaclass which is not detected by ty. If you think this is unrelated I can open a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-28 07:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I cannot say that I really understand this code but indeed it seems like the attribute is added by a metaclass which is not detected by ty. If you think this is unrelated I can open a separate issue.</p>
+</blockquote>
+<p>I think this is slightly different. In this case, <code>Test</code> has no annotation at all. The <code>objects</code> attribute seems to be something that is implicitly available on classes that subclass <code>Document</code>. So it seems to me like mongoengine could add a <code>objects: ClassVar[list[object]]</code> annotation to <code>TopLevelDocumentMetaclass</code> to make this explicit: https://play.ty.dev/224a3bdc-54c1-4fbf-8991-723aa526c002.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> removed by @AlexWaygood on 2025-05-28 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">metaprogramming</span> added by @AlexWaygood on 2025-05-28 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2025-05-28 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2025-05-29 21:00</div>
+            <div class="timeline-body"><p>Wrapping a descriptor with a class-bound <code>__get__</code> overload in <code>ClassVar</code> seems redundant.  Perhaps ty should interpret these descriptors as having an implicit <code>ClassVar</code> component. <code>ClassVar</code>-less descriptors also seem to misbehave, see lines 23, 38 and 39 here: https://play.ty.dev/9c511571-d065-4df8-af07-2e7d62058918.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-29 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps ty should interpret these descriptors as having an implicit <code>ClassVar</code> component.</p>
+</blockquote>
+<p>What would define the category of &quot;these descriptors&quot;?</p>
+<blockquote>
+<p><code>ClassVar</code>-less descriptors also seem to misbehave, see lines 23, 38 and 39 here: https://play.ty.dev/9c511571-d065-4df8-af07-2e7d62058918.</p>
+</blockquote>
+<p>I think all of the behavior there is intended.</p>
+<p>If you annotate an attribute on a class, not as a <code>ClassVar</code>, and don't assign anything to it, we take that as implying &quot;this is an attribute present on instances, not on the class.&quot; This is reasonable IMO, since it's not a <code>ClassVar</code> and nothing was assigned on the class -- but it's also causing the difficulty in this issue (where a magic metaclass is actually assigning something on the class behind the scenes.) If a descriptor is present on an instance but not on the class, the descriptor protocol doesn't come into play: that explains the result on line 23.</p>
+<p>The <code>Unknown |</code> component of the type on lines 38 and 39 is because there is no annotation, and we don't assume that an unannotated class attribute is forever tied to its initially assigned type. E.g. we don't assume that in</p>
+<pre><code class="language-py">class RetryPolicy:
+    max_retries = None
+</code></pre>
+<p>that the (unannotated) <code>max_retries</code> should be assumed to be restricted to always be <code>None</code>. So we infer a type of <code>Unknown | None</code> for it, since it is not annotated with any declared type restricting future reassignments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:24</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/539 has some more ways this can manifest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2025-05-30 08:25</div>
+            <div class="timeline-body"><blockquote>
+<p>What would define the category of &quot;these descriptors&quot;?</p>
+</blockquote>
+<p>A <code>__get__</code> overload where the instance is of type <code>None</code> can only logically apply to the class.  It’s not clean, but it might be better than carving out an exception for SQLAlchemy specifically?</p>
+<p>Thank you for explaining ty’s approach to class variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 20:26</div>
+            <div class="timeline-body"><p>After seeing another non-SQLAlchemy case of this in https://github.com/astral-sh/ty/issues/553, I'm leaning towards just abandoning our current strict handling of annotated-but-not-assigned names in class bodies, and just allow them to be considered a class-or-instance attribute, as mypy and pyright do. I still think it would have been better for the type system to go a different direction here, but I don't want to take on the burden of incompatibility with too much existing typed code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fightingdreamer">@fightingdreamer</a> on 2025-06-24 21:41</div>
+            <div class="timeline-body"><p>Can <code>ty</code> have strict mode for cases like this?</p>
+<p>Cause keeping compatibility with pyright, basedpyright and pyrefly can ease transition, at the cost of introducing non optimal behavior later on — assuming the end goal is to move to <code>ty</code> completely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-24 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>and pyrefly</p>
+</blockquote>
+<p>This surprised me a bit, since last I knew, pyrefly implemented the same thing we do, that <code>x: int</code> with no assignment and no <code>ClassVar</code> in a class body means &quot;instance-only attribute&quot;. And <a href="https://pyrefly.org/sandbox/?code=MYGwhgzhAEDCBcAoaLoA97QJYDsAuiisAdGoUA">that does seem to still be the case</a>.</p>
+<p>But pyrefly doesn't error on this SQLAlchemy example. As best I can tell, the reason is because they implement a heuristic that if the annotated type of the attribute appears to be a descriptor, they then <a href="https://pyrefly.org/sandbox/?code=MYGwhgzhAEAiBcAoaLoBMCmAzaB9XA5hgC74AUEGIWANNAJYB2ExYjwGdA9gO6MYAnAJRJUY6AJIBXAY2gA5Lv0SJQkGAGFRqAB7wGjYslRp9sFRoB0OxFbRA">assume that it is actually accessible on the class</a>.</p>
+<p>So that's another option here, but I don't think it's a good option. I don't think the details of the annotated type should impact whether we consider something to be an instance-only attribute or a class-and-instance-attribute. I would rather just follow pyright and mypy in assuming that everything annotated on the class can be accessed on the class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>So that's another option here, but I don't think it's a good option. I don't think the details of the annotated type should impact whether we consider something to be an instance-only attribute or a class-and-instance-attribute. I would rather just follow pyright and mypy in assuming that everything annotated on the class can be accessed on the class.</p>
+</blockquote>
+<p>I do like the idea of having a disabled-by-default rule that flags places our current behaviour would flag, so that those who do want additional type safety can have it. But yes, I agree that we will probably need to copy mypy/pyright for our default behaviour here. The incompatibility with existing type annotations will probably be too great otherwise :-(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SQLAlchemy Model Class Attribute Access Incorrectly Flagged as Error" to "Declared-only attributes are not accessible on instances of the class" by @sharkdp on 2025-06-26 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-02 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class pattern matching fails for final non-bivariant classes - astral-sh/ty #1458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Class pattern matching fails for final non-bivariant classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1458">#1458</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-10-30 18:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-30 18:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If you try to pattern match on a final non-bivariant class using a <a href="https://docs.python.org/3/reference/compound_stmts.html#class-patterns">class pattern</a>, that match arm will be treated as never, despite being taken at runtime and working if any of the conditions are removed.</p>
+<p>https://play.ty.dev/b6317b80-39f5-4e45-af1e-977eea84c3ae</p>
+<pre><code class="language-py">from typing import final, assert_never
+
+@final
+class FinalCovariant[T]:
+    def __init__(self, value: T):
+        self._value = value
+
+def uses_final_covariant(value: FinalCovariant[int]):
+    match value:
+        case FinalCovariant():
+            reveal_type(value)  # Should not be `Never`, but is
+            assert_never()  # Should not pass, but does
+</code></pre>
+<details>
+<summary>Examples showing similar code working, and runtime test</summary>
+
+<p>https://play.ty.dev/6e0c778e-50fa-4239-a81e-747ac9351f3a</p>
+<pre><code class="language-py">from typing import final, assert_never
+
+@final
+class FinalCovariant[T]:
+    def __init__(self, value: T):
+        self._value = value
+
+def uses_final_covariant(value: FinalCovariant[int]):
+    match value:
+        case FinalCovariant():
+            reveal_type(value)  # Should not be `Never`, but is
+            assert_never()  # Should not pass, but does
+
+
+
+class Covariant[T]:
+    def __init__(self, value: T):
+        self._value = value
+
+def uses_covariant(value: Covariant[int]):
+    match value:
+        case Covariant():
+            reveal_type(value)  # Is not `Never`
+            assert_never()  # Correctly does not pass
+
+
+@final
+class FinalBivariant[T]: ...
+
+def uses_final_bivariant(value: FinalBivariant[int]):
+    match value:
+        case FinalBivariant():
+            reveal_type(value)  # Is not `Never`
+            assert_never()  # Correctly does not pass
+</code></pre>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import final, assert_never)
+...
+... @final
+... class FinalCovariant[T]:
+...     def __init__(self, value: T):
+...         self._value = value
+...
+... def uses_final_covariant(value: FinalCovariant[int]):
+...     match value:
+...         case FinalCovariant():
+...             reveal_type(value)  # Should not be `Never`, but is
+...             assert_never()  # Should not pass, but does
+...
+&gt;&gt;&gt; from typing import reveal_type
+&gt;&gt;&gt; uses_final_covariant(FinalCovariant(1))
+Runtime type is 'FinalCovariant'
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    uses_final_covariant(FinalCovariant(1))
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File &quot;&lt;python-input-2&gt;&quot;, line 12, in uses_final_covariant
+    assert_never()  # Should not pass, but does
+    ~~~~~~~~~~~~^^
+TypeError: assert_never() missing 1 required positional argument: 'arg'
+</code></pre>
+<h3>Version</h3>
+<p>playground (5139f76d1)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 18:42</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Without <code>@final</code> we still get a wrong result, just differently wrong. We get <code>Covariant[int] &amp; Covariant[Unknown]</code>, but we don't simplify to <code>Never</code> because the type isn't final.</p>
+<p>I think this should be a fairly simple fix: this <code>match</code> narrowing needs to use the top materialization rather than the unknown-materialization, like we do for <code>isinstance</code> narrowing on a generic type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-10-30 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-10-30 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-10-30 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-10-30 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-30 20:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

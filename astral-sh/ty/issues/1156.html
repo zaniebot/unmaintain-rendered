@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialization of generic classes with type parameter default values is broken - astral-sh/ty #1156</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initialization of generic classes with type parameter default values is broken</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1156">#1156</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-09-09 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-09 14:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I identified another problem that &quot;blocks&quot; the merge of https://github.com/astral-sh/ruff/pull/18007 (in the sense that there are hundreds of false positives caused by this). It can be reproduced on <code>main</code> by explicitly annotating <code>self: Self</code>, and occurs when trying to initialize a generic class with a type parameter default value:</p>
+<pre><code class="language-py">from typing import Self
+
+class MyClass[T = int]:
+    def __init__(self: Self, x: T) -&gt; None:
+        self.x = x
+
+# error: Argument to bound method `__init__` is incorrect: Argument type `MyClass[T@MyClass]` does not satisfy upper bound of type variable `Self`
+MyClass(1)
+</code></pre>
+<p>https://play.ty.dev/adc72fc1-667d-4956-aa06-ed72e1403e1f</p>
+<h3>Version</h3>
+<p>Current main (25853e237)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-09-09 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-09-09 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-09 14:23</div>
+            <div class="timeline-body"><p>It looks like we're using the typevar default instead of the type inferred by the arguments:</p>
+<pre><code class="language-py">from typing import Self
+
+class MyClass[T = str]:
+    def __init__(self: Self, x: T) -&gt; None:
+        self.x = x
+
+reveal_type(MyClass(1))  # revealed: MyClass[str]
+</code></pre>
+<p>https://play.ty.dev/1f512f4b-b072-4844-b2dc-314b9b1b2598</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-09-09 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-09-09 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-10 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:29 UTC
+    </footer>
+</body>
+</html>

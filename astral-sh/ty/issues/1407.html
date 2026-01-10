@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty doesn't check if all union variants support a given binary operation - astral-sh/ty #1407</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty doesn't check if all union variants support a given binary operation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1407">#1407</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-10-20 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-20 17:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from __future__ import annotations
+
+class Test:
+    def __add__(self, other: Other, /) -&gt; Other:
+        return other
+
+class Other:
+    def __add__(self, other: Test, /) -&gt; Other:
+        return self
+
+a: Test | Other = Test()
+
+a + Other()
+</code></pre>
+<p>I would expect that ty reports an error for <code>a + Other()</code> because <code>Other</code> doesn't implement <code>add</code> with <code>Other</code> as its right hand side</p>
+<p>ty correctly reports an error if I change <code>a</code> to <code>a: Other = Other()</code></p>
+<p>https://play.ty.dev/c81ed42f-456e-4561-9825-8a6f0b9a15ff</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-20 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @MichaReiser on 2025-10-20 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-20 17:51</div>
+            <div class="timeline-body"><blockquote>
+<p>a: Test | Other = Test()</p>
+<p>a + Other()</p>
+</blockquote>
+<p><code>a</code> in the lower expression is just <code>Test</code> (the inferred type). You need to actually have an <em>inferred</em> type of <code>Test | Other</code> if you want this to work. Or use a nested scope, which sees the declared type:</p>
+<pre><code class="language-py">a: Test | Other = Test()
+
+def _():
+    a + Other()
+</code></pre>
+<p>For examples like these, it's often easiest to go without a concrete value:</p>
+<pre><code class="language-py">def _(a: Test | Other):
+    a + Other()
+</code></pre>
+<p>Both of these do emit an error, and in your example, we should not emit an error, because the flow-sensitive type of <code>a</code> is just <code>Test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-20 17:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:37 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dataclass causes incorrect invalid-argument-type error - astral-sh/ty #671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dataclass causes incorrect invalid-argument-type error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/671">#671</a>
+        opened by <a href="https://github.com/lexicalunit">@lexicalunit</a>
+        on 2025-06-17 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lexicalunit">@lexicalunit</a> on 2025-06-17 19:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">import random
+from dataclasses import dataclass
+
+
+@dataclass
+class Foo:
+    a: str | None = None
+
+
+def show_a(a: str) -&gt; str:
+    return f&quot;foo: {a}&quot;
+
+
+def get_foo() -&gt; Foo:
+    if random.choice([True, False]):
+        return Foo(a=&quot;Hello&quot;)
+    return Foo()
+
+
+foo = get_foo()
+result = show_a(foo.a) if foo.a else None
+print(result)
+</code></pre>
+<pre><code class="language-text">error[invalid-argument-type]: Argument to function `show_a` is incorrect
+  --&gt; foo.py:22:17
+   |
+20 | foo = get_foo()
+21 |
+22 | result = show_a(foo.a) if foo.a else None
+   |                 ^^^^^ Expected `str`, found `str | None`
+23 |
+24 | print(result)
+   |
+info: Function defined here
+  --&gt; foo.py:10:5
+   |
+10 | def show_a(a: str) -&gt; str:
+   |     ^^^^^^ ------ Parameter declared here
+11 |     return f&quot;foo: {a}&quot;
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.10 (15bae14c2 2025-06-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "keyword only dataclass causes incorrect invalid-argument-type error" to "dataclass causes incorrect invalid-argument-type error" by @lexicalunit on 2025-06-17 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lexicalunit">@lexicalunit</a> on 2025-06-17 19:12</div>
+            <div class="timeline-body"><p>At first I thought it was related to <code>@dataclass(kw_only=True)</code> vs <code>@dataclass</code> but I'm actually getting the error either way now 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 19:21</div>
+            <div class="timeline-body"><p>This looks like #164 (not related to dataclasses at all), which coincidentally was just fixed earlier today. Fix is not released yet, but you can already see that your code example works in the playground: https://play.ty.dev/37c2507e-1489-4824-8a50-18819ad35343</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-17 19:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diagnostics to explain why a `TypedDict` is not assignable to `dict` - astral-sh/ty #1646</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diagnostics to explain why a `TypedDict` is not assignable to `dict`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1646">#1646</a>
+        opened by <a href="https://github.com/lypwig">@lypwig</a>
+        on 2025-11-26 15:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lypwig">@lypwig</a> on 2025-11-26 15:45</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I use a package containing methods returning poorly typed dict, and I would like to improve typing in my inherited classes by defining a typedDict and set it as a return type:</p>
+<pre><code class="language-py">from typing import Any, TypedDict
+
+
+class FooDict(TypedDict):
+    a: int
+
+
+class A:
+    def foo(self) -&gt; dict[str, Any]:
+        return {&quot;a&quot;: 1}
+
+
+class B(A):
+    def foo(self) -&gt; FooDict: #  &lt;-- ty error here
+        return {&quot;a&quot;: 1}
+</code></pre>
+<p>Here I get:</p>
+<blockquote>
+<p>ty: Invalid override of method <code>foo</code>: Definition is incompatible with <code>A.foo</code> (invalid-method-override) [Ln 14, Col 9]</p>
+</blockquote>
+<p>https://play.ty.dev/6d88c3d3-7801-46ce-98f8-8d74a0e7fce4</p>
+<p>Is it possible to do this?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @lypwig on 2025-11-26 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 16:18</div>
+            <div class="timeline-body"><p>Hi @njourdane. Unfortunately no, this isn't possible. A TypedDict type is not usually assignable to <code>dict[str, Any]</code>. The reasons for this are laid out in https://typing.python.org/en/latest/spec/typeddict.html#subtyping-with-dict. (The spec <em>does</em> list one or two exemptions to this rule... but unfortunately, we haven't implemented those exemptions yet 🙃. It's on our roadmap to do so.)</p>
+<p>A <code>TypedDict</code> type <em>is</em> a subtype of <code>Mapping[str, Any]</code>, but I assume this is not an option for you if you don't control the package that <code>A</code> is defined in...?</p>
+<p>Your best option here might be to either <code>type: ignore</code> away the error or to use <code>typing.cast</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typeddict</span> added by @AlexWaygood on 2025-11-26 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How to surcharge TypedDicts?" to "Improve diagnostics to explain why a `TypedDict` is not assignable to `dict`" by @AlexWaygood on 2025-11-26 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-11-26 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-26 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 17:00</div>
+            <div class="timeline-body"><p>I think ideally we would give a subdiagnostic that would explain why <code>TypedDict</code> types cannot be assigned to <code>dict</code>. That's a bit hard for us to do right now, but we plan on improving our architecture in the future so that we can surface these kinds of explanatory subdiagnostics when subtyping/assignability checks fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 17:05</div>
+            <div class="timeline-body"><blockquote>
+<p>The spec <em>does</em> list one or two exemptions to this rule</p>
+</blockquote>
+<p>Those exemptions can roughly be summarized as &quot;if your <code>TypedDict</code> type provides zero type information beyond what a <code>dict</code> type would provide, then you can assign it to <code>dict</code>&quot; -- in other words, they are pretty much useless in practice. (But we should still implement them at some point.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:45 UTC
+    </footer>
+</body>
+</html>

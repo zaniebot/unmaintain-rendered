@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow assignment to new fields in class, mark the field as bound - astral-sh/ty #726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow assignment to new fields in class, mark the field as bound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/726">#726</a>
+        opened by <a href="https://github.com/flexagoon">@flexagoon</a>
+        on 2025-06-29 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flexagoon">@flexagoon</a> on 2025-06-29 21:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Not sure how else to title this issue, since this is two issues in one which relate to the same usecase.</p>
+<pre><code class="language-python">class A:
+    foo: int
+
+class B:
+    pass
+
+def bar(p: A | B):
+    p.foo = 4
+    print(p.foo)
+</code></pre>
+<p>This produces two issues:</p>
+<pre><code>Object of type `Literal[4]` is not assignable to attribute `foo` on type `A | B` (invalid-assignment) [Ln 8, Col 5]
+Attribute `foo` on type `A | B` is possibly unbound (possibly-unbound-attribute) [Ln 9, Col 11]
+</code></pre>
+<p>First of all, there should be a way to allow assignments like that via config.</p>
+<p>But also, in this case, p.foo is guaranteed to be defined, so the <code>possibly-unbound-attribute</code> rule is a false positive.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2025-06-30 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-06-30 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-30 19:37</div>
+            <div class="timeline-body"><p>Emitting diagnostics on both of those lines is the intended behavior: mypy, pyright, and pyrefly all do the same.</p>
+<p>We could emit a different error code than just <code>invalid-assignment</code> for <code>p.foo = 4</code>; something like <code>undefined-attribute</code>. Then in your config you could silence that error code if you choose.</p>
+<p>For the second diagnostic, I think we could use our narrowing support to avoid a diagnostic here, but I don't think this is high priority. The use case here is pushing against the way the Python type system is intended to work (if you want to set/access an attribute <code>B.foo</code>, then that attribute should always exist on <code>B</code>), and no other Python type checker supports it.</p>
+<p>(Side note: I don't really like the way we currently phrase the second diagnostic. It would be better to just say that the attribute <code>foo</code> doesn't exist on <code>B</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flexagoon">@flexagoon</a> on 2025-06-30 21:52</div>
+            <div class="timeline-body"><p>Alright, my bad, turns out mypy does that as well, it just didn't show an error for me because the class was imported from a library which was excluded from typechecking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @flexagoon on 2025-06-30 21:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

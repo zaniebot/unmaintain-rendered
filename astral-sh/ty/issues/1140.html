@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Exception` type not inferred from `pytest.raises` - astral-sh/ty #1140</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Exception` type not inferred from `pytest.raises`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1140">#1140</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2025-09-06 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2025-09-06 15:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>not sure following suggestion is good. just bringing it up for discussion.</p>
+<pre><code class="language-py">import pytest
+from my_pkg import main
+
+
+@pytest.mark.parametrize(&quot;arg&quot;, [&quot;-v&quot;, &quot;--version&quot;])
+def test_report_version(capsys: pytest.CaptureFixture[str], arg: str) -&gt; None:
+    &quot;&quot;&quot;Test CLI version flag.&quot;&quot;&quot;
+    with pytest.raises(SystemExit) as exc_info:
+        main([arg])
+
+    assert exc_info.value.code == 0 # Type `BaseException` has no attribute `code` ty[unresolved-attribute]
+
+    stdout, stderr = capsys.readouterr()
+
+    assert stdout.startswith(&quot;My Package v&quot;)
+    assert stderr == &quot;&quot;
+</code></pre>
+<p>if the code reaches <code>assert exc_info.value.code == 0</code>, we know that  <code>pytest.raises(SystemExit)</code> didn't throw an error, i.e <code>exc_info.value</code> must have type <code>SystemExit</code>. should <code>ty</code> infer this?</p>
+<p>this error is easy to work around by adding <code>assert isinstance(exc_info.value, SystemExit)</code> before the <code>assert exc_info.value.code == 0</code> so feel free to close if <code>ty</code> behaves as expected</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-09-07 14:00</div>
+            <div class="timeline-body"><p>Not 100% sure, but it's possible this might be different in pytest after this fix I did a while ago for a different ty issue https://github.com/pytest-dev/pytest/pull/13445
+The fix hasn't been released yet however, wonder what happens if you try latest <code>main</code> branch of pytest from github?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2025-09-07 14:04</div>
+            <div class="timeline-body"><p>same problem with <code>pytest==8.5.0.dev100+gdefc235e0</code></p>
+<pre><code>uv pip install git+https://github.com/pytest-dev/pytest
+Using Python 3.13.0 environment at: /Users/janosh/.venv/py313
+    Updated https://github.com/pytest-dev/pytest (defc235e0f514769ea4bff205435167af39d951e)
+Resolved 5 packages in 4.44s
+      Built pytest @ git+https://github.com/pytest-dev/pytest@defc235e0f514769ea4bff205435167af39
+Prepared 1 package in 239ms
+Uninstalled 1 package in 6ms
+Installed 1 package in 2ms
+ - pytest==8.4.0
+ + pytest==8.5.0.dev100+gdefc235e0 (from git+https://github.com/pytest-
+dev/pytest@defc235e0f514769ea4bff205435167af39d951e)
+
+
+(py313) ➜ ty check test_cli.py    
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files              error[unresolved-attribute]: Type `BaseException` has no attribute `code`
+  --&gt; test_cli.py:12:9
+   |
+11 |     assert (
+12 |         exc_info.value.code == 0
+   |         ^^^^^^^^^^^^^^^^^^^
+13 |     )  # Type `BaseException` has no attribute `code` ty[unresolved-attribute]
+   |
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 07:03</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<blockquote>
+<p><code>exc_info.value</code> must have type <code>SystemExit</code>. should <code>ty</code> infer this?</p>
+</blockquote>
+<p>Yes, definitely. I believe we pick <a href="https://github.com/pytest-dev/pytest/blob/bfae4224fd554d3d7f2c277a4cc092b6ec6af3ae/src/_pytest/raises.py#L73-L79">the right overload of <code>pytest.raises</code></a>, but we don't correctly solve <code>E</code> as <code>SystemExit</code> and fall back to the <a href="https://github.com/pytest-dev/pytest/blob/bfae4224fd554d3d7f2c277a4cc092b6ec6af3ae/src/_pytest/raises.py#L48">default of <code>BaseException</code></a>. So this is probably related to https://github.com/astral-sh/ty/issues/501 and #623.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-08 07:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type inferred as `Never` from cyclic * import - astral-sh/ty #113</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type inferred as `Never` from cyclic * import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/113">#113</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-23 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-23 20:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My reproduction is maybe not great, but there is a package <code>klayout</code> that contains a <code>.pyi</code> file with &gt; 75,000 lines.</p>
+<pre><code class="language-bash">mkdir /tmp/test-repro
+cd /tmp/test-repro
+uv venv
+uv pip install klayout
+echo &quot;import klayout.db as kdb
+
+from typing_extensions import reveal_type
+
+
+def _(x: kdb.LayerInfo, y: kdb.LEFDEFReaderConfiguration):
+    reveal_type(x)
+    reveal_type(y)
+&quot; &gt; main.py
+uv run &lt;red-knot-bin&gt; check main.py
+</code></pre>
+<p>This gives the following error:</p>
+<pre><code class="language-bash">error: lint:invalid-type-form: Variable of type `Never` is not allowed in a type expression
+ --&gt; /tmp/test-repro/main.py:6:10
+  |
+6 | def _(x: kdb.LayerInfo):
+  |          ^^^^^^^^^^^^^
+7 |     reveal_type(x)
+  |
+
+info: revealed-type: Revealed type
+ --&gt; /tmp/test-repro/main.py:7:5
+  |
+6 | def _(x: kdb.LayerInfo):
+7 |     reveal_type(x)
+  |     ^^^^^^^^^^^^^^ `Unknown`
+  |
+
+Found 2 diagnostics
+</code></pre>
+<p>Also to note <code>LayerInfo</code> is defined at line 36702 and <code>LEFDEFReaderConfiguration</code> at line 35628 (and <code>LEFDEFReaderConfiguration</code> works fine)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-23 22:01</div>
+            <div class="timeline-body"><p>Here's a minimal repro:</p>
+<p><code>main.py</code>:</p>
+<pre><code class="language-py">from pkg.sub import A
+
+reveal_type(A)  # reveals Never
+</code></pre>
+<p><code>pkg/outer.py</code>:</p>
+<pre><code class="language-py">class A: ...
+</code></pre>
+<p><code>pkg/sub/__init__.py</code>:</p>
+<pre><code class="language-py">from ..outer import *
+from .inner import *
+</code></pre>
+<p><code>pkg/sub/inner.py</code>:</p>
+<pre><code class="language-py">from pkg.sub import A
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-04-23 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-23 22:02</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-23 22:06</div>
+            <div class="timeline-body"><p>Also, my comment about the lines doesn't matter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-23 22:09</div>
+            <div class="timeline-body"><p>Also, this works (as in it fails) for a mdtest</p>
+<h2>Relative import to <code>.pyi</code></h2>
+<pre><code class="language-toml">[environment]
+python = &quot;/src/.venv&quot;
+python-version = &quot;3.13&quot;
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/sub/__init__.py</code>:</p>
+<pre><code class="language-py">from ..bar import *
+from .inner import *
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/sub/inner.py</code>:</p>
+<pre><code class="language-py">from package.sub import A
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/bar.pyi</code>:</p>
+<pre><code class="language-pyi">class A: ...
+</code></pre>
+<p><code>/src/main.py</code>:</p>
+<pre><code class="language-py">import package.sub as sub
+
+reveal_type(sub.A)  # revealed: Literal[A]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-23 22:12</div>
+            <div class="timeline-body"><p>And, Importantly, this passes</p>
+<h2>Relative import to <code>.pyi</code></h2>
+<pre><code class="language-toml">[environment]
+python = &quot;/src/.venv&quot;
+python-version = &quot;3.13&quot;
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/sub/__init__.py</code>:</p>
+<pre><code class="language-py">from ..bar import *
+reveal_type(A)  # revealed: Literal[A]
+from .inner import *
+reveal_type(A)  # revealed: Never
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/sub/inner.py</code>:</p>
+<pre><code class="language-py">from package.sub import A
+</code></pre>
+<p><code>/src/.venv/&lt;path-to-site-packages&gt;/package/bar.pyi</code>:</p>
+<pre><code class="language-pyi">class A: ...
+</code></pre>
+<p><code>/src/main.py</code>:</p>
+<pre><code class="language-py">import package.sub as sub
+
+reveal_type(sub.A)  # revealed: Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Types inferred as `Never` from large `.pyi` files." to "[red-knot] Type inferred as `Never` from cyclic * import" by @carljm on 2025-04-23 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-05-06 15:03</div>
+            <div class="timeline-body"><p>This is a massive issue in torch as it prevents <code>from torch import Tensor</code> from working with ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Type inferred as `Never` from cyclic * import" to "Type inferred as `Never` from cyclic * import" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-07 16:54</div>
+            <div class="timeline-body"><blockquote>
+<p>This is a massive issue in torch as it prevents <code>from torch import Tensor</code> from working with ty.</p>
+</blockquote>
+<p>Although the symptom is basically identical, that's actually a different issue, and it's fixed now with the merge of https://github.com/astral-sh/ruff/pull/17856</p>
+<p>The issue described above still repros, however; it seems less common.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-10 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-15 22:01</div>
+            <div class="timeline-body"><p>I think this is resolved? my repro works fine now, and on my codebase i dont have the issue anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-16 02:20</div>
+            <div class="timeline-body"><p>I still see the type of <code>A</code> wrongly revealed as <code>Never</code> in the MRE I showed in https://github.com/astral-sh/ty/issues/113#issuecomment-2859014192 so I think there is still something to fix here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-17 16:18</div>
+            <div class="timeline-body"><p>Ah i see, my mistake. I wonder what the difference is between our repros then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 06:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

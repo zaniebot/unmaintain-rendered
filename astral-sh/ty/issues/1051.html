@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Less error-prone way to examine both declarations and bindings - astral-sh/ty #1051</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Less error-prone way to examine both declarations and bindings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1051">#1051</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-08-19 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 15:13</div>
+            <div class="timeline-body"><p>We do this sort of thing a lot in ty's code base: iterating over both bindings and declarations separately, hoping that there is a 1:1 relationship. This is not always the case. For example:</p>
+<pre><code class="language-py">class D: # maybe a protocol, maybe a dataclass with fields, …
+    if condition:
+        attr: int
+    else:
+        attr = &quot;&quot;
+</code></pre>
+<p>This is unlikely to be a problem for protocols in particular, I think. And it's certainly not something specific to this PR. But I think it would be very beneficial in a lot of places if we could somehow iterate over all <em>definitions</em> and then get the declared type (for <code>attr: int</code>), the inferred type (for <code>attr = &quot;&quot;</code>), or both (for <code>attr: int = 0</code>).</p>
+<p>Here, it would eliminate the mutation of the entry. And the bug would probably not have happened in the first place if the iterator would yield either a <code>DeclaredType { ty }</code>, an <code>InferredType { ty }</code>, or <code>Both { declared_ty, inferred_ty }</code>. See https://github.com/astral-sh/ruff/pull/19756 for a somewhat related problem that I fixed a few weeks ago.</p>
+<p><em>Originally posted by @sharkdp in https://github.com/astral-sh/ruff/pull/19950#discussion_r2284603002</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2025-08-19 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuple unpacking from a type alias results in wrong union type - astral-sh/ty #1046</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tuple unpacking from a type alias results in wrong union type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1046">#1046</a>
+        opened by <a href="https://github.com/leddy231">@leddy231</a>
+        on 2025-08-18 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leddy231">@leddy231</a> on 2025-08-18 21:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code snippet:</p>
+<pre><code class="language-python">type Thing = tuple[str, int]
+
+
+def thing() -&gt; Thing:
+    return (&quot;1&quot;, 2)
+
+
+def foo():
+    a, b = thing()
+    a.lower()
+</code></pre>
+<p>Gives this error:</p>
+<pre><code class="language-python">warning[possibly-unbound-attribute]: Attribute `lower` on type `str | int` is possibly unbound
+   |
+ 8 | def foo():
+ 9 |     a, b = thing()
+10 |     a.lower()
+   |     ^^^^^^^
+   |
+info: rule `possibly-unbound-attribute` is enabled by default
+</code></pre>
+<p>Because it thinks <code>a</code> is <code>str | int</code> when it should be just <code>str</code>. If the type alias is removed and the return type is explicitly <code>tuple[str, int]</code> it type checks correctly.</p>
+<p>This seems like a regression in 0.0.1a18, it works correctly in 0.0.1a17</p>
+<h3>Version</h3>
+<p>0.0.1a18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 21:18</div>
+            <div class="timeline-body"><p>Thanks for the report! I can reproduce this by running <code>uvx ty check</code> on your snippet, but not on the ty playground. The ty playground is built from the <code>main</code> branch, so I suspect that after accidentally breaking this we might have accidentally fixed it again? Not sure...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 21:25</div>
+            <div class="timeline-body"><p><code>git bisect</code> indicates that the error went away again on <code>main</code> after https://github.com/astral-sh/ruff/commit/b892e4548e9b71949b1a6cb52d10ccb0c61e50d3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 21:31</div>
+            <div class="timeline-body"><p>And <code>git bisect</code> indicates that the error was first <em>introduced</em> in https://github.com/astral-sh/ruff/commit/13bdba5d28521e87373b72ce2e3f99a159ede644 -- so between those two commits, we had a bug.</p>
+<p>It's much more obvious to me why https://github.com/astral-sh/ruff/commit/13bdba5d28521e87373b72ce2e3f99a159ede644 might have added a bug here (it looks like we could be missing a branch in <code>Type::try_iterate_with_mode()</code> for <code>Type::TypeAlias()</code>?) than why https://github.com/astral-sh/ruff/commit/b892e4548e9b71949b1a6cb52d10ccb0c61e50d3 would have fixed it again 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-18 23:05</div>
+            <div class="timeline-body"><p>We unpack type aliases when they are added to a union or intersection, so I suspect that the latter commit causes us to pass the type through a union or intersection somewhere we didn't before.</p>
+<p>It would still be good to add the case in <code>try_iterate_with_mode()</code>, I think; I'll see if I can make a test case that still reproduces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-08-18 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-18 23:42</div>
+            <div class="timeline-body"><p>Not too hard to repro if we avoid returning the alias from a function call: https://play.ty.dev/e66759b0-7d25-404c-b61d-baeae942faf3</p>
+<p>Fix incoming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-19 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

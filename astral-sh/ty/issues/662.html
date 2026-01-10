@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TypeVar` bounds do not work with `__class__` - astral-sh/ty #662</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TypeVar` bounds do not work with `__class__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/662">#662</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-16 18:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-16 18:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This code does not type check <a href="https://play.ty.dev/143c2d06-491d-486f-abdf-77776d2f0215">playground</a></p>
+<pre><code class="language-py">from typing import TypeVar
+
+_B = TypeVar(&quot;_B&quot;, bound=&quot;Bound&quot;)
+class Bound:
+    def copy(self: _B) -&gt; _B:
+        new = self.__class__()
+        reveal_type(new)
+        return new
+</code></pre>
+<p><code>ty</code> gives</p>
+<pre><code>Revealed type: `Bound` (revealed-type) [Ln 7, Col 21]
+Return type does not match returned value: expected `_B`, found `Bound` (invalid-return-type) [Ln 8, Col 16]
+</code></pre>
+<p>While <code>basedpyright</code> gives no errors and <code>Type of &quot;new&quot; is &quot;_B@copy&quot;</code> <a href="https://basedpyright.com/?typeCheckingMode=all&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAsAFC0D6AQlALyEkUgAUAREzwBooAIzABXFABMWPRuKk8AlLQDGAG3IBnTVDkTJALlpQTUScWBQVYBHC6bia4AahNFUALQA%2BV4yM1TQKgUYgB3VigHJwA6enp1LU04rmUAoJMQYgA3YnI1engEYi4Q0NT0jOIYMRAUYLCgA">playground</a>
+And <code>mypy</code> gives this <a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;gist=9f6fd8bbadc87087b1b44ad9b2cdf988">playground</a></p>
+<pre><code>main.py:7: note: Revealed type is &quot;_B`-1&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<p>The same error happens if you use <code>type</code> instead of <code>__class__</code></p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.10 (15bae14c2 2025-06-13) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-06-17 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 01:50</div>
+            <div class="timeline-body"><p>This requires that we support <code>type[]</code> of a TypeVar, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-28 08:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

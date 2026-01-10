@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nullable parameter is incorrectly parsed in a lambda - astral-sh/ty #792</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nullable parameter is incorrectly parsed in a lambda</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/792">#792</a>
+        opened by <a href="https://github.com/CorentinDeBoisset">@CorentinDeBoisset</a>
+        on 2025-07-09 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CorentinDeBoisset">@CorentinDeBoisset</a> on 2025-07-09 15:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from typing import Iterable
+
+def sort(iterable: Iterable, attribute: str | None = None) -&gt; Iterable:
+    if not attribute:
+        return sorted(iterable)
+    else:
+        return sorted(iterable, key=lambda item: item.get(attribute) if type(item) is dict else getattr(item, attribute))
+</code></pre>
+<p>This error is raised on the final line:</p>
+<pre><code>Argument to function `getattr` is incorrect: Expected `str`, found `str | None` (invalid-argument-type)
+</code></pre>
+<p>Playground: https://play.ty.dev/caa55b6f-6506-405b-acaf-a71fdbe7d3a7</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.13 (6a408d5f9 2025-07-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 15:17</div>
+            <div class="timeline-body"><p>A smaller repro is:</p>
+<pre><code class="language-py">def f(x: str): ...
+
+def g(x: str | None):
+    if not x:
+        return
+
+    def h():
+        f(x)
+
+    h()  # Argument to function `f` is incorrect: Expected `str`, found `str | None` (invalid-argument-type)
+</code></pre>
+<p>I think we already have an issue open for this somewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 15:20</div>
+            <div class="timeline-body"><p>Yeah, I think this is a duplicate of #559. Thanks for the report, though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-09 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CorentinDeBoisset">@CorentinDeBoisset</a> on 2025-07-09 15:22</div>
+            <div class="timeline-body"><p>Actually, after tinkering with it a bit, it seems that python lambda are absolutely not proper closures. See <a href="https://play.ty.dev/53cc3faf-781c-4aeb-b189-7494c1528dd9">this playground</a>. No idea what should be the proper course of action.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

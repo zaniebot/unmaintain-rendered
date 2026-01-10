@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-return-type` false positive on constrained generic when narrowing for each constraint - astral-sh/ty #621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-return-type` false positive on constrained generic when narrowing for each constraint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/621">#621</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-06-10 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-10 10:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">def foo[T: (int, str)](value: T) -&gt; T:
+    if isinstance(value, int):
+        return 1
+    return &quot;&quot;
+</code></pre>
+<pre><code>Return type does not match returned value: expected `T`, found `Literal[1]` (invalid-return-type) [Ln 3, Col 16]
+Return type does not match returned value: expected `T`, found `Literal[&quot;&quot;]` (invalid-return-type) [Ln 4, Col 12]
+</code></pre>
+<p>https://play.ty.dev/2aab612b-e197-46d2-a47f-7a288cbe3574</p>
+<p>since this is a constraint instead of a regular generic, this should be allowed</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-06-10 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-06-10 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/90degs2infty">@90degs2infty</a> on 2025-09-05 14:39</div>
+            <div class="timeline-body"><p>Similar to the above:</p>
+<pre><code class="language-py">def or_default[T](value: T | None, default: T) -&gt; T:
+    return default if value is None else value
+
+
+def or_empty(value: str | None) -&gt; str:
+    return or_default(value, &quot;&quot;)
+</code></pre>
+<p>Triggers</p>
+<pre><code>Return type does not match returned value: expected `str`, found `str | None` (invalid-return-type) [Ln 6, Col 12]
+</code></pre>
+<p>but to my understanding <code>or_default</code> will always return a <code>T</code>.</p>
+<p>https://play.ty.dev/5e93f1bf-8166-4f5d-b7a2-6e4fea38265a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 16:42</div>
+            <div class="timeline-body"><p>The second comment here is not the same issue as the OP, it's a duplicate of #1115, which will be fixed by #623.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:10 UTC
+    </footer>
+</body>
+</html>

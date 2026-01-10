@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add subtyping / assignability between callable types and classes - astral-sh/ty #129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add subtyping / assignability between callable types and classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/129">#129</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-10 21:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-10 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Some other false positives appear to be because we lack handling of assignability/subtyping of a class literal or subclass-of type to a <code>Callable</code> type. I think the proper handling here (barring metaclass <code>__call__</code> handling) would consider the class to be an intersection of its <code>__init__</code> and <code>__new__</code> signatures. But we could also do a temporary version that just uses the current <code>Type::signatures()</code> implementation as forgiving gradual callable.</p>
+<p><em>Originally posted in https://github.com/astral-sh/ruff/pull/16512#issuecomment-2784668982</em></p>
+</blockquote>
+<p>This involves adding subtyping and assignability between:</p>
+<ul>
+<li>[x] <code>CallableType</code> and <code>Type::ClassLiteral</code> (high priority)</li>
+<li>[x] <code>CallableType</code> and <code>Type::Instance</code> (class instance with <code>__call__</code> method)</li>
+<li>[x] <code>CallableType</code> and <code>Type::SubclassOf</code></li>
+<li>[x] <code>CallableType</code> and <code>Type::GenericAlias</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-11 03:19</div>
+            <div class="timeline-body"><p>Subtyping/assignability between <code>CallableType</code> and <code>SubclassOf</code> is unsound (because no Liskov enforcement on constructors), but we probably should do it anyway. I'd at least like a TODO comment to note that it's unsound so in future we can consider an opt-in option to disable it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:52</div>
+            <div class="timeline-body"><p>This seems like a pretty high priority because it shows up a lot in the ecosystem changes in astral-sh/ruff#17366, specifically between callable types and class literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @dhruvmanila on 2025-04-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-23 15:03</div>
+            <div class="timeline-body"><p>Another thing that would solve a lot of false positives would be assignability of instances of classes with a <code>__call__</code> method to a <code>Callable</code> type. For example, I see a lot of false positives on usages of <code>functools.partial</code>:</p>
+<pre><code>from typing import Callable
+from functools import partial
+
+def f(x: int, y: str) -&gt; None: ...
+
+c: Callable[[int], None] = partial(f, y=&quot;a&quot;)
+</code></pre>
+<p>(https://types.ruff.rs/9f32b840-e3bd-42dd-8dea-14136e1eb6c4)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-23 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Another thing that would solve a lot of false positives would be assignability of instances of classes with a <code>__call__</code> method to a <code>Callable</code> type.</p>
+</blockquote>
+<p>I think we have that but it's only for <code>is_subtype_of</code>, we would need to add it to <code>is_assignable_to</code> as well.</p>
+<p>https://github.com/astral-sh/ruff/blob/e7f38fe74ba642cbd4cf286d8524f4172cbe30e2/crates/red_knot_python_semantic/src/types.rs#L1231-L1239</p>
+<p>This seems a bit unfortunate that we need to duplicate this in both <code>is_subtype_of</code> and <code>is_assignable_to</code> because the match arm in <code>is_subtype_of</code> would only work for fully static type and <code>partial</code>'s <code>__call__</code> method is gradual:</p>
+<p>https://github.com/python/typeshed/blob/87f599dc8312ac67b941b5f2b47274534a1a2d3a/stdlib/functools.pyi#L118-L127</p>
+<p>So, this seems like an easy fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-23 17:19</div>
+            <div class="timeline-body"><p>Okay, thank you for the references, I can look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-23 18:09</div>
+            <div class="timeline-body"><p>This is another point in favor of the idea that we should collapse <code>is_subtype_of</code> and <code>is_assignable_to</code> into a single implementation with a strategy parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-02 14:11</div>
+            <div class="timeline-body"><p>Progress on assignability between <code>Callable</code> and <code>ClassLiteral</code>:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/17469</li>
+<li>https://github.com/astral-sh/ruff/pull/17533</li>
+<li>https://github.com/astral-sh/ruff/pull/17638</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-03 18:41</div>
+            <div class="timeline-body"><p>There's also:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/17704</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add subtyping / assignability between callable types and classes" to "Add subtyping / assignability between callable types and classes" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">subtyping/assignability</span> added by @AlexWaygood on 2025-05-10 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-03 18:09</div>
+            <div class="timeline-body"><p>I also think we have support for <code>CallableType</code> and <code>Type::GenericAlias</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-04 02:13</div>
+            <div class="timeline-body"><p>Confirmed! https://play.ty.dev/3349c0d7-d7c3-42a1-8f80-5dbbcabf1762</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-04 02:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:51 UTC
+    </footer>
+</body>
+</html>

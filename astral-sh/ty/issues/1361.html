@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`from aiohttp import web` leads to `web` inferred as `object` - astral-sh/ty #1361</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`from aiohttp import web` leads to `web` inferred as `object`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1361">#1361</a>
+        opened by <a href="https://github.com/sanga">@sanga</a>
+        on 2025-10-15 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sanga">@sanga</a> on 2025-10-15 12:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>See the repo here for a reproducer https://github.com/sanga/ty_import_bug</p>
+<p>But essentially: <code>aiohttp.web.*</code> isn't resolved properly.</p>
+<p>With the <code>aiohttp</code> example server code:</p>
+<pre><code class="language-python"># the snippet below is copy pasted from here:
+# https://docs.aiohttp.org/en/stable/#server-example
+from aiohttp import web
+
+async def handle(request):
+    name = request.match_info.get(&quot;name&quot;, &quot;Anonymous&quot;)
+    text = &quot;Hello, &quot; + name
+    return web.Response(text=text)
+
+app = web.Application()
+app.add_routes([web.get(&quot;/&quot;, handle), web.get(&quot;/{name}&quot;, handle)])
+
+if __name__ == &quot;__main__&quot;:
+    web.run_app(app)
+</code></pre>
+<p><code>ty</code> version 0.0.1-alpha.22 reports:</p>
+<pre><code>error[unresolved-attribute]: Type `object` has no attribute `Response`
+  --&gt; import_bug.py:16:12
+   |
+14 |     name = request.match_info.get(&quot;name&quot;, &quot;Anonymous&quot;)
+15 |     text = &quot;Hello, &quot; + name
+16 |     return web.Response(text=text)
+   |            ^^^^^^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `object` has no attribute `Application`
+  --&gt; import_bug.py:19:7
+   |
+19 | app = web.Application()
+   |       ^^^^^^^^^^^^^^^
+20 | app.add_routes([web.get(&quot;/&quot;, handle), web.get(&quot;/{name}&quot;, handle)])
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `object` has no attribute `get`
+  --&gt; import_bug.py:20:17
+   |
+19 | app = web.Application()
+20 | app.add_routes([web.get(&quot;/&quot;, handle), web.get(&quot;/{name}&quot;, handle)])
+   |                 ^^^^^^^
+21 |
+22 | if __name__ == &quot;__main__&quot;:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `object` has no attribute `get`
+  --&gt; import_bug.py:20:39
+   |
+19 | app = web.Application()
+20 | app.add_routes([web.get(&quot;/&quot;, handle), web.get(&quot;/{name}&quot;, handle)])
+   |                                       ^^^^^^^
+21 |
+22 | if __name__ == &quot;__main__&quot;:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `object` has no attribute `run_app`
+  --&gt; import_bug.py:23:5
+   |
+22 | if __name__ == &quot;__main__&quot;:
+23 |     web.run_app(app)
+   |     ^^^^^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 5 diagnostics
+</code></pre>
+<p>The <code>web</code> module in <code>aiohttp</code> is basically a bunch of reexports ala:</p>
+<pre><code class="language-python">from .abc import AbstractAccessLogger
+from .helpers import AppKey as AppKey
+from .log import access_logger
+from .typedefs import PathLike
+from .web_app import Application as Application, CleanupError as CleanupError
+from .web_exceptions import (
+    HTTPAccepted as HTTPAccepted,
+    HTTPBadGateway as HTTPBadGateway,
+
+</code></pre>
+<p>For the record:</p>
+<ul>
+<li><code>basedpyright</code> resolves these just fine</li>
+<li>e.g. <code>from aiohttp.web_app import Application</code> works fine with <code>ty</code></li>
+</ul>
+<p>Apologies if this is already captured by a previous bug. I didn't spot anything that looked like it  matched either by searching for <code>aiohttp</code> or  glancing through the bugs tagged with &quot;import&quot;</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanga">@sanga</a> on 2025-10-15 12:34</div>
+            <div class="timeline-body"><p>Oh this may be https://github.com/astral-sh/ty/issues/133 I guess. Apologies if so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "imports not resolved for `aiohttp.web`" to "`from aiohttp import web` leads to `web` inferred as `object`" by @AlexWaygood on 2025-10-15 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-10-15 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 13:30</div>
+            <div class="timeline-body"><p>FYI @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-15 20:22</div>
+            <div class="timeline-body"><p>Thanks for the report! This is a duplicate of #1053. We can see that <code>aiohttp/__init__.py</code> has a module-level <code>__getattr__</code> function <a href="https://github.com/aio-libs/aiohttp/blob/149a8105e7de73888df11ab1689315f9482aaeae/aiohttp/__init__.py#L244-L258">here</a> annotated as returning <code>object</code>, and we currently give that precedence over the package's submodules when resolving the import</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-15 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

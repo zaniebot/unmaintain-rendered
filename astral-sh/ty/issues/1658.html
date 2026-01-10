@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>completions suggest importing `typing_extensions` even if you don't depend on it - astral-sh/ty #1658</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>completions suggest importing `typing_extensions` even if you don't depend on it</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1658">#1658</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-27 18:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-27 18:31</div>
+            <div class="timeline-body"><ul>
+<li>Original discussion https://github.com/astral-sh/ruff/pull/21668#issuecomment-3586965089</li>
+<li>Related to https://github.com/astral-sh/ty/issues/1274</li>
+</ul>
+<p>Our vendored version of typeshed includes <code>typing_extensions</code>, so we think you can just use import from <code>typing_extension</code>s all willy-nilly. This is fine enough in the playground but it will cause issues at runtime if the user actually runs their code and they haven't added it as a dependency of their project.</p>
+<p>We need some way to tell the completions subsystem whether typing_extensions is real or not. Alex suggested maybe requiring the typing_extensions module to resolve in <code>ModuleResolveMode::StubsNotAllowed</code> mode?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-11-27 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-11-27 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-01 13:44</div>
+            <div class="timeline-body"><p>I looked into this, but our current module resolution logic <em>seems</em> to suggest we won't ever resolve <code>typing_extensions</code> <em>unless</em> it's in a search path that is considered part of std. Namely:</p>
+<p>https://github.com/astral-sh/ruff/blob/5358ddae8857a0450f2a083ecdb7b9d2c0af9981/crates/ty_python_semantic/src/module_resolver/resolver.rs#L687-L699</p>
+<p>And:</p>
+<p>https://github.com/astral-sh/ruff/blob/5358ddae8857a0450f2a083ecdb7b9d2c0af9981/crates/ty_python_semantic/src/module_resolver/resolver.rs#L714-L721</p>
+<p>So I think what this means is that <code>resolve_real_module(&quot;typing_extensions&quot;)</code> will always return nothing? (Unless there is a non-stub <code>typing_extensions</code> in a std search path.) But I think this issue is suggesting using this so that, say, it will return a <code>Module</code> if there is a <code>typing_extensions</code> in an environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I looked into this, but our current module resolution logic <em>seems</em> to suggest we won't ever resolve <code>typing_extensions</code> <em>unless</em> it's in a search path that is considered part of std.</p>
+</blockquote>
+<p>Ah, yeah, I forgot about that. For the type checker, it's very important that we only ever see the typeshed version of <code>typing_extensions</code>, because it's involved in a terrible import cycle with <code>builtins</code> and <code>typing</code>, so there's a very high likelihood that we'll panic with an opaque error message if we resolve <code>typing_extensions</code> to an installed version of the package in <code>site-packages</code>. (We probably won't be able to infer the type of <code>object</code>, or something similarly awful.) The LSP obviously has different concerns here, though, so maybe we can find a way of disabling that <code>is_non_shadowable</code> thing for the LSP...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 14:08</div>
+            <div class="timeline-body"><p>Having uv integration (understanding pyproject.toml) could also help with this I suppose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 14:14</div>
+            <div class="timeline-body"><p>However we do it, we will eventually need a way to be able to ask &quot;is <code>typing_extensions</code> <em>actually</em> available, though?&quot; for https://github.com/astral-sh/ty/issues/1577, too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-01 16:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:45 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negative when Enforcing Positional Arguments in regards to Protocols - astral-sh/ty #637</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False Negative when Enforcing Positional Arguments in regards to Protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/637">#637</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2025-06-11 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2025-06-11 19:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Wasn't able to find this, but apologies if it's already been brought up in another issue, but this is more or less a rehash of https://github.com/python/mypy/issues/17421 for Ty.</p>
+<p>In effect Ty doesn't raise a warning if you pass in an class implementation that enforces positional arguments on a method, for a protocol that does not.</p>
+<p>Take this example, which should raise a warning but doesn't:</p>
+<pre><code class="language-python">from typing import Protocol
+
+
+class Readable(Protocol):
+    def read(self, n: int = -1) -&gt; bytes: ...
+
+class ActualReadable:
+    def read(self, n: int = -1, /) -&gt; bytes:
+        return b&quot;&quot;
+
+
+def foo(readable: Readable) -&gt; None:
+    readable.read(n=1)
+
+
+foo(ActualReadable())
+</code></pre>
+<p>This can lead to a runtime error if the protocol implementation is called using a key-word argument.</p>
+<p><a href="https://play.ty.dev/9793a133-5079-4305-9db6-a9c915b7cc50">Ty Playground</a></p>
+<p>If this is simply the result of support for protocols not being finalized, feel free to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-06-12 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-12 05:15</div>
+            <div class="timeline-body"><p>I think our subtyping implementation for callable types already handles this correctly, so it should fall out correctly when we add support for validation of member types of protocols. But I'll let @AlexWaygood decide whether it's useful to keep this open separately or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-12 10:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:11 UTC
+    </footer>
+</body>
+</html>

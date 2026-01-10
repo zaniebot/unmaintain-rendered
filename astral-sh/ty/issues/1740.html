@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-method-override rule is unknown in pyproject.toml - astral-sh/ty #1740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-method-override rule is unknown in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1740">#1740</a>
+        opened by <a href="https://github.com/f-schnabel">@f-schnabel</a>
+        on 2025-12-03 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/f-schnabel">@f-schnabel</a> on 2025-12-03 10:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using the VS Code plugin and ignoring the <code>invalid-method-override</code> rule, I get a warning that this rule does not exist, even though it was being reported and is ignored via this line.
+<img width="445" height="79" alt="Image" src="https://github.com/user-attachments/assets/1af5696b-e29b-44df-9951-4891b33d1e91" /></p>
+<h3>Version</h3>
+<p>2025.59.13322033</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 11:14</div>
+            <div class="timeline-body"><p>I suspect that the VS code extension picks up an older ty version that you've installed locally.</p>
+<p>Can you open the &quot;Output&quot; panel in VS code, then select &quot;ty&quot; from the dropdown (right next to the &quot;Filter&quot; input field)</p>
+<p>The output should look like this:</p>
+<pre><code>2025-12-03 12:13:15.075 [info] Name: ty
+2025-12-03 12:13:15.075 [info] Module: ty
+2025-12-03 12:13:15.075 [info] Python extension loading
+2025-12-03 12:13:15.075 [info] Waiting for interpreter from python extension.
+2025-12-03 12:13:15.526 [info] Python extension loaded
+2025-12-03 12:13:15.527 [info] Using interpreter: /Users/micha/astral/test/.venv/bin/python
+2025-12-03 12:13:15.528 [info] Initialization options: {
+    &quot;logLevel&quot;: &quot;debug&quot;
+}
+2025-12-03 12:13:15.530 [info] Using 'path' setting: /Users/micha/astral/ruff/target/debug/ty
+2025-12-03 12:13:15.532 [info] Found executable at /Users/micha/astral/ruff/target/debug/ty
+2025-12-03 12:13:15.532 [info] Server run command: /Users/micha/astral/ruff/target/debug/ty server
+2025-12-03 12:13:15.533 [info] Server: Start requested.
+</code></pre>
+<p>The important line is <code>Server run command: /Users/micha/astral/ruff/target/debug/ty server</code>. You can see how the extension uses a local ty version in my setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-12-03 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-schnabel">@f-schnabel</a> on 2025-12-03 11:17</div>
+            <div class="timeline-body"><p>Hi sure, here is the output:</p>
+<pre><code>2025-12-03 10:41:33.348 [info] Name: ty
+2025-12-03 10:41:33.348 [info] Module: ty
+2025-12-03 10:41:33.348 [info] Python extension loading
+2025-12-03 10:41:33.348 [info] Waiting for interpreter from python extension.
+2025-12-03 10:41:33.348 [info] Python extension loaded
+2025-12-03 10:41:33.348 [info] Using interpreter: e:\Programming\uni\IDP\coaching-agent-py\.venv\Scripts\python.exe
+2025-12-03 10:41:33.348 [info] Initialization options: {}
+2025-12-03 10:41:33.454 [info] Using the ty binary: e:\Programming\uni\IDP\coaching-agent-py\.venv\Scripts\ty.exe
+2025-12-03 10:41:33.456 [info] Found executable at e:\Programming\uni\IDP\coaching-agent-py\.venv\Scripts\ty.exe
+2025-12-03 10:41:33.456 [info] Server run command: e:\Programming\uni\IDP\coaching-agent-py\.venv\Scripts\ty.exe server
+2025-12-03 10:41:33.457 [info] Server: Start requested.
+</code></pre>
+<p>It looks like it is using the same as in my .venv folder, but I run ty with <code>uvx ty check</code>, which doesnt use the one from the venv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-schnabel">@f-schnabel</a> on 2025-12-03 11:23</div>
+            <div class="timeline-body"><p>Oh yeah, now I see it. A dependency of mine &quot;Instructor&quot; has a dependency on ty, which polutes my .venv:
+https://github.com/567-labs/instructor/blob/130c034c4b7ec9fe6b7d06ad836fa1318f78fd43/pyproject.toml#L19
+They should probably mark that a dev dependency...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 11:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh yeah, now I see it. A dependency of mine &quot;Instructor&quot; has a dependency on ty, which polutes my .venv:</p>
+</blockquote>
+<p>Uhm yes, that's not great 😅  They should make it a dev dependency.</p>
+<p>For now, you could specify the <code>ty.path</code> setting in VS Code and point it to the correct version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @f-schnabel on 2025-12-03 11:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

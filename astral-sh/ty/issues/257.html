@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`lint:unresolved-import` for some dependencies - astral-sh/ty #257</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`lint:unresolved-import` for some dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/257">#257</a>
+        opened by <a href="https://github.com/Secrus">@Secrus</a>
+        on 2025-05-08 00:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Secrus">@Secrus</a> on 2025-05-08 00:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>ty</code> on <code>poetry</code> <a href="https://github.com/python-poetry/poetry">repo</a> main branch, <code>lint:unresolved-import</code> errors are raised for <a href="https://pypi.org/project/dulwich"><code>dulwich</code></a> and <a href="https://pypi.org/project/xattr"><code>xattr</code></a> packages.
+Example of such error:</p>
+<pre><code>error: lint:unresolved-import: Cannot resolve imported module `dulwich.repo`
+  --&gt; tests/vcs/git/test_backend.py:8:6
+   |
+ 6 | import pytest
+ 7 |
+ 8 | from dulwich.repo import Repo
+   |      ^^^^^^^^^^^^
+ 9 |
+10 | from poetry.vcs.git.backend import Git
+   |
+info: `lint:unresolved-import` is enabled by default
+</code></pre>
+<p>Code that fails with the above error is <a href="https://github.com/python-poetry/poetry/blob/84eeadc21f92a04d46ea769e3e39d7c902e44136/tests/vcs/git/test_backend.py#L8">here</a></p>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-08 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 05:07</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 07:03</div>
+            <div class="timeline-body"><p>I can not reproduce this with properly installed dependencies:</p>
+<pre><code class="language-bash"># Without anything installed
+▶ ty check --output-format concise tests/vcs/git/test_backend.py
+error[lint:unresolved-import] tests/vcs/git/test_backend.py:6:8: Cannot resolve import `pytest`
+error[lint:unresolved-import] tests/vcs/git/test_backend.py:8:6: Cannot resolve import `dulwich.repo`
+Found 2 diagnostics
+
+# With normal dependencies installed (this includes dulwich, but not pytest)
+▶ uv run ty check --output-format concise tests/vcs/git/test_backend.py
+error[lint:unresolved-import] tests/vcs/git/test_backend.py:6:8: Cannot resolve import `pytest`
+Found 1 diagnostic
+</code></pre>
+<p>What's strange is the following behavior: if I try to layer &quot;pytest&quot; on top of the project dependencies, the <code>dulwich.repo</code> import error comes back:</p>
+<pre><code>▶ uv run --with pytest ty check --output-format concise tests/vcs/git/test_backend.py
+error[lint:unresolved-import] tests/vcs/git/test_backend.py:8:6: Cannot resolve import `dulwich.repo`
+</code></pre>
+<p>But if I explicitly add <code>dulwich</code> again (which should not be needed?), no errors are emitted:</p>
+<pre><code>▶ uv run --with pytest --with dulwich ty check --output-format concise tests/vcs/git/test_backend.py
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-05-08 08:56</div>
+            <div class="timeline-body"><p>might be related to #265</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Secrus">@Secrus</a> on 2025-05-08 10:12</div>
+            <div class="timeline-body"><p>@sharkdp I reproduced it with</p>
+<pre><code class="language-sh">uvx poetry add --dev ty
+uvx poetry run ty check
+</code></pre>
+<p>on the poetry code from main branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 10:24</div>
+            <div class="timeline-body"><p>I can not see any <code>dulwich</code> import errors if I try your two commands on commit 84eeadc21f92a04d46ea769e3e39d7c902e44136 of poetry. I do see import errors for <code>tomli</code>, <code>importlib_metadata</code>, <code>setuptools</code> and <code>xattr</code>:</p>
+<pre><code>▶ uvx poetry run ty check --output-format concise | rg unresolved-import
+error[lint:unresolved-import] src/poetry/utils/_compat.py:11:12: Cannot resolve imported module `tomli`
+error[lint:unresolved-import] src/poetry/utils/_compat.py:18:12: Cannot resolve imported module `importlib_metadata`
+error[lint:unresolved-import] tests/fixtures/extended_with_no_setup/build.py:6:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/extended_with_no_setup/build.py:7:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/extended_with_no_setup/build.py:8:6: Cannot resolve imported module `setuptools.command.build_ext`
+error[lint:unresolved-import] tests/fixtures/git/github.com/demo/namespace-package-one/setup.py:3:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/git/github.com/demo/namespace-package-one/setup.py:4:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/git/github.com/demo/no-dependencies/setup.py:3:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/git/github.com/demo/no-version/setup.py:6:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/git/github.com/demo/non-canonical-name/setup.py:3:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/project_with_setup/setup.py:3:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/fixtures/project_with_setup_calls_script/setup.py:5:6: Cannot resolve imported module `setuptools`
+error[lint:unresolved-import] tests/utils/env/test_env_manager.py:1267:12: Cannot resolve imported module `xattr`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">module-resolution</span> added by @carljm on 2025-05-08 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eekcoopuw">@eekcoopuw</a> on 2025-05-08 22:50</div>
+            <div class="timeline-body"><p>I get this error with dependencies installed in a <code>conda</code> environment. They will have been installed using some flavor of <code>pip install .</code> and a setup.cfg file.</p>
+<p>I have no reason to think the dependencies are truly missing from the conda environment; the test runs in any case:</p>
+<pre><code>(fhs-pipeline-mortality) mylaptop:fhs-pipeline-mortality eekcoop$ pytest tests/test_squeeze.py 
+=================================== test session starts ===================================
+platform darwin -- Python 3.10.16, pytest-7.2.2, pluggy-1.5.0
+rootdir: /Users/eekcoop/devel/fhs-pipeline-mortality, configfile: pytest.ini
+plugins: xdoctest-1.1.6, anyio-4.9.0, typeguard-3.0.2, cov-4.0.0, xdist-3.5.0
+collected 10 items                                                                        
+
+tests/test_squeeze.py ..........                                                    [100%]
+
+==================================== warnings summary =====================================
+tests/test_squeeze.py::TestSqueeze::test_squeeze[base_data0]
+  &lt;frozen importlib._bootstrap&gt;:241: RuntimeWarning: numpy.ndarray size changed, may indicate binary incompatibility. Expected 16 from C header, got 96 from PyObject
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================== 10 passed, 1 warning in 1.81s ==============================
+(fhs-pipeline-mortality) mylaptop:fhs-pipeline-mortality eekcoop$ ty check tests/test_squeeze.py 
+error: lint:unresolved-import: Cannot resolve imported module `pandas`
+ --&gt; tests/test_squeeze.py:6:8
+  |
+4 | from unittest.mock import Mock
+5 |
+6 | import pandas as pd
+  |        ^^^^^^^^^^^^
+7 | import pytest
+8 | import xarray as xr
+  |
+info: `lint:unresolved-import` is enabled by default
+</code></pre>
+<p>Note the tests pass about halfway through. The <code>ty check</code> fails however on the import of <code>pandas</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 22:53</div>
+            <div class="timeline-body"><p>@eekcoopuw see https://github.com/astral-sh/ty/issues/265 -- we currently only support virtual environments, not conda environments. We'd like to resolve that limitation, however!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-12 10:17</div>
+            <div class="timeline-body"><p>@Secrus It would be great if you could also show the output that you get, and highlight the part which you think shows the bug. As it stands, I can not reproduce the problem outlined in the first post here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dev-iL">@Dev-iL</a> on 2025-07-13 08:32</div>
+            <div class="timeline-body"><p>I'd like to add that packages that only exists as a &quot;nested namespace&quot;, such as <code>ruamel.yaml</code> (i.e. <code>ruamel</code> itself is not importable) are treated as unresolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 06:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to add that packages that only exists as a &quot;nested namespace&quot;, such as <code>ruamel.yaml</code> (i.e. <code>ruamel</code> itself is not importable) are treated as unresolved.</p>
+</blockquote>
+<p>Please see #133</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 13:47</div>
+            <div class="timeline-body"><p>@Secrus, I believe this <em>should</em> now be fixed in v0.0.1a19 -- please let me know if you're still experiencing the error after upgrading!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing.Hashable | typing.Sequence[typing.Hashable] not matching [&quot;x&quot;] in ty==0.0.1a20 - astral-sh/ty #1132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typing.Hashable | typing.Sequence[typing.Hashable] not matching [&quot;x&quot;] in ty==0.0.1a20</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1132">#1132</a>
+        opened by <a href="https://github.com/darabos">@darabos</a>
+        on 2025-09-05 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/darabos">@darabos</a> on 2025-09-05 11:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Code for reproduction:</p>
+<pre><code class="language-python">import typing
+
+a: typing.Hashable = &quot;GOOD&quot;
+a: typing.Sequence[typing.Hashable] = [&quot;GOOD&quot;]
+a: typing.Hashable | typing.Sequence[typing.Hashable] = &quot;GOOD&quot;
+a: typing.Hashable | typing.Sequence[typing.Hashable] = [&quot;FAILS&quot;]
+</code></pre>
+<p>With <code>ty==0.0.1a19</code> it passes but with <code>ty==0.0.1a20</code> the last line fails:</p>
+<pre><code>error[invalid-assignment]: Object of type `list[@Todo]` is not assignable to `Hashable`
+ --&gt; x.py:6:1
+  |
+4 | a: typing.Sequence[typing.Hashable] = [&quot;GOOD&quot;]
+5 | a: typing.Hashable | typing.Sequence[typing.Hashable] = &quot;GOOD&quot;
+6 | a: typing.Hashable | typing.Sequence[typing.Hashable] = [&quot;FAILS&quot;]
+  | ^
+  |
+info: rule `invalid-assignment` is enabled by default
+</code></pre>
+<p>If I change <code>Hashable</code> to <code>str</code> or <code>Sequence</code> to <code>list</code> then it works. But <code>typing.Hashable | typing.Sequence[typing.Hashable]</code> is a common type in Pandas. E.g. https://github.com/pandas-dev/pandas/blob/3c14b71c8f965ff316b22dfb3d87839361f55297/pandas/core/frame.py#L6319 I'm not sure how to call those methods with <code>ty==0.0.1a20</code> if I want to pass in a list of strings.</p>
+<h3>Version</h3>
+<p>0.0.1a20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-05 12:07</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>The issue here is that <code>Sequence[Hashable]</code> is (according to all normal rules!) a subtype of <code>Hashable</code>: <code>object</code> defines a <code>__hash__</code> method, therefore <code>object</code> is <code>Hashable</code>; and <code>Sequence[Hashable]</code> is a subtype of <code>object</code>, which therefore means that <code>Sequence[Hashable]</code> is also <code>Hashable</code>. The fact that <code>Sequence[Hashable]</code> is a subtype of <code>Hashable</code> means that the union <code>Sequence[Hashable] | Hashable</code> is redundant; ty eagerly simplifies this union to simply <code>Hashable</code>.</p>
+<p>Since all types in Python are subtypes of <code>object</code>, and <code>object</code> is a subtype of <code>Hashable</code>, this implies that all objects in Python are subtypes of <code>Hashable</code>, which is... absurd -- that's obviously not true! This is a tough problem to solve, however, since the rules around hashability in Python disobey all normal rules a type checker generally assumes when inferring types and checking code. Unhashable classes often inherit from hashable classes, and hashable classes often inherit from unhashable classes; this all deeply violates the Liskov Substitution Principle. There's a comment to this effect in typeshed's stubs here: https://github.com/astral-sh/ruff/blob/7ee863b6d7df2757a16dbbff59ca5a04b993d57a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi#L869-L875</p>
+<p>The problematic nature of <code>Hashable</code> affects ty much more severely than it affects other type checkers, because of the fact that ty will eagerly simplify redundant unions; other type checkers generally only simplify unions lazily. If we left the union unsimplified here, we would recognize <code>list[str]</code> as being a subtype of <code>Sequence[Hashable] | Hashable</code> -- it is a subtype of the first element of the union but not the second, even though the first is a subtype of the second. (Subtyping is not necessarily transitive when the Liskov principle is violated!) We're considering doing less eager union simplification in some situations; that might help this issue. Another possible solution here is to eagerly simplify <code>Hashable</code> to <code>object</code> (since both types -- in theory -- represent the set of all possible Python objects, they're the same type under all normal rules!). That would fix the false positive here (<code>list[str]</code> will easily be recognised by ty as a subtype of <code>object</code>), but might produce some unexpected behaviour in other situations.</p>
+<p>I also really wish pandas would use <code>Hashable</code> less in their annotations, though... even if we fix this behaviour in ty so that we have more intuitive behaviour, there's no way to use <code>Hashable</code> in a type annotation that won't cause unfortunate surprises and unexpected behaviour in some situations. I've had this conversation with them <a href="https://github.com/PyCQA/flake8-pyi/issues/283#issuecomment-1248095891">before</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 17:08</div>
+            <div class="timeline-body"><p>I think in the short term we should simplify <code>Hashable</code> to <code>object</code>. That is correct, according to the definitions of <code>object</code> and <code>Hashable</code>. That should eliminate false positives from this issue. What it gives up is type-checking of things actually being hashable, but the whole idea that the Python type system can safely provide that today is a lie anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-10 10:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

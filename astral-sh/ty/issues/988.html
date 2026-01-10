@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognize methods dynamically overwritten by metaclass - astral-sh/ty #988</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recognize methods dynamically overwritten by metaclass</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/988">#988</a>
+        opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a>
+        on 2025-08-14 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-14 15:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have a generic class, where we use a metaclass and overwrite the <code>__init__</code> function, to accept any argument (and generate random data), that we use to be a random generator of models ; we use it in our tests to have randomly generated inputs for pydantic models.</p>
+<p>I simplified the code for readability, but the following code triggers the error:</p>
+<pre><code class="language-py">from typing import Any, Callable
+
+
+def define_builder_init(class_dict: dict[str, Any]) -&gt; Callable[..., Any]:
+    def func(self: Any, **kwargs: dict[str, Any]) -&gt; None: ...
+    return func
+
+class BuilderMeta(type):
+    def __new__(
+        cls: type[Any],
+        name: str,
+        bases: tuple[type, ...],
+        dct: dict[str, Any],
+    ) -&gt; &quot;BuilderMeta&quot;:
+        dct[&quot;__init__&quot;] = define_builder_init(dct, )
+        return super().__new__(cls, name, bases, dct)
+
+class Builder(metaclass=BuilderMeta): ...
+
+class ConfigValueBuilder(Builder):
+    name: str
+
+ConfigValueBuilder(name=&quot;123&quot;)
+</code></pre>
+<p>The error we're getting is</p>
+<pre><code>error[unknown-argument]: Argument `name` does not match any known parameter of bound method `__init__`
+  --&gt; test.py:27:27
+   |
+27 | test = ConfigValueBuilder(name=&quot;123&quot;)
+   |                           ^^^^^^^^^^
+   |
+info: rule `unknown-argument` is enabled by default
+</code></pre>
+<p>Works without issues with mypy 1.17.1, with this config:</p>
+<pre><code>allow_subclassing_any=true
+allow_untyped_decorators=true
+ignore_missing_imports = true
+no_warn_return_any=true
+strict=true
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1-alpha.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 16:36</div>
+            <div class="timeline-body"><p>Mypy seems to issue the same error we issue: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=334365bcee6c5792b44e177b8f56efca</p>
+<p>(This is in non-strict mode so I think all the &quot;allow&quot; options you gave are implied.)</p>
+<p>Are you sure that mypy actually works with this minimized example, or is there something else going on in your real codebase? (Like for instance <code>Builder</code> ends up being <code>Any</code> where you inherit from it, making <code>ConfigValueBuilder.__init__</code> accept anything at all.)</p>
+<p>I would be quite surprised if any existing Python type checker actually supports dynamically setting <code>__init__</code> in a metaclass like that. <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcANFAMICGANtZQEbUCmAsAFDvsAmTwUPwVEwD69AK5JqPEMNRIYACgDGdAM6rhXJEpgAuftpgBtVTBBkicALoBKKAFoAfBRp1GTIwDpvF4ld3sUEH8vFDAYihKCqpM1MD6lmQAVEkA1gDulCBoqvpaOiZmvtZ2TlAAcmAoTPrenoHBIEwwYiAoYRFKnGwqlOpQAEISUkwgALLNlArwCEw2AWzBIXzCwtXpqwoNS0EqubCIHpZWJNs7KJQQNVCm5mdL9H1M%2By0IzEYzTGR1J-fBXDo8oZCuZCH5TotgqVnAAiIaSaQTGCUGELHb-Aow1ZyGCrGFWKAAXmWQlEw2kshQ8gUAJgZBsfyCTRabRuYlmIAUNk8q3Wmz2ZAuVzIjxiqjItIZHB6alUg3JowUV2RvXUhPhI3Gk3mUDq3VVcvIVUEaAAajQxEwNdIFNbRvMzkLrrdukaUCbzdRLXbOU7CTCAIwAJgAzDCpUA">Pyright</a> can't handle it either.</p>
+<p>I don't think it's <em>entirely</em> out of the realm of possibility to support it someday, but it'd be more like a long-term wishlist feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-08-14 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Overwritten __init__ not recognized when used with a metaclass" to "Recognize methods overwritten by metaclass" by @carljm on 2025-08-14 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Recognize methods overwritten by metaclass" to "Recognize methods dynamically overwritten by metaclass" by @carljm on 2025-08-14 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> added by @carljm on 2025-08-14 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-14 20:51</div>
+            <div class="timeline-body"><p>Thanks for checking @carljm!
+You're absolutely right, tried gettign a working example (with mypy and not ty), until I figured I somehow had completely missed that those calls (in that library) are marked with <code># type: ignore[call-arg]</code>
+Would be awesome if <code>ty</code> could support this though!</p>
+<p>About marking the issue to ignore, there is # ty: ignore[unknown-argument]
+But can we mark multiple call at one, like we can do with <code># type: ignore[call-arg]</code>?</p>
+<pre><code>MyBuilder(
+    name=name,
+    value=value,
+    value_translations=translations,
+)  # type: ignore[call-arg]
+</code></pre>
+<p>I tried adding <code>ty: ignore[unknown-argument]</code> to the comment (or even replace the mypy one with it) but doesn't seem to work, only doing it line per line does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 21:03</div>
+            <div class="timeline-body"><p>Hmm, we may need to tweak how we handle silencing some errors that we give pretty precise locations to. Could you maybe create a new issue specific to that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-14 21:35</div>
+            <div class="timeline-body"><p>More than happy to, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

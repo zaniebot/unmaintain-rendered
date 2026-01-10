@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isinstance narrowing does not work for `dict` - astral-sh/ty #894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>isinstance narrowing does not work for `dict`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/894">#894</a>
+        opened by <a href="https://github.com/scosman">@scosman</a>
+        on 2025-07-25 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scosman">@scosman</a> on 2025-07-25 17:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>isinstance based narrowing only seems to work in 1 direction:</p>
+<p>Fails:</p>
+<pre><code>def do_thing(input: Dict | str) -&gt; str:
+    if isinstance(input, dict):
+        return json.dumps(input, ensure_ascii=False)
+
+    # Return type does not match returned value: expected `str`, found `(dict[Unknown, Unknown] &amp; ~dict[Unknown, Unknown]) | str`
+    return input
+</code></pre>
+<p>Works:</p>
+<pre><code>def do_thing(input: Dict | str) -&gt; str:
+    if isinstance(input, str):
+        return input
+
+    return json.dumps(input, ensure_ascii=False)
+</code></pre>
+<p>similarly:</p>
+<p>Gets complex type</p>
+<pre><code>input_str = (
+            json.dumps(input, ensure_ascii=False) if isinstance(input, dict) else input
+)
+</code></pre>
+<p>Gets str type:</p>
+<pre><code>input_str: str = (
+            input if isinstance(input, str) else json.dumps(input, ensure_ascii=False)
+)
+</code></pre>
+<h3>Version</h3>
+<p>a16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "isinstance narrowing only works in one direction" to "isinstance narrowing does not work for `dict`" by @scosman on 2025-07-25 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-25 17:31</div>
+            <div class="timeline-body"><p>Thanks for the report! We're already tracking this in https://github.com/astral-sh/ty/issues/456</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-25 17:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:20 UTC
+    </footer>
+</body>
+</html>

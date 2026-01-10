@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic `index out of bounds: the len is 73 but the index is 2499` - astral-sh/ty #652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic `index out of bounds: the len is 73 but the index is 2499`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/652">#652</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2025-06-13 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2025-06-13 20:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With pytest installed and this file</p>
+<pre><code>from _pytest.python import is_generator, getfixturemarker, Generator
+import pytest
+
+class ReportPortal:
+    @pytest.mark.trylast
+    def pytest_pycollect_makeitem(self, __multicall__, collector, name, obj):
+        if inspect.isclass(obj):
+            pass
+        elif collector.funcnamefilter(name) and hasattr(obj, '__call__') and \
+                        getfixturemarker(obj) is None:
+            return Generator(name, parent=collector)
+</code></pre>
+<p>ty crashes with message</p>
+<pre><code>error[panic]: Panicked at crates/ruff_db/src/parsed.rs:193:13 when checking `/home/rafal/Downloads/FILES_4/87.py`: `index out of bounds: the len is 73 but the index is 2499`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;.&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1002))
+             at crates/ty_python_semantic/src/types/infer.rs:135
+   1: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:88
+
+</code></pre>
+<p>Steps to reproduce</p>
+<ul>
+<li>unpack - <a href="https://github.com/user-attachments/files/20732502/FILES_4.zip">FILES_4.zip</a></li>
+<li>run <code>uv sync</code></li>
+<li>run <code>ty check .</code></li>
+</ul>
+<h3>Version</h3>
+<p>0.0.1-alpha.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-13 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-06-13 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 20:27</div>
+            <div class="timeline-body"><p>In a debug build, we hit an assertion error:</p>
+<pre><code>error[panic]: Panicked at crates/ty_python_semantic/src/ast_node_ref.rs:80:9 when checking `/Users/carlmeyer/projects/ruff-examples/issue652/main.py`: `assertion `left == right` failed
+  left: 0x6000027e4cf0
+ right: 0x6000027d6ad0`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;--python-version&quot;, &quot;3.13&quot;, &quot;--project&quot;, &quot;../ruff-examples/issue652&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1002))
+             at crates/ty_python_semantic/src/types/infer.rs:135
+   1: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:88
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 20:31</div>
+            <div class="timeline-body"><p>Bisects to https://github.com/astral-sh/ruff/pull/18445 -- @ibraheemdev can you take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-14 05:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:11 UTC
+    </footer>
+</body>
+</html>

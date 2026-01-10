@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSP client settings - astral-sh/ty #82</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>LSP client settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/82">#82</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-14 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 10:27</div>
+            <div class="timeline-body"><p>Similar to Ruff's LSP. Support setting some (or all) settings from within the LSP client. Allow setting LSP specific settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-03-14 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] LSP settings" to "[red-knot] LSP client settings" by @MichaReiser on 2025-03-14 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] LSP client settings" to "LSP client settings" by @MichaReiser on 2025-05-07 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 08:56</div>
+            <div class="timeline-body"><p>There's some additional context at https://github.com/astral-sh/ty/issues/282 around using pull model for configuration instead of the current way which relies on initialization options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-06-04 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-02 06:24</div>
+            <div class="timeline-body"><p>Looking through https://github.com/astral-sh/ruff/pull/18984, I went on a bit of a rabbit hole:</p>
+<p>After reading a couple of issues / PRs mentioned in https://github.com/microsoft/language-server-protocol/issues/567#issuecomment-2085131917, it's a bit ambiguous on what the server needs to do exactly but here's what I've gathered so far:</p>
+<ul>
+<li>The <code>InitializationOptions</code> should only contain the options that are static while the server is active e.g., any command-line options because any change to these settings require a complete restart of the server<ul>
+<li>For us these would be the <code>logLevel</code> and <code>logFile</code> options for now because we cannot update the global tracing subscriber (<a href="https://docs.rs/tracing/0.1.41/tracing/subscriber/fn.set_global_default.html">ref</a>)</li>
+</ul>
+</li>
+<li>Initialize each workspace with the default options during <code>initialize</code><ul>
+<li>Should we read the option values under the <code>ty</code>, <code>python</code> and any other namespaces from <code>InitializationOptions</code> ? I don't think we should as that would be fetched via the <code>workspace/configuration</code> request</li>
+<li>This would mean that the user doesn't need to provide the server settings via the <code>initialization_options</code> (name might differ from editor to editor) and can directly provide via the generic settings mechanism for that editor</li>
+<li>But, reading through https://rust-analyzer.github.io/book/configuration.html, it seems that some editor might not support <code>workspace/configuration</code> so the users are forced to specify them via <code>InitializationOptions</code>. Looking at the editors page, it seems to be <a href="https://rust-analyzer.github.io/book/other_editors.html#eglot">Emacs via eglot</a>, <a href="https://rust-analyzer.github.io/book/other_editors.html#vim-lsp">Vim via vim-lsp</a>, <a href="https://rust-analyzer.github.io/book/other_editors.html#kate-text-editor">Kate texte editor</a> although I haven't confirmed whether it's still the same as of today (2025-07-02). So, we <em>might</em> still want to read the initialization options.</li>
+</ul>
+</li>
+<li>The server should fetch the settings for a specific namespace (e.g., <code>ty</code>, <code>python</code>) for all the workspaces after <code>initialized</code> via the <code>workspace/configuration</code> request<ul>
+<li>The server can still process any requests / notifications while the server is waiting for the configuration response from the clients but we will opt into locking the server to defer processing these notifications or requests. This is what this PR is also doing.</li>
+</ul>
+</li>
+<li>When the server receives the <code>workspace/didChangeConfiguration</code> notification, the server should refresh the settings from all the managed workspaces, ignoring any values in the notification payload.</li>
+<li>The server should update the internal cache of workspaces when it receives the <code>workspace/didChangeWorkspaceFolders</code> as:<ul>
+<li>For all the added workspace folders, update the internal state to include the new folder and fetch the settings for this folder</li>
+<li>For all the removed workspace folders, remove any internal state related to this workspace</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-07 14:10</div>
+            <div class="timeline-body"><p>As per <a href="https://github.com/astral-sh/ty-vscode/pull/65#discussion_r2182409136">this conversation</a>, we also need to explicitly register for the <code>didChangeConfiguration</code> notification. According to the spec:</p>
+<blockquote>
+<p>This pull model replaces the old push model were the client signaled configuration change via an event. If the server still needs to react to configuration changes (since the server caches the result of workspace/configuration requests) the server should register for an empty configuration change using the following registration pattern:</p>
+<p>https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_configuration</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-13 14:16</div>
+            <div class="timeline-body"><p>For scoping this feature: We should focus on the essential functionality. We can implement better configuration support in the future (e.g. it would be fine if the server restarts on every configuration change). I also suggest that we start with a narrow set of settings that we extend over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 10:39</div>
+            <div class="timeline-body"><p>@dhruvmanila should we close this one and track the remaining work in the sub tasks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>should we close this one and track the remaining work in the sub tasks?</p>
+</blockquote>
+<p>Yes, I'll create separate issues for the last two bullet points from above and then close this one. Thanks for the reminder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 14:03</div>
+            <div class="timeline-body"><p>Going to mark this as completed, I've opened follow-up issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-07 14:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:49 UTC
+    </footer>
+</body>
+</html>

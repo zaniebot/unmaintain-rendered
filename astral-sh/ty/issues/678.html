@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] Panicked at .../execute.rs:212:25 when checking `.../gen_credits.py`: `infer_definition_types(Id(c406)): execute: too many cycle iterations` - astral-sh/ty #678</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] Panicked at .../execute.rs:212:25 when checking `.../gen_credits.py`: `infer_definition_types(Id(c406)): execute: too many cycle iterations`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/678">#678</a>
+        opened by <a href="https://github.com/pawamoy">@pawamoy</a>
+        on 2025-06-18 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-06-18 14:06</div>
+            <div class="timeline-body"><p>EDIT: Maybe a duplicate of https://github.com/astral-sh/ty/issues/525? I don't think I have any self-referential or recursive type in the snippet below though.</p>
+<pre><code class="language-python">from collections.abc import Iterable
+from typing import Union
+
+from packaging.requirements import Requirement
+
+PackageMetadata = dict[str, Union[str, Iterable[str]]]
+Metadata = dict[str, PackageMetadata]
+
+
+def _extra_marker(req: Requirement) -&gt; str | None:
+    try:
+        return next(marker[2].value for marker in req.marker._markers if getattr(marker[0], &quot;value&quot;, None) == &quot;extra&quot;)
+    except StopIteration:
+        return None
+
+
+def _get_deps(metadata: Metadata) -&gt; None:
+    for pkg_name in metadata:
+        for pkg_dependency in metadata[pkg_name].get(&quot;requires-dist&quot;, []):
+            requirement = Requirement(pkg_dependency)
+            extra_marker = _extra_marker(requirement)
+</code></pre>
+<pre><code class="language-console">% uvx ty check  scripts/gen_credits.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/09627e4/src/function/execute.rs:212:25 when checking `/run/media/pawamoy/Data/dev/copier-uv/tests/tmp/scripts/gen_credits.py`: `infer_definition_types(Id(722e)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;scripts/gen_credits.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: place_by_id(Id(3022))
+             at crates/ty_python_semantic/src/place.rs:597
+   1: infer_definition_types(Id(7233))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   2: member_lookup_with_policy_(Id(281a))
+             at crates/ty_python_semantic/src/types.rs:561
+   3: infer_expression_types(Id(19bf))
+             at crates/ty_python_semantic/src/types/infer.rs:243
+   4: infer_expression_type(Id(19bf))
+             at crates/ty_python_semantic/src/types/infer.rs:305
+   5: member_lookup_with_policy_(Id(2815))
+             at crates/ty_python_semantic/src/types.rs:561
+   6: infer_expression_types(Id(1802))
+             at crates/ty_python_semantic/src/types/infer.rs:243
+   7: infer_scope_types(Id(1001))
+             at crates/ty_python_semantic/src/types/infer.rs:138
+   8: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:88
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+<p>Enabling the backtrace with <code>RUST_BACKTRACE=1</code> just shows <code>&lt;unknown&gt;</code> for every frame.</p>
+<p>ty 0.0.1-alpha.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[panic]" to "[panic] Panicked at .../execute.rs:212:25 when checking `.../gen_credits.py`: `infer_definition_types(Id(c406)): execute: too many cycle iterations`" by @pawamoy on 2025-06-18 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @carljm on 2025-06-18 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 19:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think I have any self-referential or recursive type in the snippet below though.</p>
+</blockquote>
+<p>You're importing and using the <code>packaging</code> library, though, which definitely <em>does</em> use recursive type aliases, so it's definitely plausible that this would be #256 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-06-18 20:25</div>
+            <div class="timeline-body"><p>Right, didn't think of that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-19 19:26</div>
+            <div class="timeline-body"><p>A more minimal repro of this is:</p>
+<pre><code class="language-py">from packaging.requirements import Requirement
+
+def _get_deps(pkg_dependency: str) :
+    extra_marker = Requirement(pkg_dependency).marker
+</code></pre>
+<p>So I think this is just #256 (we already track the panic on <code>packaging</code> in <a href="https://github.com/astral-sh/ruff/blob/10a1d9f01e899201c8d37d29071fe68752d09544/crates/ty_python_semantic/resources/primer/bad.txt#L10">this file</a> -- it's due to <a href="https://github.com/pypa/packaging/blob/d0d5ad8687f666bea942d1ab4ee2feb5fa019d04/src/packaging/_parser.py#L44-L47">these recursive type aliases</a></p>
+<p>But thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-19 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

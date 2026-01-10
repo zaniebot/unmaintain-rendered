@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instantiating a property as a class (not a decorator) ends with `invalid-assignment` - astral-sh/ty #566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Instantiating a property as a class (not a decorator) ends with `invalid-assignment`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/566">#566</a>
+        opened by <a href="https://github.com/dmach">@dmach</a>
+        on 2025-06-02 11:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmach">@dmach</a> on 2025-06-02 11:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I maintain a code that is an alternative to pydantic - <code>BaseModel</code> class you can extend with <code>Field</code>s.
+The <code>Field</code> class inherits from <code>property</code> and the typical usage looks like:</p>
+<pre><code class="language-py">class MyModel(BaseModel):
+    my_field: str = Field()
+</code></pre>
+<p><code>ty</code> errors out on the code with <code>error[invalid-assignment]</code></p>
+<p>I put together a snippet you can use to try it out:</p>
+<pre><code class="language-py">class MyProperty(property):
+    pass
+
+
+class Test:
+    one: int = MyProperty(lambda self: 1)
+
+    @MyProperty
+    def two(self) -&gt; int:
+        return 2
+
+
+test = Test()
+assert test.one == 1
+assert test.two == 2
+</code></pre>
+<p>the result is:</p>
+<pre><code>error[invalid-assignment]: Object of type `MyProperty` is not assignable to `int`
+ --&gt; property.py:6:5
+  |
+5 | class Test:
+6 |     one: int = MyProperty(lambda self: 1)
+  |     ^^^
+7 |
+8 |     @MyProperty
+  |
+info: rule `invalid-assignment` is enabled by default
+</code></pre>
+<p>The expected result is that the error is not reported.
+It might be good to compare the type hint of the property with the type hint of the getter instead.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-02 16:14</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Does your <code>BaseModel</code> class use <code>typing.dataclass_transform</code>?</p>
+<p>If so, then probably this will become supported as part of the &quot;support fields&quot; item of https://github.com/astral-sh/ty/issues/111</p>
+<p>If not, then it should not be supported as described; the error we give in your second simplified example is correct, and both <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=e3f8f80bc6f7032c96aa0c887a63302e">mypy</a> and <a href="https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAECyCeAFATgewA4FNkBd4Ap00td4BKALgChpbp1IIrnRHoAVTCHau6VAHaYK0AJYCc0ALxwkxbHnzgAtgCMAJmGgRMIAGYiAjGWZ8AAghQYF8GnXWY90HAHdU%2BHfrLQAtAD4xCV4%2BOmRMHABXZAFoACZmKhwuSRlObnwTRgVnZIA6QUxpGUMqLNwc7lzXVCK4oA">pyright</a> give the same error we do. Absent dataclass-transform (which instructs the type checker to consider the type annotation as describing the instance attribute's type, and allow assigning a different type on the class), this assignment should be an error. The correct typing would be <code>one: ClassVar[MyProperty] = MyProperty(lambda self: 1)</code>, and with that type we would correctly model the property's behavior, and your example <a href="https://play.ty.dev/d621071c-964d-4143-8225-e03b83d59534">passes with no errors</a>.</p>
+<p>Closing this as a duplicate of #111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-02 16:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

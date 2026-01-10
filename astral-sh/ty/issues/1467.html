@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document how to suppress a rule on a line that already has a pragma comment - astral-sh/ty #1467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document how to suppress a rule on a line that already has a pragma comment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1467">#1467</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2025-11-03 06:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2025-11-03 06:58</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have <a href="https://github.com/hynek/svcs/blob/1d6efae1a517eeabc3d283212e6e4bb058a10d85/src/svcs/_core.py#L484">code</a> in <em>svcs</em> that needs to be a bit clever about it treats callables in order to support both sync and async.</p>
+<p>I have to suppress PLW2901 (redefinition of loop variable), but with some recent-ish ty release I now also have to suppress <code>call-non-callable</code>.</p>
+<p>The docs <a href="https://docs.astral.sh/ty/suppression/#ty-suppression-comments">say</a>:</p>
+<blockquote>
+<p>To suppress a rule violation inline add a <code># ty: ignore[&lt;rule&gt;]</code> comment <strong>at the end of the line</strong></p>
+</blockquote>
+<p>So I hoped I could just write:</p>
+<pre><code class="language-python">                if iscoroutinefunction(oc):
+                    oc = oc()  # noqa: PLW2901 ty: ignore[call-non-callable]
+
+</code></pre>
+<p>but just like Ruff, ty ignores the second part. I can only suppress one: the first one.</p>
+<p>What am I missing? I'd expect the case of where I have to silence both the linter and the type checker is quite common, but I haven't found anything on the bug tracker.</p>
+<p>I literally don't know what to do, so I've disabled ty for now again.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.25 (3abd4c968 2025-10-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @hynek on 2025-11-03 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @AlexWaygood on 2025-11-03 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-03 12:41</div>
+            <div class="timeline-body"><p>Thanks for the nice write up.</p>
+<p>Either of the following two should work:</p>
+<pre><code class="language-py">                if iscoroutinefunction(oc):
+                    oc = oc()  # noqa: PLW2901 # ty: ignore[call-non-callable]
+</code></pre>
+<pre><code class="language-py">                if iscoroutinefunction(oc):
+                    oc = oc()  # ty: ignore[call-non-callable] # noqa: PLW2901 
+</code></pre>
+<p>The key is to start each <code>noqa</code> or <code>ty: ignore</code> comment with its own <code>#</code>.</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/suppressions/type_ignore.md#nested-comments">Here</a> a few examples from our test suite.</p>
+<p>Given that this has come up before on the ruff side, I think it does make sense to add an example like this to the documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-03 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-11-03 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How to combine ty's suppression with Ruff's?" to "Document how to suppress a rule on a line that already has a pragma comment" by @MichaReiser on 2025-11-03 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-11-03 14:56</div>
+            <div class="timeline-body"><p>Ah wow yes, that works and with pyrefly too – and nobody has documented it. :D  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-21 09:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:39 UTC
+    </footer>
+</body>
+</html>

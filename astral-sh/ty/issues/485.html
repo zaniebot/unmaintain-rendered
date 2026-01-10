@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect `unsupported-operator` with operator `in` on types `str` and `T &amp; str` - astral-sh/ty #485</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect `unsupported-operator` with operator `in` on types `str` and `T &amp; str`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/485">#485</a>
+        opened by <a href="https://github.com/shilch">@shilch</a>
+        on 2025-05-22 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shilch">@shilch</a> on 2025-05-22 08:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Minimal sample:</p>
+<pre><code class="language-python">def do_something[T](val: T, s: str):
+    if type(val) is str:
+        if s in val:
+            print('s in val')
+</code></pre>
+<p>Error by ty:</p>
+<pre><code>error[unsupported-operator]: Operator `in` is not supported for types `str` and `T`, in comparing `str` with `T &amp; str`
+ --&gt; test.py:3:12
+  |
+1 | def do_something[T](val: T, s: str):
+2 |     if type(val) is str:
+3 |         if s in val:
+  |            ^^^^^^^^
+4 |             print('s in val')
+  |
+info: rule `unsupported-operator` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-22 13:14</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>It seems like we mistakenly emit an <code>unsupported-operator</code> diagnostic if <em>any</em> of the members in a the intersection do not support the operator. But we should only report that if <em>none</em> of the members support it, I think.</p>
+<p>More self-contained example:</p>
+<pre><code class="language-py">class Container:
+    def __contains__(self, x) -&gt; bool:
+        return True
+
+class NonContainer:
+    pass
+
+def f(x: Container):
+    if isinstance(x, NonContainer):
+        reveal_type(x)  # Container &amp; NonContainer
+
+        &quot;a&quot; in x  # should not be an error
+</code></pre>
+<p>https://play.ty.dev/8d1dabca-2623-4431-b08c-963d9e48ebb2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @sharkdp on 2025-05-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-22 13:19</div>
+            <div class="timeline-body"><p>This needs to be fixed in <code>TypeInferenceBuilder::infer_binary_intersection_type_comparison</code> where we currently short-circuit on every error.</p>
+<p>We even have a test for this here, which asserts that there should be an error, but I think that is wrong: https://github.com/astral-sh/ruff/blob/6df10c638e3afed4a3fd9145d0353861e29d6acc/crates/ty_python_semantic/resources/mdtest/comparison/intersections.md?plain=1#L127</p>
+<p>Ideally, we would want to distinguish between &quot;operator not available&quot; and &quot;call to operator failed&quot;. The former should not be an error (if other intersection elements lead to a successful call), but the latter should probably always be an error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-05-22 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-23 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

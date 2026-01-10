@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Too narrow type for `pandas` `DataFrame(columns)` - astral-sh/ty #1689</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Too narrow type for `pandas` `DataFrame(columns)`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1689">#1689</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2025-11-30 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2025-11-30 20:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>passing <code>columns</code> as <code>list[str]</code> raises error in latest <code>ty</code>. started in 0.0.1-alpha.27 and affects 0.0.1-alpha.28 and 0.0.1-alpha.29 as well</p>
+<pre><code class="language-py">import pandas as pd
+
+df = pd.DataFrame([[1, 2, 3], [4, 5, 6]], columns=[&quot;a&quot;, &quot;b&quot;])
+</code></pre>
+<blockquote>
+<p>Argument to bound method <code>__init__</code> is incorrect: Expected <code>ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]] | Index | ... omitted 4 union elements</code>, found <code>list[Unknown | str]</code> <code>ty</code> <a href="https://ty.dev/rules#invalid-argument-type">invalid-argument-type</a></p>
+</blockquote>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @sharkdp on 2025-12-01 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:19</div>
+            <div class="timeline-body"><p>Do you have <code>pandas-stubs</code> installed? Because it seems to work fine if that is available.</p>
+<p>Without <code>pandas-stubs</code>, the type for <code>columns</code> is <code>Axes | None</code> where <code>Axes = ListLike</code> and</p>
+<pre><code>ListLike = Union[AnyArrayLike, SequenceNotStr, range]
+</code></pre>
+<p><code>SequenceNotStr</code> is supposed to cover the <code>list</code> case. It is <a href="https://github.com/pandas-dev/pandas/blob/1895c382296bca720acc358b996f4800dbdf6c9c/pandas/_typing.py#L104-L128">a generic protocol</a>:</p>
+<pre><code class="language-py"># list-like
+
+# from https://github.com/hauntsaninja/useful_types
+# includes Sequence-like objects but excludes str and bytes
+_T_co = TypeVar(&quot;_T_co&quot;, covariant=True)
+
+
+class SequenceNotStr(Protocol[_T_co]):
+    @overload
+    def __getitem__(self, index: SupportsIndex, /) -&gt; _T_co:
+        ...
+
+    @overload
+    def __getitem__(self, index: slice, /) -&gt; Sequence[_T_co]:
+        ...
+
+    def __contains__(self, value: object, /) -&gt; bool:
+        ...
+
+    def __len__(self) -&gt; int:
+        ...
+
+    def __iter__(self) -&gt; Iterator[_T_co]:
+        ...
+
+    def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int:
+        ...
+
+    def count(self, value: Any, /) -&gt; int:
+        ...
+
+    def __reversed__(self) -&gt; Iterator[_T_co]:
+        ...
+</code></pre>
+<p>ty <a href="https://play.ty.dev/8791e13a-fb76-41da-a47d-d6a718740a82">won't let you assign <code>[[1, 2, 3], [4, 5, 6]]</code> to this protocol</a>, and ty is actually correct. The problem is the <code>index</code> method in that protocol:</p>
+<pre><code class="language-py">    def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int:
+        ...
+</code></pre>
+<p>If we compare that to <code>list.index</code> from typeshed, we see the problem:</p>
+<pre><code class="language-py">    def index(self, value: _T, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int:
+        &quot;&quot;&quot;Return first index of value.
+
+        Raises ValueError if the value is not present.
+        &quot;&quot;&quot;
+</code></pre>
+<p>The protocol only accepts an <code>index</code> method with keyword-or-positional <code>start</code> and <code>stop</code> parameters, but <code>list.index</code>'s <code>start</code> and <code>stop</code> parameters are positional-only. So I think this needs to be fixed in <code>pandas</code>.</p>
+<p>In ty, however, we should definitely work on our <code>invalid-assignment</code> diagnostics! Ideally, the error message should have pointed this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:20</div>
+            <div class="timeline-body"><p>Oh, apparently this has been fixed in <code>pandas</code> main already: https://github.com/pandas-dev/pandas/issues/56995#issuecomment-1902728314</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2025-12-01 09:35</div>
+            <div class="timeline-body"><p>@sharkdp I have a similar problem trying to use ty with DRF typings that started from 27 alpha, should I create a separate issue for that?</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Literal
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+
+type _Method = Literal[&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;]
+
+
+def test(method: Sequence[_Method]) -&gt; None:
+    return None
+
+
+test([&quot;POST&quot;])
+</code></pre>
+<pre><code class="language-bash">uvx ty check  a.py
+error[invalid-argument-type]: Argument to function `test` is incorrect
+  --&gt; a.py:16:6
+   |
+16 | test([&quot;POST&quot;])
+   |      ^^^^^^^^ Expected `Sequence[_Method]`, found `list[Unknown | str]`
+   |
+info: Function defined here
+  --&gt; a.py:12:5
+   |
+12 | def test(method: Sequence[_Method]) -&gt; None:
+   |     ^^^^ ------------------------- Parameter declared here
+13 |     return None
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:37</div>
+            <div class="timeline-body"><p>@kalekseev Yes, please open a new ticket. =&gt; see https://github.com/astral-sh/ty/issues/1699</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:54</div>
+            <div class="timeline-body"><p>Seems like this is an issue in pandas (and/or with not using pandas-stubs), not an issue in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-02 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:55</div>
+            <div class="timeline-body"><p>@sharkdp This felt familiar 😆 https://github.com/astral-sh/ty/issues/1591#issuecomment-3554468014</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/sharkdp">@sharkdp</a> This felt familiar 😆 <a href="https://github.com/astral-sh/ty/issues/1591#issuecomment-3554468014">#1591 (comment)</a></p>
+</blockquote>
+<p>Maybe I'll remember it better next time, now that I've gone through the exercise myself 🙈</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:47 UTC
+    </footer>
+</body>
+</html>

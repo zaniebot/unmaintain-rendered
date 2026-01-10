@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overload argument type expansion leads to combinatoric explosion - astral-sh/ty #868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overload argument type expansion leads to combinatoric explosion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/868">#868</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2025-07-22 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2025-07-22 08:33</div>
+            <div class="timeline-body"><p>Minimized file content(this takes ~4GB ram on my computer, original file(attached also at the bottom) takes more than 20GB)</p>
+<pre><code>    self.log(level, http_response, args, exc_info=exc_info)
+
+
+def log_request(self, level, operationType, additionalCorrelationIds=None, correlationId=None,
+                deploymentConfiguration=None, durationInMs=None, endpoint=None,
+                endpointHostName=None, endpointPath=None, endTime=None,
+                exceptionClass=None, exceptionDetail=None,
+                exceptionMessage=None, flagged=None, flaggedDescription=None,
+                httpMethod=None, httpStatusCode=None, messageName=None,
+                messageStats_Avg=None, messageStats_Count=None,
+                messageStats_ErrorCount=None, messageStats_Max=None,
+                messageStats_P50=None, messageStats_P90=None,
+                messageStats_P99=None, persistentConnection=None, product=None,
+                retryCount=None, secondaryCorrelationId=None, sourceCloudPlatform=None,
+                startTime=None, exc_info=None):
+    args = dict(additionalCorrelationIds=additionalCorrelationIds,
+                correlationId=correlationId,
+                deploymentConfiguration=deploymentConfiguration,
+                durationInMs=durationInMs,
+                endpoint=endpoint,
+                endpointHostName=endpointHostName,
+                endpointPath=endpointPath,
+                endTime=endTime,
+                exceptionDetail=exceptionDetail,
+                exceptionMessage=exceptionMessage,
+                flagged=flagged,
+                flaggedDescription=flaggedDescription,
+                httpMethod=httpMethod,
+                httpStatusCode=httpStatusCode,
+                messageName=messageName,
+                messageStats_Avg=messageStats_Avg,
+                messageStats_Count=messageStats_Count,
+   True              messageStats_ErrorCount=messageStats_ErrorCount,
+                messageStats_Max=messageStats_Max,
+                messageStats_P50=messageStats_P50,
+                messageStats_P90=messageStats_P90,
+</code></pre>
+<p>running <code>ty check file.py</code> causes app out of memory crash.
+Looks that <code>check_types</code> allocates a lot of memory</p>
+<p><img width="3835" height="1929" alt="Image" src="https://github.com/user-attachments/assets/ab0bf440-7926-496b-b7d7-d9114c25cfcc" /></p>
+<p><a href="https://github.com/user-attachments/files/21362928/Untitled.Folder.zip">Untitled Folder.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">memory</span> added by @AlexWaygood on 2025-07-22 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2025-07-22 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 15:16</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<p>It runs to completion (after several <em>seconds</em>) on my laptop with a peak memory usage of 2.8 GiB(!).</p>
+<p>This is probably expected for some reason, but adding a note here that the salsa memory report only accounts for 14 MiB here.</p>
+<p>Here's a slightly cleaned-up version, which I made a bit more extreme (memory usage grows with the number of parameters, this uses 12 GiB). Note that the <code>True</code> in invalid position is required for this to reproduce:</p>
+<pre><code class="language-py">def f(
+    a1=None,
+    a2=None,
+    a3=None,
+    a4=None,
+    a5=None,
+    a6=None,
+    a7=None,
+    a8=None,
+    a9=None,
+    a10=None,
+    a11=None,
+    a12=None,
+    a13=None,
+    a14=None,
+    a15=None,
+    a16=None,
+    a17=None,
+    a18=None,
+    a19=None,
+    a20=None,
+    a21=None,
+    a22=None,
+    a23=None,
+):
+    args = dict(
+        a1=a1,
+        a2=a2,
+        a3=a3,
+        a4=a4,
+        a5=a5,
+        a6=a6,
+        a7=a7,
+        a8=a8,
+        a9=a9,
+        a10=a10,
+        a11=a11,
+        a12=a12,
+        a13=a13,
+        a14=a14,
+        a15=a15,
+        a16=a16,
+        a17=a17, True
+        a18=a18,
+        a19=a19,
+        a20=a20,
+        a21=a21,
+        a22=a22,
+        a23=a23,
+    )
+</code></pre>
+<p>I get similar tracing results to you. In addition, here's a heaptrack profile which shows where most of the memory is allocated:</p>
+<p><img width="1216" height="1127" alt="Image" src="https://github.com/user-attachments/assets/67be77ae-7eb9-4c27-bfec-f91adfbbc1c2" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 16:15</div>
+            <div class="timeline-body"><blockquote>
+<p>This is probably expected for some reason, but adding a note here that the salsa memory report only accounts for 14 MiB here.</p>
+</blockquote>
+<p>That could be because we don't track heap memory usage of salsa structs yet (e.g. we don't track the heap allocations of <code>Unions</code>. There's a PR that will add this tracking).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 16:26</div>
+            <div class="timeline-body"><p>The trace would suggest that it comes from here:</p>
+<p>https://github.com/astral-sh/ruff/blob/07e2747a21e17da81ff3c9433e27721bb8a9d61e/crates/ty_python_semantic/src/types/call/arguments.rs#L150-L184</p>
+<p>And I suspect the culprint could be</p>
+<pre><code class="language-Rust">let mut expanded_arguments = Vec::with_capacity(expanded_types.len() * previous.len());
+</code></pre>
+<p>CC: @dhruvmanila</p>
+<p>We might want to add some limit on how many types we want to expand</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 18:30</div>
+            <div class="timeline-body"><p>The issue also repros the same if the <code>True</code> argument uses valid syntax (followed by a comma) and is at a valid location (first in the argument list):</p>
+<pre><code class="language-py">def f(
+    a1=None,
+    a2=None,
+    a3=None,
+    a4=None,
+    a5=None,
+    a6=None,
+    a7=None,
+    a8=None,
+    a9=None,
+    a10=None,
+    a11=None,
+    a12=None,
+    a13=None,
+    a14=None,
+    a15=None,
+    a16=None,
+    a17=None,
+    a18=None,
+    a19=None,
+    a20=None,
+    a21=None,
+    a22=None,
+    a23=None,
+):
+    args = dict(
+        True,
+        a1=a1,
+        a2=a2,
+        a3=a3,
+        a4=a4,
+        a5=a5,
+        a6=a6,
+        a7=a7,
+        a8=a8,
+        a9=a9,
+        a10=a10,
+        a11=a11,
+        a12=a12,
+        a13=a13,
+        a14=a14,
+        a15=a15,
+        a16=a16,
+        a17=a17,
+        a18=a18,
+        a19=a19,
+        a20=a20,
+        a21=a21,
+        a22=a22,
+        a23=a23,
+    )
+</code></pre>
+<p>(That's not surprising, because after issuing the invalid-syntax error, the parser transforms the invalid versions into the equivalent of the above anyway, in the AST it generates.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 18:53</div>
+            <div class="timeline-body"><p>Every <code>a*</code> variable is of type <code>Unknown | None</code>, so each of them gets expanded into the two elements of that union.</p>
+<p>And I think the initial <code>True</code> argument is necessary to repro because without that, the call is valid on the first try, so no expansions are attempted. But that initial <code>True</code> is not assignable to <code>SupportsKeysAndGetItem[str, _VT]</code>, causing every call evaluation to fail, causing us to try every single possible expansion before finally concluding that we fail.</p>
+<p>It's a little silly that even though the first argument is definitively wrong in this case, and will always fail, we still try expanding every <em>other</em> argument. It feels like we should be able to detect that the wrong argument is not expandable, and stop there? But we can't make that optimization because of a case like this:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def f(x: int, y: Literal[False]) -&gt; Literal[0]: ...
+@overload
+def f(x: int, y: Literal[True]) -&gt; Literal[1]: ...
+@overload
+def f(x: str, y: bool) -&gt; str: ...
+
+def _(b: bool):
+    f(1, b)
+</code></pre>
+<p>Initially we will hit the last overload and the first argument will fail to assign (<code>Literal[1]</code> is not assignable to <code>str</code>), but we can't just say &quot;oh, first argument failed and is not expandable, stop here&quot;, because expanding the second argument allows us to consider other overloads in which the first argument does not fail.</p>
+<p>There may still be some smarter version of this optimization where we detect that a non-expandable argument didn't match <em>any</em> overload, and therefore skip expanding arguments?</p>
+<p>@erictraut what optimizations/heuristics/limits does pyright use in these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-22 20:01</div>
+            <div class="timeline-body"><p>Yes, argument overload expansion can lead to combinatoric explosion. In pyright, I limit it to <a href="https://github.com/microsoft/pyright/blob/8b02aa84ec916697e76d5ee69299a89d555ec98c/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L564">256 combinatoric expansions</a>. I also limit expansion of a single argument type (e.g. a tuple) <a href="https://github.com/microsoft/pyright/blob/8b02aa84ec916697e76d5ee69299a89d555ec98c/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L568">to 64</a>. These limits are admittedly somewhat arbitrary, but they seem to work well in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 20:33</div>
+            <div class="timeline-body"><p>I feel like even if we add these limits, it doesn't make sense to me that we hit 12GB of memory usage with this example. In addition to setting limits I think we should spend a bit of time to see if we can be more efficient in our memory usage when doing these expansions, or even just drop some things sooner once we no longer need them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-22 20:34</div>
+            <div class="timeline-body"><p>Another heuristic you could use is that argument expansion will only help if there is some overlap between the original argument type and the parameter type of the overload. In the example in this thread, you could first filter overloads to exclude any that can't match because of argument kinds. This step doesn't look at argument types at all, so argument expansion doesn't make a difference. In this case, that means you'd end up with the overloads that support calls like <code>dict({}, a=1)</code>. For those, the first argument must be a dict or iterable, but you can see that the argument is <code>Literal[True]</code>, which doesn't overlap with any iterable type, so you can skip argument expansion and reject the overload immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-24 04:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Another heuristic you could use is that argument expansion will only help if there is some overlap between the original argument type and the parameter type of the overload. In the example in this thread, you could first filter overloads to exclude any that can't match because of argument kinds.</p>
+</blockquote>
+<p>We do have a similar heuristic for step 5 that tries to collect all the parameters that will be participating in the filtering process. This is done by checking whether the argument type is equivalent to the parameter type and is considered in the filtering process if it isn't equivalent.</p>
+<p>https://github.com/astral-sh/ruff/blob/905b9d7f515ff4b093a9a55997e1855b54e2d73a/crates/ty_python_semantic/src/types/call/bind.rs#L1377-L1382</p>
+<p>Although, I'm getting a bit confused because you mentioned at first to check for any overlap between the argument <em>type</em> and the parameter <em>type</em> but then you're mentioning to only check the argument <em>kind</em> and not look at the argument <em>type</em>. Can you clarify this?</p>
+<p>I think we could do a similar check as for step 5 and see if any of the argument type has <strong>no</strong> overlapping corresponding parameter type and avoid doing the expansion if this is the case.</p>
+<p>Consider <a href="https://github.com/astral-sh/ty/issues/868#issuecomment-3104364252">Carl's example</a>, the <code>f(1, b)</code> call would see that <code>Literal[1]</code> has overlapping overloads (1 and 2) so it will continue with the expansion but <code>f(None, b)</code> does not have any overlapping overloads so it will avoid doing the expansion.</p>
+<p>One thing that I'm worried about is whether skipping the expansion would result in more overloads that needs to be filtered at later steps but I haven't checked if this would ever occur in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @dhruvmanila on 2025-07-24 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Out of memory when analyzing file" to "Overload argument type expansion leads to combinatoric explosion" by @dhruvmanila on 2025-07-24 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-24 05:00</div>
+            <div class="timeline-body"><p>Filtering out by argument kind would be step 1. For example, if an overload accepts no positional arguments, but the call provides a positional argument, you can know it never matches and forget about it.</p>
+<p>The heuristic I am suggesting allows you to skip performing (potentially expensive) argument expansion in step 3.
+In this example with a dict (the motivating example for the issue), we're passing one positional argument and a bunch of keyword arguments. That would filter out all but two of the overloads for <code>dict.__init__</code> (refer to: https://github.com/python/typeshed/blob/a1dc346ef6b2914197786c8a6be76202e929477a/stdlib/builtins.pyi#L1139). These have a positional parameter that is respectively of types <code>SupportsKeysAndGetItem</code> and <code>Iterable</code>. The positional argument in the call is <code>True</code>; the keyword args are all of type <code>Unknown | None</code>. <code>True</code> is not assignable to <code>SupportsKeysAndGetItem</code> or <code>Iterable</code>, so in step 2 we get errors for all overloads. Then step 3 calls for argument expansion. It appears that ty currently does this for all arguments at once, leading to a huge amount of combinations with all the <code>Unknown | None</code> parameters. But we can also compute <code>Literal[True] &amp; SupportsKeysAndGetItem</code> and <code>Literal[True] &amp; Iterable</code> and see that these types are disjoint, which means that no amount of argument expansion will make the overloads match. Therefore, we can skip doing argument expansion and conclude that the call will never succeed.</p>
+<p>Another related heuristic you could use is that for argument expansion to help, we must be expanding an argument for which we previously got a type error. In this example, we got an error on the first positional argument (<code>True</code> is not assignable to <code>SupportsKeysAndGetItem</code>). But then we do argument expansion on the other arguments. That will never fix the type mismatch on the first argument, so argument expansion is futile and we can skip it.</p>
+<p>This second heuristic could be used in Carl's example with the <code>f(1, b)</code> call to filter out one of the overloads before argument expansion: the third overload <code>(x: str, y: bool)</code> gives an error on step 2 when we pass the arguments (<code>Literal[1], bool)</code>. While the bool is expandable, we got an argument on the <code>str</code> argument, and we can know beforehand that expanding the bool won't make the call compatible with that first argument.</p>
+<p>The two heuristics I suggest would not filter out the first two overloads in that example (with <code>Literal[True]</code> and <code>Literal[False]</code>), because <code>bool</code> overlaps with those types, and the error we get in step 2 is on an argument (of type <code>bool</code>) that can undergo expansion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-07-25 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-08-19 05:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-19 13:31</div>
+            <div class="timeline-body"><p>Thank you for the detailed writeup!</p>
+<p>While thinking about this, I had a similar heuristic as you've mentioned but before that I want to provide some context:</p>
+<p>We do perform arity checks which would filter out any overloads that is guaranteed to not match based on the argument kind (extra positional arguments, etc.). So, in the original example with a single <code>True</code> and multiple keyword arguments of union type, ty would only see the two remaining overloads at the time of argument type expansion which are the ones that contains <code>SupportsKeysAndGetItem</code> and <code>Iterable</code> for the positional-only parameter.</p>
+<p>So, based on this and considering your first heuristic, we could loop over the argument types that cannot be expanded and check whether they're assignable to any of the remaining overloads. In the original example, that would make <code>Literal[True]</code> to be the argument type that cannot be expanded and it's not assignable to the remaining overloads (2 that contains the positional-only parameter).</p>
+<blockquote>
+<p>Another related heuristic you could use is that for argument expansion to help, we must be expanding an argument for which we previously got a type error. In this example, we got an error on the first positional argument (<code>True</code> is not assignable to <code>SupportsKeysAndGetItem</code>). But then we do argument expansion on the other arguments. That will never fix the type mismatch on the first argument, so argument expansion is futile and we can skip it.</p>
+</blockquote>
+<p>This is interesting but it would require maintaining some kind of metadata during type checking. I think the <code>BindingError::InvalidArgumentType</code> does provide the argument index where the type checking failed and it could be used to avoid creating the metadata. In a gist, this heuristic acts as an additional filtering layer before checking whether the expanded argument lists succeeds or not but this still requires performing argument type expansion.</p>
+<p>Here's what I'm thinking:</p>
+<ul>
+<li>Add the first heuristic</li>
+<li>Find out if there are any ways to avoid allocating a lot of vectors during the expansion to reduce the memory usage</li>
+<li>Add the second heuristic</li>
+<li>Fallback to limiting the expansion to some arbitrary number (Pyright has 256 for the number of argument lists in a single expansion) if there was no easy way to reduce the memory allocation</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-19 14:24</div>
+            <div class="timeline-body"><p>One way to reduce the memory is to create an iterator of an iterator instead of the current approach which returns an iterator of argument lists. This way we don't need to allocate the expanded argument lists upfront but it's always better to avoid doing that if there are any heuristics to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-25 09:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:19 UTC
+    </footer>
+</body>
+</html>

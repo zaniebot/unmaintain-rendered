@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No `Literal` type narrowing in function body - astral-sh/ty #275</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No `Literal` type narrowing in function body</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/275">#275</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2025-05-08 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2025-05-08 15:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>ty check ty_repro.py</code></p>
+<pre><code>warning: lint:possibly-unbound-attribute: Attribute `removeprefix` on type `@Todo | None` is possibly unbound
+  --&gt; tmp/ty.py:18:16
+   |
+16 |     if handle_dup_idx in (&quot;keep-first&quot;, &quot;keep-last&quot;):
+17 |         keep = handle_dup_idx.removeprefix(&quot;keep-&quot;)
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+19 |         return df_dummy[~df_dummy.index.duplicated(keep=keep)]
+20 |     return None
+   |
+info: `lint:possibly-unbound-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<pre><code class="language-py">&quot;&quot;&quot;minimal repro for ty not type-narrowing in if statement.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from typing import Literal
+
+import pandas as pd
+
+HandleDupes = Literal[&quot;keep-first&quot;, &quot;keep-last&quot;, &quot;mean&quot;, None]
+
+
+df_dummy = pd.DataFrame({&quot;A&quot;: [1, 2, 3, 4, 5]})
+
+
+def test(handle_dup_idx: HandleDupes = None):
+    if handle_dup_idx in (&quot;keep-first&quot;, &quot;keep-last&quot;):
+        # get possibly-unbound-attribute on next line
+        keep = handle_dup_idx.removeprefix(&quot;keep-&quot;)
+        return df_dummy[~df_dummy.index.duplicated(keep=keep)]
+    return None
+
+
+handle_dup_idx: HandleDupes = None
+
+if handle_dup_idx in (&quot;keep-first&quot;, &quot;keep-last&quot;):
+    keep = handle_dup_idx.removeprefix(&quot;keep-&quot;)
+    # no possibly-unbound-attribute here
+    df_dummy = df_dummy[~df_dummy.index.duplicated(keep=keep)]
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7 (905a3e1e5 2025-05-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 15:36</div>
+            <div class="timeline-body"><p>The issue here is not type narrowing support, but implicit type alias support. If the <code>Literal</code> type is used directly in the function annotation, it works: https://play.ty.dev/2cdc0c3f-9e0f-4f96-8274-5a3239ddf362</p>
+<p>Or if an explicit PEP 695 type alias is used: https://play.ty.dev/81f847ad-aa2e-44ba-9b97-d043ce1469fc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 15:39</div>
+            <div class="timeline-body"><p>I added this specific case to #221 and will close this as duplicate. Thank you for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-08 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AKuederle">@AKuederle</a> on 2025-08-05 13:07</div>
+            <div class="timeline-body"><blockquote>
+<p>The issue here is not type narrowing support, but implicit type alias support. If the <code>Literal</code> type is used directly in the function annotation, it works: https://play.ty.dev/2cdc0c3f-9e0f-4f96-8274-5a3239ddf362</p>
+<p>Or if an explicit PEP 695 type alias is used: https://play.ty.dev/81f847ad-aa2e-44ba-9b97-d043ce1469fc</p>
+</blockquote>
+<p>The direct annotation only partially works I think. If we add any other Union value to the Literal the type inference breaks (e.g. <code>Literal[&quot;keep-first&quot;, &quot;keep-last&quot;, &quot;mean&quot;, None] | int</code>):</p>
+<p>https://play.ty.dev/76032273-7067-4f11-97b6-2e062f6b6e48</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 13:34</div>
+            <div class="timeline-body"><blockquote>
+<p>If we add any other Union value to the Literal the type inference breaks</p>
+</blockquote>
+<p>This is intentional. The type <code>int</code> includes instances of user subclasses of <code>int</code>, which may override <code>__eq__</code> to compare equal to anything. So the test <code>handle_dup_idx in (&quot;keep-first&quot;, &quot;keep-last&quot;)</code> cannot rule out the possibility of the type <code>int</code>.</p>
+<p>It does look like we could be a bit less conservative here; although we can't rule out <code>int</code>, we should still be able to rule out <code>&quot;mean&quot;</code> and <code>None</code>, and currently we don't even eliminate those, if any type is present whose equality-test results we aren't sure of. So the preferable type should be <code>Literal[&quot;keep-first&quot;, &quot;keep-last&quot;] | int</code>. I created https://github.com/astral-sh/ty/issues/939 to track this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AKuederle">@AKuederle</a> on 2025-08-05 13:59</div>
+            <div class="timeline-body"><p>Oh true! I did not think about the possibility that <code>__eq__</code> might be modified. Thanks for the fast response :) Awesome work with ty!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:59 UTC
+    </footer>
+</body>
+</html>

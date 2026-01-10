@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check the return type of dunder methods - astral-sh/ty #196</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check the return type of dunder methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/196">#196</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-19 10:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-19 10:13</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Dunder methods like <code>__bool__</code>, <code>__len__</code> (and binary/compare?) should return a value that is assignable to what's expected by their &quot;convention&quot;. We currently don't check this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-19 11:03</div>
+            <div class="timeline-body"><p>I'm still not sure that this is actually something a type checker should check, rather than a type-aware linter. The type checker should check (where necessary/appropriate) that the return type is correct when these methods are (explicitly or implicitly) called. But if they're never called, there's no type safety issue. And we already have linter rules to guard against these antipatterns:</p>
+<ul>
+<li>https://docs.astral.sh/ruff/rules/invalid-length-return-type/</li>
+<li>https://docs.astral.sh/ruff/rules/invalid-bool-return-type/</li>
+<li>https://docs.astral.sh/ruff/rules/invalid-index-return-type/</li>
+<li>https://docs.astral.sh/ruff/rules/invalid-str-return-type/</li>
+<li>https://docs.astral.sh/ruff/rules/invalid-bytes-return-type/</li>
+<li>https://docs.astral.sh/ruff/rules/invalid-hash-return-type/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-19 11:11</div>
+            <div class="timeline-body"><p>Yeah sorry. That's what I meant. We should check the return type when implicitly calling those operations and error if the dunder is incorrectly implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-19 11:15</div>
+            <div class="timeline-body"><p>Okay, great! For <code>__len__</code>, we have a TODO here for this that's relevant for this issue:</p>
+<p>https://github.com/astral-sh/ruff/blob/e84985e9b3d101d5bd0b4b475855f9e5ccc0a007/crates/red_knot_python_semantic/src/types.rs#L1519</p>
+<blockquote>
+<p>(and binary/compare?)</p>
+</blockquote>
+<p>In general, these can return arbitrary objects and the call still succeeds, so there's nothing more for us to do on these, I don't think:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __lt__(self, other):
+...         return Foo()
+...         
+&gt;&gt;&gt; Foo() &lt; Foo()
+&lt;__main__.Foo object at 0x1031cca50&gt;
+</code></pre>
+<p>You could argue it's a bit of an antipattern to return a non-bool from these methods, but again, it's sort of a linter issue than something for a type checker to flag</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-19 19:39</div>
+            <div class="timeline-body"><p>Yeah I think this would apply to at least <code>__len__</code>, <code>__bool__</code>, <code>__str__</code>, <code>__bytes__</code> and <code>__repr__</code>. Not sure if there are others I'm forgetting, haven't cross-checked with a comprehensive list of dunders.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Check the return type of dunder methods" to "Check the return type of dunder methods" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-05-11 07:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:55 UTC
+    </footer>
+</body>
+</html>

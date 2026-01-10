@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infer class specializations for class and static methods - astral-sh/ty #541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Infer class specializations for class and static methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/541">#541</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-05-29 19:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-29 19:04</div>
+            <div class="timeline-body"><p>We can currently infer the specialization of a generic class from its constructor methods, if they include parameters that use the class's typevars:</p>
+<pre><code class="language-py">class C[T]:
+    def __init__(self, value: T) -&gt; None: ...
+
+reveal_type(C(1))  # revealed: C[int]
+</code></pre>
+<p>We should do the same for <code>@classmethod</code>s and <code>@staticmethod</code>s:</p>
+<pre><code class="language-py">class C[T]:
+    @classmethod
+    def create(cls, value: T) -&gt; C[T]: ...
+
+    @staticmethod
+    def instantiate(value: T) -&gt; C[T]: ...
+
+reveal_type(C.create(1))  # revealed: C[int]
+reveal_type(C.instantiate(1))  # revealed: C[int]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-29 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-05-29 19:33</div>
+            <div class="timeline-body"><p>I don't think this behavior would be correct. <a href="https://peps.python.org/pep-0696/">PEP 696</a> (which is now incorporated into the typing spec) effectively says that if <code>T</code> has no default type argument, the type of <code>C</code> must be evaluated as <code>C[Any]</code> in the expression <code>C.create</code> or <code>C.instantiate</code>. In other words, <code>C.create</code> and <code>C.instantiate</code> are equivalent to <code>C[Any].create</code> and <code>C[Any].instantiate</code>. If a type argument default is specified, then it is used instead, like in this example.</p>
+<pre><code class="language-python">class D[T = int]:
+    @classmethod
+    def create(cls, value: T) -&gt; D[T]: ...
+
+    @staticmethod
+    def instantiate(value: T) -&gt; D[T]: ...
+
+reveal_type(D.create(1))  # revealed: D[int]
+reveal_type(D.instantiate(1))  # revealed: D[int]
+</code></pre>
+<p>Mypy currently gets this wrong, but pyright conforms with the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-29 19:47</div>
+            <div class="timeline-body"><p>Ah, so it would need to be something like this in order for us to validly make the inference suggested by @dcreager, correct? (<code>C.create()</code> and <code>C.instantiate()</code> would need to be generic over a different typevar than the one the class is generic over?)</p>
+<pre><code class="language-py">class C[T]:
+    @classmethod
+    def create[S](cls, value: S) -&gt; C[S]: ...
+
+    @staticmethod
+    def instantiate[S](value: S) -&gt; C[S]: ...
+
+reveal_type(C.create(1))  # revealed: C[int]
+reveal_type(C.instantiate(1))  # revealed: C[int]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-29 20:11</div>
+            <div class="timeline-body"><p>Thanks for clarifying, @erictraut! So it really is class <em>construction</em> that is special-cased to allow inferring a non-default class specialization.</p>
+<p>@AlexWaygood, we actually already do support your example that uses a different typevar [<a href="https://play.ty.dev/f83f68fc-afc7-44d5-b6e4-f028e7fdd8bc">playground</a>], with the caveat that we don't promote literal types to their instance types:</p>
+<pre><code class="language-py">class C[T]:
+    @classmethod
+    def create[S](cls, x: S) -&gt; C[S]:
+        return C[S]()
+
+reveal_type(C.create(4))  # revealed: C[Literal[4]]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-29 20:12</div>
+            <div class="timeline-body"><p>Correction, we support this pattern for <code>classmethod</code>, but not for <code>staticmethod</code></p>
+<pre><code class="language-py">class C[T]:
+    @staticmethod
+    def create[S](x: S) -&gt; C[S]:
+        return C[S]()
+
+reveal_type(C.create(4))  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-29 20:36</div>
+            <div class="timeline-body"><p>I'm not sure I think this is what the spec <em>should</em> say about these cases, but I'm happy to defer that question to another day, and not spend time right now doing extra work to implement something here that the spec doesn't require.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purepani">@purepani</a> on 2025-05-30 00:52</div>
+            <div class="timeline-body"><p>I don't quite see how the PEP implies that if T has no default argument, then the type must be evaluated as <code>C[Any]</code>. It only says that if it does have a default, then it must evaluate as <code>C[Default]</code>.
+Additionally, if I'm reading the spec correctly, it should be correct behavior to infer with Self:</p>
+<pre><code class="language-python">from typing import Self, reveal_type
+
+class C[T]:
+    @classmethod
+    def method(cls, x: T) -&gt; Self: ...
+
+reveal_type(C.method(&quot;x&quot;)) # C[str]
+</code></pre>
+<p>Per https://typing.python.org/en/latest/spec/generics.html#use-in-generic-classes</p>
+<blockquote>
+<p>The PEP doesn’t specify the exact type of self.value within the method set_value. Some type checkers may choose to implement Self types using class-local type variables with Self = TypeVar(“Self”, bound=Container[T]), which will infer a precise type T. However, given that class-local type variables are not a standardized type system feature, it is also acceptable to infer Any for self.value. We leave this up to the type checker.</p>
+</blockquote>
+<p>While it's definitely not specified by the type checker, I don't think wrong behavior to infer it, at least(though certainly no need to implement it yet if it's explicitly not required).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 06:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

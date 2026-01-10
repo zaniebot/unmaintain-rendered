@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic: dependency graph cycle when querying infer_unpack_types - astral-sh/ty #364</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic: dependency graph cycle when querying infer_unpack_types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/364">#364</a>
+        opened by <a href="https://github.com/jelle-openai">@jelle-openai</a>
+        on 2025-05-13 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-05-13 18:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I got the following crash on an internal file:</p>
+<pre><code>error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/7edce6e/src/function/fetch.rs:129:25 when checking `&lt;snip&gt;.py`: `dependency graph cycle when querying infer_unpack_types(Id(2efadb)), set cycle_fn/cycle_initial to fixpoint iterate.
+Query stack:
+[
+    check_types(Id(fc70)),
+    infer_scope_types(Id(c987b2)),
+    member_lookup_with_policy_(Id(cd05be)),
+    infer_unpack_types(Id(2efadb)),
+    infer_expression_types(Id(4f5c4c)),
+    member_lookup_with_policy_(Id(cd05c2)),
+    infer_expression_type(Id(4f5c37)),
+    infer_expression_types(Id(4f5c37)),
+    all_narrowing_constraints_for_expression(Id(4f5c36)),
+    infer_definition_types(Id(4f595e)),
+    infer_expression_types(Id(4f5c73)),
+    signature_(Id(cba6c1)),
+    to_overloaded_(Id(cba6c1)),
+]`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;.&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: member_lookup_with_policy_(Id(cd05c2))
+             at crates/ty_python_semantic/src/types.rs:536
+   1: infer_expression_types(Id(4f5c4c))
+             at crates/ty_python_semantic/src/types/infer.rs:222
+             cycle heads: member_lookup_with_policy_(Id(cd05be)) -&gt; 0
+   2: infer_unpack_types(Id(2efadb))
+             at crates/ty_python_semantic/src/types/infer.rs:309
+   3: member_lookup_with_policy_(Id(cd05be))
+             at crates/ty_python_semantic/src/types.rs:536
+   4: infer_scope_types(Id(c987b2))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+   5: check_types(Id(fc70))
+             at crates/ty_python_semantic/src/types.rs:84
+</code></pre>
+<p>I haven't tried to minimize it but can do so if helpful.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.1 (12f466e46 2025-05-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 18:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't tried to minimize it but can do so if helpful.</p>
+</blockquote>
+<p>yes please!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-13 18:57</div>
+            <div class="timeline-body"><p>Unfortunately it depends on a third-party package.</p>
+<p>Install <code>pymupdf</code> (which provides the <code>fitz</code> import), then run <code>ty check</code> on this:</p>
+<pre><code class="language-python">import fitz
+
+def a():
+    def b(rect: fitz.Rect, delta: int = 5):
+        return fitz.Rect(rect.x0 - delta, rect.y0 - delta, rect.x1 + delta, rect.y1 * delta)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-13 19:10</div>
+            <div class="timeline-body"><p>Thank you! It seems like just accessing an attribute triggers the cycle:</p>
+<pre><code class="language-py">import fitz
+
+
+fitz.Rect().x0
+</code></pre>
+<p>I will spend a couple of minutes trying to minimize it further to remove the third-party dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-13 19:39</div>
+            <div class="timeline-body"><p>A minimal reproduction:</p>
+<pre><code class="language-py">class Foo:
+    def method(self):
+        other = Foo()
+        self.x, self.y = other.x, other.y
+
+
+Foo().x
+</code></pre>
+<p>With the trace logs where the cycle occurs:</p>
+<pre><code>2  └─┐ty_python_semantic::types::infer::infer_unpack_types{range=63..77, file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2    └─┐ty_python_semantic::types::infer::infer_expression_types{expression=Id(1401), range=80..96, file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2      └─┐ty_python_semantic::types::infer::infer_definition_types{range=41..46, file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2        └─┐ty_python_semantic::types::infer::infer_expression_types{expression=Id(1400), range=49..54, file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2          └─┐ty_python_semantic::semantic_index::global_scope{file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2          ┌─┘
+2          └─┐ty_python_semantic::symbol::symbol{name=&quot;Foo&quot;}
+2            └─┐ty_python_semantic::semantic_index::symbol_table{scope=Id(c00), file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2            ┌─┘
+2            └─┐ty_python_semantic::semantic_index::use_def_map{scope=Id(c00), file=File(System(&quot;/Users/dhruv/playground/ty/isolated1/play.py&quot;))}
+2            ┌─┘
+2          ┌─┘
+2          └─┐ty_python_semantic::symbol::symbol{name=&quot;Enum&quot;}
+2          ┌─┘
+2        ┌─┘
+2      ┌─┘
+2      ├─   0.106922s   0ms TRACE ty_python_semantic::types member_lookup_with_policy: Foo.y
+2    ┌─┘
+2  ┌─┘
+2┌─┘
+2┘
+fatal[panic] Panicked at /Users/dhruv/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/7edce6e/src/function/fetch.rs:129:25 when checking `/Users/dhruv/playground/ty/isolated1/play.py`: `dependency graph cycle when querying infer_unpack_types(Id(1800)), set cycle_fn/cycle_initial to fixpoint iterate.
+Query stack:
+[
+    check_types(Id(800)),
+    infer_scope_types(Id(c00)),
+    member_lookup_with_policy_(Id(4007)),
+    infer_unpack_types(Id(1800)),
+    infer_expression_types(Id(1401)),
+    member_lookup_with_policy_(Id(4008)),
+    infer_expression_types(Id(1400)),
+    symbol_by_id(Id(280b)),
+    use_def_map(Id(c00)),
+    symbol_by_id(Id(2809)),
+    infer_definition_types(Id(69d6)),
+    file_to_module(Id(2425)),
+    member_lookup_with_policy_(Id(4006)),
+    imported_modules(Id(2425)),
+    member_lookup_with_policy_(Id(4003)),
+    symbol_by_id(Id(2807)),
+    infer_definition_types(Id(5453)),
+    file_to_module(Id(241c)),
+    source_text(Id(241c)),
+]
+</code></pre>
+<p>The cycle is occurring because accessing <code>Foo().x</code> requires the <code>infer_unpack_types</code> on the unpacking assignment but inferring the right-hand side expression itself requires the <code>infer_unpack_types</code> on the same <code>Unpack</code> ingredient because <code>other</code> is also an instance of <code>Foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 19:48</div>
+            <div class="timeline-body"><p>That looks like a legitimate cycle, so the right answer here should just be a PR to add fixpoint handling to <code>infer_unpack_types</code> query.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-05-13 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

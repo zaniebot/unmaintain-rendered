@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `yield` - astral-sh/ty #1718</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `yield`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1718">#1718</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-02 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 13:34</div>
+            <div class="timeline-body"><p>Stop inferring <code>Todo</code> for:</p>
+<pre><code class="language-py">async def test():
+    a = yield 10
+
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/7b1e530a6d424c967588ffdffac89b3d5924c88c/crates/ty_python_semantic/src/types/infer/builder.rs#L8420</p>
+<p>https://play.ty.dev/f25888e2-1782-469d-9e60-4367d30452a8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-12-02 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-02 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 16:29</div>
+            <div class="timeline-body"><p>The return type of a generator function (any function containing <code>yield</code>) is a <code>typing.Generator</code> (or <code>typing.AsyncGenerator</code> if its an <code>async def</code>); this type must be assignable to the annotated return type.</p>
+<p>The type of a <code>yield</code> expression inside the function is the second type argument of the annotated <code>Generator</code> or <code>AsyncGenerator</code> return type, for example:</p>
+<pre><code class="language-py">from typing import Generator
+
+def unannotated():
+    x = yield 10
+    reveal_type(x)  # revealed: Unknown
+
+def default_specialized() -&gt; Generator:
+    x = yield 10
+    # The `_SendT_contra` typevar on `Generator` has `default=None`
+    reveal_type(x)  # revealed: None
+
+def partially_specialized() -&gt; Generator[int]:
+    x = yield 10
+    # The first type parameter of `Generator` is the yielded type (so `10` here must be assignable to it)
+    # The second type parameter is the &quot;send&quot; type, which is still default-specialized to `None` here:
+    reveal_type(x)  # revealed: None
+
+def fully_specialized() -&gt; Generator[int, str]:
+    x = yield 10
+    reveal_type(x)  # revealed: str
+
+def iterator() -&gt; Iterator[int]:
+    x = yield 10
+    # The `Iterator` return type here is a supertype of `Generator`.
+    # It has no &quot;send&quot; type, nor a send method, so this should always be `None`
+    reveal_type(x)  # revealed: None
+</code></pre>
+<p>All those examples would look the same for an <code>async def</code>, except the return type would need to be <code>AsyncGenerator</code>, not <code>Generator</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:33</div>
+            <div class="timeline-body"><p>If someone implements this, take a look at <code>Type::generator_return_type</code>, which does something similar for the return type instead of the send type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-02 16:35</div>
+            <div class="timeline-body"><blockquote>
+<p>The return type of a generator function (any function containing <code>yield</code>) must be assignable to <code>typing.Generator</code> (or <code>typing.AsyncGenerator</code> if its an <code>async def</code>).</p>
+</blockquote>
+<p>Really? No other type checker appears to enforce this rule. They all allow generator functions to return <code>Iterator</code> (which is a supertype of <code>Generator</code>, not a subtype). <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=ab5ec9cd5ab6e817e95790342db2d8e3">Mypy</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.13&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCSMApiAIYy4BQVAJscFMABQAeAlFALQB8hJ5SiADaqGAF0AXFSiyocKAF55SYgBtaUACwAmGXJDEYAVxAp5VIA">pyright</a>, <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BJBjEqoGvADropmGGDpgAFAEo6AWgB8g4aPGUA2qwYBdRFLoW6pOgF4rEGFEx0ALACZzlyjAYBXSuhWUiAANCC%2BDNBwJOSIIADEdACqkVAQTAq%2B6ADGkbjocFIycgq8NGIA%2Bui%2BNNgiiviInOgMqpp0cAyUZoFePv6BYBIgAHI1dd10wPgAvsPBYWTeYFCkhOI0UBSJAAqky6sdGDgEdNn5kGz%2BYhD5hFKJAMowMHQAFgwMxHCIAPS-Szkq0IvDYvxg6F%2BmFw2Tgv3O6Eu1zykNKlDoqAAbqhoKhsLAzhcIFddLdArhiCjolIyAw3vk1JiRHAybY6MMAMyEACMHhAwRmYVQuQgTIAYtAYBQ0Fg8EQyCAZkA">pyrefly</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-02 16:37</div>
+            <div class="timeline-body"><p>Did you mean to say that for any generator function, <code>types.GeneratorType</code> (or <code>types.AsyncGeneratorType</code> if it's an <code>async def</code> function) must be assignable to the return type of the function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-02 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you mean to say that for any generator function, <code>types.GeneratorType</code> (or <code>types.AsyncGeneratorType</code> if it's an <code>async def</code> function) must be assignable to the return type of the function?</p>
+</blockquote>
+<p>(we already implement this check: https://play.ty.dev/e79542b2-1f5e-4c15-bc82-fd8ecf182c1f)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 16:50</div>
+            <div class="timeline-body"><p>Yes, that bit was just supposed to be context for the rest, not describing what needs to be implemented still. Fixed the wording and added an example with <code>Iterator</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:47 UTC
+    </footer>
+</body>
+</html>

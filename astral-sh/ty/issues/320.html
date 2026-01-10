@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project dependencies not detected when using `uv run --with ty` - astral-sh/ty #320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Project dependencies not detected when using `uv run --with ty`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/320">#320</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-05-11 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-11 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Steps to reproduce (CPython 3.13.2, uv 0.7.3, ty 0.0.0-alpha.8):</p>
+<pre><code>uv init tmp
+cd tmp
+uv add httpx
+echo 'import httpx' &gt;&gt; main.py
+uv run --with ty ty check
+</code></pre>
+<p>ty says:</p>
+<pre><code>error[unresolved-import]: Cannot resolve imported module `httpx`
+</code></pre>
+<p>it works fine if you <code>uv add ty</code>, but doesn't work when you <code>uv run --with ty ty check</code>. <code>uv run --with mypy mypy .</code> works fine and finds the import.</p>
+<p><code>uv run --with ty ty check --verbose --verbose</code></p>
+<pre><code>2025-05-11 12:51:51.281544701 WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+2025-05-11 12:51:51.281577281 DEBUG Version: 0.0.0-alpha.8
+2025-05-11 12:51:51.281602471 DEBUG Architecture: x86_64, OS: linux, case-sensitive: case-sensitive
+2025-05-11 12:51:51.281703641 DEBUG Searching for a project in '/home/collin/tmp'
+2025-05-11 12:51:51.281806121 DEBUG Resolving requires-python constraint: `&gt;=3.13`
+2025-05-11 12:51:51.281832661 DEBUG Resolved requires-python constraint to: 3.13
+2025-05-11 12:51:51.281854762 DEBUG Project without `tool.ty` section: '/home/collin/tmp'
+2025-05-11 12:51:51.281868452 DEBUG Searching for a user-level configuration at `/home/collin/.config/ty/ty.toml`
+2025-05-11 12:51:51.281893422 INFO Defaulting to python-platform `linux`
+2025-05-11 12:51:51.281917742 INFO Python version: Python 3.13, platform: linux
+2025-05-11 12:51:51.281930492 DEBUG Adding first-party search path '/home/collin/tmp'
+2025-05-11 12:51:51.281947742 DEBUG Using vendored stdlib
+2025-05-11 12:51:51.282668282 DEBUG Discovering site-packages paths from sys-prefix `/home/collin/.cache/uv/archive-v0/aA7ze3NeJgM8fooLQjSvY` (`VIRTUAL_ENV` environment variable')
+2025-05-11 12:51:51.282701342 DEBUG Attempting to parse virtual environment metadata at '/home/collin/.cache/uv/archive-v0/aA7ze3NeJgM8fooLQjSvY/pyvenv.cfg'
+2025-05-11 12:51:51.282745112 DEBUG Searching for site-packages directory in `sys.prefix` path `/home/collin/.cache/uv/archive-v0/aA7ze3NeJgM8fooLQjSvY`
+2025-05-11 12:51:51.282753712 DEBUG Resolved site-packages directories for this virtual environment are: [&quot;/home/collin/.cache/uv/archive-v0/aA7ze3NeJgM8fooLQjSvY/lib/python3.13/site-packages&quot;]
+2025-05-11 12:51:51.282758592 DEBUG Adding site-packages search path '/home/collin/.cache/uv/archive-v0/aA7ze3NeJgM8fooLQjSvY/lib/python3.13/site-packages'
+2025-05-11 12:51:51.282942792 DEBUG Starting main loop
+Checking ------------------------------------------------------------ 0/0 files                                                                                                    2025-05-11 12:51:51.283013262 DEBUG Waiting for next main loop message.
+2025-05-11 12:51:51.283144902 DEBUG Checking project 'tmp'
+2025-05-11 12:51:51.285666824 INFO Indexed 1 file(s)
+Checking ------------------------------------------------------------ 0/1 files                                                                                                    2025-05-11 12:51:51.286172246 DEBUG Checking file '/home/collin/tmp/main.py'
+2025-05-11 12:51:51.316921754 DEBUG Resolving dynamic module resolution paths
+2025-05-11 12:51:51.317122364 DEBUG Module `httpx` not found in search paths
+error[unresolved-import]: Cannot resolve imported module `httpx`
+</code></pre>
+</blockquote>
+<p><em>Originally posted by @collinanderson in <a href="https://github.com/astral-sh/ty/issues/171#issuecomment-2870001921">#171</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-11 17:02</div>
+            <div class="timeline-body"><p>I think the logs are pretty clear that the project virtual environment's site packages aren't included (the environment in the cache directory is the <code>--with</code> layer). Why did you think this would work @AlexWaygood ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @MichaReiser on 2025-05-12 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 06:33</div>
+            <div class="timeline-body"><p>@zanieb does that mean uv uses two venvs? Does uv link one venv into the other (e.g. by using a <code>pth</code> file or similar?</p>
+<p>Are there other tools that support such layered venvs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> removed by @MichaReiser on 2025-05-12 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @MichaReiser on 2025-05-12 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv</span> added by @MichaReiser on 2025-05-12 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-12 14:34</div>
+            <div class="timeline-body"><p>Yes, they're layered as linked here https://github.com/astral-sh/ty/issues/171#issuecomment-2869953949 using a <code>pth</code> file.</p>
+<p>Support varies, it depends on how they implement site discovery presumably?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 14:40</div>
+            <div class="timeline-body"><p>We support <code>pth</code> files, but not <code>pth</code> files that run arbitrary Python code (in this case <code>import site; site.addsitedir(...)</code>, which is what <code>uv</code> does to layer venvs.) It's plausible that we could support that specific pattern in order to make this case work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 14:46</div>
+            <div class="timeline-body"><p>We should probably add a debug message when ty skips <code>.pth</code> files here</p>
+<p>https://github.com/astral-sh/ruff/blob/316e406ca46704b308466a82630a10ddff8c9c35/crates/ty_python_semantic/src/module_resolver/resolver.rs#L501-L516</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/collinanderson">@collinanderson</a> on 2025-05-12 15:08</div>
+            <div class="timeline-body"><p><code>uv run --with 'pyright[nodejs]' pyright</code> also works fine. Peaking at <code>uv run --with 'pyright[nodejs]' pyright --verbose</code>, it looks like they ultimately run the python interpreter to determine the correct paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 20:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Why did you think this would work <a href="https://github.com/AlexWaygood">@AlexWaygood</a> ?</p>
+</blockquote>
+<p>I didn't look at the code you linked yesterday as I was on my phone, and I had the wrong intuition about what the term &quot;nested venv&quot; would mean! I assumed that all the venvs from the parent venv would be installed directly into the nested venv's <code>site-packages</code> directory, but it appears that that's not the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 20:35</div>
+            <div class="timeline-body"><blockquote>
+<p>We support <code>pth</code> files, but not <code>pth</code> files that run arbitrary Python code (in this case <code>import site; site.addsitedir(...)</code>, which is what <code>uv</code> does to layer venvs.) It's plausible that we could support that specific pattern in order to make this case work.</p>
+</blockquote>
+<p>@zanieb I wonder if uv could make this a little easier for ty (and other static tools that want to support these nested venvs) by adding a key to the pyvenv.cfg file for the nested venv? Something like</p>
+<pre><code class="language-cfg">extends = &quot;path/to/parent/venv&quot;
+</code></pre>
+<p>We already implement <code>pyvenv.cfg</code> parsing in ty -- if we saw that key in the pyvenv.cfg file, it would be pretty trivial for us to add the <code>site-packages</code> from the parent venv as a search path as well as the one in the nested venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-13 20:28</div>
+            <div class="timeline-body"><p>It's definitely plausible. Is it bad form to go beyond the specification there? Should we try to standardize something? How do you compare this to just adding support for reading that particular Python idiom adding to <code>site</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 20:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it bad form to go beyond the specification there?</p>
+</blockquote>
+<p>From what I could tell when adding the original <code>site-packages</code> support to ty, there is already wide variation between different virtual-environment creation tools in terms of what additional keys they provide in the pyvenv.cfg file. Here's three different pyvenv.cfg files, for comparison, all created using the same Python executable. Some keys are the same across all three, but many are not:</p>
+<h2>1. Created by the stdlib venv module:</h2>
+<pre><code class="language-cfg">home = /Users/alexw/.pyenv/versions/3.12.4/bin
+include-system-site-packages = false
+version = 3.12.4
+executable = /Users/alexw/.pyenv/versions/3.12.4/bin/python3.12
+command = /Users/alexw/.pyenv/versions/3.12.4/bin/python3 -m venv /Users/alexw/dev/ruff/venv2
+</code></pre>
+<h2>2. Created by the third-party <code>virtualenv</code> package:</h2>
+<pre><code class="language-cfg">home = /Users/alexw/.pyenv/versions/3.12.4/bin
+implementation = CPython
+version_info = 3.12.4.final.0
+virtualenv = 20.26.3
+include-system-site-packages = false
+base-prefix = /Users/alexw/.pyenv/versions/3.12.4
+base-exec-prefix = /Users/alexw/.pyenv/versions/3.12.4
+base-executable = /Users/alexw/.pyenv/versions/3.12.4/bin/python3.12
+</code></pre>
+<h2>3. Created by uv:</h2>
+<pre><code class="language-cfgf">home = /Users/alexw/.pyenv/versions/3.12.4/bin
+implementation = CPython
+uv = 0.2.32
+version_info = 3.12.4
+include-system-site-packages = true
+relocatable = false
+prompt = ruff
+</code></pre>
+<p>Given this precedent, I think it would be absolutely fine for us to add new experimental keys to uv, even if they're not yet standardised. Obviously better standards here would also be fantastic, though!</p>
+<blockquote>
+<p>How do you compare this to just adding support for reading that particular Python idiom adding to <code>site</code>?</p>
+</blockquote>
+<p>I'd much prefer a static key (that we could attempt to standardise in the future) in a known location that we already parse (the pyvenv.cfg file) rather than checking each pth file in <code>site-packages</code> and attempting to parse Python source code in there to see if it matches something resembling this idiom.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/zanieb">@zanieb</a> I wonder if uv could make this a little easier for ty (and other static tools that want to support these nested venvs) by adding a key to the pyvenv.cfg file for the nested venv?</p>
+</blockquote>
+<p>I filed https://github.com/astral-sh/uv/pull/13598 to implement this feature over at uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-05-26 00:15</div>
+            <div class="timeline-body"><p>Just my two cents -- I initially tried using <code>uv run --with ty ty check src/testty</code> by analogy with <code>uv run --with mypy mypy src/testty</code> -- the latter works even if the project doesn't have mypy in pyproject in the first place. So was pretty confused that ty couldn't detect dependencies!</p>
+<p>Globally installed ty via <code>uvx ty</code> works, I just didn't expect that to work initially since mypy usually needs to be in the same venv as whatever you're running agains (unless you're messing with <code>MYPYPATH</code>). I guess the downside is that it won't sync project automatically (which maybe isn't a huge deal unless you change dependencies really often).</p>
+<p><code>uv add --dev ty</code> as suggested in https://github.com/astral-sh/ty/blob/main/docs/README.md#installation works as expected though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-28 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 14:59</div>
+            <div class="timeline-body"><p>We've now implemented a fix for this, but it currently requires a uv feature that only exists on uv's <code>main</code> branch <em>and</em> a ty feature that only exists on ty's <code>main</code> branch. Once uv and ty have both cut new releases, you'll need to upgrade them both for everything here to work as expected.</p>
+<p>The two relevant commits are:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/commit/7bba3d00d4ad1fb3daba86b98eb25d8d9e9836ae</li>
+<li>https://github.com/astral-sh/ruff/commit/a5ebb3f3a2b347849d0c195884ea944fb690b187</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:00 UTC
+    </footer>
+</body>
+</html>

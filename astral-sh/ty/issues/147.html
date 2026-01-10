@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>instance attributes bound in nested scopes are reported as unresolved - astral-sh/ty #147</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>instance attributes bound in nested scopes are reported as unresolved</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/147">#147</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-27 04:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-27 04:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>From https://github.com/astral-sh/ruff/pull/16852#issuecomment-2756606180</p>
+<pre><code class="language-python">class C:
+    def __init__(self):
+        def closure():
+            self.a: int = 1
+        closure()
+        [... for self.b in range(1)]
+        class D:
+            self.c = 1
+
+# should be OK
+C().a
+C().b
+C().c
+</code></pre>
+<pre><code class="language-sh">error: lint:unresolved-attribute
+  --&gt; test.py:10:7
+   |
+ 8 |             self.c = 1
+ 9 |
+10 | print(C().a)
+   |       ^^^^^ Type `C` has no attribute `a`
+11 | print(C().b)
+12 | print(C().c)
+   |
+
+error: lint:unresolved-attribute
+  --&gt; test.py:11:7
+   |
+10 | print(C().a)
+11 | print(C().b)
+   |       ^^^^^ Type `C` has no attribute `b`
+12 | print(C().c)
+   |
+
+error: lint:unresolved-attribute
+  --&gt; test.py:12:7
+   |
+10 | print(C().a)
+11 | print(C().b)
+12 | print(C().c)
+   |       ^^^^^ Type `C` has no attribute `c`
+   |
+
+Found 3 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>red-knot 0.0.0 (640d821108b6c4ed223b4b8ca1153facb558f870)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-27 06:06</div>
+            <div class="timeline-body"><p>Also consider the case when an attribute is defined within a method of a class defined in <code>__init__</code>:</p>
+<p>(<a href="https://playknot.ruff.rs/5afb0a6e-4ba0-4ab5-bd78-ab99ad867b25">playground</a>)</p>
+<pre><code class="language-python">class C:
+	def __init__(self):
+		class D:
+			def f(_):
+				self.a = 1  # Should be reported
+		self.d = D
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] instance attributes bound in nested scopes are reported as unresolved" to "instance attributes bound in nested scopes are reported as unresolved" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-05-11 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 23:19</div>
+            <div class="timeline-body"><p>After https://github.com/astral-sh/ruff/pull/20856 we now support the <code>b</code> and <code>c</code> cases in the OP, but not the <code>a</code> case. At least for the moment, this is intentional. We could reconsider if we get a lot of user reports, but for now I'm going to close this as completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-11 23:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:52 UTC
+    </footer>
+</body>
+</html>

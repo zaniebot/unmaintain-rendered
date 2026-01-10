@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niche issue - Neovim on WSL with Windows executables - astral-sh/ty #1614</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Niche issue - Neovim on WSL with Windows executables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1614">#1614</a>
+        opened by <a href="https://github.com/the-citto">@the-citto</a>
+        on 2025-11-23 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/the-citto">@the-citto</a> on 2025-11-23 21:47</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Quite niche issue - not many people use Neovim on WSL to develop on Windows</p>
+<blockquote>
+<p>The <code>ty</code> LSP in Neovim doesn't recognise the Windows virtual environment</p>
+</blockquote>
+<p>from the LspLog,  <code>ty</code> parses <code>pyenv.cfg</code> to 'create project'
+<code>pyenv.cfg</code> that refers to <code>C:\</code> while WSL understands <code>/mnt/o/</code> could be the core issue, but the log says that the error was encountered when trying to resolve the <code>home</code> value</p>
+<p>tried to point to <code>.venv/Scripts/python.exe</code> - this is what I do to make <code>mypy</code> work
+tried with just <code>.venv</code> - this works for <code>pyrigth</code></p>
+<p>I use this setup with all, <code>pytright</code>, <code>mypy</code>, <code>ruff</code> (although auto conf reload doesn't work for it), <code>flake8</code>. <code>black</code> and <code>isort</code>
+I also just started using <code>uv</code> - good results with it too, when working on Windows project I use <code>uv.exe</code>, when on Linux projects simple <code>uv</code>
+<code>uv.exe run</code> is a god-send, before I was <code>.venv/Scripts/python.exe</code> for everything: virtual env activation is not an option with this setup</p>
+<p>all of the above, LPSs including ty, linters, formatters, work with .exe</p>
+<p>I really hope this will find a solution, still early stages but I'm really looking forward to be able to forget about js' pyright in favour of blazingly fast ty</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @the-citto on 2025-11-23 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2025-11-23 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 07:37</div>
+            <div class="timeline-body"><p>Thanks for opening the issue. Can you share your project layout, or some steps on how I can reproduce the issue? I don't think I understand exactly where and when you see incorrect paths from reading the issue summary. If you can, can you share ty's logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-citto">@the-citto</a> on 2025-11-24 19:36</div>
+            <div class="timeline-body"><p>thank MichaReiser</p>
+<p>I use Neovim on Linux, everything good there, and on WSL too
+at work I also have Windows projects, so I found ways to use Neovim on WSL for those, interacting directly with the .exe files
+(as I mentioned, my setup is unusual, not sure anybody does something like it)</p>
+<p>to make pyright work, my toml</p>
+<pre><code class="language-toml">[tool.pyright]
+venvPath = &quot;.&quot;
+venv = &quot;.venv&quot;
+</code></pre>
+<p>for mypy</p>
+<pre><code class="language-toml">[tool.mypy]
+python_executable = &quot;.venv/Scripts/python.exe&quot;
+</code></pre>
+<p>the issue was that ty didn't find the third party libraries
+just found that this works</p>
+<pre><code class="language-toml">[tool.ty.environment]
+extra-paths = [&quot;.venv/Lib/site-packages&quot;]
+</code></pre>
+<p>leaving it on pyproject is a bit weird, and all colleagues use VSCode
+I'll make some experiment with Lua for when Neovim is on WSL - really want to use the same config at work and at home
+thing is that the <a href="https://github.com/neovim/nvim-lspconfig/blob/30a2b191bccf541ce1797946324c9329e90ec448/lsp/ty.lua#L11C3-L11C27">cmd</a> from Lspconfig is <code>ty server</code> and that doesn't accept  <code> --extra-search-path</code></p>
+<p>anyways, my previous LspLogs</p>
+<pre><code>INFO No workspace options found for file:///mnt/c/Users/path-to-project, using default options\n&quot;
+</code></pre>
+<pre><code>ERROR Failed to create project for `/mnt/c/Users/path-to-project`: Failed to parse the `pyvenv.cfg` file at `/mnt/c/Users/path-to-project/.venv/pyvenv.cfg` because the following error was encountered when trying to resolve the `home` value to a directory on disk: No such file or directory (os error 2). Falling back to default settings\n&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-11-24 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-25 07:42</div>
+            <div class="timeline-body"><p>Can you try using <a href="https://docs.astral.sh/ty/reference/configuration/#python"><code>python = &quot;.venv&quot;</code></a> over using <code>extra-paths</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-citto">@the-citto</a> on 2025-11-25 08:51</div>
+            <div class="timeline-body"><p>tried that but it didn't have effect
+also tried <code>python = &quot;.venv/Scripts/python.exe&quot;</code>, if I understood correctly it was a possible setting too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 07:40</div>
+            <div class="timeline-body"><p>Sorry for the many questions but I don't have a WSL machine at hand.</p>
+<p>Would you mind running ty with <code>-vv</code> so that it prints debug logs and share them with us</p>
+<blockquote>
+<p>also tried python = &quot;.venv/Scripts/python.exe&quot;, if I understood correctly it was a possible setting too</p>
+</blockquote>
+<p>The path should point to the site-packages directory. But I don't remember if pointing it to an executable works too. @AlexWaygood might have added that at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 08:11</div>
+            <div class="timeline-body"><p>Pointing it to an executable should also work, yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-citto">@the-citto</a> on 2025-11-26 09:23</div>
+            <div class="timeline-body"><p>thank you for the support</p>
+<p>i went in my <code>.local/share/nvim/mason/packages/ty</code> and run both <code>venv/bin/python -m ty server -vv</code> and <code>venv/bin/python -m ty -vv server</code> but <code>server</code> doesn't accept <code>-v</code> argument
+that is the one run by Neovim, the Lspconfig defaults <code>cmd = { &quot;ty&quot;, &quot;server&quot; }</code></p>
+<p>I <em>think</em> the crux of this niche issue is that <code>ty</code> internals have some reference depending on the platform, WSL is Linux, and this use-case calls for Windows folder structures and executables</p>
+<p>anyway, for now I had to give up and postpone for WSL-Windows: unfortunately changes to project's files weren't picked up...
+I wrote this in my Neovim Lspconfig to disable <code>ty</code> <em>only</em> for WSL-Windows projects (WSL mounts Windows' <code>C:\</code> on <code>/mnt/c</code>)</p>
+<pre><code class="language-lua">    vim.lsp.config(&quot;ty&quot;, { capabilities = capabilities })
+    if vim.fn.getcwd():match( &quot;/([^/]+)&quot;) == &quot;mnt&quot; then
+        vim.lsp.config(&quot;ty&quot;, { cmd = {} })
+    end
+</code></pre>
+<p>I shouldn't have niche problems running <code>ty</code> in WSL for Linux projects :)</p>
+<p>additional note for those 5 people in the world with a similar use case WSL-Neovim-Windows-python
+I also just started using <code>uv</code> with this setup, running <code>uv.exe</code> from the WSL terminal
+yesterday I found that <code>python-dotenv</code> wasn't installed correctly, and simply run <code>uv add</code> from a PowerShell terminal in the same location</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 09:28</div>
+            <div class="timeline-body"><p>Oh right sorry, I forgot that this is specific to neovim. I think the ideal outcome would be if we can reproduce this outside neovim, by just using the CLI (e.g. running the <code>ty.exe check</code> from within WSL?)</p>
+<p>Or you could set the <a href="https://docs.astral.sh/ty/reference/editor-settings/#logfile"><code>logFile</code></a> and <a href="https://docs.astral.sh/ty/reference/editor-settings/#loglevel"><code>logLevel</code></a> settings. Hopefully this produces some useful output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-citto">@the-citto</a> on 2025-11-26 11:13</div>
+            <div class="timeline-body"><p>cheers
+I do use <code>ty.exe check</code> in the WSL terminal, together with <code>mypy.exe .</code> etc., and it works well
+in fact, I could run the checks on PowerShell, only a <code>CTRL+Tab</code> away on Windows terminal (which is what I do now for <code>uv add</code>, etc.)</p>
+<p>all my fuss is because I'm so much looking forward to replace <code>pyright</code> and perhaps <code>mypy</code> with <code>ty</code>, but it's surely premature even for all Linux
+once we'll get there, I'll get back to this WSL-Neovim-Windows thing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @the-citto on 2025-11-26 15:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

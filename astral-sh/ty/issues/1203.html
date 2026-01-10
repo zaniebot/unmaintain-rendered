@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty could not index some content in emacs (eglot) - astral-sh/ty #1203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty could not index some content in emacs (eglot)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1203">#1203</a>
+        opened by <a href="https://github.com/ileixe">@ileixe</a>
+        on 2025-09-18 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ileixe">@ileixe</a> on 2025-09-18 14:46</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>After I changed to use ty, I found very weird cases which are</p>
+<ol>
+<li>Some contents are not indexed (go-to-definition is not working) correctly (I can't even see what's difference between working symbols and not)</li>
+<li>Newly added symbols never seems to be indexed. (Go to definition is not working)</li>
+</ol>
+<p>I compared pylsp in the same code, it was working as expected.</p>
+<p>Eglot has some suspicious logging below</p>
+<pre><code>[stderr]  [2025-09-18T14:23:02Z INFO  emacs_lsp_booster::app] Running server &quot;uvx&quot; &quot;ty&quot; &quot;server&quot;
+[stderr]  [2025-09-18T14:23:02Z INFO  emacs_lsp_booster::app] Will convert server json to bytecode! bytecode options: BytecodeOptions { object_type: Plist, null_value: Nil, false_value: Keyword(&quot;json-false&quot;) }
+[stderr]  2025-09-18 23:23:02.184626028  INFO Version: 0.0.1-alpha.20
+[stderr]  2025-09-18 23:23:02.229228647  INFO Defaulting to python-platform `linux`
+[stderr]  2025-09-18 23:23:02.230516781  INFO Python version: Python 3.9, platform: linux
+[stderr]  2025-09-18 23:23:02.230962178  WARN Your LSP client doesn't support file watching outside of project: You may see stale results when dependencies change
+[stderr]  2025-09-18 23:23:02.239369501  INFO Indexed 178 file(s) in 0.004s
+[stderr]  2025-09-18 23:23:02.767160398  WARN Received notification workspace/didChangeConfiguration which does not have a handler.
+</code></pre>
+<p>Do we (eglot in emacs) need some specific configuration to use ty?</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ileixe on 2025-09-18 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-09-18 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>[stderr]  2025-09-18 23:23:02.230962178  WARN Your LSP client doesn't support file watching outside of project: You may see stale results when dependencies change</p>
+</blockquote>
+<p>I suspect that it is due to emacs (eglot) not supporting file watching. That means, ty only gets notified about files that are changed in the editor but not when files change with git.</p>
+<p>We may want to fall back to our own file watcher in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-09-18 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-09-18 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ileixe">@ileixe</a> on 2025-09-18 15:02</div>
+            <div class="timeline-body"><p>Thanks for fast response.</p>
+<blockquote>
+<p>I suspect that it is due to emacs (eglot) not supporting file watching. That means, ty only gets notified about files that are changed in the editor but not when files change with git.</p>
+</blockquote>
+<p>It's most strange part because eglot support it: https://github.com/joaotavora/eglot/blob/master/eglot.el#L1013</p>
+<p>Is there any other condition that turn off the flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 15:11</div>
+            <div class="timeline-body"><p>Oh right, it does support file watching but not relative paths. There might be a bug in our fallback handling https://github.com/astral-sh/ruff/blob/25853e2377b17eb9c192c4989616d6e823b81435/crates/ty_server/src/session.rs#L802-L816</p>
+<p>CC: @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ileixe">@ileixe</a> on 2025-09-22 01:12</div>
+            <div class="timeline-body"><p>For my case (1,2), this fix made working again.</p>
+<pre><code>modified   crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -2349,7 +2349,17 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             let ty = if let Some(default_ty) = default_ty {
+                 UnionType::from_elements(self.db(), [Type::unknown(), default_ty])
+             } else {
+-                Type::unknown()
++                // Special case: infer `self` parameter type in method contexts
++                let param_name = parameter.name().as_str();
++                if param_name == &quot;self&quot; {
++                    if let Some(class_type) = self.class_context_of_current_method() {
++                        Type::instance(self.db(), class_type)
++                    } else {
++                        Type::unknown()
++                    }
++                } else {
++                    Type::unknown()
++                }
+             };
+             self.add_binding(parameter.into(), definition, ty);
+         }
+</code></pre>
+<p>I'm not sure it's correct fix, but at least it's working now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-22 07:20</div>
+            <div class="timeline-body"><p>@ileixe I'm not sure how this change would help with file contents (and diagnostics) getting outdated. To me, it looks like what you attempted here is to add support for https://github.com/astral-sh/ty/issues/159, which we're working on.</p>
+<p>Can you clarify your reproduction steps. I suspect it's something like. Open project, add a new class, search for the new class and it doesn't show up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ileixe">@ileixe</a> on 2025-09-22 10:37</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<p>After some trial, I found it's not related to file content updated.</p>
+<p>I found this simple case does not work as expected with eglot(ty)</p>
+<pre><code>:: issue1203$ cat main.py
+class A:
+    def func(self):
+        pass
+
+    def func2(self):
+        self.func()  # go-to-definition here is not working
+</code></pre>
+<p>With the change, it worked as expected. For both cases, eglot log was not different.</p>
+<pre><code>[stderr]  [2025-09-22T10:34:16Z INFO  emacs_lsp_booster::app] Running server &quot;/home/ys/ruff/target/release/ty&quot; &quot;server&quot;
+[stderr]  [2025-09-22T10:34:16Z INFO  emacs_lsp_booster::app] Will convert server json to bytecode! bytecode options: BytecodeOptions { object_type: Plist, null_value: Nil, false_value: Keyword(&quot;json-false&quot;) }
+[stderr]  2025-09-22 19:34:16.106946297  INFO Version: ruff/%(describe:tags) (bc89d0394 2025-09-18)
+[stderr]  2025-09-22 19:34:16.134834591  INFO Defaulting to python-platform `linux`
+[stderr]  2025-09-22 19:34:16.135219297  INFO Python version: Python 3.13, platform: linux
+[stderr]  2025-09-22 19:34:16.135580612  WARN Your LSP client doesn't support file watching outside of project: You may see stale results when dependencies change
+[stderr]  2025-09-22 19:34:16.140280020  INFO Indexed 1 file(s) in 0.001s
+[stderr]  2025-09-22 19:34:16.154497507  WARN Received notification workspace/didChangeConfiguration which does not have a handler.
+[stderr]  2025-09-22 19:34:33.733288824  INFO Defaulting to python-platform `linux`
+[stderr]  2025-09-22 19:34:33.733503147  INFO Python version: Python 3.13, platform: linux
+[stderr]  2025-09-22 19:34:33.737438525  INFO Indexed 1 file(s) in 0.004s
+[stderr]  2025-09-22 19:34:33.737532226  INFO Defaulting to python-platform `linux`
+[stderr]  2025-09-22 19:34:33.737647818  INFO Python version: Python 3.13, platform: linux
+[stderr]  2025-09-22 19:34:33.739134390  INFO Indexed 1 file(s) in 0.001s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-22 10:38</div>
+            <div class="timeline-body"><p>Yes, this is https://github.com/astral-sh/ty/issues/159</p>
+<p>But that still sounds different from what you reported in your original issue. But if it's the same, I suggest closing the issue and subscribing to https://github.com/astral-sh/ty/issues/159</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ileixe">@ileixe</a> on 2025-09-22 11:12</div>
+            <div class="timeline-body"><p>Ok Thanks. I think I did not differentiate possible causes, and at least it's working as expected.</p>
+<p>I will follow #159</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ileixe on 2025-09-22 11:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

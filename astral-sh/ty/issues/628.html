@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment narrowing doesn't work with descriptor - astral-sh/ty #628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Assignment narrowing doesn't work with descriptor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/628">#628</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2025-06-10 21:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2025-06-10 21:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Take this simple example</p>
+<pre><code class="language-python">@dataclasses.dataclass
+class Container:
+    x: int = 3
+    y: int | None = None
+
+
+x = Container()
+x.y = x.y or 34
+reveal_type(x.y) # Revealed type: `int &amp; ~AlwaysFalsy`
+</code></pre>
+<p><code>ty</code> is able to infer that is both an integer and non-falsey. However, <code>y</code> is a descriptor this behavior no-longer works:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import Any, Self, overload, reveal_type, cast
+
+import dataclasses
+
+
+class Descriptor[T]:
+    def __get__(self, obj: Any, owner: Any) -&gt; T:
+        return cast(T, 3)
+    def __set__(self, obj: Any, value: T) -&gt; None: ...
+
+
+@dataclasses.dataclass
+class Container:
+    x: int = 3
+    y: Descriptor[int | None] = Descriptor()
+
+
+x = Container()
+x.y = x.y or 34
+reveal_type(x.y) # Revealed type is `int | None`, Pyright would infer `int`.
+</code></pre>
+<p>Ty playground: https://play.ty.dev/c6e6bb7e-afe0-44e0-8ef7-a2ed60b41e28</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 21:50</div>
+            <div class="timeline-body"><p>This is intentional. The behavior of a descriptor is opaque; there’s no guarantee that the type assigned will be the same type observed on a later load. (In fact if a descriptor is used, that strongly suggests that something more complex might be going on internally.) So we cannot safely assume that just because we saw an int assigned, a later load will return an int.</p>
+<p>Id be interested to learn more about how pyright handles this to balance usability and correctness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-06-10 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 21:53</div>
+            <div class="timeline-body"><p>Hmm, I guess in the specific case of your example, the use of a generic descriptor that receives and supplies the same type <code>T</code> could allow us to conclude that the type set must be the type later observed.</p>
+<p>It <a href="https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAEAiBcAoaLoBMCmAzaB9XA5hgC74AUEGIWANNAJYB2ExYjwG80A9gEYBWGYMTrcA7owwAnLn0HCAlNAC0APgaNi0AD7QAct0lJUJ6FJIBXKY2gBGZKkw58lUrgpVaPAbIFCR0ABuYCAWnBpaugaSSmr6hpwOptAAdGmIiKCQMADCxo5csNAAvHBkChnAJdA55ZkpaNX25oEYIbjEAJ4ADhhkwA0KQA">doesn't seem like pyright is making this distinction, though</a>. <a href="https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAEAiBcAoaLoBMCmAzaB9XA5hgC74AUEGIWANNAJYB2ExYjwG80A9gEYBWGYMTrcA7owwAnLn0HCAlNAC0APmgsZyVDqkkArlMbQARFm7cT2lJhz5KpXBSq0eA2QKEjoANzAh9TgZGYmgAH2gAOW5JJTUomM5rHWgAOnTERFBIGABhJB00LlhoAF44MgVM4DLoXMqs1LRagEZEPR8Mf1xiAE8ABwwyYCaFIA">Seems more like</a> it's just about whether the types received by <code>__set__</code> and returned by <code>__get__</code> are the same?</p>
+<p>It's <a href="https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAEBqYgJYBMwBcD2AnAXAKGkOmQFMAzaAfUoHMS1qAKCEkMgGmkQDsI0xuwEjmgYARgCsSwNJwwB3biVyjJ0tAEpoAWgB8XbmmgAfaADkMS-ERvQs9AK5ZuBvgKEA6askQzqAbQAiPmwwOkCAXQIiUgpqFgZKZlYOVQkRcSkZTgA3BAdhAyNTCyUtPXNLYWjbNK9KHz9KIJCsMJJI6ABeaDyQAq4KPoHEGG4MI1KSaAFkXvzpgB5oAEYABmhWFkqlPDxQSBgASUF7AFsSQ2xrGPIqWnomFjZOHjdBQsz1OUVlDLUZOV9Dw0DdavY0E4XG9%2BB96o1Ei1MG1wlEbLF7gknik5JJ-llZPN%2BoUQUCdtVaoRMvDfIjgsj2p0esNpgBqVZ7fbgKDQADCYOgIBIUEoaAAFgJKOsRPAkKhkd04AgUOhsIwNDUDMBzpc0CRkCITtqSBcrlhFUadWb1ZzgIreTbgB4hSLxZL1oqVis8PYciQEKKAJ4ABxIjCdLogool3Clay00AAxOSZkYsA5DIgLpxg4GsIgaGKjBAwIGYAADAAyiD1bRA-i9EXL%2Bw8PGNpr1cx63t9-pAQdD4dbpxNuv1CeTACZU3YM2gsyQc3mC0XoCWy9AqzXlAgG02gA">easy to construct example descriptors</a> where pyright's narrowing is not sound, but perhaps such descriptors aren't common in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @carljm on 2025-06-10 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-10 22:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Id be interested to learn more about how pyright handles this to balance usability and correctness.</p>
+</blockquote>
+<p>Pyright's behavior (which has been the same for the past four+ years) came out of a couple of discussions with the mypy maintainers. See <a href="https://github.com/microsoft/pyright/issues/1814">here</a> for a discussion about descriptors and <a href="https://github.com/python/mypy/issues/3004">here</a> specifically focusing on property objects. In both cases, we collectively concluded that the best way for type checkers to balance usability and correctness is to treat symmetric descriptors as &quot;safe to narrow&quot;. As you point out, it's possible to construct examples where this heuristic breaks, but in practice it's almost always safe. I suppose you could make it a configuration option for users who want really strict rules.</p>
+<p>In the case of asymmetric descriptors and properties, we agreed that it's best for type checkers not to apply narrowing. I was hoping to codify this guidance in the typing spec, but we haven't gotten around to it yet. (It's the last bullet item under &quot;Methods &amp; Attributes&quot; on <a href="https://docs.google.com/presentation/d/1ash1ellodiV6FTyVnY-Q6V2G5vJ68ycWBr6MYkayC1U/edit?slide=id.g2770f948faa_0_5#slide=id.g2770f948faa_0_5">this slide</a> that I presented last year.)</p>
+<p>Interestingly, TypeScript always applies narrowing even for asymmetric accessors (which are the moral equivalent of descriptor objects in TypeScript). I guess that's not so surprising given that the TypeScript authors tend to favor usability over correctness when the two are at odds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 22:55</div>
+            <div class="timeline-body"><p>Thanks for the context!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 22:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:10 UTC
+    </footer>
+</body>
+</html>

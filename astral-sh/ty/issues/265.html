@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support resolving modules from conda or pixi environments - astral-sh/ty #265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support resolving modules from conda or pixi environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/265">#265</a>
+        opened by <a href="https://github.com/pavelzw">@pavelzw</a>
+        on 2025-05-08 08:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-05-08 08:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using pixi with ty, you get <code>lint:unresolved-import</code> errors like this:</p>
+<pre><code>❯ pixi run ty check
+...
+error: lint:unresolved-import: Cannot resolve imported module `pydantic_settings`
+ --&gt; pixi_diff_to_markdown/settings.py:3:6
+  |
+1 | from enum import Enum
+2 |
+3 | from pydantic_settings import (
+  |      ^^^^^^^^^^^^^^^^^
+4 |     BaseSettings,
+5 |     PydanticBaseSettingsSource,
+  |
+info: `lint:unresolved-import` is enabled by default
+❯ pixi run python -c &quot;import pydantic_settings&quot;
+# works
+❯ pixi run which ty
+/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/bin/ty
+❯ pixi run which python
+/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/bin/python
+❯ pixi run python -m site
+sys.path = [
+    '/Users/pavel/projects/pixi-diff-to-markdown',
+    '/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/lib/python313.zip',
+    '/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/lib/python3.13',
+    '/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/lib/python3.13/lib-dynload',
+    '/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default/lib/python3.13/site-packages',
+]
+USER_BASE: '/Users/pavel/.local' (exists)
+USER_SITE: '/Users/pavel/.local/lib/python3.13/site-packages' (doesn't exist)
+ENABLE_USER_SITE: True
+</code></pre>
+<p>see https://github.com/pavelzw/pixi-diff-to-markdown/pull/66 for a reproducer.
+pixi (and conda envs in general) stores its python site packages in <code>.pixi/envs/&lt;env-name&gt;/lib/python3.13/site-packages</code> (on windows). (note: this is the same environment that <code>ty</code> is installed in)</p>
+<p>When running <code>uv sync</code> and afterwards <code>pixi run ty check</code>, I don't get the error anymore so it seems to me that <code>ty</code> is only checking <code>.venv</code> but not the actual environment that i'm using.</p>
+<p>There are a lot of scenarios where it's not possible for me to use <code>uv</code>, for example in corporate settings where i only have a conda-forge mirror and not a pypi mirror, so ty supporting pixi environments would be very nice.</p>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "lint:unresolved-import when using pixi or conda environments" to "`lint:unresolved-import` when using pixi or conda environments" by @pavelzw on 2025-05-08 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-05-08 09:29</div>
+            <div class="timeline-body"><p>With <code>pixi run ty check --extra-search-path .pixi/envs/default/lib/python3.13/site-packages --python-version 3.13</code> you can get it to work but i think a solution that doesn't require me to add this manually would be nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 10:36</div>
+            <div class="timeline-body"><p>Does pixi set the <code>VIRTUAL_ENV</code>? You should also be able to use <code>ty check --python=.pixi</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">module-resolution</span> added by @MichaReiser on 2025-05-08 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-05-08 11:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Does pixi set the <code>VIRTUAL_ENV</code>?</p>
+</blockquote>
+<p>Nope, but both conda and pixi set <code>CONDA_PREFIX</code> which is the canonical way to the environment:</p>
+<pre><code>❯ pixi run env | grep CONDA_PREFIX
+CONDA_PREFIX=/Users/pavel/projects/pixi-diff-to-markdown/.pixi/envs/default
+</code></pre>
+<blockquote>
+<p>You should also be able to use <code>ty check --python=.pixi</code></p>
+</blockquote>
+<pre><code>❯ pixi run ty check --python=.pixi/envs/default
+ty failed
+  Cause: Invalid search path settings
+  Cause: Failed to discover the site-packages directory: `--python` argument points to a broken venv with no pyvenv.cfg file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-05-08 12:18</div>
+            <div class="timeline-body"><p>Even if pixi would set <code>VIRTUAL_ENV</code> it currently doesn't work:</p>
+<pre><code>❯ pixi run &quot;VIRTUAL_ENV=.pixi/envs/default ty check&quot;
+ty failed
+  Cause: Invalid search path settings
+  Cause: Failed to discover the site-packages directory: `VIRTUAL_ENV` environment variable points to a broken venv with no pyvenv.cfg file
+</code></pre>
+<p>You should be able to get most stuff from <code>pyenv.cfg</code> in a conda env by inspecting <code>$CONDA_PREFIX/conda-meta/python-3.*.json</code>, for example <code>python-3.13.3-h81fe080_101_cp313.json</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2025-05-08 12:29</div>
+            <div class="timeline-body"><p>The necessary functionality for detecting and handling conda environments is already present in <code>uv</code>. Maybe some of that could be reused for <code>ty</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 12:33</div>
+            <div class="timeline-body"><p>We do plan for a uv integration to discover workspace packages, virtual environemnt, and the python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 12:36</div>
+            <div class="timeline-body"><p>Currently we only support virtual environments. https://github.com/astral-sh/ty/issues/193 is already open to track supporting system installations, and we'll probably consider supporting other popular installations of Python such as conda installations too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`lint:unresolved-import` when using pixi or conda environments" to "Support resolving modules from conda or pixi environments" by @AlexWaygood on 2025-05-08 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @AlexWaygood on 2025-05-08 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-19 15:43</div>
+            <div class="timeline-body"><p>Now that https://github.com/astral-sh/ty/issues/193 is complete, this issue should be easy to tackle. We just need to add support for the <code>CONDA_PREFIX</code> environment variable: if no <code>--python</code> flag has been passed (and no configuration option has been set on the command line) <em>and</em> <code>VIRTUAL_ENV</code> has not been set <em>and</em> there's no <code>.venv</code> directory in the project root, <em>then</em> we should check to see if <code>CONDA_PREFIX</code> has been set. If so, we should understand that the value of <code>CONDA_PREFIX</code> is the currently active Python environment. We should treat these environments identically to the way we treat system environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @AlexWaygood on 2025-05-19 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-05-19 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-23 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

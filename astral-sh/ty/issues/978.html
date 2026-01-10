@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attribute `split` on type `@Todo | None` is possibly unbound - astral-sh/ty #978</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attribute `split` on type `@Todo | None` is possibly unbound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/978">#978</a>
+        opened by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a>
+        on 2025-08-13 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a> on 2025-08-13 21:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the code below, I expected that ty would allow <code>split()</code> because from the condition, <code>level_str</code> is a string and not None.</p>
+<pre><code class="language-py">if param_est.level is not None and isinstance(param_est.level, str):
+            level_str = param_est.level
+            varnames = level_str.split(&quot;__by__&quot;)
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @carljm on 2025-08-13 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 21:55</div>
+            <div class="timeline-body"><p>Thanks for the report! Can you give a more complete code example? My attempt to construct something similar <a href="https://play.ty.dev/ccd06ebc-4e3a-4675-bb41-cd9beb1d8b0e">seems to work as expected</a>, so I'm not sure what is different in your case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a> on 2025-08-15 16:56</div>
+            <div class="timeline-body"><p>Here is an example</p>
+<pre><code class="language-py">
+from typing import Self
+
+class ParamEst():
+    level: str | float | int | None
+    est: float | int
+    std_err: float | int
+
+
+class CellEst():
+    rowvar: str
+    colvar: str
+    est: float | int
+    std_err: float | int
+
+
+    @classmethod
+    def from_param(cls, param_est: ParamEst) -&gt; Self:
+        if param_est.level is not None and isinstance(param_est.level, str):
+            level_str = param_est.level
+            varnames = level_str.split(&quot;__by__&quot;)
+            rowvar = varnames[0]
+            colvar = varnames[1]
+
+        else:
+            rowvar = &quot;&quot;
+            colvar = &quot;&quot;
+
+        return cls(
+            rowvar=rowvar,
+            colvar=colvar,
+            est=param_est.est,
+            std_err=param_est.std_err,
+        )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-08-15 17:00</div>
+            <div class="timeline-body"><p>That sample produces no errors in <a href="https://play.ty.dev/4251e196-e8d4-4c4c-9198-a411ed812ae8">the playground</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 17:01</div>
+            <div class="timeline-body"><p>@MamadouSDiallo Thanks for the example! That example <a href="https://play.ty.dev/22cb1fb5-b9fe-493f-8bb6-57b858876ab4">seems to type-check correctly in ty</a>, with the desired type narrowing on <code>param_est.level</code> and no error on <code>level_str.split</code> call. So it seems there's no issue here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-15 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a> on 2025-08-15 17:07</div>
+            <div class="timeline-body"><p>Maybe my ty is not up to date or my rules are different from the ones in the playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe my ty is not up to date or my rules are different from the ones in the playground</p>
+</blockquote>
+<p>None of the rules that would impact this case are suppressed in the playground, so I don't think that can be it.</p>
+<p>ty version does seem like a good thing to check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a> on 2025-08-15 19:06</div>
+            <div class="timeline-body"><p>I upgraded to the current version, and it runs fine now. Thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:22 UTC
+    </footer>
+</body>
+</html>

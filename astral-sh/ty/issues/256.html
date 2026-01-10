@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panics for self-referential (recursive) generic classes or type aliases - astral-sh/ty #256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panics for self-referential (recursive) generic classes or type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/256">#256</a>
+        opened by <a href="https://github.com/davidbgk">@davidbgk</a>
+        on 2025-05-07 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidbgk">@davidbgk</a> on 2025-05-07 20:10</div>
+            <div class="timeline-body"><p>When running it against https://github.com/numerique-gouv/ami-notifications-api @ f9fa495fcbad07244f9f7598ac47574c3ae99ef2</p>
+<pre><code>$ uvx ty check
+Installed 1 package in 4ms
+error: panic: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/f78a641/src/function/execute.rs:210:25 when checking `/Users/david/Sites/ami-notifications-api/tests/conftest.py`: `infer_definition_types(Id(2b01f)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D we'd be very appreciative!
+info: Platform: macos x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: symbol_by_id(Id(804b))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   1: member_lookup_with_policy_(Id(6467))
+             at crates/ty_python_semantic/src/types.rs:537
+   2: infer_definition_types(Id(1a9e))
+             at crates/ty_python_semantic/src/types/infer.rs:147
+   3: symbol_by_id(Id(804a))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   4: infer_deferred_types(Id(1aad))
+             at crates/ty_python_semantic/src/types/infer.rs:185
+   5: signature_(Id(a420))
+             at crates/ty_python_semantic/src/types.rs:6611
+   6: infer_expression_types(Id(3009))
+             at crates/ty_python_semantic/src/types/infer.rs:221
+   7: infer_definition_types(Id(281d))
+             at crates/ty_python_semantic/src/types/infer.rs:147
+   8: infer_scope_types(Id(2404))
+             at crates/ty_python_semantic/src/types/infer.rs:120
+   9: check_types(Id(c01))
+             at crates/ty_python_semantic/src/types.rs:83
+</code></pre>
+<p>When runnning it with <code>RUST_BACKTRACE=1</code> as proposed:</p>
+<details>
+
+<pre><code>$ RUST_BACKTRACE=1 uvx ty check
+error: panic: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/f78a641/src/function/execute.rs:210:25 when checking `/Users/david/Sites/ami-notifications-api/tests/conftest.py`: `infer_definition_types(Id(2b883)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D we'd be very appreciative!
+info: Platform: macos x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: Backtrace:
+   0: __mh_execute_header
+   1: __mh_execute_header
+   2: __mh_execute_header
+   3: __mh_execute_header
+   4: __mh_execute_header
+   5: __mh_execute_header
+   6: __mh_execute_header
+   7: __mh_execute_header
+   8: __mh_execute_header
+   9: __mh_execute_header
+  10: __mh_execute_header
+  11: __mh_execute_header
+  12: __mh_execute_header
+  13: __mh_execute_header
+  14: __mh_execute_header
+  15: __mh_execute_header
+  16: __mh_execute_header
+  17: __mh_execute_header
+  18: __mh_execute_header
+  19: __mh_execute_header
+  20: __mh_execute_header
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: __mh_execute_header
+  24: __mh_execute_header
+  25: __mh_execute_header
+  26: __mh_execute_header
+  27: __mh_execute_header
+  28: __mh_execute_header
+  29: __mh_execute_header
+  30: __mh_execute_header
+  31: __mh_execute_header
+  32: __mh_execute_header
+  33: __mh_execute_header
+  34: __mh_execute_header
+  35: __mh_execute_header
+  36: __mh_execute_header
+  37: __mh_execute_header
+  38: __mh_execute_header
+  39: __mh_execute_header
+  40: __mh_execute_header
+  41: __mh_execute_header
+  42: __mh_execute_header
+  43: __mh_execute_header
+  44: __mh_execute_header
+  45: __mh_execute_header
+  46: __mh_execute_header
+  47: __mh_execute_header
+  48: __mh_execute_header
+  49: __mh_execute_header
+  50: __mh_execute_header
+  51: __mh_execute_header
+  52: __mh_execute_header
+  53: __mh_execute_header
+  54: __mh_execute_header
+  55: __mh_execute_header
+  56: __mh_execute_header
+  57: __mh_execute_header
+  58: __mh_execute_header
+  59: __mh_execute_header
+  60: __mh_execute_header
+  61: __mh_execute_header
+  62: __mh_execute_header
+  63: __mh_execute_header
+  64: __mh_execute_header
+  65: __mh_execute_header
+  66: __mh_execute_header
+  67: __mh_execute_header
+  68: __mh_execute_header
+  69: __mh_execute_header
+  70: __mh_execute_header
+  71: __mh_execute_header
+  72: __mh_execute_header
+  73: __mh_execute_header
+  74: __mh_execute_header
+  75: __mh_execute_header
+  76: __mh_execute_header
+  77: __mh_execute_header
+  78: __mh_execute_header
+  79: __mh_execute_header
+  80: __mh_execute_header
+  81: __mh_execute_header
+  82: __mh_execute_header
+  83: __mh_execute_header
+  84: __mh_execute_header
+  85: __mh_execute_header
+  86: __mh_execute_header
+  87: __mh_execute_header
+  88: __mh_execute_header
+  89: __mh_execute_header
+  90: __mh_execute_header
+  91: __mh_execute_header
+  92: __mh_execute_header
+  93: __mh_execute_header
+  94: __mh_execute_header
+  95: __mh_execute_header
+  96: __mh_execute_header
+  97: __mh_execute_header
+  98: __mh_execute_header
+  99: __mh_execute_header
+ 100: __mh_execute_header
+ 101: __mh_execute_header
+ 102: __mh_execute_header
+ 103: __mh_execute_header
+ 104: __mh_execute_header
+ 105: __mh_execute_header
+ 106: __mh_execute_header
+ 107: __mh_execute_header
+ 108: __pthread_start
+
+info: query stacktrace:
+   0: symbol_by_id(Id(e84b))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   1: member_lookup_with_policy_(Id(8072))
+             at crates/ty_python_semantic/src/types.rs:537
+   2: infer_definition_types(Id(329e))
+             at crates/ty_python_semantic/src/types/infer.rs:147
+   3: symbol_by_id(Id(e84a))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   4: infer_deferred_types(Id(32ad))
+             at crates/ty_python_semantic/src/types/infer.rs:185
+   5: signature_(Id(2181c))
+             at crates/ty_python_semantic/src/types.rs:6611
+   6: infer_expression_types(Id(4009))
+             at crates/ty_python_semantic/src/types/infer.rs:221
+   7: infer_definition_types(Id(281d))
+             at crates/ty_python_semantic/src/types/infer.rs:147
+   8: infer_scope_types(Id(1404))
+             at crates/ty_python_semantic/src/types/infer.rs:120
+   9: check_types(Id(c01))
+             at crates/ty_python_semantic/src/types.rs:83
+</code></pre>
+</details>
+
+<p>Hope it helps, I'm definitely not a Rust developer (yet!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-07 20:15</div>
+            <div class="timeline-body"><p>Thank you! It's a known issue that we don't converge on all cycles yet, someone with deeper knowledge will determine why this particular cycle doesn't :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-08 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-08 11:36</div>
+            <div class="timeline-body"><p>Also getting this error. Can't share the source code or make a MRE right now. But perhaps it is helpful to share the logs with <code>RUST_BACKTRACE=1</code></p>
+<details>
+
+<pre><code>ty 0.0.0-alpha.7 (905a3e1e5 2025-05-07)
+
+$ RUST_BACKTRACE=1 uvx ty check 
+error: panic: Panicked at C:\Users\runneradmin\.cargo\git\checkouts\salsa-e6f3bb7c2a062968\f78a641\src\function\execute.rs:210:25 when checking `C:\Users\...\main.py`: `exported_names(Id(b827)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D we'd be very appreciative!
+info: Platform: windows x86_64
+info: Args: [&quot;C:\\Users\\my1e5\\AppData\\Local\\uv\\cache\\archive-v0\\cS8sJwf4-jYpRSW0EuOLM\\Scripts\\ty.exe&quot;, &quot;check&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+  34: &lt;unknown&gt;
+  35: &lt;unknown&gt;
+  36: &lt;unknown&gt;
+  37: &lt;unknown&gt;
+  38: &lt;unknown&gt;
+  39: &lt;unknown&gt;
+  40: &lt;unknown&gt;
+  41: &lt;unknown&gt;
+  42: &lt;unknown&gt;
+  43: &lt;unknown&gt;
+  44: &lt;unknown&gt;
+  45: &lt;unknown&gt;
+  46: &lt;unknown&gt;
+  47: &lt;unknown&gt;
+  48: &lt;unknown&gt;
+  49: &lt;unknown&gt;
+  50: &lt;unknown&gt;
+  51: &lt;unknown&gt;
+  52: &lt;unknown&gt;
+  53: &lt;unknown&gt;
+  54: &lt;unknown&gt;
+  55: &lt;unknown&gt;
+  56: &lt;unknown&gt;
+  57: &lt;unknown&gt;
+  58: &lt;unknown&gt;
+  59: &lt;unknown&gt;
+  60: &lt;unknown&gt;
+  61: &lt;unknown&gt;
+  62: &lt;unknown&gt;
+  63: &lt;unknown&gt;
+  64: &lt;unknown&gt;
+  65: &lt;unknown&gt;
+  66: &lt;unknown&gt;
+  67: &lt;unknown&gt;
+  68: &lt;unknown&gt;
+  69: &lt;unknown&gt;
+  70: &lt;unknown&gt;
+  71: &lt;unknown&gt;
+  72: &lt;unknown&gt;
+  73: &lt;unknown&gt;
+  74: &lt;unknown&gt;
+  75: &lt;unknown&gt;
+  76: &lt;unknown&gt;
+  77: &lt;unknown&gt;
+  78: &lt;unknown&gt;
+  79: &lt;unknown&gt;
+  80: &lt;unknown&gt;
+  81: &lt;unknown&gt;
+  82: &lt;unknown&gt;
+  83: &lt;unknown&gt;
+  84: &lt;unknown&gt;
+  85: &lt;unknown&gt;
+  86: &lt;unknown&gt;
+  87: &lt;unknown&gt;
+  88: BaseThreadInitThunk
+  89: RtlUserThreadStart
+
+info: query stacktrace:
+   0: semantic_index(Id(b827))
+             at crates\ty_python_semantic\src\semantic_index.rs:49
+   1: global_scope(Id(b827))
+             at crates\ty_python_semantic\src\semantic_index.rs:138
+   2: member_lookup_with_policy_(Id(15c1c))
+             at crates\ty_python_semantic\src\types.rs:537
+   3: infer_definition_types(Id(41c3a))
+             at crates\ty_python_semantic\src\types\infer.rs:147
+   4: symbol_by_id(Id(1dc17))
+             at crates\ty_python_semantic\src\symbol.rs:576
+   5: member_lookup_with_policy_(Id(15c1b))
+             at crates\ty_python_semantic\src\types.rs:537
+   6: infer_expression_types(Id(7c5a))
+             at crates\ty_python_semantic\src\types\infer.rs:221
+   7: infer_scope_types(Id(6c63))
+             at crates\ty_python_semantic\src\types\infer.rs:120
+   8: check_types(Id(c06))
+             at crates\ty_python_semantic\src\types.rs:83
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-08 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>When running it against https://github.com/numerique-gouv/ami-notifications-api @ f9fa495fcbad07244f9f7598ac47574c3ae99ef2</p>
+</blockquote>
+<p>I narrowed this down to the following example which appears in a 3rd party dependency (<a href="https://github.com/litestar-org/litestar/blob/main/litestar/middleware/session/base.py"><code>litestar/middleware/session/base.py</code></a>. The original names of the classes were <code>BaseBackendConfig</code> and <code>BaseSessionBackend</code>:</p>
+<pre><code class="language-py">from typing import (
+    Generic,
+    TypeVar,
+)
+
+T = TypeVar(&quot;T&quot;, bound=&quot;B&quot;)
+
+class A(Generic[T]):
+    pass
+
+
+S = TypeVar(&quot;S&quot;, bound=&quot;A&quot;)
+
+class B(Generic[S]):
+    pass
+</code></pre>
+<p>The same cycle also appears if just a single class is involved:</p>
+<pre><code class="language-py">class A[T: &quot;A&quot;]:
+    pass
+</code></pre>
+<p>Similar cycles (in <code>infer_scope_types</code> instead of <code>infer_definition_types</code>) also appear with self-referential type aliases like</p>
+<pre><code class="language-py">type C = dict[str, &quot;C&quot;]
+</code></pre>
+<p>Another example from https://github.com/astral-sh/ty/issues/271, which leads to a &quot;dependency graph cycle&quot; panic because there's no cycle recovery on <code>value_type</code>:</p>
+<pre><code class="language-py">type Foo = str | list[Foo]
+
+f: Foo 
+</code></pre>
+<p>Another example from #91 which leads to a cycle on <code>pep695_generic_context_</code></p>
+<pre><code class="language-py">class Node[T: &quot;Node[int]&quot;]:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[panic] too many cycle iterations" to "Panics for self-referential generic classes or type aliases" by @sharkdp on 2025-05-08 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 14:13</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/91 is also the same issue as this; we should probably close either this one or that one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-05-08 17:53</div>
+            <div class="timeline-body"><p>Here is a triggering example without any generics:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+type IntLike = int | Add
+
+class Add:
+    l: IntLike
+    r: IntLike
+
+    def __new__(cls, l: IntLike, r: IntLike) -&gt; IntLike:
+        return (
+            l if r == 0 else
+            r if l == 0 else
+            super().__new__(cls)
+        )
+
+    def __init__(self, l: IntLike, r: IntLike):
+        self.l = l
+        self.r = r
+
+    def __repr__(self) -&gt; str:
+        return f'({self.l} + {self.r})'
+
+a0 = Add(0, 5)
+a1 = Add(1, 5)
+
+print(a0, type(a0))
+print(a1, type(a1))
+
+assert isinstance(a0, int)
+assert isinstance(a1, Add)
+</code></pre>
+<p>Code runs fine. But Ty fails with error similar to above.</p>
+<p>The error appears to come from line <code>assert isinstance(a1, Add)</code>. If that line is commented out, there is no error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Panics for self-referential generic classes or type aliases" to "Panics for self-referential (recursive) generic classes or type aliases" by @AlexWaygood on 2025-05-16 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yorickvP">@yorickvP</a> on 2025-05-18 07:31</div>
+            <div class="timeline-body"><p>Tiny example:</p>
+<pre><code class="language-python">X = dict[str, &quot;list[str | X]&quot;]
+def x() -&gt; X:
+    return {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-19 10:20</div>
+            <div class="timeline-body"><p>The example from #297 seems worth mentioning here again, as it does not panic with &quot;too many cycle iterations&quot;, but &quot;dependency graph cycle when querying value_type_(Id(3400)), set cycle_fn/cycle_initial to fixpoint iterate&quot; instead. It might be worth adding that to the eventual test corpus</p>
+<pre><code class="language-py">from __future__ import annotations
+
+type Json = dict[str, Json] | list[Json] | str | int | float | bool | None
+
+
+def parse_json(j: Json) -&gt; Json:
+    if isinstance(j, dict):
+        return {k: parse_json(v) for k, v in j.items()}
+    elif isinstance(j, list):
+        return [parse_json(i) for i in j]
+    else:
+        return
+
+
+print(parse_json({&quot;a&quot;: {&quot;b&quot;: &quot;c&quot;}}))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-27 10:05</div>
+            <div class="timeline-body"><p>The following example seems worth mentioning, as it produces a hang (one thread at 100% cpu, but seemingly no increase in memory usage, no stack overflow)</p>
+<pre><code class="language-py">from __future__ import annotations
+
+type Expression = int | tuple[Expression, Expression]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-27 13:09</div>
+            <div class="timeline-body"><p>I suspect that part of the fix here will have to be resolving type aliases lazily rather than eagerly when they appear in type expressions. (That is, treating them as first class opaque types and adding handling for them to type relation methods.) That will mean we can't eagerly simplify some unions/intersections involving type aliases as well, but that may be ok?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 13:25</div>
+            <div class="timeline-body"><p>Something that's quite interesting is that mypy, like we do currently, does actually resolve type aliases eagerly to their values -- and it is still able to support recursive type aliases. So I don't think treating type aliases as first-class opaque types is <em>necessary</em> for a type checker to support recursive type aliases (though maybe it is with our model?).</p>
+<p>Treating them as first-class opaque types will probably make it easier whatever the case, though, and I think it's desirable anyway. If you have code like this (<a href="https://github.com/python/typeshed/blob/b01e7aa9d24014855c3d45b7d671a7f6b427b4c2/stdlib/_typeshed/__init__.pyi#L181C1-L217">adapted from typeshed</a>):</p>
+<p><code>foo.py</code>:</p>
+<pre><code class="language-py">from typing import Literal
+
+type OpenTextModeUpdating = Literal[
+    &quot;r+&quot;,
+    &quot;+r&quot;,
+    &quot;rt+&quot;,
+    &quot;r+t&quot;,
+    &quot;+rt&quot;,
+    &quot;tr+&quot;,
+    &quot;t+r&quot;,
+    &quot;+tr&quot;,
+    &quot;w+&quot;,
+    &quot;+w&quot;,
+    &quot;wt+&quot;,
+    &quot;w+t&quot;,
+    &quot;+wt&quot;,
+    &quot;tw+&quot;,
+    &quot;t+w&quot;,
+    &quot;+tw&quot;,
+    &quot;a+&quot;,
+    &quot;+a&quot;,
+    &quot;at+&quot;,
+    &quot;a+t&quot;,
+    &quot;+at&quot;,
+    &quot;ta+&quot;,
+    &quot;t+a&quot;,
+    &quot;+ta&quot;,
+    &quot;x+&quot;,
+    &quot;+x&quot;,
+    &quot;xt+&quot;,
+    &quot;x+t&quot;,
+    &quot;+xt&quot;,
+    &quot;tx+&quot;,
+    &quot;t+x&quot;,
+    &quot;+tx&quot;,
+]
+
+type OpenTextModeWriting = Literal[&quot;w&quot;, &quot;wt&quot;, &quot;tw&quot;, &quot;a&quot;, &quot;at&quot;, &quot;ta&quot;, &quot;x&quot;, &quot;xt&quot;, &quot;tx&quot;]
+type OpenTextModeReading = Literal[&quot;r&quot;, &quot;rt&quot;, &quot;tr&quot;, &quot;U&quot;, &quot;rU&quot;, &quot;Ur&quot;, &quot;rtU&quot;, &quot;rUt&quot;, &quot;Urt&quot;, &quot;trU&quot;, &quot;tUr&quot;, &quot;Utr&quot;]
+type OpenTextMode = OpenTextModeUpdating | OpenTextModeWriting | OpenTextModeReading
+</code></pre>
+<p><code>bar.py</code>:</p>
+<pre><code class="language-py">from foo import OpenTextMode
+
+def f(x: OpenTextMode):
+    reveal_type(x)
+</code></pre>
+<p>...I think you <em>really</em> just want the type checker to reveal the meaningful type alias name (<code>OpenTextMode</code>, or <code>foo.OpenTextMode</code>) rather than revealing a very, very long <code>Literal</code> type. That feature should fall out naturally if we treat type aliases as first-class opaque types rather than eagerly resolving them. It's a feature mypy <a href="https://github.com/python/mypy/issues/2968">has wanted for a while</a>, but it doesn't seem like it's ever been high-priority enough for it to land at mypy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-27 13:49</div>
+            <div class="timeline-body"><p>Recursive type-references/cycles can not just lead to panics and hangs, but also to stack overflows. Like in this recursive protocol cycle:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import Protocol
+
+class Other(Protocol):
+    other: int
+
+class A(Protocol):
+    b: B            # A links to B
+    other: int
+
+class B(Protocol):
+    a: list[A]      # B links to A
+
+def _(a: A):
+    o: Other = a  # some assignment that triggers a lookup of members
+</code></pre>
+<p>Edit: this is the same as #93</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-27 18:23</div>
+            <div class="timeline-body"><p>Another example case, from https://github.com/astral-sh/ruff/pull/17602:</p>
+<pre><code class="language-py">class Foo[T: Foo, U: (Foo, Foo)]:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anmorgunov">@anmorgunov</a> on 2025-06-06 02:46</div>
+            <div class="timeline-body"><p>another one line example</p>
+<pre><code class="language-py">PaRoutesDict = dict[str, str | bool | list[&quot;PaRoutesDict&quot;]]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-06-10 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @carljm on 2025-06-10 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-03 08:48</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/709#issuecomment-3031291761 has a slight variation that leads to a hang, not a panic:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+type NestedLength = int | tuple[NestedLength, ...]
+
+n: NestedLength  # remove this to turn it from a panic into a hang
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-07-31 17:23</div>
+            <div class="timeline-body"><p>Is a fix for this planned, or is there a WIP? I'm seeing this issue everywhere in extensively typed code, and it causes a panic whenever I import from such a package. Here's an example:</p>
+<pre><code class="language-python3">from typing import Generic, TypeVar
+
+LmConfigT = TypeVar(&quot;LmConfigT&quot;, bound=&quot;LmConfig&quot;)
+LmT = TypeVar(&quot;LmT&quot;, bound=&quot;LmHeadModel&quot;)
+
+class LmHeadModel(Generic[LmConfigT]):
+    ...
+
+class LmConfig(Generic[LmT]):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-31 17:29</div>
+            <div class="timeline-body"><p>A fix is in progress currently and should be up soon, hopefully!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-20 00:14</div>
+            <div class="timeline-body"><p>@AlexWaygood Any updates on this? Is there a PR with a candidate solution I can build from source? Maybe a stop-gap solution could be to fall back to <code>Any</code> when a loop is detected. Currently, the panic means my IDE fails all LSP operations whenever I use a package that has this pattern (this is currently the case for a majority of my projects). Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nroman-openai">@nroman-openai</a> on 2025-08-20 00:21</div>
+            <div class="timeline-body"><p>An example I'm seeing from a third-party dep (<a href="https://github.com/statsig-io/python-sdk/blob/987276d81651b45ffc8f1549c7d5d5c05991713d/statsig/utils.py#L9-L10">statsig</a>): https://play.ty.dev/57e1af15-110f-4baa-9aa4-ae7218861f0d</p>
+<pre><code>from typing import Union, TypeAliasType, Sequence, Mapping
+JSONPrimitive = Union[str, int, float, bool, None]
+JSONValue = TypeAliasType(&quot;JSONValue&quot;, 'Union[JSONPrimitive, Sequence[&quot;JSONValue&quot;], Mapping[str, &quot;JSONValue&quot;]]')
+</code></pre>
+<p>We could probably hack around this if needed but wanted to be sure the repro was included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 00:37</div>
+            <div class="timeline-body"><p>I'm working on a fix that will cover the cases mentioned here, including the newest one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edaniels">@edaniels</a> on 2025-08-20 00:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm working on a fix that will cover the cases mentioned here, including the newest one.</p>
+</blockquote>
+<p>Thank you! This will be a nice un-blocker</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-08-27 16:34</div>
+            <div class="timeline-body"><p>Should it be possible to exclude a file that is causing this panic? When I add the file that has a TypeVar that causes this panic to the exclude list, i'm still getting the panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-27 16:37</div>
+            <div class="timeline-body"><p>Exclude just means we won't emit diagnostics on it, but we'll still process it if its imported by other files. A more effective temporary workaround would be to shadow the file with a type stub (<code>.pyi</code> with the same name) that has a module-level <code>__getattr__</code> returning <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-08-27 17:24</div>
+            <div class="timeline-body"><p>Hmmm, maybe I misunderstood, but I added the following <code>test.pyi</code> next to the <code>test.py</code> that was causing issues. Still getting the panic.</p>
+<pre><code class="language-py">from typing import Any
+
+# Workaround for https://github.com/astral-sh/ty/issues/256
+def __getattr__(name: str) -&gt; Any: ...
+</code></pre>
+<p>and <code>test.py</code></p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+if TYPE_CHECKING:
+    pass
+
+B = TypeVar(&quot;B&quot;, bound=&quot;Base&quot;)
+
+
+class Base(Generic[B]):
+    a: int
+
+    @classmethod
+    def to_dict(cls, sql: B) -&gt; dict:
+        return {&quot;a&quot;: sql.a}
+
+
+class Child(Base):
+    b: str
+
+    @classmethod
+    def to_dict(cls, sql: Child) -&gt; dict:
+        base_dict = super().to_dict(sql)
+        base_dict.update({&quot;b&quot;: sql.b})
+        return base_dict
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-27 17:29</div>
+            <div class="timeline-body"><p>It's possible you might need to do both the pyi and the exclude?</p>
+<p>Or instead of the pyi you could just have <code>Base: Any</code> and <code>Child: Any</code> in the <code>if TYPE_CHECKING</code> block and the real code in the <code>else</code>.</p>
+<p>Or just wait a week or so :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-16 10:39</div>
+            <div class="timeline-body"><p>Another interesting repro by @chrreisinger from https://github.com/astral-sh/ty/issues/1191:</p>
+<pre><code class="language-py">from collections.abc import Sequence
+
+type TYPE = Foo | Sequence[TYPE]
+
+
+class Foo[T = TYPE]:
+    bitfields: Sequence[T]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-17 00:20</div>
+            <div class="timeline-body"><p>With https://github.com/astral-sh/ruff/pull/20359 many of the issues reported here should be fixed. (Not all, thus not closing this issue yet -- if you have a code example here that still fails, don't worry, we're still working on it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-09-27 17:30</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/ruff/pull/20598">This PR</a> fixed my problem! Woot. Keeping an eye out for a release. Thanks guys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 14:02</div>
+            <div class="timeline-body"><p>Another example from https://github.com/astral-sh/ty/issues/1347, which still repros on <code>main</code>:</p>
+<pre><code class="language-py">type A[T] = type[T] | tuple[A[T]]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-14 15:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Another example from <a href="https://github.com/astral-sh/ty/issues/1347">#1347</a>, which still repros on <code>main</code>:</p>
+<p>type A[T] = type[T] | tuple[A[T]]</p>
+</blockquote>
+<p>Just to note, this is the same case that is failing in the conformance suite that I was already looking at. I think we will need the ability to store lazily-applied specializations on a type-alias type. (There could also be a shorter-term fix where we use <code>Type::Divergent</code> to avoid the panic, but this wouldn't give full support for the recursive alias.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @MichaReiser on 2025-10-17 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @MichaReiser on 2025-10-17 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-17 19:20</div>
+            <div class="timeline-body"><p>Following https://github.com/astral-sh/ruff/pull/20598, we no longer panic on this:</p>
+<pre><code class="language-py">from typing import TypeVar, Generic, Any
+
+T = TypeVar(&quot;T&quot;, bound=&quot;Foo[Any]&quot;)
+
+class Foo(Generic[T]): ...
+</code></pre>
+<p>Unfortunately, however, it seems we still panic on this:</p>
+<pre><code class="language-py">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;, bound=&quot;Foo[int]&quot;)
+
+class Foo(Generic[T]): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-24 13:28</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/21059 now adds a way to add &quot;panicking&quot; mdtests. That means, we could start adding some of those cases to our test suite now (there's one caveat, tests that panic with too many iterations can be slow, depending on how many queries are involved)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @MichaReiser on 2025-11-10 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ibraheemdev by @MichaReiser on 2025-11-10 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-26 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

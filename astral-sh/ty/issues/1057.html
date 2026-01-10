@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exact string comparisons should narrow to `Literal` - astral-sh/ty #1057</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exact string comparisons should narrow to `Literal`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1057">#1057</a>
+        opened by <a href="https://github.com/oliverlambson">@oliverlambson</a>
+        on 2025-08-20 04:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oliverlambson">@oliverlambson</a> on 2025-08-20 04:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a string variable is compared against string literals in ways that constrain its possible values, the type checker should narrow the variable's type to the appropriate <code>Literal</code> type within the conditional block.</p>
+<p>This should work for:</p>
+<ul>
+<li>Equality comparisons: <code>s == &quot;value&quot;</code></li>
+<li>Membership tests: <code>s in [&quot;value1&quot;, &quot;value2&quot;]</code></li>
+<li>Other comparisons that resolve to specific literal values</li>
+</ul>
+<h3>Minimal reproduction</h3>
+<p>String variables retain their <code>str</code> type even after comparisons that logically constrain their possible values, causing type errors when passing them to functions expecting literal types.</p>
+<pre><code class="language-python">from typing import Literal
+
+
+def process_string(s: str) -&gt; None:
+    if s == &quot;something&quot;:
+        use_something(s)
+
+
+def use_something(_s: Literal[&quot;something&quot;]) -&gt; None: ...
+</code></pre>
+<pre><code>$ uvx ty check narrow_string.py
+error[invalid-argument-type]: Argument to function `use_something` is incorrect
+ --&gt; narrow_string.py:6:23
+  |
+4 | def process_string(s: str) -&gt; None:
+5 |     if s == &quot;something&quot;:
+6 |         use_something(s)
+  |                       ^ Expected `Literal[&quot;something&quot;]`, found `str`
+</code></pre>
+<h3>Other type checkers</h3>
+<p>Within the true branch above, using <code>reveal_type(s)</code>:</p>
+<ul>
+<li>basedpyright resolves to <code>Literal[&quot;something&quot;]</code></li>
+<li>mypy resolves to <code>builtins.str</code></li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.19 (e9cb838b3 2025-08-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-08-20 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 06:27</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>The proposed narrowing is not sound. <code>str</code> can be subclassed, and subclasses could theoretically overload <code>__eq__</code>:</p>
+<pre><code class="language-py">class Problematic(str):
+    def __eq__(self, other):
+        return True
+
+process_string(Problematic(&quot;oh&quot;))
+</code></pre>
+<p>For this reason, we currently don't narrow the type of <code>s</code> in that conditional.</p>
+<p>It doesn't help for your example, but note that narrowing <em>is</em> sound in the negative <code>!=</code> case:</p>
+<pre><code class="language-py">def process_string(s: str) -&gt; None:
+    if s != &quot;something&quot;:
+        reveal_type(s)  # str &amp; ~Literal[&quot;something&quot;]
+</code></pre>
+<p>The positive case would also work if <code>process_string</code> takes a <code>LiteralString</code>, but I don't know if that's an option for you:</p>
+<pre><code class="language-py">def process_string(s: LiteralString) -&gt; None:
+    if s == &quot;something&quot;:
+        reveal_type(s)  # Literal[&quot;something&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oliverlambson">@oliverlambson</a> on 2025-08-20 15:43</div>
+            <div class="timeline-body"><p>Ah I hadn't thought about the operator overloading, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oliverlambson on 2025-08-20 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evtn">@evtn</a> on 2025-09-08 05:51</div>
+            <div class="timeline-body"><p><strong>upd: nevermind, seems like <code>str.__eq__</code> bails out if the class of rhs is not exactly str, so <code>s.__eq__</code> could be called here anyway</strong></p>
+<p>Would it make sense to narrow in an inversed case? (at the time of writing it is not narrowed)</p>
+<pre><code class="language-py">def process_string(s: str) -&gt; None:
+    if &quot;something&quot; == s:
+        use_something(s)
+</code></pre>
+<p>I assume that would require some changes for <code>LiteralString.__eq__</code> signature, but that does look sound</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-08 19:15</div>
+            <div class="timeline-body"><p>Other type checkers (e.g. pyright) also don't support narrowing in these reversed &quot;Yoda conditions&quot;. In principle I would like to support it, but it's not high priority. Feel free to open a separate issue for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evtn">@evtn</a> on 2025-09-09 14:28</div>
+            <div class="timeline-body"><p>Well, it's weird, but:</p>
+<pre><code>&gt;&gt;&gt; class P(str):
+...     def __eq__(self, other):
+...         return True
+...         
+&gt;&gt;&gt; &quot;123&quot;.__eq__(P(&quot;321&quot;))
+False
+&gt;&gt;&gt; &quot;123&quot; == P(&quot;321&quot;)
+True
+&gt;&gt;&gt; class P2(str):
+...     def __eq__(self, other):
+...         return NotImplemented
+...         
+&gt;&gt;&gt; &quot;123&quot; == P2(&quot;435&quot;)
+False
+&gt;&gt;&gt; &quot;123&quot;.__eq__(P2(&quot;435&quot;))
+False
+</code></pre>
+<p>I thought the <code>__eq__</code> method returned NotImplemented, but it's <code>False</code>, and then <code>==</code> ignores this and calls <code>P.__eq__</code> for some reason? CPython is doing weird stuff here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evtn">@evtn</a> on 2025-09-09 14:33</div>
+            <div class="timeline-body"><p>Oh I see, that's literally in Python data model spec:</p>
+<blockquote>
+<p>If the operands are of different types, and the right operand’s type is a direct or indirect subclass of the left operand’s type, the reflected method of the right operand has priority, otherwise the left operand’s method has priority. Virtual subclassing is not considered.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

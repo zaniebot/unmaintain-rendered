@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-platform checking - astral-sh/ty #160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multi-platform checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/160">#160</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-26 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-26 13:31</div>
+            <div class="timeline-body"><p>Calling a platform-specific method with no <code>python-platform</code> set currently always emits a <code>possibly-unbound</code> warning (<a href="https://playknot.ruff.rs/baf5d9d3-f4e7-4c87-ab8a-8302d2add03d">playground</a>), even if the branch is guarded by an explicit <code>sys.platform</code> check.</p>
+<p>The only way around the <code>possibly-unbound</code> warning seems to be to</p>
+<ol>
+<li>Use a suppression comment</li>
+<li>Only check for a specific platform, but that's not an option for everyone</li>
+</ol>
+<p>Ideally, the <code>sys.platform</code> narrowing would be sufficient but that's probably non-trivial. A more short-term solution would be to explore ways to avoid the <code>possibly-unbound</code> false positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-03-26 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-26 13:37</div>
+            <div class="timeline-body"><p>Effectively, fixing this properly means reviving the work we'd planned to do for multi-version-checking, but applying it only to multi-platform-checking for now. Because what we are wanting here is the ability to check for multiple platforms at once, and validate that you aren't using a platform-specific API without checking the platform first.</p>
+<p>I think that might not actually be too hard? It just means introducing a <code>ExistsOnPlatform</code> type and having <code>sys.platform</code> checks do narrowing and visibility constraints as intersections with that type.</p>
+<p>But there might also be a shorter-term fix that silences the false positives without actually giving us the ability to error if you use a platform-specific API without checking the platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 17:26</div>
+            <div class="timeline-body"><p>the <em>easiest</em> fix here might be to just default to <code>platform = &quot;linux&quot;</code>, which I believe is what all other type checkers do. Then we'd always understand <code>sys.platform</code>-guarded branches as either definitely-reachable or definitely-unreachable, the same as we do for <code>sys.version_info</code> guarded branches.</p>
+<p>I know this is not the behaviour we'd like in the long term, but I think making this change would be pretty easy; it might be the best course of action for the alpha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 17:53</div>
+            <div class="timeline-body"><p>This sounds like a reasonable solution for the alpha. We could consider defaulting to the current platform which gives better editor experience but might not necessarily be the right choice for the cli</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 17:55</div>
+            <div class="timeline-body"><p>Oh, sorry, I think that's what most other type checkers do: default to the current platform, not default to <code>&quot;linux&quot;</code>. So I don't think that behaviour would come as a surprise to users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 20:44</div>
+            <div class="timeline-body"><p>Slightly different but related (but might be worth its own issue):</p>
+<p>Something that https://github.com/astral-sh/ruff/pull/17183 showed is that some projects have platform specific files. E.g. rich has a file specific to windows. I'm not sure how best to support this use case because it would require overriding platform at a per file level</p>
+<p>Pyright supports this by allowing multiple execution environments https://microsoft.github.io/pyright/#/configuration?id=sample-config-file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-03 22:37</div>
+            <div class="timeline-body"><p>I agree that in the short term we should just always have a single configured (or defaulted) platform and not attempt multi-platform checking. Ignore the rest of this comment for short-term :)</p>
+<p>If/when we do aim for multi-platform (and possibly multi-version?) checking, after chatting with @sharkdp today I have an updated understanding of how that could work. I don't think we need the <code>PlatformIs</code> style types to intersect with, now that we have visibility constraints. Instead we can record a visibility constraint (as we already do) for a test like <code>sys.platform == &quot;win32&quot;</code>, and when evaluating visibility constraints we can pass in a context which contains a potentially-updated value for <code>sys.platform</code>, which would come from narrowing constraints at the usage site. So for example, given</p>
+<pre><code class="language-py">if sys.platform == &quot;win32&quot;:
+    def win_only_function(): ...
+
+# later, maybe even in a different file...
+
+if sys.platform == &quot;win32&quot;:
+    win_only_function()
+</code></pre>
+<p>The definition of <code>win_only_function</code> would come with a visibility constraint of <code>sys.platform == &quot;win32&quot;</code>. This already happens today, we just aren't able to evaluate that constraint to a known truthiness if we don't have a single platform configured. But what we can do in future is record a narrowing on the second <code>if sys.platform == &quot;win32&quot;</code> check so that within that block we understand that <code>sys.platform</code> is now <code>&quot;win32&quot;</code>. And we can include that information in the context for evaluating the visibility constraints on the definition of <code>win_only_function()</code>, so that we are able to evaluate it as definitely-truthy (but only within that context.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-07 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Calling system specific methods and possibly unbound" to "Calling system specific methods and possibly unbound" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-06-11 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Calling system specific methods and possibly unbound" to "Multi-platform checking" by @carljm on 2025-06-11 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @carljm on 2025-07-01 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> added by @carljm on 2025-07-01 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andythomas">@andythomas</a> on 2025-08-17 12:36</div>
+            <div class="timeline-body"><p>I am not sure if this is related enough to the <code>possibly-unbound</code> warning, but this case is quite similar:</p>
+<pre><code>if os.name == &quot;nt&quot;:
+    try:
+        from ctypes import windll  # ty: ignore[unresolved-import] -&gt; Only exists on Windows.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-17 12:42</div>
+            <div class="timeline-body"><p>@andythomas that's a slightly different issue. The typing spec only specifies that type checkers must understand simple tests using <code>sys.version_info</code> and <code>sys.platform</code>, and so type checkers generally do not understand conditions using other constants/functions using <code>os.name</code> or <code>platform.system()</code>. We could <em>consider</em> adding support for that, but it would add a fair amount of complexity and it might be hard to get it fully accurate. (You can see that typeshed's stubs for <code>ctypes</code>, which we use as the source of truth for the standard library, guard the definition of this symbol inside a <code>sys.platform == &quot;win32&quot;</code> branch but don't tell us anything about whether the symbol is available when <code>os.name == &quot;nt&quot;</code>: https://github.com/python/typeshed/blob/85a787bba3057f1df44188b4c815069d2d931557/stdlib/ctypes/<strong>init</strong>.pyi#L111-L112.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andythomas">@andythomas</a> on 2025-08-17 12:56</div>
+            <div class="timeline-body"><p>That is very interesting, thank you for the quick answer. So, is it save to say (also in other contexts) that <code>sys.platform</code> is the preferred check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-17 13:06</div>
+            <div class="timeline-body"><blockquote>
+<p>So, is it save to say (also in other contexts) that <code>sys.platform</code> is the preferred check?</p>
+</blockquote>
+<p><code>sys.platform</code> will almost always be better understood by type checkers than <code>os.name</code>. At runtime, <a href="https://docs.python.org/3/library/sys.html#sys.platform"><code>sys.platform</code></a> has finer granularity than <a href="https://docs.python.org/3/library/os.html#os.name"><code>os.name</code></a>, but I <em>believe</em> checking <code>if os.name == &quot;nt&quot;</code> should almost always produce the same results as checking <code>if sys.platform == &quot;win32&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @AlexWaygood on 2025-10-05 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> removed by @AlexWaygood on 2025-10-05 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:53 UTC
+    </footer>
+</body>
+</html>

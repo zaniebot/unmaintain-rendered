@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuples of unions, Unions of tuples - astral-sh/ty #493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tuples of unions, Unions of tuples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/493">#493</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-23 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-23 06:48</div>
+            <div class="timeline-body"><p>An example that I got from <a href="https://discuss.python.org/t/specify-that-assert-type-checks-for-equivalence/92967">this post</a>. As mentioned there, it's probably hard to support this in full generality, but it seems like those base cases should maybe be handled:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_equivalent_to, is_assignable_to, is_subtype_of
+
+static_assert(is_equivalent_to(tuple[int | str], tuple[int] | tuple[str]))  # currently fails
+static_assert(is_assignable_to(tuple[int | str], tuple[int] | tuple[str]))  # currently fails
+static_assert(is_subtype_of(tuple[int | str], tuple[int] | tuple[str]))  # currently fails
+</code></pre>
+<p>https://play.ty.dev/fa049103-bd97-454c-891e-92bda33973a5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @sharkdp on 2025-05-23 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-23 14:18</div>
+            <div class="timeline-body"><p>To make sure I'm following, this would only be valid for a one-element tuple, right? For multi-element tuples the equivalence wouldn't hold, since &quot;tuple of union&quot; is heterogeneous while &quot;union of tuple&quot; is homogeneous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-23 14:23</div>
+            <div class="timeline-body"><p>@dcreager nope — heterogeneous tuples of any length that contain unions can be exploded into unions, according to the spec: https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-23 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>nope — heterogeneous tuples of any length that contain unions can be exploded into unions, according to the spec: https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules</p>
+</blockquote>
+<p>Right, but if I'm reading that section correctly, the resulting expansion has to retain the heterogeneity:</p>
+<blockquote>
+<p>If multiple elements are union types, full expansion must consider all combinations. For example, <code>tuple[int | str, int | str]</code> is equivalent to <code>tuple[int, int] | tuple[int, str] | tuple[str, int] | tuple[str, str]</code>. Unbounded tuples cannot be expanded in this manner.</p>
+</blockquote>
+<p>So the following does not hold:</p>
+<pre><code class="language-py">static_assert(is_equivalent_to(tuple[int | str, int | str], tuple[int | int] | tuple[str | str]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-23 20:44</div>
+            <div class="timeline-body"><p>Another way to think about it: Tuples are products, unions are sums, and this is the distributive law:</p>
+<pre><code>(int + str) × (int + str) = int × int + int × str + str × int + str × str
+</code></pre>
+<p>&quot;Full&quot; explosion is not the only alternative form. The following two representations are also equivalent:</p>
+<pre><code>(int + str) × int + (int + str) × str
+int × (int + str) + str × (int + str)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-23 21:16</div>
+            <div class="timeline-body"><p>There was also a similar post here: https://discuss.python.org/t/unbounded-tuple-unions/92472, showing that these types are equivalent: <code>tuple[int, ...]</code> and <code>tuple[()] | tuple[int, *tuple[int, ...]]</code>. (I believe ty doesn't yet support such unpacked types.)</p>
+<p>There's a lot of other variations to come up with; for example, these are equivalent:</p>
+<pre><code class="language-python"># Group 1
+tuple[bool, ...] | tuple[object]
+tuple[()] | tuple[object] | tuple[bool, bool, *tuple[bool, ...]]
+
+# Group 2
+tuple[Literal[False], ...] | tuple[Literal[True], ...] | tuple[bool, bool, *tuple[bool, ...]]
+tuple[bool, ...]
+</code></pre>
+<p>I think ideally type checkers should detect the equivalence, but I'm not sure there's a general algorithm that will run in a reasonable time, and most of these are unlikely to come up in practice, so probably not worth worrying about too much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-10 09:39</div>
+            <div class="timeline-body"><p>An example I got from reviewing https://github.com/astral-sh/ruff/pull/17643, which may or may not be related to this issue. I find it strange that we infer <code>Unknown</code> here, and not some <code>@Todo</code> type?</p>
+<pre><code class="language-py">from typing import reveal_type
+
+
+def _(union_of_tuples: tuple[int] | tuple[None]):
+    reveal_type(union_of_tuples[0])  # Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 16:42</div>
+            <div class="timeline-body"><blockquote>
+<p>An example I got</p>
+</blockquote>
+<p>I think this is a distinct issue; I opened https://github.com/astral-sh/ty/issues/625</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

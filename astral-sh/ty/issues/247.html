@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support starred/splatted/unpacked arguments in function calls - astral-sh/ty #247</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support starred/splatted/unpacked arguments in function calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/247">#247</a>
+        opened by <a href="https://github.com/dreid">@dreid</a>
+        on 2025-05-07 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dreid">@dreid</a> on 2025-05-07 16:30</div>
+            <div class="timeline-body"><p>Status:</p>
+<ul>
+<li>[x] support single-starred arguments (https://github.com/astral-sh/ruff/pull/18996)</li>
+<li>[x] support single-starred arguments in calls to overloaded functions (https://github.com/astral-sh/ruff/pull/20223)</li>
+<li>[x] support double-starred arguments (https://github.com/astral-sh/ruff/pull/20430)</li>
+</ul>
+<p>Original description:</p>
+<details>
+
+<h3>Summary</h3>
+<p>Minimal reproducer:</p>
+<pre><code class="language-py">def foo(initial_arg: str, *args: str) -&gt; None:
+    ...
+
+foo(*[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])  # No argument provided for required parameter `initial_arg` of function `foo` (lint:missing-argument) [Ln 4, Col 1]
+foo(*[1, &quot;a&quot;, &quot;b&quot;])  # No argument provided for required parameter `initial_arg` of function `foo` (lint:missing-argument) [Ln 4, Col 1]
+</code></pre>
+<p>https://play.ty.dev/4b8dc795-03b5-4fbf-a5c3-639f9518e093</p>
+<p>I'd expect first the invocation to type check because the splatted args have compatible types to cover both the first argument and the var args.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "lint:missing-argument when splatting into a function that has a compatible positional argument." to "`lint:missing-argument` when splatting into a function that has a compatible positional argument." by @MichaReiser on 2025-05-07 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 04:43</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, we don't support splatted arguments yet, but we should fix that soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-08 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @AlexWaygood on 2025-05-10 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GriceTurrble">@GriceTurrble</a> on 2025-05-18 03:26</div>
+            <div class="timeline-body"><p>Similar scenario to watch for, which brought me here:</p>
+<p>https://play.ty.dev/edb289aa-d398-4f51-b758-42f584ca80e1</p>
+<pre><code class="language-py">def something(foo, **others):
+    pass
+
+kwargs = {
+    &quot;foo&quot;: &quot;one&quot;,
+    &quot;bar&quot;: &quot;two&quot;,
+}
+something(**kwargs)
+</code></pre>
+<p>This throws the error:</p>
+<pre><code>No argument provided for required parameter `foo` of function `something` (missing-argument) [Ln 8, Col 1]
+</code></pre>
+<p><code>foo</code> is part of the kwargs dict provided, but it's not recognized as being present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`lint:missing-argument` when splatting into a function that has a compatible positional argument." to "Support starred/splatted/unpacked arguments in function calls" by @sharkdp on 2025-05-19 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spapanik">@spapanik</a> on 2025-05-28 21:28</div>
+            <div class="timeline-body"><p>I am not sure if this is the same issue, I guess the root cause is the same. I am getting this error:</p>
+<pre><code class="language-py">error[unresolved-attribute]: Type `str` has no attribute `pop`
+   --&gt; src/eulertools/lib/utils.py:383:18
+    |
+381 |     prefix, response_key, *answers = line.split(maxsplit=2)
+382 |     try:
+383 |         answer = answers.pop()
+    |                  ^^^^^^^^^^^
+384 |     except IndexError:
+385 |         answer = &quot;&quot;
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:38</div>
+            <div class="timeline-body"><p>I think the most recent example here is actually https://github.com/astral-sh/ty/issues/191 -- the other examples do look like this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-03 09:45</div>
+            <div class="timeline-body"><p>@spapanik The <code>unresolved-attribute</code> issue mentioned in https://github.com/astral-sh/ty/issues/247#issuecomment-2917656676 should be fixed by astral-sh/ruff#18438</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-06-13 19:35</div>
+            <div class="timeline-body"><p>A note that currently other type checkers (pyright, mypy) do not check very precisely some cases of this and would allow errors like below to pass. So probably it would be okay for ty not to cover them too for a while.</p>
+<pre><code class="language-python">def test(a: int, b: int): ...
+
+test(**{&quot;a&quot;: 25, &quot;b&quot;: 42, &quot;c&quot;: 11})
+test(*[5, 4, 23])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 19:39</div>
+            <div class="timeline-body"><p>Yes, I think that's perhaps not only a &quot;for now&quot; thing, but possibly a &quot;for always&quot; that we will have to match mypy/pyright's forgiving handling of splatted calls into non-variadic signatures, because I fear the backwards-compatibility impact would otherwise be too great. Perhaps at some point in the future we could explore more opt-in strictness here, but that's definitely not an immediate priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @carljm on 2025-07-01 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 07:31</div>
+            <div class="timeline-body"><p>@dcreager I understand that this is not yet finished, despite https://github.com/astral-sh/ruff/pull/18996 being merged? Do you think we can remove the &quot;Missing support for starred/splatted/unpacked arguments in function calls&quot; item from https://github.com/astral-sh/ty/issues/445 (after we cut a release)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-24 13:53</div>
+            <div class="timeline-body"><p>It should now work for calls to non-overloaded functions, but will likely produce invalid type inferences and diagnostics for calls to overloaded functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-24 13:55</div>
+            <div class="timeline-body"><p>e.g. I updated the snippet to use tuples instead of lists (since we still aren't inferring a proper type for list literals), and it works as expected [<a href="https://play.ty.dev/f55d3567-da1f-4a0d-ac26-ae6963e4043b">playground</a>]:</p>
+<pre><code class="language-py">def foo(initial_arg: str, *args: str) -&gt; None:
+    ...
+
+foo(*(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+
+# error: [invalid-argument-type]
+foo(*(1, &quot;a&quot;, &quot;b&quot;))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-07-24 20:48</div>
+            <div class="timeline-body"><p>I would consider this a false positive on a non-overloaded function: https://play.ty.dev/92958251-1a2e-4238-b77c-83983bd7706f (yes, there can be errors here, but mypy and pyright accept it and this kind of thing is pretty common)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-24 20:52</div>
+            <div class="timeline-body"><p>Ah sorry — I forgot to call out that https://github.com/astral-sh/ruff/pull/18996 only added support for positional splats, not keyword splats.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dcreager by @carljm on 2025-08-15 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @carljm on 2025-08-19 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-10-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-06 08:15</div>
+            <div class="timeline-body"><p>This has been closed, but the example given in https://github.com/astral-sh/ty/issues/445 still leads to errors (diagnostic code has changed since writing that example). This is the current behavior:</p>
+<pre><code class="language-py">def f(a: str, b: int): pass
+
+opts = {&quot;name&quot;: &quot;foo&quot;, &quot;n&quot;: 2}
+
+# invalid-argument-type: Argument to function `f` is incorrect: Expected `str`, found `Unknown | str | int`
+# invalid-argument-type: Argument to function `f` is incorrect: Expected `int`, found `Unknown | str | int`
+f(**opts)
+</code></pre>
+<p>Is that being tracked somewhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-06 15:23</div>
+            <div class="timeline-body"><p>I think that's what #1248 is about?</p>
+<p>No other type checker really &quot;supports&quot; that example in any intelligent way. Pyright (in non-strict mode) avoids false positives by inferring the type of the dict as <code>dict[str, Unknown]</code>. Strict-mode pyright, pyrefly, and mypy all fail the same way we do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 15:26</div>
+            <div class="timeline-body"><p>theoretically I guess you could bidirectionally infer the type of <code>opts</code> as being a synthesized <code>TypedDict</code> type due to the fact that it's kwarg-splatted into the <code>f()</code> call later on in the same scope. Sounds kinda hard though</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

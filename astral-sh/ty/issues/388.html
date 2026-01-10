@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error[invalid-type-form]: Function calls are not allowed in type expressions with Pydantic conlist - astral-sh/ty #388</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error[invalid-type-form]: Function calls are not allowed in type expressions with Pydantic conlist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/388">#388</a>
+        opened by <a href="https://github.com/alex-goswag">@alex-goswag</a>
+        on 2025-05-14 15:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex-goswag">@alex-goswag</a> on 2025-05-14 15:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I can use <code>Field(min_length=1)</code> as a work around or maybe that is the better way to do it but I guess <code>conlist</code> should still be supported by <code>ty</code> ?</p>
+<h1>Example</h1>
+<pre><code class="language-python"># !pip install pydantic==2.11.4
+# !pip install ty==0.0.1a1
+
+from pydantic import BaseModel, Field, conlist
+
+
+class OrderLine(BaseModel):
+    product_id: int
+    quantity: int
+
+
+class Order(BaseModel):
+    order_lines: conlist(item_type=OrderLine, min_length=1)
+    field_order_lines: list[OrderLine] = Field(
+        min_length=1,
+    )
+
+
+if __name__ == &quot;__main__&quot;:
+    order = Order(
+        order_lines=[OrderLine(product_id=1, quantity=10)],
+        field_order_lines=[OrderLine(product_id=1, quantity=10)],
+    )
+    print(order)
+</code></pre>
+<h1>Ty</h1>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-type-form]: Function calls are not allowed in type expressions
+  --&gt; py.py:13:18
+   |
+12 | class Order(BaseModel):
+13 |     order_lines: conlist(item_type=OrderLine, min_length=1)
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 |     field_order_lines: list[OrderLine] = Field(
+15 |         min_length=1,
+   |
+info: rule `invalid-type-form` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<h1>Mypy</h1>
+<p><code>pip install mypy==1.15.0</code></p>
+<pre><code>py.py:13: error: Invalid type comment or annotation  [valid-type]
+py.py:13: note: Suggestion: use conlist[...] instead of conlist(...)
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.1 (12f466e46 2025-05-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 17:50</div>
+            <div class="timeline-body"><p>Thank you very much for reporting this.</p>
+<p>Call expressions are indeed <a href="https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions">not valid in type annotations</a>, so mypy and ty are correct here. As @AlexWaygood suggested, we could probably add a hint to the <code>invalid-type-form</code> diagnostic to help users.</p>
+<p>Apart from that, it's not completely clear how we could improve the behavior here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-05-14 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @sharkdp on 2025-05-14 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 17:58</div>
+            <div class="timeline-body"><p>Is the use of <code>conlist</code> as a function in type annotations something that is recommended and supported by pydantic? This seems like a problem that should be addressed in pydantic, because it's very clear in the typing specification that calls in annotations are not supported, and other type checkers also prohibit it.</p>
+<p>Happy to continue the discussion here and reopen if a concrete improvement suggestion arises from discussion, but in order to keep the open issues actionable, I'm going to close this as &quot;not planned&quot; for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-14 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 18:59</div>
+            <div class="timeline-body"><blockquote>
+<p>As <a href="https://github.com/AlexWaygood">@AlexWaygood</a> suggested, we could probably add a hint to the <code>invalid-type-form</code> diagnostic to help users.</p>
+</blockquote>
+<p>That has been added in https://github.com/astral-sh/ruff/pull/18104.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jc-louis">@jc-louis</a> on 2025-05-15 08:18</div>
+            <div class="timeline-body"><p>Another case which is <a href="https://docs.pydantic.dev/latest/concepts/models/#dynamic-model-creation">recommended by pydantic</a></p>
+<pre><code class="language-py">from pydantic import create_model, BaseModel
+
+
+DynamicFoobarModel = create_model('DynamicFoobarModel', foo=str, bar=(int, 123))
+
+class StaticFoobarModel(BaseModel):
+    foo: str
+    bar: int = 123
+
+# DynamicFoobarModel and StaticFoobarModel are equivalent
+# https://docs.pydantic.dev/latest/concepts/models/#dynamic-model-creation
+
+type mytypestatic = list[StaticFoobarModel] # OK
+type mytypedynamic = list[DynamicFoobarModel] # Variable of type `type[BaseModel]` is not allowed in a type expression
+
+
+class MyNestedDynamic(BaseModel):
+    inner: DynamicFoobarModel # Variable of type `type[BaseModel]` is not allowed in a type expression
+
+class MyNestedStatic(BaseModel):
+    inner: StaticFoobarModel
+
+# Both work fine
+print(MyNestedDynamic.model_json_schema())
+print(MyNestedStatic.model_json_schema())
+</code></pre>
+<p>ty output (which is right according to <a href="https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions">spec</a>)</p>
+<pre><code>error[invalid-type-form] Variable of type `type[BaseModel]` is not allowed in a type expression
+error[invalid-type-form] Variable of type `type[BaseModel]` is not allowed in a type expression
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-15 08:23</div>
+            <div class="timeline-body"><p>For others interested. <a href="https://docs.pydantic.dev/1.10/usage/types/#constrained-types">Here's</a> where this is recommended in the pydantic docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-15 08:26</div>
+            <div class="timeline-body"><p>It seems the <code>con</code> functions are discouraged, see https://github.com/pydantic/pydantic/issues/9011#issuecomment-1999970835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OliverFarren">@OliverFarren</a> on 2025-06-24 18:30</div>
+            <div class="timeline-body"><p>I found this a <em>little</em> tricky to piece together myself for handling constrained lists.</p>
+<p><a href="https://github.com/pydantic/pydantic/issues/9011#issuecomment-1999970835">This</a> did not work for me.</p>
+<p>This worked for me and mypy</p>
+<pre><code class="language-python">from typing import Annotated
+from pydantic import BaseModel, conlist
+
+
+TEXT_EMBEDDING_ADA_002_DIMENSIONALITY = 1536
+
+class Model(BaseModel):
+    embeddings: Annotated[
+        list[float] | None,
+        conlist(
+            float,
+            min_length=TEXT_EMBEDDING_ADA_002_DIMENSIONALITY,
+            max_length=TEXT_EMBEDDING_ADA_002_DIMENSIONALITY,
+        ),
+    ] = None
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

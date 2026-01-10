@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>infer variance of PEP 695 type variables - astral-sh/ty #488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>infer variance of PEP 695 type variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/488">#488</a>
+        opened by <a href="https://github.com/ilius">@ilius</a>
+        on 2025-05-22 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilius">@ilius</a> on 2025-05-22 14:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Before Python 3.12, we would write this</p>
+<pre><code class="language-py">from typing import Generic, TypeVar
+
+T_co = TypeVar(&quot;T_co&quot;, covariant=True)
+
+class A(Generic[T_co]):
+    def __init__(self, value: T_co):
+        pass
+
+
+a: A[int | str] = A(1)
+</code></pre>
+<p>But starting from 3.12, this is equivalent:</p>
+<pre><code class="language-py">class A[T]:
+    def __init__(self, value: T):
+        pass
+
+
+a: A[int | str] = A(1)
+</code></pre>
+<p>The type should be covariant according to https://peps.python.org/pep-0695/</p>
+<p>But <code>ty</code> will say:</p>
+<pre><code>error[invalid-assignment]: Object of type `A[int]` is not assignable to `A[int | str]`
+ --&gt; ty-generic.py:6:1
+  |
+6 | a: A[int | str] = A(1)
+  | ^
+  |
+info: rule `invalid-assignment` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p><strong>mypy and pyright do not report any errors for this.</strong></p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "New Generic syntax is not covariant" to "New Generic syntax is not used as covariant" by @ilius on 2025-05-22 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-22 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-05-22 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> removed by @carljm on 2025-05-22 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "New Generic syntax is not used as covariant" to "infer variance of PEP 695 type variables" by @carljm on 2025-05-22 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-23 14:09</div>
+            <div class="timeline-body"><p>Variance inference is a known missing feature, but we did not yet have an issue to track that. So thank you for reporting this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-06-13 19:42</div>
+            <div class="timeline-body"><p>I plan to work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ericmarkmartin by @carljm on 2025-06-13 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-09 08:14</div>
+            <div class="timeline-body"><p>One minor thing that we might need to look out for is &quot;private&quot; attributes:</p>
+<pre><code class="language-python">class C[T]:
+    def __init__(self, val: T) -&gt; None:
+        self._val = val  # _val: T
+</code></pre>
+<p><a href="https://stackoverflow.com/a/79695291">Mypy, Pyright and Pyrefly all say that <code>T</code> is covariant</a>, since they consider <code>_val</code> to be non-public. Change that to <code>val</code>, and <code>T</code> becomes invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 14:34</div>
+            <div class="timeline-body"><p>I'm closing https://github.com/astral-sh/ty/issues/158, so I'm adding a note here that attributes declared <code>Final</code> might affect variance inference (covariant instead of invariant). The information whether a attribute is <code>Final</code> or not should already be available in the corresponding <code>qualifiers: TypeQualifiers</code> field when accessing a member on a class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-21 19:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

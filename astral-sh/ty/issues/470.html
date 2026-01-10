@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred - astral-sh/ty #470</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/470">#470</a>
+        opened by <a href="https://github.com/PKizzle">@PKizzle</a>
+        on 2025-05-21 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PKizzle">@PKizzle</a> on 2025-05-21 09:37</div>
+            <div class="timeline-body"><p>I have encountered a language server crash on Linux with a previous version of  the ty VSCode extension. Therefore, I am not sure whether this has already been addressed in 2025.11.11402026.</p>
+<pre><code>0.003241442s  INFO ty:main ty_server::server: File watcher successfully registered
+   0.027533849s  INFO ty:worker:1 ty_project: Indexed 159 file(s)
+   6.645904567s  WARN     ty:main ty_server::server::api: Received notification $/cancelRequest which does not have a handler.
+  32.932807635s ERROR ty:worker:1 ty_server::server: panicked at crates/ty_python_semantic/src/semantic_model.rs:58:44:
+expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: start_thread
+             at ./nptl/pthread_create.c:442:8
+  17: __GI___clone3
+             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:81:0
+
+panicked at crates/ty_python_semantic/src/semantic_model.rs:58:44:
+expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: start_thread
+             at ./nptl/pthread_create.c:442:8
+  17: __GI___clone3
+             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:81:0
+
+  33.110293788s  WARN     ty:main ty_server::server::api: Received notification $/cancelRequest which does not have a handler.
+</code></pre>
+<p>ty version: 2025.9.11391444
+OS version: #61~22.04.1-Ubuntu (6.8.0-59-generic)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PKizzle">@PKizzle</a> on 2025-05-21 09:39</div>
+            <div class="timeline-body"><p>It seems like the file mentioned above <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/semantic_model.rs">semantic_model.rs</a> is actually part of ruff. Shall I open an issue over there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-21 10:03</div>
+            <div class="timeline-body"><p>Any chance you still have the file content from when ty panicked? Or can you try running the CLI to see if it panics too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-21 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Language server crash" to "expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred" by @MichaReiser on 2025-05-21 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-21 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @AlexWaygood on 2025-05-21 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PKizzle">@PKizzle</a> on 2025-05-21 15:15</div>
+            <div class="timeline-body"><p>@MichaReiser I tried re-opening all recent files but so far I am unable to find the one that caused the issue 😥</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-21 15:25</div>
+            <div class="timeline-body"><p>We have fixed some occurrences of this error since the earliest ty releases, so it's possible the issue has been fixed. Given that, I don't think this is currently actionable unless we have a confirmed case on a current ty release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-21 15:26</div>
+            <div class="timeline-body"><p>Going to close this for now, but please feel free to reopen if you see the issue occur on a current ty release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-21 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

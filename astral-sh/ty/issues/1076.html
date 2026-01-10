@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pandas` `infer_objects` type stub missing `copy` arg - astral-sh/ty #1076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pandas` `infer_objects` type stub missing `copy` arg</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1076">#1076</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2025-08-21 06:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2025-08-21 06:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>both calls to <code>infer_objects</code> on <code>pandas</code> <code>DataFrame</code> and <code>Series</code> trigger</p>
+<blockquote>
+<p>Argument <code>copy</code> does not match any known parameter of bound method <code>infer_objects</code> (https://ty.dev/rules#unknown-argument)</p>
+</blockquote>
+<pre><code class="language-py">import pandas as pd
+
+df = pd.DataFrame({&quot;A&quot;: [1, 2, 3], &quot;B&quot;: [4, 5, 6], &quot;C&quot;: [7, 8, 9]})
+
+df.infer_objects(copy=False)
+df.A.infer_objects(copy=False)
+</code></pre>
+<p>docs on the <code>copy</code> parameter:</p>
+<ul>
+<li>https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html</li>
+<li>https://pandas.pydata.org/docs/reference/api/pandas.Series.infer_objects.html</li>
+</ul>
+<p>i looked over at https://github.com/search?q=repo%3Apython%2Ftypeshed%20infer_objects&amp;type=code but found no mention of <code>infer_objects</code> so not sure where this incorrect type stub is coming from</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 11:36</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<blockquote>
+<p>i looked over at <a href="https://github.com/search?q=repo%3Apython%2Ftypeshed%20infer_objects&amp;type=code">github.com/search?q=repo%3Apython%2Ftypeshed%20infer_objects&amp;type=code</a> but found no mention of <code>infer_objects</code> so not sure where this incorrect type stub is coming from</p>
+</blockquote>
+<p>Typeshed only provides stubs for objects defined in the standard library. (Well, it has stubs for other libraries, but ty doesn't vendor those out of the box -- you have to <code>(uv) pip install</code> (or the Conda equivalent) those stubs packages into a Python environment.) The reason why typeshed's stubs were relevant in https://github.com/astral-sh/ty/issues/1048 was that pandas's type annotations indicated that the <code>Dataframe.attrs</code> attribute is a dictionary, so ty then looked at the stubs for the <code>dict</code> class and its methods in typeshed to figure out what the signature of <code>dict.update()</code> should be.</p>
+<p>Here, it looks like the <code>infer_object()</code> method is directly defined on <code>pandas.DataFrame</code>, so I'd expect ty to look either in the <code>pandas</code> library or the <code>pandas-stubs</code> library for information on the signature of that method. (In general, it'll be much easier to debug issues with <code>pandas</code> if you could let us know whether you have <code>pandas-stubs</code> installed or not! If it is installed into your environment, ty will look at that stubs package for information about pandas; if not, it'll look at the <code>pandas</code> library itself for information about the classes, functions and methods in <code>pandas</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 12:04</div>
+            <div class="timeline-body"><p>I can reproduce the error if I have <code>pandas-stubs</code> installed but not if I only have <code>pandas</code> installed, so I'm guessing you have <code>pandas-stubs</code> installed into your environment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2025-08-21 12:22</div>
+            <div class="timeline-body"><p>thanks a lot @AlexWaygood for troubleshooting this. you're exactly right:</p>
+<pre><code>$ pip show pandas-stubs
+Using Python 3.13.0 environment at: /Users/janosh/.venv/py313
+Name: pandas-stubs
+Version: 2.3.0.250703
+Requires: numpy, types-pytz
+Required-by:
+</code></pre>
+<p>required by nothing so what triggered its installation initially seems to have been uninstalled or no longer depends on it.</p>
+<p>i'll report this over at https://github.com/pandas-dev/pandas-stubs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @janosh on 2025-08-21 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>thanks a lot <a href="https://github.com/AlexWaygood">@AlexWaygood</a> troubleshooting this. you're exactly right:</p>
+</blockquote>
+<p>No problem!</p>
+<p>I think it was harder than it should be here to figure out where ty was getting its type information from -- I'm working on a patch now to improve our diagnostics here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 13:11</div>
+            <div class="timeline-body"><p>See</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/20022</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:26 UTC
+    </footer>
+</body>
+</html>

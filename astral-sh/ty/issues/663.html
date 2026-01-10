@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypedDict unpacking (**data) incorrectly flagged as type error when parameters match TypedDict fields - astral-sh/ty #663</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypedDict unpacking (**data) incorrectly flagged as type error when parameters match TypedDict fields</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/663">#663</a>
+        opened by <a href="https://github.com/FabianVegaA">@FabianVegaA</a>
+        on 2025-06-16 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FabianVegaA">@FabianVegaA</a> on 2025-06-16 18:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When unpacking a TypedDict instance using the <code>**</code> operator into a function whose parameters exactly match the TypedDict's field types, the type checker incorrectly reports a type error. This happens despite the structural compatibility between the TypedDict definition and the function signature.</p>
+<p>Example:</p>
+<pre><code class="language-python">from typing import TypedDict
+
+class Foo(TypedDict):
+    bar: int
+    baz: str
+    qux: float
+    quux: tuple[int]
+
+def do_with_foo(
+    bar: int,
+    baz: str,
+    qux: float,
+    quux: tuple[int],
+) -&gt; int:
+    raise NotImplemented
+
+data = Foo(bar=1, baz=&quot;1&quot;, qux=1.1, quux=(1,))
+result = do_with_foo(**data) # Type checker incorrectly flags this line with error
+</code></pre>
+<p>The error marked is <strong>&quot;No arguments provided for required parameters <code>bar</code>, <code>baz</code>, <code>qux</code>, <code>quux</code> of function <code>do_with_foo</code> (ty missing-argument)&quot;</strong></p>
+<p>I'm using Zed integration. This is my configuration:</p>
+<pre><code class="language-json">{
+&quot;languages&quot;: {
+    &quot;Python&quot;: {
+      &quot;language_servers&quot;: [&quot;ty&quot;]
+    }
+  },
+  &quot;lsp&quot;: {
+    &quot;ty&quot;: {
+      &quot;binary&quot;: {
+        &quot;path&quot;: &quot;/path/to/bin/ty&quot;,
+        &quot;arguments&quot;: [&quot;server&quot;]
+      }
+    }
+}
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.10 (15bae14c2 2025-06-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-16 19:19</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ty/issues/154</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 01:46</div>
+            <div class="timeline-body"><p>Also related: https://github.com/astral-sh/ty/issues/247</p>
+<p>Thanks for the report, but since this is a combination of two not-yet-supported features (TypedDict and splatted calls), I'm going to mark it as duplicate; if it still doesn't work after the above two issues are closed, then there may be a bug in one of the implementations of those features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-17 01:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

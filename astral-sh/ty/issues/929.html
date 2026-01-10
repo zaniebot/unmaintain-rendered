@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent handling of singleton `Enum` value assigned to variable - astral-sh/ty #929</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent handling of singleton `Enum` value assigned to variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/929">#929</a>
+        opened by <a href="https://github.com/mthuurne">@mthuurne</a>
+        on 2025-08-03 00:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mthuurne">@mthuurne</a> on 2025-08-03 00:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ty.dev/63e090fe-8583-4523-8b42-25e413ea1e92">testcase in playground</a></p>
+<p>When I check the following code:</p>
+<pre><code class="language-py">from enum import Enum
+from typing import Final, Literal
+
+
+class Singleton(Enum):
+    instance = &quot;there can be only one&quot;
+
+
+instance1 = Singleton.instance
+instance2: Singleton = Singleton.instance
+instance3: Final[Singleton] = Singleton.instance
+instance4: Literal[Singleton.instance] = Singleton.instance
+
+
+def f(x: Singleton | int) -&gt; None:
+    instance5 = Singleton.instance
+
+    if x is not Singleton.instance:
+        print(x + 0)
+    if x is not instance1:
+        print(x + 1)
+    if x is not instance2:
+        print(x + 2)
+    if x is not instance3:
+        print(x + 3)
+    if x is not instance4:
+        print(x + 4)
+    if x is not instance5:
+        print(x + 5)
+</code></pre>
+<p>ty reports:</p>
+<pre><code>error[unsupported-operator]: Operator `+` is unsupported between objects of type `Singleton | int` and `Literal[1]`
+  --&gt; enum_singleton.py:21:15
+   |
+19 |         print(x + 0)
+20 |     if x is not instance1:
+21 |         print(x + 1)
+   |               ^^^^^
+22 |     if x is not instance2:
+23 |         print(x + 2)
+   |
+info: rule `unsupported-operator` is enabled by default
+</code></pre>
+<p>I'd expect no issue to be reported, as enum <code>Singleton</code> only has one member and enum members have exactly one instance.</p>
+<p>For some reason, only in the case of <code>instance1</code> (assignment without annotation at module level) does ty not detect that <code>instance</code> is the only member of the enum.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 07:24</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I can see how this looks confusing, but everything is working as intended here. <code>instance1</code> is not annotated. If you check its type inside of the function <code>f</code>, you'll notice that we infer <code>Unknown | Singleton</code>. That's because other code might modify this module-global variable. Since it does not have a declared type, it might be changed to anything — without a type checker complaining about the assignment. For example, there could be a function like the following inside this module (or even another module):</p>
+<pre><code class="language-py">def modify():
+    global instance1
+    instance1 = &quot;whatever&quot;
+</code></pre>
+<p>Consequently, it is not safe to assume that the <code>if x is not instance1</code> check will exclude <code>Singleton</code> as a possibility.</p>
+<p>You can read more about our reasoning <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-08-04 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-06 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

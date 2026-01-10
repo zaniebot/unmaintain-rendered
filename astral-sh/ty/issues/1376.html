@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground crashes on too much data - astral-sh/ty #1376</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Playground crashes on too much data</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1376">#1376</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-10-17 04:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-17 04:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The playground crashes with the error <code>Uncaught DOMException: The quota has been exceeded.</code> when you put in too much data (see attached video).</p>
+<p>The crash happens by putting more than 8 MB of data into the playground. I used this script to generate 4 MB <code>python -c 'open(&quot;issue.py&quot;, &quot;w&quot;).write(&quot;a&quot; * 2**22)'</code>, which when pasted twice into the playground crashes it.</p>
+<p>It would be nice if like the <code>ruff</code> playground it didn't crash, or even better showed an error popup too.</p>
+<details>
+<summary>Full crash traceback</summary>
+
+<pre><code>Uncaught DOMException: The quota has been exceeded.
+    z0 https://play.ty.dev/assets/index-C9G0QtaD.js:64
+    m1 https://play.ty.dev/assets/index-C9G0QtaD.js:107
+    ll https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    nn https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    nn https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    Dg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    zg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    Ee https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    Y_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    Y_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    Z_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    F_ https://play.ty.dev/assets/index-C9G0QtaD.js:42
+    W_ https://play.ty.dev/assets/index-C9G0QtaD.js:50
+    &lt;anonymous&gt; https://play.ty.dev/assets/index-C9G0QtaD.js:50
+[index-C9G0QtaD.js:64](https://play.ty.dev/assets/index-C9G0QtaD.js)
+    z0 https://play.ty.dev/assets/index-C9G0QtaD.js:64
+    m1 https://play.ty.dev/assets/index-C9G0QtaD.js:107
+    ll https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    nn https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    nn https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    gg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    Dg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    zg https://play.ty.dev/assets/index-C9G0QtaD.js:49
+    Ee https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    (Async: EventHandlerNonNull)
+    Y_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    Y_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    Z_ https://play.ty.dev/assets/index-C9G0QtaD.js:26
+    F_ https://play.ty.dev/assets/index-C9G0QtaD.js:42
+    W_ https://play.ty.dev/assets/index-C9G0QtaD.js:50
+    &lt;anonymous&gt; https://play.ty.dev/assets/index-C9G0QtaD.js:50
+</code></pre>
+</details>
+
+<p>https://github.com/user-attachments/assets/1e687845-523e-467d-b9de-fcb5a2b993de</p>
+<h3>Version</h3>
+<p>Playground (64edfb6ef)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @AlexWaygood on 2025-10-17 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-10-17 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-17 07:03</div>
+            <div class="timeline-body"><p>The issue here is that there's a quote limit on how much we can store in local storage.</p>
+<p>We can skip local persistence if the files become very large. This fixes the crash but the playground definitely becomes sluggish with large files (we'd have to move the check phase to a worker, which isn't worth the complexity, as it isn't intended as a full IDE).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-17 07:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

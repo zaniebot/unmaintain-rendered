@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imports in stubs are not recognized as module attributes - astral-sh/ty #787</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Imports in stubs are not recognized as module attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/787">#787</a>
+        opened by <a href="https://github.com/zeevro">@zeevro</a>
+        on 2025-07-09 08:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeevro">@zeevro</a> on 2025-07-09 08:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-console">$ cat mymod.pyi
+import json
+
+$ cat test.py
+import mymod
+
+print(mymod.json.dumps({}))
+
+$ ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `&lt;module 'mymod'&gt;` has no attribute `json`
+ --&gt; test.py:3:7
+  |
+1 | import mymod
+2 |
+3 | print(mymod.json.dumps({}))
+  |       ^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+
+$ mv mymod.pyi mymod.py
+
+$ ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-07-10 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-10 08:18</div>
+            <div class="timeline-body"><p>Thank you for reporting this. It looks related to https://github.com/astral-sh/ty/issues/133. Given that this ticket is not resolved, I am more surprised by the fact that it works for non-stubs, then by the fact that it fails for stubs...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 17:14</div>
+            <div class="timeline-body"><p>Unfortunately this is unrelated to #133: this is the <a href="https://typing.python.org/en/latest/spec/distributing.html#import-conventions">re-export convention</a> for stub files. All <em>imported</em> symbols in a stub file <code>foo.pyi</code> are considered private by default unless they are included in <code>foo.__all__</code>, they were imported into <code>foo.pyi</code> using a <code>*</code> import, or they are explicitly re-exported in <code>foo.pyi</code> using a &quot;redundant alias&quot; (here that would be <code>import json as json</code> rather than just <code>import json</code>). If we did not follow the re-export convention as laid out by the typing spec, we would think that many objects exist at runtime despite the fact that they were only imported into stub files to provide accurate type hints (we used to think that Python had a <code>Literal</code> builtin symbol, because typeshed imports <code>typing.Literal</code> in its stubs for the <code>builtins</code> module!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-14 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:16 UTC
+    </footer>
+</body>
+</html>

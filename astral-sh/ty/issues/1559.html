@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit a diagnostic if a `@type_check_only` symbol is imported in a runtime context - astral-sh/ty #1559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit a diagnostic if a `@type_check_only` symbol is imported in a runtime context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1559">#1559</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-14 17:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 17:07</div>
+            <div class="timeline-body"><p>E.g.</p>
+<pre><code class="language-md">
+`stub.pyi`:
+
+```pyi
+from typing import type_check_only, Protocol
+
+@type_check_only
+class SupportsNext(Protocol):
+    def __next__(self): ...
+
+X: SupportsNext
+```
+
+`main.py`:
+
+```py
+# We should emit a diagnostic here:
+# `SupportsNext` doesn't exist at runtime, it's only for the type checker
+from stub import SupportsNext
+```
+</code></pre>
+<p>The diagnostic should not fire if the <code>import</code> statement is inside a stub file. Ideally we would also suppress the diagnostic if the <code>import</code> statement is inside an <code>if TYPE_CHECKING</code> block, but doing that well depends on implementing https://github.com/astral-sh/ty/issues/1553.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-11-14 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 17:15</div>
+            <div class="timeline-body"><p>It looks to me like neither pyright (not even in strict mode) nor mypy offer this diagnostic? Marking it as post-stable for that reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:42 UTC
+    </footer>
+</body>
+</html>

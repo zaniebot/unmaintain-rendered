@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`types.ModuleType.__getattr__` is never respected - astral-sh/ty #1346</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`types.ModuleType.__getattr__` is never respected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1346">#1346</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-13 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 13:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Typeshed includes a <code>__getattr__</code> method on its stub for <code>types.ModuleType</code>. This makes <a href="https://github.com/AlexWaygood/typeshed-stats/blob/b60f4ff38e5a5cba5ee2a5f14f0f735ff3df58ef/tests/test___all__.py#L33-L35">code like this</a> easier to write: although it is true that not all modules have an <code>__all__</code> attribute, I do happen to know in this case that all the submodules of <code>typeshed_stats</code> <em>do</em> have <code>__all__</code> attributes, and it would be somewhat annoying to have to <code>type: ignore</code> these lines. There's no other way of annotating this code to make the type checker happy, and it's pretty often the case that when you're handling a list of <code>ModuleType</code> instances in this way in Python, you know where they came from. A little bit of dynamic typing here goes a long way to improve ergonomics.</p>
+<p>Ty ignores <code>ModuleType.__getattr__</code> when resolving attribute accesses on module <em>literal</em> types, which is good, because otherwise it would consider every module to have every attribute. But it also ignores <code>ModuleType.__getattr__</code> when resolving attribute accesses on non-literal instances of <code>ModuleType</code>, which doesn't seem right. Ty therefore emits an <code>unresolved-attribute</code> diagnostic on this snippet even though mypy, pyright and pyrefly all have no complaints about it:</p>
+<pre><code class="language-py">import types
+
+def f(x: types.ModuleType):
+    print(x.__all__)
+</code></pre>
+<p>I spotted this by studying the ecosystem report in https://github.com/astral-sh/ruff/pull/20723#issuecomment-3372209543</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-13 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-10-13 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-13 14:06</div>
+            <div class="timeline-body"><blockquote>
+<p>This makes <a href="https://github.com/AlexWaygood/typeshed-stats/blob/b60f4ff38e5a5cba5ee2a5f14f0f735ff3df58ef/tests/test___all__.py#L33-L35">code like this</a> easier to write: although it is true that not all modules have an <code>__all__</code> attribute, I do happen to know in this case that all the submodules of <code>typeshed_stats</code> <em>do</em> have <code>__all__</code> attributes, and it would be somewhat annoying to have to <code>type: ignore</code> these lines. There's no other way of annotating this code to make the type checker happy</p>
+</blockquote>
+<p>I'm not generally questioning the usefulness of this typeshed lie, but this specific case doesn't seem that compelling to me? Couldn't you use <code>hasattr</code> narrowing?</p>
+<pre><code class="language-py">def test_submodule__all___is_valid(submodule: types.ModuleType) -&gt; None:
+    assert hasattr(submodule, &quot;__all__&quot;)
+    assert isinstance(submodule.__all__, list)
+    assert all(isinstance(item, str) for item in submodule.__all__)
+</code></pre>
+<p>https://play.ty.dev/c16a6272-d2c7-496a-b9fa-a6513af5ece8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>this specific case doesn't seem that compelling to me? Couldn't you use <code>hasattr</code> narrowing?</p>
+</blockquote>
+<p>True, though I run pyright in CI as well as mypy, and IIRC pyright does not support <code>hasattr()</code> narrowing IIRC</p>
+<p>https://github.com/python/typeshed/pull/6302 was the PR that made the typeshed change -- the mypy_primer report is still up there if you want to take a look at the impact it had on the ecosystem as a whole 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-13 14:34</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>this specific case doesn't seem that compelling to me? Couldn't you use <code>hasattr</code> narrowing?</p>
+</blockquote>
+<p>True, though I run pyright in CI as well as mypy, and IIRC pyright does not support <code>hasattr()</code> narrowing IIRC</p>
+</blockquote>
+<p>The code above seems to be accepted by all type checkers</p>
+<blockquote>
+<p><a href="https://github.com/python/typeshed/pull/6302">python/typeshed#6302</a> was the PR that made the typeshed change -- the mypy_primer report is still up there if you want to take a look at the impact it had on the ecosystem as a whole 😄</p>
+</blockquote>
+<p>I'm .... still not convinced 😃. Instead of modifying <code>ModuleType</code> for everyone (causing false negatives as well!), it feels like a similarly large ecosystem impact could have been achieved by modifying the return type of <code>builtins.__import__</code> /<code>importlib.import_module</code> to something more permissive (ideally <code>Any &amp; ModuleType</code>, if we had intersections, or a dedicated <code>DynamicModule</code> type with the usual <code>ModuleType</code> attributes plus that dynamic <code>__getattr__</code> method).</p>
+<p>In any case, that seems like a typeshed discussion. For ty, we should probably just follow typeshed and other typecheckers, I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 14:43</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>this specific case doesn't seem that compelling to me? Couldn't you use <code>hasattr</code> narrowing?</p>
+</blockquote>
+<p>True, though I run pyright in CI as well as mypy, and IIRC pyright does not support <code>hasattr()</code> narrowing IIRC</p>
+</blockquote>
+<p>The code above seems to be accepted by all type checkers</p>
+</blockquote>
+<p>yes, because pyright/mypy/pyrefly respect <code>types.ModuleType.__getattr__</code> -- I was saying that this code would <em>not</em> type-check with pyright if we removed <code>types.ModuleType.__getattr__</code> from typeshed, because pyright <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;strict=true&amp;code=CYUwZgBA%2BgFAHgLggewEYCsQGMAuBKBAWACgIyIBLSACwEMBnWnHAJ3gBoIAiMZZLgiXLCIABxYUAdjngA6XsjwkgA">doesn't support <code>hasattr()</code> narrowing</a></p>
+<blockquote>
+<p>I'm .... still not convinced 😃. Instead of modifying <code>ModuleType</code> for everyone (causing false negatives as well!), it feels like a similarly large ecosystem impact could have been achieved by modifying the return type of <code>builtins.__import__</code> /<code>importlib.import_module</code> to something more permissive (ideally <code>Any &amp; ModuleType</code>, if we had intersections, or a dedicated <code>DynamicModule</code> type with the usual <code>ModuleType</code> attributes plus that dynamic <code>__getattr__</code> method).</p>
+</blockquote>
+<p>Hmm, I think it could cause problems if the type returned by <code>__import__</code> was not recognised as being the same class that module-literals from <code>import</code> statements are instances of. Using <code>Any &amp; ModuleType</code> would obviously be the ideal solution here, but typeshed cannot use intersections yet 😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-10-17 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @AlexWaygood on 2025-10-17 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-10-17 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @AlexWaygood on 2025-10-17 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-14 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

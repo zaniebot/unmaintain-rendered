@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't union in `Any` from parameter default into parameter type - astral-sh/ty #1013</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't union in `Any` from parameter default into parameter type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1013">#1013</a>
+        opened by <a href="https://github.com/shroominic">@shroominic</a>
+        on 2025-08-15 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shroominic">@shroominic</a> on 2025-08-15 17:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My pydantic model (sqlmodel) has an attribute defined as :int but ty treats it as int or Any</p>
+<p><img width="435" height="140" alt="Image" src="https://github.com/user-attachments/assets/44f8b3ca-96f9-491a-8a43-feeba75e3b93" /></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-08-15 17:12</div>
+            <div class="timeline-body"><p>Could you give a code sample that shows enough code to reproduce the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-08-15 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shroominic">@shroominic</a> on 2025-08-15 17:37</div>
+            <div class="timeline-body"><pre><code class="language-python">import os
+from sqlalchemy.ext.asyncio.engine import create_async_engine
+from sqlmodel import Field, SQLModel
+
+DATABASE_URL = os.environ.get(&quot;DATABASE_URL&quot;, &quot;sqlite+aiosqlite:///keys.db&quot;)
+
+engine = create_async_engine(DATABASE_URL, echo=False)  # echo=True for debugging SQL
+
+
+class ApiKey(SQLModel, table=True):  # type: ignore
+    __tablename__ = &quot;api_keys&quot;
+
+    hashed_key: str = Field(primary_key=True)
+    balance: int = Field(default=0&quot;)
+</code></pre>
+<pre><code class="language-python">from fastapi import Depends
+from .db import ApiKey, AsyncSession, get_session
+
+async def refund_wallet_endpoint(
+    key: ApiKey = Depends(get_key_from_header),
+    session: AsyncSession = Depends(get_session),
+) -&gt; dict:
+    remaining_balance_msats = key.balance
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 18:41</div>
+            <div class="timeline-body"><p>Thanks! That minification still has some undefined names, but I simplified the second file as follows:</p>
+<pre><code class="language-py">from fastapi import Depends
+from db import ApiKey
+
+async def refund_wallet_endpoint(
+    key: ApiKey,
+):
+    remaining_balance_msats = reveal_type(key.balance)
+</code></pre>
+<p>And here I get the type <code>int</code> revealed.</p>
+<p>Which makes me suspect that the <code>Any</code> component of the union is coming from <code>Depends(...)</code> resolving to <code>Any</code>.</p>
+<p>Here's a <a href="https://play.ty.dev/6390b197-21f4-4873-87d6-1536e0e4c269">simpler presentation of the problem</a>.</p>
+<p>So I don't think this is related to SQLModel fields at all; it's related to parameter type inference with defaults.</p>
+<p>We union the default type in so that we can improve behavior in cases like <code>def f(x = 1): ...</code>, where there's no annotation but we know it can be <code>Literal[1]</code>, so we use <code>Unknown | Literal[1]</code> instead of just <code>Unknown</code>. But perhaps we should not do that when there is an annotation.</p>
+<p>(This is similar to #136 , but for parameters instead of assignments.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pydantic attributes not recognized correctly" to "Don't union in Any from parameter default into parameter type" by @carljm on 2025-08-15 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @carljm on 2025-08-15 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-08-15 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-08-22 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Don't union in Any from parameter default into parameter type" to "Don't union in `Any` from parameter default into parameter type" by @MichaReiser on 2025-09-19 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-02 23:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:24 UTC
+    </footer>
+</body>
+</html>

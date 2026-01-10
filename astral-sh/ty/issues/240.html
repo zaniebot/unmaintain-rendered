@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a benchmark involving realistic code that creates large unions - astral-sh/ty #240</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a benchmark involving realistic code that creates large unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/240">#240</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-29 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-29 16:15</div>
+            <div class="timeline-body"><p>Code that creates large unions (explicitly or implicitly) is known to be hard for type checkers to analyze in a performant way. Both mypy and pyright have had lots of issues regarding performance for these, and both have implemented several optimizations to deal with them. We should add at least one benchmark (probably several) that measures how we do on this.</p>
+<p>Common themes that come up in this area are:</p>
+<ul>
+<li><p>Unions involving <code>Literal</code> types (<code>Literal[1, 2, 3]</code> desugars to <code>Literal[1] | Literal[1] | Literal[3]</code> from the type checker's perspective, so &quot;medium-sized <code>Literal</code> types&quot; quickly end up creating huge unions)</p>
+</li>
+<li><p>Enums. A similar issue to <code>Literal</code> types. If you have an enum like this:</p>
+<pre><code class="language-py">class A(enum.Enum):
+    X = 1
+    Y = 2
+    Z = 3
+</code></pre>
+<p>Then in some cases, <code>x: A</code> can desugar to <code>x: Literal[A.X] | Literal[A.Y] | Literal[A.Z]</code></p>
+</li>
+<li><p>Pydantic. Pydantic uses some big unions, and features in performance bug reports in both the mypy and pyright issue trackers.</p>
+</li>
+<li><p>Unions involving protocols</p>
+</li>
+<li><p>Unions involving recursive type aliases</p>
+</li>
+<li><p>Unions involving <code>TypedDict</code>s</p>
+</li>
+</ul>
+<h2>References</h2>
+<p>Here are some references that are worth looking at (and from which we might be able to derive benchmarks). The great thing about all of these is that they are performance issues that we know real users encountered when their type checker was checking real code. I've tried to exclude anything specific to recursive type aliases, since that feels somewhat out of scope for this issue:</p>
+<h3>Mypy</h3>
+<ul>
+<li>https://github.com/python/mypy/issues/9169<ul>
+<li>fixed-ish by:<ul>
+<li>https://github.com/python/mypy/pull/9192</li>
+<li>https://github.com/python/mypy/pull/9394</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>https://github.com/python/mypy/issues/12225</li>
+<li>(enum-related) https://github.com/python/mypy/issues/12408<ul>
+<li>fixed-ish by https://github.com/python/mypy/pull/12519</li>
+</ul>
+</li>
+<li>https://github.com/python/mypy/issues/12526<ul>
+<li>linked PRs:<ul>
+<li>https://github.com/python/mypy/pull/12541</li>
+<li>https://github.com/python/mypy/pull/12659</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>(enum-related) https://github.com/python/mypy/issues/13821<ul>
+<li>fixed by https://github.com/python/mypy/pull/14277</li>
+</ul>
+</li>
+<li>(pydantic-related) https://github.com/python/mypy/issues/14034<ul>
+<li>fixed by https://github.com/python/mypy/pull/15104</li>
+</ul>
+</li>
+</ul>
+<h3>Pyright</h3>
+<ul>
+<li>https://github.com/microsoft/pyright/issues/7617<ul>
+<li>Fixed by https://github.com/microsoft/pyright/commit/aff916f0cdebd68fc6faa416a8fb428d36a06554</li>
+</ul>
+</li>
+<li>!! https://github.com/microsoft/pyright/issues/7143<ul>
+<li>Fixed by https://github.com/microsoft/pyright/pull/7154</li>
+</ul>
+</li>
+<li>(pydantic-related) https://github.com/microsoft/pyright/issues/4781<ul>
+<li>Fixed by https://github.com/microsoft/pyright/commit/c7ab8045bae66a19b69ce013de6f8fb642ec403c</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2024-09-29 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2024-09-29 22:17</div>
+            <div class="timeline-body"><p>We recently added a <code>TypedDict</code>-heavy feature in <code>altair</code>.</p>
+<p>Not sure if this helps as real-world examples, but sharing as <code>red-knot</code> came up during review</p>
+<ul>
+<li>https://github.com/vega/altair/pull/3536#discussion_r1761294081</li>
+</ul>
+<p><code>mypy</code> performance here has a lot of room for improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-10-01 03:08</div>
+            <div class="timeline-body"><p>Nice! I'll add altair to <a href="https://github.com/hauntsaninja/mypy_primer">mypy_primer</a>. You may also be interested in https://github.com/python/mypy/issues/17231#issuecomment-2379375287 , I think it makes mypy significantly faster on your workload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add a benchmark involving realistic code that creates large unions" to "Add a benchmark involving realistic code that creates large unions" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-11 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-05-11 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 12:22</div>
+            <div class="timeline-body"><p>@AlexWaygood we added pydantic to our benchmarks. Do you think we can close this issue or do you want to see some more union specific benchmarks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-15 12:26</div>
+            <div class="timeline-body"><p>Yeah, we now have a bunch of benchmarks running ty over codebsaes that other type checkers have (or used to have) pathological performance issues with. I think we're in a much better position now.</p>
+<p>I'm sure there are other benchmarks we can usefully add in the future, and the list above will still probably provide a useful reference, but I don't think there's anything immediately actionable here anymore. Thank you for adding all the new benchmarks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-15 12:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:57 UTC
+    </footer>
+</body>
+</html>

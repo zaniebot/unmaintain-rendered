@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lazy snapshot sweeping needs to invalidate constraints in nested scopes - astral-sh/ty #955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>lazy snapshot sweeping needs to invalidate constraints in nested scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/955">#955</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-08-07 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-07 20:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's an inconsistent inferred type on <code>main</code> today:</p>
+<pre><code class="language-py">def f():
+    x = None
+    def g():
+        if x is None:
+            def h():
+                # Reveals `None` but is &quot;foo&quot; at runtime.
+                reveal_type(x)
+            return h
+    h = g()
+    x = &quot;foo&quot;
+    h()
+</code></pre>
+<p>My understanding is that the reassignment <code>x = &quot;foo&quot;</code> invalidates shapshots of <code>x</code> in <code>f</code>, but it doesn't invalidate the snapshot of <code>x</code> in <code>g</code> that captures the <code>x is None</code> constraint.</p>
+<p>Here's a second variant of this issue, where we don't have any functions-returning-functions, but we do have some <code>nonlocal</code> bindings:</p>
+<pre><code class="language-py">def f():
+    x = None
+    def g():
+        if x is None:
+            def h1():
+                # Reveals `None` but is &quot;foo&quot; at runtime.
+                reveal_type(x)
+            def h2():
+                nonlocal x
+                x = &quot;foo&quot;
+            h2()
+            h1()
+    g()
+</code></pre>
+<p>That second version might fall under the umbrella of &quot;we don't currently infer nested bindings&quot; though? I'm not sure. cc @carljm @mtshiba</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-08-07 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-08-07 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-08 17:11</div>
+            <div class="timeline-body"><p>@mtshiba is this something you could look into?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-08-11 01:49</div>
+            <div class="timeline-body"><p>Yes, I'll work to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-15 00:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:22 UTC
+    </footer>
+</body>
+</html>

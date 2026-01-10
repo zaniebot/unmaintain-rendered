@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>walrus expressions in a comprehension scope &quot;leak&quot; into the comprehension's enclosing scope - astral-sh/ty #162</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>walrus expressions in a comprehension scope &quot;leak&quot; into the comprehension's enclosing scope</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/162">#162</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-24 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-24 15:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>List/set/dict comprehensions, and generator expressions, run code in an isolated scope, meaning that names defined in the comprehension body cannot be accessed from outside the comprehension:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; [x for x in range(2)]
+[0, 1]
+&gt;&gt;&gt; x
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    x
+NameError: name 'x' is not defined
+</code></pre>
+<p>But... there is one exception to this: walrus expressions! Here, <code>y</code> is not accessible from outside the comprehension scope, but <code>x</code> <em>is</em> because it was defined using a walrus (it &quot;leaks&quot; into the comprehension's enclosing scope):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; [(x := y*2) for y in range(2)]
+[0, 2]
+&gt;&gt;&gt; y
+Traceback (most recent call last):
+  File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
+    y
+NameError: name 'y' is not defined
+&gt;&gt;&gt; x
+2
+</code></pre>
+<p>This inconsistency might <em>look</em> like a bug in CPython, but it's intentional behaviour. PEP 572, which introduced walrus expressions to Python, <a href="https://peps.python.org/pep-0572/#scope-of-the-target">states</a>:</p>
+<blockquote>
+<p>An assignment expression does not introduce a new scope. In most cases the scope in which the target will be bound is self-explanatory: it is the current scope. If this scope contains a <code>nonlocal</code> or <code>global</code> declaration for the target, the assignment expression honors that. A lambda (being an explicit, if anonymous, function definition) counts as a scope for this purpose.</p>
+<p>There is one special case: an assignment expression occurring in a list, set or dict comprehension or in a generator expression (below collectively referred to as “comprehensions”) binds the target in the containing scope, honoring a <code>nonlocal</code> or <code>global</code> declaration for the target in that scope, if one exists. For the purpose of this rule the containing scope of a nested comprehension is the scope that contains the outermost comprehension. A lambda counts as a containing scope.</p>
+<p>The motivation for this special case is twofold. First, it allows us to conveniently capture a “witness” for an <code>any()</code> expression, or a counterexample for <code>all()</code>, for example:</p>
+<pre><code class="language-py">if any((comment := line).startswith('#') for line in lines):
+    print(&quot;First comment:&quot;, comment)
+else:
+    print(&quot;There are no comments&quot;)
+
+if all((nonblank := line).strip() == '' for line in lines):
+    print(&quot;All lines are blank&quot;)
+else:
+    print(&quot;First non-blank line:&quot;, nonblank)
+</code></pre>
+<p>Second, it allows a compact way of updating mutable state from a comprehension, for example:</p>
+<pre><code class="language-py"># Compute partial sums in a list comprehension
+total = 0
+partial_sums = [total := total + v for v in values]
+print(&quot;Total:&quot;, total)
+</code></pre>
+</blockquote>
+<p>Use of this feature is reasonably common for generator expressions in <code>any()</code> and <code>all()</code> (both mentioned as motivations in the PEP), so it's important for red-knot to model this accurately. We currently don't -- this test fails on <code>main</code> when it should pass:</p>
+<pre><code class="language-py">class Iterator:
+    def __next__(self) -&gt; int:
+        return 42
+
+class Iterable:
+    def __iter__(self) -&gt; Iterator:
+        return Iterator()
+
+[(a := b * 2) for b in Iterable()]
+[c for d in Iterable() if (c := d - 10) &gt; 0]
+{(e := f * 2): (g := f * 3) for f in Iterable()}
+list(((h := i * 2) for i in Iterable()))
+
+reveal_type(a)  # revealed: int
+reveal_type(c)  # revealed: int
+reveal_type(e)  # revealed: int
+reveal_type(g)  # revealed: int
+reveal_type(h)  # revealed: int
+</code></pre>
+<p>https://playknot.ruff.rs/5be255af-1c62-44b1-b843-eaba65293980</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-03-24 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot should model that definitions created using walrus expressions inside comprehension scopes "leak" into the comprehension's enclosing scope" to "red-knot should model that definitions created using walrus expressions inside a comprehension scope "leak" into the comprehension's enclosing scope" by @AlexWaygood on 2025-03-24 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-24 16:04</div>
+            <div class="timeline-body"><p>Yeah, I think there is a TODO comment for this somewhere in SemanticIndexBuilder IIRC. Thanks for writing it up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-24 16:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/blob/b9ac714d95f36f232711398ebf7a8e27962f76a7/crates/red_knot_python_semantic/src/semantic_index/builder.rs#L1671-L1676</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot should model that definitions created using walrus expressions inside a comprehension scope "leak" into the comprehension's enclosing scope" to "[red-knot] walrus expressions in a comprehension scope "leak" into the comprehension's enclosing scope" by @carljm on 2025-03-26 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] walrus expressions in a comprehension scope "leak" into the comprehension's enclosing scope" to "walrus expressions in a comprehension scope "leak" into the comprehension's enclosing scope" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-05-11 07:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:53 UTC
+    </footer>
+</body>
+</html>

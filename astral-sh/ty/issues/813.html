@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type of restriction of float | Sequence[float] not working - astral-sh/ty #813</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type of restriction of float | Sequence[float] not working</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/813">#813</a>
+        opened by <a href="https://github.com/eendebakpt">@eendebakpt</a>
+        on 2025-07-11 07:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eendebakpt">@eendebakpt</a> on 2025-07-11 07:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following minimal example:</p>
+<pre><code>def ty_test(x: list[float] | float) -&gt; None:
+    if isinstance(x, float):
+        x = [x] 
+    
+    if len(x) == 1:
+        x[0]
+    elif len(x) == 2:
+        x[1]
+        
+    return
+</code></pre>
+<p>After the <code>isinstance</code> check I would expect the type to be restricted to <code>list[float]</code>. Instead the type reported by <code>ty</code> is <code>list[int | float] | int | list[Unknown]</code>, and multiple errors are generated on the call to <code>len</code> and the subscripting on <code>x</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14 (3ececb07e 2025-07-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-11 16:10</div>
+            <div class="timeline-body"><p>This seems mostly correct, except I'd expect the last <code>list[Unknown]</code> to be <code>list[float]</code>. <code>float</code> includes <code>int</code> in the type system, and the way ty implements that (which I agree with) is to interpret the type annotation <code>float</code> as if it means <code>float | int</code>. But <code>isinstance(x, float)</code> only checks for actual <code>float</code>, not <code>int</code>, so after the <code>if</code> condition <code>x</code> could still be an int.</p>
+<p>Implementing it this way is important for soundness; ty will accept a call like <code>ty_test(1)</code>, which would fail at runtime in your implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eendebakpt">@eendebakpt</a> on 2025-07-12 22:22</div>
+            <div class="timeline-body"><p>Yes, with</p>
+<pre><code>def ty_test(x: list[float] | float) -&gt; float:
+    if isinstance(x, (float, int)):
+        x = [x] 
+    
+    return x[0]
+</code></pre>
+<p>all checks are fine. It is a bit strange the <code>list[Unknown]</code> is reported (also in the playground), but the return type is accepted.</p>
+<p>Feel free to close the issue (or leave open for the <code>Unknown</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 06:40</div>
+            <div class="timeline-body"><blockquote>
+<p>all checks are fine. It is a bit strange the <code>list[Unknown]</code> is reported (also in the playground), but the return type is accepted.</p>
+</blockquote>
+<p>We currently still infer <code>list[Unknown]</code> for list literals, so the <code>[x]</code> in the <code>x = [x]</code> assignment has type <code>list[Unknown]</code> at the moment. This is already tracked in https://github.com/astral-sh/ty/issues/543, so I think we can close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-14 06:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

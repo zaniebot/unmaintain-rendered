@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow setting additional attributes on functions? - astral-sh/ty #1256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow setting additional attributes on functions?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1256">#1256</a>
+        opened by <a href="https://github.com/benglewis">@benglewis</a>
+        on 2025-09-25 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benglewis">@benglewis</a> on 2025-09-25 15:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>You should be able to extend callable instances (e.g. functions) with attributes. Currently instead I get the above error for the following code:</p>
+<pre><code class="language-python">def a():
+    a.test = 1
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unresolved attribute `test` on type `def a(func: (...) -> Unknown) -> Unknown`.tyunresolved-attribute" to "Unresolved attribute `test` on type `def a(func: (...) -> Unknown) -> Unknown`" by @AlexWaygood on 2025-09-25 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-25 16:02</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I don't think it would be consistent for this to be allowed. In general, statically typed Python assumes that classes have a certain known set of attributes (with known types), and only those attributes can be set (to the correct types) on instances of those classes. Functions do not generally have a <code>test</code> attribute.</p>
+<p>All major type checkers (mypy, pyright, pyrefly) agree with us that this code is an error. (In mypy you have to add <code>-&gt; None</code> to the function definition, otherwise the function body isn't checked at all.)</p>
+<p>It's true that setting arbitrary attributes on functions works at runtime, but so does this, and no type checker allows this either:</p>
+<pre><code class="language-py">class A(): pass
+
+a = A()
+a.test = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-25 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benglewis">@benglewis</a> on 2025-09-25 16:16</div>
+            <div class="timeline-body"><p>Weird, because in our existing type checker, basedpyright, I am sure that this is allowed. I will check with regular old pyright and come back if it also allows this behaviour</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-25 16:20</div>
+            <div class="timeline-body"><p>I have wondered in the past whether we should add a <code>__setattr__</code> method to <code>FunctionType</code> in typeshed... I do agree that it's quite common (and quite idiomatic!) to monkey-patch attributes onto functions, and that the status quo makes typing many decorators quite painful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-09-25 17:17</div>
+            <div class="timeline-body"><p>In pyright, this is configurable. Pyright has a specific diagnostic category for this check: <code>reportFunctionMemberAccess</code>. This check is <a href="https://microsoft.github.io/pyright/#/configuration?id=diagnostic-settings-defaults">disabled</a> in &quot;basic&quot; type checking mode but is enabled in &quot;standard&quot; and &quot;strict&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-25 19:00</div>
+            <div class="timeline-body"><p>I'll reopen this, it seems like at some point we may want to consider how we can better support this use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-09-25 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-09-25 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-09-25 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unresolved attribute `test` on type `def a(func: (...) -> Unknown) -> Unknown`" to "Allow setting additional attributes on functions?" by @carljm on 2025-09-25 20:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:33 UTC
+    </footer>
+</body>
+</html>

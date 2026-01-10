@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic: expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it - astral-sh/ty #366</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic: expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/366">#366</a>
+        opened by <a href="https://github.com/jelle-openai">@jelle-openai</a>
+        on 2025-05-13 18:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-05-13 18:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>error[panic]: Panicked at crates/ty_python_semantic/src/types/infer.rs:714:59 when checking `&lt;snip&gt;.py`: `expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;.&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_definition_types(Id(8f79d5))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+             cycle heads: infer_definition_types(Id(8f79e4)) -&gt; 0
+   1: infer_expression_types(Id(8fb907))
+             at crates/ty_python_semantic/src/types/infer.rs:222
+   2: infer_expression_type(Id(8fb907))
+             at crates/ty_python_semantic/src/types/infer.rs:278
+   3: member_lookup_with_policy_(Id(8fac2f))
+             at crates/ty_python_semantic/src/types.rs:536
+   4: member_lookup_with_policy_(Id(8fac2e))
+             at crates/ty_python_semantic/src/types.rs:536
+   5: infer_expression_types(Id(8fb973))
+             at crates/ty_python_semantic/src/types/infer.rs:222
+             cycle heads: member_lookup_with_policy_(Id(8fac2c)) -&gt; 0, infer_definition_types(Id(8f79fd)) -&gt; 0
+   6: infer_expression_type(Id(8fb973))
+             at crates/ty_python_semantic/src/types/infer.rs:278
+   7: symbol_by_id(Id(8f9c5f))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   8: infer_definition_types(Id(8f79e4))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   9: symbol_by_id(Id(8f9c5e))
+             at crates/ty_python_semantic/src/symbol.rs:576
+  10: class_member_with_policy_(Id(8ad30f))
+             at crates/ty_python_semantic/src/types.rs:536
+  11: member_lookup_with_policy_(Id(8fac2c))
+             at crates/ty_python_semantic/src/types.rs:536
+  12: infer_definition_types(Id(8f79fd))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+  13: infer_scope_types(Id(8d6959))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+  14: check_types(Id(4af8))
+             at crates/ty_python_semantic/src/types.rs:84
+</code></pre>
+<p>As before, this is on a big internal codebase and I haven't attempted to minimize the crash. I can do so if it's helpful.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @carljm on 2025-05-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-13 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 18:32</div>
+            <div class="timeline-body"><p>Haven't seen this one before. I can try to create a repro for this one based on the given stack trace; if I fail, I might need to ask you for more info. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 18:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Haven't seen this one before.</p>
+</blockquote>
+<p>We had a similar problem here: https://github.com/astral-sh/ruff/issues/17792. Adding this as a reference in case it's a related problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-26 14:05</div>
+            <div class="timeline-body"><p>I hit this crash on the playground:</p>
+<details>
+
+<pre><code>panicked at crates/ty_python_semantic/src/semantic_model.rs:58:44:
+expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
+
+Stack:
+
+dp/i.wbg.__wbg_new_8a6f238a6ece86ea@https://play.ty.dev/assets/index-BP2-Iyp6.js:64:13264
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[6815]:0x519dce
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[2099]:0x3f0616
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[3211]:0x49e0bf
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[5634]:0x50113b
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[4454]:0x4d76a7
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[2229]:0x42552c
+@https://play.ty.dev/assets/ty_wasm_bg-V9G3C6yo.wasm:wasm-function[5603]:0x5002b3
+hover@https://play.ty.dev/assets/index-BP2-Iyp6.js:64:10197
+provideHover@https://play.ty.dev/assets/Editor-CPAUVll_.js:1:3107
+provideHover@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:739:6325
+_@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:660:168952
+b/l&lt;@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:660:169104
+b@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:660:169092
+_getMarkdownHovers@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:665:28407
+computeAsync@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:665:28238
+computeAsync/&lt;@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:616:57255
+computeAsync@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:616:57231
+_triggerAsyncComputation/this._asyncIterable&lt;@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:616:60528
+L@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:122:20227
+_triggerAsyncComputation@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:616:60509
+m/this._firstWaitScheduler&lt;@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:616:59598
+doRun@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:122:16421
+onTimeout@https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.js:122:16400
+</code></pre>
+</details>
+
+<p><img src="https://github.com/user-attachments/assets/a80313c2-f7c4-4666-a9a8-728f8344381e" alt="Image" /></p>
+<p>Unfortunately I still can't reproduce it exactly. The code I had was this:</p>
+<pre><code class="language-python">from typing import TypeVar, Generic, final, reveal_type
+from ty_extensions import Intersection
+
+type Alias = int | str
+
+def f(x: Intersection[Alias, None]):
+    reveal_type(x)  # Never, expect Child[int]
+</code></pre>
+<p>But that exact code doesn't trigger the crash. Before I was trying <code>None</code> instead of <code>float</code>, but putting in <code>float</code> again and then updating to None doesn't trigger the crash.</p>
+<p>(The comment in the text is wrong, kept it here just in case it has something to do with the crash.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 14:33</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I can consistently reproduce the crash by using your example and then hovering over the comma in <code>Intersection[Alias, None]</code>. So it's probably related to trying to look up types on some sub-expression.</p>
+<p>I can reproduce this with a hover unit test:</p>
+<pre><code class="language-py">from ty_extensions import Intersection
+
+def _(x: Intersection[str,&lt;CURSOR&gt; None]):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-26 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-26 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-05-26 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 15:11</div>
+            <div class="timeline-body"><p>I'm pretty sure those two instances <em>&quot;expression should belong to this TypeInference region […]&quot;</em> were <strong>not</strong> related to the same root cause, since the first one apparently happened on the CLI(?). And I think there's no way you could have triggered the same panic that was fixed in https://github.com/astral-sh/ruff/pull/18321 without hover-types.</p>
+<p>Do we want to keep this open, or wait for an MRE of the original example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-26 15:12</div>
+            <div class="timeline-body"><p>I don't think we should mark this as completed. It seems rather unlikely that Jelle used <code>ty_extensions</code> in their production code base</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-26 15:12</div>
+            <div class="timeline-body"><p>I think we should keep it open because there's a bug somewhere. We'll probably need an MRE for it to be actionable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-26 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-05-26 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-26 19:47</div>
+            <div class="timeline-body"><p>(That was just me syncing my fork -- I didn't intentionally close this issue!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-05-28 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @carljm on 2025-05-28 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 14:58</div>
+            <div class="timeline-body"><p>@jelle-openai, does this specific panic still repro on your codebase? A lot's changed since May 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-10-25 03:20</div>
+            <div class="timeline-body"><p>I spent a bit of time today looking at the current version of our codebase with the latest ty release. There were some crashes and hangs, but they seem related to issues with recursive aliases that are already fixed on main. Once that's released I can do another run to see if there's any remaining crashes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-29 20:50</div>
+            <div class="timeline-body"><p>I will be very surprised if this particular issue still repros, since we basically never throw this panic anywhere anymore; we fall back to <code>Unknown</code> instead. Going to close it on that basis, feel free to comment if you are seeing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-29 20:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missed exhaustiveness checking for class unions - astral-sh/ty #99</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missed exhaustiveness checking for class unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/99">#99</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-05-03 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-03 16:33</div>
+            <div class="timeline-body"><p><code>print(obj_type)</code> here is marked as &quot;used when possibly not defined&quot;.</p>
+<pre><code class="language-python">class Foo:
+    pass
+
+class Bar:
+    pass
+
+class Baz:
+    pass
+
+FooBarBaz = Foo | Bar | Baz
+
+
+def func(obj: FooBarBaz):
+    match obj:
+        case Foo():
+            obj_type = &quot;Foo&quot;
+        case Bar():
+            obj_type = &quot;Bar&quot;
+        case Baz():
+            obj_type = &quot;Baz&quot;
+    
+    print(obj_type)
+</code></pre>
+<p>See: https://types.ruff.rs/74979412-252c-4f0a-a271-1c4fb1e6bc82</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 18:01</div>
+            <div class="timeline-body"><p>There are two missing features here. The first is that we don't understand the legacy type alias at all (we have a pretty good understanding of PEP-695 type aliases, but we currently only understand very simple legacy type aliases such as <code>X = int</code>).</p>
+<p>But even if you rewrite it as <code>type FooBarBaz = Foo | Bar | Baz</code>, we still don't understand the <code>match</code> statement as being exhaustive. And it seems like the problem persists if you use <code>if/elif</code> as well: https://types.ruff.rs/7d05802c-0dcf-4e5f-8c81-c4f778d8d1c1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-03 19:16</div>
+            <div class="timeline-body"><p>In both the if/elif and match cases, we do all the narrowing correctly and we understand that if you add a <code>case _: ...</code> or an <code>else:</code>, the type of <code>obj</code> within it is <code>Never</code>. But we don't yet make use of that understanding to prune the possible control flow paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-05-08 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaseemabid">@jaseemabid</a> on 2025-05-22 11:48</div>
+            <div class="timeline-body"><p>I'm seeing the same errors for Enums as well, probably the same underlying issue.</p>
+<p>https://play.ty.dev/8afe9230-2803-4392-bf6d-0f23462867ad</p>
+<pre><code class="language-python">from enum import Enum
+
+class Pet(Enum):
+    cat = &quot;cat&quot;
+    dog = &quot;dog&quot;
+
+
+def speak(p: Pet) -&gt; str:
+    match p:
+        case Pet.cat:
+            return &quot;meow&quot;
+        case Pet.dog:
+           return &quot;woof&quot;
+ #     case _:
+ #         return &quot;This shouldn't be needed&quot;
+
+</code></pre>
+<p>☝ has one false positive error</p>
+<pre><code class="language-text">Function can implicitly return `None`, which is not assignable to return type `str` (invalid-return-type) [Ln 8, Col 22]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 15:02</div>
+            <div class="timeline-body"><p>@jaseemabid we don't really support enums at all yet unfortunately, I'm afraid -- you'd need both this feature and https://github.com/astral-sh/ty/issues/183 to get rid of the diagnostic there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kohlivarun5">@kohlivarun5</a> on 2025-06-04 03:01</div>
+            <div class="timeline-body"><p>Just to record interest, I'm seeing the same issue as @jaseemabid for enums</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 09:28</div>
+            <div class="timeline-body"><p>Supporting exhaustiveness checks in <code>match</code> statements would probably involve adding a new <code>NotNever(&lt;expr&gt;)</code> reachability constraint type, very similar to the one that is used to resolve #180. We could then report a <code>NotNever(match_subject)</code> constraint in the (implicit or explicit) catch-all case of the match statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 15:26</div>
+            <div class="timeline-body"><p>@sharkdp Same approach should work for if/elif/else chains, I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Same approach should work for if/elif/else chains, I think?</p>
+</blockquote>
+<p>My thought was that this is harder because we need to extract the narrowing subject from the test expressions, and it might not be safe to do so in all cases? In the example below, it seems reasonable to detect that <code>x</code> is the subject:</p>
+<pre><code class="language-py">def _(x: Literal[0, 1]):
+    if x == 0:
+        pass
+    elif x == 1:
+        pass
+    else:
+        reveal_type(x)  # Never
+</code></pre>
+<p>But what if we have something like this (stupid example)? Do we extract all identifiers that have appeared in <code>if</code> or <code>elif</code> conditions prior to the <code>else</code> case, and put a <code>NotNever</code> constraint on all of them (and <em>AND</em> them together)?</p>
+<pre><code class="language-py">def _(x: Literal[0, 1]):
+    ZERO = 0
+    ONE = 1
+
+    if x == ZERO:
+        pass
+    elif x == ONE:
+        pass
+    else:
+        # reachable if `x` is not Never AND `ZERO` is not Never AND `ONE` is not Never.
+        reveal_type(x)  # Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 15:54</div>
+            <div class="timeline-body"><p>Makes sense.</p>
+<p>Is there an alternative approach here where we instead check whether the last branch (whether an <code>elif</code> or a <code>case</code>) is statically known to be taken? Isn't this guaranteed to be the case for any exhaustive <code>match</code> or <code>if/elif</code> chain? The obvious case is that the final clause is a <code>case _:</code> or an <code>else:</code>, which trivially is known to be taken. But if we don't have one of those, then if the checks are exhaustive we should be able to see that the final <code>elif</code> test is statically-known-true, or that the final <code>case</code> is statically known to match.</p>
+<p>(I'm not sure that this is simpler than your idea for <code>match</code>, but I think it is for <code>if/elif</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there an alternative approach here where we instead check whether the last branch (whether an <code>elif</code> or a <code>case</code>) is statically known to be taken? Isn't this guaranteed to be the case for any exhaustive <code>match</code> or <code>if/elif</code> chain?</p>
+</blockquote>
+<p>Yes, you're right. I originally came here because I thought that we should already support this. But then I somehow confused myself, probably because I tested with <code>match</code> instead of <code>if</code>. In fact, we do already support &quot;exhaustiveness checks&quot; in easy cases:</p>
+<pre><code class="language-py">def _(x: Literal[0, 1]):
+    if x == 0:
+        pass
+    elif x == 1:
+        pass
+    else:
+        assert_never(x)  # this passes, `x` is narrowed to `Never`
+
+        # we also detect this branch as unreachable, because `x == 1` is
+        # inferred as `Literal[True]` in the `elif` case with `x` narrowed to
+        # `Literal[0, 1] &amp; ~Literal[0] = Literal[1]`
+
+</code></pre>
+<p>Something like the following does not work, but we could probably make it work by inferring literal Boolean types for <code>isinstance(…)</code>:</p>
+<pre><code class="language-py">class A: ...
+class B: ...
+
+def _(x: A | B):
+    if isinstance(x, A):
+        pass
+    elif isinstance(x, B):
+        pass
+    else:
+        assert_never(x)  # this passes, `x` is narrowed to `Never`
+        # but this branch is not detected as unreachable, because
+        # `isinstance(x: A &amp; ~B, B)` is not inferred as `Literal[True]`.
+</code></pre>
+<p>For some reason, the following also doesn't work, so I guess it might just be an incorrect modelling of reachability constraints in <code>match</code> statements?</p>
+<pre><code class="language-py">def matching(x: Literal[0, 1]):
+    match x:
+        case 0:
+            pass
+        case 1:
+            pass
+        case _:
+            assert_never(x)  # this passes, `x` is narrowed to `Never`
+
+            # not detected as unreachable
+</code></pre>
+<blockquote>
+<p>But if we don't have one of those, then if the checks are exhaustive we should be able to see that the final <code>elif</code> test is statically-known-true, or that the final <code>case</code> is statically known to match.</p>
+</blockquote>
+<p>👍</p>
+<p>In summary: Something like this <code>NotNever(&lt;expr&gt;)</code> constraint is not needed, but we might have to improve type <em>inference</em> for some expressions that we can already handle in narrowing (<code>isinstance</code>, <code>issubclass</code>, type guards(?), …). And it looks like we need to look at the reachability constraint modelling in <code>match</code> statements again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-18 07:41</div>
+            <div class="timeline-body"><p>I think the problem with <code>match</code> statements is the following:</p>
+<pre><code class="language-py">def matching(x: Literal[0, 1]):
+    match x:
+        case 0:
+            pass
+        case 1:
+            pass
+        case _:
+            # reachable?
+</code></pre>
+<p>When we evaluate the <code>case 1</code> pattern, we compare the type of the subject expression (the <code>x</code> in <code>match x</code>) with the type of the value pattern (<code>1</code>). But since we only store a reference to the <code>x</code> expression at the top of the <code>match</code> statement, narrowing constraints that come from previous patterns are not taken into account when inferring types for <code>x</code>. This means that we still see <code>Literal[0, 1]</code> as the type of the subject expression when evaluating <code>case 1</code>, and so we infer an ambiguous truthiness.</p>
+<p>Instead, we should re-evaluate the subject expression <em>under the current narrowing constraints</em>. One way to do this might be to inject/record the subject expression repeatedly for each <code>case</code>. This way, we would get new &quot;uses&quot; of <code>x</code> with the right narrowing constraints. There might be better ways to solve this, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-19 00:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Instead, we should re-evaluate the subject expression <em>under the current narrowing constraints</em>.</p>
+</blockquote>
+<p>It seem like we shouldn't need to re-evaluate the subject expression anew each time -- the type of the subject expression itself never changes (it is only evaluated once). What changes is our understanding of the constraints on its possible type, given that we've reached match case N.</p>
+<p>And I also think that re-evaluating the subject expression under the current narrowing constraints might fail to give us exhaustiveness detection when the subject is a more complex expression (not a simple Place). Because in that case there are no applicable narrowing constraints (narrowing applies only to Places).</p>
+<p>It seems like we might need more of a new system here? Where we track the accumulated set of constraints on the type of the subject at each match arm, and the reachability constraints that we add to the control flow paths include those constraints, as well as the original subject expression (which we would still evaluate only once, to its original type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-19 01:43</div>
+            <div class="timeline-body"><p>Yes, you'll likely need to create a new system here. That's what I needed to do in pyright. So did the Adrian Freund, the contributor who implemented this support for mypy. Interestingly, Adrian did this as his bachelors thesis for his CS degree at KIT. If you can read German or don't mind using a translation program, his <a href="https://archive.org/details/typinferenz-und-vollstandigkeitsuberprufung-fur-structural-pattern-matching-in-python">thesis</a> is an interesting read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems like we might need more of a new system here? Where we track the accumulated set of constraints on the type of the subject at each match arm, and the reachability constraints that we add to the control flow paths include those constraints, as well as the original subject expression (which we would still evaluate only once, to its original type).</p>
+</blockquote>
+<p>Thank you @carljm. This paragraph helped me to find a solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-23 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2025-12-01 11:23</div>
+            <div class="timeline-body"><p>This issue still persists when matching against classes that use generics:</p>
+<pre><code class="language-python">class Ok[T]:
+    def __init__(self, value: T) -&gt; None:
+        self._value = value
+
+
+class Err[E]:
+    def __init__(self, value: E) -&gt; None:
+        self._value = value
+
+
+def get_data() -&gt; Ok[str] | Err[str]:
+    return Ok(&quot;example&quot;)
+
+
+def func() -&gt; str:
+    match get_data():
+        case Ok():
+            return &quot;Foo&quot;
+        case Err():
+            return &quot;Bar&quot;
+</code></pre>
+<blockquote>
+<p>Function can implicitly return <code>None</code>, which is not assignable to return type <code>str</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:37</div>
+            <div class="timeline-body"><p>@sasanjac Thank you. I opened #1702 to discuss this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

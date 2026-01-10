@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `json` output format - astral-sh/ty #717</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `json` output format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/717">#717</a>
+        opened by <a href="https://github.com/Sh099078">@Sh099078</a>
+        on 2025-06-27 15:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Sh099078">@Sh099078</a> on 2025-06-27 15:49</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h5>Context</h5>
+<p>Hi, I am currently testing <code>ty</code> on a pipeline to compare type checking errors between a pull request between the source and target branches and associate errors on both. The goal is to be able to do a summary indicating which errors are new in the source compared to the target branch and which ones it fixed. That pipeline runs on a legacy part of the project that already had a lot of typing errors before we added type checking in the CI, so we cannot fail the pipeline if there are any errors present. Ideally, we would only fail it if there are new errors in the pull request source branch compared to the target branch.</p>
+<h5>Questions: what's on the roadmap ?</h5>
+<p>Which raises two questions:</p>
+<ul>
+<li>Are there plans to allow to uniquely identify errors per error type + module + method + variable (or something alike) instead of identifying them by line / column number ? The goal would be to be able to match errors between two runs easily even when the line numbers have changed between the runs for some reason (formatter, new imports / code added to the file, etc).</li>
+<li>Is formatting the output to json on the roadmap ?</li>
+</ul>
+<p>If your team doesn't consider that implementing that kind of identifier would be absurd, too time consuming, too complex or incompatible with your current objectives and if it is not currently planned I might create a feature request for it.</p>
+<p>Thanks in advance!</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Sh099078 on 2025-06-27 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 16:16</div>
+            <div class="timeline-body"><p>JSON-formatted (or generally, machine-readable) output format is planned, though it's not currently high priority.</p>
+<p>We don't currently have any plans to try to create a unique key for a diagnostic that would be stable across line number changes. It seems like a problem with no good solution, only a variety of possible heuristics that may or may not work as expected. For reference, the <a href="https://docs.basedpyright.com/v1.29.1/benefits-over-pyright/baseline/">baseline feature of basedpyright</a> just matches based on file, diagnostic code, and column number (excluding line number), which is a heuristic that could be implemented externally today (by parsing the existing concise output, or a future machine-readable output). It seems unlikely to me that we attempt more complex heuristics than this within ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-27 16:41</div>
+            <div class="timeline-body"><p>The gitlab output format in ruff does compute a somewhat unique identifier (a truely unique identifier is hard) and @ntBre's working on porting Ruff to the same diagnostic infrastructure as ty is using. That will, hopefully, allow us to use the gitlab reporter in ty too that you can then enable with <code>--output-format gitlab</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akaihola">@akaihola</a> on 2025-09-06 11:08</div>
+            <div class="timeline-body"><p><a href="/akaihola/graylint">Graylint</a> is a tool which runs linters twice: once for a baseline commit and once for the working tree. It then suppresses messages which already existed for the baseline commit.</p>
+<p>A mapping for unmodified lines between the working tree and the baseline commit is created using <code>difflib.SequenceMatcher</code> from the Python standard library. This works fairly reliably, but obviously loses the correct mapping when chunks of code are reordered.</p>
+<p>The code for this is in the following <a href="/akaihola/darkgraylib">Darkgraylib</a> functions:</p>
+<ul>
+<li><a href="/akaihola/darkgraylib/blob/fd2c11c62c8f85941249d7e93a5ae175fdce9f06/src/darkgraylib/diff.py#L95-L126"><code>map_unmodified_lines()</code></a></li>
+<li><a href="/akaihola/darkgraylib/blob/fd2c11c62c8f85941249d7e93a5ae175fdce9f06/src/darkgraylib/diff.py#L56-L79"><code>diff_and_get_opcodes()</code></a></li>
+</ul>
+<p>I hope this provides another possible heuristic to consider for a <code>ty</code> baseline feature.</p>
+<p>Also, this issue seems to be related to these <code>ty</code> issues:</p>
+<ul>
+<li>#1074</li>
+<li>#913</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Is there an alternative way to match errors between several runs more reliably than column + line number planned on the roadmap ?" to "Add `json` output format" by @MichaReiser on 2025-11-14 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-14 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-11-14 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-14 08:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

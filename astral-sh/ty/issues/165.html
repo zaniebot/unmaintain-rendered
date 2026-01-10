@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore alternate implementation for callable type equivalence - astral-sh/ty #165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore alternate implementation for callable type equivalence</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/165">#165</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-21 03:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 03:35</div>
+            <div class="timeline-body"><p>Currently, the general callable type uses a manual implementation to check whether the two types are equivalent (<code>is_equivalent_to</code>). This is required for two reasons:</p>
+<ol>
+<li>The type of the default values don't participate in checking for equivalence, it's only the optionality that participates i.e., is the parameter required for both callable types or not?</li>
+<li>The name of positional-only, variadic and keyword-variadic parameters don't participate in checking for equivalence</li>
+</ol>
+<p>Refer to https://github.com/astral-sh/ruff/pull/16698#discussion_r2003121350 for previous discussion.</p>
+<p>A possible option that's discussed in the above thread is to erase the information that doesn't participate in equivalence relation (above two points) when <a href="https://github.com/astral-sh/ruff/blob/3b1e030fbbe586a2b8918d4f1c33cea710faa446/crates/red_knot_python_semantic/src/types.rs#L4375-L4383">constructing a <code>GeneralCallableType</code> from a function literal</a>. This will mean that we can remove the manual implementation and it will then use the catch-all branch:</p>
+<p>https://github.com/astral-sh/ruff/blob/3b1e030fbbe586a2b8918d4f1c33cea710faa446/crates/red_knot_python_semantic/src/types.rs#L913-L913</p>
+<p>This has the benefit that the equivalence is maintained at the type level. But, this does mean that (a) we'll need to make <code>name: Name</code> into <code>name: Option&lt;Name&gt;</code> to erase it or replace it with <code>Name(&quot;&quot;)</code> (empty name seems error prone) and (b) use something else for the default type as <code>Type::Unknown</code> is not a static type, maybe just replace it with <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-24 18:17</div>
+            <div class="timeline-body"><p>This might not be possible given that we now use the manual implementation for both <code>is_equivalent_to</code> and <code>is_gradual_equivalent_to</code> (https://github.com/astral-sh/ruff/pull/16887).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-02 14:06</div>
+            <div class="timeline-body"><blockquote>
+<p>A possible option that's discussed in the above thread is to erase the information that doesn't participate in equivalence relation (above two points) when <a href="https://github.com/astral-sh/ruff/blob/3b1e030fbbe586a2b8918d4f1c33cea710faa446/crates/red_knot_python_semantic/src/types.rs#L4375-L4383">constructing a <code>GeneralCallableType</code> from a function literal</a>. This will mean that we can remove the manual implementation and it will then use the catch-all branch:</p>
+</blockquote>
+<p>For context, this is possible now via the <code>normalized</code> method but that can only be used for <code>is_equivalent_to</code>. Refer to https://github.com/astral-sh/ruff/pull/17145#discussion_r2025123895 for why it's not done that way currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Explore alternate implementation for callable type equivalence" to "Explore alternate implementation for callable type equivalence" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:53 UTC
+    </footer>
+</body>
+</html>

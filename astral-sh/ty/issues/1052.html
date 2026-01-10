@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reopening notebook breaks ty language server partly - astral-sh/ty #1052</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reopening notebook breaks ty language server partly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1052">#1052</a>
+        opened by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a>
+        on 2025-08-19 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a> on 2025-08-19 15:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reopening a <code>notebook</code> containing same code blocks in another <code>.py</code> file breaks ty language server.</p>
+<p>In the <code>example.ipynb</code> and <code>example.py</code> containing the same code block:</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv(&quot;data.csv&quot;)
+print(df.head())
+</code></pre>
+<p>Open the <code>example.py</code> and then <code>example.ipynb</code>, ty works as expected as the figure</p>
+<p><img width="1615" height="544" alt="Image" src="https://github.com/user-attachments/assets/c698a340-fa0b-426c-9276-bd59c5b89046" /></p>
+<p>Then colse and reopen <code>example.ipynb</code> will cause wrong segment highlight and wrong hover respond as the figure:
+<img width="1620" height="549" alt="Image" src="https://github.com/user-attachments/assets/a0d8892f-0d7c-47dd-8cb3-1c8f7583ef1d" /></p>
+<p>Tested on version <strong>2025.35.12261122</strong> and <strong>2025.37.12311339</strong>, the issue persists. I did not dig deep into the problem, while the trace of ty language server looks normal. Looks like some thing wrong with the cache used by ty.</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.19 with ty-vscode 2025.37.12311339</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-19 15:58</div>
+            <div class="timeline-body"><p>Thank you for the report!</p>
+<p>Currently, ty doesn't support notebooks, there's a tracking issue over at #173.</p>
+<p>Can you clarify which screenshot is the one with the notebook as it's hard to understand? 😅</p>
+<p>@MichaReiser If the client is still sending requests for notebooks to ty like hover, semantic tokens, etc., I think we might want to restrict the snapshots to only be created for Python files. Currently, they would be created for notebooks as well which might be confusing to users when ty hasn't declared official support for notebooks. I haven't checked this yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-19 16:02</div>
+            <div class="timeline-body"><p>Huh, not sure why is VS Code sending requests for notebooks when the server hasn't registered for it. I guess it might be because each cell is still a Python text document while the server doesn't receive any requests related to notebooks.</p>
+<p><img width="2560" height="1412" alt="Image" src="https://github.com/user-attachments/assets/0e606e35-f1be-4d37-ae49-485df535176a" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-08-19 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a> on 2025-08-19 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you clarify which screenshot is the one with the notebook as it's hard to understand? 😅</p>
+</blockquote>
+<p>Both screenshot is with a notebook. The difference is the first comes from the notebook is opened the first time. The sccond screenshot is a result of closing and reopening the notebook.</p>
+<p>Steps:</p>
+<ol>
+<li>Open <code>.py</code> -&gt; works fine.</li>
+<li>Open <code>.notebook</code> containing same code block as <code>.py</code> -&gt; works fine. (screenshot 1)</li>
+<li>Close and reopen <code>.notebook</code> -&gt; ty breaks. (screenshot 2)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 16:49</div>
+            <div class="timeline-body"><p>Maybe it's because of</p>
+<p>https://github.com/astral-sh/ty-vscode/blob/3b77f79626a64b7e0d07d172ad06e9d3d98fe95b/package.json#L53-L57</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:07</div>
+            <div class="timeline-body"><p>The first screenshot doesn't look like ty to me. ty doesn't support multiline formatting of types (there's a PR but it's not yet merged https://github.com/astral-sh/ruff/pull/19979). So I suspect the first screenshot is a different LSP providing the hover over ty. Do you have pylance or pyright (or any other python LSP installed?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a> on 2025-08-19 17:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The first screenshot doesn't look like ty to me. ty doesn't support multiline formatting of types (there's a PR but it's not yet merged <a href="https://github.com/astral-sh/ruff/pull/19979">astral-sh/ruff#19979</a>). So I suspect the first screenshot is a different LSP providing the hover over ty. Do you have pylance or pyright (or any other python LSP installed?)</p>
+</blockquote>
+<p>Yes I have Pylance alongside ty. I thought ty would mute pylance automatically. I'll try reproduce the issue with pylance disabled manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a> on 2025-08-19 17:18</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>The first screenshot doesn't look like ty to me. ty doesn't support multiline formatting of types (there's a PR but it's not yet merged <a href="https://github.com/astral-sh/ruff/pull/19979">astral-sh/ruff#19979</a>). So I suspect the first screenshot is a different LSP providing the hover over ty. Do you have pylance or pyright (or any other python LSP installed?)</p>
+</blockquote>
+<p>Yes I have Pylance alongside ty. I thought ty would mute pylance automatically. I'll try reproduce the issue with pylance disabled manually.</p>
+</blockquote>
+<p>I can confirm that without Pylance, screenshot 1 is the same as 2. That' to say:</p>
+<ol>
+<li>Open <code>.py</code> -&gt; (screenshot 2)</li>
+<li>Open <code>.notebook</code> containing same code block as <code>.py</code> -&gt;  (screenshot 2)</li>
+<li>Close and reopen <code>.notebook</code> -&gt; (screenshot 2)</li>
+</ol>
+<p>Now the problem becomes the semantic highlight for <code>pandas</code> and reference to <code>pd.read_csv</code> is not displayed as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:22</div>
+            <div class="timeline-body"><p>Hmm, I must be doing something wrong because I'm not able to reproduce this.</p>
+<p>https://github.com/user-attachments/assets/f57a43d9-4891-49ba-b999-1efb6c91ce99</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:23</div>
+            <div class="timeline-body"><p>Edit: Or are you saying that the issue now just is that <code>pandas</code> doesn't use the same highlighting as Pylance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-08-19 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xiao-Chenguang">@Xiao-Chenguang</a> on 2025-08-19 17:27</div>
+            <div class="timeline-body"><p>Yes I have being using ty along pylance for a while, I got exactly the same result as you now with pylance disabled. I thought the highlight and reference in screenshot 1 was provided by ty while it's not.</p>
+<p>If the semantic highlight and multiline is still in development, pleaes feel free to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 17:32</div>
+            <div class="timeline-body"><p>Okay, that makes sense. I'll merge this into https://github.com/astral-sh/ty/issues/791 as highlights for symbols from other modules is explicitly listed as a TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-19 17:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

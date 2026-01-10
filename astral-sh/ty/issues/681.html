@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;not_none&quot; fails to refine type - astral-sh/ty #681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;not_none&quot; fails to refine type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/681">#681</a>
+        opened by <a href="https://github.com/adamh-oai">@adamh-oai</a>
+        on 2025-06-18 17:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2025-06-18 17:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example below.  If make this <code>not_none(str | None) -&gt; str</code> it works as expected.</p>
+<pre><code>$ cat not_none.py
+import os
+from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+def not_none(v: T | None) -&gt; T:
+    if v is None:
+        raise RuntimeError(&quot;f&quot;)
+    return v
+
+def test_not_none() -&gt; int:
+    v = not_none(os.environ.get(&quot;X&quot;))
+    return len(v)
+
+$ uvx ty@latest check
+Installed 1 package in 14ms
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `len` is incorrect
+  --&gt; not_none.py:13:16
+   |
+11 | def test_not_none() -&gt; int:
+12 |     v = not_none(os.environ.get(&quot;X&quot;))
+13 |     return len(v)
+   |                ^ Expected `Sized`, found `str | None`
+   |
+info: Function defined here
+    --&gt; stdlib/builtins.pyi:1535:5
+     |
+1533 | def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -&gt; bool: ...
+1534 | def issubclass(cls: type, class_or_tuple: _ClassInfo, /) -&gt; bool: ...
+1535 | def len(obj: Sized, /) -&gt; int: ...
+     |     ^^^ ---------- Parameter declared here
+1536 |
+1537 | license: _sitebuiltins._Printer
+     |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 17:46</div>
+            <div class="timeline-body"><p>I think this is because we're solving the <code>TypeVar</code> <code>T</code> to <code>str | None</code> (which is a <em>valid</em> solution, just not the narrowest type we could solve to).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-06-18 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-18 18:40</div>
+            <div class="timeline-body"><p>Yes, our constraint solver is currently extremely basic; this should be fixed by improving it. Duplicate of #623</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-18 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

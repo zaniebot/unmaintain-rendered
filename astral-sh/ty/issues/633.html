@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not fall back to behaving as if there is no `__get__` if call to `__get__` fails to type check - astral-sh/ty #633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not fall back to behaving as if there is no `__get__` if call to `__get__` fails to type check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/633">#633</a>
+        opened by <a href="https://github.com/n-gao">@n-gao</a>
+        on 2025-06-11 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/n-gao">@n-gao</a> on 2025-06-11 10:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code gives false positives in <code>ty</code> but works in PyLance:</p>
+<pre><code class="language-py">from typing import Protocol, ClassVar, Self, reveal_type
+
+class Descriptor[S, T](Protocol):
+    def __get__(self, instance: S, owner: type[S]) -&gt; T:
+        ...
+
+class HasItem(Protocol):
+    item: ClassVar[Descriptor[Self, str]]
+
+def f(x: HasItem) -&gt; str:
+    result = x.item
+    reveal_type(result) # PyLance: str, ty: Descriptor[HasItem, str]
+    return result
+</code></pre>
+<p>I would assume that <code>x.item</code> will be inferred to be <code>str</code>.</p>
+<h3>Version</h3>
+<p>0.0.1a8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-06-11 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-06-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-11 18:24</div>
+            <div class="timeline-body"><p>We do support descriptors in general. I think one thing that's potentially confusing is that if a call to <code>__get__</code> fails with a type error, we don't surface that error, we just skip the descriptor protocol. That may not be ideal.</p>
+<p>The specific problem here appears to be related to the use of <code>typing.Self</code>. <a href="https://play.ty.dev/e03af05c-c805-4e9c-a503-59eedfba4905">This works</a>, but <a href="https://play.ty.dev/0bdee25a-249f-4dcd-9e22-ce3fc84181fc">this does not</a> -- the only difference is the use of <code>Self</code> vs <code>&quot;HasItem&quot;</code>. (I also removed the use of protocols from the OP, just to eliminate another possible factor.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Descriptors `__get__` are not resolved" to "Do not fall back to behaving as if there is no `__get__` if call to `__get__` fails to type check" by @carljm on 2025-11-13 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 07:29</div>
+            <div class="timeline-body"><p>This came up again today.</p>
+<p>We need #194 to get good diagnostics from these cases, but even in the absence of that, we should still not fall back to not-a-descriptor if the call to <code>__get__</code> fails.</p>
+<p>(The OP example here also requires #1124 in order for the call to <code>__get__</code> to not fail; that's a separate issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-13 12:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:10 UTC
+    </footer>
+</body>
+</html>

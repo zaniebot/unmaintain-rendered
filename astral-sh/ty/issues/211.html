@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bare `ClassVar` annotations - astral-sh/ty #211</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bare `ClassVar` annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/211">#211</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-27 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-27 10:30</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Consider a 'bare' <code>ClassVar</code> annotation, i.e. without an explicit <code>ClassVar[…]</code> type argument:</p>
+<pre><code class="language-py">class C:
+    var: ClassVar = 1
+</code></pre>
+<p>There are two questions here:</p>
+<ul>
+<li>Should this be allowed?</li>
+<li>If allowed, what should the public type of <code>C.var</code> be?</li>
+</ul>
+<h2>Should this be allowed?</h2>
+<p>Arguments for why it should be disallowed:</p>
+<ul>
+<li><p><a href="https://peps.python.org/pep-0526/#class-and-instance-variable-annotations">PEP 526</a> which introduced <code>ClassVar</code> doesn't mention the possibility of a bare <code>ClassVar</code></p>
+</li>
+<li><p>The <a href="https://typing.readthedocs.io/en/latest/spec/class-compat.html#classvar">typing spec</a> seems rather clear that this is not allowed:</p>
+<blockquote>
+<p>A <a href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-qualifier">type qualifier</a> <code>ClassVar[T]</code> exists in the <a href="https://docs.python.org/3/library/typing.html#module-typing">typing</a> module. It accepts only a single argument that should be a valid type, and is used to annotate class variables that should not be set on class instances.</p>
+</blockquote>
+</li>
+<li><p>A bare <a href="https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax"><code>Final</code> is <em>explicitly allowed</em></a> in the spec, but no such clarification exists for <code>ClassVar</code>.</p>
+</li>
+<li><p>The <a href="https://typing.readthedocs.io/en/latest/spec/annotations.html#type-and-annotation-expressions">syntax for type and annotations expressions</a> does not seem to allow for a <code>ClassVar</code> without bracketed arguments, because it would fall under the <code>type_expression</code> branch and this only allows bare names if they <em>&quot;refer to a valid in-scope class, type alias, or TypeVar&quot;</em>, but <code>ClassVar</code> is a special form:</p>
+<pre><code>annotation_expression ::=  …
+                          | &lt;ClassVar&gt; '[' annotation_expression ']'
+                          | &lt;Final&gt; ('[' annotation_expression']')?
+                          | …
+                          | type_expression
+
+type_expression       ::=  …
+                          | name
+                                (where name must refer to a valid in-scope class,
+                                 type alias, or TypeVar)
+                          | …
+</code></pre>
+<p>~~Although to be fair, the syntax does not seem to allow a bare <code>Final</code> either, which is explicitly allowed in the spec~~ This <a href="https://github.com/python/typing/pull/1915">has actually been changed</a>. A bare <code>Final</code> is now explicitly allowed.</p>
+</li>
+</ul>
+<p>Arguments for why it should be allowed:</p>
+<ul>
+<li>It is okay to declare the type of a (class) variable using <code>var: int</code>, or not to declare it at all. It therefore seems reasonable to allow both <code>var: ClassVar[int]</code> and <code>var: ClassVar</code>, because <code>ClassVar</code> is a type <em>qualifier</em> that adds information that is orthogonal to the declared type.</li>
+<li>Mypy and Pyright both support a bare <code>ClassVar</code> annotation in the sense that they raise a diagnostic if you try to modify <code>var</code> through an instance.</li>
+<li><code>ClassVar</code> seems similar in spirit to <code>Final</code>, and a bare <code>Final</code> is explicitly allowed (but see below for why we probably <em>don't</em> want a bare <code>ClassVar</code> to have the same implication as a bare <code>Final</code>).</li>
+</ul>
+<h2>If allowed, what should the public type of <code>C.var</code> be?</h2>
+<p>A bare <code>Final</code> has the following <a href="https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax">meaning</a>:</p>
+<blockquote>
+<pre><code class="language-py">ID: Final = 1
+</code></pre>
+<p>The typechecker should apply its usual type inference mechanisms to determine the type of <code>ID</code> (here, likely, <code>int</code>). Note that unlike for generic classes this is not the same as <code>Final[Any]</code>.</p>
+</blockquote>
+<p>This suggests that the type should be inferred from the right-hand side of the definition. For Red Knot, this would mean that we infer <code>Literal[1]</code> which is both precise and correct for <code>Final</code> variables, as they can not be modified.</p>
+<p>But for <code>ClassVar</code>, this seems undesirable. If we treat <code>C.var</code> from above as having type <code>Literal[1]</code>, we would not be allowed to modify it. There are two other reasonable behaviors:</p>
+<ol>
+<li>Use <code>Unknown | Literal[1]</code> as the public type, which would also be the type of an un-annotated class variable</li>
+<li>Use <code>Unknown</code> as the public type, which would also be the public type of a class variable annotated with <code>var: ClassVar[Unknown]</code></li>
+</ol>
+<p>Option 1 is the behavior that is documented as being desirable in TODO comments (<a href="https://github.com/astral-sh/ruff/blob/2ef94e5f3e6e57a19151334b598e2bf381e97dac/crates/red_knot_python_semantic/resources/mdtest/type_qualifiers/classvar.md?plain=1#L24-L25">[1]</a>, <a href="https://github.com/astral-sh/ruff/blob/2ef94e5f3e6e57a19151334b598e2bf381e97dac/crates/red_knot_python_semantic/resources/mdtest/attributes.md?plain=1#L186-L187">[2]</a>). Option 2 is our current behavior on <code>main</code>.</p>
+<p>Implementing Option 1 is quite involved, as there is a difference (inconsistency?) between undeclared variables and variables declared with <code>Unknown</code> (as documented <a href="https://github.com/astral-sh/ruff/blob/2ef94e5f3e6e57a19151334b598e2bf381e97dac/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md#undeclared-but-bound">here</a>. It would probably involve returning <code>Option&lt;Type&lt;…&gt;&gt;</code> instead of <code>Type&lt;…&gt;</code> in functions like <code>infer_annotation_expression</code>. It might also involve treating <code>var: ClassVar = 1</code> as a pure binding?</p>
+<p>If Option 2 seems like a possible alternative (for now?), we can simply remove some TODO comments (draft PR <a href="https://github.com/astral-sh/ruff/pull/15768">here</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-31 10:15</div>
+            <div class="timeline-body"><p>Interestingly, the <a href="https://typing.readthedocs.io/en/latest/spec/annotations.html#type-and-annotation-expressions">type annotation/expression syntax</a> has been <a href="https://github.com/python/typing/pull/1915">changed</a> to explicitly allow a bare <code>Final</code>:</p>
+<pre><code class="language-diff">-                         : | &lt;Final&gt; '[' `annotation_expression`']'
++                         : | &lt;Final&gt; ('[' `annotation_expression`']')?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-01 19:48</div>
+            <div class="timeline-body"><p>It looks like the spec will be changed to explicitly allow a bare <code>ClassVar</code>: https://github.com/python/typing/pull/1931</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Bare `ClassVar` annotations" to "Bare `ClassVar` annotations" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-07 13:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:56 UTC
+    </footer>
+</body>
+</html>

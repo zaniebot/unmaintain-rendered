@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panics found by the `py-fuzzer` fuzzer - astral-sh/ty #228</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panics found by the `py-fuzzer` fuzzer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/228">#228</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-12-02 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-02 17:27</div>
+            <div class="timeline-body"><p>The following code snippets surfaced by the <code>py-fuzzer</code> script all produce red-knot panics. Some of these may be duplicates in terms of their syntax structure; I haven't tried hard to deduplicate them. I've only gone through panics found in the first 500 seeds.</p>
+<p>To run red-knot on all failing seeds in the first 500 seeds, you can run the following command from the Ruff repository root:</p>
+<pre><code>uvx --from ./python/py-fuzzer fuzz --bin=red_knot 0 5 16 19 25 28 30 36 39 57 76 81 91 100 102 107 110 115 116 119 120 125 127 138 141 147 158 168 174 175 224 234 247 255 260 261 282 294 295 311 313 321 332 344 347 348 350 351 353 361 374 382 386 391 395 397 400 409 414 451 452 454 455 463 473 488 492 494 497
+</code></pre>
+<p>They are all (or at least <em>should</em> be) valid Python syntax.</p>
+<h2>Failing seeds</h2>
+<p><strong>Seeds 39, 25, 19, 107, 138, 110, 115, 120, 125, 116, 147, 174, 175, 260, 294, 313, 261, 347, 282, 350, 391, 386, 374, 414, 409, 451, 455, 497</strong></p>
+<p>The panics in these seeds all boil down to recursive type aliases of the form</p>
+<pre><code class="language-py">type name = name
+</code></pre>
+<p><strong>Seed 28</strong></p>
+<pre><code class="language-py">class name_5[**name_4](name_5.name_5):
+    pass
+</code></pre>
+<p><strong>Seed 30</strong></p>
+<pre><code class="language-py">async def name_5[name_2](name_5: (name_1 and name_5)(), /):
+    pass
+</code></pre>
+<p><strong>Seed 0</strong></p>
+<pre><code class="language-py">type name_5 = name_2
+type name_2 = name_5
+</code></pre>
+<p><strong>Seed 76</strong></p>
+<pre><code class="language-py">class name_4[**name_5](name_3, name_0=name_4.name_3):
+    pass
+</code></pre>
+<p><strong>Seed 81</strong></p>
+<pre><code class="language-py">class name_4[**name_2](name_4.name_1):
+    pass
+</code></pre>
+<p><strong>Seed 57</strong></p>
+<pre><code class="language-py">class name_4[name_5]({}, name_3=name_4.name_1):
+    pass
+</code></pre>
+<p><strong>Seed 91</strong></p>
+<pre><code class="language-py">type name_2 = name_3
+(name_3 := name_2)
+</code></pre>
+<p><strong>Seed 100</strong></p>
+<pre><code class="language-py">type name_5 = name_0
+(name_0 := name_5)
+</code></pre>
+<p><strong>Seed 168</strong></p>
+<pre><code class="language-py">class name_0[name_5](name_0.name_5):
+    pass
+</code></pre>
+<p><strong>Seed 158</strong></p>
+<pre><code class="language-py">async def name_4[*name_5](name_5: name_4(), /):
+    pass
+</code></pre>
+<p><strong>Seed 224</strong></p>
+<pre><code class="language-py">class name_2[name_5](name_2.name_4):
+    pass
+</code></pre>
+<p><strong>Seed 247</strong></p>
+<pre><code class="language-py">type name_3 = name_4
+(name_0 := name_3)
+(name_4 := name_0)
+</code></pre>
+<p><strong>Seed 255</strong></p>
+<pre><code class="language-py">class name_5[**name_3](name_5.name_3):
+    pass
+</code></pre>
+<p><strong>Seed 234</strong></p>
+<pre><code class="language-py">def name_2[*name_0](*, name_4: name_4):
+    pass
+type name_4 = name_2()
+</code></pre>
+<p><strong>Seed 332</strong></p>
+<pre><code class="language-py">class name_1[**name_0](name_1()()):
+    pass
+</code></pre>
+<p><strong>Seed 361</strong></p>
+<pre><code class="language-py">async def name_0[*name_5](name_4: name_0()):
+    pass
+</code></pre>
+<p>Seed 351</p>
+<pre><code class="language-py">class name_3[*name_1](something, **name_3.name_2):
+    pass
+</code></pre>
+<p><strong>Seed 344</strong></p>
+<pre><code class="language-py">type name_3 = name_4()
+
+def name_4[*name_0](*, name_3: name_3):
+    pass
+</code></pre>
+<p><strong>Seed 311</strong></p>
+<pre><code class="language-py">class name_1[**name_4](name_1, name_1=name_5):
+    pass
+match name_2:
+    case None:
+        try:
+            pass
+        except name_1 as name_5:
+            pass
+    case []:
+        type name_5 = name_1
+</code></pre>
+<p><strong>Seed 400</strong></p>
+<pre><code class="language-py">class name_4[*name_2](name_5 if name_4() else name_4):
+    pass
+</code></pre>
+<p><strong>Seed 382</strong></p>
+<pre><code class="language-py">class name_1[name_1](name_4, name_1=name_3.name_2):
+    pass
+(name_3 := name_1)
+</code></pre>
+<p><strong>Seed 395</strong></p>
+<pre><code class="language-py">class name_5[name_1](*name_5):
+    pass
+</code></pre>
+<p><strong>Seed 397</strong></p>
+<pre><code class="language-py">class name_0[name_4](name_0[name_1]):
+    pass
+</code></pre>
+<p><strong>Seed 488</strong></p>
+<pre><code class="language-py">class name_1[name_5](name_1.name_5):
+    pass
+</code></pre>
+<p><strong>Seed 473</strong></p>
+<pre><code class="language-py">async def name_2[*name_4](*, name_5: name_3()):
+    pass
+(name_3 := name_2)
+</code></pre>
+<p><strong>Seed 492</strong></p>
+<pre><code class="language-py">class name_0[name_5](name_0.name_3):
+    pass
+</code></pre>
+<p><strong>Seed 454</strong></p>
+<pre><code class="language-py">type name_5 = name_0
+name_0 = name_5
+</code></pre>
+<p><strong>Seed 463</strong></p>
+<pre><code class="language-py">def name_3[**name_2](*, name_3: name_4):
+    pass
+type name_4 = name_3()
+</code></pre>
+<p>Also failing (but pysource-minimize can't minimize the panics in these for some reason, so the repros are too much text to paste into this GitHub issue) are the following seeds:</p>
+<ul>
+<li>Seed 5</li>
+<li>Seed 16</li>
+<li>Seed 36</li>
+<li>Seed 102</li>
+<li>Seed 119</li>
+<li>Seed 127</li>
+<li>Seed 141</li>
+<li>Seed 295</li>
+<li>Seed 321</li>
+<li>Seed 348</li>
+<li>Seed 353</li>
+<li>Seed 452</li>
+<li>Seed 494</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-02 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-02 19:26</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood. I skimmed through these examples and I think they are almost all related to known issues:</p>
+<ul>
+<li>astral-sh/ruff#14672: recursive and self-referential (circular) type aliases</li>
+<li>astral-sh/ruff#14333 and and the two known failures here:
+https://github.com/astral-sh/ruff/blob/5137fcc9c81610f687b6cb45413ef83c2c5eea73/crates/red_knot_workspace/tests/check.rs#L267-L270</li>
+</ul>
+<p>What's new to me are some examples with self-referential/cyclic <em>function</em> definitions, but given that we have the same problem with classes and type aliases, this is not a big surprise 😄.</p>
+<p>I think the value of the fuzzer will be much bigger after we solved those three issues (it sounds like maybe it's just one big issue with self-referential definitions). Do you think it makes sense to keep this ticket open?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-02 22:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the value of the fuzzer will be much bigger after we solved those three issues (it sounds like maybe it's just one big issue with self-referential definitions). Do you think it makes sense to keep this ticket open?</p>
+</blockquote>
+<p>Agreed. I think I'd like to keep this issue open for now, though. I'd like to eventually run this fuzzer on red-knot in CI like we already do with the parser, so it's useful to have something to track that. I'm also not 100% sure if <em>all</em> these panics are to do with self-referential definitions -- the ones that pysource-minimize is failing to minimize are somewhat mysterious (not sure what's going on there). And it's also <em>possible</em> that on some of these seeds there are actually multiple panics, and the self-referential definitions are obscuring other issues that also exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-03-01 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-12 12:55</div>
+            <div class="timeline-body"><p>After merging astral-sh/ruff#14029, we have these seeds still failing: <code>0 28 57 76 107 120 168 175 260 311 313 332 351 382 391 451 488 492 494</code> (reduction from 69 failing seeds to 18, out of the first 500). I think some of these are still cycles, where we need to add cycle handling to some more queries. Some may be other issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-13 01:04</div>
+            <div class="timeline-body"><p>With astral-sh/ruff#16693 we are down to these 15 failing seeds: <code>0 28 57 107 120 175 260 311 332 351 382 391 451 488 492</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot panics found by the `py-fuzzer` fuzzer" to "[red-knot] panics found by the `py-fuzzer` fuzzer" by @carljm on 2025-03-27 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] panics found by the `py-fuzzer` fuzzer" to "panics found by the `py-fuzzer` fuzzer" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "alpha" by @MichaReiser on 2025-05-07 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-10 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Alpha" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 01:13</div>
+            <div class="timeline-body"><p>We are now down to just one failing seed in the 0-500 range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-17 11:31</div>
+            <div class="timeline-body"><p>The sole remaining panic in seeds 0-500 is this:</p>
+<pre><code class="language-py">class name_0[name_5: name_0[name_5]]:
+    pass
+</code></pre>
+<p>which is an instance of #256. Let's keep this issue open, so that we can track adding a randomised fuzzer job to CI (rather than one that just checks whether a PR introduces any <em>new</em> panics in seeds 0-500). But I think this no longer needs to be considered a distinct beta-blocker issue to #256; I'm removing it from the Beta milestone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @AlexWaygood on 2025-10-17 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-18 14:48</div>
+            <div class="timeline-body"><p>Note that https://github.com/astral-sh/ruff/pull/20957 changes the file contents that each seed corresponds to: running the fuzzer on Python 3.14 (as we do in CI), there are now no longer any seeds in the 0-500 range that trigger any ty panics. We still panic on the snippet in https://github.com/astral-sh/ty/issues/228#issuecomment-3415120659, however, and the fuzzer is still occasionally turning up snippets we panic on (they're just rarer than before). For example, we panic on seed 692 when the fuzzer is run with Python 3.14, which is:</p>
+<pre><code class="language-py">match 0:
+    case name_1.name_1 | 0:
+
+        class name_5[name_2](0, name_1=name_1):
+            pass
+for unique_name_0 in 0:
+    type name_5 = 0
+
+async def name_5():
+    pass
+while name_5:
+
+    def name_1(name_2=name_5):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 15:06</div>
+            <div class="timeline-body"><p>I'm inclined to close this issue (or at least de-prioritize it and put it in the backlog). Running the fuzzer in CI is useful to avoid regressions, but fuzzer-only panics are always lower priority than panics that are actually appearing in user projects, so I don't expect we'll prioritize this anytime soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 15:08</div>
+            <div class="timeline-body"><p>I agree it should be deprioritised; that's why I already removed it from the beta milestone :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 15:14</div>
+            <div class="timeline-body"><p>Yeah, I only noticed that after I made my comment 😆 It came to my attention because it was still in the in-progress state and I hadn't noticed it was gone from the beta.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @carljm on 2025-11-03 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @AlexWaygood on 2025-12-05 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-07 15:22</div>
+            <div class="timeline-body"><p>Since all the original panics discovered here have now been fixed, I'm going to close this as completed now and open a followup issue for randomized fuzzing in CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-07 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect types inferred when a &quot;mixed tuple&quot; is unpacked - astral-sh/ty #947</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect types inferred when a &quot;mixed tuple&quot; is unpacked</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/947">#947</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-06 16:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 16:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider:</p>
+<pre><code class="language-py">class I0: ...
+class I1: ...
+class I2: ...
+
+def f(x: tuple[I0, *tuple[I1, ...], I2]):
+    [a, b, *c] = x
+    reveal_type(a)  # I0
+    reveal_type(b)  # I1
+    reveal_type(c)  # list[I1 | I2]
+</code></pre>
+<p>The types we infer for <code>a</code> and <code>c</code> seem correct here. But the type for <code>b</code> seems incorrect. There are three possible scenarios in which this assignment could succeed; I think we need to consider them all and union the types together:</p>
+<ol>
+<li>The middle element &quot;materialises&quot; to a 0-length tuple. In this scenario at runtime, <code>a</code> would be of type <code>I0</code>, <code>b</code> would be of type <code>I2</code> and <code>c</code> would be of type <code>list[Never]</code></li>
+<li>The middle element &quot;materialises&quot; to a tuple of length 1. In this scenario at runtime, <code>a</code> would be of type <code>I0</code>, <code>b</code> would be of type <code>I1</code> and <code>c</code> would be of type <code>list[I2]</code></li>
+<li>The middle element &quot;materialises&quot; to a tuple of length &gt;=2. In this scenario at runtime, <code>a</code> would be of type <code>I0</code>, <code>b</code> would be of type <code>I1</code> and <code>c</code> would be of type <code>list[I1 | I2]</code></li>
+</ol>
+<p>Given these three scenarios in which the assignment could succeed, I think we should be inferring <code>I1 | I2</code> for <code>b</code> rather than <code>I1</code>.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-08-06 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 16:39</div>
+            <div class="timeline-body"><p>Similarly:</p>
+<pre><code class="language-py">class I0: ...
+class I1: ...
+class I2: ...
+
+def f(x: tuple[I0, *tuple[I1, ...], I2]):
+    [a, b, c, *d] = x
+    reveal_type(a)  # I0
+    reveal_type(b)  # I1
+    reveal_type(c)  # I1
+    reveal_type(d)  # list[I1 | I2]
+</code></pre>
+<p>The type of <code>c</code> here should also be <code>I1 | I2</code> rather than just <code>I1</code>, I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-06 17:24</div>
+            <div class="timeline-body"><p>For reference, other existing type checkers all do arguably worse here than our current behavior; for the first example pyright infers <code>I0, I1, list[I2]</code> (so missing the possibility that <code>b</code> could be <code>I2</code>, and also the possibility that there could be an <code>I1</code> in <code>c</code>), mypy throws a (clearly wrong?) unpack error and then infers a weird <code>Unpack</code> type for <code>b</code>, and pyrefly doesn't attempt any unpack logic at all, it just infers <code>I0 | I1 | I2</code> for <code>a</code> and <code>b</code> and <code>list[I0 | I1 | I2]</code> for <code>c</code> (at least this version is not <em>wrong</em>, even if it lacks precision.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-08-06 18:10</div>
+            <div class="timeline-body"><p>Tuples containing mixed variable-length and fixed-length components can be a rabbit hole for lots of complicated logic that almost nobody is going to care about (when does one use a type like <code>tuple[A, *tuple[B, ...], C]</code> in practice?).</p>
+<blockquote>
+<p>other existing type checkers all do arguably worse here</p>
+</blockquote>
+<pre><code>% python -m pycroscope -c '''
+class I0: ...
+class I1: ...
+class I2: ...
+
+def f(x: tuple[I0, *tuple[I1, ...], I2]):
+    [a, b, *c] = x
+    reveal_type(a)  # I0
+    reveal_type(b)  # I1
+    reveal_type(c)  # list[I1 | I2]
+''' --output-format concise
+&lt;code&gt;:8:16: Revealed type is 'I0' [reveal_type]
+&lt;code&gt;:9:16: Revealed type is 'I1 | I2' [reveal_type]
+&lt;code&gt;:10:16: Revealed type is 'list[I1 | I2]' [reveal_type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = &quot;&gt;=3.9&quot;` - astral-sh/ty #511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = &quot;&gt;=3.9&quot;`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/511">#511</a>
+        opened by <a href="https://github.com/karlicoss">@karlicoss</a>
+        on 2025-05-26 00:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-05-26 00:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have <code>requires-python = &quot;&gt;=3.9&quot;</code> in my <code>pyproject.toml</code> and the following bit of code</p>
+<pre><code class="language-python">import sys
+from typing import Union
+
+if sys.version_info &gt;= (3, 10):
+    T = str | None
+else:
+    T = Union[str, None]
+
+print(T)
+</code></pre>
+<h1>current ty behaviour</h1>
+<p>It seems like the conditional for <code>sys.version_info</code> isn't handled correctly?</p>
+<pre><code>$ uvx ty check test_310_union.py 
+error[unsupported-operator]: Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `None`
+ --&gt; test_310_union.py:5:9
+  |
+4 | if sys.version_info &gt;= (3, 10):
+5 |     T = str | None
+  |         ^^^^^^^^^^
+6 | else:
+7 |     T = Union[str, None]
+  |
+info: Note that `X | Y` PEP 604 union syntax is only available in Python 3.10 and later
+info: The inferred target version of your project is Python 3.9
+info: If using a pyproject.toml file, consider adjusting the `project.requires-python` or `tool.ty.environment.python-version` field
+info: rule `unsupported-operator` is enabled by default
+</code></pre>
+<h1>Expected behaviour</h1>
+<p>I think the check should pass?</p>
+<ul>
+<li><p>this works in runtime under both under 3.9 and 3.10 python</p>
+<pre><code>uv run --python=3.9 test_310_union.py 
+typing.Optional[str]
+$ uv run --python=3.10 test_310_union.py 
+str | None
+</code></pre>
+</li>
+<li><p>mypy is happy with it:</p>
+<pre><code>$ uvx mypy test_310_union.py 
+Success: no issues found in 1 source file
+</code></pre>
+<p>(I also tried <code>mypy --python-version=3.9</code> just in case, this also passes)</p>
+</li>
+<li><p>ty works if I set <code>requires-python = &quot;&gt;=3.10&quot;</code> in pyproject.toml</p>
+</li>
+</ul>
+<h1>Possibly relevant issues</h1>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/449</li>
+<li>the check was implemented here https://github.com/astral-sh/ruff/pull/18192</li>
+<li>I wasn't sure whether it's relevant to type aliases somehow (https://github.com/astral-sh/ty/issues/221) , but considering this works with python3.10 target, I don't think so</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive for "PEP 604 union syntax is only available in Python 3.10 and later" when `requires-python = ">=3.9"`" to "False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = ">=3.9"`" by @karlicoss on 2025-05-26 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-26 06:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = ">=3.9"`" to "False positive for *PEP 604 union syntax is only available in Python 3.10 and later* when `requires-python = ">=3.9"`" by @MichaReiser on 2025-05-26 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive for *PEP 604 union syntax is only available in Python 3.10 and later* when `requires-python = ">=3.9"`" to "False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = ">=3.9"`" by @MichaReiser on 2025-05-26 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 11:41</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<p>We <em>do</em> correctly handle <code>sys.version_info &gt;= (3, 10)</code>, and we detect the corresponding branch as unreachable (Note for ty developers: it's easy to check this by trying to access a undefined symbol in the branch, which will not lead to a diagnostic). The problem is that we currently only silence a subset of all diagnostics in unreachable sections of code.</p>
+<p>I will close this as a duplicate of #127, but add your example to the linked ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-26 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-26 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> added by @sharkdp on 2025-05-26 11:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:06 UTC
+    </footer>
+</body>
+</html>

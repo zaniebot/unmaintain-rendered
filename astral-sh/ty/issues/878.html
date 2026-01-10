@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove ty support for Python 3.7 (and 3.8?) - astral-sh/ty #878</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove ty support for Python 3.7 (and 3.8?)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/878">#878</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-07-23 21:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-23 21:53</div>
+            <div class="timeline-body"><p>In the <a href="https://docs.astral.sh/ty/reference/cli/#ty-check--python-version">docs</a>, it is said that you can supply <code>--python-version 3.7</code> but you cant pip install with python 3.7.</p>
+<p>What is the intended outcome, can we support 3.7?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 21:58</div>
+            <div class="timeline-body"><p>I don't think having a wheel of ty for 3.7 is needed for it to type check 3.7 code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-23 21:59</div>
+            <div class="timeline-body"><p>True, but ideally we can pip install in a codebase that runs 3.7 no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 22:04</div>
+            <div class="timeline-body"><p>Per your deleted comment, and to clarify, we build universal wheels so it is just the <code>requires-python</code> metadata that prevents this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-23 22:06</div>
+            <div class="timeline-body"><p>ah okay, understood, thank you.</p>
+<p>Would I be able to make a PR for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 22:46</div>
+            <div class="timeline-body"><p>I'm not sure. I still don't really see the case for it, we'd need consensus from other stakeholders.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-23 23:43</div>
+            <div class="timeline-body"><p>Python 3.7 has been EOL for over two years now, and it's been a year and a half already since typeshed <a href="https://github.com/python/typeshed/pull/11238">removed all 3.7-specific type information from typeshed</a>. Typeshed <a href="https://github.com/python/typeshed/pull/13776">doesn't even support 3.8 anymore</a> since earlier this spring; 3.8 has been EOL since last October.</p>
+<p>Given the typeshed situation, I think any type checker's claim to support 3.7 or 3.8 is pretty empty at this point (unless they vendor an old version of typeshed specifically for that purpose). The results in practice won't be much different from just type-checking your project as if it were 3.9, since typeshed doesn't know anything about pre-3.9 versions.</p>
+<p>So if we are to take any action here, I think it should be to clarify that we don't support 3.7. And I think we should seriously consider dropping support for 3.8 as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Do we support 3.7 or not?" to "Remove ty support for Python 3.7 (and 3.8?)" by @carljm on 2025-07-23 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-23 23:45</div>
+            <div class="timeline-body"><p>In uv we have <code>requires-python: &gt;=3.8</code>, and we don't formally support Python 3.7.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-24 06:50</div>
+            <div class="timeline-body"><p>Thanks for the input and clarity. That all makes sense, and yeah it would be good to sync those 2 up so they agree with each other</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-24 19:20</div>
+            <div class="timeline-body"><p>I would happily approve a PR to remove 3.7 support from ty. I think the main question mark here is whether Ruff wants to continue supporting it, since that might impact the details of how that PR should look. (I.e. removing 3.7 from the shared <code>PythonVersion</code> enum altogether, vs leaving it in place and just having ty validate 3.8+ and avoid mentioning 3.7 in docs or help text.) Maybe @MichaReiser or @AlexWaygood have thoughts on the Ruff version support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 20:04</div>
+            <div class="timeline-body"><p>I'd prefer to keep 3.7 support in Ruff. It is very low maintenance on the Ruff side and removing support would at least require a minor release</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-syntax-in-forward-annotation` does not preserve error spans - astral-sh/ty #1627</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-syntax-in-forward-annotation` does not preserve error spans</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1627">#1627</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-11-24 23:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-11-24 23:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As the title says, <code>invalid-syntax-in-forward-annotation</code> does not preserve error spans. For example:
+https://play.ty.dev/f034109f-c63d-4871-9976-dbea46491a62</p>
+<pre><code class="language-py">a: type]
+b: &quot;type]&quot;
+</code></pre>
+<p>The span of <code>a</code>'s error is <code>1:8-1:9</code> (well actually it has two errors, but both are on the <code>]</code>).
+The span of <code>b</code>'s error is the entire string literal. It would be nice if <code>ty</code> preserved the <code>invalid-syntax</code> error location and propagated it to <code>invalid-syntax-in-forward-annotation</code></p>
+<pre><code class="language-powershell">PS ~&gt;Set-Content issue.py @'
+a: type]
+b: &quot;type]&quot;
+'@
+PS ~&gt;uvx ty check issue.py
+error[invalid-syntax]: Expected a statement
+ --&gt; issue.py:1:8
+  |
+1 | a: type]
+  |        ^
+2 | b: &quot;type]&quot;
+  |
+
+error[invalid-syntax]: Expected a statement
+ --&gt; issue.py:1:9
+  |
+1 | a: type]
+  |         ^
+2 | b: &quot;type]&quot;
+  |
+
+error[invalid-syntax-in-forward-annotation]: Syntax error in forward annotation: Unexpected token at the end of an expression
+ --&gt; issue.py:2:4
+  |
+1 | a: type]
+2 | b: &quot;type]&quot;
+  |    ^^^^^^^
+  |
+info: rule `invalid-syntax-in-forward-annotation` is enabled by default
+
+Found 3 diagnostics
+</code></pre>
+<p>The error message is also not always helpful, since the error may not occur at the end, ie <code>type] | int</code></p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.27 (26d7b6864 2025-11-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2025-11-25 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-25 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-11-25 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-25 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-25 07:39</div>
+            <div class="timeline-body"><p>I think this should go into stable as it can lead to a panic when rendering the diagnostics if the offset falls out of range or between a char boundary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-25 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-11-25 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-25 12:17</div>
+            <div class="timeline-body"><p>Okay, I think I misunderstood this one but I suspect this should be easier with @Gankra's latest changes in https://github.dev/astral-sh/ruff/pull/21577</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

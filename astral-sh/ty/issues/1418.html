@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconsider hiding all subdiagnostics when `--output-format=concise` is specified - astral-sh/ty #1418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reconsider hiding all subdiagnostics when `--output-format=concise` is specified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1418">#1418</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-23 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 13:33</div>
+            <div class="timeline-body"><p>Many of our existing diagnostics are unactionable when using <code>--output-format=concise</code>. For example:</p>
+<pre><code>~/dev [1] % cat foo.py                      
+sum(1, 2)
+~/dev % uvx ty check foo.py --output-format=concise
+Checking ------------------------------------------------------------ 1/1 files
+foo.py:1:1: error[no-matching-overload] No overload of function `sum` matches arguments
+Found 1 diagnostic
+</code></pre>
+<p>Some other type checkers do a much better job here: mypy defaults to concise diagnostics (you have to enable verbose annotations using the <code>--pretty</code> flag), but even with mypy's default, concise, output format it displays subdiagnostics that tell you what the available overloads are:</p>
+<pre><code>~/dev [1] % uvx mypy foo.py                            
+foo.py:1: error: No overload variant of &quot;sum&quot; matches argument types &quot;int&quot;, &quot;int&quot;  [call-overload]
+foo.py:1: note: Possible overload variants:
+foo.py:1: note:     def sum(Iterable[bool], /, start: int = ...) -&gt; int
+foo.py:1: note:     def [_SupportsSumNoDefaultT: _SupportsSumWithNoDefaultGiven] sum(Iterable[_SupportsSumNoDefaultT], /) -&gt; _SupportsSumNoDefaultT | Literal[0]
+foo.py:1: note:     def [_AddableT1: SupportsAdd[Any, Any], _AddableT2: SupportsAdd[Any, Any]] sum(Iterable[_AddableT1], /, start: _AddableT2) -&gt; _AddableT1 | _AddableT2
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>There are many situations where it's implausible to put all information to make a diagnostic actionable on a single line; I think there will often be situations when important information needs to be shunted to a subdiagnostic. We should add a way to specify for some subdiagnostics that they should be displayed (in a concise format) even if <code>--output-format=concise</code> is specified on the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-23 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-27 08:32</div>
+            <div class="timeline-body"><p>I agree: our concise diagnostics are too concise in many situations. Sometimes I look at the ecosystem diff and don't even understand what the problem is:</p>
+<pre><code class="language-py"># lots of code
+
+assert_type(x, int)  # Argument does not have asserted type `int`
+</code></pre>
+<p>(ok, cool, but what is the actual type of <code>x</code>? — it's only shown in the &quot;full&quot; message)</p>
+<p>I think there's probably no good one-size-fits-all heuristic here (should the info text always be included or not? should subdiagnostics be extra sentences or not? should annotations be added somehow?). We might need to actually design the &quot;full&quot; and the &quot;concise&quot; diagnostic <em>separately</em> for the best UX. We wouldn't need to do that for <em>every</em> lint rule that we have. But some rules are more important than others. And it might be a valuable investment to have a bespoke construction of the concise message for those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-29 19:55</div>
+            <div class="timeline-body"><p>I suspect that as a default rule we should show all sub-diagnostics in concise mode. The bulk of the &quot;concision&quot; comes from eliminating code frames.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 19:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that as a default rule we should show all sub-diagnostics in concise mode.</p>
+</blockquote>
+<p>We should also omit the</p>
+<pre><code>info: rule `foo-bar-baz` enabled by default
+</code></pre>
+<p>subdiagnostics that are added to every diagnostic, when we're in concise mode. But yes, I agree that the default for subdiagnostics should probably be for them to be shown in concise mode, unless configured otherwise (and we could configure it otherwise for these specific subdiagnostics)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 00:00</div>
+            <div class="timeline-body"><p>Do we have a good understanding of when and how often the concise output format is being used? I acknowledge that we use it heavily for the ecosystem diff check, but where else?</p>
+<p>My main concern is mostly with making the construction of diagnostics more complicated/difficult by exposing &quot;concise or not&quot; in that API. I think it's important that diagnostics are really easy to construct without much mental burden.</p>
+<p>(My concern is mitigated by @carljm's suggestion, FWIW.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-30 00:27</div>
+            <div class="timeline-body"><p>I'm mostly concerned by the fact that we use the concise format for diagnostics in the LSP. So it might actually be the format that is seen more often by users than our pretty/&quot;full&quot; format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 00:28</div>
+            <div class="timeline-body"><p>For me personally (and this is only my personal perspective!), I find our current default output format much too verbose for CLI usage if there are more than even one or two diagnostics. Usually if I'm running a type checker on Python code from the CLI, I want to be able to easily see the different kinds of errors being emitted by the type checker across a codebase and to be able to scroll between different diagnostics. Our current default output format is too verbose for either of those, and our concise output format is too concise!</p>
+<p>I love all the annotations and extra information we add in the VSCode context, where I can use the &quot;click to see full diagnostic&quot; feature to view each diagnostic in isolation in a separate tab, but for me it's just too much right now when using ty from the CLI.</p>
+<p>For all our output formats, I do also think we need to think a bit harder about the UX in situations where we're emitting hundreds or thousands of diagnostics on a codebase. Spewing them all onto the terminal is pretty overwhelming, and I think will be quite a negative experience for people using ty for the first time. (First-time users will often have lots of diagnostics, even if they've previously used other type checkers on their codebase!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm mostly concerned by the fact that we use the concise format for diagnostics in the LSP. So it might actually be the format that is seen more often by users than our pretty/&quot;full&quot; format?</p>
+</blockquote>
+<p>In my LSP setup, I can only see one line anyway. So would adding multiple lines for each concise diagnostic end up helping?</p>
+<p>(I wouldn't be too surprised to discover that my setup is hampered in some way.)</p>
+<p>OK, @AlexWaygood's comment answers that. I guess there is a way to see the full diagnostic in VS Code. But even then, wouldn't you want the full diagnostic and not the concise one?</p>
+<blockquote>
+<p>For all our output formats, I do also think we need to think a bit harder about the UX in situations where we're emitting hundreds or thousands of diagnostics on a codebase. Spewing them all onto the terminal is pretty overwhelming, and I think will be quite a negative experience for people using ty for the first time. (First-time users will often have lots of diagnostics, even if they've previously used other type checkers on their codebase!)</p>
+</blockquote>
+<p>I'm thinking about rustc here, which has always very heavily relied on the verbose diagnostic output format. I've never used its concise format and I don't ever see anyone else doing so. Is there a fundamental difference here between rustc and ty? Is it that we expect ty to be emitting lots of diagnostics that folks won't seek to actually fix? I guess in rustc's case, you can't really move forward until you satisfy the compiler. But that's not really the case for Python.</p>
+<p>Another lever to pull on here is whether it makes sense to limit output to the first N diagnostics by default. If we're emitting thousands of diagnostics, for example, then that surely isn't useful (unless you have a specific use case where you really want to see everything). So maybe it would be better to limit it by default.</p>
+<p>Is it possible we (as in, the people working on ty) have a different use case than typical end users? I can see us caring a lot more about things <em>in aggregate</em>, &quot;how many lints are this kind and how many are that kind,&quot; where as maybe end users don't care about that as much?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 00:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess in rustc's case, you can't really move forward until you satisfy the compiler. But that's not really the case for Python.</p>
+</blockquote>
+<p>Yeah, I think that's a pretty big difference! A single rustc diagnostic means the project won't run. But you can have a Python project that's been run in production for years, and might even be clean under other, established Python type checkers, that still produces thousands of ty diagnostics.</p>
+<blockquote>
+<p>Is it possible we (as in, the people working on ty) have a different use case than typical end users? I can see us caring a lot more about things <em>in aggregate</em>, &quot;how many lints are this kind and how many are that kind,&quot; where as maybe end users don't care about that as much?</p>
+</blockquote>
+<p>No, I think I've very much cared about these things when writing things in Python and using type checkers to check my Python code! Often many similar diagnostics can be caused by a single error, and it's useful to know that do that you can go and fix that error first before bothering with any of the rest of them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 00:49</div>
+            <div class="timeline-body"><p>To clarify my position here: I agree and acknowledge that our concise diagnostics are less useful than they could be.</p>
+<p>I am fully in favor of any kind of tweak we can make that doesn't require individual diagnostic tailoring. I'm not <em>opposed</em> to individual diagnostic tailoring, but I want to understand whether the use cases we improve with that tailoring are worth that work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 00:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Another lever to pull on here is whether it makes sense to limit output to the first N diagnostics by default. If we're emitting thousands of diagnostics, for example, then that surely isn't useful (unless you have a specific use case where you really want to see everything). So maybe it would be better to limit it by default.</p>
+</blockquote>
+<p>I agree that we may want to do this as well, yes. It might make sense to print some kind of summary at the top (rather than at the bottom) if there are <em>many</em> diagnostics, and then print the remaining output to a pager, rather than printing many thousands of lines of output to the terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 00:54</div>
+            <div class="timeline-body"><p>I like the idea of printing a summary.</p>
+<p>I also like the idea of just turning on all sub-diagnostics (like @carljm suggested) and seeing how that feels. It might get us to a &quot;good enough&quot; state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 00:57</div>
+            <div class="timeline-body"><p>Currently <em>every</em> diagnostic has &gt;1 subdiagnostic due to https://github.com/astral-sh/ty/issues/1418#issuecomment-3463638012, so I do think we need a way to ensure that <em>some</em> subdiagnostics can be switched off when <code>--output-format=concise</code> is specified. I think it's too much for <em>every</em> diagnostic to take &gt;=2 lines of space on the terminal when <code>--output-format=concise</code> is specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-30 00:58</div>
+            <div class="timeline-body"><p>I have the same sentiment as @BurntSushi and I question that defaulting to always showing the subdiagnostic is necessary what users want. E.g. I would not want to see every available overload. I'd be more than happy to use my IDE to see the type of the overload or switch to <code>--output-format=full</code>.</p>
+<p>I also think we shouldn't over-optimize for the case where projects have many diagnostics. Instead, we should provide a way to reduce those diagnostics, either by having a baseline or <code>--add-noqa</code> feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 01:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Currently <em>every</em> diagnostic has &gt;1 subdiagnostic due to <a href="https://github.com/astral-sh/ty/issues/1418#issuecomment-3463638012">#1418 (comment)</a>, so I do think we need a way to ensure that <em>some</em> subdiagnostics can be switched off when <code>--output-format=concise</code> is specified. I think it's too much for <em>every</em> diagnostic to take &gt;=2 lines of space on the terminal when <code>--output-format=concise</code> is specified.</p>
+</blockquote>
+<p>Yeah but I think we can do this via a general rule and without individual diagnostic tailoring. We can even hack this at first (perhaps with a substring search in diagnostic output rendering) just so we can see what it feels like before doing something more principled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 01:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd be more than happy to use my IDE to see the type of the overload</p>
+</blockquote>
+<p>Not all users will use ty inside an IDE. I think it's much more common in Python than in Rust to use a lightweight text editor and more-or-less live inside the terminal rather than live inside an IDE. That obviously doesn't scale to larger Python applications, but lots of Python applications aren't that large; that doesn't mean that you don't want to run a type checker on them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-30 01:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Not all users will use ty inside an IDE. I think it's much more common in Python than in Rust to use a lightweight text editor and more-or-less live inside the terminal rather than live inside an IDE.</p>
+</blockquote>
+<p>That's where you can use <code>--output-format=full</code> ;)</p>
+<blockquote>
+<p>Yeah but I think we can do this via a general rule and without individual diagnostic tailoring. We can even hack this at first (perhaps with a substring search in diagnostic output rendering) just so we can see what it feels like before doing something more principled.</p>
+</blockquote>
+<p>There's at least the python version diagnostic (where we inferred the python version from) that probably needs to be suppressed. I also worry that many sub-diagnostics are framed in a way that it may not make sense to show them without the code frame. But I guess that's something we can solve.</p>
+<p>I don't mind exploring this but I suspect that the outcome is that users will ask for a &quot;proper-concise&quot; output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 01:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't mind exploring this but I suspect that the outcome is that users will ask for a &quot;proper-concise&quot; output.</p>
+</blockquote>
+<p>I can't recollect this ever being an issue on the mypy issue tracker, and, as I say, mypy generally prints all its subdiagnostics even as part of its (default) output format. (Not saying there isn't a mypy issue somewhere asking for this -- there may well be. But I can't remember it coming up much at all, from my time triaging mypy issues.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 01:13</div>
+            <div class="timeline-body"><blockquote>
+<p>There's at least the python version diagnostic (where we inferred the python version from) that probably needs to be suppressed.</p>
+</blockquote>
+<p>IDK, even these might be usefully displayed by default even with <code>--output-format=concise</code> if they only take up one additional line on the terminal. We only add them in situations where we have strong reason to suspect that the user could get rid of the error by adjusting their configuration to change their inferred Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 01:17</div>
+            <div class="timeline-body"><p>I do think there is a fundamental impedance mismatch between concise and &quot;full&quot; output. Particularly where the full output includes the code frame. That code frame is incredibly rich and detailed context that doesn't need to be repeated in the prose of the diagnostic. A good diagnostic should generally keep that prose very short, often relying on the position in the code frame to do a lot of the talking. So if you render the prose <em>without</em> the code frame you lose that context and the resulting prose <em>can</em> become nonsense or at least much more difficult to understand. The extent to which the prose becomes hard to understand might vary greatly from diagnostic to diagnostic.</p>
+<p>We could try to write all prose in diagnostics while being mindful that it won't always be shown along with the code frame. IDK how I feel about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-30 01:21</div>
+            <div class="timeline-body"><p>An easy way to filter the sub-diagnostics would be by severity. E.g. hide all <code>note</code> level diagnostics.</p>
+<blockquote>
+<p>We could try to write all prose in diagnostics while being mindful that it won't always be shown along with the code frame. IDK how I feel about that.</p>
+</blockquote>
+<p>I share this concern and I think the python version is a good example of this:</p>
+<pre><code class="language-py">Python {version} assumed due to this configuration setting
+</code></pre>
+<p>Which will be fairly pointless.</p>
+<p>Unless we say we skip any sub-diagnostics with annotations and only render simple notes. But it definitely makes writing diagnostics trickier because you have to keep all this in mind when authoring them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 01:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I share this concern and I think the python version is a good example of this:</p>
+<pre><code>Python {version} assumed due to this configuration setting
+</code></pre>
+<p>Which will be fairly pointless.</p>
+</blockquote>
+<p>Yes, that's a good illustration of the problem. Possible solutions would be to make it possible to have a subdiagnostic be rendered differently depending on the specified output format, or even have an entirely different subdiagnostic be rendered depending on the output format.</p>
+<p>Both of these would result in our diagnostic model changing and becoming more complicated, yes. My perspective, however, is that I've found concise output formats very useful when using type checkers on Python code, and I therefore don't think it's an acceptable outcome for us to have a noticeably worse concise output format to existing type checkers such as mypy. What works well for rustc isn't necessarily a great match for Python. If fixing this issue requires us to complicate our current diagnostic model somewhat, for me that's a price I'm willing to pay.</p>
+<p>I love our &quot;full&quot; output format and I think it's far better UX than what mypy or pyright are able to provide. However, I don't think that having a much better verbose output format means that we can get away with a noticeably worse concise output format than what they provide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 14:44</div>
+            <div class="timeline-body"><p>Isn't &quot;filename and line number&quot; (maybe we add column numbers too?) the concise-output way of representing the &quot;same information&quot; as the code frame, but concisely? It's certainly a less <em>accessible</em> representation (though that's somewhat mitigated by shells/editors supporting filename:lineno as a click target), but it's not like the information is absent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 14:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that the outcome is that users will ask for a &quot;proper-concise&quot; output.</p>
+</blockquote>
+<p>I think the prior experience of mypy and pyright suggests that this is not really a risk.</p>
+<p>What users probably will ask for (either way) is machine-parseable output, but I don't think &quot;concise format restricted to one line per diagnostic&quot; is the right answer to that request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't &quot;filename and line number&quot; (maybe we add column numbers too?) the concise-output way of representing the &quot;same information&quot; as the code frame, but concisely? It's certainly a less <em>accessible</em> representation (though that's somewhat mitigated by shells/editors supporting filename:lineno as a click target), but it's not like the information is absent.</p>
+</blockquote>
+<p>The code frames are richer than that. They aren't just a subset of lines from a source file. They also include position information into those lines (which I guess you can get with column numbers, although there may be multiple such column <em>ranges</em> per line) along with annotation text (which seems harder to represent in a concise output mode). That information density influences (or at least, I think it ought to) how one writes the rest of the messages in the diagnostic.</p>
+<p>I agree that the context in the concise output doesn't need to be completely absent, but I'm thinking about <em>quality</em> here and the extent to which we're willing to abide &quot;worse&quot; diagnostics in the concise output format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:37 UTC
+    </footer>
+</body>
+</html>

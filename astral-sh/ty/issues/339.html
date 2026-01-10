@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`[invalid-return-type]` should not be emitted on function definitions inside `if TYPE_CHECKING` blocks - astral-sh/ty #339</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`[invalid-return-type]` should not be emitted on function definitions inside `if TYPE_CHECKING` blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/339">#339</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-12 23:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 23:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It's fairly common for <code>.py</code> files to have &quot;stub-like sections&quot; of code that are added just for a type checker's benefit. These &quot;stub-like sections&quot; generally do not have any function bodies (just <code>...</code>), and are generally guarded by <code>if TYPE_CHECKING</code>. As an example, see this code in the <code>trio</code> library: https://github.com/python-trio/trio/blob/ac7b93f05796d49f324b231b3b2751facd34bc3a/src/trio/_file_io.py#L300-L344.</p>
+<p>We shouldn't emit <code>invalid-return-type</code> for functions like this that are inside <code>if TYPE_CHECKING</code> blocks; we should omit checking these functions for that lint, just like we do for actual stub files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-05-12 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-05-13 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-13 23:16</div>
+            <div class="timeline-body"><p>Shouldn't we also not emit <code>invalid-return-type</code> for <code>foo</code> in the else clause here? (which we do right now)</p>
+<pre><code class="language-py">if TYPE_CHECKING:
+    def foo() -&gt; int: ...
+else:
+    def foo() -&gt; int: ...
+</code></pre>
+<p>(maybe not the best example)
+Both mypy and pyright do not emit anything here.</p>
+<p>I don't think we should so this is another issue we currently have.</p>
+<p>Maybe a place for a warning though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 23:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't we also not emit <code>invalid-return-type</code> for <code>foo</code> in the else clause here? (which we do right now)</p>
+</blockquote>
+<p>I think we should emit the diagnostic for the <code>else</code>-clause definition here. The <code>else</code> clause here is a definition that will actually be executed at runtime. And at runtime, it won't actually return an <code>int</code>. Allowing the definition to go without a diagnostic would lead to unsound behaviour.</p>
+<blockquote>
+<p>Both mypy and pyright do not emit anything here.</p>
+</blockquote>
+<p>Yes, both mypy and pyright have some heuristics that mean that they ignore all functions that only have <code>...</code> as their body when they apply this lint. We'd like to try doing something a bit more principled (but a bit more complex!), which is what's suggested in this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-16 15:24</div>
+            <div class="timeline-body"><p>I think special-casing <code>TYPE_CHECKING</code> as a type-checking-time/runtime differentiator is a bad way to go about this. It will only cause more problems in the future, especially when ty adds support for user-defined constants.</p>
+<p>Plus, defining functions with a <code>...</code>-only body (and optionally a docstring) is such a common pattern that, I think, it deserves a dedicated lint (say, <code>invalid-return-type-ellipsis</code>) that is disabled by default. This lint will then be used for such functions instead of the existing <code>invalid-return-type</code>, excluding known special cases like overloads and abstract methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-16 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we should emit the diagnostic for the <code>else</code>-clause definition here. The <code>else</code> clause here is a definition that will actually be executed at runtime. And at runtime, it won't actually return an <code>int</code>. Allowing the definition to go without a diagnostic would lead to unsound behaviour.</p>
+</blockquote>
+<p>Isn't the point of <code>if TYPE_CHECKING</code> that the code in the else branch is not checked by the type checker? You shouldn't emit any diagnostics for the else block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-16 16:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't the point of <code>if TYPE_CHECKING</code> that the code in the else branch is not checked by the type checker? You shouldn't emit any diagnostics for the else block.</p>
+</blockquote>
+<p>Good point, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2025-05-26 15:15</div>
+            <div class="timeline-body"><p>I'll pick this up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @evanrittenhouse by @AlexWaygood on 2025-05-26 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-02 11:13</div>
+            <div class="timeline-body"><p>@evanrittenhouse -- LMK if you need any pointers about how to tackle this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-10 20:01</div>
+            <div class="timeline-body"><p>@AlexWaygood I'd be interested in picking this up if Evan isn't working on it anymore. I tried to have a go at it previously.</p>
+<p>I had made a variable in <code>InferContext</code> <code>in_type_checking_block: bool</code>. But it seemed like i was setting that in the wrong pass through of a file. So, any pointers are appreciated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MatthewMckee4 by @MichaReiser on 2025-07-11 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @evanrittenhouse by @MichaReiser on 2025-07-11 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-15 00:25</div>
+            <div class="timeline-body"><p>@MatthewMckee4 I think we can recognize an <code>if TYPE_CHECKING:</code> block in semantic indexing (that is, in <code>SemanticIndexBuilder</code>), and it will be better to implement this there, because that's where we always do a full AST walk with context. In type inference, we may visit the AST out of order or &quot;helicopter in&quot; to a specific function definition without even visiting the surrounding AST, so I don't think this can be implemented purely in type inference. I think we will need to record in the semantic index in some way which function definitions are in a <code>TYPE_CHECKING</code> block, and then refer to this information when deciding whether to emit the invalid-return-type diagnostic in type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-16 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-07-20 21:10</div>
+            <div class="timeline-body"><p>Reading this thread and I'm a bit confused (hope you don't mind asking here since seems relevant). Should the code under <code>if TYPE_CHECKING</code>  be type checked at all?</p>
+<p>Or the idea is that <code>ty</code> will omit/relax some checks but not other checks? I.e. it might still make sense to check &quot;insides&quot; of TYPE_CHECKING clause, but shadow their type context from the outside typing context?</p>
+<p>I.e. this results in <code>a: Literal[123]</code>  (whereas if the condition was &quot;normal&quot; bool, it would have been <code>a: Literal[123, &quot;abc&quot;]</code>)</p>
+<pre><code>from typing import TYPE_CHECKING, reveal_type
+
+if TYPE_CHECKING:
+    a = 123
+else:
+    a = &quot;abc&quot;
+
+reveal_type(a)
+</code></pre>
+<p>However, if you make a type error, e.g. like this: <code>a: str = 123</code>, it would still be flagged by ty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-21 06:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Should the code under <code>if TYPE_CHECKING</code> be type checked at all</p>
+</blockquote>
+<blockquote>
+<p>Or the idea is that ty will omit/relax some checks but not other checks?</p>
+</blockquote>
+<p>Code inside these blocks is written specifically for type checkers, so yes, it should be checked. What's special about these blocks is that we know that they will never be executed at runtime, so <em>some</em> rules can be relaxed — correct.</p>
+<blockquote>
+<p>I.e. it might still make sense to check &quot;insides&quot; of TYPE_CHECKING clause, but shadow their type context from the outside typing context?</p>
+</blockquote>
+<p>I don't know exactly what you mean by that, but I don't think there should be any sort of boundary there. Code in <code>if TYPE_CHECKING</code> sections is often the type <em>setup</em> for what comes after. So code inside these branches should interact with code outside these branches in the usual way.</p>
+<blockquote>
+<p>I.e. this results in a: Literal[123] (whereas if the condition was &quot;normal&quot; bool, it would have been a: Literal[123, &quot;abc&quot;])</p>
+</blockquote>
+<p>That's working as intended, yes. <code>if TYPE_CHECKING</code> blocks and their counterparts (the <code>else</code> branch here) allow you to selectively show code to the type checker and to hide code from the type checker.</p>
+<blockquote>
+<p>However, if you make a type error, e.g. like this: <code>a: str = 123</code>, it would still be flagged by ty?</p>
+</blockquote>
+<p>Yes. Code like this will even be flagged inside the <code>else</code> branch. It's definitely wrong. If you really want to convince the type checker that <code>123</code> is of type <code>str</code>, you need to use <code>typing.cast</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-07-21 09:52</div>
+            <div class="timeline-body"><p>Aah sorry 🤦 I made a typo, what I wanted to ask  was &quot;Should the code under <strong>not TYPE_CHECKING</strong> be type checked at all?&quot;.</p>
+<p>I.e. the following snippet is rejected by ty with &quot;Object of type <code>Literal[123]</code> is not assignable to <code>str</code> (invalid-assignment)&quot;</p>
+<pre><code>from typing import TYPE_CHECKING
+
+if not TYPE_CHECKING:
+    a: str = 123
+else:
+    a = &quot;abc&quot;
+</code></pre>
+<p>Whereas for instance mypy just ignores things inside <code>not TYPE_CHECKING</code> completely.</p>
+<p>Hopefully this question makes more sense now if you account for the typo:</p>
+<blockquote>
+<p>I.e. it might still make sense to check &quot;insides&quot; of TYPE_CHECKING clause, but shadow their type context from the outside typing context</p>
+</blockquote>
+<p>But I think you answered it here: &quot;Yes. Code like this will even be flagged inside the else branch. It's definitely wrong.&quot; -- thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 16:46</div>
+            <div class="timeline-body"><p>We consider code under <code>if not TYPE_CHECKING</code> as unreachable, and apply the same rules to it that we apply to any unreachable code. This silences many diagnostics, but not all -- some simple self-contained cases that don't rely on anything outside the unreachable block and are definitely wrong will still be flagged, even in unreachable code.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostics for async context managers - astral-sh/ty #918</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Diagnostics for async context managers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/918">#918</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-31 10:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-31 10:49</div>
+            <div class="timeline-body"><p>For <em>synchronous</em> context managers, we emit diagnostics when the context manager is not implemented properly. For example, if there is no <code>__enter__</code> method, or no <code>__exit__</code> method. Or if the call to these methods fails.</p>
+<p>https://play.ty.dev/a64092ee-fde8-40a6-9e32-56c84602e677</p>
+<pre><code class="language-py">class Ctx:
+    def __enter__(self) -&gt; str:  # remove this to generate a diagnostic
+        return &quot;a&quot;
+
+    def __exit__(self, exc_type, exc_val, exc_tb):  # change the signature here to generate a diagnostic
+        pass
+
+
+with Ctx() as c:
+    pass
+</code></pre>
+<p>We should do the same for async context managers.</p>
+<pre><code class="language-py">class Ctx:
+    async def __aenter__(self) -&gt; str:  # removing this does not yet generate a diagnostic
+        return &quot;a&quot;
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):  # changing the signature here does not yet generate a diagnostic
+        pass
+
+
+async def main():
+    async with Ctx() as c:
+        pass
+</code></pre>
+<ul>
+<li>The entry-point to implement this is https://github.com/astral-sh/ruff/blob/27b03a9d7bf779049585bb6cfbf229f18352572d/crates/ty_python_semantic/src/types.rs#L4859C1-L4859C83</li>
+<li>We could unify this method with <code>try_enter</code> and add a <code>EvaluationMode</code> parameter, similar to what we do for <a href="https://github.com/astral-sh/ruff/blob/27b03a9d7bf779049585bb6cfbf229f18352572d/crates/ty_python_semantic/src/types.rs#L4640-L4648"><code>try_iterate</code></a></li>
+<li>This would allow us to re-use <code>ContextManagerError</code>. We would probably need to add a <code>mode</code> parameter to that error type in order to adapt the error messages to mention <code>__aenter__</code> instead of <code>__enter__</code> etc. Similar adaptations have been made for <code>IterationError</code> in https://github.com/astral-sh/ruff/pull/19634</li>
+<li>See existing tests for synchronous context managers: https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/with/sync.md</li>
+<li>The new tests should be added here: https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/with/async.md</li>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @sharkdp on 2025-07-31 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @sharkdp on 2025-07-31 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-08-05 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-05 14:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

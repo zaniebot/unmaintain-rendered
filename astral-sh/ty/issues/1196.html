@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument type `Top[list[Unknown]]` does not satisfy upper bound `Bottom[MutableSequence[Unknown]]` of type variable `Self` - astral-sh/ty #1196</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument type `Top[list[Unknown]]` does not satisfy upper bound `Bottom[MutableSequence[Unknown]]` of type variable `Self`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1196">#1196</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-09-17 08:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 08:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On https://github.com/astral-sh/ruff/pull/18007, we see the following problem:</p>
+<pre><code class="language-py">def f(obj: object):
+    if isinstance(obj, list):
+        obj.clear()
+</code></pre>
+<pre><code>/home/shark/playground/test.py:8:9: error[invalid-argument-type] Argument to bound method `clear` is incorrect: Argument type `Top[list[Unknown]]` does not satisfy upper bound `Bottom[MutableSequence[Unknown]]` of type variable `Self`
+/home/shark/playground/test.py:8:9: error[invalid-argument-type] Argument to bound method `clear` is incorrect: Expected `Self@clear`, found `Top[list[Unknown]]`
+</code></pre>
+<p>It looks like the upper bound is incorrect (<code>Bottom[MutableSequence[Unknown]]</code> instead of <code>Top[MutableSequence[Unknown]]</code>.</p>
+<h3>Version</h3>
+<p>https://github.com/astral-sh/ruff/pull/18007 (ed798a35ee8378d18c014a3c8c605981ca336ec9)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-09-17 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-09-17 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-09-17 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 08:31</div>
+            <div class="timeline-body"><p>This can be reproduced on <code>main</code>:</p>
+<pre><code class="language-py">from typing import Self
+
+
+class C[T]:
+    x: T
+
+    def get(self: Self):
+        pass
+
+
+def _(obj: object):
+    if isinstance(obj, C):
+        obj.get()
+</code></pre>
+<p>https://play.ty.dev/3271b09e-7989-4bb2-a185-f0529b889092</p>
+<pre><code>Argument to bound method `get` is incorrect: Argument type `Top[C[Unknown]]` does not satisfy
+upper bound `Bottom[C[Unknown]]` of type variable `Self`
+
+Argument to bound method `get` is incorrect: Expected `Self@get`, found `Top[C[Unknown]]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 11:06</div>
+            <div class="timeline-body"><p>I think this happens because we apply the flipped materialization kind to parameters of a signature <a href="https://github.com/astral-sh/ruff/qblob/7e464b815096f66ad33111f95147184db84ac638/crates/ty_python_semantic/src/types/signatures.rs#L478-L480">here</a>.</p>
+<p>And so, when we access <code>get</code> on <code>Top[C[Unknown]]</code>, we end up with the bottom materialization on the upper bound of the <code>self: Self</code> parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 11:27</div>
+            <div class="timeline-body"><p>And it only happens for invariant typevars (try changing to co/contra-variant here: https://play.ty.dev/6a77ba03-c87f-45ca-9f09-6c40f02305dd) when this code path is active:</p>
+<p>https://github.com/astral-sh/ruff/blob/7e464b815096f66ad33111f95147184db84ac638/crates/ty_python_semantic/src/types/generics.rs#L762-L769</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 11:46</div>
+            <div class="timeline-body"><p>I think this is also related to Doug's comment in https://github.com/astral-sh/ty/issues/1164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 12:15</div>
+            <div class="timeline-body"><p>Now I'm starting to think that the problem is this code here, where we materialize the type of an attribute when accessing it on <code>Top[…]</code> or <code>Bottom[…]</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/7e464b815096f66ad33111f95147184db84ac638/crates/ty_python_semantic/src/types.rs#L2810-L2817</p>
+<p>This leads us to top-materialize <code>fn get(self: Self{bound=C[Unknown]})</code> to <code>fn get(self: Self{bound=Bottom[C[Unknown]]})</code>, after which we can't call it (create a bound method object).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-17 15:00</div>
+            <div class="timeline-body"><p>It only happens for invariant type vars because that's the only case where we have to explicitly represent a <code>Top</code> or <code>Bottom</code> type; otherwise we can just immediately apply the top/bottom materialization. For <code>Covariant[T]</code> the top materialization of <code>Covariant[Any]</code> is just <code>Covariant[object]</code> and the bottom materialization is <code>Covariant[Never]</code>; for <code>Contravariant[T]</code> it's the reverse. But for invariant type vars we need <code>Top[Invariant[Any]]</code>, which represents the infinite union of all possible materializations of <code>Invariant[Any]</code>, and <code>Bottom[Invariant[Any]]</code>, representing the infinite intersection of all possible materializations. Because of invariance, neither of these is the same type as <code>Invariant[object]</code> or <code>Invariant[Never]</code>.</p>
+<p>Gradual upper bounds are weird, and I suspect that the answer here might be that we should never create a gradual upper bound for <code>Self</code> in the first place. If we are initially creating the <code>Self</code> type var with an upper bound of <code>C[Unknown]</code> in your example, we should instead be initially creating it with the upper bound as the top materialization, so <code>Top[C[Unknown]]</code>. This is the correct upper bound -- it is the type that includes all possible materializations of <code>C</code>, which are all valid types for <code>Self</code> to take on. And since that is already a fully static type, the materialization-of-attributes code won't affect it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-09-17 15:11</div>
+            <div class="timeline-body"><p>I believe a gradual upper bound is equivalent to an upper bound of the <code>Top[]</code> of that gradual upper bound, though I haven't fully worked out that that always holds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-17 16:09</div>
+            <div class="timeline-body"><p>Some notes from offline discussion:</p>
+<blockquote>
+<p>I believe a gradual upper bound is equivalent to an upper bound of the <code>Top[]</code> of that gradual upper bound</p>
+</blockquote>
+<p>This isn't generally true, at least not internally to the function, where uses of a typevar with upper bound <code>Any</code> needs to be treated more forgivingly than a typevar with upper bound <code>object</code>. It may be true as far as external solving of the typevar goes?</p>
+<blockquote>
+<p>we should instead be initially creating it with the upper bound as the top materialization, so <code>Top[C[Unknown]]</code></p>
+</blockquote>
+<p>@sharkdp observed that this isn't right either, because then for internal uses of <code>self</code> we have specialized away the typevar of <code>C</code> too quickly:</p>
+<pre><code class="language-py">from typing import Self
+
+class C[T]:
+    x: T
+
+    def get(self: Self) -&gt; T:
+        return self.x  # expected `T@C`, found `object`
+</code></pre>
+<p>Effectively it seems that <code>Self</code> on a generic type must be treated as a typevar with a generic upper bound of <code>C[T]</code>, at least internally to the function, but generic upper bounds are not generally allowed. So that either will require some special-casing of <code>Self</code> relative to other typevars, or generally supporting generic upper bounds, which <a href="https://discuss.python.org/t/union-of-invariant-types/103344/17">has been suggested before</a>.</p>
+<p>In the short term, we may want a simpler workaround which accepts some false negatives in order to eliminate false positives and allows us to land type-of-self, e.g. not enforcing upper bound of <code>Self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-18 08:30</div>
+            <div class="timeline-body"><p>For completeness, here is how our current behavior of using <code>C[Unknown]</code> as the upper bound for <code>Self</code> can lead to false negatives inside method bodies:</p>
+<pre><code class="language-py">from typing import Self
+
+
+class C[T: str]:
+    attr: T
+
+    def f(self: Self):
+        self.attr.replace(&quot;foo&quot;, 2)  # should be an error
+        reveal_type(self.attr)  # ty: Unknown
+</code></pre>
+<p>(https://play.ty.dev/45237f59-91c8-4ad7-982b-91a9d73667a2)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-23 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

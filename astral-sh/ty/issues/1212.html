@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>infer type of parameter from super type - astral-sh/ty #1212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>infer type of parameter from super type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1212">#1212</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-20 06:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-20 06:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">class A:
+    def f(self, i: int): ...
+
+class B(A):
+    def f(self, i):
+        reveal_type(i)  # Unknown
+</code></pre>
+<p>here i would expect <code>int</code></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 12:36</div>
+            <div class="timeline-body"><p>Why would you expect <code>int</code> here? I could write a Liskov-compliant subclass of <code>A</code> like this, since parameter types are contravariant:</p>
+<pre><code class="language-py">class A:
+    def f(self, i: int): ...
+
+class B(A):
+    def f(self, i: object):
+        reveal_type(i)
+</code></pre>
+<p>Without explicit annotations, we can't guess about what the user's intentions are here without breaking the gradual guarantee.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 12:43</div>
+            <div class="timeline-body"><p>This seems similar to https://github.com/astral-sh/ty/issues/1213, and I'd like to close it for the same reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-22 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>the gradual guarantee</p>
+</blockquote>
+<p>i don't care about gradual typing, i fully type everything i write. if i wanted <code>object</code> i would annotate it as such. inferring <code>int</code> here is intuitive and ergonomic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 20:11</div>
+            <div class="timeline-body"><p>&quot;Missing annotation means dynamic/gradual typing&quot; and &quot;missing annotation means best-guess type inference&quot; are incompatible semantics for the Python type system. While Python type checkers have arguably been a bit fence-sitting between the two for attribute or variable annotations, there has never been any doubt for function arguments: the former interpretation was chosen ten years ago. If you want everything fully typed in Python, you must annotate all your function arguments.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

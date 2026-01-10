@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>correctly model short-circuting control flow in boolean expressions - astral-sh/ty #626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>correctly model short-circuting control flow in boolean expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/626">#626</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-10 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 16:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For example, in <a href="https://play.ty.dev/337ceb56-569f-4db8-aa55-f00b635b3be3">this snippet</a> we should not emit a <code>possibly-unresolved-reference</code> error on the use of <code>x</code> inside the <code>if</code> block, because we can only reach the inside of the <code>if</code> block in a case where the assignment expression has definitely executed:</p>
+<pre><code class="language-py">def _(flag: bool, number: int):
+    if flag and (x := number):
+        reveal_type(x)
+</code></pre>
+<p>(Note that we disable <code>possibly-unresolved-reference</code> by default, so to reproduce this on the command line you'll have to use <code>--error possibly-unresolved-reference</code>.)</p>
+<p>This was previously fixed in https://github.com/astral-sh/ruff/pull/18010, but the fix caused a large performance regression in some cases (see https://github.com/astral-sh/ty/issues/431 for details) and was reverted in https://github.com/astral-sh/ruff/pull/18150. So one useful way to approach this issue is to reapply the previous fix and explore the cause of the performance regression (and add a benchmark that would catch that regression in future.)</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-06-10 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @carljm on 2025-06-10 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-10 17:52</div>
+            <div class="timeline-body"><p>Just adding a quick note here that I'm currently doing a major rework of the visibility/reachability constraints system. I don't want to block work on this, but it would probably be more efficient to wait until #365 is resolved. And it might even make the implementation of this easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2025-06-10 18:59</div>
+            <div class="timeline-body"><p>I reproduced the performance issue with a single file with 1000 <code>if x and y: ...</code> lines.
+I found something that seems to fix the issue, but then I got #365 in the mdtest suit, so I stopped there. Maybe we should wait for #365 before putting extra work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 08:09</div>
+            <div class="timeline-body"><p>@TomerBin The <a href="https://github.com/astral-sh/ruff/pull/18621">reachability-constraints PR</a> has now been merged and #365 has been fixed. Let me know if you need any help adapting your changes to the new constraints system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2025-06-17 08:10</div>
+            <div class="timeline-body"><p>@sharkdp Awesome! I'll take a look shortly
+Tnx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2025-06-24 21:06</div>
+            <div class="timeline-body"><p>For clarity - we are now blocked on #690</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 22:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:10 UTC
+    </footer>
+</body>
+</html>

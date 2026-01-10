@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inlay hints for return types - astral-sh/ty #1545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>inlay hints for return types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1545">#1545</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-14 08:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:51</div>
+            <div class="timeline-body"><p>Requires https://github.com/astral-sh/ty/issues/128</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-11-14 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-08 23:13</div>
+            <div class="timeline-body"><p>Hmm I wonder if we really need #128. At the start of the issue David suggests a naive approach, and I think that makes perfect sense for the purposes of purely informational inlay hints? Notably it's &quot;safer&quot; to ship just the inlay hint because it has no semantics in the typechecker's inferences. But if double-clickable could help you add missing types to code quickly (or just quickly scan the signature line for info on what this function actually does).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-08 23:17</div>
+            <div class="timeline-body"><p>Wouldn't it be confusing if we displayed an inlay hint showing that we &quot;knew&quot; what the return type &quot;actually&quot; was, but then inferred the function as returning <code>Unknown</code> everywhere from inside the type checker?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-08 23:59</div>
+            <div class="timeline-body"><p>The hardest problem in #128 was always recursion, which is not a problem we could have handwaved away for the LSP, since it would cause crashes, not just wrong results. Now I think we're at a place with our recursion handling where we can do #128 (and @mtshiba is working on it) but I don't think doing it properly is hard enough that it makes sense to do a simpler version just for inlay hints.</p>
+<p>The main relevant question (in terms of &quot;naive approach&quot; vs &quot;full approach&quot;) is what you'd want to see as the inlay hint on <code>A.foo</code> return type here:</p>
+<pre><code class="language-py">class A:
+    def foo(self):
+        return None
+
+class B(A):
+    def foo(self):
+        return 1
+</code></pre>
+<p>The naive approach would be to show <code>None</code> for <code>A.foo</code> and <code>Literal[1]</code> for <code>B.foo</code>. If you bake both of those, then you have a Liskov violation.</p>
+<p>If we use this naive approach in #128, then we'll emit a Liskov violation on your untyped code, which is wrong (you may always use <code>.foo()</code> in a way that recognizes its implicit return type as <code>int | None</code>) -- or if we suppress the Liskov diagnostic, then we'll just make unsound inferences, because <code>None</code> is simply wrong as the return type for <code>A.foo</code>, since the type <code>A</code> includes instances of <code>B</code>.</p>
+<p>In #128 we plan to infer <code>Unknown | None</code> for <code>A.foo</code> to avoid this problem.</p>
+<p>We could consider having type inference and inlay hints use different inferred return types, but I'd be pretty concerned about that being confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-09 00:32</div>
+            <div class="timeline-body"><blockquote>
+<p>We could consider having type inference and inlay hints use different inferred return types, but I'd be pretty concerned about that being confusing.</p>
+</blockquote>
+<p>Yes, this is what I was considering. It would also make recursion not a problem (a recursive call would just see the actual signature and conclude you return Unknown).</p>
+<p>I don't find the Liskov argument that persuasive -- it's already the case that many inlay hints (basically every one that contains Literal) is the wrong one to bake. The bake feature is opportunistically useful but not like, guaranteed useful.</p>
+<p>Even when the annotation isn't what you want baked, it still can help you scan the code and understand what you're looking at.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 00:36</div>
+            <div class="timeline-body"><blockquote>
+<p>It would also make recursion not a problem (a recursive call would just see the actual signature and conclude you return Unknown)</p>
+</blockquote>
+<p>Oh, good point; as long as we don't actually do RTI in type inference, there's no recursion problem.</p>
+<blockquote>
+<p>I don't find the Liskov argument that persuasive</p>
+</blockquote>
+<p>The Liskov thing wasn't intended as an argument, just an explanation of why the actual RTI types are a little more complex.</p>
+<p>The actual argument is &quot;showing a different inlay hint than the return type we will use in type inference is confusing.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-09 00:37</div>
+            <div class="timeline-body"><p>To me an inlay hint strongly implies &quot;this is the type the type checker has inferred and is going to use to infer types elsewhere&quot;. That's just not true if we still infer all unannotated functions as returning <code>Unknown</code> in the type checker. I think <em>I</em> would be really confused by this as a ty user</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-09 00:45</div>
+            <div class="timeline-body"><p>Maybe I'm too compiler-brained, because I would never assume a compiler does externally-visible function signature inference... that would be global inference, no one would ever consider doing global inference!</p>
+<p><em>stares into the middle distance</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 00:49</div>
+            <div class="timeline-body"><p>It's only global inference if you <em>actually</em> handle subclass overrides precisely (rather than just inserting some unions with Unknown on inferred return types for methods), or if you treat unannotated functions as implicitly generic if an unannotated parameter flows into an unannotated return type (pyright actually does a version of this, but only for small functions...). Otherwise it's still just fairly naive local inference, just one level deeper.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:41 UTC
+    </footer>
+</body>
+</html>

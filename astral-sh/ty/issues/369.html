@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-deterministic output on hydra-zen - astral-sh/ty #369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-deterministic output on hydra-zen</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/369">#369</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-13 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 20:34</div>
+            <div class="timeline-body"><h2>How to reproduce</h2>
+<p>Set up the project the mypy_primer way:</p>
+<pre><code class="language-bash">git clone https://github.com/mit-ll-responsible-ai/hydra-zen
+cd hydra-zen
+uv venv
+uv pip install pydantic beartype hydra-core
+source .venv/bin/activate
+</code></pre>
+<p>Then run the following command repeatedly:</p>
+<pre><code>ty check src tests/annotations
+</code></pre>
+<p>Leads to either 541, 543, or 544 diagnostics.</p>
+<p>When <code>TY_MAX_PARALLELISM</code> is set to <code>1</code>, ty consistently reports 544 diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-13 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-13 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-14 05:47</div>
+            <div class="timeline-body"><p>This is pure speculation. I wonder if this happens because of different runs use different cycle heads (we enter cycles with different entry function depending on whether the project is checked in parallel or not). May in combination with generics?</p>
+<p>I'm seeing something similar in https://github.com/salsa-rs/salsa/issues/831</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 08:21</div>
+            <div class="timeline-body"><p>Ouff... this took me a long time to narrow down. It seems to require three different files:</p>
+<p><code>mod1.py</code></p>
+<pre><code class="language-py">class A[T]:
+    pass
+
+
+class B[T]:
+    pass
+</code></pre>
+<p><code>mod2.py</code></p>
+<pre><code class="language-py">from mod1 import A, B
+
+def f[T](f: bool) -&gt; A[T] | B[T]:
+    raise NotImplementedError
+</code></pre>
+<p><code>main.py</code></p>
+<pre><code class="language-py">from typing import TypeAlias, assert_type
+
+from mod2 import f
+from mod1 import A, B
+
+
+SomeTodoType: TypeAlias = int
+
+
+def _(flag: bool):
+    assert_type(
+        f(flag),
+        A[SomeTodoType] | B[SomeTodoType],
+    )
+</code></pre>
+<p>Then I can run the following in the folder with these three files:</p>
+<pre><code>&gt; while true; do ty check --output-format concise 2&gt;&amp;1 | rg '(Found|checks)'; done
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+All checks passed!
+Found 1 diagnostic
+Found 1 diagnostic
+All checks passed!
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+All checks passed!
+All checks passed!
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+All checks passed!
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+Found 1 diagnostic
+</code></pre>
+<p>There are 6 permutations in which you can check these three files. When running single-threaded, one of them leads to a diagnostic being emitted, the other five run successfully:</p>
+<pre><code>▶ TY_MAX_PARALLELISM=1 ty check main.py mod1.py mod2.py
+All checks passed!
+
+▶ TY_MAX_PARALLELISM=1 ty check main.py mod2.py mod1.py
+error[type-assertion-failure]: Argument does not have asserted type `A[@Todo] | B[@Todo]`
+  --&gt; main.py:11:5
+   |
+10 |   def _(flag: bool):
+11 | /     assert_type(
+12 | |         f(flag),
+   | |         ------- Inferred type of argument is `A[Unknown] | B[Unknown]`
+13 | |         A[SomeTodoType] | B[SomeTodoType],
+14 | |     )
+   | |_____^
+   |
+info: `A[@Todo] | B[@Todo]` and `A[Unknown] | B[Unknown]` are not equivalent types
+info: rule `type-assertion-failure` is enabled by default
+
+Found 1 diagnostic
+
+▶ TY_MAX_PARALLELISM=1 ty check mod1.py main.py mod2.py
+All checks passed!
+
+▶ TY_MAX_PARALLELISM=1 ty check mod1.py mod2.py main.py
+All checks passed!
+
+▶ TY_MAX_PARALLELISM=1 ty check mod2.py main.py mod1.py
+All checks passed!
+
+▶ TY_MAX_PARALLELISM=1 ty check mod2.py mod1.py main.py
+All checks passed!
+</code></pre>
+<p>Interestingly, we infer <code>A[Unknown] | B[Unknown]</code> for <code>f(flag)</code> in all six cases, but only one of them leads to the diagnostic.</p>
+<blockquote>
+<p>I wonder if this happens because of different runs use different cycle heads (we enter cycles with different entry function depending on whether the project is checked in parallel or not). May in combination with generics?</p>
+</blockquote>
+<p>I don't think so. There's nothing self-referential here and I don't see any fixpoint iteration happening in the traces.</p>
+<p>But I have some other leads (e.g. type normalization, representation of <code>@Todo</code> types) that I want to follow...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-15 01:06</div>
+            <div class="timeline-body"><p>From conversations with @sharkdp on Discord, I have managed to find two bugs to do with type normalisation and unions. Once both of these bugs are fixed, the non-deterministic output on hydra-zen no longer occurs.</p>
+<p>Bug number 1: equivalent unions that include <code>Any</code>, <code>Unknown</code> and/or <code>Todo</code> are simplified differently depending on their order in the source code:</p>
+<pre><code class="language-py">from typing import Any
+from ty_extensions import Unknown
+
+def f(x: Any | Unknown, y: Unknown | Any):
+    reveal_type(x)  # Any
+    reveal_type(y)  # Unknown
+</code></pre>
+<p>Bug number 2: equivalent unions that include equivalent-but-not-equal generic instance types are not understood as equivalent:</p>
+<pre><code class="language-py">from ty_extensions import is_equivalent_to
+
+class Foo[T]: ...
+
+reveal_type(is_equivalent_to(Foo[int | str] | str, str | Foo[str | int]))  # revealed `Literal[False]`, but it should reveal `Literal[True]`
+</code></pre>
+<p>Once both of these bugs are fixed, I no longer see any non-deterministic output on hydra-zen locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-15 02:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

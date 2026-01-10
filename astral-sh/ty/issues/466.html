@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incrementally checking many small edits in a large context - astral-sh/ty #466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incrementally checking many small edits in a large context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/466">#466</a>
+        opened by <a href="https://github.com/breandan">@breandan</a>
+        on 2025-05-20 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/breandan">@breandan</a> on 2025-05-20 20:47</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>To what extent does <code>ty</code> support incremental type checking and is this documented somewhere? I would like the ability to insert a large number of candidate lines (say 10^5 or more) into a local typing context and filter out the ill-typed versions without checking the entire project in full. Do consumers need to go through the LSP and simulate keystrokes or are there endpoints for modifying the AST directly? Thanks.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @breandan on 2025-05-20 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @AlexWaygood on 2025-05-20 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-05-20 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 20:53</div>
+            <div class="timeline-body"><p>There's certainly no API for modifying the AST directly in memory; the AST is derived from source code.</p>
+<p>ty does support incremental checking, either via the LSP server or via the <code>--watch</code> CLI flag. If I'm understanding your use case, it sounds like you can run ty with <code>--watch</code> and pass just one file to check as CLI argument (you need to ensure that all other files that should be importable are either discoverable in a Python installation you point to with <code>--python</code> or in a virtualenv pointed to by <code>VIRTUAL_ENV</code>, or are directly importable from the directory where you run ty) and then just repeatedly rewrite that one file with new candidate code you want to check? ty will re-check only the one file, and reuse type information from all other unchanged files without re-computing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/breandan">@breandan</a> on 2025-05-20 21:31</div>
+            <div class="timeline-body"><p>I guess that makes sense. Do you plan to add more granular support below the file-level or is this not a high priority?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 21:45</div>
+            <div class="timeline-body"><p>We are already much more granular than the file level when it comes to tracking dependencies across multiple files (and lazy evaluation within dependency modules we haven't been asked to check). But when a file itself is edited, we will always fully re-check that file.</p>
+<p>I guess this might start to slow down if you wanted to add <code>10^5</code> lines to the file-to-check, without removing any of the previous lines (i.e. the file eventually grows to become massive) -- but in this case (if the various lines don't interfere with each other, or even depend on previous ones) then I'm not sure why you even want it to be incremental, just pre-generate a big file with all <code>10^5</code> lines and check that file once. If you're doing it incrementally why not just rewrite the file with each version of the code you want to check (removing previous lines), and then it should be very fast.</p>
+<p>Incremental parsing or finer-grained incrementality within a modified file is not a high priority, since ty is so fast that in realistic cases it's never a problem to re-check a changed file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @breandan on 2025-05-20 22:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:04 UTC
+    </footer>
+</body>
+</html>

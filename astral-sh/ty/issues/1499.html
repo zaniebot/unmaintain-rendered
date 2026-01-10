@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-assignment error when try to unpack an array shape when the array has type hint with multiple shape - astral-sh/ty #1499</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-assignment error when try to unpack an array shape when the array has type hint with multiple shape</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1499">#1499</a>
+        opened by <a href="https://github.com/BaoNguyen6742">@BaoNguyen6742</a>
+        on 2025-11-07 08:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BaoNguyen6742">@BaoNguyen6742</a> on 2025-11-07 08:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example code</p>
+<pre><code>import numpy as np
+
+def get_shape(
+    example_image: np.ndarray[
+        tuple[int, int, int] | tuple[int, int, int, int], np.dtype[np.float32]
+    ],
+):
+    img_shape = example_image.shape
+    img_ndims = example_image.ndim
+    if img_ndims == 3:
+        h, w, c = img_shape
+        n = 1
+    else:
+        n, h, w, c = img_shape
+    return n, h, w, c
+
+</code></pre>
+<p>Error when running <code>ty check</code></p>
+<pre><code>error[invalid-assignment]: Too many values to unpack
+  --&gt; ty_test.py:11:9
+   |
+ 9 |     img_ndims = example_image.ndim
+10 |     if img_ndims == 3:
+11 |         h, w, c = img_shape
+   |         ^^^^^^^   --------- Got 4
+   |         |
+   |         Expected 3
+12 |         n = 1
+13 |     else:
+   |
+info: rule `invalid-assignment` is enabled by default
+
+error[invalid-assignment]: Not enough values to unpack
+  --&gt; ty_test.py:14:9
+   |
+12 |         n = 1
+13 |     else:
+14 |         n, h, w, c = img_shape
+   |         ^^^^^^^^^^   --------- Got 3
+   |         |
+   |         Expected 4
+15 |     return n, h, w, c
+   |
+info: rule `invalid-assignment` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>Is there any way to make the <code>img_shape</code> know that the array has the correct number of dimensions when unpack so it doesn't resulted in this type of error</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.25 (3abd4c968 2025-10-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @sharkdp on 2025-11-07 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> removed by @sharkdp on 2025-11-07 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @sharkdp on 2025-11-07 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-07 14:01</div>
+            <div class="timeline-body"><p>Thank you for reporting this. No other type checker supports checking this code in the current form, because the length of the shape tuple is stored in <code>img_ndims</code>, instead of being used in the <code>if</code> checks directly. Other type checkers <em>do</em> however support narrowing if it is rewritten as:</p>
+<pre><code class="language-py">import numpy as np
+
+
+def get_shape(
+    example_image: np.ndarray[
+        tuple[int, int, int] | tuple[int, int, int, int],
+        np.dtype[np.float32]
+    ],
+):
+    img_shape = example_image.shape
+
+    if len(img_shape) == 3:
+        h, w, c = img_shape
+    elif len(img_shape) == 4:
+        b, h, w, c = img_shape
+    else:
+        raise ValueError(f&quot;Unexpected number of dimensions: {len(img_shape)}&quot;)
+</code></pre>
+<p>We also plan to add support for this, please see https://github.com/astral-sh/ty/issues/560</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-07 14:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:40 UTC
+    </footer>
+</body>
+</html>

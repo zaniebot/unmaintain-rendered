@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support multi-step bidirectional type inference - astral-sh/ty #1211</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support multi-step bidirectional type inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1211">#1211</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-20 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-20 06:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">def f1() -&gt; list[object]:
+    return [1, 2, 3]  # lovely, bidirectional type inference uses the return type to infer `list[object]`
+
+def f2() -&gt; list[object]:
+    result = [1, 2, 3]
+    return result  # error: bi-directional type inference does not look ahead, so the inferred type is `list[int]`
+</code></pre>
+<p>note that there are two issues preventing the actual error from surfacing:</p>
+<ul>
+<li>return position is not taken into account for constraint solving</li>
+<li><code>[1, 2, 3]</code> is inferred as <code>list[Unknown | int]</code>, which is assignable to <code>list[object]</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-09-20 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-09-20 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support multi step bi-directional type inference" to "support multi-step bidirectional type inference" by @AlexWaygood on 2025-09-22 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-09-22 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 22:09</div>
+            <div class="timeline-body"><p>It looks like pyright/mypy/pyrefly all have the same behavior as ty here. I think it is quite challenging to do what's requested here with good performance. So while I don't disagree it would be very nice, I doubt this will be a priority anytime soon. The workaround is at least simple: explicitly annotate <code>result: list[object] = [1, 2, 3]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-22 22:16</div>
+            <div class="timeline-body"><p>I don't think the first case is even bidirectional type inference, we infer the list literal independently as <code>list[Unknown | int]</code> and then ensure check with <code>list[object]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 22:17</div>
+            <div class="timeline-body"><p>@ibraheemdev Yes, you're right. Though I think we should add &quot;return position&quot; as another case where we do use bidirectional inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 22:18</div>
+            <div class="timeline-body"><p>(Also, in fact ty doesn't currently error on either of these examples, because we prefer <code>list[Unknown | int]</code> inference, precisely in order to avoid these kinds of issues. That may change, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 23:33</div>
+            <div class="timeline-body"><p>personally, i can't comprehend the <code>list[Unknown | int]</code>, are you planning on any way to disable this? in my opinion it results in the type checker being unusable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-09-23 00:19</div>
+            <div class="timeline-body"><p>Yeah I’m quite concerned about this as well. I remember seeing this behavior mentioned elsewhere.  Correct me if I’m wrong because i can’t find that discussion anymore but it’s for projects gradually adopting a type checker, as in you don’t want hundreds of type errors to be reported on existing code that already works, right? And I believe it was mentioned that there will be a strictness setting to report an error on <code>Any</code> / <code>Unknown</code> types for people who don’t like this behavior.</p>
+<p>But doesn’t that mean users who want full strictness will have to annotate <em>everything</em> to opt out of this behavior, and therefore can’t rely on type inference at all? IMO there are other ways to achieve the same goal without compromising for people who want full type safety. For example <a href="https://docs.basedpyright.com/latest/benefits-over-pyright/baseline/">a baseline file</a>.</p>
+<p>I realize that people like us who want the type checker to be as strict as possible are in the minority, but this sounds like ty will be a downgrade for us, which is a shame because everything else astral has made has been a massive improvement over the existing solutions.</p>
+<p>If gradual adoption of type safety is the goal, what does that mean for people who complete the “gradual” journey and end up at the same place as us? Their experience will be degraded by being forced to annotate everything, which is a major reason why people don’t like the idea of type checkers in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-23 00:58</div>
+            <div class="timeline-body"><p>&quot;Getting lots of false positives on working code&quot; and &quot;having to add annotations for things that seem 'obvious'&quot; are both reasons people dislike Python type checkers; it's difficult to balance the two correctly.</p>
+<p>ty aims to be a usable LSP for Python code that is untyped and whose author has no intention to type it or use a type checker at all. Baseline files are not a useful solution for such a user.</p>
+<p>I suspect that <code>list[Unknown | int]</code> is in practice much more usable than you think it is. The type <code>Unknown | int</code> is indistinguishable from the type <code>int</code>, when you try to use a value of that type; they are only different when you try to assign something to a destination explicitly annotated as <code>Unknown | int</code>. When you pull an element from a <code>list[Unknown | int]</code> and try use it in a way that would be an error for an <code>int</code>, you will get exactly the same errors as you would if the list were typed as <code>list[int]</code>.</p>
+<p>The difficulty is that to make this sound we would need to update the type of the list every time you put something new into it (since we will allow you to put non-int things into it, since you never declared that you wanted it limited to ints), and this may be impractical with good performance. For that reason, I do think we will likely add an option to, or even default to, inferring the type of un-annotated generic container literals without the union with <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-23 02:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that <code>list[Unknown | int]</code> is in practice much more usable than you think it is.</p>
+</blockquote>
+<blockquote>
+<p>The type <code>Unknown | int</code> is indistinguishable from the type <code>int</code></p>
+</blockquote>
+<p>i think that <code>list[Unknown | int]</code> is in practice absolutly not what i would ever want, as it is inherantly unsafe. i'm interested in writing safe code, maintaining safe programs, and using tools that provide me with a garuntee of that safety</p>
+<pre><code class="language-py">a = [1]
+a.append(&quot;i'm not an int&quot;)
+a.pop() + 1
+
+b = [1]
+c: list[object] = b
+c.append(&quot;im not an int&quot;)
+</code></pre>
+<blockquote>
+<p>we would need to update the type of the list every time you put something new into it</p>
+</blockquote>
+<p>this results in an extreme amount of complication:</p>
+<pre><code class="language-py">a = [1]
+b = a
+a.append(&quot;&quot;)
+reveal_type(a)  # list[int | str]
+reveal_type(b)  # list[int]
+</code></pre>
+<p>another example of this <code>Unknown</code> injection being completely unviable is:</p>
+<pre><code class="language-py">class A:
+    length = 100
+
+def get_length() -&gt; int | None:
+    return None
+
+def f(a: A):
+    a.length + 1
+
+a = A()
+a.length = get_length()  # oops!
+f(a)
+</code></pre>
+<p>so if i'm interested in having type inference of even simple things like integer literals, i have to forgo all type safety</p>
+<p>maybe <code>ty</code> isn't the project for me then</p>
+<p>seeing as <code>ty</code> diverges from all other python type checkers so drastically, i think it would be valuable to include your quote in the readme of the project:</p>
+<blockquote>
+<p>ty aims to be a usable LSP for Python code that is untyped and whose author has no intention to type it or use a type checker at all.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-23 02:07</div>
+            <div class="timeline-body"><blockquote>
+<p>this results in an extreme amount of complication</p>
+</blockquote>
+<p>Yes, which is why I said (in the same paragraph) that it's probably not feasible and we'll likely default to the behavior you're looking for :) still navigating the right balance to meet the needs of lots of different users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-23 02:11</div>
+            <div class="timeline-body"><blockquote>
+<p>still navigating the right balance to meet the needs of lots of different users.</p>
+</blockquote>
+<p>if there was a <code>gradual = false</code> configuration option, then it would resolve <code>Any</code> and all issues i have with the current direction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-09-23 02:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I do think we will likely add an option to, or even default to, inferring the type of un-annotated generic container literals without the union with <code>Unknown</code>.</p>
+</blockquote>
+<p>thanks, that'll address my concerns, so i've opened #1240 for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-04 20:45</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ty/issues/1473 for our plans here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-11-04 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

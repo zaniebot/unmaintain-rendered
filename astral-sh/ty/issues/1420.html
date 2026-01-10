@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-return-type` on syntax `(A | None) and B` for return type `B | None`; needs narrowing - astral-sh/ty #1420</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-return-type` on syntax `(A | None) and B` for return type `B | None`; needs narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1420">#1420</a>
+        opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a>
+        on 2025-10-23 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-10-23 15:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Valid python syntax is to do a union on boolean operations and return either the first or second component based on condition:</p>
+<pre><code class="language-py">a = &quot;hit&quot; and &quot;this is the output&quot;
+b = &quot;&quot; and &quot;misses this&quot;
+</code></pre>
+<p><code>ty</code> is unable to narrow the return type when mismatch types are present with a <code>~AlwaysTruthy</code>. To see this in action, https://play.ty.dev/9af3b976-3b09-4f7d-927e-570bcdd53260</p>
+<pre><code class="language-py">def foo(name: str) -&gt; str | None:
+    bar: dict[str, Foo] = {}
+    baz = bar.get(name)
+    return baz and f&quot;This is string {baz}&quot;
+# Return type does not match returned value: expected `str | None`, found `(Foo &amp; ~AlwaysTruthy) | None | str` (invalid-return-type)
+</code></pre>
+<p>The above code fails because <code>baz</code> is <code>Foo | None</code>. But this should be possible to narrow and say that <code>Foo</code> can never be returned. If <code>baz</code> is truthy, it returns the second component, the string. If <code>baz</code> is falsy, it returns None.</p>
+<p>That said, technically <code>ty</code> is correct. This case is ambiguous;
+Given the example:</p>
+<pre><code class="language-py">def foo(name: str) -&gt; str | None:
+    bar: dict[str, int] = {}
+    baz = bar.get(name)
+    return baz and f&quot;This is string {baz}&quot;
+</code></pre>
+<p>It is possible for it to return <code>0</code> instead of None. And that would be invalid based on the return type. However, if I modify the code to:</p>
+<pre><code class="language-py">def foo(name: str) -&gt; str | None:
+    bar: dict[str, int] = {}
+    baz = bar.get(name)
+    return (baz or None) and f&quot;This is string {baz}&quot;
+# Return type does not match returned value: expected `str | None`, found `(int &amp; ~AlwaysFalsy &amp; ~AlwaysTruthy) | None | str`
+</code></pre>
+<p>This should no longer be possible to return <code>0</code>. And the &quot;same&quot; issue is present. Maybe you want to say that my first example is ambiguous and there is no way to narrow this down. But in this last example, <code>int</code> should never be possible to return. Narrowing should be possible.</p>
+<hr />
+<p>While I can find some issues that seem related to this. I feel as though this is unique and specific enough to warrant its own issue. More specifically, there are two things going on here. A) narrowing of truthy types and B) ambiguous cases here that you can or can not guarantee to be the case.
+Other type checkers are all over the place on this one. <code>Foo | None</code> case is valid in pyright, but not mypy. It is the reverse for <code>int | None</code> case. And both say my workaround for <code>(A or None)</code> is invalid.
+I don't expect <code>ty</code> to have parity with the other checkers. Just acknowledging that this is a complicated situation.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.24 (1fee7da8b 2025-10-23)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 09:59</div>
+            <div class="timeline-body"><p>Thanks for the report! I had to fix some details before writing this up, so some of what I'm saying below only applies on <code>main</code> (though it will be included in the next release) -- in particular the bits about <code>__len__</code> and <code>@final</code> classes don't work correctly on the latest alpha 😄 But the playground is deployed from the <code>main</code> branch, so it should all apply if you try things out in the playground.</p>
+<p>Unfortunately I think ty is behaving as expected here. Here's a slightly simpler version of your original example:</p>
+<pre><code class="language-py">class Foo: ...
+
+def f(foo: Foo) -&gt; None:
+    # error: [invalid-return-type] &quot;Return type does not match returned value: expected `None`, found `(Foo &amp; ~AlwaysTruthy) | None`&quot;
+    return foo and None
+</code></pre>
+<p>At runtime, it looks like ty is behaving incorrectly here, because instances of <em>exactly</em> <code>Foo</code> are always truthy!</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: ...
+... 
+... def f(foo: Foo) -&gt; None:
+...     return foo and None
+...     
+&gt;&gt;&gt; f(Foo()) is None
+True
+</code></pre>
+<p>Unfortunately, however, <code>Foo</code> in a type annotation does <em>not</em> mean &quot;any instance of <em>exactly</em> <code>Foo</code>&quot;! It means &quot;any instance of <code>Foo</code> <em>or</em> a subclass of <code>Foo</code>&quot;. ty can't rule out here that there might be a subclass of <code>Foo</code> that would be sometimes or always falsy (because that's legal according to the type system), and it would also be perfectly legal according to the type system to pass an instance of such a subclass into the <code>f()</code> function here:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class FooSub(Foo):
+...     def __bool__(self): return False
+...     
+&gt;&gt;&gt; f(FooSub())
+&lt;__main__.FooSub object at 0x1055f8c20&gt;
+</code></pre>
+<p>If ty could be confident that <em>all</em> instances of <code>Foo</code> are always truthy, it would be able to simplify the type <code>Foo &amp; ~AlwaysTruthy</code> to <code>Never</code> (the empty type), which would mean that the type <code>(Foo &amp; ~AlwaysTruthy) | None</code> would simplify to <code>None</code>, which matches the return type -- therefore, in that situation, no <code>invalid-return-type</code> error would be emitted either on this simplified example or on your original snippet. But because of the possibility of subclasses, it cannot be confident that <em>all</em> instances of <code>Foo</code> are always truthy, so it cannot make that simplification, so the diagnostic is emitted.</p>
+<p>There <em>are</em> situations in which ty can be confident that a subclass cannot change the truthiness of a base class. If a <code>__bool__</code> method is annotated as returning a <code>Literal</code> type, it's illegal according to the type system to change the return type of <code>__bool__</code> in a subclass override, so ty is allowed to assume that truthiness will be consistent for all subclasses, e.g.</p>
+<pre><code class="language-py">from typing import Literal
+
+# ty knows that all instances of `A` will always be truthy
+class A:
+    def __bool__(self) -&gt; Literal[True]:
+        return True
+</code></pre>
+<p>If the class is marked as <code>@final</code> and <code>__len__</code> is defined, ty can also look at the return type of <code>__len__</code>: the runtime falls back to <code>__len__</code> to decide the truthiness of an object if <code>__bool__</code> is not defined. Generally it's not safe for ty to look at <code>__len__</code> because of the fact that <code>__bool__</code> always takes precedence, and could be defined on a subclass, but <code>@final</code> classes cannot be subclassed:</p>
+<pre><code class="language-py">from typing import Literal, final
+
+# ty knows that all instances of `B` will always be falsy
+@final
+class B:
+    def __len__(self) -&gt; Literal[0]:
+        return 0
+</code></pre>
+<p>And if a class defines neither <code>__len__</code> nor <code>__bool__</code>, but is marked <code>@final</code>, ty knows that it will always be truthy. Adding <code>@final</code> to the <code>Foo</code> class fixes the error in your first snippet.</p>
+<pre><code class="language-py">from typing import final
+
+# ty knows that all instances of `C` will always be truthy
+@final
+class C: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-24 09:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:37 UTC
+    </footer>
+</body>
+</html>

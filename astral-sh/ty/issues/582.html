@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid argument to `fields` from `attrs` - astral-sh/ty #582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid argument to `fields` from `attrs`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/582">#582</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2025-06-04 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2025-06-04 10:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>fields</code> from <code>attrs</code>, ty reports a <code>error[invalid-argument-type]</code>.</p>
+<p>Similar to</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/92</li>
+</ul>
+<p>and related to</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/111.</li>
+</ul>
+<h2>MRE</h2>
+<pre><code class="language-py">from attrs import define, fields
+
+
+@define
+class Foo:
+    x: int
+    y: float
+    z: str
+
+
+for field in fields(Foo):
+    print(field.name, field.type)
+</code></pre>
+<pre><code>$ uvx --with attrs==25.3.0 ty check dev/foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `fields` is incorrect
+  --&gt; dev\foo.py:11:21
+   |
+11 | for field in fields(Foo):
+   |                     ^^^ Expected `type[AttrsInstance]`, found `&lt;class 'Foo'&gt;`
+12 |     print(field.name, field.type)
+   |
+info: Function defined here
+   --&gt; .venv\Lib\site-packages\attr\__init__.pyi:311:5
+    |
+309 |     unsafe_hash: bool | None = ...,
+310 | ) -&gt; Callable[[_C], _C]: ...
+311 | def fields(cls: type[AttrsInstance]) -&gt; Any: ...
+    |     ^^^^^^ ------------------------ Parameter declared here
+312 | def fields_dict(cls: type[AttrsInstance]) -&gt; dict[str, Attribute[Any]]: ...
+313 | def validate(inst: AttrsInstance) -&gt; None: ...
+    |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<hr />
+<p><code>AttrsInstance</code> is a protocol</p>
+<p>https://github.com/python-attrs/attrs/blob/a6ae894aad9bc09edc7cdad8c416898784ceec9b/src/attr/<strong>init</strong>.pyi#L67</p>
+<pre><code class="language-py"># We subclass this here to keep the protocol's qualified name clean.
+class AttrsInstance(AttrsInstance_, Protocol):
+    pass
+</code></pre>
+<p>https://github.com/python-attrs/attrs/blob/a6ae894aad9bc09edc7cdad8c416898784ceec9b/src/attr/_typing_compat.pyi#L8</p>
+<pre><code class="language-py">from typing import Any, ClassVar, Protocol
+
+# MYPY is a special constant in mypy which works the same way as `TYPE_CHECKING`.
+MYPY = False
+
+if MYPY:
+    # A protocol to be able to statically accept an attrs class.
+    class AttrsInstance_(Protocol):
+        __attrs_attrs__: ClassVar[Any]
+
+else:
+    # For type checkers without plug-in support use an empty protocol that
+    # will (hopefully) be combined into a union.
+    class AttrsInstance_(Protocol):
+        pass
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-04 11:45</div>
+            <div class="timeline-body"><p>Interesting, thank you for reporting this. I think this should be fixed by modelling assignability of class literals <code>C</code> to <code>type[SomeProtocol]</code> if instances of <code>C</code> implement <code>SomeProtocol</code>?</p>
+<p>MRE without attrs dependency:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class AttrsInstance(Protocol):
+    pass
+
+def fields(a: type[AttrsInstance]):
+    pass
+
+class C: ...
+
+fields(C)
+</code></pre>
+<p>cc @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-06-04 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @sharkdp on 2025-06-04 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-04 11:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this should be fixed by modelling assignability of class literals <code>C</code> to <code>type[SomeProtocol]</code> if instances of <code>C</code> implement <code>SomeProtocol</code>?</p>
+</blockquote>
+<p>Yes. I haven't done much work on protocol meta-types (and meta-protocols...) yet, but it's on my TODO list. Good to have an issue tracking it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-18 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

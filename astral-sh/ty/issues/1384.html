@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match statement + exception on default case doesn't narrow properly - astral-sh/ty #1384</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Match statement + exception on default case doesn't narrow properly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1384">#1384</a>
+        opened by <a href="https://github.com/drewbrew">@drewbrew</a>
+        on 2025-10-17 13:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drewbrew">@drewbrew</a> on 2025-10-17 13:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example function:</p>
+<pre><code class="language-python">def do_something(interval: str, number_of_periods: int | None = None) -&gt; None:
+    match interval:
+        case &quot;monthly&quot;:
+            if number_of_periods is None:
+                number_of_periods = 12
+            # do other stuff here
+        case &quot;daily&quot;:
+            if number_of_periods is None:
+                number_of_periods = 30
+        case &quot;hourly&quot;:
+            if number_of_periods is None:
+                number_of_periods = 24
+        case _:
+            raise ValueError(f&quot;Unknown interval {interval}&quot;)
+    if number_of_periods &lt; 0 or number_of_periods &gt; 50:
+        raise ValueError(f&quot;Invalid number of periods {number_of_periods}&quot;)
+    # now fetch some data or something, IDK
+</code></pre>
+<p>Running <code>ty check</code> on this function returns two errors because ty does not catch that <code>number_of_periods</code> has to be an int at that point (each branch of the match either coerces that variable into an int or fails out with an exception).</p>
+<pre><code>error[unsupported-operator]: Operator `&lt;` is not supported for types `None` and `int`, in comparing `int | None` with `Literal[0]`
+  --&gt; ty_fail.py:15:8
+   |
+13 |         case _:
+14 |             raise ValueError(f&quot;Unknown interval {interval}&quot;)
+15 |     if number_of_periods &lt; 0 or number_of_periods &gt; 50:
+   |        ^^^^^^^^^^^^^^^^^^^^^
+16 |         raise ValueError(f&quot;Invalid number of periods {number_of_periods}&quot;)
+17 |     # now fetch some data or something, IDK
+   |
+info: rule `unsupported-operator` is enabled by default
+
+error[unsupported-operator]: Operator `&gt;` is not supported for types `None` and `int`, in comparing `int | None` with `Literal[50]`
+  --&gt; ty_fail.py:15:33
+   |
+13 |         case _:
+14 |             raise ValueError(f&quot;Unknown interval {interval}&quot;)
+15 |     if number_of_periods &lt; 0 or number_of_periods &gt; 50:
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^
+16 |         raise ValueError(f&quot;Invalid number of periods {number_of_periods}&quot;)
+17 |     # now fetch some data or something, IDK
+   |
+info: rule `unsupported-operator` is enabled by default
+</code></pre>
+<p>This <em>may</em> be related to #1349 but I'm not 100% sure.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.23</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-17 13:58</div>
+            <div class="timeline-body"><p>Thank you for reporting this. It looks like this is an instance of #690.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-17 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drewbrew">@drewbrew</a> on 2025-10-17 16:00</div>
+            <div class="timeline-body"><p>Yep, that indeed looks like the right duplicate. Thanks, @sharkdp!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] dependency graph cycle when querying value_type_(Id(6400)), set cycle_fn/cycle_initial to fixpoint iterate - astral-sh/ty #458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] dependency graph cycle when querying value_type_(Id(6400)), set cycle_fn/cycle_initial to fixpoint iterate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/458">#458</a>
+        opened by <a href="https://github.com/aslpavel">@aslpavel</a>
+        on 2025-05-20 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aslpavel">@aslpavel</a> on 2025-05-20 09:44</div>
+            <div class="timeline-body"><p>Panic as the result of running <code>uvx ty check ukanren.py</code></p>
+<h3>File content:</h3>
+<details>
+
+<summary>ukanen.py</summary>
+
+<pre><code class="language-python">#!/usr/bin/env python
+# pyright: strict
+from __future__ import annotations
+
+import itertools
+import unittest
+from functools import reduce
+from typing import Any, cast, final, override
+from collections.abc import Callable, Iterable, Iterator
+
+
+@final
+class Var:
+    &quot;&quot;&quot;Variable&quot;&quot;&quot;
+
+    __slots__ = [&quot;id&quot;]
+
+    def __init__(self, id: int) -&gt; None:
+        self.id = id
+
+    @override
+    def __eq__(self, other: Any) -&gt; bool:
+        return isinstance(other, Var) and self.id == other.id
+
+    @override
+    def __hash__(self) -&gt; int:
+        return hash(self.id)
+
+    @override
+    def __repr__(self) -&gt; str:
+        return f&quot;Var({self.id})&quot;
+
+
+type Val = Var | tuple[Val, ...] | int | str | None
+type State = tuple[SMap, int]
+type Stream[State] = Iterable[State]
+type Goal = Callable[[State], Stream[State]]
+
+type _List[V] = tuple[V, _List[V]] | None
+
+
+@final
+class ImmMap[K, V]:
+    __slots__ = [&quot;root&quot;]
+
+    def __init__(self, root: dict[K, V]) -&gt; None:
+        self.root = root
+
+    @classmethod
+    def empty(cls) -&gt; ImmMap[K, V]:
+        return cls({})
+
+    def insert(self, key: K, value: V) -&gt; ImmMap[K, V]:
+        return ImmMap(self.root | {key: value})
+
+    def get[O](self, key: K, default: O = None) -&gt; V | O:
+        return self.root.get(key, default)
+
+    def __iter__(self) -&gt; Iterator[tuple[K, V]]:
+        return iter(self.root.items())
+
+    @override
+    def __repr__(self) -&gt; str:
+        return f&quot;ImmMap({self.root})&quot;
+
+
+GUARD = cast(Val, object())
+
+
+@final
+class SMap:
+    &quot;&quot;&quot;Substitution map&quot;&quot;&quot;
+
+    __slots__ = [&quot;root&quot;]
+
+    def __init__(self, root: ImmMap[Var, Val]):
+        self.root = root
+
+    def walk(self, var: Val) -&gt; Val:
+        &quot;&quot;&quot;Resolve variable until unmapped of value is reached&quot;&quot;&quot;
+        if not isinstance(var, Var):
+            return var
+        val = self.root.get(var, GUARD)
+        if val is GUARD:
+            return var
+        else:
+            return self.walk(val)
+
+    def deep_walk(self, val: Val) -&gt; Val:
+        &quot;&quot;&quot;Walk complex type&quot;&quot;&quot;
+        val = self.walk(val)
+        if isinstance(val, Var):
+            return val
+        elif isinstance(val, tuple):
+            return tuple(map(self.deep_walk, val))
+        return val
+
+    def assoc(self, var: Var, val: Val) -&gt; SMap:
+        &quot;&quot;&quot;Bind variable to a value&quot;&quot;&quot;
+        return SMap(self.root.insert(var, val))
+
+    @override
+    def __repr__(self) -&gt; str:
+        return f&quot;{self.root}&quot;
+
+
+type _Body[*P] = Callable[[*P], Goal]
+# type constraint `*P : Var` on the above is not supported
+type Body = (
+    _Body[Var]
+    | _Body[Var, Var]
+    | _Body[Var, Var, Var]
+    | _Body[Var, Var, Var, Var]
+    | _Body[Var, Var, Var, Var, Var]
+    | _Body[Var, Var, Var, Var, Var, Var]
+)
+
+
+def fresh(body: Body) -&gt; Goal:
+    &quot;&quot;&quot;Allocate new fresh variable(s)&quot;&quot;&quot;
+
+    def body_fresh(state: State) -&gt; Stream[State]:
+        smap, count = state
+        return body(*(Var(index) for index in range(count, count + arity)))(
+            (smap, count + arity)
+        )
+
+    arity = body.__code__.co_argcount
+    assert arity &gt; 0, &quot;body of `fresh` should take at least one argument&quot;
+    return body_fresh
+
+
+def unify(smap: SMap, left: Val, right: Val) -&gt; SMap | None:
+    &quot;&quot;&quot;Unify `left` with `right` terms&quot;&quot;&quot;
+    left = smap.walk(left)
+    right = smap.walk(right)
+
+    if left == right:
+        return smap
+    elif isinstance(left, Var):
+        return smap.assoc(left, right)
+    elif isinstance(right, Var):
+        return smap.assoc(right, left)
+    elif (
+        isinstance(left, tuple) and isinstance(right, tuple) and len(left) == len(right)
+    ):
+        for lval, rval in zip(left, right):
+            smap_next = unify(smap, lval, rval)
+            if smap_next is None:
+                return None
+            smap = smap_next
+        return smap
+    return None
+
+
+# -----------------------------------------------------------------------------#
+# Stream
+# -----------------------------------------------------------------------------#
+szero: Stream[Any] = ()
+
+
+def splus[I](a: Stream[I], b: Stream[I]) -&gt; Stream[I]:
+    return itertools.chain(a, b)
+
+
+def sunit[I](item: I) -&gt; Stream[I]:
+    return (item,)
+
+
+def sbind[A, B](stream: Stream[A], fn: Callable[[A], Stream[B]]) -&gt; Stream[B]:
+    for i_item in stream:
+        yield from fn(i_item)
+
+
+def siter[I](stream: Stream[I]) -&gt; Iterator[I]:
+    return iter(stream)
+
+
+def sdelay[I](thunk: Callable[[], Stream[I]]) -&gt; Stream[I]:
+    return thunk()
+
+
+# -----------------------------------------------------------------------------#
+# Primitives
+# -----------------------------------------------------------------------------#
+def eq(left: Val, right: Val) -&gt; Goal:
+    def eq_goal(state: State) -&gt; Stream[State]:
+        smap, count = state
+        smap = unify(smap, left, right)
+        if smap is None:
+            return szero
+        return sunit((smap, count))
+
+    return eq_goal
+
+
+def disj(*goals: Goal) -&gt; Goal:
+    &quot;&quot;&quot;Disjoint: any goals must be reached&quot;&quot;&quot;
+
+    def disj(first: Goal, second: Goal) -&gt; Goal:
+        return lambda state: splus(first(state), second(state))
+
+    return reduce(disj, goals)
+
+
+def conj(*goals: Goal) -&gt; Goal:
+    &quot;&quot;&quot;Conjoint: all goals must be reaached&quot;&quot;&quot;
+
+    def conj(first: Goal, second: Goal) -&gt; Goal:
+        return lambda state: sbind(first(state), second)
+
+    return reduce(conj, goals)
+
+
+def delay(goal: Goal) -&gt; Goal:
+    return lambda state: sdelay(lambda: goal(state))
+
+
+# -----------------------------------------------------------------------------#
+# Run
+# -----------------------------------------------------------------------------#
+def run(body: Body) -&gt; Iterator[Val]:
+    def reify(state: State) -&gt; Val:
+        smap, _ = state
+        return smap.deep_walk(Var(0))
+
+    # from fn.immutable import Map as ImmMap
+    empty_state: State = (SMap(ImmMap[Var, Val].empty()), 0)
+    return map(reify, siter(fresh(body)(empty_state)))
+
+
+# -----------------------------------------------------------------------------#
+# Unittest
+# -----------------------------------------------------------------------------#
+class MicroKanrenUnittest(unittest.TestCase):
+    @staticmethod
+    def einstein_problem() -&gt; Callable[[Var], Goal]:
+        def left_of(i0: Val, i1: Val) -&gt; Goal:
+            &quot;&quot;&quot;index `i1` is directly following `i2` in the range of [0, 4)&quot;&quot;&quot;
+            goals: list[Goal] = []
+            for index in range(0, 4):
+                goals.append(conj(eq(i0, index), eq(i1, index + 1)))
+            return disj(*goals)
+
+        def next_to(i0: Val, i1: Val) -&gt; Goal:
+            &quot;&quot;&quot;index `i0` is adjacent to `i1`&quot;&quot;&quot;
+            return disj(left_of(i0, i1), left_of(i1, i0))
+
+        def member(x: Val, xs: Val) -&gt; Goal:
+            &quot;&quot;&quot;`x` is a member of `xs` tuple of 5 elements&quot;&quot;&quot;
+            return delay(
+                fresh(
+                    lambda x0, x1, x2, x3, x4: conj(
+                        eq(xs, (x0, x1, x2, x3, x4)),
+                        disj(eq(x, x0), eq(x, x1), eq(x, x2), eq(x, x3), eq(x, x4)),
+                    )
+                )
+            )
+
+        def house_attrs(house: Val, **attrs: Val) -&gt; Goal:
+            &quot;&quot;&quot;House with specified attributes&quot;&quot;&quot;
+
+            def house_attrs(
+                index: Val,
+                nation: Val,
+                color: Val,
+                pet: Val,
+                drink: Val,
+                smoke: Val,
+            ) -&gt; Goal:
+                goals = [eq(house, (index, nation, color, pet, drink, smoke))]
+                kv = attrs.copy()
+                for key, var in (
+                    (&quot;index&quot;, index),
+                    (&quot;nation&quot;, nation),
+                    (&quot;color&quot;, color),
+                    (&quot;pet&quot;, pet),
+                    (&quot;drink&quot;, drink),
+                    (&quot;smoke&quot;, smoke),
+                ):
+                    val = kv.pop(key, None)
+                    if val is not None:
+                        goals.append(eq(val, var))
+                assert not kv, f&quot;unhandled attrs: {kv}&quot;
+                return conj(*goals)
+
+            return fresh(house_attrs)
+
+        def house(street: Val, house: Val, **attrs: Val) -&gt; Goal:
+            &quot;&quot;&quot;`house` on the `street` with specified attributes&quot;&quot;&quot;
+            return conj(
+                house_attrs(house, **attrs),
+                member(house, street),
+            )
+
+        def house_exists(street: Val, **attrs: Val) -&gt; Goal:
+            &quot;&quot;&quot;Any house on the `street` with specified attributes&quot;&quot;&quot;
+            return fresh(lambda h: house(street, h, **attrs))
+
+        def house_next_to(
+            street: Val,
+            attrs_0: dict[str, Val],
+            attrs_1: dict[str, Val],
+        ) -&gt; Goal:
+            &quot;&quot;&quot;Two houses on the `street` next to each other with `attrs_0` and `attrs_1`&quot;&quot;&quot;
+            return fresh(
+                lambda h0, i0, h1, i1: conj(
+                    next_to(i0, i1),
+                    house(street, h0, index=i0, **attrs_0),
+                    house(street, h1, index=i1, **attrs_1),
+                )
+            )
+
+        def house_left_of(
+            street: Val,
+            attrs_0: dict[str, Val],
+            attrs_1: dict[str, Val],
+        ) -&gt; Goal:
+            &quot;&quot;&quot;Two houses on the `street` with `attrs_0` followed by house with `attrs_1`&quot;&quot;&quot;
+            return fresh(
+                lambda h0, i0, h1, i1: conj(
+                    left_of(i0, i1),
+                    house(street, h0, index=i0, **attrs_0),
+                    house(street, h1, index=i1, **attrs_1),
+                )
+            )
+
+        return lambda q: fresh(
+            lambda fish_owner, street: conj(
+                eq(q, (fish_owner, street)),
+                fresh(
+                    lambda h0, h1, h2, h3, h4: conj(
+                        eq(street, (h0, h1, h2, h3, h4)),
+                        house_attrs(h0, index=0),
+                        house_attrs(h1, index=1),
+                        house_attrs(h2, index=2),
+                        house_attrs(h3, index=3),
+                        house_attrs(h4, index=4),
+                    )
+                ),
+                house_exists(street, nation=&quot;brit&quot;, color=&quot;red&quot;),
+                house_exists(street, nation=&quot;swede&quot;, pet=&quot;dog&quot;),
+                house_exists(street, nation=&quot;dane&quot;, drink=&quot;tea&quot;),
+                house_left_of(street, dict(color=&quot;green&quot;), dict(color=&quot;white&quot;)),
+                house_exists(street, color=&quot;green&quot;, drink=&quot;coffee&quot;),
+                house_exists(street, smoke=&quot;pall mall&quot;, pet=&quot;bird&quot;),
+                house_exists(street, smoke=&quot;dunhill&quot;, color=&quot;yellow&quot;),
+                house_exists(street, index=2, drink=&quot;milk&quot;),
+                house_exists(street, index=0, nation=&quot;norweigan&quot;),
+                house_next_to(street, dict(smoke=&quot;blend&quot;), dict(pet=&quot;cat&quot;)),
+                house_next_to(street, dict(pet=&quot;horse&quot;), dict(smoke=&quot;dunhill&quot;)),
+                house_exists(street, drink=&quot;beer&quot;, smoke=&quot;bluemaster&quot;),
+                house_exists(street, nation=&quot;german&quot;, smoke=&quot;prince&quot;),
+                house_next_to(street, dict(nation=&quot;norweigan&quot;), dict(color=&quot;blue&quot;)),
+                house_next_to(street, dict(smoke=&quot;blend&quot;), dict(drink=&quot;water&quot;)),
+                house_exists(street, nation=fish_owner, pet=&quot;fish&quot;),
+            )
+        )
+
+    def test_einstein_problem(self) -&gt; None:
+        results = tuple(run(self.einstein_problem()))
+        self.assertEqual(len(results), 1)
+        result = results[0]
+        assert isinstance(result, tuple)
+        fish_owner, street = result
+        self.assertEqual(fish_owner, &quot;german&quot;)
+        self.assertEqual(
+            street,
+            (
+                (0, &quot;norweigan&quot;, &quot;yellow&quot;, &quot;cat&quot;, &quot;water&quot;, &quot;dunhill&quot;),
+                (1, &quot;dane&quot;, &quot;blue&quot;, &quot;horse&quot;, &quot;tea&quot;, &quot;blend&quot;),
+                (2, &quot;brit&quot;, &quot;red&quot;, &quot;bird&quot;, &quot;milk&quot;, &quot;pall mall&quot;),
+                (3, &quot;german&quot;, &quot;green&quot;, &quot;fish&quot;, &quot;coffee&quot;, &quot;prince&quot;),
+                (4, &quot;swede&quot;, &quot;white&quot;, &quot;dog&quot;, &quot;beer&quot;, &quot;bluemaster&quot;),
+            ),
+        )
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+</details>
+
+<h3>Output:</h3>
+<pre><code>error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/7edce6e/src/function/fetch.rs:129:25 when checking `/home/pavelaslanov/.config/configs/libs/py/ukanren.py`: `dependency graph cycle when querying value_type_(Id(6400)), set cycle_fn/cycle_initial to fixpoint iterate.
+Query stack:
+[
+    check_types(Id(c00)),
+    infer_scope_types(Id(1000)),
+    infer_definition_types(Id(1436)),
+    infer_expression_types(Id(1805)),
+    value_type_(Id(6400)),
+    infer_scope_types(Id(1006)),
+    symbol_by_id(Id(301a)),
+    infer_definition_types(Id(6e52)),
+    all_narrowing_constraints_for_expression(Id(192c)),
+    member_lookup_with_policy_(Id(2c15)),
+    imported_modules(Id(243f)),
+    infer_deferred_types(Id(1662)),
+    infer_definition_types(Id(1612)),
+    symbol_by_id(Id(3008)),
+    infer_definition_types(Id(1711)),
+]`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;ukanren.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1006))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+   1: value_type_(Id(6400))
+             at crates/ty_python_semantic/src/types.rs:7477
+   2: infer_expression_types(Id(1805))
+             at crates/ty_python_semantic/src/types/infer.rs:222
+   3: infer_definition_types(Id(1436))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   4: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+   5: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:84
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[panic] While running `check` sub-command" to "[panic] dependency graph cycle when querying value_type_(Id(6400)), set cycle_fn/cycle_initial to fixpoint iterate" by @aslpavel on 2025-05-20 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-20 13:12</div>
+            <div class="timeline-body"><p>Thank you for reporting this. It happens due to the self-referential <code>Val</code> type alias. ~~I will add a MRE of this to #256~~ (actually, we have very similar examples there that lead to the same cycle entry point).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-20 13:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:04 UTC
+    </footer>
+</body>
+</html>

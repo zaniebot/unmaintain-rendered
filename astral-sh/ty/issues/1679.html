@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show suggested fixes when rendering diagnostics on the CLI - astral-sh/ty #1679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show suggested fixes when rendering diagnostics on the CLI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1679">#1679</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 16:03</div>
+            <div class="timeline-body"><p>For example, we now offer an IDE autofix for this snippet that will correct <code>&quot;naem&quot;</code> to <code>&quot;name&quot;</code>:</p>
+<pre><code class="language-py">from typing import TypedDict
+
+class Person(TypedDict):
+    name: str
+
+def f(p: Person):
+    print(p[&quot;naem&quot;])
+</code></pre>
+<p>This autofix is <a href="https://github.com/astral-sh/ruff/blob/594b7b04d3b04bcf42861f86207017c8117678ca/crates/ty_python_semantic/resources/mdtest/snapshots/typed_dict.md_-_%60TypedDict%60_-_Diagnostics_(e5289abf5c570c29">also included in our test snapshots</a>.snap#L239-L255) now. However, we don't render the suggested fix on the CLI yet:</p>
+<p><img width="1166" height="416" alt="Image" src="https://github.com/user-attachments/assets/8ac271e7-2566-4c2b-9691-ac866bbe3ea1" /></p>
+<p>Even if the user does not want the autofix automatically applied when they invoke <code>ty check</code> on their code, the suggested fix can be very helpful in informing the user how they might fix the problem, so we should show it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-29 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @AlexWaygood on 2025-11-29 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-29 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-11-29 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-29 17:07</div>
+            <div class="timeline-body"><p>I was a bit confused about why we aren't showing this particular fix, since we are showing fixes on the CLI. The reason is that this fix is unsafe, so we might need a concept similar to Ruff's unsafe fixes.</p>
+<p>Figuring out how to handle unsafe fixes is definitely something we want to do. However, I'm not sure whether rendering a fix for this diagnostic is actually useful, given that the primary annotation already contains all the information. It feels like we'll just present the exact same information in a much verbose way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 17:14</div>
+            <div class="timeline-body"><p>Hmm, yes... I mainly opened this issue because of your comment in https://github.com/astral-sh/ruff/pull/21667#discussion_r2569692570, but I think I agree with you on all points here! Happy to close this again if you don't think this is a helpful issue for tracking purposes.</p>
+<p>I think most of ty's fixes will probably be marked as unsafe (most of them will change behaviour in some way), and I don't think something like Ruff's <code>--fix --unsafe-fixes</code> mode would be helpful on the CLI. In this case, it <em>might</em> be a simple <code>naem -&gt; name</code> typo (it's a very good guess), but it also might not -- as a ty user, I'd want to review each suggested edit in isolation before deciding whether to apply it to my code. That implies something like a &quot;review mode&quot; would be more helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-01 23:23</div>
+            <div class="timeline-body"><p>I'm not sure this belongs in stable milestone, but since it's CLI/fix related I'll eave that to @MichaReiser to decide</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-12-02 07:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

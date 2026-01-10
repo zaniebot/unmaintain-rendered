@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A nominal type from a stub file should be treated as equivalent to a nominal type from a `.py` file with the same module name - astral-sh/ty #1306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A nominal type from a stub file should be treated as equivalent to a nominal type from a `.py` file with the same module name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1306">#1306</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-04 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 16:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We've been seeing strange diagnostics like <a href="https://github.com/astral-sh/ruff/pull/20603#issuecomment-3345317444">this</a> in ecosystem reports for bokeh, and they're starting to show up <a href="https://github.com/astral-sh/ruff/pull/20368#issuecomment-3368395654">more</a> as we add more functionality to ty:</p>
+<pre><code>src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[src.bokeh.model.model.Model]`, found `set[src.bokeh.model.model.Model]`
+</code></pre>
+<p>A <a href="https://play.ty.dev/da6dbbed-748c-44bd-8f35-b2e34145b212">minimal repro</a> of this issue looks something like the following:</p>
+<pre><code class="language-md">
+`package/__init__.py`:
+
+```py
+from .foo import MyClass
+
+def make_MyClass() -&gt; MyClass:
+    return MyClass()
+```
+
+`package/foo.pyi`:
+
+```py
+class MyClass: ...
+```
+
+`package/foo.py`:
+
+```py
+class MyClass: ...
+
+def get_MyClass() -&gt; MyClass:
+    from . import make_MyClass
+
+    # error: [invalid-return-type] &quot;Return type does not match returned value: expected `package.foo.MyClass`, found `package.foo.MyClass`&quot;
+    return make_MyClass()
+```
+</code></pre>
+<p>The issue is that ty:</p>
+<ol>
+<li>Views <code>MyClass</code> from the <code>foo.py</code> file and <code>MyClass</code> from <code>foo.pyi</code> as being different classes</li>
+<li>Understands the <code>get_MyClass</code> function as being annotated as returning an instance of <code>MyClass</code> from <code>foo.py</code></li>
+<li>Understands the <code>get_MyClass</code> function as <em>actually</em> returning an instance of <code>MyClass</code> from <code>foo.pyi</code></li>
+</ol>
+<p>I propose that we fix this by adding handling to make two nominal-instance types equivalent to each other if the two types come from modules that have the same fully qualified module names and come from the same search path.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">stubs</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-06 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I propose that we fix this by adding handling to make two nominal-instance types equivalent to each other if the two types come from modules that have the same fully qualified module names and come from the same search path.</p>
+</blockquote>
+<p>I think this will have unexpected consequences for examples like this:</p>
+<pre><code class="language-py">if FOO:
+    class C: ...
+else:
+    class C: ...
+</code></pre>
+<p>I think the case in the OP is quite tricky to handle correctly, as it's essentially another case of type-checking &quot;unreachable&quot; code.</p>
+<p>How do other type-checkers handle this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 20:54</div>
+            <div class="timeline-body"><blockquote>
+<p>How do other type-checkers handle this case?</p>
+</blockquote>
+<p>Hmm, good question. Mypy does not appear to emit this error, but pyrefly and pyright emit the same error we do here (with just as bad a diagnostic). Pyright:</p>
+<pre><code>Type &quot;Iterable[Model]&quot; is not assignable to return type &quot;Iterable[Model]&quot;
+  &quot;typing.Iterable&quot; is not assignable to &quot;typing.Iterable&quot;
+    Type parameter &quot;_T_co@Iterable&quot; is covariant, but &quot;Model&quot; is not a subtype of &quot;Model&quot;
+      &quot;model.Model&quot; is not assignable to &quot;model.Model&quot;
+</code></pre>
+<p>Pyrefly:</p>
+<pre><code>ERROR Returned type `Iterable[bokeh.model.model.Model@40:7-12]` is not assignable to declared return type `Iterable[bokeh.model.model.Model@79:7-12]` [bad-return]
+   --&gt; src/bokeh/model/model.py:510:16
+    |
+510 |         return find(self.references(), selector)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+</code></pre>
+<p>Pyrefly at least gestures at the fact that the two classes have different line numbers, but still doesn't mention the crucial fact that they're defined in different files!</p>
+<p>I'm not sure how mypy avoids emitting this error, but given that pyright and pyrefly both have similar behaviour to us, we may want to just try to improve our diagnostic message here. Though I also don't know how we'd expect bokeh to fix this kind of thing? It seems like they're doing everything correctly as per the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-07 15:46</div>
+            <div class="timeline-body"><p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn't check those files.&quot; Is it possible that's what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
+<p>That approach is unsatisfactory as an LSP, though.</p>
+<p>I agree there's nothing wrong with what bokeh is doing here.</p>
+<p>Better disambiguation of type names in our diagnostics would certainly be a good first step, and would be useful in lots of other cases, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 21:54</div>
+            <div class="timeline-body"><blockquote>
+<p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn't check those files.&quot; Is it possible that's what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
+</blockquote>
+<p>That may indeed be what mypy is doing, since it emits no errors on the <code>.py</code> file, whereas pyright emits several. (But that could also just be because they're, you know, different type checkers that disagree on many things!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-10-07 23:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree there's nothing wrong with what bokeh is doing here.</p>
+</blockquote>
+<p>That's debatable. This is arguably a misuse of a stub file. I'm curious why they don't just add inline type annotations to the &quot;.py&quot; module. If they want to run type checking on their own code, this is the route I'd recommend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 23:15</div>
+            <div class="timeline-body"><blockquote>
+<p>This is arguably a misuse of a stub file.</p>
+</blockquote>
+<p>Why? PEP 484, which introduced stub files, <a href="https://peps.python.org/pep-0484/#storing-and-distributing-stub-files">stated</a>:</p>
+<blockquote>
+<p>The easiest form of stub file storage and distribution is to put them alongside Python modules in the same directory. This makes them easy to find by both programmers and the tools.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-10-07 23:37</div>
+            <div class="timeline-body"><p>Stub files are intended to be used as a proxy for a library when that library is not present, is written in another language, or is untyped. They are not intended to be used for type checking the code they are proxying. Doing so will result in the sort of problems that you discuss above. If a library maintainer intends to type check the code in their library, the type information should be inlined in the library code itself.</p>
+<p>Inlined type annotations for libraries were not well considered in the days of PEP 484, but the community has made significant progress since then — first with the introduction of <code>py.typed</code> in PEP 561 and with later clarifications in the <a href="https://typing.python.org/en/latest/spec/distributing.html">typing spec</a>.</p>
+<p>If you want to type check a piece of code that imports from <code>bokeh</code>, the side-by-side stub file should work fine across all type checkers. If the maintainers of <code>bokeh</code> want to run a type checker on <code>bokeh</code> itself, then I think they should move the annotations inline and delete the stub file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 23:45</div>
+            <div class="timeline-body"><p>I suspect that there may still be a lot of ecosystem code out there that uses stub files side-by-side with the implementation, especially if mypy permits this practice. We might wish it weren't the case, but this is the first I'm hearing of the idea that this practice should be considered deprecated for projects that want to run type checkers on their own code.</p>
+<p>In any event, https://github.com/astral-sh/ruff/pull/20756 improves our diagnostics to make it clearer why we view the two types as being distinct even though they have the same fully qualified name.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

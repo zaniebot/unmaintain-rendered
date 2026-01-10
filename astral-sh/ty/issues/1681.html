@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add diagnostic warning about unsound subclassing of `order=True` dataclasses - astral-sh/ty #1681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add diagnostic warning about unsound subclassing of `order=True` dataclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1681">#1681</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 16:38</div>
+            <div class="timeline-body"><p>It's unsound to subclass an <code>order=True</code> dataclass, because the generated comparison methods raise an exception if you try to compare an instance of the subclass with an instance of the superclass:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+@dataclass(order=True)
+class F:
+    x: int
+
+class G(F): ...
+
+G(42) &lt; F(42)  # exception raised here at runtime, but cannot detected by ty
+</code></pre>
+<p>We should detect attempts to subclass <code>order=True</code> dataclasses and warn users about the unsoundness (emitting a diagnostic at the point where <code>G</code> is defined). We could recommend that they use <code>functools.total_ordering</code> instead to generate their comparison methods, as <code>total_ordering</code> doesn't have the same problem.</p>
+<p>(One way of describing the problem here is that the design of the stdlib feature violates the Liskov Substitution Principle.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-11-29 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-11-29 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-30 15:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

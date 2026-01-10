@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not inferring narrowing of type var when used in return type - astral-sh/ty #1814</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Not inferring narrowing of type var when used in return type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1814">#1814</a>
+        opened by <a href="https://github.com/hutchiko">@hutchiko</a>
+        on 2025-12-08 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hutchiko">@hutchiko</a> on 2025-12-08 23:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Type inference for type parameter does not appear to flow through to return type when narrowed via an <code>isinstance</code> check.</p>
+<p>eg.</p>
+<pre><code class="language-python">def keep_type[T](value: T) -&gt; T:
+    if isinstance(value, str):
+        return value.lower() 
+    if isinstance(value, int):
+        return 0
+    return value
+</code></pre>
+<p>Fails with following errors at <code>return value.lower()</code> and <code>return 0</code> respectively.</p>
+<pre><code>Return type does not match returned value: expected `T@keep_type`, found `str`
+</code></pre>
+<pre><code>Return type does not match returned value: expected `T@keep_type`, found `Literal[0]`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.32 (84a188116 2025-12-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-12-08 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-08 23:48</div>
+            <div class="timeline-body"><p>Hi, thanks for the report!</p>
+<p>I think that ty is working as expected here, and the results are correct. Mypy and pyright emit the same diagnostics we do here.</p>
+<p>Consider:</p>
+<pre><code class="language-py">class MyStr(str):
+    pass
+
+# According to the type signature of `keep_type`, we must reveal `MyStr` as the return type here.
+# But at runtime, given the above definition of `keep_type`, this will return `str`, not `MyStr`. So
+# the given implementation of `keep_type` is not sound.
+reveal_type(keep_type(MyStr(&quot;foo&quot;)))
+
+class MyInt(int):
+    pass
+
+# Similarly, the revealed type here should be `MyInt`, but the above implementation would return an instance of `int`,
+# which is not sound.
+reveal_type(keep_type(MyInt(1)))
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-08 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 00:04</div>
+            <div class="timeline-body"><p>We should support this pattern if the type var is constrained to <code>(int, str)</code> (meaning that even if the argument is a <code>MyStr</code> or a <code>MyInt</code>, we would still always solve the return type to <code>int</code> or <code>str</code>). That's tracked in https://github.com/astral-sh/ty/issues/621</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutchiko">@hutchiko</a> on 2025-12-09 00:07</div>
+            <div class="timeline-body"><p>Thanks Carl. Makes sense. Appreciate the quick response.</p>
+<p>I would love to know how to write a function type signature that does work for my intent if possible.</p>
+<p>I tried with strict type narrowing and the return type checks still fail. This should be sound for your example above, but maybe not for others?</p>
+<pre><code>def keep_type[T](value: T) -&gt; T:
+    if type(value) is str:
+        return value.lower()
+    if type(value) is int:
+        return 0
+    return value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 00:23</div>
+            <div class="timeline-body"><p>Yes, I think the version with <code>type(value) is str</code> is sound. It'd be a bit of a lift to support it, because it requires a new type variant to represent &quot;instance of X, excluding subclasses&quot;, which is not a type we currently have a representation for.</p>
+<p>I think if the semantics you want are those shown in your latest version, currently your simplest approach would be to write that version and just use a couple type-ignores and some comments to explain why it's sound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-09 00:30</div>
+            <div class="timeline-body"><p>You can consider using overloads:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def keep_type(value: str) -&gt; str: ...
+
+@overload
+def keep_type(value: int) -&gt; int: ...
+
+@overload
+def keep_type[T](value: T) -&gt; T: ...
+
+def keep_type[T](value: str | int | T) -&gt; str | int | T:
+    if isinstance(value, str):
+        return value.lower() 
+    if isinstance(value, int):
+        return 0
+    return value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutchiko">@hutchiko</a> on 2025-12-09 00:48</div>
+            <div class="timeline-body"><p>Thanks all for such helpful responses. Much appreciated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:51 UTC
+    </footer>
+</body>
+</html>

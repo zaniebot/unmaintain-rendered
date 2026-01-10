@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing attribute access checking for Pydantic BaseModel - astral-sh/ty #1119</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing attribute access checking for Pydantic BaseModel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1119">#1119</a>
+        opened by <a href="https://github.com/jackhodkinson">@jackhodkinson</a>
+        on 2025-09-03 10:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackhodkinson">@jackhodkinson</a> on 2025-09-03 10:06</div>
+            <div class="timeline-body"><h1>Missing attribute access checking for Pydantic BaseModel</h1>
+<p>ty doesn't detect invalid attribute access on Pydantic models, while pyright correctly reports an error.</p>
+<h2>Reproduction</h2>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class Example(BaseModel):
+    name: str
+    age: int
+
+def main():
+    examples: list[Example] = [
+        Example(name=&quot;John&quot;, age=30),
+    ]
+    print(examples[0].incorrect)  # Should error: attribute &quot;incorrect&quot; doesn't exist
+</code></pre>
+<h2>Current behavior</h2>
+<pre><code class="language-bash">$ uv run ty check main.py
+All checks passed!
+</code></pre>
+<h2>Expected behavior</h2>
+<pre><code class="language-bash">$ uv run pyright main.py
+  /path/to/main.py:11:23 - error: Cannot access attribute &quot;incorrect&quot; for class &quot;Example&quot;
+    Attribute &quot;incorrect&quot; is unknown (reportAttributeAccessIssue)
+</code></pre>
+<h2>Environment</h2>
+<ul>
+<li>ty version: 0.0.1a19</li>
+<li>Python: 3.13.3</li>
+<li>pydantic: 2.11.7</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-03 10:41</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This is related to the fact that we infer <code>list[Unknown]</code> for <code>examples</code> here (despite the annotation... because you're accessing it from the same scope, so we use the inferred local type, instead of the declared type).</p>
+<p>If you change your example to the following, you'll notice that ty emits an error now:</p>
+<pre><code class="language-py">example = Example(name=&quot;John&quot;, age=30),
+print(example.incorrect)  # error: unresolved-attribute
+</code></pre>
+<p>Related tickets:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/543</li>
+<li>https://github.com/astral-sh/ty/issues/168</li>
+<li>https://github.com/astral-sh/ty/issues/136</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-03 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godsplanhub">@godsplanhub</a> on 2025-09-03 13:16</div>
+            <div class="timeline-body"><p>Also ty does not autocomplete or autosuggest field values
+if you were to start typing name it would help with autocomplete with the correct name of the fields that the model has.Any workaround on this.This would really be useful if Example(naMe=&quot;John&quot;,age=30,unknown=&quot;Result&quot;) ty would notify on unknown field value naMe and unknown.
+Am on neovim and i have setup ty ruff and jedi-language-server .The same behavior i achieved it with mypy and it was really helpful.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

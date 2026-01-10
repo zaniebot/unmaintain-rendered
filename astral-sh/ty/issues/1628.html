@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Literal` `str`s do not work with `Sequence[T]` generic function argument narrowing - astral-sh/ty #1628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Literal` `str`s do not work with `Sequence[T]` generic function argument narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1628">#1628</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-11-25 01:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-11-25 01:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Minimization of when I ran into this in my code:</p>
+<p>https://play.ty.dev/21a7ef1b-756b-4981-af2d-878f5fe72ee4</p>
+<pre><code class="language-py">from typing import Sequence, assert_type
+
+def first[T](x: Sequence[T]) -&gt; T:
+    return x[0]
+
+reveal_type(&quot;1&quot;)  # Revealed type: `Literal[&quot;1&quot;]`
+assert_type(first(&quot;1&quot;), str)  # Type `str` does not match asserted type `Unknown`
+</code></pre>
+<p>Since the type of <code>&quot;1&quot;</code> is defaulted to <code>Literal[&quot;1&quot;]</code>, code that tries to rely on literal strings with this <code>Sequence</code> generic narrowing will not work.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.27 (26d7b6864 2025-11-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`str` does not work with `Sequence[str]` generic function argument narrowing" to "`Literal` `str`s do not work with `Sequence[T]` generic function argument narrowing" by @MeGaGiGaGon on 2025-11-25 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-11-25 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-25 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-25 01:53</div>
+            <div class="timeline-body"><p>Yes, this is odd, since <code>str</code> directly inherits <code>Sequence[str]</code>. It looks like we aren't falling back from <code>Literal[&quot;1&quot;]</code> to <code>str</code> correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-11-25 01:55</div>
+            <div class="timeline-body"><p>I think it has something to do with the generic, since <code>static_assert(is_assignable_to(Literal[&quot;1&quot;], Sequence[str]))</code> works as expected, so the generic is somehow causing the fallback to not apply/be tried/fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-25 02:01</div>
+            <div class="timeline-body"><p>Yes, we definitely understand the relationship between <code>Literal[&quot;1&quot;]</code> and <code>str</code> in general, I mean that in the typevar solver we aren't falling back where we need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nklsla">@nklsla</a> on 2025-11-29 11:12</div>
+            <div class="timeline-body"><p>I think this one might be related to my issue.
+I get an error, <code>ty[invalid-argument-type]</code>, from my function signature when using typehint. Removing the typehint resolves the error. Also defining the variable inside the function with or without the typehint results in no error either.
+Im using <code>0.0.1a29</code></p>
+<pre><code class="language-py">import polars as pl
+
+def winsorize(
+    col: pl.Expr | str,
+    lower_quantile: float = 0.05,
+    upper_quantile: float = 0.95,
+    method: str = &quot;linear&quot;, # Using typehint results in this error
+    # method = &quot;linear&quot;,  # No error, however not using typehint
+) -&gt; pl.Expr:
+    &quot;&quot;&quot;Winsorize a column by clipping its values to the specified quantiles.&quot;&quot;&quot;
+
+    if isinstance(col, str):
+        _col = pl.col(col)
+    elif isinstance(col, pl.Expr):
+        _col = col
+    else:
+        raise TypeError(&quot;col must be a str or pl.Expr&quot;)
+
+#  Re-/defining the value in function gives not error
+#  method = &quot;linear&quot;  # no error
+#  method: str = &quot;linear&quot; # no error
+    return _col.clip(
+        lower_bound=_col.quantile(lower_quantile, interpolation=method), # Argument to bound method `quantile` is incorrect: Expected `Literal[&quot;nearest&quot;, &quot;higher&quot;, &quot;lower&quot;, &quot;midpoint&quot;, &quot;linear&quot;, &quot;equiprobable&quot;]`, found `str`ty[invalid-argument-type](https://ty.dev/rules#invalid-argument-type)
+        upper_bound=_col.quantile(upper_quantile, interpolation=method), # Argument to bound method `quantile` is incorrect: Expected `Literal[&quot;nearest&quot;, &quot;higher&quot;, &quot;lower&quot;, &quot;midpoint&quot;, &quot;linear&quot;, &quot;equiprobable&quot;]`, found `str`ty[invalid-argument-type](https://ty.dev/rules#invalid-argument-type)
+    )
+</code></pre>
+<p>This is the signature for the <code>polars column</code> method <code>quantile</code></p>
+<pre><code class="language-py">bound method Expr.quantile(
+    quantile: int | float | Expr,
+    interpolation: Literal[&quot;nearest&quot;, &quot;higher&quot;, &quot;lower&quot;, &quot;midpoint&quot;, &quot;linear&quot;, &quot;equiprobable&quot;] = Literal[&quot;nearest&quot;]
+) -&gt; Expr
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I get an error, <code>ty[invalid-argument-type]</code>, from my function signature when using typehint.</p>
+</blockquote>
+<p>I don't think this is related to the issue here. If you annotate <code>method</code> as <code>str</code>, then ty <em>should</em> error on your code, because <code>Expr.quantile</code> expects <code>Literal[&quot;nearest&quot;, &quot;higher&quot;, &quot;lower&quot;, &quot;midpoint&quot;, &quot;linear&quot;, &quot;equiprobable&quot;]</code>. <code>str</code> is a supertype of this union of literals, and so you might accidentally pass invalid <code>str</code> values to <code>Expr.quantile</code>. You probably want to annotate your <code>method</code> parameter in the same way that <code>Expr.quantile</code>'s <code>interpolation</code> parameter is annotated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-02 02:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

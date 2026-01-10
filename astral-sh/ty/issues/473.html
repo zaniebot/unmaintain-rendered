@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diagnostics when a non-Protocol inherits a Protocol and tries to define stub methods - astral-sh/ty #473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diagnostics when a non-Protocol inherits a Protocol and tries to define stub methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/473">#473</a>
+        opened by <a href="https://github.com/ilius">@ilius</a>
+        on 2025-05-21 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilius">@ilius</a> on 2025-05-21 15:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When you create a type class from <code>typing.Protocol</code>, you don't generally fill in the body of methods, just the signature.</p>
+<p>Here is an example:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class A(Protocol):
+    def astr(self) -&gt; str: ...
+
+class B(A):
+    def bstr(self) -&gt; str: ...
+
+</code></pre>
+<p>Error:</p>
+<pre><code>error[invalid-return-type]: Function can implicitly return `None`, which is not assignable to return type `str`
+ --&gt; ty-protocol.py:7:23
+  |
+6 | class B(A):
+7 |     def bstr(self) -&gt; str: ...
+  |                       ^^^
+  |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<h3>Version</h3>
+<p><code>ty 0.0.1-alpha.6</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-21 15:28</div>
+            <div class="timeline-body"><p>Hi! This looks like a true positive to me. Class <code>A</code> is a protocol class, so all methods on the class are implicitly abstract. But class <code>B</code> is not a protocol class -- it has <code>Protocol</code> in its MRO, but it must directly inherit from <code>Protocol</code> in order for it to be considered a <code>Protocol</code> class by type checkers or Python at runtime, e.g.</p>
+<pre><code class="language-diff">- class B(A):
++ class B(A, Protocol):
+      def bstr(self) -&gt; str: ...
+</code></pre>
+<p>Therefore a method will only be considered abstract on class <code>B</code> if it is explicitly decorated with <code>@abstractmethod</code>.</p>
+<p>I think we could improve our diagnostics here -- we could add a note to <code>invalid-return-type</code> diagnostics if we see that <code>Protocol</code> is present in the MRO but the class is not actually a <code>Protocol</code> class!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-21 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Protocol: Function can implicitly return `None`" to "Improve diagnostics when a non-Protocol inherits a Protocol and tries to define stub methods" by @carljm on 2025-05-21 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-05-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-21 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2025-05-21 17:54</div>
+            <div class="timeline-body"><p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-21 18:12</div>
+            <div class="timeline-body"><p>you're welcome!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

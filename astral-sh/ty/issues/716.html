@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GC AST nodes &amp; `exported_names` - astral-sh/ty #716</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>GC AST nodes &amp; `exported_names`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/716">#716</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-27 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-27 15:30</div>
+            <div class="timeline-body"><p>The <code>exported_names(file)</code> query is only called when another module imports <code>file</code> with a star import. Otherwise, the query never runs.</p>
+<p>This introduces a problem with how we garbage collected AST nodes because the basic assumption is that it's fine to collect AST nodes when <code>check_file</code> completes because all queries for that file are now &quot;pre-warmed&quot;.</p>
+<p>There are a few options here:</p>
+<ol>
+<li>We accept that we might need to re-parse because it isn't that common</li>
+<li>We use salsa's specify feature (or something else) to set the <code>exported_names</code> result after building the semantic index (and deriving the information from the semantic index).</li>
+<li>We always call <code>exported_names</code> as part of <code>check_files</code> (that's probably undecired because it is unnecessary in most cases</li>
+<li>... something else?</li>
+</ol>
+<p>The downside of setting the <code>exported_names</code> result for each module is that we have to store extra information for many modules that never get star-imported, which seems wasteful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-06-27 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-28 13:43</div>
+            <div class="timeline-body"><p>I think there might be a similar issue with the <code>dunder_all_names</code> query, which is also called by functions that are called cross-module, possibly after type checking of the external module has been completed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-28 14:17</div>
+            <div class="timeline-body"><p>Is there a way of asking Salsa whether a query has already been run and had its result cached? Maybe <code>exported_names()</code>, when called, could check whether semantic indexing for the file has already been completed. If it has, <code>exported_names</code> could just obtain the necessary information from the semantic index if so; if not, <code>exported_names</code> would fall back to an AST walk of the global scope, like it does now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 14:20</div>
+            <div class="timeline-body"><p>No, this isn't currently possible. The closest is using <code>specify</code> where one query can &quot;set&quot; the result of another query. The downside is that it's less lazy than what you're suggesting. That doesn't mean that we can't extend salsa to possibly support this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-28 15:50</div>
+            <div class="timeline-body"><p>My proposal on this issue is that we don't prioritize it until/unless we see a practical problem on real codebases.</p>
+<p>I think even without <code>exported_names</code> and <code>dunder_all_names</code>, that our current GC AST strategy is not foolproof, and there is nothing in principle preventing re-parsing -- it should be possible if a class is defined and one of its attributes is never accessed in the current module but is accessed in another module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-30 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>My proposal on this issue is that we don't prioritize it until/unless we see a practical problem on real codebases.</p>
+</blockquote>
+<p>When I looked at the traces of a dd-trace ecosystem run of ty recently, I noticed that 300/2000 = 15% of files were being reparsed. That may only be due to diagnostic printing, but could probably also refer to the issue here(?).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

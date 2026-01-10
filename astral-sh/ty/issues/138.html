@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typevar should specialize to a single type across different statements - astral-sh/ty #138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Typevar should specialize to a single type across different statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/138">#138</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-04-03 20:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-03 20:09</div>
+            <div class="timeline-body"><p>A typevar should specialize to a single type each time its generic class or function is specialized. We're already considering that, and have a (currently failing) mdtest for this example:</p>
+<pre><code class="language-py">def f[T: (int, str)](t: T, u: T) -&gt; T:
+  return t + u
+</code></pre>
+<p>This is valid since <code>int</code> has an <code>__add__</code> method that takes in another <code>int</code>, and <code>str</code> has one that takes in another <code>str</code>.  It's not an error that <code>int</code>'s method doesn't take in a <code>str</code>, since if <code>t</code> is an <code>int</code>, <code>u</code> must be one too. This is an important way that constrained typevars are different from a union.</p>
+<p>@carljm and I were trying to brainstorm whether this kind of propagation could occur across multiple statements, and he came up with this example:</p>
+<pre><code class="language-py">def f[T](a: T, b: T):
+    if isinstance(a, int):
+        reveal_type(a)  # revealed: int
+        reveal_type(b)  # hopefully: int
+</code></pre>
+<p>The narrowing constraint machinery seems like it provides what we need to make this work — the <code>isinstance</code> call would (waving hands wildly) not just add a narrowing constraint on <code>a</code>, but also on any typevars that appear in the type of <code>a</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Typevar should specialize to a single type across different statements" to "Typevar should specialize to a single type across different statements" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-11 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:52 UTC
+    </footer>
+</body>
+</html>

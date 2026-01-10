@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve `[unresolved-attribute]` diagnostic for the case of an invalid `__getattr__` method - astral-sh/ty #135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve `[unresolved-attribute]` diagnostic for the case of an invalid `__getattr__` method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/135">#135</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-06 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-06 19:58</div>
+            <div class="timeline-body"><p>For this code:</p>
+<pre><code class="language-py">class Foo:
+    def __getattr__(self) -&gt; str:
+        return &quot;foo&quot;
+
+Foo().attr
+</code></pre>
+<p>red-knot currently emits the following diagnostic:</p>
+<pre><code>error: lint:unresolved-attribute
+ --&gt; /Users/alexw/dev/experiment2/foo.py:5:1
+  |
+3 |         return &quot;foo&quot;
+4 |
+5 | Foo().attr
+  | ^^^^^^^^^^ Type `Foo` has no attribute `attr`
+  |
+</code></pre>
+<p>It's correct for us to emit a diagnostic here, but the diagnostic implies that the code will fail with <code>AttributeError</code>, and it doesn't say anything about the <code>__getattr__</code> method, which (if you didn't look at it too closely) you <em>might</em> think would allow arbitrary attributes to be accessed on instances of <code>Foo</code> at runtime. In actual fact, the <code>__getattr__</code> method is invalid (it needs to take two arguments, not one), so running this code fails with <code>TypeError</code> at runtime rather than <code>AttributeError</code>:</p>
+<pre><code class="language-pytb">~/dev/experiment2 [1] % python foo.py
+Traceback (most recent call last):
+  File &quot;/Users/alexw/dev/experiment2/foo.py&quot;, line 5, in &lt;module&gt;
+    Foo().attr
+TypeError: Foo.__getattr__() takes 1 positional argument but 2 were given
+</code></pre>
+<p>It would be great to add a subdiagnostic for this specific case pointing out that the reason why the attribute access will fail <em>despite</em> the existence of the <code>__getattr__</code> method is that the <code>__getattr__</code> method is invalid</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-04-06 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-04-06 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-06 20:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be great to add a subdiagnostic for this specific case pointing out that the reason why the attribute access will fail <em>despite</em> the existence of the <code>__getattr__</code> method is that the <code>__getattr__</code> method is invalid</p>
+</blockquote>
+<p>We can still keep this as a separate issue, but this is essentially the goal of https://github.com/astral-sh/ty/issues/194. There are many things that can go wrong when accessing an attribute, which we would like to report as sub-diagnostics on <code>unresolved-attribute</code>. This is one particular instance. Another example would be a failed <code>__get__</code> call for a descriptor attribute. Or a missing <code>getter</code> on a <code>property</code> attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-06 20:25</div>
+            <div class="timeline-body"><blockquote>
+<p>We can still keep this as a separate issue, but this is essentially the goal of <a href="https://github.com/astral-sh/ty/issues/194">#16298</a>. There are many things that can go wrong when accessing an attribute, which we would like to report as sub-diagnostics on <code>unresolved-attribute</code>. This is one particular instance. Another example would be a failed <code>__get__</code> call for a descriptor attribute. Or a missing <code>getter</code> on a <code>property</code> attribute.</p>
+</blockquote>
+<p>good point -- I've explicitly marked this as a sub-issue of astral-sh/ty#194.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2025-04-06 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-05-07 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Improve `[unresolved-attribute]` diagnostic for the case of an invalid `__getattr__` method" to "Improve `[unresolved-attribute]` diagnostic for the case of an invalid `__getattr__` method" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-05-11 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:51 UTC
+    </footer>
+</body>
+</html>

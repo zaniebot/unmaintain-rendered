@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`issubclass()` narrowing leads to incorrect results for a generic `@final` class - astral-sh/ty #1513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`issubclass()` narrowing leads to incorrect results for a generic `@final` class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1513">#1513</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-10 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 11:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's our behaviour on <code>main</code>:</p>
+<pre><code class="language-py">from typing import final
+
+@final
+class Foo[T]:
+    x: T
+
+def f(x: type[Foo]):
+    if issubclass(x, Foo):
+        reveal_type(x)  # `Never` (should be `&lt;class 'Foo[Unknown]'&gt;`)
+    else:
+        reveal_type(x)  # `&lt;class 'Foo[Unknown]'&gt;` (should be `Never`)
+
+# `memoryview` is `@final` and generic in typeshed
+def g(x: type[memoryview]):
+    if issubclass(x, memoryview):
+        reveal_type(x)  # `Never` (should be `&lt;class 'memoryview[Unknown]'&gt;`)
+    else:
+        reveal_type(x)  # `&lt;class 'memoryview[Unknown]'&gt;` (should be `Never`)
+</code></pre>
+<p>https://play.ty.dev/bc10f742-75d1-4d82-87dd-7fa07c89e151</p>
+<p>All inhabitants of <code>type[memoryview]</code> are, by definition, subclasses of <code>memoryview</code>, so our behaviour here is clearly incorrect. I'm not totally sure what the fix should be, however.</p>
+<p>There are several things at play here. For any class <code>C</code>:</p>
+<ol>
+<li>We eagerly simplify <code>type[C]</code> (&quot;any subclass of <code>C</code>&quot;) to <code>&lt;class 'C'&gt;</code> (a singleton type consisting only of the class object <code>C</code>) if <code>C</code> is <code>@final</code></li>
+<li><code>issubclass()</code> leads us to narrow the type by intersecting the type with <code>Top[type[C]]</code>, which for a <code>@final</code> class therefore simplifes to <code>Top[&lt;class 'C'&gt;]</code>, and for a <code>@final</code> generic class therefore simplifies to <code>&lt;class 'Top[C[Unknown]]'&gt;</code></li>
+<li><code>&lt;class 'C[Unknown]'&gt;</code> is currently thought by ty to be disjoint from <code>&lt;class 'Top[C[Unknown]]'&gt;</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @AlexWaygood on 2025-11-10 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-10 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-11-10 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-10 17:30</div>
+            <div class="timeline-body"><p>There is clearly an error in (3). There might also be some other issues (e.g. in <code>is_singleton</code>) in how we treat a <code>Type::GenericAlias</code> whose specialization is a top materialization. The top materialization of <code>&lt;class 'C[Unknown]'&gt;</code> is the union of every possible generic alias of <code>C</code> (that is, every possible materialization of <code>&lt;class 'C[Unknown]'&gt;</code>). So it's not a singleton type at all, it's an (infinitely sized) union of generic aliases. Thus it definitely should not be disjoint with <code>&lt;class 'C[Unknown]'&gt;</code>. Every materialization of <code>&lt;class 'C[Unknown]'&gt;</code> is a subtype of the top materialization of <code>&lt;class 'C[Unknown]'&gt;</code> -- that's the definition of a top materialization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-11-24 19:18</div>
+            <div class="timeline-body"><p>A new case of this has come up in https://github.com/astral-sh/ruff/pull/21552#issuecomment-3572330789, for example:</p>
+<pre><code class="language-py">from typing import Any, final
+
+@final
+class Foo[T]:
+    ...
+
+# error [invalid-assignment]: Object of type `&lt;class 'Foo[str]'&gt;` is not assignable to `&lt;class 'Foo[Any]'&gt;`
+_: type[Foo[Any]] = Foo[str]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-10 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:40 UTC
+    </footer>
+</body>
+</html>

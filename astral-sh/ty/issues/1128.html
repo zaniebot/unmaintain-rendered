@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhaustive check in `Enum` method doesn't narrow `self` type to `Never` - astral-sh/ty #1128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exhaustive check in `Enum` method doesn't narrow `self` type to `Never`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1128">#1128</a>
+        opened by <a href="https://github.com/lancelote">@lancelote</a>
+        on 2025-09-04 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lancelote">@lancelote</a> on 2025-09-04 15:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>given the following example ...</p>
+<pre><code class="language-python">from enum import Enum
+from typing import assert_never
+
+
+class Cell(Enum):
+    EMPTY = &quot;L&quot;
+    FLOOR = &quot;.&quot;
+    OCCUPIED = &quot;#&quot;
+
+    def foo(self) -&gt; None:
+        match self:
+            case Cell.EMPTY:
+                ...
+
+            case Cell.FLOOR:
+                ...
+
+            case Cell.OCCUPIED:
+                ...
+
+            case _:
+                assert_never(self)
+
+</code></pre>
+<p><code>ty</code> reports ...</p>
+<pre><code>error[type-assertion-failure]: Argument does not have asserted type `Never`
+  --&gt; sample.py:22:17
+   |
+21 |             case _:
+22 |                 assert_never(self)
+   |                 ^^^^^^^^^^^^^----^
+   |                              |
+   |                              Inferred type of argument is `Unknown &amp; ~Literal[Cell.EMPTY] &amp; ~Literal[Cell.FLOOR] &amp; ~Literal[Cell.OCCUPIED]`
+   |
+info: `Never` and `Unknown &amp; ~Literal[Cell.EMPTY] &amp; ~Literal[Cell.FLOOR] &amp; ~Literal[Cell.OCCUPIED]` are not equivalent types
+info: rule `type-assertion-failure` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-04 15:48</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This is related to the fact that we currently infer <code>Unknown</code> for <code>self</code>, see #159. If you explicitly annotate <code>self</code>, it should work: https://play.ty.dev/d5e36c28-0f0e-4055-b93b-a313692cb617</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-04 15:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

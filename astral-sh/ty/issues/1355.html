@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>possibly-missing-attribute warnings with asyncio on python 3.14 - astral-sh/ty #1355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>possibly-missing-attribute warnings with asyncio on python 3.14</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1355">#1355</a>
+        opened by <a href="https://github.com/oliverlambson">@oliverlambson</a>
+        on 2025-10-14 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oliverlambson">@oliverlambson</a> on 2025-10-14 19:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>asyncio.timeout and asyncio.TaskGroup</code> both flag <code>possibly-missing-attribute</code> when targeting python 3.14, but I don't believe they should for anything &gt;=3.11</p>
+<pre><code class="language-python"># ex.py
+import asyncio
+
+
+async def main() -&gt; None:
+    async with asyncio.TaskGroup():
+        ...
+    async with asyncio.timeout(1):
+        await asyncio.sleep(1)
+</code></pre>
+<pre><code>$ uv run ty check --python-version 3.13 ex.py 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                          All checks passed!
+
+$ uv run ty check --python-version 3.14 ex.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                          warning[possibly-missing-attribute]: Attribute `TaskGroup` on type `&lt;module 'asyncio'&gt;` may be missing
+ --&gt; ex.py:5:16
+  |
+4 | async def main() -&gt; None:
+5 |     async with asyncio.TaskGroup():
+  |                ^^^^^^^^^^^^^^^^^
+6 |         ...
+7 |     async with asyncio.timeout(1):
+  |
+info: rule `possibly-missing-attribute` is enabled by default
+
+warning[possibly-missing-attribute]: Attribute `timeout` on type `&lt;module 'asyncio'&gt;` may be missing
+ --&gt; ex.py:7:16
+  |
+5 |     async with asyncio.TaskGroup():
+6 |         ...
+7 |     async with asyncio.timeout(1):
+  |                ^^^^^^^^^^^^^^^
+8 |         await asyncio.sleep(1)
+  |
+info: rule `possibly-missing-attribute` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.22 (2f3190d09 2025-10-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-15 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-10-15 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 08:16</div>
+            <div class="timeline-body"><p>Thank you for reporting this. I managed to find a MRE:</p>
+<p>https://play.ty.dev/c3a85c2a-0617-4fd7-a0fb-f758508a9ac1</p>
+<p>It looks to me like the problem is that the conditional <code>from .graph import *</code> star import (mistakenly) imports <code>__all__</code> from <code>asyncio.graph</code> (??), which seems to affect the inference of <code>__all__</code> for <code>asyncio</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-15 18:41</div>
+            <div class="timeline-body"><p>it looks like there might be at least two bugs here (exciting!):</p>
+<ul>
+<li>If you have a file <code>a.py</code> with <code>__all__ = [&quot;foo&quot;]</code> and a file <code>b.py</code> with <code>from a import *</code>, that shouldn't lead to an <code>__all__</code> symbol being considered to be defined in <code>b.py</code>. <code>a.py</code> would need to have <code>__all__ = [&quot;foo&quot;, &quot;__all__&quot;]</code> for the <code>from a import *</code> statement to import <code>__all__</code> from <code>a.py</code> as well as <code>foo</code> from <code>a.py</code></li>
+<li>Even if you accept the (incorrect) premise that the <code>from .graph import *</code> import should lead to <code>asyncio.graph.__all__</code> being imported into <code>asyncio/__init__.pyi</code>, our dunder-all inference machinery <em>should</em> detect that earlier definition of <code>__all__</code> as being entirely shadowed by the <code>__all__</code> definition later on in the module <a href="https://github.com/python/typeshed/blob/11c7821a79a8ab7e1982f3ab506db16f1c4a22a9/stdlib/asyncio/__init__.pyi#L36-L995">here</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfaldanam">@jfaldanam</a> on 2025-10-24 14:45</div>
+            <div class="timeline-body"><p>Also found the issue on <code>ty 0.0.1-alpha.24</code>, nice to know that targeting 3.13 can serve as a workaround for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-10-30 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sghng">@sghng</a> on 2025-11-16 00:44</div>
+            <div class="timeline-body"><p>I updated ty to 0.0.1a26, seems like it has been fixed. At least <code>asyncio.TaskGroup</code> can be detected now.</p>
+<p>EDIT: this is on macOS Tahoe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-17 12:24</div>
+            <div class="timeline-body"><p>@Gankra Is it plausible that this was fixed by one of your PRs? And if so, <em>should</em> it have been fixed by your PRs, or was that unexpected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-17 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/refi64">@refi64</a> on 2025-11-23 23:46</div>
+            <div class="timeline-body"><p>as an extra data point, I can still observe this on ty 0.0.1a26, a27, and <code>e642874cf</code> targeting python 3.14: https://play.ty.dev/6286cc96-37b9-4fe1-a351-490c0569147f for the exact same reproducer as the original comment.</p>
+<p>so I don't think it's (incidentally or intentionally) fixed yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-11-27 12:09</div>
+            <div class="timeline-body"><p>Here's a slightly <a href="https://play.ty.dev/1854205a-5352-4c42-b436-6a0d3abd1792">more minimal mre</a>:</p>
+<ul>
+<li>all of <code>taskgroups.pyi</code> was removed, and the import star replaced with an inline class declaration</li>
+<li>the <code>__all__</code> assignment in <code>my_asyncio/__init__.py</code> was removed</li>
+</ul>
+<p>A few things I noticed that might be clues for someone more knowledgeable about ty internals:</p>
+<ol>
+<li>Making the <code>sys.version_info</code> conditionals mutually exclusive makes the warning go away</li>
+<li>Copying over <code>class TaskGroup: ...</code> into the first conditional (for 3.14) makes the warning go away</li>
+<li>In <code>my_asyncio/__init__.py</code> if I replace <code>import sys</code> with <code>import sys as sys2</code> (and all references accordingly), the warning goes away</li>
+<li>Similarly replacing <code>import sys</code> in <code>graph.pyi</code> also makes the warning go away</li>
+<li>If the type of <code>__all__</code> in <code>graph.pyi</code> is not a tuple of string literals, then <code>__all__ = ()</code> will get a funky type error in <code>my_asyncio/__init__.py</code> <a href="https://play.ty.dev/298691e1-a307-4f60-afba-db360ce5b3f4">like so</a></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @AlexWaygood on 2025-11-28 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @AlexWaygood on 2025-11-28 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-11-28 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 21:43</div>
+            <div class="timeline-body"><p>Using a <a href="https://play.ty.dev/89ee7408-9b97-4333-a36f-1cb8b161c6cc">slightly modified version of @zsol's repro</a> (altered so that the <code>sys.version_info</code> branch uses Python 3.13 rather than 3.14), I did a <code>git bisect</code> to find which commit caused this bug. I ran <code>cargo run --manifest-path ../ruff/Cargo.toml -p ty check  main.py --python-version=3.13</code> using each commit <code>git bisect</code> gave me, from a directory that contained the modified repro:</p>
+<pre><code>7d468ee58aee6a476ec1a0b54275210c9add8622 is the first bad commit
+commit 7d468ee58aee6a476ec1a0b54275210c9add8622
+Author: David Peter &lt;sharkdp@users.noreply.github.com&gt;
+Date:   Tue Jul 1 11:06:37 2025 +0200
+
+    [ty] Model reachability of star import definitions for nonlocal lookups (#19066)
+    
+    ## Summary
+    
+    Temporarily modify `UseDefMapBuilder::reachability` for star imports in
+    order for new definitions to pick up the right reachability. This was
+    already working for `UseDefMapBuilder::place_states`, but not for
+    `UseDefMapBuilder::reachable_definitions`.
+    
+    closes https://github.com/astral-sh/ty/issues/728
+    
+    ## Test Plan
+    
+    Regression test
+
+ .../resources/mdtest/import/star.md                | 30 ++++++++++++++--------
+ .../resources/mdtest/terminal_statements.md        |  6 ++---
+ .../src/semantic_index/builder.rs                  | 25 +++++++++++++++++-
+ .../src/semantic_index/use_def.rs                  |  7 ++---
+ 4 files changed, 48 insertions(+), 20 deletions(-)
+</code></pre>
+<p>which points to https://github.com/astral-sh/ruff/commit/7d468ee58aee6a476ec1a0b54275210c9add8622. And indeed, <code>uvx ty@0.0.1a13 check main.py --python-version=3.13</code> on the modified repro exhibits the false-positive error, but the same command with <code>uvx ty@0.0.1a12</code> does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @carljm on 2025-12-02 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-12-03 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-03 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-12-03 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 14:26</div>
+            <div class="timeline-body"><p>Thank you both for your analysis here. Especially the <em>&quot;Similarly replacing import sys in graph.pyi also makes the warning go away&quot;</em> hint was very helpful.</p>
+<p>Let's look at the relevant part of the code again (from <code>asyncio/__init__.pyi</code>):</p>
+<pre><code class="language-py">import sys
+
+if sys.version_info &gt;= (3, 14):
+    from .graph import *
+if sys.version_info &gt;= (3, 11):
+    class TaskGroup: ...
+</code></pre>
+<p>What's going on is the following: When we see the <code>from .graph import *</code> star import, we don't know yet which symbols from <code>.graph</code> will be available later on (because we might later find out that their definitions are unreachable, or that they might not be re-exported via <code>__all__</code>). For this reason, in the semantic index builder, we pretend that <em>all</em> of the symbols that we can see in <code>.graph</code> are imported, but we guard each of these import-definitions with a special star-import reachability constraint. One of the symbols in <code>graph</code> is <code>sys</code>! We will later find out that it's not actually re-exported (because it's not listed in <code>__all__</code>), but we do create a definition, just in case it might be. The star-import basically creates a structure like the following (where <code>symbol_is_reexported_and_visible</code> is a made-up function that we can later evaluate in type checking):</p>
+<pre><code class="language-py">import sys
+
+if sys.version_info &gt;= (3, 14):
+    if symbol_is_reexported_and_visible(&quot;.graph&quot;, &quot;sys&quot;):
+        from .graph import sys
+    if symbol_is_reexported_and_visible(&quot;.graph&quot;, &quot;FutureCallGraph&quot;):
+        from .graph import FutureCallGraph
+    # &lt;more of these, one for every visible symbol in .graph&gt;
+
+if sys.version_info &gt;= (3, 11):
+    class TaskGroup: ...
+</code></pre>
+<p>So if we are on 3.14, when we later evaluate the <em>second</em> <code>sys.version_info &gt;= (3, 11)</code> condition, we see <em>two</em> live bindings of <code>sys</code>. All should be good though, because once we evaluate <code>symbol_is_reexported_and_visible(&quot;.graph&quot;, &quot;sys&quot;)</code> (to <code>AlwaysFalse</code>), we see that only the first definition is actually reachable.</p>
+<p>And indeed, if we check the type of <code>sys</code> after that star-import, it's still <code>&lt;module 'sys'&gt;</code> as it should be. However, if we check the type of <code>sys.version_info</code>, we find that it has a type of <code>Never</code>! <a href="https://play.ty.dev/cf6ac260-2932-496b-8d68-c4b8559eb0e0">Here's an even smaller MRE</a> that demonstrates this.</p>
+<p>This has to do with another mechanism that the semantic index builder helps with: attribute-narrowing. When we narrow the type of an attribute (<code>if obj.attr is not None</code>), and then later see an assignment to <code>obj</code>, we <a href="https://play.ty.dev/e90d5778-d90d-43bc-9f90-00df4f780632">invalidate the narrowing</a>. To do this, the semantic index builder keeps track of relationships between members (<code>obj.attr</code>) and corresponding symbols (<code>obj</code>). When it sees a binding to <code>obj</code>, it records a <code>DefinitionState::Deleted</code> binding for the corresponding member. I'm pretty sure that this is the root cause here. We probably do not keep track of the state of the <code>sys.version_info</code> member in <em>both</em> control flow branches (the one where <code>symbol_is_reexported_and_visible(&quot;.graph&quot;, &quot;sys&quot;)</code> is true, and the one where it's false), due to the way we model these special star-import pseudo branches (which itself is necessary for performance reasons). Fixing this will require us to not just model the state and the merging of symbols-states, but also the state and merging of their associated member-states.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-03 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

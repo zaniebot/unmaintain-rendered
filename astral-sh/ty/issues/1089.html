@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect inference when iterating over unions of types - astral-sh/ty #1089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect inference when iterating over unions of types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1089">#1089</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-22 12:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-22 12:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I first thought this was a bug in <code>Type::try_iterate_with_mode()</code>, then I thought it might be a bug in generics solving, but finally I realised that this was a bug in protocol assignability/subtyping -- we currently think that <code>Iterator[str]</code> is a subtype of <code>Iterator[int]</code>, meaning we eagerly simplify the union of the two types together, leading us to infer the wrong type when iterating over a union of iterables if each element in the union has an <code>__iter__</code> method that returns <code>Iterator[T]</code>. And the vast majority of real-world <code>__iter__</code> methods are annotated as returning <code>Iterator[T]</code>. That means that we infer the correct type when iterating over <code>b</code> in the function below, but an incorrect type when iterating over <code>a</code>.</p>
+<p>So this is a bug I was already aware of, but it had a consequence I wasn't aware of, leading me to spend some time debugging it just now. Hence why I'm writing it up. It also probably serves as a good test case for the future.</p>
+<pre><code class="language-py">from typing import Literal, reveal_type, Iterator
+from ty_extensions import is_subtype_of
+
+class StringIterator:
+    def __next__(self) -&gt; str:
+        return &quot;foo&quot;
+
+class IntIterator:
+    def __next__(self) -&gt; int:
+        return 42
+
+class StringIterable1:
+    def __iter__(self) -&gt; Iterator[str]:
+        raise NotImplementedError
+
+class IntIterable1:
+    def __iter__(self) -&gt; Iterator[int]:
+        raise NotImplementedError
+
+class StringIterable2:
+    def __iter__(self) -&gt; StringIterator:
+        raise NotImplementedError
+
+class IntIterable2:
+    def __iter__(self) -&gt; IntIterator:
+        raise NotImplementedError
+
+def f(a: StringIterable1 | IntIterable1, b: StringIterable2 | IntIterable2, c: Iterator[int] | Iterator[str]):
+    for x in a:
+        reveal_type(x)  # str -- should be `str | int`!
+
+    reveal_type(a.__iter__())  # Iterator[str] -- should be `Iterator[str | int]`!
+    reveal_type(c)  # Iterator[int]  -- should be `Iterator[int] | Iterator[str]` (or `Iterator[int | str]`)
+    reveal_type(is_subtype_of(Iterator[int], Iterator[str]))  # `Literal[True]`, but should be `Literal[False]`
+
+    for y in b:
+        reveal_type(y)  # str | int (correct!)
+</code></pre>
+<p>https://play.ty.dev/86abc512-4b5f-4675-8689-9f36b92b163d</p>
+<p>You can also reproduce this by iterating over unions of literals, unions of tuples, etc.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-08 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:26 UTC
+    </footer>
+</body>
+</html>

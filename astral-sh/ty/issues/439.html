@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>logging.StreamHandler(sys.stderr) triggers false no-matching-overload error in Pyright/ty - astral-sh/ty #439</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>logging.StreamHandler(sys.stderr) triggers false no-matching-overload error in Pyright/ty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/439">#439</a>
+        opened by <a href="https://github.com/Dheebz">@Dheebz</a>
+        on 2025-05-18 10:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Dheebz">@Dheebz</a> on 2025-05-18 10:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using StreamHandler(sys.stderr) or StreamHandler(sys.stdout) — both valid runtime calls — fails static type checking in ty (backed by Pyright). This appears to be due to overly strict or ambiguous overload resolution on StreamHandler.<strong>init</strong>.</p>
+<h3>Behavior</h3>
+<pre><code class="language-python">handler = logging.StreamHandler(sys.stderr)
+</code></pre>
+<p>Yields</p>
+<pre><code>error[no-matching-overload]: No overload of bound method `__init__` matches arguments
+</code></pre>
+<h3>Overloads Involved:</h3>
+<pre><code class="language-python">@overload
+def __init__(self: StreamHandler[TextIO], stream: None = None) -&gt; None: ...
+@overload
+def __init__(self: StreamHandler[_StreamT], stream: _StreamT) -&gt; None: ...
+</code></pre>
+<p>It seems that sys.stderr or sys.stdout (which are TextIO objects) fail to match either overload in Pyright's interpretation, especially when passed as a positional argument.</p>
+<h3>Attempted Fixs</h3>
+<ol>
+<li>Explicity Cast:</li>
+</ol>
+<pre><code class="language-python">from typing import cast
+handler = cast(logging.StreamHandler, logging.StreamHandler(sys.stderr))
+</code></pre>
+<ol start="2">
+<li>Explicit Generic with TextIO:</li>
+</ol>
+<pre><code class="language-python">from typing import TextIO
+handler: logging.StreamHandler[TextIO] = logging.StreamHandler(sys.stderr)
+</code></pre>
+<ol start="3">
+<li>Default constructor + type annotations:</li>
+</ol>
+<pre><code class="language-python">handler: logging.StreamHandler = logging.StreamHandler()
+</code></pre>
+<h3>Minimal Reproducible Example</h3>
+<pre><code class="language-python">import logging
+import sys
+
+handler = logging.StreamHandler(sys.stderr)
+handler.setLevel(logging.INFO)
+</code></pre>
+<p>Note: Appologies for any spelling and/or if this issue requires additional information.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-18 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-18 11:56</div>
+            <div class="timeline-body"><p>Thanks for the report! This issue is a duplicate of https://github.com/astral-sh/ty/issues/258, which in turn is likely caused by the same underlying problem as #370.</p>
+<blockquote>
+<p>fails static type checking in ty (backed by Pyright)</p>
+</blockquote>
+<p>Just as an FYI — ty is a totally separate tool to pyright that makes many different decisions with regards to its behaviour. We don't depend on pyright in any way (and I'd be surprised if pyright issued the same false positive here, since it's a tool that's been around for a lot longer than we have!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-18 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-18 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dheebz">@Dheebz</a> on 2025-05-18 12:08</div>
+            <div class="timeline-body"><p>Thank you @AlexWaygood for the prompt response and clarification, and marking as a duplicate. Appoligies for not seeing it before submitting it.</p>
+<p>I think this line through me which when thinking about it probably is coming from the typeshed/stdlib/logging.pyi.</p>
+<pre><code class="language-python">class StreamHandler(Handler, Generic[_StreamT]):
+    stream: _StreamT  # undocumented
+    terminator: str
+    @overload
+    def __init__(self: StreamHandler[TextIO], stream: None = None) -&gt; None: ...
+    @overload
+    def __init__(self: StreamHandler[_StreamT], stream: _StreamT) -&gt; None: ...  **# pyright: ignore[reportInvalidTypeVarUse]  #11780**
+    def setStream(self, stream: _StreamT) -&gt; _StreamT | None: ...
+    if sys.version_info &gt;= (3, 11):
+        def __class_getitem__(cls, item: Any, /) -&gt; GenericAlias: ...
+</code></pre>
+<p>In regards to pyright and false positives, i find ruff is significantly more reliable than pyright which is why i am so keen to give this a go. Cant wait to see how it all goes and the awesome tooling you will no doubt do in the future.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

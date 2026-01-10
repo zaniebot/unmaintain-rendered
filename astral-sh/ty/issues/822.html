@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expression involving `map` and `os.path.realpath` - astral-sh/ty #822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expression involving `map` and `os.path.realpath`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/822">#822</a>
+        opened by <a href="https://github.com/dalcinl">@dalcinl</a>
+        on 2025-07-14 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dalcinl">@dalcinl</a> on 2025-07-14 13:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not really sure how to classify this issue.</p>
+<p>Minimal reproducer:</p>
+<pre><code class="language-python"># file: tmp.py
+import os
+import typing
+path = os.environ[&quot;PATH&quot;].split(os.path.pathsep)
+for p in map(os.path.realpath, path):
+    print(p)
+</code></pre>
+<pre><code class="language-console">$ ty check tmp.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `__new__` is incorrect
+ --&gt; tmp.py:4:14
+  |
+2 | import typing
+3 | path = os.environ[&quot;PATH&quot;].split(os.path.pathsep)
+4 | for p in map(os.path.realpath, path):
+  |              ^^^^^^^^^^^^^^^^ Expected `(str, /) -&gt; Unknown`, found `Overload[(filename: PathLike[AnyStr], *, strict: bool | @Todo = Literal[False]) -&gt; AnyStr, (filename: AnyStr, *, strict: bool | @Todo = Literal[False]) -&gt; AnyStr]`
+5 |     print(p)
+  |
+info: Matching overload defined here
+    --&gt; stdlib/builtins.pyi:1602:13
+     |
+1600 |     else:
+1601 |         @overload
+1602 |         def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /) -&gt; Self: ...
+     |             ^^^^^^^      ------------------------- Parameter declared here
+1603 |         @overload
+1604 |         def __new__(cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self: ...
+     |
+info: Non-matching overloads for function `__new__`:
+info:   (cls, func: (_T1, _T2, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, _T4, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, _T4, _T5, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], iter5: Iterable[_T5], /) -&gt; Self
+info:   (cls, func: (...) -&gt; _S, iterable: Iterable[Any], iter2: Iterable[Any], iter3: Iterable[Any], iter4: Iterable[Any], iter5: Iterable[Any], iter6: Iterable[Any], /, *iterables: Iterable[Any]) -&gt; Self
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1-alpha.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 13:20</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>The issue seems to be that we don't recognize <code>realpath</code> as being assignable to <code>Callable[[str], Unknown]</code>. This can also be demonstrated <a href="https://play.ty.dev/bb091958-4f78-44a5-8e6c-66bf269b3439">like this</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 13:27</div>
+            <div class="timeline-body"><p>I think this may actually be the same issue as #771. Will close this as a duplicate and update the other ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-14 13:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

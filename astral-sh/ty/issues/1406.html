@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSP hang/crash on certain kinds of syntax error? - astral-sh/ty #1406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>LSP hang/crash on certain kinds of syntax error?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1406">#1406</a>
+        opened by <a href="https://github.com/DanCardin">@DanCardin</a>
+        on 2025-10-20 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanCardin">@DanCardin</a> on 2025-10-20 16:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The act of going from:</p>
+<pre><code>def foo(self, key, value):
+    return
+</code></pre>
+<p>to</p>
+<pre><code>def foo(self, **key, value):
+    return
+</code></pre>
+<p>by typing the <code>**</code> hangs neovim for me. I'm not sure how to take neovim out of the loop here, but given that this kind of instant hang is, so far, unique to <code>ty</code> i'm hoping it's straightforward to reproduce whether or not neovim is involved.</p>
+<p>I dont see this problem on alpha 14, but do for every version afterward.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.15 (0369a3598 2025-07-18) onward</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-20 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-21 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-21 06:33</div>
+            <div class="timeline-body"><p>Thank you for reporting this. I can confirm the error. Neovim's LSP logs show this:</p>
+<pre><code>ERROR An error occurred with request ID 37: request handler panicked at crates/ty_ide/src/semantic_tokens.rs:234:9:\nTokens must be added in file order: previous token ends at Some(21), new token starts at 16\nrun with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n&quot;
+</code></pre>
+<p>Which points to this debug assertion:</p>
+<p>https://github.com/astral-sh/ruff/blob/24d0f65d6237eb956553f0a8075030113f065aa1/crates/ty_ide/src/semantic_tokens.rs#L233-L241</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-21 06:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Which points to this debug assertion:</p>
+</blockquote>
+<p>That's interesting — I assume OP is using a release build, in which case debug assertions probably won't trigger for them. Is it possible that this is a separate bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you for reporting this. I can confirm the error. Neovim's LSP logs show this:</p>
+<pre><code>ERROR An error occurred with request ID 37: request handler panicked at crates/ty_ide/src/semantic_tokens.rs:234:9:\nTokens must be added in file order: previous token ends at Some(21), new token starts at 16\nrun with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n&quot;
+</code></pre>
+<p>Which points to this debug assertion:</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/24d0f65d6237eb956553f0a8075030113f065aa1/crates/ty_ide/src/semantic_tokens.rs#L233-L241">astral-sh/ruff@<code>24d0f65</code>/crates/ty_ide/src/semantic_tokens.rs#L233-L241</a></p>
+</blockquote>
+<p>Could you enable <code>RUST_BACKTRACE=1</code> with a debug build? It would help narrow down where the tokens are added out of order.</p>
+<p>Edit: I'm adding a test now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:49</div>
+            <div class="timeline-body"><blockquote>
+<p>That's interesting — I assume OP is using a release build, in which case debug assertions probably won't trigger for them. Is it possible that this is a separate bug?</p>
+</blockquote>
+<p>The LSP uses a compact encoding for semantic tokens where offests are encoded relative to the previous token. I'm not sure if it supports negative offsets (as tokens are expected to be in source order) and I could see clients get stuck if a relative offset happens to be negative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-21 08:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

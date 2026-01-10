@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix disjointness relation for class literals and generic aliases - astral-sh/ty #1842</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix disjointness relation for class literals and generic aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1842">#1842</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-10 16:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 16:19</div>
+            <div class="timeline-body"><p>There are some inconsistencies in our disjointness relation modeling for class literals and generic aliases. They are documented in the failing tests here:</p>
+<p>https://github.com/astral-sh/ruff/blob/951766d1fbce5bfa6758f81876ae26124892f33e/crates/ty_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md?plain=1#L669-L709</p>
+<p>We should fix those tests and probably also increase the test coverage.</p>
+<p>If it's helpful, I started to work on this, and this is how far I got:</p>
+<details><summary>Diff</summary>
+<p>
+
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 12a38a8e34..49021d4b08 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -3347,7 +3347,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 | Type::WrapperDescriptor(..)
+                 | Type::ModuleLiteral(..)
+                 | Type::ClassLiteral(..)
+-                | Type::GenericAlias(..)
+                 | Type::SpecialForm(..)
+                 | Type::KnownInstance(..)),
+                 right @ (Type::BooleanLiteral(..)
+@@ -3361,11 +3360,90 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 | Type::WrapperDescriptor(..)
+                 | Type::ModuleLiteral(..)
+                 | Type::ClassLiteral(..)
+-                | Type::GenericAlias(..)
+                 | Type::SpecialForm(..)
+                 | Type::KnownInstance(..)),
+             ) =&gt; ConstraintSet::from(left != right),
+ 
++            (
++                Type::GenericAlias(..),
++                Type::BooleanLiteral(..)
++                | Type::IntLiteral(..)
++                | Type::StringLiteral(..)
++                | Type::BytesLiteral(..)
++                | Type::EnumLiteral(..)
++                | Type::FunctionLiteral(..)
++                | Type::BoundMethod(..)
++                | Type::KnownBoundMethod(..)
++                | Type::WrapperDescriptor(..)
++                | Type::ModuleLiteral(..)
++                | Type::SpecialForm(..)
++                | Type::KnownInstance(..),
++            )
++            | (
++                Type::BooleanLiteral(..)
++                | Type::IntLiteral(..)
++                | Type::StringLiteral(..)
++                | Type::BytesLiteral(..)
++                | Type::EnumLiteral(..)
++                | Type::FunctionLiteral(..)
++                | Type::BoundMethod(..)
++                | Type::KnownBoundMethod(..)
++                | Type::WrapperDescriptor(..)
++                | Type::ModuleLiteral(..)
++                | Type::SpecialForm(..)
++                | Type::KnownInstance(..),
++                Type::GenericAlias(..),
++            ) =&gt; ConstraintSet::from(false),
++
++            (Type::GenericAlias(left_alias), Type::GenericAlias(right_alias)) =&gt; {
++                disjointness_visitor.visit((self, other), || {
++                    ConstraintSet::from(left_alias != right_alias).or(db, || {
++                        (left_alias
++                            .specialization(db)
++                            .has_relation_to_impl(
++                                db,
++                                right_alias.specialization(db),
++                                InferableTypeVars::None,
++                                TypeRelation::Assignability,
++                                relation_visitor,
++                                disjointness_visitor,
++                            )
++                            .negate(db))
++                        .and(db, || {
++                            right_alias
++                                .specialization(db)
++                                .has_relation_to_impl(
++                                    db,
++                                    left_alias.specialization(db),
++                                    InferableTypeVars::None,
++                                    TypeRelation::Assignability,
++                                    relation_visitor,
++                                    disjointness_visitor,
++                                )
++                                .negate(db)
++                        })
++                    })
++                })
++            }
++
++            (Type::ClassLiteral(class_literal), Type::GenericAlias(alias))
++            | (Type::GenericAlias(alias), Type::ClassLiteral(class_literal)) =&gt; {
++                disjointness_visitor.visit((self, other), || {
++                    class_literal
++                        .default_specialization(db)
++                        .into_generic_alias()
++                        .when_none_or(|other_alias| {
++                            Type::GenericAlias(other_alias).is_disjoint_from_impl(
++                                db,
++                                Type::GenericAlias(alias),
++                                inferable,
++                                disjointness_visitor,
++                                relation_visitor,
++                            )
++                        })
++                })
++            }
++
+             (
+                 Type::SubclassOf(_),
+                 Type::BooleanLiteral(..)
+
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @sharkdp on 2025-12-10 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @sharkdp on 2025-12-10 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 20:28</div>
+            <div class="timeline-body"><p>Closed by @ibraheemdev in https://github.com/astral-sh/ruff/pull/21770</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-10 20:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:52 UTC
+    </footer>
+</body>
+</html>

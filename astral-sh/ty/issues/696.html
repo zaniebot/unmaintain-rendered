@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type of class object is narrowed to `Never` - astral-sh/ty #696</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type of class object is narrowed to `Never`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/696">#696</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-06-24 13:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-24 13:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example:</p>
+<pre><code class="language-python">from typing import reveal_type
+
+class X:
+    pass
+
+def f(x: X) -&gt; int:
+    match x:
+        case X():
+            return 1
+        case _:
+            reveal_type(X)
+</code></pre>
+<p>https://play.ty.dev/19d83388-93e2-47b5-875f-9786b4d2b076</p>
+<p>ty here reveals Never for the type of X (the class object), which seems wrong. The branch is unreachable, but that shouldn't affect the type of (uppercase) X. Unrelated types are not narrowed; <code>reveal_type(int)</code> still gives <code>&lt;class 'int'&gt;</code>.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 13:48</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<blockquote>
+<p>The branch is unreachable, but that shouldn't affect the type of (uppercase) X.</p>
+</blockquote>
+<p>We generally infer <code>Never</code> for symbols in unreachable code if the use of the symbol is not reachable from the binding/definition. For example:</p>
+<pre><code class="language-py">x = 1
+
+if False:
+    reveal_type(x)  # Never
+</code></pre>
+<p>This is our current solution to silencing (most) diagnostics in unreachable code. This helps us solve cases like the ones described in this <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md#conflicting-type-information">test section</a>.</p>
+<p>This case is slightly different because we use a binding/definition from an outer scope. We still infer <code>Never</code> for somewhat <a href="https://github.com/astral-sh/ruff/blob/0edbd6c390a16677a1214a29f835444a1d522172/crates/ty_python_semantic/src/place.rs#L812-L861">more complex reasons</a>:</p>
+<pre><code class="language-py">x = 1
+
+def _():
+    if False:
+        reveal_type(x)  # Never
+</code></pre>
+<p>As I just realized, this is not 100% consistent, because we do not infer <code>Never</code> here:</p>
+<pre><code class="language-py">x = 1
+
+def _():
+    if False:
+        def _():
+            reveal_type(x)  # Unknown | Literal[1]
+</code></pre>
+<blockquote>
+<p>Unrelated types are not narrowed; <code>reveal_type(int)</code> still gives <code>&lt;class 'int'&gt;</code>.</p>
+</blockquote>
+<p>Yes, this is not related to narrowing (lowercase <code>x</code> is narrowed, but uppercase <code>X</code> should not be narrowed at all). It's only related to reachability. Accessing builtins in unreachable code is another case where we do not infer <code>Never</code> for symbols. I haven't seen any cases where this causes problems, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-06-24 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Accessing builtins in unreachable code is another case where we do not infer <code>Never</code> for symbols. I haven't seen any cases where this causes problems, though.</p>
+</blockquote>
+<p>It seems to mean that we infer <code>Unknown</code> in the <code>reveal_type</code> call here if you use <code>--python-version=3.10</code> or lower -- I suppose <code>Never</code> would be more consistent?</p>
+<pre><code class="language-py">import sys
+
+if sys.version_info &gt;= (3, 11):
+    reveal_type(ExceptionGroup)
+</code></pre>
+<p>https://play.ty.dev/cc68bcc2-543a-4ddb-bda3-0efbe22d014c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Type of class object is narrowed to never" to "Type of class object is narrowed to `Never`" by @AlexWaygood on 2025-10-06 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:20</div>
+            <div class="timeline-body"><p>I think our underlying behavior here is still the same, but today we silence <code>reveal_type</code> in unreachable code, like pyright does. Not 100% sure if this is the best behavior long-term, but I don't have a clear sense of what is actionable in this issue, so going to close it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-14 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:13 UTC
+    </footer>
+</body>
+</html>

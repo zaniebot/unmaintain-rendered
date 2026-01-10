@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing an equivalent of rust's unwrap in ty (`def unwrap[T](x: T | None) -&gt; T`) - astral-sh/ty #901</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Typing an equivalent of rust's unwrap in ty (`def unwrap[T](x: T | None) -&gt; T`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/901">#901</a>
+        opened by <a href="https://github.com/karlicoss">@karlicoss</a>
+        on 2025-07-27 01:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-07-27 01:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Apologies if this is a duplicate/subissue of some bigger issue - I searched on issue tracker and couldn't find anything relevant.</p>
+<p>Sometimes I find it quite useful to have a function similar to rust's <code>unwrap</code> in my projects.
+In mypy, this snippet passes fine (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=e8bb5656911cc53e37a8a52bc9121580">mypy playground link</a>)</p>
+<pre><code class="language-python">from typing import cast, reveal_type
+
+t = cast(int | None, 5)
+reveal_type(t)  # reveals int | None
+
+
+def unwrap[T](x: T | None) -&gt; T:
+    assert x is not None
+    return x
+
+reveal_type(unwrap(t))  # reveals int
+unwrap(t) + 123   # type checks
+</code></pre>
+<p>However, ty (<a href="https://play.ty.dev/2ce5ae60-a0bd-4330-abd9-42a0f854d0d6">playground link</a>) seems to be inferring the result as <code>T | None</code>, and complains about <code>unwrap(t) + 123</code> as a result.</p>
+<p>Not sure if it's a bug (i.e. ty can't pattern match <code>int | None</code> against <code>T | None</code> yet), or it's some subtle difference in semantics (i.e. maybe mypy is doing something not fully correct here?).</p>
+<p>Out of interest I looked at the <code>ty_extensions</code> stuff that I've seen mentioned in a couple of other issues and it seems to type check as I expect:</p>
+<pre><code class="language-python">from ty_extensions import Not, Intersection
+def unwrap2[T](x: T | None) -&gt; Intersection[T, Not[None]]:
+    assert x is not None
+    return x
+
+reveal_type(unwrap2(t))  # reveals int
+unwrap2(t) + 123  # type checks
+</code></pre>
+<p>Would be curious to know what's the right way!</p>
+<h3>Version</h3>
+<p>latest master/playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-27 10:30</div>
+            <div class="timeline-body"><p>Your first code snippet is correct and mypy is correct. We just do not support this yet.</p>
+<p>This is similar to what is shown here</p>
+<p>https://github.com/astral-sh/ruff/pull/18398#discussion_r2116936039</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-27 11:03</div>
+            <div class="timeline-body"><p>Thanks for the report! This is a duplicate of https://github.com/astral-sh/ty/issues/623</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-27 11:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:20 UTC
+    </footer>
+</body>
+</html>

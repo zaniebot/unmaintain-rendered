@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multi-line unknown-argument suppression - astral-sh/ty #995</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>multi-line unknown-argument suppression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/995">#995</a>
+        opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a>
+        on 2025-08-15 04:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-15 04:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>According to the docs, we should be able to do multiline suppressions:
+https://docs.astral.sh/ty/suppression/#ty-suppression-comments</p>
+<p>But this doesn't seem to work with unknown-argument.
+This still errors out:</p>
+<pre><code>MyBuilder(
+    name=&quot;123&quot;,
+    translation=&quot;Some translation&quot;,
+)  # ty: ignore[unknown-argument]
+</code></pre>
+<p>Same as:</p>
+<pre><code>MyBuilder(  # ty: ignore[unknown-argument]
+    name=&quot;123&quot;,
+    translation=&quot;Some translation&quot;,
+)
+</code></pre>
+<p>Only this works:</p>
+<pre><code>MyBuilder(
+    name=&quot;123&quot;,  # ty: ignore[unknown-argument]
+    translation=&quot;Some translation&quot;,  # ty: ignore[unknown-argument]
+)
+</code></pre>
+<p>For more context: https://github.com/astral-sh/ty/issues/988#issuecomment-3189107887</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 06:21</div>
+            <div class="timeline-body"><p>Here's a more complete example: https://play.ty.dev/071a7857-df0c-42a5-801c-d2a59e2440d4 and I'll use this to explain what's happening.</p>
+<p>The first diagnostic is:</p>
+<pre><code>Argument `name` does not match any known parameter of bound method `__init__` (unknown-argument) [Ln 7, Col 5]
+</code></pre>
+<p>and the documentation says:</p>
+<blockquote>
+<p>Rule violations spanning multiple lines can be suppressed by adding the comment at the end of the violation's first or last line:</p>
+</blockquote>
+<p>The violation's first line is line number 7 as you can see in the diagnostic message. That means, you can place a suppression comment at the end of line 7.</p>
+<p>Now, it's a bit harder to tell where a diagnostic ends because that's not visible in its message but in this instance, it's also line number 7. That means, suppressions are only allowed at the end of line 7.</p>
+<p>You can change your example to:</p>
+<pre><code class="language-py">class MyBuilder:
+
+    def __init__(self):
+        pass
+
+MyBuilder(
+    name=  # ty: ignore[unknown-argument]
+        &quot;123&quot;,
+    translation=&quot;Some translation&quot;,
+) 
+
+</code></pre>
+<p>In which case the suppression is both valid at the end of the <code>name=</code> line or after <code>&quot;123&quot;,</code></p>
+<pre><code class="language-py">class MyBuilder:
+
+    def __init__(self):
+        pass
+
+MyBuilder(
+    name=
+        &quot;123&quot;,   # ty: ignore[unknown-argument]
+    translation=&quot;Some translation&quot;,
+)  
+</code></pre>
+<p>Because the diagnostic starts at line 7, and ends at line 8, suppressions are valid at both the end of line 7 and 8</p>
+<p>You can find more exmaples in https://github.com/astral-sh/ruff/blob/1167ed61cf3fa186e852df2d6ec9cb0136dffa80/crates/ty_python_semantic/resources/mdtest/suppressions/ty_ignore.md</p>
+<p>Now, I can see how it might be desirable to suppress all unknown argument errors with a single suppression. And we had other instances where we intentionally kept the diagnostic range larger than it had to be so that suppressions worked more intuitively (@AlexWaygood do you remember some of those instances). What we discussed there is whether diagnostics can have a secondary range that isn't visible when rendering the diagnostic but adds an extra range where suppressions are allowed in addition to the start and end line of the diagnostic itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @MichaReiser on 2025-08-15 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 17:13</div>
+            <div class="timeline-body"><blockquote>
+<p>we had other instances where we intentionally kept the diagnostic range larger than it had to be so that suppressions worked more intuitively (<a href="https://github.com/AlexWaygood">@AlexWaygood</a> do you remember some of those instances)</p>
+</blockquote>
+<p>Yeah, some of the other instances where we intentionally kept the range broader than what we'd ideally highlight in the diagnostic rendering (so that suppresion comments work intuitively) are:</p>
+<ul>
+<li><code>assert_type</code></li>
+<li><code>assert_never</code></li>
+<li><code>cast</code></li>
+</ul>
+<p>For <code>reveal_type</code> we did not do this -- we changed the range of the diagnostic so that it was only the range of one of the arguments passed in. I think that was the correct decision, because users will never realistically want to suppress a <code>reveal-type</code> diagnostic. But the narrower diagnostic ranges still caused issues for <em>us</em> when writing mdtests: https://github.com/astral-sh/ruff/pull/17980/files#r2081633694</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

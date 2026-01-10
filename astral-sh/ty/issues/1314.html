@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing support for SQLAlchemy ORM Select and Query - astral-sh/ty #1314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing support for SQLAlchemy ORM Select and Query</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1314">#1314</a>
+        opened by <a href="https://github.com/stephencsnow">@stephencsnow</a>
+        on 2025-10-07 04:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stephencsnow">@stephencsnow</a> on 2025-10-07 04:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>SQLAlchemy typing for <code>Select</code> and <code>Query</code> statements on <code>Mapped</code> columns does not appear to be working in current versions of it and <code>ty</code>.</p>
+<h3>Expected behavior</h3>
+<p><a href="https://docs.sqlalchemy.org/en/20/changelog/whatsnew_20.html#typing-is-supported-from-step-3-onwards">Docs reference</a>.</p>
+<p>In the reproduction script below, we would expect the same revealed types as mypy.</p>
+<h3>Reproduction</h3>
+<p>The script below is annotated with results from mypy vs ty.</p>
+<p>Note: both pyright/pyrefly had same correct behavior as mypy.</p>
+<pre><code class="language-python">from typing import cast, reveal_type
+
+from sqlalchemy import Select, select, Integer, Text
+from sqlalchemy.engine import Row
+from sqlalchemy.orm.query import Query, RowReturningQuery
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import create_engine
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class User(Base):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    phone: Mapped[str] = mapped_column(Text)
+
+
+engine = create_engine(&quot;sqlite://&quot;)
+session = Session(engine)
+
+stmt = select(User.id, User.phone)
+# mypy: Select[tuple[int, str]]
+#   ty: Select[tuple[Unknown, Unknown]]
+reveal_type(stmt)
+
+query = session.query(User.id, User.phone)
+# mypy: RowReturningQuery[tuple[int, str]]
+#   ty: RowReturningQuery[tuple[Unknown, Unknown]]
+reveal_type(query)
+
+for row in session.execute(stmt):
+    # mypy: Row[Tuple[int, str]]
+    #   ty: Row[tuple[Unknown, Unknown]]
+    reveal_type(row)
+for row in query.all():
+    # mypy: Row[Tuple[int, str]]
+    #   ty: Row[tuple[Unknown, Unknown]]
+    reveal_type(row)  
+
+user_stmt = select(User)
+# mypy: Select[tuple[User]]
+#   ty: Select[tuple[Unknown]]
+reveal_type(user_stmt)
+
+users = session.scalars(select(User)).all()
+# mypy: Sequence[User]
+#   ty: Sequence[Unknown]
+reveal_type(users)
+
+users_legacy = session.query(User).all()
+# mypy: list[User]
+#   ty: list[Unknown]
+reveal_type(users_legacy)
+
+
+# None of these give type errors for mypy/ty
+def get_user_id_and_phone_base_stmt() -&gt; Select[tuple[int, str]]:
+    return select(User.id, User.phone)
+
+
+def get_user_id_with_only_columns() -&gt; Select[tuple[int]]:
+    return get_user_id_and_phone_base_stmt().with_only_columns(User.id)
+
+
+def get_user_id_and_phone() -&gt; Row[tuple[int, str]]:
+    return session.execute(get_user_id_and_phone_base_stmt()).one()
+
+
+def get_user_stmt() -&gt; Select[tuple[User]]:
+    return select(User)
+
+
+def get_user() -&gt; User:
+    return session.scalars(get_user_stmt()).one()
+
+
+def get_user_id_and_phone_query() -&gt; RowReturningQuery[tuple[int, str]]:
+    return session.query(User.id, User.phone)
+
+
+def get_user_id_with_entities() -&gt; RowReturningQuery[tuple[int]]:
+    query = get_user_id_and_phone_query().with_entities(User.id)
+    # Not handled well in either, legacy pattern
+    # mypy: Query[Any]
+    #   ty: Query[Unknown]
+    reveal_type(query)
+    return cast(RowReturningQuery[tuple[int]], query)
+
+
+def get_user_query() -&gt; Query[User]:
+    return session.query(User)
+
+
+def get_user_from_query() -&gt; User:
+    return get_user_query().one()
+
+
+# Checking that Row works if we manually specify it
+def get_user_id_and_phone_query_all() -&gt; list[Row[tuple[int, str]]]:
+    return get_user_id_and_phone_query().all()
+
+
+rows = get_user_id_and_phone_query_all()
+reveal_type(rows[0])  # both: Row[tuple[int, str]]
+reveal_type(rows[0].phone)  # both: Any
+reveal_type(rows[0][0])  # both: Any
+reveal_type(rows[0]._t)  # both: tuple[int, str]
+</code></pre>
+<h3>Pyproject</h3>
+<pre><code class="language-toml">[project]
+name = &quot;ty-sqla&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;mypy&gt;=1.18.2&quot;,
+    &quot;pyrefly&gt;=0.36.1&quot;,
+    &quot;pyright&gt;=1.1.406&quot;,
+    &quot;sqlalchemy&gt;=2.0.43&quot;,
+    &quot;ty&gt;=0.0.1a21&quot;,
+]
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @AlexWaygood on 2025-10-07 06:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-07 16:01</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I assume this is mostly #623, which is being actively worked on. But this is a very useful concise reproduction script to check ourselves against.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @sharkdp on 2025-10-14 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-10-17 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @MichaReiser on 2025-11-10 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @MichaReiser on 2025-11-10 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 11:03</div>
+            <div class="timeline-body"><p>It looks like the recent work on generic implicit type aliases now allows to pass some of these test cases. We reveal the expected type for all of these:</p>
+<pre><code class="language-py"># Expected: Select[tuple[User]]
+user_stmt = select(User)
+reveal_type(user_stmt)
+
+# Expected: Sequence[User]
+users = session.scalars(select(User)).all()
+reveal_type(users)
+
+# Expected: list[User]
+users_legacy = session.query(User).all()
+reveal_type(users_legacy)
+</code></pre>
+<p>These two test cases with two arguments remain unchanged:</p>
+<pre><code class="language-py"># Expected: Select[tuple[int, str]]
+# Actual (ty): Select[tuple[Unknown, Unknown]]
+stmt = select(User.id, User.phone)
+reveal_type(stmt)
+
+# Expected: RowReturningQuery[tuple[int, str]]
+# Actual (ty): RowReturningQuery[tuple[Unknown, Unknown]]
+query = session.query(User.id, User.phone)
+reveal_type(query)
+</code></pre>
+<p>Looking at the first one (<code>select(User.id, User.phone)</code>), the corresponding overload for the <code>select</code> call in the first test is:</p>
+<pre><code class="language-py">@overload
+def select(
+    __ent0: _TCCA[_T0], __ent1: _TCCA[_T1]
+) -&gt; Select[Tuple[_T0, _T1]]: ...
+
+# where _TCCA is an import alias for:
+
+_TypedColumnClauseArgument = Union[
+    roles.TypedColumnsClauseRole[_T],
+    &quot;SQLCoreOperations[_T]&quot;,
+    Type[_T],
+]
+
+# with:
+
+class TypedColumnsClauseRole(Generic[_T_co], SQLRole): ...
+
+class SQLCoreOperations(Generic[_T_co], ColumnOperators, TypingOnly): ...
+</code></pre>
+<p>We infer the type of <code>User.id</code> argument as <code>InstrumentedAttribute[int]</code>, which is defined as</p>
+<pre><code class="language-py">class InstrumentedAttribute(QueryableAttribute[_T_co]): ...
+
+# where:
+
+class QueryableAttribute(
+    _DeclarativeMapped[_T_co],
+    SQLORMExpression[_T_co],
+    interfaces.InspectionAttr,
+    interfaces.PropComparator[_T_co],
+    roles.JoinTargetRole,
+    roles.OnClauseRole,
+    sql_base.Immutable,
+    cache_key.SlotsMemoizedHasCacheKey,
+    util.MemoizedSlots,
+    EventTarget,
+): ...
+
+# and:
+
+class PropComparator(SQLORMOperations[_T_co], Generic[_T_co], ColumnOperators): ...
+
+class SQLORMOperations(SQLCoreOperations[_T_co], TypingOnly): ...
+</code></pre>
+<p>So I guess the attributes have types that are subtypes of <code>SQLCoreOperations[int]</code> and should therefore be matched by the <code>SQLCoreOperations[_T]</code> entry in the union type of the parameters. I don't know what is specifically missing from the legacy generics solver in order to support that. We should now understand those intermediate implicit generic aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dcreager by @MichaReiser on 2025-12-05 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @MichaReiser on 2025-12-05 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-08 14:23</div>
+            <div class="timeline-body"><p>Our current SQLAlchemy support is now tracked in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/external/sqlalchemy.md">this test suite</a> (thank you @stephencsnow for the initial work here).</p>
+<p>It looks to me like the only missing puzzle piece is https://github.com/astral-sh/ty/issues/1772 (see <a href="https://github.com/astral-sh/ruff/pull/21814/files">this diff</a> for the root cause analysis). I verified this by adding <code>cast(Select[tuple[int, str]], …)</code>s around the problematic <code>select</code> calls, which makes all of the TODOs go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-08 15:32</div>
+            <div class="timeline-body"><blockquote>
+<p>the only missing puzzle piece is https://github.com/astral-sh/ty/issues/1772</p>
+</blockquote>
+<p>That's actually not true. We also need https://github.com/astral-sh/ty/issues/1809.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-09 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect implementation of equivalence and subtyping for module-literal types? - astral-sh/ty #790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect implementation of equivalence and subtyping for module-literal types?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/790">#790</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-09 10:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 10:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider this situation:</p>
+<p><code>module.py</code>:</p>
+<pre><code class="language-py">import typing
+</code></pre>
+<p><code>main.py</code>:</p>
+<pre><code class="language-py">from ty_extensions import is_subtype_of, is_equivalent_to, TypeOf
+
+import typing
+from module import typing as other_typing
+
+reveal_type(is_subtype_of(TypeOf[typing], TypeOf[other_typing]))
+reveal_type(is_equivalent_to(TypeOf[typing], TypeOf[other_typing]))
+</code></pre>
+<p>https://play.ty.dev/251c9d98-2f71-4b0d-a627-8d2c4f40770b</p>
+<p>The <code>reveal_type</code> calls both reveal <code>Literal[False]</code> here, even though <code>typing</code> refers to the same module as <code>other_typing</code>. This is because our implementation of equivalence and subtyping for module-literal types just does a naive <code>==</code> comparison between two <code>ModuleLiteralType</code>s to determine whether one <code>ModuleLiteralType</code> is equivalent to another. But these two &quot;copies&quot; of the <code>typing</code> module in our representation were originally imported by different modules, so they do not compare equal, because we record the importing module on the type itself in the <code>importing_file</code> field on <code>ModuleLiteralType</code>: https://github.com/astral-sh/ruff/blob/f32f7a3b48ff11351c709c60109fafd5ca18ec6c/crates/ty_python_semantic/src/types.rs#L7499-L7510</p>
+<p>The reason <em>why</em> we store the <code>importing_file</code> field on <code>ModuleLiteralType</code>s at all is so that we can check whether any submodules of that module have been imported in the same file that imported the module. If there were, then we recognize those submodules as being available as attributes on the <code>ModuleLiteralType</code>. That means that for something like this, we would recognize an <code>abc</code> attribute as being available on <code>other_importlib</code> but not <code>importlib</code>:</p>
+<p><code>module.py</code>:</p>
+<pre><code class="language-py">import importlib
+import importlib.abc
+</code></pre>
+<p><code>main.py</code>:</p>
+<pre><code class="language-py">import importlib
+from module import importlib as other_importlib
+
+# error: Type `&lt;module 'importlib'&gt;` has no attribute `abc` (unresolved-attribute)
+reveal_type(importlib.abc)  # revealed: Unknown
+
+reveal_type(other_importlib.abc)  # revealed: &lt;module 'importlib.abc'&gt;
+</code></pre>
+<p>https://play.ty.dev/8b92c614-403a-47be-84dc-f3e3321f62c1</p>
+<p>So perhaps there <em>is</em> an argument that our current implementation is actually correct -- we <em>could</em> treat the two <code>ModuleLiteralType</code>s differently in some situations, so they shouldn't be seen as equivalent types, even if they point to the same underlying module?</p>
+<p>In any case, we should add some tests for this, and some comments to the test explaining why this is currently the case -- I don't think we have any at the moment. No tests fail if I apply this diff to <code>main</code>, which changes the result of the <code>reveal_type</code> calls in my original snippet from <code>Literal[False]</code> to <code>Literal[True]</code></p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 71e7ab5798..1b3fe9ab5d 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -1355,6 +1355,9 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             (Type::MethodWrapper(self_method), Type::MethodWrapper(target_method)) =&gt; {
+                 self_method.has_relation_to(db, target_method, relation)
+             }
++            (Type::ModuleLiteral(self_module), Type::ModuleLiteral(target_module)) =&gt; {
++                self_module.module(db).file() == target_module.module(db).file()
++            }
+ 
+             // No literal type is a subtype of any other literal type, unless they are the same
+             // type (which is handled above). This case is not necessary from a correctness
+@@ -1630,6 +1633,9 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             | (nominal @ Type::NominalInstance(n), Type::ProtocolInstance(protocol)) =&gt; {
+                 n.class.is_object(db) &amp;&amp; protocol.normalized(db) == nominal
+             }
++            (Type::ModuleLiteral(first), Type::ModuleLiteral(second)) =&gt; {
++                first.module(db).file() == second.module(db).file()
++            }
+             _ =&gt; false,
+         }
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-07-09 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect implementation of equivalence and subtyping for module-literal types" to "Incorrect implementation of equivalence and subtyping for module-literal types?" by @AlexWaygood on 2025-07-09 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-10 09:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

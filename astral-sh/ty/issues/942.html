@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type inference and function transformations - astral-sh/ty #942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type inference and function transformations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/942">#942</a>
+        opened by <a href="https://github.com/syrkis">@syrkis</a>
+        on 2025-08-05 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/syrkis">@syrkis</a> on 2025-08-05 17:35</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When coding in, for example Jax, function transformations are common (<code>vmap</code> for vectorizing a function across an axis, <code>grad</code> for the gradient of a function). <code>functools.partial</code> is another example. Currently (it seems to me) <code>ty</code> has limited support for this. I've attached an example of a scenario in which type inference should be possible, but is not happening.</p>
+<p><img width="1499" height="1315" alt="Image" src="https://github.com/user-attachments/assets/ce1b7926-2efb-4eee-941d-fe9735502ba7" /></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @syrkis on 2025-08-05 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-05 17:50</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Can you please share that code as text (if possible)? Ideally, in a self-contained way and minified to the problematic lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/syrkis">@syrkis</a> on 2025-08-05 17:59</div>
+            <div class="timeline-body"><pre><code class="language-python">import jax.numpy as jnp
+from functools import partial
+from jaxtyping import Array
+
+def f(a: Array, b: Array) -&gt; Array:
+    return a + b
+
+
+a = jnp.ones(2)
+b = jnp.ones(2)
+c = partial(f, a)(b)  # Type is not inferred 
+d = f(a, b) # Type IS inferred
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/syrkis">@syrkis</a> on 2025-08-05 18:11</div>
+            <div class="timeline-body"><p>I am using zed.dev as my editor, with inline type hints. Here is another example using numpy instead of jax</p>
+<pre><code class="language-python">import numpy as np
+from numpy.typing import NDArray
+from functools import partial
+
+
+def f(a: NDArray[np.float32], b: NDArray[np.float32]) -&gt; NDArray[np.float32]:
+    return a + b
+
+
+a: NDArray[np.float32] = np.ones(2, dtype=np.float32)
+b: NDArray[np.float32] = np.ones(2, dtype=np.float32)
+d = f(a, b)  # Type is inferred as \@todo
+c = partial(f, a)(b)  # Type is infered as unknown
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 20:01</div>
+            <div class="timeline-body"><p>Thanks for the report; you've identified some known limitations that we are working on improving!</p>
+<p>The failure to infer a precise type for <code>partial</code> is #500 (which may just be wrapped up into @dcreager 's current work on #623).</p>
+<p>The todo type for <code>NDArray</code> is due to #544, which should be unblocked soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-05 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

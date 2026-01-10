@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unresolved-attribute` for `@&lt;field&gt;.validator` in `attrs` class - astral-sh/ty #267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unresolved-attribute` for `@&lt;field&gt;.validator` in `attrs` class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/267">#267</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2025-05-08 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-08 11:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reporting this here to understand if this is something that needs sorting on the <code>attrs</code> library side.</p>
+<p><code>attrs</code> allows you to define a validator for an attribute using a decorator (<code>@&lt;field&gt;.validator</code>)</p>
+<pre><code class="language-py"># /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;attrs&quot;,
+# ]
+# ///
+
+from typing import Any
+
+from attrs import define, field
+
+
+@define(kw_only=True)
+class Foo:
+    name: str = field(default=&quot;&quot;)
+    age: int = field(default=0)
+
+    @age.validator
+    def check_age(self, _: Any, value: int) -&gt; None:
+        if value &lt; 0:
+            raise ValueError(&quot;Age must be a positive integer.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    foo = Foo(age=3)
+    foo.age = -2  # This will raise a ValueError
+</code></pre>
+<h3>ty</h3>
+<pre><code>$ uvx --with attrs==25.3.0 ty check foo.py 
+Installed 2 packages in 51ms
+error: lint:unresolved-attribute: Type `Literal[0]` has no attribute `validator`
+  --&gt; foo.py:18:6
+   |
+16 |     age: int = field(default=0)
+17 |
+18 |     @age.validator
+   |      ^^^^^^^^^^^^^
+19 |     def check_age(self, _: Any, value: int) -&gt; None:
+20 |         if value &lt; 0:
+   |
+info: `lint:unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>mypy</h3>
+<pre><code>$ uvx --with attrs mypy --strict foo.py
+Success: no issues found in 1 source file
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7 (905a3e1e5 2025-05-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 11:05</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>It probably falls under the more general point <em>&quot;Support for <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">dataclass fields</a>&quot;</em> here: https://github.com/astral-sh/ty/issues/111.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-05-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-05-11 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-10 13:19</div>
+            <div class="timeline-body"><p>I don't think better support for <code>fields</code> will remove this diagnostic. <code>mypy</code> does not give a diagnostic for this, because it does not do any type checking for <code>validator</code> at all, if used as a decorator:</p>
+<p>https://github.com/python/mypy/blob/fe91422e56e38c0ec67fccdd5f589dbeb03f3b52/mypy/plugins/attrs.py#L591-L600</p>
+<p><code>pyright</code> does not do this special-casing, and does give a diagnostic for the above example:</p>
+<pre><code class="language-bash">(code) [~/code/mypy] $ bat /tmp/foo.py
+───────┬────────────────────────────────────────────────────────────────────────────────────────
+       │ File: /tmp/foo.py
+───────┼────────────────────────────────────────────────────────────────────────────────────────
+   1   │ from attrs import define, field
+   2   │
+   3   │
+   4   │ @define(kw_only=True)
+   5   │ class Foo:
+   6   │     age: int = field(default=0)
+   7   │
+   8   │     @age.validator
+   9   │     def check_age(self, _, value: int) -&gt; None:
+  10   │         ...
+───────┴────────────────────────────────────────────────────────────────────────────────────────
+(code) [~/code/mypy] $ mypy /tmp/foo.py
+Success: no issues found in 1 source file
+(code) [~/code/mypy] $ pyright /tmp/foo.py
+/tmp/foo.py
+  /tmp/foo.py:8:10 - error: Cannot access attribute &quot;validator&quot; for class &quot;int&quot;
+    Attribute &quot;validator&quot; is unknown (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 15:32</div>
+            <div class="timeline-body"><p>It looks to me like both pyright's diagnostic and ours are based on assuming that <code>age</code> in the class scope is an <code>int</code> (as annotated) rather than a <code>field</code> object. So it does look to me like proper support for <code>field</code> objects should fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-10 15:49</div>
+            <div class="timeline-body"><p>Even <code>mypy</code> infers <code>age</code> as an <code>int</code> in the class scope. And I believe that is not wrong, since the matching <code>field</code> overload has been annotated as returning the type of <code>default</code>?</p>
+<pre><code class="language-py"># This form catches an explicit default argument.
+@overload
+def field(
+    *,
+    default: _T,
+    validator: _ValidatorArgType[_T] | None = ...,
+    # more args
+) -&gt; _T: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-10 15:52</div>
+            <div class="timeline-body"><p>I don't know if it's relevant here or not, but note that mypy actually has a plugin for <code>attrs</code> that is bundled as part of mypy itself (you don't need to <code>(uv) pip install</code> it separately like you do for most mypy plugins): https://github.com/python/mypy/blob/master/mypy/plugins/attrs.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-10 15:55</div>
+            <div class="timeline-body"><p>Yup! The plugin is what is I believe doing the magic of ignoring the <code>age.validator</code> decorator to avoid the error (linked from my first comment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-10 15:57</div>
+            <div class="timeline-body"><p>If you change your code to the following, then no special magic is required to type check it, and it will work with all conformant type checkers.</p>
+<pre><code class="language-python">    def check_age(self, _: Any, value: int) -&gt; None:
+        ...
+    age: int = field(default=0, validator=check_age)
+</code></pre>
+<p>Even with mypy, this approach is probably preferable because the signature of <code>check_age</code> is type checked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-06-24 13:07</div>
+            <div class="timeline-body"><p>This looks like it's solved with <code>ty 0.0.1-alpha.11 (1ae703836 2025-06-17)</code>? Or is this a false positive?</p>
+<h2><code>0.0.1a10</code></h2>
+<pre><code>$ uvx --with attrs==25.3.0 --with ty==0.0.1a10 ty check dev/foo.py 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `Literal[0]` has no attribute `validator`
+  --&gt; dev\foo.py:11:6
+   |
+ 9 |     age: int = field(default=0)
+10 |
+11 |     @age.validator
+   |      ^^^^^^^^^^^^^
+12 |     def check_age(self, _: Any, value: int) -&gt; None:
+13 |         if value &lt; 0:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h2><code>0.0.1a11</code></h2>
+<pre><code>$ uvx --with attrs==25.3.0 --with ty==0.0.1a11 ty check dev/foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-25 16:36</div>
+            <div class="timeline-body"><p>We used to infer the type of <code>field(default=0)</code> as <code>Literal[0]</code> earlier, but sometime recently, we started inferring it as <code>Unknown</code>. This silenced the error. I bisected this to https://github.com/astral-sh/ruff/pull/18607.</p>
+<p>cc @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-26 03:20</div>
+            <div class="timeline-body"><p>Thanks for bisecting the issue! I think that's due to https://github.com/astral-sh/ty/issues/669. The third overload for <code>attrs.field</code> has the type of <code>default</code> as <code>_T</code> which is the return type but we're checking whether the non-generic argument type <code>Literal[0]</code> is assignable to <code>_T</code> when performing the overload call evaluation.</p>
+<p>Edit: I've provided a possible solution to this issue over at #669</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-08-20 04:27</div>
+            <div class="timeline-body"><p>The error is back :)</p>
+<pre><code class="language-shell">(code) [~/code/ruff] $ uvx --with ty==0.0.1a19 ty check /tmp/foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                               All checks passed!
+(code) [~/code/ruff] $ ./target/debug/ty check /tmp/foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                               error[unresolved-attribute]: Type `Literal[0]` has no attribute `validator`
+  --&gt; /tmp/foo.py:11:6
+   |
+ 9 |     age: int = field(default=0)
+10 |
+11 |     @age.validator
+   |      ^^^^^^^^^^^^^
+12 |     def check_age(self, _: Any, value: int) -&gt; None:
+13 |         if value &lt; 0:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 06:16</div>
+            <div class="timeline-body"><blockquote>
+<p>The error is back :)</p>
+</blockquote>
+<p>You are fast! It changed with the recently merged https://github.com/astral-sh/ruff/pull/19964 by @dhruvmanila. Previously, <code>age</code> was inferred as <code>Unknown</code>, and so there was no error.</p>
+<p>Now we infer <code>Literal[0]</code> for <code>age</code>, which is correct, according to <a href="https://github.com/python-attrs/attrs/blob/19175d91df292e9d0722ecb6575043f1d124a123/src/attrs/__init__.pyi#L112-L133">this overload of <code>field</code></a>. And consequently, we get <em>&quot;Type <code>Literal[0]</code> has no attribute <code>validator</code>&quot;</em>.</p>
+<p>For the standard library / typeshed <code>field</code> function, we <a href="https://github.com/astral-sh/ruff/blob/f019cfd15f8947b95ab0f200551d14558705f6e7/crates/ty_python_semantic/src/types/call/bind.rs#L951-L962">special-case the return type of the <code>field</code> function</a> to return a <code>dataclasses.Field</code> instance, instead of the type of the default argument. To resolve the problem here, we will need to do the same for dataclass transformers and <a href="https://github.com/python-attrs/attrs/blob/19175d91df292e9d0722ecb6575043f1d124a123/src/attrs/__init__.pyi#L158">their <code>field_specifiers</code></a>.</p>
+<p>Thank you for reporting this (again)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-09-03 16:36</div>
+            <div class="timeline-body"><p>With the release of ty 0.0.1-alpha.20 (f41f00af1 2025-09-03), I've noticed that if <code>field()</code> doesn't contain the <code>default</code> parameter then there is no error raised. But if <code>default</code> is present (as it is in the original minimal example) then we get the error.</p>
+<pre><code class="language-py">from typing import Any
+
+from attrs import define, field
+
+
+@define
+class Foo:
+    bar: int = field(default=0)
+    baz: int = field()
+
+    @bar.validator
+    def check_bar(self, _: Any, value: int) -&gt; None:
+        if value &lt; 0:
+            raise ValueError(&quot;Bar must be a positive integer.&quot;)
+
+    @baz.validator
+    def check_baz(self, _: Any, value: int) -&gt; None:
+        if value &lt; 0:
+            raise ValueError(&quot;Baz must be a positive integer.&quot;)
+</code></pre>
+<pre><code>$ uvx --with attrs==25.3.0 --with ty==0.0.1a20 ty check dev/foo.py 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files
+error[unresolved-attribute]: Type `Literal[0]` has no attribute `validator`
+  --&gt; dev\foo.py:11:6
+   |
+ 9 |     baz: int = field()
+10 |
+11 |     @bar.validator
+   |      ^^^^^^^^^^^^^
+12 |     def check_bar(self, _: Any, value: int) -&gt; None:
+13 |         if value &lt; 0:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Note how only <code>bar.validator</code> is an issue. <code>baz.validator</code> is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-04 11:52</div>
+            <div class="timeline-body"><blockquote>
+<p>With the release of ty 0.0.1-alpha.20 (<a href="https://github.com/astral-sh/ty/commit/f41f00af15e7c21384e7abf05a9da3364a15d3f7">f41f00a</a> 2025-09-03), I've noticed that if <code>field()</code> doesn't contain the <code>default</code> parameter then there is no error raised. But if <code>default</code> is present (as it is in the original minimal example) then we get the error.</p>
+</blockquote>
+<p>I haven't checked this in detail, but I would imagine it might be related to #1068.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @carljm on 2025-11-14 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 14:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

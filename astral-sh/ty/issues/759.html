@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polars concat fails to typecheck with ty - astral-sh/ty #759</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Polars concat fails to typecheck with ty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/759">#759</a>
+        opened by <a href="https://github.com/kszlim">@kszlim</a>
+        on 2025-07-02 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kszlim">@kszlim</a> on 2025-07-02 21:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using polars 1.3.1 and ty fails to typecheck the following block with:</p>
+<pre><code>error[unresolved-attribute]: Type `DataFrame` has no attribute `collect`
+ --&gt; r.py:5:7
+  |
+3 | ldf = pl.LazyFrame({&quot;a&quot;: [1,2,3]})
+4 | z = pl.concat([ldf, ldf])
+5 | print(z.collect())
+  |       ^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>MRE:</p>
+<pre><code class="language-python">import polars as pl
+
+ldf = pl.LazyFrame({&quot;a&quot;: [1,2,3]})
+z = pl.concat([ldf, ldf])
+print(z.collect())
+</code></pre>
+<p>This could be an issue in polars code for this function is <a href="https://github.com/pola-rs/polars/blob/bfcb40e629e4e3a3d2ee4ab8f0653886fa4a7dd8/py-polars/polars/functions/eager.py#L26">here</a>, but that method does seem to typecheck with pyright. Not sure, but maybe it's related to https://github.com/astral-sh/ty/issues/688.</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-07-02 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 21:54</div>
+            <div class="timeline-body"><p>This is because we currently still infer <code>list[Unknown]</code> for the list literal <code>[ldf, ldf]</code>. There might also be an issue with how we then resolve the type var in the <code>concat</code> call, given an argument of type <code>list[Unknown]</code> -- it seems we resolve it to <code>DataFrame</code> (I'm not sure why), but we should just consider the return type <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:22</div>
+            <div class="timeline-body"><p>We type-check this correctly now that https://github.com/astral-sh/ruff/pull/20360 has landed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-06 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kszlim">@kszlim</a> on 2025-10-06 17:01</div>
+            <div class="timeline-body"><p>@AlexWaygood is this in the latest pre-release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> is this in the latest pre-release?</p>
+</blockquote>
+<p>yup!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

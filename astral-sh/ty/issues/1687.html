@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't import utils with Pytest - astral-sh/ty #1687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't import utils with Pytest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1687">#1687</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2025-11-30 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-11-30 16:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If you have test utils (for example, a builder class) and you want to use them with Pytest, then you add</p>
+<pre><code class="language-toml">[tool.pytest]
+pythonpath = [&quot;tests&quot;]
+</code></pre>
+<p>to your pyproject to import code from the tests folder.</p>
+<p>But ty currently returns an error.</p>
+<p>For example, if you test it with my repository (https://github.com/AndreuCodina/python-template), this is the output when you run <code>uv run -- ty check</code>:</p>
+<pre><code>error[unresolved-import]: Cannot resolve imported module `test_utils.builders.domain.entities.product_builder`
+ --&gt; tests/integration/api/workflows/products/discontinue_product/test_discontinue_product_workflow.py:2:6
+  |
+1 | import pytest
+2 | from test_utils.builders.domain.entities.product_builder import ProductBuilder
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3 |
+4 | from python_template.api.dependency_container import DependencyContainer
+  |
+info: Searched in the following paths during module resolution:
+info:   1. /python-template/src (first-party code)
+info:   2. /python-template (first-party code)
+info:   3. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info:   4. /python-template/.venv/lib/python3.14/site-packages (site-packages)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1a29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 07:16</div>
+            <div class="timeline-body"><p>Similar to pytest, you have to tell ty about the extra search paths using <code>environment.root</code>:</p>
+<pre><code class="language-toml">[tool.ty.environment]
+root = [&quot;src&quot;, &quot;.&quot;, &quot;tests&quot;]
+</code></pre>
+<p>In your case, we need three:</p>
+<ul>
+<li><code>src</code>: For your production code</li>
+<li><code>tests</code>: To support <code>from test_utils</code></li>
+<li><code>.</code>: Because there's one place where you import from <code>tests.test_utils</code>. Not sure if you want to change this import?</li>
+</ul>
+<p>The downside of adding <code>tests</code> to the search paths is that ty now won't catch if you import a test module from <code>src</code>. We're discussing other options for how to handle test folders in https://github.com/astral-sh/ty/issues/1539</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-12-01 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-12-05 10:51</div>
+            <div class="timeline-body"><p>I tested your configuration and it works, but now the linked issue is closed, and, reading https://docs.astral.sh/ty/reference/configuration/#root, which contains the text <code>Besides, if a ./python or ./tests directory exists and is not a package (i.e. it does not contain an __init__.py or __init__.pyi file), it will also be included in the first party search path.</code>,</p>
+<p>then if I don't add configuration and I remove the <code>tests/__init__.py</code> file, it works.</p>
+<p>I'm not sure if everything is OK. I understand my repository should have a file <code>tests/__init__.py</code> and not remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 22:57</div>
+            <div class="timeline-body"><p>@AndreuCodina If you want to always write absolute imports of your testing code as <code>tests.test_utils</code>, then you should have a <code>tests/__init__.py</code> file, and you should <em>not</em> place <code>tests/</code> directory in your ty <code>environment.roots</code> (only <code>.</code> and <code>src</code>), and you probably shouldn't use the pytest setting <code>pythonpath = [&quot;tests&quot;]</code> either. In this scenario <code>tests/</code> is a top-level Python package.</p>
+<p>But (what I think is probably better for your case?) if you want to write that import as just <code>test_utils</code> (not <code>tests.test_utils</code>), then you do want pytest's <code>pythonpath = [&quot;tests&quot;]</code> and you want <code>root = [&quot;src&quot;, &quot;tests&quot;]</code> for ty, and you do NOT want <code>tests/__init__.py</code> file. In this scenario <code>tests/</code> is not a Python package, it is an &quot;import root&quot; which contains top-level Python packages and modules.</p>
+<p>It is definitely better to choose one of these or the other, and not try to do both simultaneously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-12-07 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/AndreuCodina">@AndreuCodina</a> If you want to always write absolute imports of your testing code as <code>tests.test_utils</code>, then you should have a <code>tests/__init__.py</code> file, and you should <em>not</em> place <code>tests/</code> directory in your ty <code>environment.roots</code> (only <code>.</code> and <code>src</code>), and you probably shouldn't use the pytest setting <code>pythonpath = [&quot;tests&quot;]</code> either. In this scenario <code>tests/</code> is a top-level Python package.</p>
+<p>But (what I think is probably better for your case?) if you want to write that import as just <code>test_utils</code> (not <code>tests.test_utils</code>), then you do want pytest's <code>pythonpath = [&quot;tests&quot;]</code> and you want <code>root = [&quot;src&quot;, &quot;tests&quot;]</code> for ty, and you do NOT want <code>tests/__init__.py</code> file. In this scenario <code>tests/</code> is not a Python package, it is an &quot;import root&quot; which contains top-level Python packages and modules.</p>
+<p>It is definitely better to choose one of these or the other, and not try to do both simultaneously.</p>
+</blockquote>
+<p>Hi @carljm</p>
+<p>Your suggestion of having <code>tests/__init__.py</code>, removing <code>pythonpath = [&quot;tests&quot;]</code> and not adding any <code>[tool.ty.environment]</code> configuration is awesome because it's all I want: the simplest configuration, as other ecosystems.</p>
+<p>I prefer the first option because it's clear I'm using code from <code>tests/</code> instead of application code, but what I really appreciate is that: no configuration or few configuration, and a working solution.</p>
+<p>Thanks! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-07 10:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:47 UTC
+    </footer>
+</body>
+</html>

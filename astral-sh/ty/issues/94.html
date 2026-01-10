@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty: Fails to accept special forms as types - astral-sh/ty #94</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty: Fails to accept special forms as types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/94">#94</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-05-07 03:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-07 03:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from collections.abc import Callable
+from typing import Protocol
+
+def gimme_ty(t: type):
+    pass
+
+gimme_ty(Callable)
+gimme_ty(Protocol)
+</code></pre>
+<pre><code>    Argument to this function is incorrect: Expected `type`, found `typing.Callable` (lint:invalid-argument-type) [Ln 7, Col 10]
+    Argument to this function is incorrect: Expected `type`, found `typing.Protocol` (lint:invalid-argument-type) [Ln 8, Col 10]
+</code></pre>
+<p>https://play.ty.dev/3aebb756-4e06-414b-9445-b53a4b1b9f5f</p>
+<p>Both of these are in fact types (instances of <code>builtins.type</code>) at runtime.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-07 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-05-07 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-07 13:23</div>
+            <div class="timeline-body"><p>I think this is the same error I'm seeing with <code>dataclasses</code> and <code>fields</code>?</p>
+<p>https://play.ty.dev/331a08e9-3adf-41f4-a4a5-483a964a1b64</p>
+<pre><code class="language-py">from dataclasses import dataclass, fields
+
+
+@dataclass
+class Foo:
+    x: int
+    y: float
+    z: str
+
+
+for field in fields(Foo):
+    print(field.name, field.type)
+</code></pre>
+<pre><code>$ uvx ty check foo.py 
+error: lint:invalid-argument-type: Argument to this function is incorrect
+  --&gt; foo.py:11:21
+   |
+11 | for field in fields(Foo):
+   |                     ^^^ Expected `DataclassInstance`, found `Literal[Foo]`
+12 |     print(field.name, field.type)
+   |
+info: Function defined here
+   --&gt; stdlib\dataclasses.pyi:220:5
+    |
+218 |     ) -&gt; Any: ...
+219 |
+220 | def fields(class_or_instance: DataclassInstance | type[DataclassInstance]) -&gt; tuple[Field[Any], ...]: ...
+    |     ^^^^^^ -------------------------------------------------------------- Parameter declared here
+221 |
+222 | # HACK: `obj: Never` typing matches if object argument is using `Any` type.
+    |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-07 13:25</div>
+            <div class="timeline-body"><p>That seems like a different issue to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-07 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">subtyping/assignability</span> added by @AlexWaygood on 2025-05-10 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-07-23 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @carljm on 2025-07-23 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-23 22:50</div>
+            <div class="timeline-body"><p>I think this should be a pretty easy fix? Just a new (or fixed) match arm in <code>has_relation_to</code>. @AlexWaygood you had it assigned to you for a while, did you try to fix it and find it unexpectedly difficult?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-24 07:24</div>
+            <div class="timeline-body"><p>No I never got to it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-24 11:55</div>
+            <div class="timeline-body"><p>Isn't it the case that only concrete classes are assignable to <code>type</code>?</p>
+<blockquote>
+<p>The value corresponding to <code>type[C]</code> must be an actual class object that's a subtype of <code>C</code>, not a <a href="https://typing.python.org/en/latest/spec/glossary.html#term-special-form">special form</a> or other kind of type. In other words, in the above example calling e.g. <code>new_user(BasicUser | ProUser)</code> is rejected by the type checker (in addition to failing at runtime because you can't instantiate a union).
+[...]
+However, the actual argument passed in at runtime must still be a concrete class object [...]</p>
+<p>— <a href="https://typing.python.org/en/latest/spec/special-types.html#type"><i>Special types in annotations</i> § <code>type[]</code></a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-24 16:31</div>
+            <div class="timeline-body"><p>I think the OP idea is that at runtime <code>Protocol</code> is in fact a concrete class, that's how it is implemented in <code>typing.py</code>.</p>
+<p>But I just looked and this is not true of <code>Callable</code> -- <code>Callable</code> at runtime is not a type, it's an instance of <code>_CallableType</code> class. So I'm not sure what the rationale would be for allowing <code>Callable</code> to be assignable to <code>type</code>.</p>
+<p>And looking at this more closely, I'm also unsure whether it makes sense for a type checker to model any of this. Typeshed just says that both <code>Protocol</code> and <code>Callable</code> are instances of <code>_SpecialForm</code> (which is of course a lie, but typeshed tells a lot of lies in <code>typing.pyi</code>). So I think in order to implement this, we'd be hardcoding knowledge about the runtime implementation of specific special forms in <code>typing.py</code>, that typeshed intentionally elides.</p>
+<p>For reference, pyright allows both of these, and mypy errors on both.</p>
+<p>I'm inclined to close this and say mypy's behavior, and our current behavior, are correct according to typeshed, and if a different behavior is desired, then typeshed should be changed.</p>
+<p>@JelleZijlstra am I missing some rationale for why you think this should be allowed?</p>
+<p>(Going ahead and closing, but happy to reopen given good rationale that I missed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-24 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-24 16:42</div>
+            <div class="timeline-body"><p>I think I opened this because I tried running ty on <a href="https://github.com/JelleZijlstra/pycroscope">pycroscope</a> and got some errors when Callable was passed to a function annotating as accepting <code>type</code>. At runtime <code>collections.abc.Callable</code> is an instance of <code>type</code> but <code>typing.Callable</code> isn't. I feel ideally type checkers should reflect that behavior, so that <code>isinstance(..., type)</code> matches what's assignable to <code>type</code>, but I appreciate that's difficult to do if you're working purely from the typeshed stubs, and the issue isn't important enough to do anything fancy like special-casing specific special forms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-24 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>For reference, pyright allows both of these, and mypy errors on both.</p>
+</blockquote>
+<p>I think both <a href="https://pyright-play.net/?code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgGEDFjkBYAKFEilQE8L0sAczKVqtAArhUYOPHby2AEyTAog8hCQB9XgApUALm58kASgPsoVqBQI4cC9uoiadPXQyZFkppxu16kmDSsr5sQA">pyright</a> and mypy reject this. That's arguably correct because these special forms, even if they happen to be implemented as class objects, cannot be instantiated like normal classes. Neither of them are callable.</p>
+<p>Pyright does <a href="https://pyright-play.net/?reportMissingModuleSource=false&amp;code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgGEDFjkBYAKFEilQE8L0sAczKVqtAArhUYOPHadovfkID6SAB6okuTLhFUaUACp8kAMWoR21tgBMkwKIPIQkK3gApUALmOmLIBAAlN7sUOFQFAQ4ODbszhCu7jweDExEyEHxLm6ekmDSsllsQA">accept this</a> if you use <code>TypeForm</code> instead of <code>type</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-24 17:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I think both <a href="https://pyright-play.net/?code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgGEDFjkBYAKFEilQE8L0sAczKVqtAArhUYOPHby2AEyTAog8hCQB9XgApUALm58kASgPsoVqBQI4cC9uoiadPXQyZFkppxu16kmDSsr5sQA">pyright</a> and mypy reject this.</p>
+</blockquote>
+<p>Yes, sorry, I see that now -- I think I was fooled by the pyright playground being slow to respond when I initially pasted in the example, so it just had an out-of-date &quot;everything looks good&quot; message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-24 18:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel ideally type checkers should reflect that behavior, so that <code>isinstance(..., type)</code> matches what's assignable to <code>type</code></p>
+</blockquote>
+<p>I don't disagree, but it does seem like if we care about this, then we ought to improve typeshed. (But I realize that's probably difficult to do without disruption to existing type checkers.)</p>
+<blockquote>
+<p>cannot be instantiated like normal classes. Neither of them are callable.</p>
+</blockquote>
+<p>Whether something typed as <code>type[...]</code> is callable, and with what signature, is a huge soundness hole anyway, so I'm not sure I see this as a strong argument against assignability to <code>type</code> -- consistency with <code>isinstance(..., type)</code> seems like a stronger argument to me (in principle). Ideally IMO <code>type[...]</code> wouldn't imply callability at all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:49 UTC
+    </footer>
+</body>
+</html>

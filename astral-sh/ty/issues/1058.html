@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] execute: too many cycle iterations - astral-sh/ty #1058</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] execute: too many cycle iterations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1058">#1058</a>
+        opened by <a href="https://github.com/aivarannamaa">@aivarannamaa</a>
+        on 2025-08-20 05:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aivarannamaa">@aivarannamaa</a> on 2025-08-20 05:38</div>
+            <div class="timeline-body"><p>Got following stacktrace for <code>ty check</code>:</p>
+<pre><code>Checking ------------------------------------------------------------ 19/19 files
+error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/a/secret/fle.py`: `infer_definition_types(Id(3f5b6)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: 0.0.1-alpha.19 (e9cb838b3 2025-08-19)
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: place_by_id(Id(1643c))
+             at crates/ty_python_semantic/src/place.rs:688
+   1: infer_definition_types(Id(3f5bb))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   2: ClassLiteral &lt; 'db &gt;::try_mro_(Id(43814))
+             at crates/ty_python_semantic/src/types/class.rs:1230
+   3: ClassLiteral &lt; 'db &gt;::is_typed_dict_(Id(3c00b))
+             at crates/ty_python_semantic/src/types/class.rs:1230
+   4: infer_deferred_types(Id(3f5be))
+             at crates/ty_python_semantic/src/types/infer.rs:207
+   5: FunctionType &lt; 'db &gt;::signature_(Id(3902b))
+             at crates/ty_python_semantic/src/types/function.rs:642
+   6: infer_expression_types(Id(11c7d))
+             at crates/ty_python_semantic/src/types/infer.rs:248
+   7: infer_definition_types(Id(4f08))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   8: infer_expression_types(Id(11c7e))
+             at crates/ty_python_semantic/src/types/infer.rs:248
+   9: infer_definition_types(Id(4f0a))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  10: ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_(Id(4f007))
+             at crates/ty_python_semantic/src/types/class.rs:1230
+  11: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(1ec3f))
+             at crates/ty_python_semantic/src/types.rs:635
+  12: infer_expression_types(Id(78b1))
+             at crates/ty_python_semantic/src/types/infer.rs:248
+  13: infer_definition_types(Id(64c2))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  14: infer_scope_types(Id(3818))
+             at crates/ty_python_semantic/src/types/infer.rs:138
+  15: check_file_impl(Id(c09))
+             at crates/ty_project/src/lib.rs:527
+</code></pre>
+<p>Unfortunately I can't share my code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @carljm on 2025-08-20 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 18:08</div>
+            <div class="timeline-body"><p>We have some known causes of this, will try to comment here when some of those are fixed so you can see if it resolves the issue on your code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @carljm on 2025-08-20 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-11 08:38</div>
+            <div class="timeline-body"><p>We're seeing the same in https://github.com/astral-sh/packse:</p>
+<pre><code>error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a3ffa22/src/function/execute.rs:228:25 when checking `/home/konsti/projects/packse/src/packse/view.py`: `infer_definition_types(Id(1b66f)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.20
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: place_by_id(Id(3c858))
+             at crates/ty_python_semantic/src/place.rs:702
+   1: infer_definition_types(Id(1b674))
+             at crates/ty_python_semantic/src/types/infer.rs:174
+   2: ClassLiteral &lt; 'db &gt;::try_mro_(Id(4fc44))
+             at crates/ty_python_semantic/src/types/class.rs:1377
+             cycle heads: ClassLiteral &lt; 'db &gt;::is_typed_dict_(Id(3d40b)) -&gt; IterationCount(0)
+   3: ClassLiteral &lt; 'db &gt;::is_typed_dict_(Id(3d40b))
+             at crates/ty_python_semantic/src/types/class.rs:1377
+   4: infer_deferred_types(Id(1b677))
+             at crates/ty_python_semantic/src/types/infer.rs:214
+   5: FunctionType &lt; 'db &gt;::signature_(Id(57044))
+             at crates/ty_python_semantic/src/types/function.rs:645
+   6: infer_expression_types(Id(10431))
+             at crates/ty_python_semantic/src/types/infer.rs:255
+   7: infer_definition_types(Id(b847))
+             at crates/ty_python_semantic/src/types/infer.rs:174
+   8: infer_expression_types(Id(1043a))
+             at crates/ty_python_semantic/src/types/infer.rs:255
+   9: infer_definition_types(Id(b84c))
+             at crates/ty_python_semantic/src/types/infer.rs:174
+  10: ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_(Id(77c37))
+             at crates/ty_python_semantic/src/types/class.rs:1377
+  11: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(3104f))
+             at crates/ty_python_semantic/src/types.rs:715
+  12: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(3104e))
+             at crates/ty_python_semantic/src/types.rs:715
+  13: infer_expression_types(Id(20c2d))
+             at crates/ty_python_semantic/src/types/infer.rs:255
+  14: all_narrowing_constraints_for_expression(Id(20c2d))
+             at crates/ty_python_semantic/src/types/narrow.rs:84
+  15: infer_scope_types(Id(18405))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+  16: check_file_impl(Id(1001))
+             at crates/ty_project/src/lib.rs:522
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-11 09:07</div>
+            <div class="timeline-body"><blockquote>
+<p>We're seeing the same in https://github.com/astral-sh/packse:</p>
+</blockquote>
+<p>Usage of <code>packaging.requirements.Requirement</code> is problematic; this is related to #256.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-11 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

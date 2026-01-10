@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Top[]` should respect upper bound - astral-sh/ty #1109</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Top[]` should respect upper bound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1109">#1109</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-08-31 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-08-31 16:56</div>
+            <div class="timeline-body"><p>Minimal reproducible example (<a href="https://play.ty.dev/64e41ddb-8baf-43e0-abfd-64c45f0004c5">playground</a>):</p>
+<pre><code class="language-python">class Covariant[T: int]:
+    def _(self) -&gt; T: ...
+
+def _(covariant: Top[Covariant[Any]]):
+    reveal_type(covariant)  # `Covariant[object]`, but should instead be `Covariant[int]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-31 21:56</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ruff/pull/19946 . The approach in that PR might also solve this issue.</p>
+<p>There's a harder variant of this when a TypeVar has constraints:</p>
+<pre><code class="language-python">class Covariant[T: (int, str)]:
+    def method(self) -&gt; T: ...
+
+def _(covariant: Top[Covariant[Any]]):
+    reveal_type(covariant)  # ???
+</code></pre>
+<p>On Discord I suggested inferring this to be <code>Covariant[int | str]</code>, but it now occurs to me that we could instead infer <code>Covariant[int] | Covariant[str]</code>: that is, simply union together all the possible materializations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-08-31 22:29</div>
+            <div class="timeline-body"><p>I agree; <code>Covariant[int] | Covariant[str]</code> seems much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-09-01 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-09-02 14:00</div>
+            <div class="timeline-body"><p>But the approach I suggest there could have pathological performance issues if you have a class that is generic over a lot of TypeVars with constraints. For example, materializing the class from https://github.com/python/mypy/issues/19622 (20 TypeVars with 2 constraints each) would generate a union of 2**20 elements.</p>
+<p>So maybe we should just not simplify <code>Top[]</code> in this case, as we do for invariant TypeVars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-02 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>So maybe we should just not simplify <code>Top[]</code> in this case, as we do for invariant TypeVars.</p>
+</blockquote>
+<p>This seems like a fine option; it just means we have to handle this additional case when implementing type relations for these unsimplified materializations.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dataclass class literal subtyping with callables not working - astral-sh/ty #760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dataclass class literal subtyping with callables not working</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/760">#760</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-07-03 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-03 19:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This snippet does not work</p>
+<pre><code class="language-py">@dataclass
+class DC:
+    x: DC | None
+
+v: Callable[[DC], DC] = DC
+</code></pre>
+<p>The reason is that <code>__init__</code> for <code>DC</code> is not a <code>FunctionLiteral</code>.</p>
+<p>Should we allow other types for these constructor functions too? (other than FunctionLiteral and Callable</p>
+<p>https://github.com/astral-sh/ruff/pull/19130 this may also help with allowing any type and converting it to callable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-03 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-07-03 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-03 19:41</div>
+            <div class="timeline-body"><p>You may find <a href="https://typing.python.org/en/latest/spec/constructors.html#converting-a-constructor-to-callable">this section of the typing spec</a> to be useful here. It covers the rules for converting the constructor of a class object into a callable type for purposes of assignability testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-03 20:14</div>
+            <div class="timeline-body"><blockquote>
+<ol start="2">
+<li>If the class defines a <code>__new__</code> method</li>
+</ol>
+</blockquote>
+<p>Does this mean we should not allow different types of <code>__new__</code>?</p>
+<p>And same for <code>__init__</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-04 01:40</div>
+            <div class="timeline-body"><p>We already implement that section of the spec, it's just that our implementation assumes that <code>__new__</code>/ <code>__init__</code> will be a <code>FunctionLiteral</code> type, and the synthesized <code>__init__</code> on a dataclass is not. I think ideally we should support any callable type as <code>__init__</code> or <code>__new__</code>, using a generalized <code>Type::into_callable_type</code> method. (But practically speaking, just adding support for <code>Type::Callable</code> so we support dataclass synthesized methods would go a long way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-04 06:56</div>
+            <div class="timeline-body"><p>Yeah, I'm trying to generalise it to use the into_callable method we just landed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-08 13:02</div>
+            <div class="timeline-body"><p>Just going for supporting 'Callable' as using into_callable has proved to be a lot more work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-09 08:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

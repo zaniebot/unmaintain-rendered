@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate diagnostics in unpacking targets - astral-sh/ty #185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate diagnostics in unpacking targets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/185">#185</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-05 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-05 04:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following code:</p>
+<pre><code class="language-py">class Foo():
+    pass
+
+a, b = Foo().nonexistant
+</code></pre>
+<p>Here, the RHS of the assignment has an error <code>unresolved-attribute</code> which is being shown 3 times (2 + 1 where 2 is the number of variables involved in the unpacking):</p>
+<p><img width="1043" alt="Image" src="https://github.com/user-attachments/assets/e6be58cc-cc5e-4079-814c-de25191bc10d" /></p>
+<p>This is because the standalone expression is being inferred <em>outside</em> the unpacking in <code>infer_assignment_definition</code> (and similarly in <code>infer_for_statement_definition</code>). This inference should only be done for non-unpack targets.</p>
+<p>Fixing this would lead to another bug which is that the diagnostics raised during the unpacking query isn't being merged into the outer type inference builder.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-03-05 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Duplicate diagnostics in unpacking assignment" to "[red-knot] Duplicate diagnostics in unpacking targets" by @dhruvmanila on 2025-03-05 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-03-05 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dhruvmanila by @carljm on 2025-03-27 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Duplicate diagnostics in unpacking targets" to "Duplicate diagnostics in unpacking targets" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-11 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 08:38</div>
+            <div class="timeline-body"><p>This should be relatively easy to fix once https://github.com/astral-sh/ruff/pull/18041 has landed. This is because that PR adds a <code>Definition</code> ingredient for all attributes which would then allow us to use the <code>infer_unpack_types</code> for all attributes involved in an unpacking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-06-04 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-13 14:20</div>
+            <div class="timeline-body"><p>I tried fixing this today based on the assumption that assignments containing an attribute expressions now always create a <code>Definition</code> but that isn't true. It's only created if <code>PlaceExpr::try_from</code> is successful, so a call expression like the following doesn't create a <code>Definition</code>. I'll have to re-think the approach that I used here.</p>
+<pre><code class="language-py">class Foo:
+    def __init__(self):
+        self.x = 1
+
+Foo().x = 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-24 02:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:55 UTC
+    </footer>
+</body>
+</html>

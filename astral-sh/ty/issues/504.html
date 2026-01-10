@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option for not stripping `Annotated` metadata. - astral-sh/ty #504</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option for not stripping `Annotated` metadata.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/504">#504</a>
+        opened by <a href="https://github.com/carrascomj">@carrascomj</a>
+        on 2025-05-24 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carrascomj">@carrascomj</a> on 2025-05-24 21:24</div>
+            <div class="timeline-body"><p>As a user, I would like to be able to see the <a href="https://docs.python.org/3/library/typing.html#typing.Annotated"><code>Annotated</code> </a>metadata on hover.</p>
+<h3>Current behavior</h3>
+<p>The first argument is correctly interpreted as the type but the metadata is stripped on hover.</p>
+<p><img src="https://github.com/user-attachments/assets/ba249ae0-62d4-4fe9-8609-37c149887f56" alt="Image" /></p>
+<h3>Desired behavior</h3>
+<p>The user should be able to configure <code>ty</code> to use it (maybe not by default). My particular use case is <code>jaxtyping</code> for annotating tensor shapes. If I use <code>ty</code> (or <code>pyright</code>, which <a href="https://github.com/microsoft/pyright/discussions/6528#discussioncomment-7654251">likely won't implement it</a>), I don't see the shape on hover, which is very helpful for programming with tensors in <a href="https://pytorch.org/">pytorch</a>, <a href="https://docs.jax.dev/en/latest/">jax</a>, etc.</p>
+<p>For example, (this is with pyright):</p>
+<p><img src="https://github.com/user-attachments/assets/d4a49ac1-b64e-4041-8418-618a764e910f" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-05-27 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-05-27 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 09:14</div>
+            <div class="timeline-body"><p>@carljm That would probably require fundamental changes to how we represent <code>Annotated</code> that go beyond just the LSP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/carljm">@carljm</a> That would probably require fundamental changes to how we represent <code>Annotated</code> that go beyond just the LSP.</p>
+</blockquote>
+<p>I would guess the reason why Carl added the <code>server</code> label is because this is a situation where the needs of a type checker and the needs of an LSP server are slightly in tension with each other. For a command-line type checker, it makes sense to eagerly strip the metadata, since it's useless for type checking. If we changed our model to retain the metadata (which would significantly complicate our internal representation of the type, as you say), it would solely be because of the use cases the LSP server might have for it (on-hover functionality, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-28 17:59</div>
+            <div class="timeline-body"><p>Yes, Alex is right -- I marked this <code>server</code> because it's a change that would be motivated entirely by LSP server use cases, not because the required code changes would be strictly limited to the LSP server code.</p>
+<p>(I don't think the required code changes would be <em>super</em> invasive, though. I don't think we would track the <code>Annotated</code> data as part of the type, just as another kind of type qualifier. Which implies that it wouldn't &quot;travel&quot; with the type, it would apply just to the particular annotated name -- but I think that's preferable for most use cases anyway.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrdmnd">@mrdmnd</a> on 2025-06-23 16:17</div>
+            <div class="timeline-body"><p>Flying by to add that I would also love this change too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carrascomj">@carrascomj</a> on 2025-11-30 23:23</div>
+            <div class="timeline-body"><p>I have been experimenting with this, and I think the best option is to have a specialized language server to handle jaxtyping annotations, since the experience I was looking for was to ultimately have static shape analysis to report errors as diagnostics and run shape inference on hover.</p>
+<p>I have made my own (<a href="https://github.com/carrascomj/shapels">shapels</a>, only for torch), feel free to close this if it's not of general interest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jkyl">@jkyl</a> on 2025-12-06 01:17</div>
+            <div class="timeline-body"><p>im a user of jaxtyping who'd love to see shape metadata preserved! another relevant use case of <code>Annoted</code> might be to extend jaxtyping with <a href="https://docs.jax.dev/en/latest/notebooks/explicit-sharding.html">sharding information</a>, something like:</p>
+<pre><code class="language-python">import jax
+from jax.sharding import PartitionSpec as P
+from jax.sharding import NamedSharding, Sharding
+from typing import Annotated
+from beartype.vale import Is
+from jaxtyping import Array, Float32
+
+class Sharded:
+    &quot;&quot;&quot;Extends jaxtyping.Array with sharding info.&quot;&quot;&quot;
+    def __class_getitem__(cls, args: tuple[type, str, Sharding]):
+        dtype, shape, sharding = args
+        return Annotated[
+            dtype[Array, shape],
+            Is(lambda x: jax.typeof(x).sharding == sharding)
+        ]
+
+mesh = jax.make_mesh((8,), (&quot;data&quot;,)) 
+sharding = NamedSharding(mesh, P(&quot;data&quot;))
+array: Sharded[Float32, &quot;M N&quot;, sharding] = jnp.ones((64, 64), out_sharding=sharding)
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersection between @final class and Callable is not reduced to Never - astral-sh/ty #513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intersection between @final class and Callable is not reduced to Never</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/513">#513</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-05-26 01:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-26 01:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>An intersection like <code>bool &amp; Callable[..., int]</code> should be Never, because bool can't have any subclasses that are callable. But ty treats it as irreducible.</p>
+<pre><code class="language-python">from typing import Callable, reveal_type, Literal, final
+from ty_extensions import Intersection
+
+@final
+class C:
+    pass
+
+def f(
+    x: Intersection[bool, Callable[..., int]],
+    y: Intersection[Literal[1], Callable[..., int]],
+    z: Intersection[C, Callable[..., int]],
+):
+    reveal_type(x)  # bool &amp; ((...) -&gt; int), expect Never
+    reveal_type(y)  # Never (correct)
+    reveal_type(z)  # C &amp; (...) -&gt; int), expect Never
+</code></pre>
+<p>https://play.ty.dev/979ab089-7157-44ad-a94a-868260108090</p>
+<p>An intersection between a final class and a non-applicable Protocol is correctly reduced to Never though.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-26 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-26 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 12:44</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<p>The underlying reason is that we don't yet model disjointness for <code>Callable</code> types correctly (<a href="https://play.ty.dev/2470c350-48de-4330-88c7-d358a3fbfa86">playground</a>).</p>
+<p>The corresponding TODO in the code is here:</p>
+<p>https://github.com/astral-sh/ruff/blob/d8216fa3282c89b0e5827b8da5f5f2aefd55ad4a/crates/ty_python_semantic/src/types.rs#L2176-L2186</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-29 23:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:06 UTC
+    </footer>
+</body>
+</html>

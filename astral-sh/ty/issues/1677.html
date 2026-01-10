@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`@final` and `@override` diagnostics are not emitted if there are multiple reachable definitions - astral-sh/ty #1677</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`@final` and `@override` diagnostics are not emitted if there are multiple reachable definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1677">#1677</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 15:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider this snippet:</p>
+<pre><code class="language-py">from typing import final, override
+
+def coinflip() -&gt; bool:
+    return False
+
+class A:
+    @final
+    def method(self) -&gt; None: ...
+
+    if coinflip():
+        @override
+        def wut(self) -&gt; None: ...
+    else:
+        @override
+        def wut(self) -&gt; None: ...
+
+class B(A):
+    if coinflip():
+        def method(self) -&gt; None: ...
+    else:
+        def method(self) -&gt; None: ...
+</code></pre>
+<p>We should emit diagnostics on the definitions of <code>A.wut</code> and <code>B.method</code>, but we currently do not:</p>
+<ul>
+<li><code>A.wut</code> is marked with <code>@override</code> but doesn't override anything</li>
+<li><code>B.method</code> overrides a method decorated with <code>@final</code></li>
+</ul>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-29 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-29 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 16:12</div>
+            <div class="timeline-body"><p>Note that we do emit these diagnostics if there is a single possibly-undefined definition:</p>
+<pre><code class="language-py">from typing import final, override
+
+def coinflip() -&gt; bool:
+    return False
+
+class A:
+    @final
+    def method(self) -&gt; None: ...
+
+    if coinflip():
+        @override
+        def wut(self) -&gt; None: ...  # diagnostic correctly emitted here
+
+class B(A):
+    if coinflip():
+        def method(self) -&gt; None: ...  # diagnostic correctly emitted here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-03 12:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `@type_check_only` - astral-sh/ty #816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for `@type_check_only`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/816">#816</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-11 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 13:25</div>
+            <div class="timeline-body"><p>We should add support for <a href="https://docs.python.org/3/library/typing.html#typing.type_check_only">the <code>type_check_only</code> decorator</a>. Any class or function with this decorator should never be included in autocomplete suggestions. We should possibly also emit a warning if a class or function decorated with <code>@type_check_only</code> is imported into a non-stub file.</p>
+<p>We'll want to add a <code>TypeCheckOnly</code> variant to the <code>KnownFunction</code> enum at https://github.com/astral-sh/ruff/blob/7533a0bfdbdaa7966fac056fb48d267afdb97d10/crates/ty_python_semantic/src/types/function.rs#L885. Then we'll want to filter out functions and classes with that decorator from the results returned by the <code>all_members</code> function: https://github.com/astral-sh/ruff/blob/7533a0bfdbdaa7966fac056fb48d267afdb97d10/crates/ty_python_semantic/src/types/ide_support.rs#L244.</p>
+<p>We should probably apply these semantics to something decorated with <code>@type_check_only</code> regardless of whether the class/function was originally defined in a stub file or a <code>.py</code> file. You might plausibly define a class/function in an <code>if TYPE_CHECKING</code> block in a <code>.py</code> file and decorate it with <code>@type_check_only</code> to indicate that it won't be available at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-07-11 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-08-05 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p>We'll want to add a <code>NoTypeCheck</code></p>
+</blockquote>
+<p>Do you mean a <code>TypeCheckOnly</code> variant ? I will be happy to work on that !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mean a <code>TypeCheckOnly</code> variant ? I will be happy to work on that !</p>
+</blockquote>
+<p>oops, yes -- edited my post to correct it! And, great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @lipefree by @AlexWaygood on 2025-08-05 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @lipefree by @AlexWaygood on 2025-10-07 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-10-07 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/decorator-factory">@decorator-factory</a> on 2025-10-15 19:03</div>
+            <div class="timeline-body"><p>Hey, I'd like to work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @decorator-factory by @AlexWaygood on 2025-10-15 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-15 19:26</div>
+            <div class="timeline-body"><p>I feel like we should still return those classes, but with a very low ranking. You might still want to import that type, and just hiding it seems weird, as it clearly exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:33</div>
+            <div class="timeline-body"><p>I understand that this was completed as part of <a href="https://github.com/astral-sh/ruff/pull/20910">#20910</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-14 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 08:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I understand that this was completed as part of <a href="https://github.com/astral-sh/ruff/pull/20910">#20910</a></p>
+</blockquote>
+<p>That only completed the autocomplete side of things. We should also emit a diagnostic if a user tries to import one of these symbols in a .py file outside of a <code>TYPE_CHECKING</code> block.</p>
+<p>There's also some open questions about how we might extend https://github.com/astral-sh/ruff/pull/20910 so that type-check-only symbols from other files are ranked lower in auto-import completion suggestions (https://github.com/astral-sh/ruff/pull/20910)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-11-14 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2025-11-14 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @decorator-factory by @AlexWaygood on 2025-11-14 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> removed by @MichaReiser on 2025-11-14 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-11-14 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 09:29</div>
+            <div class="timeline-body"><p>CC: @carljm whether this should make it into stable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 09:34</div>
+            <div class="timeline-body"><blockquote>
+<p>CC: <a href="https://github.com/carljm">@carljm</a> whether this should make it into stable</p>
+</blockquote>
+<p>It doesn't need to be, I don't think. I think it would benefit users since typeshed uses this decorator extensively, but support for the feature is sketchy among other type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> removed by @AlexWaygood on 2025-11-14 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 17:09</div>
+            <div class="timeline-body"><p>Okay, I've opened three more focused followup issues:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/1559</li>
+<li>https://github.com/astral-sh/ty/issues/1557</li>
+<li>https://github.com/astral-sh/ty/issues/1558</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-14 17:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

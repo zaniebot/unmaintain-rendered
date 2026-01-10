@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--quiet` CLI flag to `ty check` - astral-sh/ty #772</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `--quiet` CLI flag to `ty check`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/772">#772</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-07-07 16:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-07 16:19</div>
+            <div class="timeline-body"><p>This has come up a few times and is useful for benchmarking and memory profiling reports. It should silence all diagnostics and only provide an exit code, I think Ruff calls this <code>--silent</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ibraheemdev on 2025-07-07 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 16:20</div>
+            <div class="timeline-body"><p>would this be different to e.g. <code>--ignore=ALL</code>? (Or would we implement this <em>instead</em> of <code>--ignore=ALL</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 16:22</div>
+            <div class="timeline-body"><p>Isn't this just silencing diagnostic <em>output</em>? Wouldn't <code>--ignore=ALL</code> make it exit with a zero?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 16:24</div>
+            <div class="timeline-body"><p>That makes sense, thanks! Though in that case I almost wonder if <code>--output-format=none</code> might work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 16:28</div>
+            <div class="timeline-body"><p>I think it's different from an <code>--output-format=none</code> because <code>--quiet</code> (ruff also has <code>--silent</code>) also silence all other messages. E.g. ty wouldn't report: Found x diagnostics at the end of checking and it also disables any other tracing output (needs to be decided up to which level)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-07-07 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 16:31</div>
+            <div class="timeline-body"><p><code>--output-format=none</code> might be sufficient for benchmarking though, if the problem is printing all the diagnostics?</p>
+<p>uv also uses <code>--quiet</code> and <code>--silent</code>: https://github.com/astral-sh/uv/blob/1d20530f2dfbfa8e20dad236558d4ae82ebebdf3/crates/uv/src/printer.rs#L6-L9</p>
+<p>I think I'd expect <code>--quiet</code> to retain summary output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 16:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's different from an <code>--output-format=none</code> because <code>--quiet</code> (ruff also has <code>--silent</code>) also silence all other messages</p>
+</blockquote>
+<p>Including, e.g., the messages with the memory usage stats that we'd usually print if the <code>TY_MEMORY_REPORT</code> environment variable was set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-07 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Including, e.g., the messages with the memory usage stats that we'd usually print if the TY_MEMORY_REPORT environment variable was set?</p>
+</blockquote>
+<p>No I think we want to print those. Part of the motivation of the flag was to be able to print the memory report without diagnostics affecting the diff (or taking up your terminal screen locally). The memory report is somewhat of a special case though, it's not a standard output of the CLI command (similar to if you enabled <code>RUST_LOG</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 16:51</div>
+            <div class="timeline-body"><p>Right, that was why I was asking. If we only really want to suppress <em>diagnostic</em> output, but not (per Zanie) the summary output or (per you) the memory usage stats, then that implies to me that a better name for the flag might be <code>--output-format=none</code>. It sounds like the main thing we care about for this use case is suppressing <em>diagnostic output</em>, not <em>all output</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 17:32</div>
+            <div class="timeline-body"><p>Fwiw I find <code>--output-format=none</code> non-obvious whereas <code>--quiet</code> is pretty clear and covers the use-case just fine? I think the only semantic difference is that <code>--quiet</code> would change the tracing log level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-08 11:40</div>
+            <div class="timeline-body"><p>If a user did <code>--output-format=full --quiet</code>, which would take priority -- I guess <code>--quiet</code>? What if <code>--quiet</code> was specified in a <code>pyproject.toml</code> file but <code>--output-format=full</code> was specified on the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-08 11:51</div>
+            <div class="timeline-body"><p>To me, <code>--quiet</code> is the opposite of <code>-v</code> (and <code>-vv</code>). It's a CLI only argument and is fairly common across CLI tools (eslint and cargo both have it) although they often have different semantics.</p>
+<p>What I expect from someone who picks up this task is to explore the design space and propose whether we should use <code>--quiet</code> and <code>--silent</code> (precedence in ruff and uv) or <code>--output-format</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-08 13:24</div>
+            <div class="timeline-body"><p>I think <code>quiet</code> wouldn't be exposed in the <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-10 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:16 UTC
+    </footer>
+</body>
+</html>

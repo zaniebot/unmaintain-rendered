@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can not specialize generic class with (its own) bound typevar in value positions - astral-sh/ty #1607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can not specialize generic class with (its own) bound typevar in value positions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1607">#1607</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-21 10:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-21 10:49</div>
+            <div class="timeline-body"><p>We currently emit the following error when trying to create a generic type alias, which specializes a generic class with a legacy typevar:</p>
+<pre><code class="language-py">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;, bound=int)
+
+class dtype(Generic[T]): ...
+
+# Argument to class `dtype` is incorrect: Expected `int`, found `typing.TypeVar`
+MyDtype = dtype[T]
+</code></pre>
+<p>https://play.ty.dev/32ca2785-9c60-4134-98ec-a7817bde5bc4</p>
+<p>This is the root cause for a large ecosystem impact in https://github.com/astral-sh/ruff/pull/21553, because numpy's <code>NDArray</code> makes use of a similar pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @sharkdp on 2025-11-21 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-11-21 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-11-21 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-11-21 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Can not specialize generic class with its own (bound) typevar" to "Can not specialize generic class with (its own) bound typevar" by @sharkdp on 2025-11-21 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Can not specialize generic class with (its own) bound typevar" to "Can not specialize generic class with (its own) bound typevar in value positions" by @sharkdp on 2025-11-21 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-21 15:20</div>
+            <div class="timeline-body"><p>If we use <code>dtype[T]</code> as a base of another class (where it also appears in value position), this works just fine, because the class provides a typvar binding context that will turn the <code>T</code> into a bound <code>Type::TypeVar(…)</code> which <em>is</em> assignable. So the problem is really that we don't have a generic context for the implicit type alias. This is probably a strong argument in favor of giving implicit type aliases their own generic context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-22 01:56</div>
+            <div class="timeline-body"><p>Isn't this the same as #1596 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-24 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-11-24 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-24 17:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:43 UTC
+    </footer>
+</body>
+</html>

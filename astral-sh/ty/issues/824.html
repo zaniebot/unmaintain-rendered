@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support streaming and caching for workspace diagnostics - astral-sh/ty #824</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support streaming and caching for workspace diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/824">#824</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-07-15 05:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-15 05:43</div>
+            <div class="timeline-body"><p>The current support for workspace diagnostics is implemented using the newly introduced <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_diagnostic"><code>workspace/diagnostic</code></a> endpoint which uses the pull model.</p>
+<p>We noticed that VS Code keeps sending the workspace diagnostic request every ~2 seconds which is because the workspace diagnostics needs to be implemented as long-polling (https://github.com/microsoft/vscode-languageserver-node/issues/1261). This lead us to realize that the server could stream diagnostics via <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspaceDiagnosticReportPartialResult"><code>WorkspaceDiagnosticReportPartialResult</code></a>. We spent some time discussing this internally and we've realized that this would be important to implement but is not a high priority and would be good to have before the beta release. For now, we're thinking of either of the following option leaning more towards option 2:</p>
+<h3>Option 1</h3>
+<ul>
+<li>When we get the first workspace diagnostic request, we keep this request open indefinitely and start streaming diagnostics for the entire workspace. This means that updating the diagnostics is controlled by the server.</li>
+<li>It might be useful to have this in a separate thread so as to not block the worker thread.</li>
+<li>Whenever any changes happen e.g., a file content changed, we queue up a <code>ReCheck</code> event for the corresponding <code>ProjectDatabase</code>. This event will be consumed by main loop and re-checks the project and streams the diagnostics aka refreshing them.</li>
+<li>In this case, the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#previousResultId">previous result id</a> cannot be used because we won't be refreshing them for workspace diagnostics request.</li>
+</ul>
+<h3>Option 2</h3>
+<ul>
+<li>Implement the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#previousResultId">previous result id</a> by hashing all the diagnostics for a document similar to how the Go language server does.</li>
+<li>When a workspace diagnostic request arrives, check whether it has previous result ids in the request payload:<ul>
+<li>If it does not, perform the check, compute the result ids and send the full diagnostic report</li>
+<li>If it does, perform the check, compute the result ids and check it against the previous result ids. After filtering out the ones that are unchanged, if there are any remaining diagnostics, return them. But if there are none, we keep this request open.</li>
+<li>Whenever any changes happen e.g., a file content changed, we ask to <code>ReCheck</code> for workspace diagnostics and then perform the above check again. At this point, if the diagnostics changed, return them and close the request. If it's not, do not close the request.</li>
+</ul>
+</li>
+</ul>
+<p>The reason that this is important to have is because currently we send the entire diagnostic payload every time VS Code asks us for workspace diagnostics which as mentioned is ~2 seconds. Even with salsa caching, we still would be spending a lot of time serializing and deserializing the payload which is expensive for large projects having dozens of diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-15 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @dhruvmanila on 2025-07-15 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @dhruvmanila on 2025-07-17 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 16:21</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ty/issues/863#issue-3248466289 for a case where not having this optimization results in a laggy VS code experience</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-04 10:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

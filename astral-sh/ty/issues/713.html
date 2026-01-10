@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[possibly-unbound-attribute] False positive on result from while loop - astral-sh/ty #713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[possibly-unbound-attribute] False positive on result from while loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/713">#713</a>
+        opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a>
+        on 2025-06-27 03:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2025-06-27 03:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a maybe-<code>None</code> variable is defined in a while loop, and the while loop exits when the variable is determined to be not <code>None</code>, ty still thinks the value may be <code>None</code> resulting in a false positive of <code>possibly-unbound-attribute</code></p>
+<h2>Example 1</h2>
+<p>This showcases the false positive.</p>
+<pre><code class="language-python">def f() -&gt; str | None: ...
+
+
+while True:
+    if v := f():
+        break
+print(v.capitalize())
+</code></pre>
+<pre><code>warning[possibly-unbound-attribute]: Attribute `capitalize` on type `str | None` is possibly unbound
+ --&gt; example.py:7:7
+  |
+5 |     if v := f():
+6 |         break
+7 | print(v.capitalize())
+  |       ^^^^^^^^^^^^
+  |
+</code></pre>
+<p>Note that this false positive is not tied to the <code>:=</code> operator. The more verbose example below produces the same error:</p>
+<pre><code class="language-python">while True:
+    v = f()
+    if v is not None:
+        break
+print(v.capitalize())
+</code></pre>
+<h2>Example 2</h2>
+<p>This example, while functionally equivalent, does <em>not</em> raise a false positive.</p>
+<pre><code class="language-python">def f() -&gt; str | None: ...
+
+
+while not (v := f()):
+    continue
+print(v.capitalize())
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.12 (f7446a6ee 2025-06-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-06-27 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 07:04</div>
+            <div class="timeline-body"><p>Thank you for reporting this. We do not implement cyclic control flow yet. See https://github.com/astral-sh/ty/issues/232 for the issue that keeps track of this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-27 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2025-06-27 07:05</div>
+            <div class="timeline-body"><p>Ah, thanks! I assumed this might be a side-effect of something yet to be implemented 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 14:43</div>
+            <div class="timeline-body"><p>I guess specifically the issue here is that we model control flow &quot;falling off the end&quot; of the <code>while</code> loop, while in fact that possibility is contingent on re-checking the while loop condition?</p>
+<p>FWIW that seems fixable without fully modeling the control flow back edges -- the bug described here doesn't actually depend on the back edge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess specifically the issue here is that we model control flow &quot;falling off the end&quot; of the <code>while</code> loop, while in fact that possibility is contingent on re-checking the while loop condition?</p>
+</blockquote>
+<p>Hm... really? It seems to me that only example 2 follows that description, and this we already handle fine.</p>
+<p>But you're right. My analysis here was short-sighted The problem is actually that we don't retain the narrowing constraint in the control flow merge (another instance of https://github.com/astral-sh/ty/issues/690). Everything else works just fine:</p>
+<pre><code class="language-py">while True:
+    v = f()
+    if v is not None:
+        break
+</code></pre>
+<p>Before looking at the static truthiness of the conditions, there are three ways that control flow could reach the post-loop state:</p>
+<ol>
+<li>the first evaluation of the loop condition yields false. This has a reachability constraint of <code>~[True]</code>, so it's excluded</li>
+<li>the body was executed, but a later evaluation of the loop condition yielded false. This path is also guarded by a <code>~[True]</code> reachability constraint, i.e. it's also excluded</li>
+<li>the loop was exited through the <code>break</code> statement. This path has a reachability constraint of <code>[True] AND [v is not None]</code>, which evaluates to an ambiguous truthiness.</li>
+</ol>
+<p>The third branch is the only on that survives after the control flow merge, but we lose the narrowing constraint of <code>[v is not None]</code> when merging it with the other two branches.</p>
+<p>I think we might be able to fix this specific example by eagerly recording <code>ALWAYS_TRUE</code> for the expression <code>True</code>, but of course that wouldn't work with any other always-truthy condition. The real solution seems to be https://github.com/astral-sh/ty/issues/690</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-06-27 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 19:20</div>
+            <div class="timeline-body"><p>Ah, that clarifies, thank you!</p>
+<p>You reopened the issue, but I actually think your analysis suggests this should be closed as a duplicate of #690?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>You reopened the issue</p>
+</blockquote>
+<p>Yes — I thought it might be neat to try and fix this specific instance by recording <code>ALWAYS_TRUE</code>/<code>ALWAYS_FALSE</code> for <code>True</code>/<code>False</code>. That might be beneficial for performance anyways. <code>if True</code> and <code>if False</code> hopefully don't appear that often, but <code>while True</code> is a frequent pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 20:54</div>
+            <div class="timeline-body"><blockquote>
+<p>try and fix this specific instance by recording <code>ALWAYS_TRUE</code>/<code>ALWAYS_FALSE</code> for <code>True</code>/<code>False</code></p>
+</blockquote>
+<p>Yes, that works: https://github.com/astral-sh/ruff/pull/18998 (that was just a hacky implementation, will redo that in a cleaner way on Monday).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-06-30 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-30 11:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

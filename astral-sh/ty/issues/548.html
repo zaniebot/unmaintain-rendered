@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support type annotations that use legacy typing aliases for generic classes - astral-sh/ty #548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support type annotations that use legacy typing aliases for generic classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/548">#548</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-30 11:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 11:09</div>
+            <div class="timeline-body"><p>ty currently only has partial support for legacy aliases such as <code>Dict</code>, <code>List</code>, <code>FrozenSet</code>, etc. For example, these two <code>reveal_type</code> calls should both reveal <code>dict[str, int]</code>, but the second one does not:</p>
+<pre><code class="language-py">from typing import Dict
+
+def f(x: dict[str, int], y: Dict[str, int]):
+    reveal_type(x)  # revealed: dict[str, int]
+    reveal_type(y)  # revealed: dict[Unknown, Unknown]
+</code></pre>
+<p>We now support generics, so this should be fairly easy to fix. We need to resolve the TODOs in this area of the code: https://github.com/astral-sh/ruff/blob/ad2f667ee4323dd0c12224338734d722d13d28b4/crates/ty_python_semantic/src/types/infer.rs#L8753-L8789</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-05-30 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-30 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-30 12:06</div>
+            <div class="timeline-body"><p>I can try to take a look at this !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @lipefree by @AlexWaygood on 2025-05-30 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-30 13:27</div>
+            <div class="timeline-body"><p>If someone can help me understand the following. I have managed to implement the feature for <code>List[T]</code> but still struggles when I have more than one type for example <code>Dict[str, int]</code>. I have tried to do</p>
+<pre><code class="language-rust">            KnownInstanceType::Dict =&gt; {
+                let ty = self.infer_type_expression(arguments_slice);
+                KnownClass::Dict.to_specialized_instance(db, [ty, ty]) // reveal: Dict[Unknown, Unkown]
+            }
+            KnownInstanceType::List =&gt; {
+                let ty = self.infer_type_expression(arguments_slice);
+                KnownClass::List.to_specialized_instance(db, [ty]) // reveal: List[str] ✓
+            }
+</code></pre>
+<p>But it doesn't seem to work and I don't know how to decompose <code>ty</code> into 2 part to pass to the <code>to_specialized_instance</code> when it requires 2 types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-30 14:12</div>
+            <div class="timeline-body"><p>If there are two arguments provided, <code>arguments_slice</code> will be a tuple expression, and you'll want to call <code>infer_type_expression</code> on each subexpression of that tuple. There's an example of doing that <a href="https://github.com/astral-sh/ruff/blob/d65bd69963e8b6ec05e465b1ecbdd391883645ef/crates/ty_python_semantic/src/types/infer.rs#L7279-L7291">here</a>. <a href="https://github.com/astral-sh/ruff/blob/d65bd69963e8b6ec05e465b1ecbdd391883645ef/crates/ty_python_semantic/src/types/infer.rs#L7282">This line</a> in particular gives you an <code>Iterator</code> of the inferred types of each element of the tuple, which you can pass in directly as the second parameter to <code>to_specialized_instance</code>. That method will automatically detect and raise a diagnostic if the tuple has the wrong number of elements. (We might consider a more specific diagnostic, but that can be a follow-on!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-30 16:21</div>
+            <div class="timeline-body"><p>Thank you very much for the detailed explanation @dcreager !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-30 23:04</div>
+            <div class="timeline-body"><p>I am stuck for a few hours now and can't seem to debug it. So I have implemented the following (example for <code>Dict</code>)</p>
+<pre><code class="language-rust">KnownInstanceType::Dict =&gt; {
+    if let ast::Expr::Tuple(tuple) = arguments_slice {
+        let ty_iter = tuple.elts.iter().map(|elt| self.infer_type_expression(elt));
+        KnownClass::Dict.to_specialized_instance(db, ty_iter)
+    } else {
+        KnownClass::Dict.to_instance(db)
+    }
+}
+</code></pre>
+<p>And the feature even work when I run this code on some python script, it successfully reveal <code>dict[str, int]</code> !</p>
+<p>However when running all the tests, I get the following :</p>
+<pre><code>test linter_af_no_panic ... FAILED
+test corpus_no_panic ... ok
+test parser_no_panic ... ok
+test linter_gz_no_panic ... FAILED
+
+failures:
+
+---- linter_af_no_panic stdout ----
+[...]
+checking crates/ruff_linter/resources/test/fixtures/fastapi/FAST001.py
+
+thread 'linter_af_no_panic' panicked at crates/ty_python_semantic/src/semantic_model.rs:58:44:
+expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Check failed for &quot;crates/ruff_linter/resources/test/fixtures/fastapi/FAST001.py&quot;. Consider fixing it or adding it to KNOWN_FAILURES
+
+---- linter_gz_no_panic stdout ----
+[...]
+checking crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py
+
+thread 'linter_gz_no_panic' panicked at /Users/lipefree/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/function/execute.rs:209:25:
+infer_definition_types(Id(115b1)): execute: too many cycle iterations
+
+thread 'linter_gz_no_panic' panicked at /Users/lipefree/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/function/execute.rs:209:25:
+infer_definition_types(Id(115e6)): execute: too many cycle iterations
+checking crates/ruff_linter/resources/test/fixtures/pyflakes/F401_4.py
+[...]
+
+thread 'linter_gz_no_panic' panicked at crates/ty_python_semantic/src/semantic_model.rs:58:44:
+expression should belong to this TypeInference region and TypeInferenceBuilder should have inferred a type for it
+Check failed for &quot;crates/ruff_linter/resources/test/fixtures/refurb/FURB131.py&quot;. Consider fixing it or adding it to KNOWN_FAILURES
+
+failures:
+    linter_af_no_panic
+    linter_gz_no_panic
+</code></pre>
+<p>I don't even know how I get linter errors when only touching at one file in <code>ty_python_semantic</code>. :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-31 00:22</div>
+            <div class="timeline-body"><p>@lipefree Sorry, this is a confusing error. Our tests run CI against various files in the Ruff codebase, including linter test files, just to verify that we can check them without crashing. So it's not that you broke the linter, it's that there was an error in ty checking those particular linter test files.</p>
+<p>And in these tests we do one other thing, which is that we verify that every AST node has a type stored for it (so that e.g. you could see a type when you hover over it in an editor). This is something that ty normally doesn't verify, which explains why it works for you in normal type checking but fails in these tests.</p>
+<p>The fix is that you need to make sure a type is stored for every AST node. If you call <code>self.infer_type_expression(...)</code> on a node, it will both infer and store a type for that node. But in this case I think you also need to store a type for the overall <code>arguments_slice</code> node, using <code>self.store_expression_type(...)</code>. If you grep you can probably find other examples of this, even in similar cases with an <code>arguments_slice</code> in a subscript.</p>
+<p>Hope that helps unblock you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-03 11:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

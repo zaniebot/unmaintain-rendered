@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`tuple[Any]` should be assignable to `Never` - astral-sh/ty #639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`tuple[Any]` should be assignable to `Never`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/639">#639</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-06-12 05:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-12 05:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>tuple[Any]</code> should be assignable to <code>Never</code> because <code>Never</code> is one of the materialization of <code>tuple[Any]</code> and it is a subtype of <code>Never</code> so as per the <a href="https://typing.python.org/en/latest/spec/concepts.html#the-assignable-to-or-consistent-subtyping-relation">consistent subtyping relation</a> it should be assignable.</p>
+<p>Playground: https://play.ty.dev/48729f64-0a5a-4f06-82e4-39aa671872d8</p>
+<pre><code class="language-py">from typing import Any, Never
+from ty_extensions import static_assert, is_assignable_to
+
+# This is false but should be true
+static_assert(is_assignable_to(tuple[Any], Never))
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-06-12 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @dhruvmanila on 2025-06-12 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-12 05:46</div>
+            <div class="timeline-body"><p>Hmm, this doesn't sound right to me. <code>Never</code> isn't a materialization for <code>tuple[Any]</code>. And while <code>Never</code> is a consistent subtype of <code>tuple[Any]</code>, the converse isn't true.</p>
+<p>Code sample in <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcANFAHICmAbpSAFD0AmlwUwArigMYAUAHgC5CxMnGEwOCADaUA2kTgBdAJSD6UTVACGwqrRBQAvFH6aAxFADyAaQ1aARnpp1jUOBagBREOAZaobgkpWTl9OiU3DyhLW3ogA">pyright playground</a></p>
+<pre><code class="language-python">from typing import Any, Never
+
+def func(x: Any, y: tuple[Any]):
+    a: Never = x  # OK
+    b: Never = y  # Error
+    c: tuple[Never] = y  # OK
+</code></pre>
+<p>Perhaps you meant to say that <code>tuple[Never]</code> is a materialization for <code>tuple[Any]</code>. That statement is true, and for that reason, <code>tuple[Never]</code> is assignable to <code>tuple[Any]</code> and vice versa. It looks like ty currently <a href="https://play.ty.dev/7c4d3d6c-ebeb-4d85-ab21-f17c174fe206">gets this wrong</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-12 06:23</div>
+            <div class="timeline-body"><blockquote>
+<p><code>Never</code> isn't a materialization for <code>tuple[Any]</code>.</p>
+</blockquote>
+<p>Isn't <code>tuple[Never]</code> same as <code>Never</code> ? i.e., a materialization of <code>tuple[Any]</code> is <code>tuple[Never]</code> which gets simplified to <code>Never</code> in ty because <code>tuple[Never]</code> is an empty set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-12 14:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't <code>tuple[Never]</code> same as <code>Never</code>?</p>
+</blockquote>
+<p>Just because a type includes <code>Never</code> as a type argument doesn't mean it's equivalent to <code>Never</code>. By the same logic, would you consider <code>list[Never]</code> or <code>UserDefined[Never]</code> equivalent to <code>Never</code>, or are you arguing that <code>tuple</code> is somehow special?</p>
+<p>Here's a type that includes <code>Never</code> that's definitely not equivalent to <code>Never</code>: <code>Callable[[], Never]</code>. This represents a callable type that doesn't return control back to the caller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-12 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>are you arguing that <code>tuple</code> is somehow special?</p>
+</blockquote>
+<p>tuple is special because it's a product type. <code>tuple[Never, int]</code> is equal to <code>Never</code> because it corresponds to the Cartesian product <code>Never × int</code>. The product with the empty set is empty.</p>
+<blockquote>
+<p>Just because a type includes <code>Never</code> as a type argument doesn't mean it's equivalent to <code>Never</code>. By the same logic, would you consider <code>list[Never]</code></p>
+</blockquote>
+<p>No, <code>list[Never]</code> is not equal to <code>Never</code>. It is a type with a single inhabitant, the empty list.</p>
+<p>For user-defined types... it depends. A generic class like the following is structurally equivalent to a tuple/product of <code>T</code> and <code>int</code>, so <code>C[Never]</code> should also be equivalent to <code>Never</code>. There is no way to construct an object of type <code>C[Never]</code>, because there is no way to generate a value for the <code>x</code> member:</p>
+<pre><code class="language-py">class C[T]:
+    x: T
+    y: int
+</code></pre>
+<p>On the other hand, for the following example, <code>D[Never]</code> is not equal to <code>Never</code>. <code>D(x=None)</code> is a valid inhabitant of <code>D[Never]</code>:</p>
+<pre><code class="language-py">class D[T]:
+    x: T | None
+</code></pre>
+<p>I'm not 100% if that reasoning applies to class types in Python, but for tuple types, it seems correct to consider <code>tuple[Never]</code> to be equivalent to <code>Never</code>. There is no way to construct such a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-12 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>tuple is special because it's a product type</p>
+</blockquote>
+<p>I'm not familiar with the term &quot;product type&quot;, but I think we need to be careful here.</p>
+<p>If we (the Python typing community) collectively want to treat <code>tuple[Never]</code> (or more generally, certain classes of types that are parameterized by <code>Never</code>) as equivalent to <code>Never</code>, I think that should be documented in the typing spec. Maybe this will be done as part of the work to define intersections? If there isn't some special rule in the spec that says <code>tuple[Never]</code> is equivalent to (or even assignable to) <code>Never</code>, then I don't think a type checker should make that assumption. We've worked hard to clarify the rules for type assignability in the spec because it's important for all type checkers to be consistent here.</p>
+<p>I'll note that <code>tuple</code> is documented to be special in a few other ways <a href="https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules">in the spec</a>, but <code>Never</code> is not mentioned in this section other than &quot;A zero-length tuple (<code>tuple[()]</code>) is a subtype of <code>Sequence[Never]</code>.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-12 14:32</div>
+            <div class="timeline-body"><p>I do think it's correct to say that <code>tuple[Never]</code> is equivalent to <code>Never</code>. <code>tuple[Never]</code> means a single-element tuple, where the single element cannot exist. There is no value that is a member of this type, so the type is equivalent to Never, which is the empty type. This follows naturally from the definitions we adopted, so I don't think it needs special discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-12 14:35</div>
+            <div class="timeline-body"><p>Yes, I think the equivalence of <code>tuple[Never]</code> to <code>Never</code> is an unavoidable conclusion from the core semantics of Python types, which are already in the spec. I wouldn't be opposed to explicitly documenting it also, but I don't consider that a blocker for ty implementing it (we already do). There are many such edge cases which can be reasoned from the core semantics, and I'm not sure it's even a feasible goal to explicitly mention every one in the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-12 14:52</div>
+            <div class="timeline-body"><p>We've invested heavily over the past few years to clarify the rules for assignability in the spec. What I hear you arguing here is that type checkers can selectively deviate from the standard assignability rules based on a deeper understanding of the semantics of particular classes. I worry about where that will lead. I think it means that we're going to see different assignability rules adopted by each type checker. That sounds counter to the goals we've been pursuing for standardization. How do we prevent this if we don't spell this out in the spec?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-12 18:52</div>
+            <div class="timeline-body"><p>I don't think that considering <code>tuple[Never]</code> equivalent to <code>Never</code> is a deviation from anything that is currently specified or standardized. It's a logical conclusion from the (specified) core semantics of Python types, in an area that isn't otherwise currently specified more directly. (There is no explicit specification anywhere in the spec of what types are equivalent to what other types.)</p>
+<p>I think it's useful to continue to add explicit detail to the spec in areas where we observe divergence between type checkers that causes user problems. I'm not convinced that equivalence of <code>tuple[Never]</code> to <code>Never</code> is a priority for specification, relative to other things that cause more user problems, but I'm not opposed to adding it explicitly to the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-12 19:30</div>
+            <div class="timeline-body"><p>Thinking about this more, I do think this line of thinking leads to problems.</p>
+<ul>
+<li><code>tuple[Any]</code> can materialize to <code>tuple[Never]</code>, which is equivalent to <code>Never</code>.</li>
+<li><code>tuple[int, Any]</code> can materialize to <code>tuple[int, Never]</code>, which is also equivalent to <code>Never</code>.</li>
+<li>Two gradual types are consistent with each other if they can materialize to the same type.</li>
+<li>Ergo, all fixed-length tuple types that contain Any are consistent with each other.</li>
+</ul>
+<p>But that seems undesirable; <code>tuple[int, Any]</code> and <code>tuple[Any]</code> clearly shouldn't be assignable to each other.</p>
+<p>How do we fix this? Maybe <code>tuple[Never]</code> shouldn't be a legal materialization of <code>tuple[Any]</code>. <code>tuple[Any]</code> is a type that describes a value that is definitely a tuple with one element, and <code>tuple[Never]</code> doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-12 19:39</div>
+            <div class="timeline-body"><p>That's an excellent point. I'll need to think a bit about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-12 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Two gradual types are consistent with each other if they can materialize to the same type</p>
+</blockquote>
+<p><code>tuple[Never]</code> and <code>tuple[int, Never]</code> cannot materialize to <em>any</em> type. So there is no type that they both materialize to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-12 20:02</div>
+            <div class="timeline-body"><p>No scratch that, I'm wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-06-12 23:34</div>
+            <div class="timeline-body"><p>Something to be cautious of here is not making this too broad.</p>
+<p>while <code>tuple[Never]</code> can never have a runtime value, <code>tuple[Never, ...]</code> can for 0-length (empty, and therefore no value of type Never) tuples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-06-12 23:37</div>
+            <div class="timeline-body"><blockquote>
+<p>How do we fix this? Maybe tuple[Never] shouldn't be a legal materialization of tuple[Any]. tuple[Any] is a type that describes a value that is definitely a tuple with one element, and tuple[Never] doesn't.</p>
+</blockquote>
+<p>We can fix this by fixing Never. If we take the stance that Never <em>isn't</em> a materialization, but the absence of a materialization, this paradoxical issue evaporates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-13 00:00</div>
+            <div class="timeline-body"><p>Do you mean that Any should never be able to materialize to Never? That seems wrong to me because it's perfectly fine for e.g. <code>Callable[..., Any]</code> to materialize to <code>Callable[..., Never]</code>.</p>
+<p>A formulation I've been thinking of is that if a gradual type is not Any, it cannot materialize to Never (or to any type equivalent to Never). That means that <code>Callable[..., Any]</code> can still materialize to <code>Callable[..., Never]</code> (which is an inhabited type), but <code>tuple[Any]</code> cannot materialize to <code>tuple[Never]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-13 00:31</div>
+            <div class="timeline-body"><p>I'm still not convinced that <code>tuple[Never]</code> should be assignable to (or considered equivalent to) <code>Never</code>. If I understand correctly, the argument is that the set of values described by <code>tuple[Never]</code> is empty, so it is equivalent to <code>Never</code>. But is that really true? Consider the following.</p>
+<pre><code class="language-python">class Foo(tuple[Never]): pass
+
+x: tuple[Never] = Foo()
+</code></pre>
+<p>This class might not be very useful, but I think it's a legal subclass of <code>tuple[Never]</code>, and I'm able to construct an instance of it.</p>
+<p>If we can agree that <code>tuple[Never]</code> is not assignable to <code>Never</code>, then I don't see a need to complicate the definitions of <code>Never</code> or &quot;materialization&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-13 01:01</div>
+            <div class="timeline-body"><p>Subclasses of fixed-length tuple are a good point but I think the way pyright (and mypy) currently handles those is unsound.</p>
+<p>For example, given the program:</p>
+<pre><code class="language-python">from typing import Never
+
+class TI(tuple[int]): pass
+
+def f(x: tuple[int] | tuple[int, str]):
+    if len(x) == 0:
+        reveal_type(x)
+    elif len(x) == 1:
+        reveal_type(x)
+    else:
+        reveal_type(x)
+
+f(TI())
+</code></pre>
+<p>Pyright thinks the len-0 branch is unreachable, but in fact at runtime <code>Foo()</code> creates a length-zero tuple. Pyright and mypy also allow the call <code>TI((1, 2))</code>, which creates a tuple of length 2.</p>
+<p>For an instance of such a subclass to exist, it must be a tuple containing the elements specified in the bases. That means that no instance of your <code>Foo</code> class can exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-13 02:52</div>
+            <div class="timeline-body"><p>This highlights the danger of trying to justify special-case typing rules based on the way you think that the type parameters are interpreted for that class.</p>
+<p>Here's a class that arguably satisfies the interface contract of the <code>tuple</code> class and is a legitimate subclass of <code>tuple[Never]</code>.</p>
+<pre><code class="language-python">class TI(tuple[Never]):
+    def __init__(self) -&gt; None: ...
+
+    def __len__(self) -&gt; Literal[1]:
+        return 1
+
+    def __getitem__(self, key: SupportsIndex | slice, /) -&gt; Never:
+        raise IndexError()
+</code></pre>
+<p>When it comes to assignability, I think the rules should be as simple and consistent as possible, and they should be applied mechanistically without regard for knowledge of the internal implementation details of the class.</p>
+<p>If there's a compelling justification for deviating from these rules, then we could consider a special case, but I maintain this should be done only after public discussion and scrutiny, and it should be standardized in the typing spec. This is why I contributed the <a href="https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules">Type Compatibility Rules</a> section of the tuples chapter, which defines a few special cases that apply to tuples. Those special cases are both useful and carefully considered, and they received due public scrutiny before being accepted into the spec.</p>
+<p>When it comes to asserting equivalence for <code>tuple[Never]</code> and <code>Never</code>, I haven't heard any argument for why we'd want to grant such a special case — especially given that it creates paradoxes and other complications.</p>
+<p>The notion of &quot;assignability&quot; is foundational to the type system, and I though we had come to a clear and unambiguous definition of assignability — thanks in large part to Carl's contributions to the typing spec. My confidence has been shaken by this thread. Apparently, the foundation is weaker than I had thought. It is being argued that the definition of assignability is malleable based on how each type checker interprets the semantics and implementation details of certain classes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-06-13 04:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Here's a class that arguably satisfies the interface contract of the tuple class and is a legitimate subclass of tuple[Never].</p>
+</blockquote>
+<pre><code class="language-py">class TI(tuple[Never]):
+    def __init__(self) -&gt; None: ...
+
+    def __len__(self) -&gt; Literal[1]:
+        return 1
+
+    def __getitem__(self, key: SupportsIndex | slice, /) -&gt; Never:
+        raise IndexError()
+</code></pre>
+<p>While it does under the current rules, there's a strong argument from theory that it does not satisfy the interface contract, as <code>__getitem__</code>'s function domain is uniquely different for <code>tuple[Never]</code> than for Any tuple specialized with a type for which a value can exist.</p>
+<p>I'm willing to say that <code>tuple[Never]</code> <em>doesn't have</em> a valid materialization, and that somewhat by definition, for a value to materialize, it has to be possible for a value of that type to exist at runtime, the constant possibility of an error is a lack of a value, not an always compatible value.</p>
+<p>I believe this is just a gap in our definitions currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 23:30</div>
+            <div class="timeline-body"><p>Lots to comment on here! Let me start with the type theory, <em>if</em> (and I am not assuming this!) we were to set aside the question of user subclasses of tuple and assume we can treat tuple as a simple product type. I asked Guillaume Duboc (@gldubc, though not sure if I can tag here), who works (along with Giuseppe Castagna, a leading researcher in the area of set-theoretic gradual types) on the Elixir type system, how they handle this Never issue. Their answer is that they do consider their equivalent of <code>tuple[Never]</code> to be equivalent to <code>Never</code>, for the reason discussed here (both types are empty). But they also use an additional restriction on assignability (beyond just &quot;consistent subtyping&quot;). Any type which can materialize to <code>Never</code> is a consistent subtype of any other type which can materialize to <code>Never</code>, per the definition of consistent subtyping. But assignability is meant to establish that an inhabitant of one type can substitute for an inhabitant of another type -- this is not meaningful in the absence of inhabitants. So for A to be assignable to B, they require both that A is a consistent subtype of B, and that, if the bottom or lower bound materialization of A is <code>Never</code>, that the upper bound or top materializations of A and B be non-disjoint. Another way to describe this is that there must be some object that can inhabit some possible materialization of both A and B, in order for A to be assignable to B.</p>
+<p>I think this approach makes sense, and I think we should update to the core concepts document in our typing spec to describe this additional restriction. I'm happy to provide that PR, if we are in agreement that it makes sense. What it would ensure, in this case, is that <em>even if</em> we were to consider both <code>tuple[Never]</code> and <code>tuple[Never, int]</code> as equivalent to <code>Never</code>, that would still not imply that <code>tuple[Any]</code> or <code>tuple[Any, int]</code> are assignable to <code>Never</code>, or to each other.</p>
+<p>For me, that's sufficient to conclude that regardless of how we settle the question of <code>tuple[Never]</code> vs <code>Never</code>, we should not implement what is described in this issue (<code>tuple[Any]</code> being assignable to <code>Never</code>).</p>
+<p>That aside, I also find @erictraut's argument convincing, that an instance can exist of a user subclass of tuple which is a valid subtype of <code>tuple[Never]</code>, which means (because of user subclasses) that <code>tuple[Never]</code> is not necessarily an empty type. This would imply that in ty we should stop simplifying heterogenous tuple types containing <code>Never</code>, to <code>Never</code>.</p>
+<p>User subclasses of tuple are tricky; because heterogenous tuple types are inherently quite special-cased (they can't be described by typeshed), it's easy to fall into the trap of forgetting user subclasses. Both ty and pyright are currently willing to assume, for instance, that the type <code>tuple[()]</code> is always falsy, which is also not necessarily true if you consider user subclasses. (I think practically this is useful, and we do the same -- we've discussed making it an error to define <code>__bool__</code> on a user subclass of <code>tuple</code>, in order to make this assumption more sound.)</p>
+<p>@erictraut, I guess the last thing to address here is your comments on the spec and special-casing. I reject the description of ty's treatment of <code>tuple[Never]</code> and <code>Never</code> as equivalent as &quot;special-casing&quot; based on &quot;implementation details&quot;, as well as the assertion that it somehow weakens the definition of assignability in the spec. I think it was a reasonable and useful effort to reason directly <em>from</em> that definition of assignability and apply it. And I consider the outcome of that attempt to have been quite positive for ty and for Python typing. We've uncovered a theoretical gap in the definition of assignability currently given in the spec, which can now be fixed, and we've clarified our understanding of the semantics of tuple types. In the future, I intend for ty to continue to reason from core semantics and try new things that may not be done by current type checkers. Where we are right, this can lead to future more public discussion and amendment of the spec; where we are wrong, it can also lead to discussion and changes to our behavior. I don't think that it is a service to the Python typing community for new type checkers to never attempt to implement anything new or different until after it has been codified in the spec -- this places too much of a damper on improving and increasing our understanding of the Python type system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-14 00:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Any type which can materialize to Never is a consistent subtype of any other type which can materialize to Never, per the definition of consistent subtyping. But assignability is meant to establish that an inhabitant of one type can substitute for an inhabitant of another type -- this is not meaningful in the absence of inhabitants. So for A to be assignable to B, they require both that A is a consistent subtype of B, and that, if the bottom or lower bound materialization of A is Never, that the upper bound or top materializations of A and B be non-disjoint. Another way to describe this is that there must be some object that can inhabit some possible materialization of both A and B, in order for A to be assignable to B.</p>
+</blockquote>
+<p>Does this mean that Never is not assignable to itself? That would break <code>assert_never()</code>.</p>
+<p>I'm still unconvinced that instances of a subclass of <code>tuple[Never]</code> should be allowed to exist. If they do exist, then this program has a type error, but pyright allows it:</p>
+<pre><code class="language-python">from typing import assert_never, Never
+
+class Foo(tuple[Never]): pass
+
+def f(x: tuple[int | str]):
+    match x:
+        case (int(),):
+            pass
+        case (str(),):
+            pass
+        case _:
+            assert_never(x)
+
+f(Foo())
+</code></pre>
+<p>Pretending to be a one-element tuple by overriding <code>__len__</code> etc. doesn't fool C-implemented functions that look at the underlying tuple object directly:</p>
+<pre><code>&gt;&gt;&gt; class X(tuple[str]):
+...     def __getitem__(self, i):
+...         return &quot;x&quot;
+...         
+&gt;&gt;&gt; t = X((&quot;y&quot;,))
+&gt;&gt;&gt; &quot;yz&quot;.startswith(t)
+True
+</code></pre>
+<p>User-defined subclasses of heterogeneous tuple do have some practical use; there are a few dozen in typeshed, mostly for &quot;structseq&quot; C classes. I think type checkers should disallow such subclasses if they have Never fields, and otherwise enforce that the object is constructed with the correct number of fields.</p>
+<p>Regardless of the issues with user-defined tuple subclasses, the problem with Never that we identified in this thread exists elsewhere too. For example, the spec is explicit that TypedDicts must be instances of <code>dict</code> itself, not a subclass (https://typing.python.org/en/latest/spec/typeddict.html#class-based-syntax under &quot;Methods are not allowed&quot;). That means that a TypedDict with an Any item can materialize that item to Never, making the type itself equivalent to Never. Someone above mentioned user-defined classes with Any attributes too, though there perhaps there's wiggle room with descriptors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-06-14 01:46</div>
+            <div class="timeline-body"><p>I think as a practical matter, we need to clear up definitions involving Never beyond what is explored in this thread, eventually, but the additional restriction Elixir uses is compatible with the changes I personally see as beneficial, and it improves a few real cases including this one.</p>
+<p>I'm also willing to go further and say certain behaviors in user-subclasses of builtin types should be considered an error due to python's execution model rather than just pure theory to avoid putting the two in direct conflict with each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-14 02:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Another way to describe this is that there must be some object that can inhabit some possible materialization of both A and B, in order for A to be assignable to B.</p>
+</blockquote>
+<p>That makes sense. I'm in favor of adding this clarification to the typing spec. It might make the concept harder to grok for first-time readers of the spec, but that's not a good reason to avoid it. Plus, you have a knack for describing complex concepts in simple terms.</p>
+<p>What does that additional restriction imply for the concept of &quot;equivalency&quot;? I've assumed that equivalence is transitive — that is &quot;A == B&quot; and &quot;B == C&quot; implies &quot;A == C&quot;. Furthermore, I've assumed that equivalence implies assignability — if &quot;A == B&quot;, then &quot;A := B&quot; and &quot;B := A&quot;. If those assumptions are incorrect, then I think the concept of &quot;equivalence&quot; loses most of its utility. Thankfully, the typing spec currently makes very little use of equivalence. IIRC, the only place it shows up is in the description of <code>assert_type</code>. Put another way, I don't care as much about &quot;equivalence&quot; as I do about &quot;assignability&quot;. The latter is much more foundational.</p>
+<blockquote>
+<p>I reject the description of ty's treatment of tuple[Never] and Never as equivalent as &quot;special-casing&quot; based on &quot;implementation details&quot;</p>
+</blockquote>
+<p>I have a hard time seeing this as anything other than &quot;special-casing based on implementation details&quot;. If I tell you that I've created a generic class <code>Foo</code> that has a single type variable <code>T</code> that is covariant, and I ask you &quot;is <code>Foo[Never]</code> equivalent to <code>Never</code>&quot;, would you answer &quot;definitely not!&quot;, or would you answer &quot;I can't tell without more information; I'd need to see the implementation of <code>Foo</code>&quot;?</p>
+<p>I'm not arguing against innovation or public discussions about changes to the spec. But I don't think it serves the community well if the the foundational concepts in the type system are fluid or up for interpretation by each type checker. That's what I'm trying to avoid here. This discussion took me by surprise because it calls into question a concept that I thought was already well established in the typing spec — one that many other concepts build upon. I don't want a definition of assignability that depends on the subjective judgement of individuals. Nor do I want a definition that necessitates a multi-hour debate every time someone raises a question about &quot;functional domains&quot; or other semantic properties of a particular class. This is why it's important for the foundational rules to be clear and simple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-06-15 17:31</div>
+            <div class="timeline-body"><p>@carljm @erictraut</p>
+<p>While I also don't want a definition where we keep having to re-clarify, I find it difficult to reconcile this with the amount of leeway typecheckers are currently given for constraint solving and inference, or places where we already know there are underspecified behaviors.</p>
+<p>The following language would be easy to explain, covers the function domain problem, and sets a better ground for other things being worked on, and naturally encompasses the more involved definition that Elixir uses, and is proposed we accept.</p>
+<p>&quot;Consistent subtyping requires that if the super type is inhabited, that the subtype can be as well&quot; (not is, but can be. it doesnt require a proof that some type can exist, only that there is no knowledge that prohibits such a type from existing)</p>
+<p>This requires a slight change in the understanding of Never, from a consistent subtype of all types, to a representation of the absence of <em>the possibility</em> of a value consistent with the available type information (which happens to be more accurate)</p>
+<p>This <em>would</em> also be a change in behavior as it implies the below error case:</p>
+<pre><code class="language-py">class A:
+    def calc(self) -&gt; int:
+        ...
+
+class B(A):
+    def calc(self)  -&gt; Never:  # error
+        ...
+</code></pre>
+<p>I don't think it should be controversial that simply replacing a method expected to produce a value with one that never can does not satisfy a useful interface contract. (This is the domain of the method <code>calc</code> here, No inputs beyond bound self producing some int)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kroppeb">@Kroppeb</a> on 2025-06-17 22:43</div>
+            <div class="timeline-body"><p>@JelleZijlstra</p>
+<blockquote>
+<p>from typing import assert_never, Never</p>
+<p>class Foo(tuple[Never]): pass</p>
+<p>def f(x: tuple[int | str]):
+match x:
+case (int(),):
+pass
+case (str(),):
+pass
+case _:
+assert_never(x)</p>
+<p>f(Foo())</p>
+</blockquote>
+<p>Well there is at least a type error here is the instantiation of <code>Foo()</code> this way. If the <code>Never</code> is replaced with <code>int</code> it will still end up in the <code>assert_never</code> case yet still not produce any type errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-07-20 06:01</div>
+            <div class="timeline-body"><p>I posted https://discuss.python.org/t/interactions-with-never-leading-to-undesirable-assignability/99445 to suggest a solution for this (spoiler: after more thinking I favor a solution similar to the Elixir one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alwaysmpe">@alwaysmpe</a> on 2025-07-20 08:23</div>
+            <div class="timeline-body"><p>I added a comment on Jelle's discussion but the short version I think is I agree with Eric, a sequence of length 1 of empty sets is a set containing a single member so is not in itself the empty set. There's no value that can materialize this at runtime (in python), but the type may be used (eg in a monad or as a generic argument). Other stuff I don't have a strong opinion on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:11 UTC
+    </footer>
+</body>
+</html>

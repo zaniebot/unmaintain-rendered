@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set distributive law does not hold when using complements sometimes - astral-sh/ty #1394</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set distributive law does not hold when using complements sometimes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1394">#1394</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-10-18 06:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-18 06:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Per the distributive law:
+<code>A∪(B∩C)=(A∪B)∩(A∪C)</code>
+Replacing <code>B</code> with <code>A'</code>, the distributive law should still hold, but it does not, <a href="https://play.ty.dev/dfa369c0-1001-4d33-8e13-6c95fb719cca">example</a>:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_equivalent_to, Intersection, Not
+from typing import Literal
+
+class A: ...
+class B: ...
+class C: ...
+# Works correctly (no error)
+static_assert(is_equivalent_to(A | Intersection[B, C], Intersection[A | B, A | C]))
+# Fails incorrectly (error)
+static_assert(is_equivalent_to(A | Intersection[Not[A], C], Intersection[A | Not[A], A | C]))
+</code></pre>
+<details>
+<summary> powershell demo </summary>
+
+<pre><code class="language-powershell">PS D:\python_projects\ty_issues&gt; echo @'
+from ty_extensions import static_assert, is_equivalent_to, Intersection, Not
+from typing import Literal
+
+class A: ...
+class B: ...
+class C: ...
+# Works correctly (no error)
+static_assert(is_equivalent_to(A | Intersection[B, C], Intersection[A | B, A | C]))
+# Fails incorrectly (error)
+static_assert(is_equivalent_to(A | Intersection[Not[A], C], Intersection[A | Not[A], A | C]))
+'@ &gt; main.py
+PS D:\python_projects\ty_issues&gt; uvx ty check main.py
+Checking ------------------------------------------------------------ 1/1 files                                         error[static-assert-error]: Static assertion error: argument of type `ty_extensions.ConstraintSet[never]` is statically known to be falsy
+  --&gt; main.py:10:1
+   |
+ 8 | static_assert(is_equivalent_to(A | Intersection[B, C], Intersection[A | B, A | C]))
+ 9 | # Fails incorrectly (error)
+10 | static_assert(is_equivalent_to(A | Intersection[Not[A], C], Intersection[A | Not[A], A | C]))
+   | ^^^^^^^^^^^^^^------------------------------------------------------------------------------^
+   |               |
+   |               Inferred type of argument is `ty_extensions.ConstraintSet[never]`
+   |
+info: rule `static-assert-error` is enabled by default
+
+Found 1 diagnostic
+PS D:\python_projects\ty_issues&gt; uvx ty version
+ty 0.0.1-alpha.23 (5c51b8480 2025-10-16)
+</code></pre>
+</details>
+
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.23 (5c51b8480 2025-10-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-10-18 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-18 12:33</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>We represent the left hand side of the lower equivalence test as <code>A | (C &amp; ~A)</code>. The right hand side will be (correctly) simplified to <code>A | C</code> (because <code>A | ~A = object</code>). But we fail to recognize that those are the same type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-24 18:50</div>
+            <div class="timeline-body"><p>This is similar to https://github.com/astral-sh/ty/issues/224</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

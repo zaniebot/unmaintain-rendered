@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-return-type with dict despite isinstance checks - astral-sh/ty #1019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-return-type with dict despite isinstance checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1019">#1019</a>
+        opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a>
+        on 2025-08-16 05:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-16 05:47</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi,</p>
+<p>I'm wondering if this isn't an issue:</p>
+<pre><code>from typing import Self
+
+
+class Test:
+    @classmethod
+    def validate_data(cls, data: str | dict[str, str] | Self) -&gt; Self:
+        if isinstance(data, str):
+            return cls.from_json(data)
+        if isinstance(data, dict):
+            return cls(**data)
+        return data
+</code></pre>
+<p>Gives the following error</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+  --&gt; test.py:6:62
+   |
+ 4 | class Test:
+ 5 |     @classmethod
+ 6 |     def validate_data(cls, data: str | dict[str, str] | Self) -&gt; Self:
+   |                                                              ---- Expected `Self@validate_data` because of return type
+ 7 |         if isinstance(data, str):
+ 8 |             return cls.from_json(data)
+ 9 |         if isinstance(data, dict):
+10 |             return cls(**data)
+11 |         return data
+   |                ^^^^ expected `Self@validate_data`, found `(dict[str, str] &amp; ~dict[Unknown, Unknown]) | (Self@validate_data &amp; ~str &amp; ~dict[Unknown, Unknown])`
+   |
+</code></pre>
+<p>Except... since I'm removing the possibility where data is either a str or a dict, it can only be a Self, hence line 11 can only return when it's of type Self. Or am I missing something?</p>
+<h3>Version</h3>
+<p><a href="https://github.com/astral-sh/ty/releases/tag/0.0.1-alpha.18">0.0.1-alpha.18</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @CharlesPerrotMinot on 2025-08-16 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "invalid-return-type" to "invalid-return-type with dict despite isinstance checks" by @CharlesPerrotMinot on 2025-08-16 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-16 05:54</div>
+            <div class="timeline-body"><p>One workaround I found is to change the return value to the quote name of the class, check for type, and error if none of the expected one are received</p>
+<pre><code>from typing import Self
+
+
+class Test:
+    @classmethod
+    def validate_data(cls, data: str | dict | Self) -&gt; &quot;Test&quot;:
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, str):
+            return cls.from_json(data)
+        if isinstance(data, dict):
+            return cls(**data)
+        raise TypeError(&quot;not a supported input&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-16 14:54</div>
+            <div class="timeline-body"><p>Thanks for the report! Yes, this is a known issue in our type narrowing for instances of generic classes: #456</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-16 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurious possibly-unbound-attribute - astral-sh/ty #479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Spurious possibly-unbound-attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/479">#479</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2025-05-21 20:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-05-21 20:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reproducer</p>
+<pre><code class="language-python">class Context:
+
+    def __init__(self, default_map):
+        self.default_map: dict | None = default_map
+
+def test(
+    ctx: Context,
+):
+    ctx.default_map = ctx.default_map or {}
+    a = {'a': 1}
+    ctx.default_map.update(a)
+</code></pre>
+<pre><code class="language-console">&gt; ty check test.py
+warning[possibly-unbound-attribute]: Attribute `update` on type `dict[Unknown, Unknown] | None` is possibly unbound
+  --&gt; test.py:12:5
+   |
+10 |     ctx.default_map = ctx.default_map or {}
+11 |     a = {'a': 1}
+12 |     ctx.default_map.update(a)
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+info: rule `possibly-unbound-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>https://play.ty.dev/19b86451-c3e0-455c-a3d7-78b623def6ab</p>
+<p>It looks like the declared type is preferred over the narrowed type? If I remove the type annotation in the <code>__init__</code> method the error goes away.</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-21 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-21 20:49</div>
+            <div class="timeline-body"><p>Thanks! We don't narrow the types of attributes at all yet, but we're working on it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-05-21 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-05-21 20:57</div>
+            <div class="timeline-body"><p>Ah, sorry, I was aware of that issue, but thought this is something different. I got confused why the error went away when I removed the type, but now I understand that in that case the inferred type was Unknown, and so narrowing was not necessary. Sorry for the noise!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

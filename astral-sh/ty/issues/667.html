@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevent cascading diagnostics when using unknown type form - astral-sh/ty #667</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prevent cascading diagnostics when using unknown type form</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/667">#667</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-06-17 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 07:45</div>
+            <div class="timeline-body"><p>We currently report multiple diagnostics in situations like the following:</p>
+<pre><code class="language-py"># Name `UnknownTypeForm` used when not defined (unresolved-reference) [Ln 1, Col 4]
+# Int literals are not allowed in this context in a type expression (invalid-type-form) [Ln 1, Col 20]
+x: UnknownTypeForm[1]
+
+
+# Name `UnknownTypeForm` used when not defined (unresolved-reference) [Ln 1, Col 4]
+# Syntax error in forward annotation: Unexpected token at the end of an expression (invalid-syntax-in-forward-annotation) [Ln 1, Col 20]
+x: UnknownTypeForm[&quot;some string&quot;]
+</code></pre>
+<p>The first of these (<code>unresolved-reference</code>) is obviously fine, but I think we should suppress the other diagnostic. This can also cause false positives in unreachable code where legit type forms may be inferred as <code>Unknown</code>:</p>
+<pre><code class="language-py">assert False
+
+from typing_extensions import Literal
+
+def outer():
+    # Syntax error in forward annotation: Unexpected token at the end of an expression (invalid-syntax-in-forward-annotation) [Ln 7, Col 26]
+    def inner(p: Literal[&quot;missing value&quot;]):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-06-17 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @sharkdp on 2025-06-17 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-06-17 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-19 16:33</div>
+            <div class="timeline-body"><p>A possible approach is to apply &quot;name-based resolution&quot; on some of the unresolved references:</p>
+<pre><code class="language-python"># `Literal` is unresolved, since it is not imported,
+# but instead of treating it as `Unknown`,
+# assume the user mean `typing[_extensions].Literal`.
+
+#        vvvvvvv error: `Literal` is not resolved
+def _(a: Literal['a b']):
+#                ^^^^^ Fine
+	reveal_type(a)        # Literal['a b']
+	reveal_type(Literal)  # Error out, but reveal `typing[_extensions].Literal`
+</code></pre>
+<p><code>reveal_type()</code> is already benefitting from this special treatment. I'm not sure how much of a good idea it is to extend to other symbols, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-19 17:35</div>
+            <div class="timeline-body"><p>I don't think we want to make assumptions based on the name.</p>
+<p>It seems to me the likely fix here is just some kind of &quot;visit and evaluate/store unknown&quot; helper in type expression evaluation that doesn't emit diagnostics, so when we evaluate something as <code>Unknown</code>, we can just mark its subscript expression (and all sub-expressions) as also <code>Unknown</code> and move on, rather than really trying to evaluate them and possibly emitting diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

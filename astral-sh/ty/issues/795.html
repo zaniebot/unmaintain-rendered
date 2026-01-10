@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type narrowing with `assert x is not None` does not work with `global` - astral-sh/ty #795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type narrowing with `assert x is not None` does not work with `global`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/795">#795</a>
+        opened by <a href="https://github.com/thorbenk">@thorbenk</a>
+        on 2025-07-10 07:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thorbenk">@thorbenk</a> on 2025-07-10 07:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the following snippet, while the <code>assert x is not None</code> works for function <code>f</code>, the same does not work for <code>g</code>, and I get and unexpected diagnostic:</p>
+<pre><code class="language-python">def f(x: int | None) -&gt; int:
+    assert x is not None
+    return x
+
+
+y: int | None = None
+
+
+def g() -&gt; int:
+    global y
+    assert y is not None
+    return y
+
+
+print(f(42))
+y = 43
+print(g())
+</code></pre>
+<pre><code>uv run ty check tytest.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-return-type]: Return type does not match returned value
+  --&gt; tytest.py:9:12
+   |
+ 9 | def g() -&gt; int:
+   |            --- Expected `int` because of return type
+10 |     global y
+11 |     assert y is not None
+12 |     return y
+   |            ^ expected `int`, found `int | None`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p><code>mypy</code> doesn't report any diagnostics here.</p>
+<p>I'm running <code>ty 0.0.1-alpha.14</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @sharkdp on 2025-07-10 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-10 07:34</div>
+            <div class="timeline-body"><p>Thank you for reporting this. I believe this is a duplicate of #311</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-10 07:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

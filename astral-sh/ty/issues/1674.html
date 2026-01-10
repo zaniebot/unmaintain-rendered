@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No diagnostics reported for override of `@final` method if the method has other decorators too - astral-sh/ty #1674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No diagnostics reported for override of `@final` method if the method has other decorators too</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1674">#1674</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 15:28</div>
+            <div class="timeline-body"><p>Similar to #1675. We currently issue no complaint about this snippet, for example, but mypy (the reference implementation for PEP 591) <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=b4d60bd1cba3c19d627d0ff6144aa2c9">does</a>:</p>
+<pre><code class="language-py">from typing import final
+from functools import lru_cache
+
+class Foo:
+    @lru_cache
+    @final
+    def method(self, x: int) -&gt; None: ...
+
+class Bar(Foo):
+    @lru_cache
+    def method(self, x: int) -&gt; None: ...
+</code></pre>
+<p>The reason why we issue no complaint is that the <code>lru_cache</code> decorator transforms the function definition into an instance of <code>_lru_cache_wrapper</code>. We currently only recognise methods as being <code>@final</code> if they have <code>Type::FunctionLiteral</code> types in our internal model, so the transformation into an instance of <code>_lru_cache_wrapper</code> means that we &quot;forget&quot; that the method was decorated with <code>@final</code>. To fix this issue, we may need to treat the <code>@final</code> decorator more like a type qualifier that &quot;survives&quot; the transformations from a function-literal type to a callable type and then to an <code>_lru_cache_wrapper</code> type.</p>
+<p>Pyright <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.12&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMrCoCGANgFCiQECuKAxjGGCQM6ba74kjUD6dROgAsApmTJ0SRFmwBiTAFxkoKqAAFufAcLGr1hFKWWqAJiOBQIImELAmAFCxElgAGigAPBZhQwAlFAAtAB8UAByYCgi3gB0ceKS0mwAQkQg9vJgfkp6Gjz8gqLGKmYWVjZ2js5unt6o-kGhEVGx8UA">also emits a diagnostic about this override</a>, but (at time of writing) pyrefly <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN2R0qKAB10YavTABXdAGMGuXFDiduvflErSA%2BnNRyAFjDFi5UVHFUAxJYjF1HdAAJbd%2BoyfROXg4Q6dMGDA6GhgGQ1xMAAo4GCgwABo6fEROdAYASjoAWgA%2BOgA5XHQYNMIK03kLKzoAIVRKaNtcTPtvJ1dtPQNjAMcgkLCIqNj4pJS01izcguLS8sr0EESQaQZoOBJyRBAAYjoAVQ2oCCYBWQUIErgqwYFeGlQGHXRpGmwYJtT0mfy6OAMSjtHyUcLSSjeMAiECFd6fYF0YD4AC%2BMLEKxAZDBYCgpEIihoUAoBwACqQcXiARgcAQ6HISpA2BDntd0IQxAcAMowGB0QwMBjEOCIAD0ouxwTxhF4bFFMHQoswuDkcFFDPEEGZlFZJVFD0odFQADdUNBUNhYPTGVqWRsSnRcMR7egtmIyCN0DljV84Gy6ABeOgwgDMhAAjAAmdHLFGrAwbH3WaAwChoLB4IhkEAooA">does not</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-29 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-11-29 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-01 23:26</div>
+            <div class="timeline-body"><p>Another approach to fixing this kind of issue might be to rely less on the type of the decorated member to preserve this info, and instead attach the info to the type of <code>Foo</code> -- that is, have classes keep a set of the names which are final on them?</p>
+<p>I'm not sure this needs to be in stable milestone, either, but for now I've given it a P2 and we can consider it later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] ty does not work a a particalar file - astral-sh/ty #1118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] ty does not work a a particalar file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1118">#1118</a>
+        opened by <a href="https://github.com/sehHeiden">@sehHeiden</a>
+        on 2025-09-03 08:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sehHeiden">@sehHeiden</a> on 2025-09-03 08:44</div>
+            <div class="timeline-body"><p>I start ty with:</p>
+<pre><code>uv run ty check .
+</code></pre>
+<p>The platform is amd64 with Win10.
+Python 3.13.7</p>
+<p>I get this error message:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 66/66 files
+error[panic]: Panicked at C:\Users\runneradmin\.cargo\git\checkouts\salsa-e6f3bb7c2a062968\918d35d\src\function\execute.rs:215:25 when checking path to project\cli\patch_generator.py`: `infer_definition_types(Id(9da9a)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: windows x86_64
+info: Version: 0.0.1-alpha.19 (e9cb838b3 2025-08-19)
+info: Args: [&quot;patch to project\\.venv\\Scripts\\ty.exe&quot;, &quot;check&quot;, &quot;.&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_definition_types(Id(9dadc))
+             at crates\ty_python_semantic\src\types\infer.rs:167
+   1: place_by_id(Id(554f6))
+             at crates\ty_python_semantic\src\place.rs:688
+   2: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(2708b))
+             at crates\ty_python_semantic\src\types.rs:635
+   3: infer_definition_types(Id(996f0))
+             at crates\ty_python_semantic\src\types\infer.rs:167
+   4: infer_deferred_types(Id(9d9aa))
+             at crates\ty_python_semantic\src\types\infer.rs:207
+   5: ClassLiteral &lt; 'db &gt;::explicit_bases_(Id(2a41e))
+             at crates\ty_python_semantic\src\types\class.rs:1230
+   6: ClassLiteral &lt; 'db &gt;::is_typed_dict_(Id(2a41e))
+             at crates\ty_python_semantic\src\types\class.rs:1230
+   7: infer_deferred_types(Id(9300a))
+             at crates\ty_python_semantic\src\types\infer.rs:207
+   8: FunctionType &lt; 'db &gt;::signature_(Id(674ad))
+             at crates\ty_python_semantic\src\types\function.rs:642
+   9: infer_scope_types(Id(891e))
+             at crates\ty_python_semantic\src\types\infer.rs:138
+  10: check_file_impl(Id(c0f))
+             at crates\ty_project\src\lib.rs:527
+</code></pre>
+<p>The repo is private therefore I paste my (own) code here:</p>
+<pre><code>#!/usr/bin/env python3
+&quot;&quot;&quot;Simple patch generator for training data.&quot;&quot;&quot;
+
+from collections import defaultdict
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from pathlib import Path
+
+import fiona
+import geopandas as gpd
+import numpy as np
+import rioxarray as rxr
+import xarray as xr
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
+from rasterio.features import rasterize
+from shapely.geometry import box
+from tqdm import tqdm
+
+
+class Config(BaseSettings):
+    &quot;&quot;&quot;Configuration for patch generation.&quot;&quot;&quot;
+
+    patch_size: int = 512
+    raster_dir: Path = Path(&quot;data/ground_truth/tile_gt_dop20/training&quot;)
+    annotation_dir: Path = Path(&quot;data/ground_truth/gpkg_gt_dop20&quot;)
+    output_dir: Path = Path(&quot;data/patches&quot;)
+    filter_annotated: bool = True
+    min_area: float = 1.6
+    raster_pattern: str = &quot;*.zstd.tif&quot;
+    max_workers: int = 4
+    model_config = {&quot;env_file&quot;: &quot;config/generate_patch.env&quot;}
+
+    @field_validator(&quot;filter_annotated&quot;, mode=&quot;before&quot;)
+    @classmethod
+    def parse_bool(cls, value: str | bool) -&gt; bool:
+        &quot;&quot;&quot;Parse boolean values from environment variables.&quot;&quot;&quot;
+        if isinstance(value, str):
+            return value.lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;on&quot;)
+        return bool(value)
+
+
+def _to_dataarray(data: xr.DataArray | xr.Dataset) -&gt; xr.DataArray:
+    &quot;&quot;&quot;Normalize raster input to a squeezed DataArray.&quot;&quot;&quot;
+    if isinstance(data, xr.DataArray):
+        return data.squeeze()
+    if isinstance(data, xr.Dataset):
+        return next(iter(data.data_vars.values())).squeeze()
+    error_msg = f&quot;Unexpected type: {type(data)}&quot;
+    raise TypeError(error_msg)
+
+
+def print_stats(annotation_files: list[Path]) -&gt; None:
+    &quot;&quot;&quot;Print annotation statistics.&quot;&quot;&quot;
+    stats = [(f.name, *_get_file_stats(f)) for f in annotation_files if f.exists()]
+    for name, objects, area in stats:
+        print(f&quot;{name}: {objects} objects, {area:,.0f} m²&quot;)
+    print(f&quot;Total: {sum(s[1] for s in stats)} objects, {sum(s[2] for s in stats):,.0f} m²&quot;)
+
+
+def _get_file_stats(gpkg_path: Path) -&gt; tuple[int, float]:
+    layers = [layer for layer in fiona.listlayers(str(gpkg_path)) if layer != &quot;layer_styles&quot;]
+    dfs = [gpd.read_file(gpkg_path, layer=layer) for layer in layers]
+    return sum(len(df) for df in dfs), sum(df.geometry.area.sum() for df in dfs)
+
+
+def collect_mask_files(masks_dir: Path) -&gt; list[Path]:
+    &quot;&quot;&quot;Collect all mask files from training, testing, and validation splits.&quot;&quot;&quot;
+    if not masks_dir.exists():
+        return []
+
+    splits = [&quot;training&quot;, &quot;testing&quot;, &quot;validation&quot;]
+    mask_files: list[Path] = []
+    for split in splits:
+        split_dir = masks_dir / split
+        if split_dir.exists():
+            mask_files.extend(split_dir.glob(&quot;*.tif&quot;))
+    return mask_files
+
+
+def calculate_class_ratio(masks: np.ndarray) -&gt; float | None:
+    &quot;&quot;&quot;Calculate the annotated class ratio from stacked mask arrays.&quot;&quot;&quot;
+    if masks.size == 0:
+        return None
+
+    positive = np.sum(masks &gt; 0)
+    total = masks.size
+
+    return positive / total
+
+
+def calculate_prevalence_by_split(masks_dir: Path) -&gt; tuple[dict[str, float | None], float | None]:
+    &quot;&quot;&quot;Calculate annotated class prevalence grouped by split and overall.&quot;&quot;&quot;
+    splits = [&quot;training&quot;, &quot;testing&quot;, &quot;validation&quot;]
+    prevalence_by_split: dict[str, float | None] = {}
+    all_positive = all_total = 0
+
+    for split in splits:
+        split_dir = masks_dir / split
+        mask_files = list(split_dir.glob(&quot;*.tif&quot;)) if split_dir.exists() else []
+        if not mask_files:
+            prevalence_by_split[split] = None
+            continue
+
+        mask_arrays = [_to_dataarray(rxr.open_rasterio(mf)).values.squeeze() for mf in mask_files]  # type: ignore[arg-type]
+        stacked = np.stack(mask_arrays)
+        prevalence_by_split[split] = calculate_class_ratio(stacked)
+
+        all_positive += int(np.sum(stacked &gt; 0))
+        all_total += stacked.size
+
+    overall = all_positive / all_total if all_total &gt; 0 else None
+    return prevalence_by_split, overall
+
+
+def print_prevalence_stats(prevalence_by_split: dict[str, float | None], overall_prevalence: float | None) -&gt; None:
+    &quot;&quot;&quot;Print prevalence statistics grouped by split and overall.&quot;&quot;&quot;
+    print(&quot;\nClass Prevalence by Split:&quot;)
+
+    # Print individual split statistics
+    for split, ratio in prevalence_by_split.items():
+        if ratio is not None:
+            print(f&quot;  {split.capitalize()}: {ratio * 100:.2f}% annotated&quot;)
+        else:
+            print(f&quot;  {split.capitalize()}: No masks found&quot;)
+
+    # Print overall prevalence (true weighted average)
+    if overall_prevalence is not None:
+        print(f&quot;\n  Overall (all ground truth): {overall_prevalence * 100:.2f}% annotated&quot;)
+    else:
+        print(&quot;\n  Overall: No data available&quot;)
+
+
+def _count_positive_pixels(mask_path: Path) -&gt; int:
+    mask = _to_dataarray(rxr.open_rasterio(mask_path))  # type: ignore[arg-type]
+    return int((mask &gt; 0).sum().item())
+
+
+def _count_total_pixels(mask_path: Path) -&gt; int:
+    mask = _to_dataarray(rxr.open_rasterio(mask_path))  # type: ignore[arg-type]
+    return mask.sizes[&quot;y&quot;] * mask.sizes[&quot;x&quot;]
+
+
+def process_raster(raster_path: Path, config: Config) -&gt; tuple[str, int]:
+    &quot;&quot;&quot;
+    Process a single raster file.
+
+    Returns:
+        Tuple of (split_name, patch_count)
+
+    &quot;&quot;&quot;
+    raster = _to_dataarray(rxr.open_rasterio(raster_path))  # type: ignore[arg-type]
+    layer_name = raster_path.stem.replace(&quot;.zstd&quot;, &quot;&quot;)
+    split = _get_split(raster_path)
+    annotations = _load_annotations(config.annotation_dir / f&quot;{split}.gpkg&quot;, layer_name)
+
+    if config.filter_annotated and (annotations is None or annotations.empty):
+        return split, 0
+
+    # Setup patch grid and output dirs
+    h, w = raster.sizes[&quot;y&quot;], raster.sizes[&quot;x&quot;]
+    ny, nx = h // config.patch_size, w // config.patch_size
+    y_off, x_off = (h - ny * config.patch_size) // 2, (w - nx * config.patch_size) // 2
+
+    out_dirs = {k: config.output_dir / k / split for k in [&quot;rasters&quot;, &quot;masks&quot;, &quot;annotations&quot;]}
+    for d in out_dirs.values():
+        d.mkdir(parents=True, exist_ok=True)
+
+    patches = 0
+    for i in range(ny):
+        for j in range(nx):
+            y1 = y_off + i * config.patch_size
+            x1 = x_off + j * config.patch_size
+            patch = raster.isel(y=slice(y1, y1 + config.patch_size), x=slice(x1, x1 + config.patch_size))
+            name = f&quot;{layer_name}_{y1:05d}_{x1:05d}&quot;
+
+            # Get annotations for this patch
+            clipped = gpd.clip(annotations, box(*patch.rio.bounds())) if annotations is not None and not annotations.empty else None
+            if config.filter_annotated and (clipped is None or len(clipped) == 0) and (clipped.geometry.area.sum() &lt; config.min_area):
+                continue
+
+            generate_patch(patch, name, out_dirs[&quot;rasters&quot;])
+            generate_annotations(clipped, name, out_dirs[&quot;annotations&quot;])
+            generate_mask(clipped, patch, name, out_dirs[&quot;masks&quot;], config.patch_size)
+            patches += 1
+
+    split = _get_split(raster_path)
+    return split, patches
+
+
+def generate_patch(patch: xr.DataArray, name: str, output_dir: Path) -&gt; None:
+    &quot;&quot;&quot;Generate and save a raster patch.&quot;&quot;&quot;
+    patch.rio.to_raster(output_dir / f&quot;{name}.tif&quot;)
+
+
+def generate_annotations(clipped_annotations: gpd.GeoDataFrame | None, name: str, output_dir: Path) -&gt; None:
+    &quot;&quot;&quot;Generate and save clipped annotations.&quot;&quot;&quot;
+    if clipped_annotations is not None and len(clipped_annotations) &gt; 0:
+        clipped_annotations.to_file(output_dir / f&quot;{name}.gpkg&quot;, driver=&quot;GPKG&quot;)
+
+
+def generate_mask(clipped_annotations: gpd.GeoDataFrame | None, patch: xr.DataArray, name: str, output_dir: Path, patch_size: int) -&gt; None:
+    &quot;&quot;&quot;Generate and save a mask from annotations.&quot;&quot;&quot;
+    if clipped_annotations is not None and len(clipped_annotations) &gt; 0:
+        mask = rasterize(
+            [(g, 1) for g in clipped_annotations.geometry],
+            out_shape=(patch_size, patch_size),
+            transform=patch.rio.transform(),
+            fill=0,
+            dtype=&quot;uint8&quot;,
+        )
+    else:
+        mask = np.zeros((patch_size, patch_size), dtype=&quot;uint8&quot;)
+
+    mask_da = xr.DataArray(mask[None], dims=[&quot;band&quot;, &quot;y&quot;, &quot;x&quot;], coords={&quot;band&quot;: [1], &quot;y&quot;: patch.y, &quot;x&quot;: patch.x})
+    mask_da.rio.write_crs(patch.rio.crs, inplace=True)
+    mask_da.rio.to_raster(output_dir / f&quot;{name}.tif&quot;)
+
+
+def _get_split(raster_path: Path) -&gt; str:
+    return next((s for s in [&quot;training&quot;, &quot;testing&quot;, &quot;validation&quot;] if s in str(raster_path)), &quot;validation&quot;)
+
+
+def _load_annotations(annotation_file: Path, layer_name: str) -&gt; gpd.GeoDataFrame | None:
+    if not (annotation_file.exists() and layer_name in fiona.listlayers(str(annotation_file))):
+        return None
+    annotations = gpd.read_file(annotation_file, layer=layer_name)
+    annotations.geometry = annotations.geometry.buffer(0)
+    return annotations
+
+
+def main() -&gt; None:
+    &quot;&quot;&quot;Run patch generation.&quot;&quot;&quot;
+    config = Config()
+    print(config.model_dump(), &quot;\n&quot;)
+
+    print_stats(list(config.annotation_dir.glob(&quot;*.gpkg&quot;)))
+
+    rasters = list(config.raster_dir.rglob(config.raster_pattern))
+    print(f&quot;\nFound {len(rasters)} raster files&quot;)
+
+    # Process rasters in parallel with a progress bar
+    patch_counts_by_split: dict[str, int] = defaultdict(int)
+    with ProcessPoolExecutor(max_workers=config.max_workers) as executor:
+        # Submit all tasks
+        future_to_raster = {executor.submit(process_raster, raster, config): raster for raster in rasters}
+
+        # Process completed tasks with a progress bar
+        with tqdm(total=len(rasters), desc=&quot;Processing rasters&quot;, unit=&quot;files&quot;) as pbar:
+            for future in as_completed(future_to_raster):
+                raster_path = future_to_raster[future]
+                try:
+                    split, patch_count = future.result()
+                    patch_counts_by_split[split] += patch_count
+                except OSError as exc:
+                    print(f&quot;\nError processing {raster_path.name}: {exc}&quot;)
+                finally:
+                    pbar.update(1)
+
+    # Print results grouped by split
+    print(&quot;\nPatches generated by split:&quot;)
+    total_patches = 0
+    for split in [&quot;training&quot;, &quot;testing&quot;, &quot;validation&quot;]:
+        count = patch_counts_by_split.get(split, 0)
+        print(f&quot;  {split.capitalize()}: {count:,} patches&quot;)
+        total_patches += count
+    print(f&quot;  Total: {total_patches:,} patches&quot;)
+
+    # Calculate and print prevalence grouped by split
+    print(&quot;\nCalculating prevalence...&quot;)
+    prevalence_by_split, overall_prevalence = calculate_prevalence_by_split(config.output_dir / &quot;masks&quot;)
+    print_prevalence_stats(prevalence_by_split, overall_prevalence)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>I also use mypy. Got no problem with the code so far.
+If I remember correctly, it started after adding the ProcessPoolExecutor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-03 09:15</div>
+            <div class="timeline-body"><p>Thank you for reporting this. I narrowed this down to:</p>
+<pre><code class="language-py">import xarray as xr
+
+def _(mask: xr.DataArray):
+    mask &gt; 0
+</code></pre>
+<p>It is very likely that this is related to #256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sehHeiden">@sehHeiden</a> on 2025-09-03 11:07</div>
+            <div class="timeline-body"><p>Wonderful, I did not know how to narrow it down.
+Beside, do a full bisect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-03 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-09-03 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-03 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

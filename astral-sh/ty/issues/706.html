@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No error emitted for invalid binary operations in type expressions - astral-sh/ty #706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No error emitted for invalid binary operations in type expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/706">#706</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-25 19:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-25 19:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We don't emit a diagnostic for this, but we should:</p>
+<pre><code class="language-py">x: 1 + 2
+</code></pre>
+<p>This bit of the code needs to be edited: https://github.com/astral-sh/ruff/blob/15f370e19c6bcaefd662a968b8a14c59dbbb36a6/crates/ty_python_semantic/src/types/infer.rs#L8366-L8370</p>
+<p>it needs to look more like this: https://github.com/astral-sh/ruff/blob/15f370e19c6bcaefd662a968b8a14c59dbbb36a6/crates/ty_python_semantic/src/types/infer.rs#L8387-L8393</p>
+<p>though we might have to do a tedious match over all the various kinds of binary operations in order to get good error messages.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-06-25 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-06-25 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/med1844">@med1844</a> on 2025-06-26 04:05</div>
+            <div class="timeline-body"><p>Can I work on this? I can only code after work, so it might take a little bit longer, but PR should be ready within 2 days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-26 04:25</div>
+            <div class="timeline-body"><p>@med1844 Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @med1844 by @dhruvmanila on 2025-06-26 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/med1844">@med1844</a> on 2025-06-27 15:52</div>
+            <div class="timeline-body"><p>After adding the diagnostic, I found that it breaks <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md?plain=1#L254">this test</a>.</p>
+<p>I'm trying to decide on the best approach to fix this. Should I:</p>
+<ol>
+<li>replace the expression with <code>Intersection[LiteralString, Not[Literal[&quot;&quot;]]]</code>?</li>
+<li>add <code>#[invalid-type-form]</code>?</li>
+<li>or do something else?</li>
+</ol>
+<p>Thanks in advance for any input on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 15:55</div>
+            <div class="timeline-body"><p>@med1844 option (1) is the correct one there! That test is currently invalid; we don't support using <code>~</code> to express negated types (yet).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-30 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

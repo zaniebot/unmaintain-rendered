@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support gradual equivalence for an overloaded callable - astral-sh/ty #105</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support gradual equivalence for an overloaded callable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/105">#105</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-01 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-01 19:32</div>
+            <div class="timeline-body"><p>The task here is to resolve the following TODO and add support for <code>is_gradual_equivalent_to</code> for an overloaded callable. Note that this relation is supported when both types are non-overloaded callable i.e., a callable type with one signature.</p>
+<p>https://github.com/astral-sh/ruff/blob/75effb8ed7430288648eb616b1499939700edff6/crates/red_knot_python_semantic/src/types.rs#L7216-L7229</p>
+<h3>Notes</h3>
+<p>Currently, the equivalence relation between two, possible overloaded, callable types is implemented based on the definition of <a href="https://typing.python.org/en/latest/spec/concepts.html#subtype-supertype-and-type-equivalence">equivalence in the typing spec</a> and delegates it to the subtyping check:</p>
+<blockquote>
+<p>We also define an <strong>equivalence</strong> relation on fully static types: the types <code>A</code> and <code>B</code> are equivalent (or “the same type”) if and only if <code>A</code> is a subtype of <code>B</code> and <code>B</code> is a subtype of <code>A</code>.</p>
+</blockquote>
+<p>Implementation of equivalence check between two callable type:</p>
+<p>https://github.com/astral-sh/ruff/blob/75effb8ed7430288648eb616b1499939700edff6/crates/red_knot_python_semantic/src/types.rs#L7190-L7214</p>
+<p>I had a discussion with Carl internally and we think that the gradual equivalence check could potentially be implemented using a similar approach instead of implementing it from scratch as it might be complicated to implement the check from scratch.</p>
+<p>The way this could work is by using some kind of &quot;strategy&quot; parameter that the <code>CallableType::is_subtype_of</code> accepts which would have two variants to indicate that the subtype check between two parameter type is being done to check either (1) gradual equivalence between two callable types or (2) subtyping between two callable types.</p>
+<p>In terms of implementation, this could look like:</p>
+<ul>
+<li>Update <code>CallableType::is_gradual_equivalent_to</code> to delegate it to <code>is_subtype_of</code> when either of both types are overloaded</li>
+<li>Update <code>CallableType::is_subtype_of</code> to accept an enum parameter with two variants</li>
+<li>Pass this parameter to <code>Signature::is_subtype_of</code></li>
+<li>The inner close in <code>Signature::is_subtype_of</code> that checks the relation between two types will take either of the two approach:<ol>
+<li>If the main check is <code>is_subtype_of</code>, the logic that exists currently will remain as is</li>
+<li>If the main check is <code>is_gradual_equivalent_to</code>, if both types are fully static then call into <code>Type::is_subtype_of</code> otherwise use <code>Type::is_gradual_equivalent_to</code></li>
+</ol>
+</li>
+</ul>
+<p>Both (1) and (2) above would be represented using a two variant enum parameter that I talked about earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Support gradual equivalence for an overloaded callable" to "Support gradual equivalence for an overloaded callable" by @MichaReiser on 2025-05-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-05-10 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-06-11 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-06-11 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-08 13:54</div>
+            <div class="timeline-body"><p>This isn't required after astral-sh/ruff#18799 as the <code>is_gradual_equivalent_to</code> check has been removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-08 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

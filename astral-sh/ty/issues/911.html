@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server panics when making changes while the workspace diagnostics request is in flight - astral-sh/ty #911</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Server panics when making changes while the workspace diagnostics request is in flight</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/911">#911</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-29 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-29 12:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<ul>
+<li>Open a larger project (e.g. langchain)</li>
+<li>Wait for workspace diagnostics to start</li>
+<li>Make changes (make sure you hit save)</li>
+</ul>
+<pre><code>panicked at crates/ty_server/src/session.rs:532:44:
+called `Option::unwrap()` on a `None` value
+   0: std::backtrace_rs::backtrace::libunwind::trace
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/../../backtrace/src/backtrace/libunwind.rs:117:9
+   1: std::backtrace_rs::backtrace::trace_unsynchronized
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/../../backtrace/src/backtrace/mod.rs:66:14
+   2: std::backtrace::Backtrace::create
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/backtrace.rs:331:13
+   3: ty_server::server::ServerPanicHookHandler::new::{{closure}}
+             at /Users/micha/astral/ruff/crates/ty_server/src/server.rs:274:29
+   4: ruff_db::panic::install_hook::{{closure}}::{{closure}}
+             at /Users/micha/astral/ruff/crates/ruff_db/src/panic.rs:87:24
+   5: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/alloc/src/boxed.rs:1980:9
+   6: std::panicking::rust_panic_with_hook
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:841:13
+   7: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:699:13
+   8: std::sys::backtrace::__rust_end_short_backtrace
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/sys/backtrace.rs:168:18
+   9: __rustc::rust_begin_unwind
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:697:5
+  10: core::panicking::panic_fmt
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/panicking.rs:75:14
+  11: core::panicking::panic
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/panicking.rs:145:5
+  12: core::option::unwrap_failed
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/option.rs:2040:5
+  13: core::option::Option&lt;T&gt;::unwrap
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1003:21
+  14: ty_server::session::Session::index_mut
+             at /Users/micha/astral/ruff/crates/ty_server/src/session.rs:532:21
+  15: ty_server::session::Session::update_text_document
+             at /Users/micha/astral/ruff/crates/ty_server/src/session.rs:492:9
+  16: &lt;ty_server::server::api::notifications::did_change::DidChangeTextDocumentHandler as ty_server::server::api::traits::SyncNotificationHandler&gt;::run
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/api/notifications/did_change.rs:39:9
+  17: ty_server::server::api::sync_notification_task::{{closure}}
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/api.rs:351:27
+  18: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  19: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1966:9
+  20: ty_server::server::schedule::Scheduler::dispatch
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/schedule.rs:52:17
+  21: ty_server::server::main_loop::&lt;impl ty_server::server::Server&gt;::main_loop
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/main_loop.rs:102:21
+  22: ty_server::server::Server::run::{{closure}}
+             at /Users/micha/astral/ruff/crates/ty_server/src/server.rs:173:33
+  23: ty_server::server::schedule::thread::Builder::spawn::{{closure}}
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/schedule/thread.rs:70:13
+  24: std::sys::backtrace::__rust_begin_short_backtrace
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152:18
+  25: std::thread::Builder::spawn_unchecked_::{{closure}}::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559:17
+  26: &lt;core::panic::unwind_safe::AssertUnwindSafe&lt;F&gt; as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272:9
+  27: std::panicking::try::do_call
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/panicking.rs:589:40
+  28: ___rust_try
+  29: std::panicking::try
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/panicking.rs:552:19
+  30: std::panic::catch_unwind
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+  31: std::thread::Builder::spawn_unchecked_::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557:30
+  32: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  33: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/alloc/src/boxed.rs:1966:9
+  34: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/alloc/src/boxed.rs:1966:9
+  35: std::sys::pal::unix::thread::Thread::new::thread_start
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/sys/pal/unix/thread.rs:97:17
+  36: __pthread_cond_wait
+
+panicked at /Users/micha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jod-thread-1.0.0/src/lib.rs:33:22:
+called `Result::unwrap()` on an `Err` value: Any { .. }
+   0: std::backtrace_rs::backtrace::libunwind::trace
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/../../backtrace/src/backtrace/libunwind.rs:117:9
+   1: std::backtrace_rs::backtrace::trace_unsynchronized
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/../../backtrace/src/backtrace/mod.rs:66:14
+   2: std::backtrace::Backtrace::create
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/backtrace.rs:331:13
+   3: ty_server::server::ServerPanicHookHandler::new::{{closure}}
+             at /Users/micha/astral/ruff/crates/ty_server/src/server.rs:274:29
+   4: ruff_db::panic::install_hook::{{closure}}::{{closure}}
+             at /Users/micha/astral/ruff/crates/ruff_db/src/panic.rs:87:24
+   5: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/alloc/src/boxed.rs:1980:9
+   6: std::panicking::rust_panic_with_hook
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:841:13
+   7: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:706:13
+   8: std::sys::backtrace::__rust_end_short_backtrace
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/sys/backtrace.rs:168:18
+   9: __rustc::rust_begin_unwind
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:697:5
+  10: core::panicking::panic_fmt
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/panicking.rs:75:14
+  11: core::result::unwrap_failed
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/result.rs:1732:5
+  12: core::result::Result&lt;T,E&gt;::unwrap
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/result.rs:1137:23
+  13: jod_thread::JoinHandle&lt;T&gt;::join
+             at /Users/micha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jod-thread-1.0.0/src/lib.rs:33:9
+  14: ty_server::server::schedule::thread::JoinHandle&lt;T&gt;::join
+             at /Users/micha/astral/ruff/crates/ty_server/src/server/schedule/thread.rs:89:9
+  15: ty_server::server::Server::run
+             at /Users/micha/astral/ruff/crates/ty_server/src/server.rs:173:9
+  16: ty_server::run_server
+             at /Users/micha/astral/ruff/crates/ty_server/src/lib.rs:50:25
+  17: ty::run
+             at /Users/micha/astral/ruff/crates/ty/src/lib.rs:44:28
+  18: ty::main
+             at /Users/micha/astral/ruff/crates/ty/src/main.rs:6:5
+  19: core::ops::function::FnOnce::call_once
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  20: std::sys::backtrace::__rust_begin_short_backtrace
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152:18
+  21: std::rt::lang_start::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/rt.rs:199:18
+  22: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;F&gt;::call_once
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/core/src/ops/function.rs:284:13
+  23: std::panicking::try::do_call
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:589:40
+  24: std::panicking::try
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:552:19
+  25: std::panic::catch_unwind
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panic.rs:359:14
+  26: std::rt::lang_start_internal::{{closure}}
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/rt.rs:168:24
+  27: std::panicking::try::do_call
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:589:40
+  28: std::panicking::try
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panicking.rs:552:19
+  29: std::panic::catch_unwind
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/panic.rs:359:14
+  30: std::rt::lang_start_internal
+             at /rustc/6b00bc3880198600130e1cf62b8f8a93494488cc/library/std/src/rt.rs:164:5
+  31: std::rt::lang_start
+             at /Users/micha/.rustup/toolchains/1.88-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/rt.rs:198:5
+  32: _main
+
+</code></pre>
+<p>I was mainly able to reproduce this with Zed using the following configuration:</p>
+<pre><code class="language-json">  &quot;lsp&quot;: {
+    &quot;ty&quot;: {
+      &quot;binary&quot;: {
+        &quot;path&quot;: &quot;/Users/micha/astral/ruff/target/debug/ty&quot;,
+        &quot;arguments&quot;: [&quot;server&quot;]
+      },
+      &quot;initialization_options&quot;: {
+        &quot;settings&quot;: {
+          &quot;logLevel&quot;: &quot;debug&quot;,
+          &quot;logFile&quot;: &quot;/Users/micha/astral/ruff/target/ty_server.log&quot;,
+          &quot;diagnosticMode&quot;: &quot;workspace&quot;
+        }
+      },
+      &quot;settings&quot;: {
+        &quot;ty&quot;: {
+          &quot;diagnosticMode&quot;: &quot;workspace&quot;
+        }
+      }
+    }
+  }
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-29 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2025-07-29 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 08:28</div>
+            <div class="timeline-body"><p>I believe the issue here is that <code>SessionSnapshot</code> has its own <code>Arc&lt;Index&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-30 15:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:20 UTC
+    </footer>
+</body>
+</html>

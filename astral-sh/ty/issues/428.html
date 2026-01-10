@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descriptor / `__get__` not respected - astral-sh/ty #428</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Descriptor / `__get__` not respected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/428">#428</a>
+        opened by <a href="https://github.com/kreathon">@kreathon</a>
+        on 2025-05-16 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kreathon">@kreathon</a> on 2025-05-16 18:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the following example, it seems that the <code>__get__</code> method of the descriptor is not respected.</p>
+<pre><code class="language-python">from typing import Any
+from typing import reveal_type
+
+
+class Descriptor[T]:
+
+    def __get__(self, instance: object, owner: Any) -&gt; T: ...
+
+
+class A:
+    a: Descriptor[int]
+    
+
+reveal_type(A().a)
+</code></pre>
+<p>Output:</p>
+<pre><code>Descriptor[int]
+</code></pre>
+<p>Expected Output:</p>
+<pre><code>int
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-16 21:13</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p><code>A.a</code> is only declared, not defined. We treat this as a hint that the <code>a</code> attribute is a pure instance attribute, which is not  accessible on the class itself. And instance attributes do not invoke the descriptor protocol. Try defining <code>A.a</code> and it should work.</p>
+<p>We're also interested in feedback on this design decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-05-17 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-05-17 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kreathon">@kreathon</a> on 2025-05-17 18:59</div>
+            <div class="timeline-body"><p>I came up with the example from above while playing around with <code>ty</code> and a codebase using <code>sqlalchemy</code>.</p>
+<p>Here is a simple model:</p>
+<pre><code class="language-python">from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import DeclaritiveBase
+from sqlalchemy.orm import mapped_column
+
+
+class Base(DeclaritiveBase):
+    pass
+
+
+class User(Base):
+    __tablename__ = &quot;user&quot;
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    name: Mapped[str]
+</code></pre>
+<p>Attributes like <code>name</code> can either be used to access the instance value or at the class level as part of a query:</p>
+<pre><code class="language-python">
+user: User = session.execute(
+    sa.select(User)
+    .filter(User.name == &quot;ty&quot;)
+).scalar_one()
+
+print(user.name)
+</code></pre>
+<p>This code can currently not be type checked with <code>ty</code>:</p>
+<pre><code class="language-python">user.name   # Mapped[str]
+User.name   # Attribute `name` can only be accessed on instances, not on the class object `&lt;class 'User'`&gt;` itself.
+
+</code></pre>
+<p><a href="https://github.com/sqlalchemy/sqlalchemy/blob/main/lib/sqlalchemy/orm/base.py#L763">Definition</a> of <code>Mapped</code>:</p>
+<pre><code class="language-python">class Mapped(
+    SQLORMExpression[_T_co],
+    ORMDescriptor[_T_co],
+    _MappedAnnotationBase[_T_co],
+    roles.DDLConstraintColumnRole,
+):
+     ...
+
+    if typing.TYPE_CHECKING:
+
+        @overload
+        def __get__(
+            self, instance: None, owner: Any
+        ) -&gt; InstrumentedAttribute[_T_co]: ...
+
+        @overload
+        def __get__(self, instance: object, owner: Any) -&gt; _T_co: ...
+
+        def __get__(
+            self, instance: Optional[object], owner: Any
+        ) -&gt; Union[InstrumentedAttribute[_T_co], _T_co]: ...
+
+    ...
+</code></pre>
+<p>The problem could be solved (as described by @sharkdp ) by adding a definition:</p>
+<pre><code class="language-python">name: Mapped[str] = mapped_column()
+</code></pre>
+<p>Is there anything that could be done on the <code>sqlalchemy</code> end?</p>
+<p>Do we need to add the <code>mapped_column</code> assignments (that are otherwise useless and make the code less readable)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-17 19:04</div>
+            <div class="timeline-body"><p>I see, thank you for providing that background. I'll close this ticket in favor of https://github.com/astral-sh/ty/issues/384, where the same question is being discussed (see also the <code>ClassVar</code> suggestion there).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-17 19:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

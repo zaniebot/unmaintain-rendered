@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] infer_definition_types(Id(b5a0)): execute: too many cycle iterations - astral-sh/ty #1080</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] infer_definition_types(Id(b5a0)): execute: too many cycle iterations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1080">#1080</a>
+        opened by <a href="https://github.com/janbernloehr">@janbernloehr</a>
+        on 2025-08-21 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janbernloehr">@janbernloehr</a> on 2025-08-21 11:13</div>
+            <div class="timeline-body"><p>This panic does only happen every ~10th time of running it against our codebase</p>
+<p>Code in question is</p>
+<pre><code>from __future__ import annotations
+
+from collections.abc import Sequence
+from enum import Enum
+from typing import Any, Protocol, TypeAlias, TypeVar, runtime_checkable
+
+import torch
+from typing_extensions import Self
+
+
+@runtime_checkable
+class TransferableDataContainer(Protocol):
+
+    def to(self, device: torch.device | str) -&gt; Self: ...
+
+    @classmethod
+    def stack(cls, instance_list: Sequence[Self], dim: int = 0) -&gt; Self: ...
+
+
+ContainerTypeT = TypeVar(&quot;ContainerTypeT&quot;, bound=TransferableDataContainer)
+
+
+def collate_transferable_container(batch: Sequence[ContainerTypeT], *, collate_fn_map: Any) -&gt; ContainerTypeT:
+    return batch[0].stack(batch)
+
+
+NestedTensorTuple: TypeAlias = tuple[&quot;torch.Tensor | None | NestedTensorTuple&quot;, ...]  # enables (nested) NamedTuples
+TensorDict: TypeAlias = (
+    dict[str, torch.Tensor]
+    | dict[Enum, torch.Tensor]
+    | dict[str | Enum, torch.Tensor]
+    | dict[str, dict[str, torch.Tensor] | torch.Tensor]
+)
+BaseTypes: TypeAlias = torch.Tensor | TensorDict | TransferableDataContainer | NestedTensorTuple
+SupportedData: TypeAlias = BaseTypes | tuple[BaseTypes, ...] | dict[str, BaseTypes]
+
+DatasetRetTypeT = TypeVar(&quot;DatasetRetTypeT&quot;, bound=SupportedData)
+ModelRetTypeT = TypeVar(&quot;ModelRetTypeT&quot;, bound=SupportedData)
+
+@runtime_checkable
+class Detachable(Protocol):
+    def detach(self) -&gt; Self: ...
+
+
+SupportedStateTypes = torch.Tensor | Detachable
+TemporalStateTypeT = TypeVar(&quot;TemporalStateTypeT&quot;, bound=SupportedStateTypes | dict[str, SupportedStateTypes])
+
+</code></pre>
+<p>Stacktrace is</p>
+<pre><code>error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/bje2lr/workspace/xflow3/xtorch/src/xtorch/training/data_container.py`: `infer_definition_types(Id(b5a0)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.19
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;--project&quot;, &quot;xtorch&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: start_thread
+             at ./nptl/pthread_create.c:442:8
+  31: __GI___clone3
+             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:81:0
+
+info: query stacktrace:
+   0: infer_scope_types(Id(6864))
+             at crates/ty_python_semantic/src/types/infer.rs:138
+   1: check_file_impl(Id(3009))
+             at crates/ty_project/src/lib.rs:527
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-08-21 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 11:17</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like you have a recursive type alias there, so I think this is a duplicate of #256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-21 11:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:26 UTC
+    </footer>
+</body>
+</html>

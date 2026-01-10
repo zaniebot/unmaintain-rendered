@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overloaded non-stub function `f` must have an implementation - issue just on the last overload - astral-sh/ty #1316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overloaded non-stub function `f` must have an implementation - issue just on the last overload</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1316">#1316</a>
+        opened by <a href="https://github.com/darioinova">@darioinova</a>
+        on 2025-10-07 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/darioinova">@darioinova</a> on 2025-10-07 09:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When defining an overloaded function, the <strong>LAST</strong> implementation is always labeled as
+<strong>&quot;Overloaded non-stub function <code>f</code> must have an implementation&quot;</strong></p>
+<pre><code class="language-py">from typing import overload
+
+class A:
+    @overload
+    def f(v: float) -&gt; float:
+        return v * 2
+
+    @overload
+    def f(v: int) -&gt; int: # issue here
+        return v * 2
+</code></pre>
+<pre><code class="language-py">from typing import overload
+
+class A:
+    @overload
+    def f(v: float) -&gt; float:
+        return v * 2
+
+    @overload
+    def f(v: int) -&gt; int:  # no issue here !!!!
+        return v * 2
+
+    @overload
+    def f(v: str) -&gt; str:
+        return v * 2
+
+    @overload
+    def f(v: list) -&gt; list:     # issue here
+        return v + v
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 09:14</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Could you say a little bit more about what you think the behaviour should be instead? I'm guessing you wouldn't want a diagnostic on every single overload -- would you want the diagnostic to be emitted on the first overload rather than the last overload? Or are you saying that you don't think we should emit a diagnostic at all here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-10-07 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-07 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-10-07 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darioinova">@darioinova</a> on 2025-10-07 10:10</div>
+            <div class="timeline-body"><p>All the overloaded functions do have an implementation.
+The should be no diagnostic at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:14</div>
+            <div class="timeline-body"><p>I see! I can't see any implementation in the example snippets you posted in this issue, however. An &quot;overload implementation&quot; is a function not decorated with <code>@overload</code> that immediately follows all the <code>@overload</code>-decorated functions. See the typing-module docs <a href="https://github.com/astral-sh/ty/issues/147">here</a> -- there is a non-<code>@overload</code>-decorated <code>process</code> function immediately after all the overloads that are decorated with <code>@overload</code>, and it is the final non-<code>@overload</code>-decorated <code>process()</code> function that provides the function implementation that is actually used at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:17</div>
+            <div class="timeline-body"><p>To be clear, if I try to run your first example at runtime, it is rejected -- and it is this <code>TypeError</code> at runtime that ty is trying to warn you about:</p>
+<pre><code class="language-pycon">Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from typing import overload
+... 
+... class A:
+...     @overload
+...     def f(v: float) -&gt; float:
+...         return v * 2
+... 
+...     @overload
+...     def f(v: int) -&gt; int: # issue here
+...         return v * 2
+...         
+&gt;&gt;&gt; A.f(42)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    A.f(42)
+    ~~~^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 2681, in _overload_dummy
+    raise NotImplementedError(
+    ...&lt;3 lines&gt;...
+        &quot;by an implementation that is not @overload-ed.&quot;)
+NotImplementedError: You should not call an overloaded function. A series of @overload-decorated functions outside a stub module should always be followed by an implementation that is not @overload-ed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darioinova">@darioinova</a> on 2025-10-07 12:38</div>
+            <div class="timeline-body"><p>Completely my fault ... actually now I understand the @overload decorator!</p>
+<p>Thank you @AlexWaygood !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @darioinova on 2025-10-07 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-07 13:55</div>
+            <div class="timeline-body"><p>There's probably a chance to improve our diagnostic message here, maybe by linking to the <a href="https://docs.python.org/3/library/typing.html#typing.overload"><code>typing</code> module documentation</a> (the link above seems incorrect)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>There's probably a chance to improve our diagnostic message here</p>
+</blockquote>
+<p>I already have a patch locally ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 14:41</div>
+            <div class="timeline-body"><p>See:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/20745</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

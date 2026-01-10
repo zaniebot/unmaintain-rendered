@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`dataclass_transform`: Add support for `kw_only_default` and `frozen_default` - astral-sh/ty #1260</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`dataclass_transform`: Add support for `kw_only_default` and `frozen_default`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1260">#1260</a>
+        opened by <a href="https://github.com/rayansostenes">@rayansostenes</a>
+        on 2025-09-26 09:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rayansostenes">@rayansostenes</a> on 2025-09-26 09:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">import typing as tp
+
+@tp.dataclass_transform(kw_only_default=True, frozen_default=True)
+def model(*, kw_only: bool = True):
+    def decorator[T](cls: type[T]) -&gt; type[T]:
+        return cls
+    return decorator
+
+@tp.dataclass_transform(kw_only_default=True, frozen_default=True)
+class ModelBase:
+    def __init_subclass__(cls, *, kw_only: bool = True) -&gt; None: ...
+
+
+@tp.dataclass_transform(kw_only_default=True, frozen_default=True)
+class ModelMeta(type):
+    def __new__(
+        cls,
+        name: str,
+        bases: tuple[type[tp.Any], ...],
+        namespace: tp.Mapping[str, tp.Any],
+        *,
+        kw_only: bool = True
+    ):
+        ...
+
+class ModelBase_Metaclass(metaclass=ModelMeta): ...
+
+
+@model()
+class A:
+    name: str
+
+@model(kw_only=False)
+class B:
+    name: str
+
+class C(ModelBase):
+    name: str
+
+class D(ModelBase_Metaclass):
+    name: str
+
+class E(ModelBase_Metaclass, kw_only=False):
+    name: str
+
+tp.reveal_type(A.__init__) # ✅ `(self: A, *, name: str) -&gt; None`
+tp.reveal_type(B.__init__) # ❌ `(self: B, *, name: str) -&gt; None` =&gt; `(self: B, name: str) -&gt; None`
+tp.reveal_type(C.__init__) # ❌ `def __init__(self) -&gt; None`      =&gt; `(self: C, *, name: str) -&gt; None`
+tp.reveal_type(D.__init__) # ❌ `(self: D, name: str) -&gt; None`    =&gt; `(self: D, *, name: str) -&gt; None`
+tp.reveal_type(E.__init__) # ✅ `(self: E, name: str) -&gt; None`
+
+def test_frozen(
+    a: A,
+    b: B,
+    c: C,
+    d: D,
+    e: E,
+):
+    a.name = &quot;test&quot; # ✅ error: Property `name` defined in `A` is read-only (invalid-assignment)
+    b.name = &quot;test&quot; # ✅ error: Property `name` defined in `B` is read-only (invalid-assignment)
+    c.name = &quot;test&quot; # ❌ No error reported
+    d.name = &quot;test&quot; # ❌ No error reported
+    e.name = &quot;test&quot; # ❌ No error reported
+</code></pre>
+<p><strong>Expected</strong>:</p>
+<pre><code class="language-console">Revealed type: `(self: A, *, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: B, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: C, *, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: D, *, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: E, name: str) -&gt; None` (revealed-type)
+Property `name` defined in `A` is read-only (invalid-assignment)
+Property `name` defined in `B` is read-only (invalid-assignment)
+Property `name` defined in `C` is read-only (invalid-assignment)
+Property `name` defined in `D` is read-only (invalid-assignment)
+Property `name` defined in `E` is read-only (invalid-assignment)
+</code></pre>
+<p><strong>Actual</strong>:</p>
+<pre><code class="language-console">Revealed type: `(self: A, *, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: B, *, name: str) -&gt; None` (revealed-type)
+Revealed type: `def __init__(self) -&gt; None` (revealed-type)
+Revealed type: `(self: D, name: str) -&gt; None` (revealed-type)
+Revealed type: `(self: E, name: str) -&gt; None` (revealed-type)
+Property `name` defined in `A` is read-only (invalid-assignment)
+Property `name` defined in `B` is read-only (invalid-assignment)
+</code></pre>
+<p><strong>Ref:</strong>
+https://typing.python.org/en/latest/spec/dataclasses.html#the-dataclass-transform-decorator</p>
+<p><strong>Playground Links:</strong></p>
+<ul>
+<li>https://play.ty.dev/6c84c71f-33db-47e4-977d-606486daaad6</li>
+<li><a href="https://pyright-play.net/?pyrightVersion=1.1.404&amp;strict=true&amp;locale=en-us&amp;code=JYWwDg9gTgLgBDAnmYA7A5nAhgZwWAWAChiABGMAOgBMsYsBjAG1xwH0YotUcAzaEAAoA1gHc2EVE0RtqAU15YArkxgBeACpQlcgDRxeUCAC85qWQuWrN2uQEpi83nBAR5TQQCp9YiVMQAXHAARhAQTHBqcFo6dgHEcIlwTslyDNB00ADaGgC6gsw4QUhgcjm5dnAAtAB8CMhlefFESa1wUHIwSlCocIUJSR1dPanpXDDQxGQUNHSMLDjsnNx8AiLiktIWiirqMXoGRqbmTlZ7tg5EzKxwALJuckwAQrhyza0pbGxowDBsOEpgtdFl8CkwcPpvHBfJtAiEwhEovtKrU4AA5SRvOCUHFTEhEchUWj0YFLLg8fhQIQw-zbM42HT6QwmMx03YM%2BzEUl3B5MW6dLCCEr2d5JT5sVBycRsQQDNp9cG6OVtVBYEBYnCcJUteUhV5FBBKMBMMrCrIzACCqEQuX0OMotuVrVV6pwYEYWJmtywYBQGCymqg%2Bkt1sdOvl3idSRp0iCoXCkWitmVcSjiXteO593cLxwcjY-JJCxwgnVRdYamzj0LWDi2Nx%2BLIrncgku3ItosSLo1nDxpGbj3WfmkagAYlhwZyrsW4E9O3Bu0FA5mZwBhQRV56vVPhhdqntQFc3AAiG95ufzNdJO%2Bd%2B6Xvfx3IAomec68CwLST4Nv4xxO8zeSSLnAy74jMHQAG5yBOHANIIFqUF8Px-GwlQAMRwIAoORwAABoIeZMLwQQWpC%2BjAYGKJ1Biko4cQ4FyFBMHCoITyId8qC-F86FwIAMuS4fhjxEbOpF7uq95QJR6KYjhkR1HhBFCU8ZF3iBnCSdRci0UQ9GMUwsGlIIq5schXFwBhfE4eKJkygp6nSfKahyQJhFBKuInkWp1RUdJdFUJB0F6cxx7GRxKHcRZzlCceyliapEleVJNGtI5-EKUE0VwFCHnxaiGlaTpAX6XIghPiFnGoWZvGpYJ6UxQedlJUkKXyTVcBPnV4kNZpeIpDAciamwzLHLKu5YMR2qtMEQRKcqDCuRNYq1cqWLtcQgGJFglDdomABEfWajtlXYXIUBGFAQQAApGKUsCILh3YyU4aByNQcBoLhFoycAeAdFg1BVLCcCCGgEETsA-2sMA6CoOqqAwJck1bfuu37TAh0Ycdp3QJd10nUg937o9CjPa9704U8X0-dB-2A8DqCg0w4NVJD0Ow-Ds1I%2BqKP9WjlV8RicAnWd7RyJAsAvcq1Cc3I3MHXzUmC1jUAi2LfXUMt0uy7z5kK0L0Aq9Aat4sQQA">Pyright Playground</a></li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @sharkdp on 2025-09-26 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @sharkdp on 2025-09-26 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`typing.dataclass_transform` Problems" to "`dataclass_transform`: Add support for `kw_only_default` and `frozen_default`" by @sharkdp on 2025-09-26 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-26 10:11</div>
+            <div class="timeline-body"><p>Thank you for reporting this. We do not support <code>kw_only_default</code> and <code>frozen_default</code> yet. We already record them in a bitset called <code>DataclassTransformerParams</code>, but we do not yet make use of them when creating signatures for <code>__init__</code> and when considering whether a field is frozen or not. This <em>might</em> be relatively easy to resolve (since we support the corresponding fields for normal dataclasses already), so I'm tentatively labeling this as <code>good-first-issue</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-09 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-09 07:57</div>
+            <div class="timeline-body"><p>Let's actually reopen this. We now support <code>kw_only_default</code> and <code>frozen_default</code>, but we don't apply dataclass transform params to baseclass- and metaclass-based models.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-10-09 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-09 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-10-09 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-09 13:54</div>
+            <div class="timeline-body"><p>I have opened https://github.com/astral-sh/ty/issues/1327 as a more structured way to track the progress here. Again, thank you for reporting this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-09 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:33 UTC
+    </footer>
+</body>
+</html>

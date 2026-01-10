@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an opt-in diagnostic warning about unsound calls to `type[]` - astral-sh/ty #145</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an opt-in diagnostic warning about unsound calls to `type[]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/145">#145</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-31 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-31 11:37</div>
+            <div class="timeline-body"><p>Red-knot allows you to call <code>type[]</code> types, and accurately infers the result of these calls:</p>
+<pre><code class="language-py">class A: ...
+
+def f(x: type[A]):
+    y = x()
+    reveal_type(y)
+</code></pre>
+<p>But it's pretty easy to demonstrate that this is unsound:</p>
+<ul>
+<li><code>type[]</code> is covariant, meaning that a subclass of <code>A</code> could be passed into <code>f</code> and red-knot would not complain</li>
+<li>subclasses of <code>A</code> are allowed to override <code>__init__</code> and/or <code>__new__</code> any way they like, since constructors are not checked for Liskov compatibility by type checkers.</li>
+</ul>
+<pre><code class="language-py">class B(A):
+    def __init__(self, required_argument: int): pass
+
+f(B)  # boom, but not detected by red-knot
+</code></pre>
+<p>The ability to call <code>type[]</code> types is useful for a variety of reasons, so we should allow it by default. However, we should add an opt-in diagnostic that warns users when they call <code>type[]</code> types, because of this unsoundness. When the rule is enabled, the behaviour would be something like this:</p>
+<pre><code class="language-py">class A: ...
+
+def f(x: type[A]):
+    y = x()  # error: [unsound-type-call] &quot;Calling a `type[]` type is unsound as constructor methods are not checked for Liskov compatibility by type checkers&quot;
+    reveal_type(y)  # revealed: A
+</code></pre>
+<p>Originally suggested by @carljm in https://github.com/astral-sh/ruff/issues/15948. I think @mishamsk may be interested in working on this issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-31 18:11</div>
+            <div class="timeline-body"><p>@AlexWaygood thanks for creating a separate issue. Happy to help, so feel free to assign to me. But, I need to conquer my current nemesis astral-sh/ty#186 first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add an opt-in diagnostic warning about unsound calls to `type[]`" to "Add an opt-in diagnostic warning about unsound calls to `type[]`" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:52 UTC
+    </footer>
+</body>
+</html>

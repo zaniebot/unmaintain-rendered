@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect type when indexing a pandas dataframe through `.loc` and selecting a single column - astral-sh/ty #1643</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect type when indexing a pandas dataframe through `.loc` and selecting a single column</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1643">#1643</a>
+        opened by <a href="https://github.com/diego-pm">@diego-pm</a>
+        on 2025-11-26 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/diego-pm">@diego-pm</a> on 2025-11-26 08:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have been searching for issues related to this but haven't found this case. Some pandas related errors mentioned in the issues stated that it was due to <code>ty</code> not supporting <code>TypeAlias</code>, but the current version 0.0.1-alpha.28 does support it (and I have seen many errors related to pandas disappear in my codebase due to this but not this one). Maybe the error is due to a missing feature in <code>ty</code> that I am not aware of.</p>
+<p>The issue is that when selecting a column trought <code>.loc</code> in a pandas dataframe, the infered type should be Series, but ty infers a DataFrame.</p>
+<pre><code class="language-python">from typing_extensions import reveal_type
+import pandas as pd
+
+def foo(s: pd.Series[int], df: pd.DataFrame):
+    reveal_type(df.loc[[1, 2], &quot;col1&quot;]) # revealed type: DataFrame
+</code></pre>
+<p>I have tested this also with pyright and it correctly reveals that the type is <code>Series</code>.</p>
+<p>Setup:</p>
+<p>Used <code>ty check file.py</code>, the default configuration was not modified.</p>
+<p>pandas version: 2.2.1
+pandas-stubs version: 2.2.1.240316
+python version: 3.10.16</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 09:06</div>
+            <div class="timeline-body"><p>Thank you for the detailed report!</p>
+<p>We did implement support for implicit type aliases and PEP 613 <code>TypeAlias</code>es in the latest version, but we still don't have support for generic implicit/PEP-613 type aliases. We plan to add support for them soon. In fact, we do infer <code>Series[Any]</code> on <a href="https://github.com/astral-sh/ruff/pull/21553">this feature branch</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-11-26 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @sharkdp on 2025-11-26 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-11-26 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-11-26 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-28 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type analyze error with pydantic base model instance - astral-sh/ty #484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type analyze error with pydantic base model instance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/484">#484</a>
+        opened by <a href="https://github.com/birdhackor">@birdhackor</a>
+        on 2025-05-22 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/birdhackor">@birdhackor</a> on 2025-05-22 08:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>from pydantic import BaseModel, Field
+
+class D(BaseModel):
+    target_tests: str | None = Field(None, alias=&quot;targetTests&quot;)
+
+def f1(d: D):
+    if d.target_tests is None:
+        raise RuntimeError
+    tt = p(d.target_tests)
+
+def p(v: str):
+    print(v)
+</code></pre>
+<p>Check result:</p>
+<pre><code>error[invalid-argument-type]: Argument to function `p` is incorrect
+  --&gt; test_ty.py:9:12
+   |
+ 7 |     if d.target_tests is None:
+ 8 |         raise RuntimeError
+ 9 |     tt = p(d.target_tests)
+   |            ^^^^^^^^^^^^^^ Expected `str`, found `str | None`
+10 |
+11 | def p(v: str):
+   |
+info: Function defined here
+  --&gt; test_ty.py:11:5
+   |
+ 9 |     tt = p(d.target_tests)
+10 |
+11 | def p(v: str):
+   |     ^ ------ Parameter declared here
+12 |     print(v)
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>In this case, <code>d.target_tests</code> could only be <code>str</code>.</p>
+<p>If code modify to this, it will pass.</p>
+<pre><code>def f1(d: str | None = None):
+    if d is None:
+        raise RuntimeError
+    tt = p(d)
+
+def p(v: str):
+    print(v)
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 08:40</div>
+            <div class="timeline-body"><p>I think this is another instance of https://github.com/astral-sh/ty/issues/164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birdhackor">@birdhackor</a> on 2025-05-22 08:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is another instance of <a href="https://github.com/astral-sh/ty/issues/164">#164</a></p>
+</blockquote>
+<p>Oh... you are right. I will close this issue directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @birdhackor on 2025-05-22 08:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

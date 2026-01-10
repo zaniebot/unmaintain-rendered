@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shutdown request fails with &quot;invalid type: map, expected unit&quot; when params is empty object - astral-sh/ty #1330</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Shutdown request fails with &quot;invalid type: map, expected unit&quot; when params is empty object</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1330">#1330</a>
+        opened by <a href="https://github.com/achyudh">@achyudh</a>
+        on 2025-10-10 02:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/achyudh">@achyudh</a> on 2025-10-10 02:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The <code>ty</code> language server rejects LSP <code>shutdown</code> requests when the <code>params</code> field contains an empty JSON object <code>{}</code>, causing the server to crash instead of shutting down gracefully. Emacs eglot <a href="https://debbugs.gnu.org/cgi/bugreport.cgi?bug=66144">recently changed</a> to send <code>{}</code> instead of <code>null</code> to accommodate other language servers (like <code>ocamllsp</code>) that have strict validation.</p>
+<h3>Error Message</h3>
+<pre><code>[eglot] Server reports (type=1): ty failed to handle a request from the editor. Check the logs for more details.
+[jsonrpc] Server exited with status 9
+jsonrpc-error: &quot;request id=5 failed:&quot;, (jsonrpc-error-code . -32603), 
+  (jsonrpc-error-message . &quot;JSON parsing failure: Invalid request Method: shutdown 
+  error: invalid type: map, expected unit&quot;)
+</code></pre>
+<h3>Steps to Reproduce</h3>
+<ol>
+<li>Start <code>ty</code> language server via Emacs eglot</li>
+<li>Send a <code>shutdown</code> request with <code>M-x eglot-shutdown</code></li>
+<li>Server crashes with the above error</li>
+</ol>
+<h3>Expected Behavior</h3>
+<p>According to the <a href="https://www.jsonrpc.org/specification#parameter_structures">JSON-RPC 2.0 specification, section 4.2</a>:</p>
+<blockquote>
+<p><strong>If present</strong>, parameters for the rpc call MUST be provided as a Structured value. Either by-position through an Array or by-name through an Object.</p>
+</blockquote>
+<p>An empty object <code>{}</code> is a valid structured value and should be accepted. The LSP specification inherits this from JSON-RPC.</p>
+<h3>Related Issues</h3>
+<ul>
+<li>Emacs bug report: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=66144</li>
+<li>Similar issue was reported for helix: https://github.com/helix-editor/helix/issues/5400</li>
+</ul>
+<h3>Version</h3>
+<ul>
+<li><code>ty</code> version: 0.0.1-alpha.21</li>
+<li>Editor: Emacs 31.0.50 with eglot</li>
+<li>OS: Ubuntu Linux 6.8.0-83-generic</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-10 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-10 06:56</div>
+            <div class="timeline-body"><p>This might require changes in the <code>lsp-server</code> or <code>lsp-types</code> crate. I'm also not sure if we support the array notation for params but I don't think that's important.</p>
+<p>I suspect that rust anlayzer has the same issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/achyudh">@achyudh</a> on 2025-10-10 16:54</div>
+            <div class="timeline-body"><p>Can confirm that rust-analyzer has the same issue:</p>
+<blockquote>
+<p>jsonrpc-request: jsonrpc-error: &quot;request id=6 failed:&quot;, (jsonrpc-error-code . -32602), (jsonrpc-error-message . &quot;Failed to deserialize shutdown: invalid type: map, expected unit; {}&quot;), (jsonrpc-error-data)</p>
+</blockquote>
+<p>Given this is the case, I am assuming this first needs to be fixed upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`shutdown` request fails with "invalid type: map, expected unit" when params is empty object" to "Shutdown request fails with "invalid type: map, expected unit" when params is empty object" by @achyudh on 2025-10-15 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/achyudh">@achyudh</a> on 2025-10-15 15:08</div>
+            <div class="timeline-body"><p>I have opened an issue with rust-analyzer to track this: https://github.com/rust-lang/rust-analyzer/issues/20846</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

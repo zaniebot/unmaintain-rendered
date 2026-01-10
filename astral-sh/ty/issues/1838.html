@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolve `ParamSpec` with the matching overload - astral-sh/ty #1838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolve `ParamSpec` with the matching overload</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1838">#1838</a>
+        opened by <a href="https://github.com/leddy231">@leddy231</a>
+        on 2025-12-10 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leddy231">@leddy231</a> on 2025-12-10 12:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Upgraded from 0.0.1a26 to 0.0.1a33 and noticed issues with asyncio.to_thread in combination with overloaded functions. Initially noticed with <code>open</code> but can be reduced to some simple example:</p>
+<pre><code class="language-python">import asyncio
+from typing import overload
+
+
+def normal(a: str) -&gt; None:
+    pass
+
+
+@overload
+def overloaded(a: str) -&gt; None:
+    pass
+
+
+@overload
+def overloaded(a: int) -&gt; None:
+    pass
+
+
+def overloaded(a: str | int) -&gt; None:
+    pass
+
+
+t1 = normal(&quot;test&quot;)
+t2 = overloaded(&quot;test&quot;)
+t3 = asyncio.to_thread(normal, &quot;test&quot;)
+t4 = asyncio.to_thread(overloaded, &quot;test&quot;)
+</code></pre>
+<p><code>ty check</code> gives:</p>
+<pre><code>error[invalid-argument-type]: Argument to function `to_thread` is incorrect
+  --&gt; test.py:26:36
+   |
+24 | t2 = overloaded(&quot;test&quot;)
+25 | t3 = asyncio.to_thread(normal, &quot;test&quot;)
+26 | t4 = asyncio.to_thread(overloaded, &quot;test&quot;)
+   |                                    ^^^^^^ Expected `Overload[(a: str) -&gt; Unknown, (a: int) -&gt; Unknown]`, found `Literal[&quot;test&quot;]`
+   |
+info: Function defined here
+  --&gt; stdlib/asyncio/threads.pyi:12:11
+   |
+10 | _R = TypeVar(&quot;_R&quot;)
+11 |
+12 | async def to_thread(func: Callable[_P, _R], /, *args: _P.args, **kwargs: _P.kwargs) -&gt; _R:
+   |           ^^^^^^^^^                            -------------- Parameter declared here
+13 |     &quot;&quot;&quot;Asynchronously run function *func* in a separate thread.
+   |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1a33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-10 12:45</div>
+            <div class="timeline-body"><p>Thank you for reporting!</p>
+<p>The <code>asyncio.to_thread</code> contains a ParamSpec in it's callable annotation and overloads are not resolved correctly when ParamSpec are involved.</p>
+<p>At least in this case, I think we would need to recognize that <code>_P</code> is bound to an overloaded callable, perform overload call resolution to find the matching overload and update our specialization to reflect this. We should only raise an error if none of the overloads match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @dhruvmanila on 2025-12-10 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-10 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @dhruvmanila on 2025-12-10 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "asyncio.to_thread fails on overloaded function" to "Resolve `ParamSpec` with the matching overload" by @dhruvmanila on 2025-12-10 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @dhruvmanila on 2025-12-10 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-12-10 12:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:51 UTC
+    </footer>
+</body>
+</html>

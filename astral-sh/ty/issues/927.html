@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nonlocal snapshot sweeping considers unrelated scopes, sweeps too much - astral-sh/ty #927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>nonlocal snapshot sweeping considers unrelated scopes, sweeps too much</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/927">#927</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-08-01 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-01 16:32</div>
+            <div class="timeline-body"><p>As of https://github.com/astral-sh/ruff/pull/19321 we use &quot;lazy snapshots&quot; to track when a variable in an enclosing scope is never re-bound, which lets us infer a narrower type in nested functions. For example (working as intended):</p>
+<pre><code class="language-py">def foo():
+    x: int = 1
+    def bar():
+        reveal_type(x)  # `Literal[1]`
+
+def foo():
+    x: int = 1
+    def bar():
+        reveal_type(x)  # `int` (un-narrowed because of reassignment)
+    x = 2
+</code></pre>
+<p>Similarly, we sweep/ignore enclosing snapshots of a variable <a href="https://github.com/astral-sh/ruff/blob/48d5bd13faf0def62afca7477dc2ec86b2f2ad69/crates/ty_python_semantic/src/semantic_index/builder.rs#L414-L440">if any nested function declares that variable <code>nonlocal</code> and binds it</a> (also working as intended):</p>
+<pre><code class="language-py">def foo():
+    x: int = 1
+    def bar():
+        reveal_type(x)  # `int` (un-narrowed because of nonlocal assignment)
+    def baz():
+        nonlocal x
+        x = 2
+</code></pre>
+<p>However, that sweeping is currently more aggressive than it needs to be. It finds <code>nonlocal</code>+bound symbols of the same name, even in unrelated later (not earlier) scopes:</p>
+<pre><code class="language-py">def foo():
+    x: int = 1
+    def bar():
+        reveal_type(x)  # `int` (should be narrowed)
+
+def bing():
+    x = 2
+    def baz():
+        nonlocal x
+        x = 3
+</code></pre>
+<p>Similarly, it finds symbols in nested scopes that potentially could be aliasing but actually aren't because of shadowing:</p>
+<pre><code class="language-py">def foo():
+    x: int = 1
+    def bar():
+        reveal_type(x)  # `int` (should be narrowed)
+    def bing():
+        x = 2
+        def baz():
+            nonlocal x
+            x = 3
+</code></pre>
+<p>I'm currently working on adding a couple maps to symbol tables that will track &quot;reference -&gt; definition in enclosing scope&quot; and &quot;definition -&gt; references in nested scopes&quot;, and it might be easier to fix this once that change lands. I'll link it here when I put up a PR. cc @mtshiba</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

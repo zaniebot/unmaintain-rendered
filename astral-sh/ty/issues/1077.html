@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do AsyncGenerators always need `None` to be part of the SendType? - astral-sh/ty #1077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do AsyncGenerators always need `None` to be part of the SendType?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1077">#1077</a>
+        opened by <a href="https://github.com/pfaion">@pfaion</a>
+        on 2025-08-21 09:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfaion">@pfaion</a> on 2025-08-21 09:04</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi all,</p>
+<p>I'm running into an issue with <code>AsyncGenerator</code>s requiring to send an initial <code>None</code> value to &quot;prime&quot; them. But this <code>None</code> will never be seen inside the generator. I don't understand if I have to essentially do a <code>None</code> check every time I receive the value in the generator? I've tried to use a SendType that does not include <code>None</code>, but then ty complains...</p>
+<p>Maybe this is by design? It smells like bad API design on the generator interface to be honest, but wanted to know if this is something that could be circumvented or made easier by ty as well.</p>
+<p>Here's an example that outlines the issue (<a href="https://play.ty.dev/91607ed4-3c24-4736-80b7-1fbb4acbab48">playground link</a>)</p>
+<pre><code class="language-python">from collections.abc import AsyncGenerator
+import asyncio
+
+### this is how I would like to type my generator, only dealing with ints
+### but this is not usable see A() and B() below
+async def pure_int_generator() -&gt; AsyncGenerator[int, int]:
+    for i in range(10):
+        incoming = yield(i)
+        print(i * incoming)
+
+### priming with `asend(None)` works at runtime, but ty throws an error
+async def A():
+    gen = pure_int_generator()
+    await gen.asend(None)  # Argument to bound method `asend` is incorrect: Expected `int`, found `None`
+asyncio.run(A())
+
+### priming with an int throws a runtime TypeError
+async def B():
+    gen = pure_int_generator()
+    await gen.asend(0)     # runtime TypeError: can't send non-None value to a just-started async generator
+asyncio.run(B())
+
+
+### this is the only way I managed to make it work, but it always requires None-checking all received values
+async def cumbersome_generator() -&gt; AsyncGenerator[int, int | None]:
+    for i in range(10):
+        incoming = yield(i)
+        if incoming is None:
+            raise ValueError
+        print(i * incoming)
+
+async def C():
+    gen = cumbersome_generator()
+    await gen.asend(None)
+
+
+asyncio.run(C())     # works, but cumbersome non-check!
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @pfaion on 2025-08-21 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snus-kin">@snus-kin</a> on 2025-08-21 14:30</div>
+            <div class="timeline-body"><p>Could you use <code>await anext(gen)</code> to reach the first yield perhaps? You avoid the send typing issue then.</p>
+<pre><code class="language-py">async def pure_int_generator() -&gt; AsyncGenerator[int, int]:
+    for i in range(10):
+        incoming = yield(i)
+        print(i * incoming)
+
+async def A():
+    gen = pure_int_generator()
+    await anext(gen)
+asyncio.run(A())
+</code></pre>
+<pre><code class="language-bash">$ uvx ty check test.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                                               All checks passed!
+</code></pre>
+<p>Generators only take input when 'paused' at a yield.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2025-08-21 15:36</div>
+            <div class="timeline-body"><p>Riiight, that makes sense! I wonder why the <a href="https://peps.python.org/pep-0525/#asynchronous-generator-object">PEP</a> does not mention this, it only shows calling <code> .send(None)</code> for the initial step.</p>
+<p>Thanks, this was my missing knowledge about how to use an AsyncGenerator properly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pfaion on 2025-08-21 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snus-kin">@snus-kin</a> on 2025-08-21 15:49</div>
+            <div class="timeline-body"><p>From the <a href="https://docs.python.org/3/reference/expressions.html#agen.asend">docs</a>:</p>
+<blockquote>
+<p>When <a href="https://docs.python.org/3/reference/expressions.html#agen.asend">asend()</a> is called to start the asynchronous generator, it must be called with <a href="https://docs.python.org/3/library/constants.html#None">None</a> as the argument, because there is no yield expression that could receive the value.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2025-08-22 06:57</div>
+            <div class="timeline-body"><p>Yeah I don't know why they wouldn't mention that you can start the generator with <code>await anext(gen)</code> as well. Because then you don't need to include <code>None</code> in the SendType! (Which is essentially the answer to my question)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:26 UTC
+    </footer>
+</body>
+</html>

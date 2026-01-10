@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty lsp not publishing diagnostics to Zed - astral-sh/ty #1450</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty lsp not publishing diagnostics to Zed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1450">#1450</a>
+        opened by <a href="https://github.com/insane-dreamer">@insane-dreamer</a>
+        on 2025-10-28 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/insane-dreamer">@insane-dreamer</a> on 2025-10-28 23:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'll preface this by saying I don't know whether this is an issue with the <code>ty</code> server or <code>zed</code>. But despite ty support being implemented in zed, I'm not getting any diagnostics.</p>
+<p>I've verified from the logs:</p>
+<ul>
+<li>ty LSP starts and tracks files in Zed</li>
+<li>ty registers diagnostics capabilities</li>
+<li>ty isn't publishing diagnostics (not showing up in ty logs, also not in Zed)</li>
+<li>no error messages in either ty or zed logs</li>
+</ul>
+<p>(ty check works from CLI and flags errors as expected)</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.24 on Ubuntu 24.04</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-28 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-10-29 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-29 01:01</div>
+            <div class="timeline-body"><p>Can you tell me a bit more about your setup?</p>
+<ul>
+<li>What Zed version are you using?</li>
+<li>What's your Zed configuration?</li>
+<li>How do you tell that ty tracks the files in Zed?</li>
+<li>Did you enable workspace diagnostics? If not, did you open a file with a diagnostic (in which case Zed should send a pullDiagnostic request)</li>
+<li>If you can, can you share the LSP server logs?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/insane-dreamer">@insane-dreamer</a> on 2025-10-29 04:18</div>
+            <div class="timeline-body"><p>I just saw another <code>zed</code> user opened an issue about not getting diagnostics from <code>ty</code> or <code>ruff</code>. My <code>zed</code> install (v 0.209.7) is showing diagnostics from <code>basedpyright</code> but not <code>ruff</code> or <code>ty</code>. Also tested  <code>pyrefly</code> -- no diagnostics either, so that indicates the issue is probably on the zed side. I'll see if that gets resolved and if not report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-29 13:05</div>
+            <div class="timeline-body"><p>Thanks. I can confirm that ty stopped working for me too (in Zed).</p>
+<p>I scanned the RPC messages and Zed doesn't request any diagnostics (and ty doesn't send any diagnostics using the push model because Zed tells us that it supports pull diagnostics).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-29 13:08</div>
+            <div class="timeline-body"><p>Upstream Zed issue https://github.com/zed-industries/zed/pull/41386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-04 18:57</div>
+            <div class="timeline-body"><p>Second upstream issue https://github.com/zed-industries/zed/pull/41929</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andythomas">@andythomas</a> on 2025-11-04 22:12</div>
+            <div class="timeline-body"><p>After some boring hours of debugging (or rather random trying and hoping for the best ;), I could make my Zed work again. I found https://github.com/zed-industries/zed/issues/39499 and https://github.com/astral-sh/ty/issues/1299 and https://github.com/zed-industries/zed/issues/39144, which made me change from</p>
+<pre><code class="language-json">&quot;lsp&quot;: {
+    &quot;ty&quot;: {
+      &quot;binary&quot;: {
+        &quot;path&quot;: &quot;.venv/bin/ty&quot;,
+        &quot;arguments&quot;: [&quot;server&quot;]
+      }
+    },
+</code></pre>
+<p>to</p>
+<pre><code class="language-json">&quot;lsp&quot;: {
+    &quot;ty&quot;: {
+      &quot;binary&quot;: {
+        &quot;path&quot;: &quot;.venv/bin/ty&quot;,
+        &quot;arguments&quot;: [&quot;server&quot;]
+      },
+      &quot;settings&quot;: {
+        &quot;diagnosticMode&quot;: &quot;workspace&quot;
+      }
+    }, 
+</code></pre>
+<p>And lo and behold it works again. Before I tried Zed 0.210.4 and Zed Preview 0.211.3 but to no avail. Now, both work.</p>
+<p>So, overall: explicit <code>&quot;diagnosticMode&quot;: &quot;workspace&quot;</code> works as intended, but without it, not even the open files are scanned.</p>
+<p>Hopefully, somebody might find this earlier :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/insane-dreamer">@insane-dreamer</a> on 2025-11-05 23:40</div>
+            <div class="timeline-body"><p>Confirming that with latest Zed release (211.4) <code>ty</code> diagnostics are now showing in Zed when using the above settings. I tried both <code>workspace</code> and <code>openFilesOnly</code> diagnosticMode, and both worked as expected. Omitting the <code>diagnosticMode</code> altogether defaults to open files only (and works).
+This is on Ubuntu 24.04.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-06 00:45</div>
+            <div class="timeline-body"><p>Thanks for the update. I tested it myself with Zed and Zed Preview and the issue is fixed for both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-06 00:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

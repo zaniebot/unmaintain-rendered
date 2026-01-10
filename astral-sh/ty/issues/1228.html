@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid &quot;object is not assignable&quot; with class-scoped generic - astral-sh/ty #1228</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid &quot;object is not assignable&quot; with class-scoped generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1228">#1228</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-21 23:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-21 23:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from __future__  import annotations
+
+class A[T]:
+    def __init__(self, value: T) -&gt; None:
+        self.t: T = value
+    def f(self, value: A[T]):
+        _: A[T | int] = A(value.t)  # Object of type `A[T@A]` is not assignable to `A[T@A | int]`
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-09-22 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 07:55</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Isn't <code>A</code> invariant in <code>T</code> here? So should that assignment really be allowed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 07:58</div>
+            <div class="timeline-body"><p>I think ideally we would use the type context of the l.h.s. annotation to inform the way we solve the TypeVar in the constructor call to <code>A</code>, and therefore our inferred type of the r.h.s.. Done correctly, that would mean that we never actually infer <code>A[T@A]</code> for the r.h.s. at all — we would instead infer the broader type <code>A[T@A | int]</code>, which is of course the same type as the l.h.s. annotation and therefore assignable to the l.h.s. annotation even though the TypeVar is invariant here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 08:04</div>
+            <div class="timeline-body"><p>Ah yes, of course. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-09-22 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "invalid "object is not assignable" with class scoped generic" to "invalid "object is not assignable" with class-scoped generic" by @AlexWaygood on 2025-09-22 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2025-10-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ibraheemdev by @ibraheemdev on 2025-10-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2025-10-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @ibraheemdev on 2025-10-17 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-11-10 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

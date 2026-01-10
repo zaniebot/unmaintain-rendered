@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhaustive match with `assert_never()` over generic types does not work - astral-sh/ty #723</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exhaustive match with `assert_never()` over generic types does not work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/723">#723</a>
+        opened by <a href="https://github.com/cam-matsui">@cam-matsui</a>
+        on 2025-06-28 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cam-matsui">@cam-matsui</a> on 2025-06-28 21:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>example:</p>
+<pre><code class="language-py">from typing import assert_never, Literal
+from dataclasses import dataclass
+
+@dataclass
+class V1[T1]:
+    t: T1
+
+@dataclass
+class V2[T2]:
+    t: T2
+
+type V = V1 | V2
+    
+
+def my_func(v: V) -&gt; bool:  # E: Function can implicitly return `None`, which is not assignable to return type `bool`
+    match v:
+        case V1():
+            return True
+        case V2():
+            return False
+        case _:
+            assert_never(v)  # E: Argument does not have asserted type `Never`
+</code></pre>
+<p>mypy passes here; I would expect ty to pass as well given <code>v</code> is either a <code>V1</code> or <code>V2</code></p>
+<p>Playground link: https://play.ty.dev/a1c99b5b-d5e6-474d-9f00-08c6a613fcc0</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-30 07:37</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This is a duplicate of #99</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-30 07:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

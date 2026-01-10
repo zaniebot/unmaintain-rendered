@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem running the server from WSL - astral-sh/ty #1362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problem running the server from WSL</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1362">#1362</a>
+        opened by <a href="https://github.com/klonuo">@klonuo</a>
+        on 2025-10-15 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/klonuo">@klonuo</a> on 2025-10-15 14:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I'm working on a project in WSL, but my Windows editor reported crushes on <code>ty</code> LSP server, so I tried to set the project to use <code>ty</code> as LSP server from within the WSL, but it fails too.</p>
+<p>Let me walk you quickly:</p>
+<p>Executing <code>ruff</code> and <code>ty</code> checks through <code>wsl</code> command (<code>wsl --shell-type login -- &lt;command&gt;</code>) works correctly, and <code>ty</code> has the right context from the project file and venv:</p>
+<pre><code class="language-powershell">Microsoft.PowerShell.Core\FileSystem::\\wsl.localhost\Ubuntu-20.04\home\klo\projects\api (main)
+❯ dir
+
+    Directory: \\wsl.localhost\Ubuntu-20.04\home\klo\projects\api
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          2025-10-15    16:09                .git
+d----          2025-10-15    15:57                .ruff_cache
+d----          2025-10-15    13:14                .venv
+d----          2025-10-15    13:31                .zed
+d----          2025-10-15    14:10                utils
+-----          2025-10-15    14:07            429 .env
+-----          2025-10-15    14:14             52 .env.example
+-----          2025-10-15    13:12            109 .gitignore
+-----          2025-10-15    13:12              5 .python-version
+-----          2025-10-15    14:37           1433 fastapi.sublime-project
+-----          2025-10-15    14:38          39007 fastapi.sublime-workspace
+-----          2025-10-15    14:14           4159 main.py
+-----          2025-10-15    14:13            325 pyproject.toml
+-----          2025-10-15    14:14           1768 README.md
+-----          2025-10-15    14:58           2167 tmp.py
+-----          2025-10-15    13:14          65640 uv.lock
+
+Microsoft.PowerShell.Core\FileSystem::\\wsl.localhost\Ubuntu-20.04\home\klo\projects\api (main)
+❯ wsl --shell-type login -- ruff check -v
+[2025-10-15][16:09:58][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-10-15][16:09:58][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.12
+[2025-10-15][16:09:58][ruff::resolve][DEBUG] Derived `target-version` from found `requires-python`: Py312
+[2025-10-15][16:09:58][ignore::gitignore][DEBUG] opened gitignore file: /home/klo/.config/git/ignore
+[2025-10-15][16:09:58][ignore::gitignore][DEBUG] opened gitignore file: /home/klo/projects/api/.gitignore
+[2025-10-15][16:09:58][ignore::gitignore][DEBUG] opened gitignore file: /home/klo/projects/api/.git/info/exclude
+[2025-10-15][16:09:58][ignore::walk][DEBUG] ignoring /home/klo/projects/api/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/klo/projects/api/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/klo/projects/api/utils/qwen_inference.py&quot;
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/klo/projects/api/.git&quot;
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/klo/projects/api/pyproject.toml&quot;
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/klo/projects/api/tmp.py&quot;
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/klo/projects/api/main.py&quot;
+[2025-10-15][16:09:58][ignore::gitignore][DEBUG] opened gitignore file: /home/klo/projects/api/.ruff_cache/.gitignore
+[2025-10-15][16:09:58][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/klo/projects/api/.ruff_cache&quot;
+[2025-10-15][16:09:58][ruff::commands::check][DEBUG] Identified files to lint in: 14.991101ms
+[2025-10-15][16:09:58][ruff::diagnostics][DEBUG] Checking: /home/klo/projects/api/pyproject.toml
+[2025-10-15][16:09:58][ruff::commands::check][DEBUG] Checked 4 files in: 1.19529ms
+All checks passed!
+Microsoft.PowerShell.Core\FileSystem::\\wsl.localhost\Ubuntu-20.04\home\klo\projects\api (main)
+❯ wsl --shell-type login -- ty check -q
+Found 4 diagnostics
+</code></pre>
+<p>When I set it as LSP server this way, I get this info from LSP logs:</p>
+<p>First:</p>
+<pre><code class="language-py"># --&gt; ty initialize (1):
+{
+    &quot;processId&quot;: 10276,
+    &quot;clientInfo&quot;: {&quot;name&quot;: &quot;Sublime Text LSP&quot;, &quot;version&quot;: &quot;2.6.0&quot;},
+    &quot;rootUri&quot;: &quot;file://wsl.localhost/Ubuntu-20.04/home/klo/projects/api&quot;,
+    &quot;rootPath&quot;: &quot;\\\\wsl.localhost\\Ubuntu-20.04\\home\\klo\\projects\\api&quot;,
+    &quot;workspaceFolders&quot;: [
+        {
+            &quot;name&quot;: &quot;api&quot;,
+            &quot;uri&quot;: &quot;file://wsl.localhost/Ubuntu-20.04/home/klo/projects/api&quot;,
+        }
+    ],
+    # ...
+}
+</code></pre>
+<p>then:</p>
+<pre><code class="language-py"># &lt;&lt;&lt; ty (1) (duration: 461ms):
+{
+    &quot;capabilities&quot;: {
+        &quot;completionProvider&quot;: {&quot;triggerCharacters&quot;: [&quot;.&quot;]},
+        &quot;declarationProvider&quot;: True,
+        &quot;definitionProvider&quot;: True,
+        &quot;documentHighlightProvider&quot;: True,
+        &quot;documentSymbolProvider&quot;: True,
+        &quot;executeCommandProvider&quot;: {
+            &quot;commands&quot;: [&quot;ty.printDebugInformation&quot;],
+            &quot;workDoneProgress&quot;: False,
+        },
+        &quot;hoverProvider&quot;: True,
+        &quot;inlayHintProvider&quot;: {},
+        &quot;positionEncoding&quot;: &quot;utf-16&quot;,
+        &quot;referencesProvider&quot;: True,
+        &quot;selectionRangeProvider&quot;: True,
+        &quot;semanticTokensProvider&quot;: {
+            &quot;full&quot;: True,
+            &quot;legend&quot;: {
+                &quot;tokenModifiers&quot;: [&quot;definition&quot;, &quot;readonly&quot;, &quot;async&quot;],
+                &quot;tokenTypes&quot;: [
+                    &quot;namespace&quot;,
+                    &quot;class&quot;,
+                    &quot;parameter&quot;,
+                    &quot;selfParameter&quot;,
+                    &quot;clsParameter&quot;,
+                    &quot;variable&quot;,
+                    &quot;property&quot;,
+                    &quot;function&quot;,
+                    &quot;method&quot;,
+                    &quot;keyword&quot;,
+                    &quot;string&quot;,
+                    &quot;number&quot;,
+                    &quot;decorator&quot;,
+                    &quot;builtinConstant&quot;,
+                    &quot;typeParameter&quot;,
+                ],
+            },
+            &quot;range&quot;: True,
+        },
+        &quot;signatureHelpProvider&quot;: {
+            &quot;retriggerCharacters&quot;: [&quot;)&quot;],
+            &quot;triggerCharacters&quot;: [&quot;(&quot;, &quot;,&quot;],
+        },
+        &quot;typeDefinitionProvider&quot;: True,
+        &quot;workspaceSymbolProvider&quot;: True,
+        &quot;textDocumentSync&quot;: {&quot;change&quot;: {&quot;syncKind&quot;: 2}, &quot;didOpen&quot;: {}, &quot;didClose&quot;: {}},
+    },
+    &quot;serverInfo&quot;: {&quot;name&quot;: &quot;ty&quot;, &quot;version&quot;: &quot;0.0.1-alpha.22&quot;},
+}
+</code></pre>
+<p>which results in:</p>
+<blockquote>
+<p>ty: ty failed
+ty:   Cause: Failed to start server
+ty:   Cause: Workspace URL is not a file or directory:</p>
+</blockquote>
+<pre><code>Url {
+    scheme: &quot;file&quot;,
+    cannot_be_a_base: false,
+    username: &quot;&quot;,
+    password: None,
+    host: Some(Domain(&quot;wsl.localhost&quot;)),
+    port: None,
+    path: &quot;/Ubuntu-20.04/home/klo/projects/api&quot;,
+    query: None,
+    fragment: None,
+}
+</code></pre>
+<p>And right after that it reports:</p>
+<pre><code> -&gt; ty initialized: {}
+ -&gt; ty workspace/didChangeConfiguration: {}
+ -&gt; ty textDocument/didOpen: {'textDocument': {'uri': 'file://wsl.localhost/Ubuntu-20.04/...
+</code></pre>
+<p>However LSP stays in &quot;initializing...&quot; phase maybe because of the previous fail and it doesn't work.</p>
+<p>Ok, so that is my problem, thanks for reading I know its lengthy and condensed but couldn't explain it shorter.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.22 (2f3190d09 2025-10-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2025-10-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klonuo">@klonuo</a> on 2025-10-15 15:17</div>
+            <div class="timeline-body"><p>Same happens with <code>ruff</code> server too, while trying to run with <code>wsl</code>, but <code>ruff</code> server doesn't fail to start on the same project from my Windows <code>ruff</code> binary.</p>
+<p>For <code>ty</code> as mentioned it fails also to start Windows binary, and besides provided logs above, this is what is appended:</p>
+<pre><code>ty: 2025-10-15 17:07:11.489449800 ERROR Failed to create project for `\\wsl.localhost\Ubuntu-20.04\home\klo\projects\api`: Failed to discover the site-packages directory: Invalid local virtual environment `\\?\UNC\wsl.localhost\Ubuntu-20.04\home\klo\projects\api\.venv`: Could not find a `site-packages` directory for this Python installation/executable. Falling back to default settings
+:: [17:07:11.489] &lt;-  ty window/showMessage: {'message': 'Failed to load project rooted at \\\\wsl.localhost\\Ubuntu-20.04\\home\\klo\\projects\\api. Please refer to the logs for more details.', 'type': 1}
+ty: 2025-10-15 17:07:11.490223200  INFO Defaulting to python-platform `win32`
+ty: 2025-10-15 17:07:11.585543400 ERROR panicked at crates\ty_server\src\session.rs:546:30:
+ty: Default configuration to be valid: Failed to discover the site-packages directory
+ty: 
+ty: Caused by:
+ty:     Invalid local virtual environment `\\?\UNC\wsl.localhost\Ubuntu-20.04\home\klo\projects\api\.venv`: Could not find a `site-packages` directory for this Python installation/executable
+ty:    0: &lt;unknown&gt;
+ty:    1: &lt;unknown&gt;
+ty:    2: &lt;unknown&gt;
+ty:    3: &lt;unknown&gt;
+ty:    4: &lt;unknown&gt;
+ty:    5: &lt;unknown&gt;
+ty:    6: &lt;unknown&gt;
+ty:    7: &lt;unknown&gt;
+ty:    8: &lt;unknown&gt;
+ty:    9: &lt;unknown&gt;
+ty:   10: &lt;unknown&gt;
+ty:   11: &lt;unknown&gt;
+ty:   12: &lt;unknown&gt;
+ty:   13: BaseThreadInitThunk
+ty:   14: RtlUserThreadStart
+ty: 
+ty: panicked at crates\ty_server\src\session.rs:546:30:
+ty: Default configuration to be valid: Failed to discover the site-packages directory
+ty: 
+ty: Caused by:
+ty:     Invalid local virtual environment `\\?\UNC\wsl.localhost\Ubuntu-20.04\home\klo\projects\api\.venv`: Could not find a `site-packages` directory for this Python installation/executable
+ty:    0: &lt;unknown&gt;
+ty:    1: &lt;unknown&gt;
+ty:    2: &lt;unknown&gt;
+ty:    3: &lt;unknown&gt;
+ty:    4: &lt;unknown&gt;
+ty:    5: &lt;unknown&gt;
+ty:    6: &lt;unknown&gt;
+ty:    7: &lt;unknown&gt;
+ty:    8: &lt;unknown&gt;
+ty:    9: &lt;unknown&gt;
+ty:   10: &lt;unknown&gt;
+ty:   11: &lt;unknown&gt;
+ty:   12: &lt;unknown&gt;
+ty:   13: BaseThreadInitThunk
+ty:   14: RtlUserThreadStart
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klonuo">@klonuo</a> on 2025-10-15 15:28</div>
+            <div class="timeline-body"><p>Actually the problem seems to be in Sublime LSP, as for the same WSL project both <code>ty</code> and <code>ruff</code> servers work correctly in Zed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @klonuo on 2025-10-15 15:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken relative imports for almost-`src` layouts - astral-sh/ty #1398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Broken relative imports for almost-`src` layouts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1398">#1398</a>
+        opened by <a href="https://github.com/Salamandar">@Salamandar</a>
+        on 2025-10-19 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Salamandar">@Salamandar</a> on 2025-10-19 18:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's the project topology:</p>
+<pre><code>myproject/
+├─ src/
+│  ├─ __init__.py
+│  ├─ utils.py
+│  └─ something.py
+├─ tests/
+└─ pyproject.toml
+</code></pre>
+<p>with <code>something.py</code> importing like <code>from .utils import utilityfunc</code>.</p>
+<p><code>ty</code> doesn't like that at all. debugging gives:</p>
+<pre><code>2025-10-19T18:52:58.723460Z DEBUG ty_python_semantic::types::infer::builder: Relative module resolution `.utils` failed: too many leading dots
+    at crates/ty_python_semantic/src/types/infer/builder.rs:5010 on ThreadId(2)
+    in ty_project::check_file with file=file(Id(c00))
+    in ty_project::Project::check
+
+</code></pre>
+<p>So i guess <code>ty</code> finds the src directory and thinks it's gone one time up too many.</p>
+<p>Is there any way to support this project layout ?</p>
+<p>(of course creating a subdir src/myproject or renaming src to myproject &quot;fixes&quot; the issue)</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.23 (5c51b8480 2025-10-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-19 19:04</div>
+            <div class="timeline-body"><p>The issue here is that ty has spotted you have an <code>src</code> directory and assumed that you're therefore using the standard <code>src</code> layout. As a result, it's added <code>./src</code> as an import search path as well as the project root <code>.</code>, and <code>./src</code> takes precedence over <code>.</code> when resolving the import in <code>./src/something.py</code> because <code>./src/something.py</code> is relative to both paths, but <code>./src</code> is a subdirectory of <code>.</code>.</p>
+<p>You can change ty's behaviour here by specifying <code>tool.ty.environment.root = [&quot;.&quot;]</code> in your pyproject.toml file (https://docs.astral.sh/ty/reference/configuration/#root).</p>
+<p>However, I would advise against this layout! This isn't really an &quot;almost-<code>src</code> layout&quot; -- it's the &quot;flat layout&quot;, but your package happens to have the name <code>src</code>. That means that an <code>src</code> package will be directly importable from the root of your project, which seems like it's probably not what you'd want. I'm curious what build backend your using; I'd imagine this would confuse packaging tools as well as ty :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-19 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-10-19 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-10-19 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Salamandar">@Salamandar</a> on 2025-10-25 12:16</div>
+            <div class="timeline-body"><blockquote>
+<p>You can change ty's behaviour here by specifying tool.ty.environment.root = [&quot;.&quot;] in your pyproject.toml file (<a href="https://docs.astral.sh/ty/reference/configuration/#root">docs.astral.sh/ty/reference/configuration#root</a>).</p>
+</blockquote>
+<p>Thanks ! That actually does the trick.</p>
+<blockquote>
+<p>However, I would advise against this layout
+That means that an src package will be directly importable from the root of your project</p>
+</blockquote>
+<p>Yeah, I get what you mean. But actually this is a project with a long history, that is <em>always</em> installed as a deb package, so this is not an issue we can encounter (except when trying to run linters on the tests directory…)</p>
+<blockquote>
+<p>I'm curious what build backend your using</p>
+</blockquote>
+<p>dh-build, and it looks like it doesn't have any issues with this layout. I think we manually describe which files goes where in the final package, that's probably why ;)</p>
+<blockquote>
+<p>I'd imagine this would confuse packaging tools as well as ty :-)</p>
+</blockquote>
+<p>Well i've been using pyright, mypy and other linting / type checking tools and they don't have any issue with the current layout of the project. Maybe that's something they detect and adapt to ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-26 08:25</div>
+            <div class="timeline-body"><p>Some other type checker implement a fallback where they do a relative search from the importing module. I think we'll implement this behavior too, for better out-of-the-box IDE experience but there are a few drawbacks and we have to think how we can inform users that the fallback behavior is applied</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

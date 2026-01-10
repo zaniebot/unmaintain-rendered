@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `try_call_dunder` infrastructure consistently - astral-sh/ty #190</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use `try_call_dunder` infrastructure consistently</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/190">#190</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-25 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-25 13:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>__enter__</code> and <code>__exit__</code> should be treated like all other dunder methods. However, while working on astral-sh/ruff#16368, I noticed that we look them up manually (and potentially incorrectly) here …</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L1621-L1622</p>
+<p>… and call them manually (and potentially incorrectly) here:</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L1660-L1661</p>
+<p>This only leads to incorrect behavior in very exotic situations like the following, where we incorrectly raise a <em>&quot;Object of type <code>Manager</code> cannot be used with <code>with</code> because it does not correctly implement <code>__enter__</code>&quot;</em> diagnostic:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+class Target: ...
+
+class SomeCallable:
+    def __call__(self) -&gt; Target:
+        return Target()
+
+class Descriptor:
+    def __get__(self, instance, owner) -&gt; SomeCallable:
+        return SomeCallable()
+
+class Manager:
+    __enter__: Descriptor = Descriptor()
+
+    def __exit__(self, exc_type, exc_value, traceback): ...
+
+with Manager() as f:
+    reveal_type(f)  # revealed: Target
+</code></pre>
+<p>Fixing this would involve using <code>try_call_dunder</code> after astral-sh/ruff#16368 is merged, or using <code>static_member</code> + a manual descriptor call, if that is not possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-02-25 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-25 13:35</div>
+            <div class="timeline-body"><p>The same is probably true for <code>__class_getitem__</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L5220-L5221</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L5238</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-25 13:37</div>
+            <div class="timeline-body"><p>And augmented assignments:</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L2259-L2267</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-25 13:39</div>
+            <div class="timeline-body"><p>And <code>in</code>/<code>not in</code> tests:</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L4902-L4910</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-25 13:40</div>
+            <div class="timeline-body"><p>… and subscript expressions (this is the last one, I promise):</p>
+<p>https://github.com/astral-sh/ruff/blob/1be0dc6885317340acdd3427aa43acc05e7a43d3/crates/red_knot_python_semantic/src/types/infer.rs#L5220-L5238</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Context managers should use `try_call_dunder` infrastructure" to "[red-knot] Use `try_call_dunder` infrastructure consistently" by @sharkdp on 2025-02-25 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Use `try_call_dunder` infrastructure consistently" to "Use `try_call_dunder` infrastructure consistently" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 16:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decorator gives unknown return type - astral-sh/ty #1160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Decorator gives unknown return type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1160">#1160</a>
+        opened by <a href="https://github.com/vlashada">@vlashada</a>
+        on 2025-09-10 01:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vlashada">@vlashada</a> on 2025-09-10 01:07</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>For the below code, I would expect the typing to be str and not unknown:</p>
+<p>From https://github.com/pola-rs/polars/blob/57cbc95bceb6c5e092ada748d27ce81dc908601c/py-polars/polars/io/parquet/functions.py#L403</p>
+<pre><code class="language-python">from functools import wraps
+from typing import Callable, ParamSpec, TypeVar, reveal_type
+
+P = ParamSpec(&quot;P&quot;)
+T = TypeVar(&quot;T&quot;)
+
+
+def my_decorator(
+    old_name: str, new_name: str, *, version: str
+) -&gt; Callable[[Callable[P, T]], Callable[P, T]]:
+    def decorate(function: Callable[P, T]) -&gt; Callable[P, T]:
+        @wraps(function)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+            return function(*args, **kwargs)
+
+        return wrapper
+
+    return decorate
+
+
+@my_decorator(&quot;row_count_offset&quot;, &quot;row_index_offset&quot;, version=&quot;0.20.4&quot;)
+def say() -&gt; str:
+    return &quot;hello world&quot;
+
+
+res = say()
+reveal_type(res) # Revealed type: `Unknown`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @vlashada on 2025-09-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 01:11</div>
+            <div class="timeline-body"><p>Thanks for the report! This is #157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-10 01:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:29 UTC
+    </footer>
+</body>
+</html>

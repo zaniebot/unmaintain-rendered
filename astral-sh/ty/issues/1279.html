@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] error[panic]: too many iterations - astral-sh/ty #1279</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] error[panic]: too many iterations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1279">#1279</a>
+        opened by <a href="https://github.com/jasminemoore-verses">@jasminemoore-verses</a>
+        on 2025-09-29 16:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jasminemoore-verses">@jasminemoore-verses</a> on 2025-09-29 16:02</div>
+            <div class="timeline-body"><p>Error:</p>
+<pre><code class="language-shell">Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/Users/jasmine/Code/genius-engines/packages/genius-pymdp-engine/src/genius_pymdp_engine/pymdp_mapper.py`: `infer_definition_types(Id(19235)): execute: too many cycle iterations`
+</code></pre>
+<p>Source file:</p>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+&quot;&quot;&quot;
+mapper.py: Core module for handling POMDP-related requests using PYMDP
+
+This module provides the Mapper class, which serves as an interface between
+the API requests and the PYMDP model operations. It handles the creation of
+POMDP models, running simulations, and generating visualizations.
+
+Key components:
+- PymdpMapper: Main class for handling POMDP operations and requests
+
+The module integrates with the POMDP_Model from utils.py to perform the actual
+POMDP computations and simulations.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+from typing import List
+from overrides import override
+
+from pyvfg.versions.v_0_5_0.vfg_0_5_0 import VFG
+
+from genius_engines_api.request_response import (
+    InferenceRequest,
+    InferenceResponse,
+    InferenceResult,
+    LearnHistory,
+)
+from genius_engines_common_components.mapper import Mapper
+from genius_engines_common_components.metrics import (
+    create_response_metadata,
+    start_tracing_metrics,
+    stop_tracing_metrics,
+)
+from genius_pymdp_engine.pomdp_model import PomdpModel
+from genius_pymdp_engine.utils import sort_pomdp_factors
+
+
+class PymdpMapper(PomdpModel, Mapper):
+    &quot;&quot;&quot;
+    Mapper class for handling POMDP-related requests using PYMDP.
+
+    This class processes requests for various POMDP operations including
+    model building, environment creation, and simulation. It serves as the main
+    interface between the API and the POMDP model implementation.
+    &quot;&quot;&quot;
+
+    def __init__(
+        self,
+        vfg: VFG,
+        policy_len: int = 1,
+        use_utility: bool = True,
+        use_infogain: bool = True,
+        learn_A: bool = False,
+        learn_B: bool = False,
+        learn_D: bool = False,
+        learning_rate: float = 1.0,
+    ):
+        &quot;&quot;&quot;
+        Initialize the PyMDP mapper.
+        &quot;&quot;&quot;
+        super().__init__(
+            policy_len=policy_len,
+            use_utility=use_utility,
+            use_states_info_gain=use_infogain,
+            learn_A=learn_A,
+            learn_B=learn_B,
+            learn_D=learn_D,
+            learning_rate=learning_rate,
+        )
+        self.create_model(sort_pomdp_factors(vfg))
+
+    @override
+    def process_inference_request(self, request: InferenceRequest) -&gt; InferenceResponse:
+        &quot;&quot;&quot;Process an action selection request.&quot;&quot;&quot;
+
+        metrics_start = start_tracing_metrics()
+
+        # Use the existing POMDP model instance
+        result, warnings = self.perform_inference(request)
+
+        end = stop_tracing_metrics(metrics_start[&quot;tracing_id&quot;])
+
+        # Update internal VFG state but keep the same POMDP model instance
+        if result.updated_vfg and request.save is True:
+            self.vfg = result.updated_vfg
+
+        history: List[LearnHistory] = []
+        for name, data in result.action_data.items():
+            history.append(LearnHistory(metrics=data.to_metrics_dict()))
+
+        inference_result = InferenceResult(
+            history=history,
+            returned_variables=None,
+            result_model=self.vfg.deepcopy(),
+        )
+
+        return InferenceResponse(
+            success=True,
+            error=None,
+            result=inference_result,
+            metadata=create_response_metadata(metrics_start, end),
+            warnings=warnings,
+        )
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C0rn3j">@C0rn3j</a> on 2025-09-29 16:22</div>
+            <div class="timeline-body"><p>Tauon's <a href="https://github.com/taiko2k/tauon">src/tauon/main.py</a> codebase (which is a hardcore test suite if anything) is also crashing on a panic at the moment, against current <code>ty</code> master.</p>
+<pre><code>[Error - 18:27:16] Request textDocument/inlayHint failed.
+  Message: request handler panicked at /home/user/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/29ab321/src/function/execute.rs:217:25:
+exported_names(Id(186f4)): execute: too many cycle iterationsquery stacktrace:
+   0: DatabaseKeyIndex(IngredientIndex(96), Id(1bf6))
+   1: DatabaseKeyIndex(IngredientIndex(92), Id(1bf6))
+   2: DatabaseKeyIndex(IngredientIndex(108), Id(12504))
+   3: DatabaseKeyIndex(IngredientIndex(141), Id(e87b))
+   4: DatabaseKeyIndex(IngredientIndex(145), Id(2000))
+
+
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+  Code: -32603 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-29 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-09-29 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-29 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 17:36</div>
+            <div class="timeline-body"><p>(@C0rn3j, your panic looks like a different problem from the one originally reported in this issue -- it looks like a duplicate of #444 rather than #256)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:34 UTC
+    </footer>
+</body>
+</html>

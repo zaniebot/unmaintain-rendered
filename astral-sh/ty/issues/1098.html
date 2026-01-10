@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] execute: too many cycle iterations - astral-sh/ty #1098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] execute: too many cycle iterations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1098">#1098</a>
+        opened by <a href="https://github.com/obi-jerome">@obi-jerome</a>
+        on 2025-08-26 09:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/obi-jerome">@obi-jerome</a> on 2025-08-26 09:47</div>
+            <div class="timeline-body"><p>Hi,
+I'm testing ty and got this error:</p>
+<pre><code>error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/usr/src/app/xml_renderer.py`: `infer_definition_types(Id(70970)): execute: too many cycle iterations`
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.19
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: place_by_id(Id(6ec1d))
+             at crates/ty_python_semantic/src/place.rs:688
+   1: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(6c490))
+             at crates/ty_python_semantic/src/types.rs:635
+   2: infer_definition_types(Id(70905))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   3: place_by_id(Id(6ec1c))
+             at crates/ty_python_semantic/src/place.rs:688
+   4: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(6c48f))
+             at crates/ty_python_semantic/src/types.rs:635
+   5: infer_definition_types(Id(6f0d7))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   6: infer_definition_types(Id(6f36d))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   7: infer_definition_types(Id(6f371))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   8: infer_expression_types(Id(6bb6a))
+             at crates/ty_python_semantic/src/types/infer.rs:248
+   9: infer_definition_types(Id(6f377))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  10: place_by_id(Id(6ec1a))
+             at crates/ty_python_semantic/src/place.rs:688
+  11: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(6c48d))
+             at crates/ty_python_semantic/src/types.rs:635
+  12: infer_definition_types(Id(6f096))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  13: place_by_id(Id(6ec19))
+             at crates/ty_python_semantic/src/place.rs:688
+  14: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(6c48c))
+             at crates/ty_python_semantic/src/types.rs:635
+  15: infer_definition_types(Id(6f037))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  16: place_by_id(Id(6ec18))
+             at crates/ty_python_semantic/src/place.rs:688
+  17: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(6c48b))
+             at crates/ty_python_semantic/src/types.rs:635
+  18: infer_expression_types(Id(51d43))
+             at crates/ty_python_semantic/src/types/infer.rs:248
+  19: infer_definition_types(Id(50e74))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+  20: infer_scope_types(Id(4e29e))
+             at crates/ty_python_semantic/src/types/infer.rs:138
+  21: check_file_impl(Id(1835))
+             at crates/ty_project/src/lib.rs:527
+</code></pre>
+<p>I guess it could be related to one of those two libraries:
+xmlschema
+django.utils.xmlutils.SimplerXMLGenerator</p>
+<p>Tell me if you need more data.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @AlexWaygood on 2025-08-26 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-08-26 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-26 09:52</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<blockquote>
+<p>Tell me if you need more data.</p>
+</blockquote>
+<p>The most common cause of this panic is #256, but yes, we would need a <a href="https://stackoverflow.com/help/minimal-reproducible-example">minimal, reproducible example</a> to confirm this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/obi-jerome">@obi-jerome</a> on 2025-08-26 16:15</div>
+            <div class="timeline-body"><p>I think this is the simplest I can go. ^_^
+Here's the library : https://pypi.org/project/xmlschema/</p>
+<pre><code>import xmlschema
+schema = xmlschema.XMLSchema(&quot;schema.xsd&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-29 09:32</div>
+            <div class="timeline-body"><p>With some help from Claude, I narrowed it down further to a dependency of <code>xmlschema</code>:</p>
+<pre><code class="language-py">from elementpath import XPath2Parser
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-09-05 01:20</div>
+            <div class="timeline-body"><p>I was able to manually minimize this to</p>
+<pre><code class="language-py">from collections.abc import MutableSequence
+from typing import TypeVar
+TK = TypeVar('TK', bound='Token[Any]')
+class Token(MutableSequence[TK]):...
+</code></pre>
+<p>Which is just #256</p>
+<p>There may be more crashes, this is just the first one I found with my minimization method. What I did is:</p>
+<ol>
+<li>Clone the repo and start from <code>XPath2Parser</code>'s file at <code>&quot;.\elementpath\xpath2\xpath2_parser.py&quot;</code></li>
+<li>Using the command <code>uvx ty check &lt;file&gt; | rg &quot;error\[panic\]&quot; -</code>, repeatedly try deleting imports until the panic goes away</li>
+<li>On finding the import that causes the panic, repeat step 2 on that file</li>
+</ol>
+<p>This took me on the path of</p>
+<ol>
+<li><code>&quot;.\elementpath\xpath2\xpath2_parser.py&quot;</code></li>
+<li><code>&quot;.\elementpath\xpath1\xpath1_parser.py&quot;</code></li>
+<li><code>&quot;.\elementpath\xpath_tokens.py&quot;</code></li>
+<li><code>&quot;.\elementpath\exceptions.py&quot;</code></li>
+<li><code>&quot;.\elementpath\tdop.py&quot;</code></li>
+</ol>
+<p><code>&quot;.\elementpath\tdop.py&quot;</code> contains no non-stdlib imports, so at that point I did a similar thing where I deleted code at random until the panic went away, and kept doing that until there were no lines left to delete, giving me the minimalization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 01:26</div>
+            <div class="timeline-body"><p>Thanks for the minimization! Yes, we support recursive bounds on PEP 695 typevars, but not yet on legacy typevars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-05 01:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:27 UTC
+    </footer>
+</body>
+</html>

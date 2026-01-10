@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong overload for `str.join` / assignability to `Iterable[_]` - astral-sh/ty #306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong overload for `str.join` / assignability to `Iterable[_]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/306">#306</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-10 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 12:25</div>
+            <div class="timeline-body"><p>The return type of <code>str.join</code> should be <code>str</code> here, not <code>LiteralString</code>:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def _(pair: tuple[str, str]):
+    reveal_type(&quot;, &quot;.join(pair))  # ty: LiteralString
+</code></pre>
+<p>Seems related to the fact that we seem to think that <code>tuple[str, str]</code> or <code>Iterable[str]</code> is assignable to <code>Iterable[LiteralString]</code>:</p>
+<pre><code class="language-py">from typing import LiteralString, Iterable
+
+def _(iterable: Iterable[str]):
+    x: Iterable[LiteralString] = iterable  # this should be an error
+</code></pre>
+<p>https://play.ty.dev/b1a1e84a-6cb9-4b46-89aa-3567a830bad0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Wrong overload for `str.join`" to "Wrong overload for `str.join` / assignability to `Iterable[_]`" by @sharkdp on 2025-05-10 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-10 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-17 05:16</div>
+            <div class="timeline-body"><p>The first example is probably related to https://github.com/astral-sh/ty/issues/665.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 15:39</div>
+            <div class="timeline-body"><p>And I suspect the second part is because <code>Iterable</code> is a protocol, and currently our protocol support only checks member existence, not member type; @AlexWaygood is working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-07-17 00:28</div>
+            <div class="timeline-body"><p>I have the following example where I'd expect type error, I assume it's the same issue? https://play.ty.dev/5294987b-6776-4cde-9844-bf45e510f59d</p>
+<pre><code class="language-python">from collections.abc import Iterator, Sequence
+
+def gen() -&gt; Iterator[str]:
+    yield 123  # expect type error here!
+
+def seq() -&gt; Sequence[str]:
+    return [123]  # expect type error here!
+
+
+a: Iterator[int] = gen()  # expect type error here!
+
+## the types themselves seem to be inferred correctly
+reveal_type(gen)
+reveal_type(seq())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-17 00:33</div>
+            <div class="timeline-body"><p>I'd suspect that's different. The <code>return [123]</code> is because ty isn't inferring precise types for list literals; there are open issues about that. The <code>yield 123</code> likely means that ty isn't type-checking yields in generators yet. I don't see an open issue about that but <a href="https://play.ty.dev/ffa8537a-9610-4958-91cf-fdf9f1b429ed">experimenting in the playground</a> gives some TODO types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-08-27 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-08 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:00 UTC
+    </footer>
+</body>
+</html>

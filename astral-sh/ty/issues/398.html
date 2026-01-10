@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>module attribute exists but causes unresolved-attribute - astral-sh/ty #398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>module attribute exists but causes unresolved-attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/398">#398</a>
+        opened by <a href="https://github.com/c-ludo-driva">@c-ludo-driva</a>
+        on 2025-05-15 01:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/c-ludo-driva">@c-ludo-driva</a> on 2025-05-15 01:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I think the astral python tooling is fantastic, so I'm excited to use ty. I've run into a few unresolved-attribute errors this morning with the pre-release version.</p>
+<p>If I set up an environment with <code>uv</code> and a small python script by running:</p>
+<pre><code class="language-{sh}">#!/bin/bash
+uv init
+uv add xgboost==1.7.1
+echo &quot;import xgboost\nprint(xgboost.callback)&quot;&gt;&gt;test.py
+cat test.py
+uvx ty check
+</code></pre>
+<p>I get a warning</p>
+<pre><code>error[unresolved-attribute]: Type `&lt;module 'xgboost'&gt;` has no attribute `callback`
+ --&gt; test.py:4:7
+  |
+2 | print(xgboost.__version__)
+3 | import xgboost
+4 | print(xgboost.callback)
+  |       ^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>However, the attribute exists and <code>uv run test.py</code> runs fine</p>
+<pre><code>❯ uv run test.py
+&lt;module 'xgboost.callback' from '&lt;path to dir&gt;/.venv/lib/python3.12/site-packages/xgboost/callback.py'&gt;
+
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-15 02:25</div>
+            <div class="timeline-body"><p>Thanks for the report! In this case, I believe ty is working as intended. The <code>xgboost.callback</code> submodule is not explicitly imported in <code>xgboost/__init__.py</code>, therefore accessing it as a submodule without explicitly importing it could be an error. As it happens, other submodules of <code>xgboost</code> are imported in <code>xgboost/__init__.py</code>, and at least one of those does happen to import the <code>callback</code> submodule, so at runtime the <code>callback</code> submodule is always attached as an attribute of <code>xgboost</code>. But this is quite implicit and may even be accidental, and it's too implicit for ty to model. Pyright issues exactly the same error here.</p>
+<p>If <code>xgboost</code> wishes to commit to having the <code>callback</code> submodule always eagerly imported, it should explicitly import it in <code>xgboost/__init__.py</code>. Failing that, the safer practice in your code (which will also satisfy ty) would be to <code>import xgboost.callback</code> in your own module, before expecting <code>xgboost.callback</code> attribute to exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-15 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kszlim">@kszlim</a> on 2025-05-19 19:09</div>
+            <div class="timeline-body"><p>Might be similar to this issue, but is this an expected failure?</p>
+<pre><code>error[unresolved-attribute]: Type `&lt;module 'plotly.graph_objects'&gt;` has no attribute `Figure`
+ --&gt; t.py:3:12
+  |
+1 | import plotly.graph_objects as go
+2 |
+3 | def t() -&gt; go.Figure:
+  |            ^^^^^^^^^
+4 |     return go.Figure()
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>So it seems like plotly lazily imports their modules dynamically via https://github.com/plotly/plotly.py/blob/main/_plotly_utils/importers.py#L4C5-L4C20</p>
+<p>Is this a case ty should handle?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-19 19:17</div>
+            <div class="timeline-body"><p>The dynamic stuff is hidden from type checkers by https://github.com/plotly/plotly.py/blob/main/plotly/<strong>init</strong>.py#L38</p>
+<p>Which makes this an instance of #133</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

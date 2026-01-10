@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider removing `infer_expression_type` query - astral-sh/ty #855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider removing `infer_expression_type` query</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/855">#855</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-20 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-20 11:28</div>
+            <div class="timeline-body"><p>The original motivation why we introduced the <code>infer_expression_type</code> was because we wanted to avoid that ty ever infers the same expression twice and that this is important for performance. https://github.com/astral-sh/ruff/pull/19436 shows that this might not be the case (and it's a very naive approach at removing the query). Most benchmarks are neutral with the exception of sympy (11% regresssion).</p>
+<p>Removing the query is motivated by the fact that the cached query results can take up up to 3GB of memory (struct fields + metadata) in large projects (~10% of overall memory usage) and this is without accounting for the <code>Expression</code> ingredients (another 500MB).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">memory</span> added by @MichaReiser on 2025-07-20 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-20 15:58</div>
+            <div class="timeline-body"><p>A less extreme variant of this could be to only create standalone expression that are used in reachability constraints, as these tend to be evaluated in fairly hot code and the evaluation of reachability constraints isn't cached itself.</p>
+<p>The alternative is that we try to cache reachability constraint resolution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-07-20 15:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `@warnings.deprecated` supression for uses of imported symbols - astral-sh/ty #845</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement `@warnings.deprecated` supression for uses of imported symbols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/845">#845</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-07-17 16:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-17 16:59</div>
+            <div class="timeline-body"><p>I'm landing https://github.com/astral-sh/ruff/pull/19376 without this functionality.</p>
+<hr />
+<p>If you <code>from module import something_deprecated</code> we should emit a diagnostic for that <strong>but then not emit diagnostics for subsequent uses of something_deprecated in the file</strong> to minimize needless repetition when there's a single root issue.</p>
+<hr />
+<p>See this section of the deprecated mdtest:</p>
+<p>https://github.com/astral-sh/ruff/blob/8ded41b7e5d9cb3c7883bdb6cdd4acbda2512305/crates/ty_python_semantic/resources/mdtest/deprecated.md#direct-import-deprecated</p>
+<hr />
+<p>I think this is probably not too hard to do, although it depends on how &quot;right&quot; you want to do it. Notably ideally we should have this behaviour:</p>
+<pre><code>import module
+from module import some_deprecated  # error: [deprecated]
+
+some_deprecated()  # ok! (supressed)
+module.some_deprecated()  # error: [deprecated]
+</code></pre>
+<p>However a potentially simple implementation of this behaviour would be to, when we emit a diagnostic while checking imports, record the <code>DeprecatedInstance</code> as &quot;handled&quot; in the scope and supress all subsequent diagnostics that involve that <code>DeprecatedInstance</code> (or maybe mark the FunctionLiteral/ClassLiteral? unclear if there's relevant corner cases to that difference).</p>
+<p>That implementation would supress <code>module.some_deprecated()</code> until the <code>from module import some_deprecated</code> was handled, at which point it would suddenly become unsupressed and complain. While this is certainly suboptimal I think this is so narrow that the &quot;flaw&quot; is acceptable.</p>
+<p>Of course if the &quot;correct&quot; implementation is easy, great. I have no idea how to do the correct one in ty's architecture though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> added by @Gankra on 2025-07-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @Gankra on 2025-07-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-18 22:17</div>
+            <div class="timeline-body"><p>Another possible implementation approach here would be that when we see an import or assignment of a deprecated function/class, after raising the deprecation diagnostic, we actually assign/import a modified version of the type with the <code>deprecated</code> field cleared to <code>None</code>.</p>
+<p>This would probably require that we also implement <code>normalized_impl</code> on functions/classes such that they always normalize to &quot;non-deprecated&quot;, so that we still consider the deprecated and non-deprecated literal types for the same function/class as equivalent types. This is a bit ugly, but may still be overall nicer/simpler than other ways of implementing this suppression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 09:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:18 UTC
+    </footer>
+</body>
+</html>

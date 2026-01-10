@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider unsafely assuming that subclasses don't add `__await__`, for better `isawaitable` narrowing - astral-sh/ty #1567</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider unsafely assuming that subclasses don't add `__await__`, for better `isawaitable` narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1567">#1567</a>
+        opened by <a href="https://github.com/alexmacnorthstar">@alexmacnorthstar</a>
+        on 2025-11-14 21:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexmacnorthstar">@alexmacnorthstar</a> on 2025-11-14 21:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">import asyncio
+import inspect
+from typing import Callable, Awaitable, Any
+
+def foo_1():
+  return [1,2,3]
+
+async def foo_2():
+  return [1,2,3]
+
+async def test(
+  foo: list[int] | Awaitable[list[int]]
+):
+  intlist = await foo if inspect.isawaitable(foo) else foo
+  for x in intlist:
+    print(x)
+
+async def main():
+  await test(foo_1())
+  await test(foo_2())
+
+asyncio.run(main())
+</code></pre>
+<p>Gives</p>
+<pre><code>error[not-iterable]: Object of type `object` is not iterable
+  --&gt; /Users/alex/Desktop/ty_test.py:15:12
+   |
+13 | ):
+14 |   intlist = await foo if inspect.isawaitable(foo) else foo
+15 |   for x in intlist:
+   |            ^^^^^^^
+16 |     print(x)
+   |
+info: It doesn't have an `__iter__` method or a `__getitem__` method
+info: rule `not-iterable` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>The online playground shows that &quot;intlist&quot; is inferred as type &quot;object&quot; but it should be type &quot;list[int]&quot;</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.26 (b225fd8b4 2025-11-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 21:55</div>
+            <div class="timeline-body"><p>This is another case where our narrowing is strictly correct, but perhaps overly pedantic.</p>
+<p>It is possible that there exists some user subclass of <code>list</code> which is awaitable and returns some other type (not even necessarily the same type as contained in the list, so not necessarily <code>int</code> in this case). So after checking <code>inspect.isawaitable(foo)</code>, we can't assume that the type of <code>foo</code> is <code>Awaitable[list[int]]</code> -- all we can assume is that it is some awaitable object, and awaiting it returns... something. That's why we infer <code>object</code> as the type of <code>intlist</code>.</p>
+<p>One path forward here could be to place some restrictions on subclassing certain builtin types. Like, emit a diagnostic if you subclass <code>list</code> and add an <code>__await__</code> method to it. Then we could safely narrow in the expected way here. But maybe somebody out there will find this restriction unbearable?</p>
+<p>Or we could just decide to make some unsafe assumptions in these cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "type check with inspect.isawaitable does not appear to narrow type" to "Consider unsafely assuming that subclasses don't add `__await__`, for better `isawaitable` narrowing" by @carljm on 2025-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-11-14 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-11-14 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexmacnorthstar">@alexmacnorthstar</a> on 2025-11-14 22:19</div>
+            <div class="timeline-body"><p>I would assume that subclassing list would be the edge case and I'd actually want a warning if someone did that in our codebase - but the real world is a full of crazy stuff, and i could imagine that in a more complex codebase like numpy that deals with interesting container types that they might do those kind of gymnastics...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:42 UTC
+    </footer>
+</body>
+</html>

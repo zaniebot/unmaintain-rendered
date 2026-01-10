@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive: &quot;possibly-unbound-attribute&quot; when accessing attribute after if obj is not None guard - astral-sh/ty #347</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive: &quot;possibly-unbound-attribute&quot; when accessing attribute after if obj is not None guard</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/347">#347</a>
+        opened by <a href="https://github.com/romainbourdain">@romainbourdain</a>
+        on 2025-05-13 08:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/romainbourdain">@romainbourdain</a> on 2025-05-13 08:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I'm encountering what seems to be a false positive from Ty when accessing an attribute on an optional object that has just been checked with if.</p>
+<h2>Reproductible example</h2>
+<pre><code class="language-python">from typing import Optional
+
+class Node:
+    def __init__(self, name: str, parent: Optional[&quot;Node&quot;] = None):
+        self.name = name
+        self.parent = parent
+
+positions = [(&quot;root&quot;, (0, 0)), (&quot;child&quot;, (1, 1))]
+
+node = Node(&quot;child&quot;, parent=Node(&quot;root&quot;))
+
+if node.parent:
+    pos = next(p for name, p in positions if name == node.parent.name)[1]
+</code></pre>
+<h2>Ty output</h2>
+<pre><code>Attribute `name` on type `Unknown | Node | None` is possibly unboundty(possibly-unbound-attribute)
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 08:29</div>
+            <div class="timeline-body"><p>Thank you for reporting this. We currently don't support narrowing on attribute expressions, yet. See #164.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-13 08:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

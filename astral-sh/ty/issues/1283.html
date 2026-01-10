@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>self.&lt;completion&gt; not working in helix - astral-sh/ty #1283</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>self.&lt;completion&gt; not working in helix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1283">#1283</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2025-09-30 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-09-30 13:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following example works in the playground</p>
+<pre><code class="language-py">class A:
+    def __init__(self):
+        self.abc = 1
+
+    def foo(self):
+        self.a&lt;completion&gt;
+</code></pre>
+<p>but in helix the auto-completion does not work for self attributes (it works for other variables).</p>
+<p>Helix 25.07.1 with the following configs:</p>
+<p>config.toml</p>
+<pre><code class="language-toml">[editor.lsp]
+display-inlay-hints = true
+inlay-hints-length-limit = 32
+</code></pre>
+<p>languages.toml</p>
+<pre><code class="language-toml">[[language]]
+name = &quot;python&quot;
+language-servers = [&quot;ruff&quot;, &quot;ty&quot;]
+auto-format = true
+
+# needed for older helix versions
+[language-server.ty]
+command = &quot;ty&quot;
+args = [&quot;server&quot;]
+
+[language-server.ruff.config.settings]
+fix = true
+
+[language-server.ruff.config.settings.lint]
+extendSelect = [
+    &quot;ASYNC&quot;,  # flake8-async
+    &quot;B&quot;,  # flake8-bugbear
+    &quot;A&quot;,  # flake8-builtins
+    &quot;C4&quot;,  # flake8-comprehensions
+    &quot;LOG&quot;,  # flake8-logging
+    &quot;RET&quot;,  # flake8-return
+    &quot;SIM&quot;,  # flake8-simplify
+    &quot;PTH&quot;,  # flake8-use-pathlib
+    &quot;FLY&quot;,  # flynt
+    &quot;I&quot;,  # isort
+    &quot;N&quot;, # pep8-naming
+    &quot;PERF&quot;,  # perflint
+    &quot;PGH&quot;,  # pygrep-hooks
+    &quot;PLE&quot;,  # pylint error
+    &quot;PLW&quot;,  # pylint warning
+    &quot;UP&quot;,  # pyupgrade
+    &quot;FURB&quot;,  # refurb
+    &quot;RUF&quot;,  # ruff
+]
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-30 13:49</div>
+            <div class="timeline-body"><p>Thank you for reporting this. This is likely just related to #159. We do infer the correct type for <code>self</code>, yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2025-09-30 15:33</div>
+            <div class="timeline-body"><p>It seems related, but the current example doesn't use TypeVars and it seems to work in the playground (just not in helix - not sure about other editors)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 15:37</div>
+            <div class="timeline-body"><p>if you do <code>reveal_type(self)</code>, you will find that we infer <code>Unknown</code> as the type of <code>self</code> currently, and that is #159. As a result of inferring <code>Unknown</code>, we do not provide any autocompletions on <code>self</code> in any IDEs yet. (<code>Unknown</code> has all possible attributes, but we can't provide an infinite list of autocomplete suggestions to the user -- it might be a bit much :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slice is not subscriptable at runtime - astral-sh/ty #1595</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Slice is not subscriptable at runtime</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1595">#1595</a>
+        opened by <a href="https://github.com/joecox">@joecox</a>
+        on 2025-11-19 19:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joecox">@joecox</a> on 2025-11-19 19:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty should report <a href="https://docs.astral.sh/ty/reference/rules/#non-subscriptable"><code>not-subscriptable</code></a> when annotating slice types ~below 3.14:~</p>
+<pre><code class="language-sh">$ cat &gt;slice.py &lt;&lt;'# EOF'
+s: slice[int]
+# EOF
+
+$ uv run --python 3.13 slice.py
+Using CPython 3.13.7 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Traceback (most recent call last):
+  File &quot;/Users/joe/slice.py&quot;, line 1, in &lt;module&gt;
+    s: slice[int]
+       ~~~~~^^^^^
+TypeError: type 'slice' is not subscriptable
+
+$ uv run --python 3.14 slice.py
+Using CPython 3.14.0
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+
+$ uvx --python 3.13 --with &quot;ty==0.0.1-alpha.27&quot; ty check slice.py
+All checks passed!
+</code></pre>
+<p>I assume ty doesn't complain because typeshed has slice as generic? ~I don't even know if it's documented anywhere that subscripting slice began working on 3.14.~</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.27 (26d7b6864 2025-11-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:35</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>In fact, <code>slice</code> didn't become subscriptable at runtime on Python 3.14 either. What happened was that type annotations became deferred by default (PEP 649/749), so <code>s: slice[int]</code> doesn't execute the code <code>slice[int]</code> at runtime.</p>
+<pre><code>Python 3.14.0rc2 (main, Aug 28 2025, 17:02:21) [Clang 20.1.4 ] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; slice[int]
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    slice[int]
+    ~~~~~^^^^^
+TypeError: type 'slice' is not subscriptable
+</code></pre>
+<p>Ideally, type checkers should not assume that just because <code>slice</code> is generic in typeshed, that also means it is subscriptable at runtime. Runtime subscriptability should be indicated separately by defining <code>__class_getitem__</code>. But in typeshed, <code>Generic</code> itself defines <code>__class_getitem__</code>, so it may be difficult for type checkers to make this distinction.</p>
+<p>None of the other type checkers (mypy, pyright, pyrefly) report this either.</p>
+<p>So I think it will not be a priority for us in the near term, but I'll keep the issue open as something we may want to look at in future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @carljm on 2025-11-19 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-11-19 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Slice is not subscriptable < py3.14" to "Slice is not subscriptable at runtime" by @carljm on 2025-11-19 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joecox">@joecox</a> on 2025-11-19 20:39</div>
+            <div class="timeline-body"><p>That makes sense, thanks for the info!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 20:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Ideally, type checkers should not assume that just because <code>slice</code> is generic in typeshed, that also means it is subscriptable at runtime. Runtime subscriptability should be indicated separately by defining <code>__class_getitem__</code>.</p>
+</blockquote>
+<p>Yes, the reason why we generally include <code>__class_getitem__</code> methods in typeshed when they exist at runtime (even for classes that inherit from <code>Generic</code> in typeshed) is so that type checkers can have the option of distinguishing between classes that are generic at runtime <em>and</em> at type-check time, and those which are only generic at type-check time.</p>
+<blockquote>
+<p>But in typeshed, <code>Generic</code> itself defines <code>__class_getitem__</code>, so it may be difficult for type checkers to make this distinction.</p>
+</blockquote>
+<p>What do you mean here? I don't think typeshed says anything about whether <code>Generic</code> defines <code>__class_getitem__</code>. <code>Generic</code> isn't even a class in typeshed.</p>
+<blockquote>
+<p>None of the other type checkers (mypy, pyright, pyrefly) report this either.</p>
+<p>So I think it will not be a priority for us in the near term, but I'll keep the issue open as something we may want to look at in future.</p>
+</blockquote>
+<p>Yeah, I agree that this shouldn't be a priority</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:47</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you mean here? I don't think typeshed says anything about whether <code>Generic</code> defines <code>__class_getitem__</code>. <code>Generic</code> isn't even a class in typeshed.</p>
+</blockquote>
+<p>I was looking at https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L445-L457. Admittedly I didn't think very hard about why it does that funny dance with <code>class _Generic</code> and then <code>Generic: type[_Generic]</code> -- but I think that if taken literally (and if a type checker allowed subclassing a <code>type[...]</code> type), that would still have the effect of making a type checker think that a class inheriting <code>Generic</code> had <code>__class_getitem__</code> (at least on Python 3.10+).</p>
+<p>That said, I don't think that's actually the issue in ty; we special-case inheritance from Generic anyway. I agree that if this is true:</p>
+<blockquote>
+<p>we generally include <code>__class_getitem__</code> methods in typeshed when they exist at runtime (even for classes that inherit from <code>Generic</code> in typeshed)</p>
+</blockquote>
+<p>then in principle type checkers have the information they need in order to handle this correctly (even though apparently they don't!).</p>
+<p>The issues in ty here are really two-fold:</p>
+<ol>
+<li>We don't type check annotations as runtime value expressions, on any Python version, even though ideally we should for Python &lt;3.13, without <code>from __future__ import annotations</code>. This might be hard to fix with our current approach to value vs type expressions, but I think we should change our approach there in a way that would make it easier in the future.</li>
+<li>Even in value expressions, we special-case explicit subscription of generic classes and always allow it, regardless of whether the class has <code>__class_getitem__</code> or not. This would be pretty easy to fix, I think.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 20:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I was looking at https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L445-L457. Admittedly I didn't think very hard about why it does that funny dance with <code>class _Generic</code> and then <code>Generic: type[_Generic]</code> -- but I think that if taken literally (and if a type checker allowed subclassing a <code>type[...]</code> type), that would still have the effect of making a type checker think that a class inheriting <code>Generic</code> had <code>__class_getitem__</code> (at least on Python 3.10+).</p>
+</blockquote>
+<p>Oh! I'm sorry, I forgot the definition changed in https://github.com/python/typeshed/pull/14583; I had the previous definition still in my head (<code>Generic</code> used to just be an instance of <code>_SpecialForm</code> in typeshed). The funny dance is because pyright broke in the first version of that PR, when we tried to make <code>Generic</code> an actual class.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:43 UTC
+    </footer>
+</body>
+</html>

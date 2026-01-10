@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support `Generic` bound evaluation on `typing.Self` - astral-sh/ty #1335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support `Generic` bound evaluation on `typing.Self`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1335">#1335</a>
+        opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a>
+        on 2025-10-10 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-10-10 14:35</div>
+            <div class="timeline-body"><p>Given the following python code</p>
+<pre><code class="language-py">from typing import Generic, Self, TypeVar
+
+class Base: ...
+
+V = TypeVar(&quot;V&quot;, bound=&quot;Base&quot;)
+# V = TypeVar(&quot;V&quot;, bound=&quot;Base&quot;, covariant=True) # also fails
+
+
+class Item(Generic[V]): ...
+
+class Fine(Base): ...
+
+class Problem(Base):
+    item: Item[Self]
+    good: Item[Fine]
+
+    def __init__(self) -&gt; None:
+        super().__init__()
+
+        self.item = Item()
+        self.good = Item()
+</code></pre>
+<p><code>ty</code> reports:</p>
+<pre><code class="language-sh">&gt; uvx ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                error[invalid-argument-type]: Argument to class `Item` is incorrect
+  --&gt; main.py:18:11
+   |
+17 | class Problem(Base):
+18 |     item: Item[Self]
+   |           ^^^^^^^^^^ Expected `Base`, found `typing.Self`
+19 |     good: Item[Fine]
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>As you can see, with <code>good</code> // <code>Fine</code>, <code>ty</code> correctly can determine that <code>Fine</code> is bound to <code>Base</code> but it can not evaluate <code>Self</code> as being bound to <code>Base</code></p>
+<details><summary>Version</summary>
+<p>
+
+<pre><code class="language-sh">&gt; uvx ty --version
+ty 0.0.1-alpha.22 (2f3190d09 2025-10-10)
+</code></pre>
+</p>
+</details> 
+
+<p><sub>Potentially related (but inverted) is #1124.</sub></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support `Generic` bound with `typing.Self`" to "support `Generic` bound evaluation on `typing.Self`" by @CoderJoshDK on 2025-10-10 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 23:06</div>
+            <div class="timeline-body"><p>Thanks for the report! Although the presentation is a bit different, the root cause here is exactly the same as #1124; we don't have any support yet for <code>Self</code> as an attribute annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-10 23:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

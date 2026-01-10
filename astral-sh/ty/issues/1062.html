@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to report conflicting-argument-forms at site of problematic function definition instead of at call site? - astral-sh/ty #1062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to report conflicting-argument-forms at site of problematic function definition instead of at call site?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1062">#1062</a>
+        opened by <a href="https://github.com/tlauli">@tlauli</a>
+        on 2025-08-20 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlauli">@tlauli</a> on 2025-08-20 14:10</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Currently, if I have one conditionally defined function that is correct, but which triggers <code>conflicting-argument-forms</code> rule, it is necessary to add  ignore to every call of the function. Would it be possible to report the violation at the function definition, so that it is ignorable at a single location? Pyright does it, and in my opinion it also makes more sense, and it is significantly easier to ignore false positives.</p>
+<pre><code>from typing import reveal_type
+from ty_extensions import is_singleton
+
+if flag:
+    f = repr  # Expects a value
+else:
+    f = is_singleton  # Expects a type form, only location where pyright reports an error
+
+f(int)  # ty error 1
+f(int)  # ty error 2
+f(int)  # ty error 3
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1-alpha.19 (e9cb838b3 2025-08-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @tlauli on 2025-08-20 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @MichaReiser on 2025-08-20 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 15:19</div>
+            <div class="timeline-body"><p>Thank you for reporting this, and for the ty-specific MRE. Can you also show us how you test this with pyright (without <code>ty_extensions</code>)? And maybe tell us more about your actual use case to see if there are other reasonable solutions (e.g. making <code>flag</code> a statically-known condition)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlauli">@tlauli</a> on 2025-08-21 07:20</div>
+            <div class="timeline-body"><p>I made a function that acts like <code>cast</code> but also checks at runtime if the cast is correct. For performance reasons I want this function to degenerate to a simple <code>cast</code> while running in prod. See the code snippet:</p>
+<pre><code>from typeguard import CollectionCheckStrategy, check_type
+import os
+
+if TYPE_CHECKING or os.environ.get(&quot;ENV&quot;) == &quot;prod&quot;:
+    safe_cast = cast
+else:
+
+    def safe_cast(typ: Any, val: Any) -&gt; Any:
+        checked = check_type(val, typ, collection_check_strategy=CollectionCheckStrategy.ALL_ITEMS)
+        return cast(typ, checked)  # pyright: ignore[reportInvalidTypeForm]
+</code></pre>
+<p>As far as I understand it, the <code>typeguard.check_type</code> treats <code>typ</code> as a value, and <code>cast</code> treats it as a type, so the else branch is problematic, as it contains both usages. Pyright reports the error at the line with return statement, while ty reports it at every call site of <code>safe_cast</code>, even though it is the same single issue of <code>safe_cast</code> being questionably defined.</p>
+<p>To be fair, I would not be surprised if what I tried to do could be done in a better way to pass the checks, but I still think it would be better to report the error only once, instead of at every call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 14:38</div>
+            <div class="timeline-body"><p>I think there are two different errors being reported here. Based on the suppression in the extended example, pyright is reporting that the return type of <code>check_type</code> is not valid in a type expression (in the call to <code>cast</code>). (I'm not sure why ty isn't reporting that, but we probably should be.) Ty is reporting a different problem, which is that at every call site of <code>safe_cast</code>, you are trying to call a union of two functions, and those functions don't agree about whether the second argument should be a value or type expression, so we don't know how to interpret the argument expression at each callsite. That's not a problem with either of the two definitions of <code>safe_cast</code> in isolation, it's only a problem when you try to call a union of them.</p>
+<p>I'm working on some changes that should allow us to infer a given expression twice, once as value expression and once as type expression. Which might allow us to eliminate <code>conflicting-argument-forms</code> rule entirely. I'd recommend holding off on this issue for a bit and see what develops there.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:25 UTC
+    </footer>
+</body>
+</html>

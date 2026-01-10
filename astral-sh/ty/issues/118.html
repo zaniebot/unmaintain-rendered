@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not all class literals are singletons - astral-sh/ty #118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Not all class literals are singletons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/118">#118</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-04-21 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-21 20:59</div>
+            <div class="timeline-body"><p>I'm not sure if what this might break (if anything), but we currently assume that all class literals are singletons.  Normally they are:</p>
+<pre><code class="language-py">class C: ...
+</code></pre>
+<p>Only one instance of the type <code>C</code> at runtime. But if a class is defined in a function:</p>
+<pre><code class="language-py">def f():
+    class D: ...
+</code></pre>
+<p>then a new <code>type</code> is created each time the function is invoked.</p>
+<p>A couple of wrinkles complicate this:</p>
+<ul>
+<li><p>Inside the function body, <code>D</code> <em>is</em> a singleton, since for the duration of that single invocation, <code>D</code> refers to the (single) class that was just created.</p>
+</li>
+<li><p>It's only <em>outside</em> the function body where we have to consider that <code>f</code> might be invoked multiple times. Now, at the moment, without return type inference (#17349), there isn't a way for anything outside of <code>f</code> to talk about <code>D</code> (either the type itself, or subclasses of it, or instances of it, etc). But we'll have to consider how we want to represent this if we do implement RTI.</p>
+</li>
+</ul>
+<p>(There's some overlap here with eager nested scopes, since that's another feature that changes behavior once we cross a function body boundary.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-21 22:22</div>
+            <div class="timeline-body"><p>Seems like we may want to label scopes as run-once vs run-many (where the former is any scope outside of any function, and the latter is all scopes where any ancestor is a function), and then <code>Type::ClassLiteral</code> would know if its a singleton or not based on whether the scope in which it was defined is run-once or run-many?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Not all class literals are singletons" to "Not all class literals are singletons" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-09 00:59</div>
+            <div class="timeline-body"><p>I put a bit more thought into this over in https://github.com/astral-sh/ty/issues/128#issuecomment-2864800219</p>
+<p>I don't think my comment above makes sense; it's not nearly enough to just consider the class-literal type not a singleton; this affects all kinds of assumptions we make about class and instance types. I think instead we have to avoid this possibility in our implementation of return-type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-23 23:12</div>
+            <div class="timeline-body"><p>I think our conclusion here is to continue to assume that class literal types are singletons, and avoid allowing them to be inferred as a return type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-23 23:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

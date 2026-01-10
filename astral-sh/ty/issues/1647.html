@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect type narrowing under the presence of complex Union type - astral-sh/ty #1647</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect type narrowing under the presence of complex Union type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1647">#1647</a>
+        opened by <a href="https://github.com/mflova">@mflova</a>
+        on 2025-11-26 17:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mflova">@mflova</a> on 2025-11-26 17:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I simplified as much as I could the given example. I guess that <code>ty</code> gets a bit lost under this <code>Union</code> type. Two errors are reported here:</p>
+<pre><code class="language-py">from collections.abc import Mapping, Sequence
+from typing import TypeAlias
+
+RecommendationT: TypeAlias = &quot;str | Mapping[str, str]&quot;
+
+class CustomRecommendation: ...
+
+class CustomError(Exception):
+    def __init__(
+        self,
+        message: str,
+        *,
+        initial_recommendations: (RecommendationT | Sequence[RecommendationT] | CustomRecommendation | None) = None,
+    ) -&gt; None:
+        super().__init__(message)
+        self.recommendations: list[RecommendationT] = []
+        if isinstance(initial_recommendations, Mapping):
+            self.add_recommendation(initial_recommendations) #  error[invalid-argument-type] Argument to bound method `add_recommendation` is incorrect: Expected `str | Mapping[str, str] | CustomRecommendation`, found `(Sequence[str | Mapping[str, str]] &amp; Top[Mapping[Unknown, object]]) | Mapping[str, str] | (CustomRecommendation &amp; Top[Mapping[Unknown, object]])`
+        elif isinstance(initial_recommendations, Sequence):
+            for r in initial_recommendations or []:
+                self.add_recommendation(r)  # error[invalid-argument-type] Argument to bound method `add_recommendation` is incorrect: Expected `str | Mapping[str, str] | CustomRecommendation`, found `object`
+
+    def add_recommendation(self, recommendation: RecommendationT) -&gt; None:
+        ...
+</code></pre>
+<p>None of <code>mypy</code> nor <code>pyight</code> report any error. It also seems logical to me. The problem is also happening if I replace <code>Mapping</code> by <code>dict</code>. So it has nothing to do with <code>collections.abc</code> being used</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28 (8c342496a 2025-11-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 19:09</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Ty isn't getting lost in the union type; rather, it is telling you accurately that this code is not type-safe, in a way that mypy and pyright prefer to ignore.</p>
+<p>I can create a subclass of <code>CustomRecommendation</code> which satisfies <code>Sequence</code> but is not a sequence of <code>RecommendationT</code>, it's a sequence of something else. Thus, after <code>elif isinstance(initial_recommendations, Sequence)</code> it is not actually safe to assume that iterating over <code>initial_recommendations</code> must yield <code>RecommendationT</code>.</p>
+<p>If you want to express that this is not possible in your codebase, you could decorate <code>CustomRecommendation</code> with <code>@typing.final</code>, and then ty will understand that such a subclass is not possible, and the second error in this example will go away.</p>
+<p>This alone isn't sufficient to fix the first error, because it is <em>also</em> possible that some hypothetical type which satisfies <code>Sequence[RecommendationT]</code> <em>also</em> satisfies <code>Mapping</code>, but not necessarily a <code>Mapping[str, str]</code>. So similarly, after <code>if isinstance(initial_recommendations, Mapping)</code> we can't rule out such a type, so we can't be sure that <code>initial_recommendations</code> is a <code>Mapping[str, str]</code>.</p>
+<p>This can be solved by just reordering the if/elif, so that we've already ruled out <code>Sequence</code>.</p>
+<p>With both of those fixes, this code passes checking in ty, and is in fact more type safe: https://play.ty.dev/5bb218e9-f627-4cd2-93e4-ee98e7a68e9b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 19:17</div>
+            <div class="timeline-body"><p>This is similar to the cases discussed in #1578, will close as duplicate of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-26 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mflova">@mflova</a> on 2025-11-26 19:17</div>
+            <div class="timeline-body"><p>Thanks for the very nice and detailed explanation! It is appreciated.</p>
+<p>I can understand and it is a smart treatment. However, what if CustomRecommendation is meant to be an abstract interface where any user can derive from to create custom recommendations? Isn't there a way to indicate <code>ty</code> that any subclasses that are derived from this abstract interface cannot have any Sequence-based type in any of its bases? Although <code>ty</code> treatment is the most correct implementation, it is also not so easy to deal with when we are working with cases like these (abstract interfaces)</p>
+<p>As far as I am aware, I cannot think about any tool within the typing or typing-extensions ecosystem.</p>
+<p>Thank you so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 19:24</div>
+            <div class="timeline-body"><p>@mflova Yes, I don't think there's currently a nice way to express such limitations on subclasses of <code>CustomRecommendation</code>. I can imagine possibly expressing this by defining <code>__getitem__</code> and/or <code>__iter__</code> using <code>Never</code> types, meaning that a subclass could never override them in a usable way? Currently ty would not understand this expression as making such a subclass impossible, though I suspect that could be added.</p>
+<p>The simpler solution here is just to first rule out <code>CustomRecommendation</code> via checking <code>isinstance(initial_recommendations, CustomRecommendation)</code>, which also fixes the errors: https://play.ty.dev/031de150-e8a0-4c84-86b3-54d5b3d36520</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:45 UTC
+    </footer>
+</body>
+</html>

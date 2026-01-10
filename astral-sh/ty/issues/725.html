@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is the right way to annotating `self` with other types without losing its original type? - astral-sh/ty #725</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>What is the right way to annotating `self` with other types without losing its original type?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/725">#725</a>
+        opened by <a href="https://github.com/observerw">@observerw</a>
+        on 2025-06-29 08:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/observerw">@observerw</a> on 2025-06-29 08:02</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When marking <code>self</code> with another type (e.g a Protocol), we can't use it to access other methods in the same class:</p>
+<pre><code class="language-python">class WithHello(Protocol):
+    def hello(self) -&gt; str: ...
+
+
+class SomeClass:
+    def world(self) -&gt; str:
+        return &quot;world&quot;
+
+    def some_method(self: WithHello):
+        self.hello()
+        self.world()  # Type `WithHello` has no attribute `world` ty(unresolved-attribute)
+</code></pre>
+<p>Maybe we can declare a new type that is both a <code>WithHello</code> and a <code>SomeClass</code>, then use it to annotate self. That works fine by ty, but upsets Pylance, so there is a behavior inconsistent here:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import Protocol
+
+
+class WithHello(Protocol):
+    def hello(self) -&gt; str: ...
+
+
+class SomeClass:
+    def world(self) -&gt; str:
+        return &quot;world&quot;
+
+    def some_method(self: WithHelloAndSomeClass): # the type of `self` must be of super type of `SomeClass` Pylance(reportGeneralTypeIssues)
+        self.hello()
+        self.world()
+
+
+class WithHelloAndSomeClass(WithHello, SomeClass): ...
+</code></pre>
+<p>So I'm not sure if this is the right way (or the only way) to achieve the desired behavior, and I can only find some limited discussions (https://github.com/python/mypy/issues/7191) about self-types and they are not helping.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @observerw on 2025-06-29 08:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iyakushev">@iyakushev</a> on 2025-06-29 18:24</div>
+            <div class="timeline-body"><p>Hello! This seems intended, as you've explicitly marked <code>self: WithHello</code> which only implements <code>def hello() -&gt; str</code>. Instead, try inheriting your protocol <code>class SomeClass(WithHello): ...</code> if you want to be explicit, or just implement required functions and pass class instances to some functions/methods which require said interface <code>WithHello</code>.</p>
+<pre><code class="language-python">class WithHello(Protocol):
+    def hello(self) -&gt; str: ...
+
+
+class SomeClass1:
+    def hello(self) -&gt; str: 
+         return &quot;hello&quot;
+
+    def world(self) -&gt; str:
+        return &quot;world&quot;
+
+    def some_method(self): 
+        self.hello()  # OK
+        self.world()  # OK
+
+class SomeClass2(WithHello):
+    def world(self) -&gt; str:
+        return &quot;world&quot;
+
+    def some_method(self): 
+        self.hello()  # OK (but relies on default impl from WithHello)
+        self.world()  # OK
+
+
+
+def handler(obj: WithHello): ...
+
+handler(SomeClass1())  # OK
+handler(SomeClass2())  # OK
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/observerw">@observerw</a> on 2025-06-30 03:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Hello! This seems intended, as you've explicitly marked <code>self: WithHello</code> which only implements <code>def hello() -&gt; str</code>. Instead, try inheriting your protocol <code>class SomeClass(WithHello): ...</code> if you want to be explicit, or just implement required functions and pass class instances to some functions/methods which require said interface <code>WithHello</code>.</p>
+<p>class WithHello(Protocol):
+def hello(self) -&gt; str: ...</p>
+<p>class SomeClass1:
+def hello(self) -&gt; str:
+return &quot;hello&quot;</p>
+<pre><code>def world(self) -&gt; str:
+    return &quot;world&quot;
+
+def some_method(self): 
+    self.hello()  # OK
+    self.world()  # OK</code></pre>
+<p>class SomeClass2(WithHello):
+def world(self) -&gt; str:
+return &quot;world&quot;</p>
+<pre><code>def some_method(self): 
+    self.hello()  # OK (but relies on default impl from WithHello)
+    self.world()  # OK</code></pre>
+<p>def handler(obj: WithHello): ...</p>
+<p>handler(SomeClass1())  # OK
+handler(SomeClass2())  # OK</p>
+</blockquote>
+<p>Oh! I forgot I can just inherit a Protocol! That solves my problem. Thank you for your kind and timely reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @observerw on 2025-06-30 03:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

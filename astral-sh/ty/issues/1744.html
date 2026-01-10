@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perplexing &quot;Object of type `typing.Any` has no attribute&quot; - astral-sh/ty #1744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Perplexing &quot;Object of type `typing.Any` has no attribute&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1744">#1744</a>
+        opened by <a href="https://github.com/alex">@alex</a>
+        on 2025-12-03 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex">@alex</a> on 2025-12-03 13:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I apologies because I don't have a minimal reproducer for this! I'm seeing the following errors with <code>ty</code>:</p>
+<pre><code>error[unresolved-attribute]: Object of type `typing.Any` has no attribute `string`
+  --&gt; src/cryptography/hazmat/bindings/openssl/binding.py:90:26
+   |
+88 |     # shared object that were loaded have the same version and raise an
+89 |     # ImportError if they do not
+90 |     so_package_version = _openssl.ffi.string(
+   |                          ^^^^^^^^^^^^^^^^^^^
+91 |         _openssl.lib.CRYPTOGRAPHY_PACKAGE_VERSION
+92 |     )
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Object of type `typing.Any` has no attribute `CRYPTOGRAPHY_PACKAGE_VERSION`
+  --&gt; src/cryptography/hazmat/bindings/openssl/binding.py:91:9
+   |
+89 |     # ImportError if they do not
+90 |     so_package_version = _openssl.ffi.string(
+91 |         _openssl.lib.CRYPTOGRAPHY_PACKAGE_VERSION
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+92 |     )
+93 |     if version.encode(&quot;ascii&quot;) != so_package_version:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Object of type `typing.Any` has no attribute `OpenSSL_version_num`
+   --&gt; src/cryptography/hazmat/bindings/openssl/binding.py:104:9
+    |
+103 |     _openssl_assert(
+104 |         _openssl.lib.OpenSSL_version_num() == openssl.openssl_version(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+105 |     )
+    |
+info: rule `unresolved-attribute` is enabled by default
+
+</code></pre>
+<p>Right off the bat I'm confused, because my understanding of the <code>Any</code> type is that all operations are valid on it :-) I also can't seem to create a minimal reproducer out of it. I'm wondering if this is somehow related to #136 and declared vs. observed field types, but teh error doesn't give me a lot to go on.</p>
+<p>This can be reproduced in https://github.com/pyca/cryptography with <code>ty check src/cryptography/ vectors/cryptography_vectors/ tests/ release.py noxfile.py</code></p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.30 (d5754d3b5 2025-12-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 14:04</div>
+            <div class="timeline-body"><p>There are two types associated with <code>Any</code>, and I think (at least one) issue here is that we're doing a terrible job at distinguishing between the two types in our diagnostic here, which results in a very confusing message :-)</p>
+<p>The first type is the one you're thinking of: if an object <em>inhabits</em> the type <code>Any</code>, then it of course has arbitrary attributes:</p>
+<pre><code class="language-py">from typing import Any
+
+def f(x: Any):
+    x.foooooooooooooooofaaaaaaaaaaaaaa  # fine
+</code></pre>
+<p>but there is also the type of the symbol <code>typing.Any</code> itself! The runtime symbol <code>typing.Any</code> doesn't inhabit the type <code>Any</code>: it's obviously the case that if you do <code>x = Any</code> at runtime, <code>x</code> does not have arbitrary attributes:</p>
+<pre><code class="language-py">&gt;&gt;&gt; from typing import Any
+&gt;&gt;&gt; x = Any
+&gt;&gt;&gt; x.foooooofarrrr
+Traceback (most recent call last):
+  File &quot;&lt;python-input-2&gt;&quot;, line 1, in &lt;module&gt;
+    x.foooooofarrrr
+AttributeError: type object 'Any' has no attribute 'foooooofarrrr'
+</code></pre>
+<p>Because this symbol requires so much extensive special casing in ty, we infer this symbol as inhabiting a singleton type that has exactly one inhabitant (the symbol <code>typing.Any</code>). And we then give it a very confusing <code>Display</code> in diagnostics (<code>typing.Any</code> for the singleton definition-of-Any type, as opposed to <code>Any</code> for the type <code>Any</code> itself.)</p>
+<p>So I <em>suspect</em> that <em>somewhere</em> you (or a third-party package you depend on) has done <code>x = Any</code> where you/they <em>meant</em> to do <code>x: Any</code>. But we should definitely improve our diagnostics here, in multiple ways :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-03 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-12-03 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-03 14:29</div>
+            <div class="timeline-body"><p>Ohhhh man, if that's what's happening a) I'll be extremely mortified, b) please consider this an diagnostic bug :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-03 14:30</div>
+            <div class="timeline-body"><p>https://github.com/pyca/cryptography/blob/main/src/cryptography/hazmat/bindings/_rust/_openssl.pyi 🙃</p>
+<p>Great call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-03 14:38</div>
+            <div class="timeline-body"><p>Notwithstanding the confusing error message here, I think it's pretty great that ty is finding bugs in our type annotations. Well done!</p>
+<p>(I believe that once https://github.com/pyca/cryptography/pull/13965 lands our only remaining blocker to using ty will be https://github.com/astral-sh/ty/issues/1112)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 17:29</div>
+            <div class="timeline-body"><p>Here's an example of what our diagnostics will look like if https://github.com/astral-sh/ruff/pull/21777 is merged:</p>
+<pre><code>error[unresolved-attribute]: Special form `typing.Any` has no attribute `foo`
+ --&gt; foo.py:5:1
+  |
+3 | X = typing.Any
+4 |
+5 | X.foo
+  | ^^^^^
+  |
+help: Objects with type `Any` have a `foo` attribute, but the symbol `typing.Any` does not itself inhabit the type `Any`
+help: This error may indicate that `X` was defined as `X = typing.Any` when `X: typing.Any` was intended
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>with colour:</p>
+<p><img width="2198" height="462" alt="Image" src="https://github.com/user-attachments/assets/6c95864c-7113-4b75-96ef-e8073b6e64fd" /></p>
+<p>I've also filed https://github.com/astral-sh/ruff/pull/21775 to disambiguate the display of our special-form singleton types in other situations too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-03 17:34</div>
+            <div class="timeline-body"><p>I promise I'll have no excuse in the future, because the help text is quite clear :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-03 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

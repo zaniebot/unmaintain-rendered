@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>literal promotion in inference fails to account for type context - astral-sh/ty #1198</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>literal promotion in inference fails to account for type context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1198">#1198</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-09-18 00:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-09-18 00:13</div>
+            <div class="timeline-body"><blockquote>
+<p>A similar issue came up in https://github.com/astral-sh/ruff/pull/20360. We now unconditionally promote any literals within the elements of a list/set literal, partly for performance reasons with large list literals. However, this means that we fail to typecheck against literal annotations, e.g.,</p>
+<pre><code class="language-py"># error: Object of type `list[int]` is not assignable to `list[Literal[1, 2, 3]]`
+x: list[Literal[1, 2, 3]] = [1, 2, 3]
+
+# error: Object of type `list[str]` is not assignable to `list[LiteralString]`
+x: list[LiteralString] = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+</code></pre>
+<p>Which is the same issue we currently run into with generic classes:</p>
+<pre><code class="language-py"># error: Object of type `tuple[X[int]]` is not assignable to `tuple[X[Literal[1]]]`
+x: tuple[X[Literal[1]]] = (X(1), )
+</code></pre>
+<p>My reading of this issue is that we promote <em>should</em> eagerly promote literals, unless there is an explicit type annotation that would require otherwise? That seems to align with pyright's behavior as well.</p>
+<p>@carljm pointed out that this could get tricky with nested types, or even unions:</p>
+<pre><code class="language-py">x: list[int | Literal[&quot;a&quot;]] = [1, 2, 3, &quot;a&quot;, 4, 5, 6]
+reveal_type(x)
+</code></pre>
+</blockquote>
+<p><em>Originally posted by @ibraheemdev in <a href="https://github.com/astral-sh/ty/issues/336#issuecomment-3304801943">#336</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-18 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-09-18 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2025-09-18 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2025-09-18 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @ibraheemdev on 2025-09-19 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @ibraheemdev on 2025-09-19 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-10-09 20:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

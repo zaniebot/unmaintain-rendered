@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix for `override-of-final-method` can introduce invalid syntax - astral-sh/ty #1678</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix for `override-of-final-method` can introduce invalid syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1678">#1678</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 15:56</div>
+            <div class="timeline-body"><p>If the user has something like this:</p>
+<pre><code class="language-py">from typing import final
+
+def coinflip() -&gt; bool:
+    return True
+
+class A:
+    @final
+    def method(self): ...
+
+class B(A):
+    if coinflip():
+        def method(self): ...
+    else:
+        pass
+</code></pre>
+<p>then in the IDE, we currently offer an autofix that turns their code into:</p>
+<pre><code class="language-py">from typing import final
+
+def coinflip() -&gt; bool:
+    return True
+
+class A:
+    @final
+    def method(self): ...
+
+class B(A):
+    if coinflip():
+
+    else:
+        pass
+</code></pre>
+<p>which is invalid syntax. I think the autofix could still be useful here anyway, but ideally we would obviously not introduce invalid syntax. Ruff has <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/fix/edits.rs#L25">some nice infrastructure</a> to help avoid this kind of issue, but adapting it to our model might be tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-29 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-29 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-11-29 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> removed by @AlexWaygood on 2025-11-29 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-29 17:10</div>
+            <div class="timeline-body"><p>Hmm, I assumed we removed that fix. It seems bad to offer fixes that result in invalid syntax (In addition that I'm still not convinced that this is the <strong>correct</strong> fix to begin with as it's as likely that the <code>@final</code> should be removed).</p>
+<p>I'd remove the fix or only offer it if the parent is a <code>class</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>it's as likely that the <code>@final</code> should be removed</p>
+</blockquote>
+<p>I would wager that in most cases where users encounter this diagnostic, the method decorated with <code>@final</code> comes from a third-party library, but they want to override it anyway. Removing the <code>@final</code> decorator from that method is outside of their control. They have two options: removing the override, or adding a <code>type: ignore</code>.</p>
+<blockquote>
+<p>I'd remove the fix or only offer it if the parent is a <code>class</code>.</p>
+</blockquote>
+<p>Only offering it if the parent is a <code>class</code> would be great, yes. But how do we determine what the parent AST node is from the point where we're emitting the diagnostic in https://github.com/astral-sh/ruff/blob/69ace002102c7201f4514ffad87b87ce6a0d604f/crates/ty_python_semantic/src/types/diagnostic.rs#L3803-L3920? I don't know how to obtain that information in ty's model. If I knew how to obtain that information, it would be trivial to move Ruff's <code>delete_statement</code> routine to somewhere where ty would also be able to access it, and then just use that to implement the autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-29 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I would wager that in most cases where users encounter this diagnostic, the method decorated with @final comes from a third-party library, but they want to override it anyway. Removing the @final decorator from that method is outside of their control. They have two options: removing the override, or adding a type: ignore.</p>
+</blockquote>
+<p>That's a fair point, but we could restrict to the fix (or mark it as not preferred, another extension), if the overriden method is not from a library</p>
+<blockquote>
+<p>But how do we determine what the parent AST node is from the point where we're emitting the diagnostic in <a href="https://github.com/astral-sh/ruff/blob/69ace002102c7201f4514ffad87b87ce6a0d604f/crates/ty_python_semantic/src/types/diagnostic.rs#L3803-L3920">astral-sh/ruff@69ace00/crates/ty_python_semantic/src/types/diagnostic.rs#L3803-L3920</a>?</p>
+</blockquote>
+<p>There's no convenient way today. You could get the <code>parsed_module</code>, keep a stack of ancestor nodes until you find the node with the same ID. Then take the parent. The ideal would be if our AST allows upward traversal, but I don't see this being possible anytime soon. The alternative is to have a query that builds up the inverse tree, but that's also a lot of work. For now, I'd be inclined to just remove the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-30 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

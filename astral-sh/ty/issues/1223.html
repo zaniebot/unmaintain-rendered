@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeGuard and isinstance narrowing inconcistencies - astral-sh/ty #1223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypeGuard and isinstance narrowing inconcistencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1223">#1223</a>
+        opened by <a href="https://github.com/tpgillam">@tpgillam</a>
+        on 2025-09-20 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-09-20 16:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Run with ty 0.0.1-alpha21.</p>
+<p>Consider the following. The comments indicate the diagnostics from running <code>uvx ty check moo.py</code>:</p>
+<pre><code class="language-python">import typing
+
+
+# Case 1
+def f1(x: int | str) -&gt; typing.TypeGuard[int | bool]:
+    return isinstance(x, (int, bool))
+
+x = typing.cast(&quot;int | str&quot;, 42)
+assert f1(x)
+typing.reveal_type(x)  # Revealed type: `int | str`
+
+
+# Case 2
+def f2(x: int | str) -&gt; typing.TypeIs[int | bool]:
+    return isinstance(x, (int, bool))
+
+x = typing.cast(&quot;int | str&quot;, 42)
+assert f2(x)
+typing.reveal_type(x)  # Revealed type: `int`
+
+# Case 3
+x = typing.cast(&quot;int | str&quot;, 42)
+assert isinstance(x, int | bool)
+typing.reveal_type(x)  # Revealed type: `int | str`
+
+# Case 4
+x = typing.cast(&quot;int | str&quot;, 42)
+assert isinstance(x, (int, bool))
+typing.reveal_type(x)  # Revealed type: `int`
+</code></pre>
+<ul>
+<li>Case 1: from the documentation of TypeGuard I would have expected <code>int | bool</code> here</li>
+<li>Case 2: this seems correct</li>
+<li>Case 3: I would have <em>expected</em> <code>int</code> here, since I think this should be equivalent to case 4</li>
+<li>Case 4: this seems correct</li>
+</ul>
+<p>(I've done a brief search of existing issues since I feel sure this must already be reported, but failed to find something relevant. Apologies if I missed them!)</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TypeGuard narrowing inconcistencies" to "TypeGuard and isinstance narrowing inconcistencies" by @tpgillam on 2025-09-20 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-20 17:06</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Case 1 here is #117 — we don't yet support <code>TypeGuard</code> at all yet unfortunately, only <code>TypeIs</code>.</p>
+<p>Case 3 is #122 — again, we just don't support this at all yet I'm afraid</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-20 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:32 UTC
+    </footer>
+</body>
+</html>

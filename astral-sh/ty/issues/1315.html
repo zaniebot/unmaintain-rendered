@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty never completes checking astropy (looks like a runaway memory leak) - astral-sh/ty #1315</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty never completes checking astropy (looks like a runaway memory leak)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1315">#1315</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-10-07 08:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-07 08:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've been trying to check the astropy source tree using <code>ty check</code>, however it never seems to complete, and instead hangs on a not-so-reproducible high fraction of the file count, e.g.</p>
+<pre><code>❯ git clone https://github.com/astropy/astropy
+❯ cd astropy
+❯ ty check astropy
+Checking ------------------------------------------------------------ 926/958 files
+</code></pre>
+<p>meanwhile, the process steadily allocates GBs of memory and needs to be killed manually.
+note: this code base is fairly large and poorly typed at the moment.
+What can I do to help pin point the actual problem ?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 09:20</div>
+            <div class="timeline-body"><p>Thanks for the report. I can reproduce this on our current <code>main</code> branch as well, which is a shame (I was hoping it might have already been fixed by https://github.com/astral-sh/ruff/pull/20650 or https://github.com/astral-sh/ruff/pull/20602...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> added by @AlexWaygood on 2025-10-07 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 09:22</div>
+            <div class="timeline-body"><p>ty gets stuck somewhere in https://github.com/astropy/astropy/blob/main/astropy/nddata/tests/test_nddata.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 09:25</div>
+            <div class="timeline-body"><p>The hang was introduced in ty 0.0.1a14 (it wasn't caused by a recent change)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 09:25</div>
+            <div class="timeline-body"><p>This might be related to #1111 I'm seeign a lot of member_lookup_with_policy calls towards the end (not on my normal computer where I can easily debug salsa).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 09:32</div>
+            <div class="timeline-body"><pre><code>f4bd74ab6af8981ccd384ad0c791ea6028e21a94 is the first bad commit
+commit f4bd74ab6af8981ccd384ad0c791ea6028e21a94
+Author: Abhijeet Prasad Bodas &lt;55339528+abhijeetbodas2001@users.noreply.github.com&gt;
+Date:   Sat Jul 5 00:22:52 2025 +0530
+
+    [ty] Correctly handle calls to functions marked as returning `Never` / `NoReturn` (#18333)
+</code></pre>
+<p>git bisect points to https://github.com/astral-sh/ruff/commit/f4bd74ab6af8981ccd384ad0c791ea6028e21a94 as having introduced the hang</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 09:38</div>
+            <div class="timeline-body"><p>I can confirm that my &quot;new salsa&quot; version fix this. So this is just another fixpoint runayway. (It completes in 300ms)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-07 10:57</div>
+            <div class="timeline-body"><p>thanks for engaging this quickly !</p>
+<blockquote>
+<p>I can confirm that my &quot;new salsa&quot; version fix this.</p>
+</blockquote>
+<p>that's a bit hard to parse from an outsider's POV, but I'm assuming this means the first beta will have the fix ? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 11:04</div>
+            <div class="timeline-body"><p>The slightly less concise version of</p>
+<blockquote>
+<p>I can confirm that my &quot;new salsa&quot; version fix this</p>
+</blockquote>
+<p>is: We have existing reports of runaway execution time on certain snippets of code (https://github.com/astral-sh/ty/issues/1111, etc.). The root cause of these is the mechanism that Salsa (a library that we depend on) uses to resolve cycles that crop up during type inference. This mechanism is called &quot;fixpoint iteration&quot;. It turns out that Salsa's implementation of fixpoint iteration can get quite pathologically slow if you have nested cycles. Micha has a work-in-progress PR to fix that on the Salsa side: https://github.com/salsa-rs/salsa/pull/999. It appears to fix the pathological performance issues demonstrated in #1111, and also appears to fix the pathological performance issues here too.</p>
+<p>So, the TL;DR is that this is a somewhat hard problem to fix (fixpoint iteration is complicated!), but it's something we're already working on, and we hope to have a fix up soon.</p>
+<p>Hope that helps :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-16 21:36</div>
+            <div class="timeline-body"><p>This is solved in ty 0.0.1-alpha.23</p>
+<p>Thank you very much !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @neutrinoceros on 2025-10-16 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-return-type error message is too weak for wrong return type - astral-sh/ty #538</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-return-type error message is too weak for wrong return type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/538">#538</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-05-28 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 12:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Playground link: https://play.ty.dev/95591965-0266-4a59-9952-4e8be99ee67c</p>
+<pre><code class="language-python">from pathlib import Path
+
+def setup_test_project(registry_name: str, registry_url: str, project_dir: str) -&gt; Path:
+    pyproject_file = Path(project_dir) / &quot;pyproject.toml&quot;
+    pyproject_file.write_text(&quot;...&quot;, encoding=&quot;utf-8&quot;)
+</code></pre>
+<p>The error to me implies that I need to use <code>None | Path</code> when the function can never return <code>Path</code> at all and I should replaced <code>Path</code> with <code>None</code> instead</p>
+<pre><code>error[invalid-return-type]: Function can implicitly return `None`, which is not assignable to return type `Path`
+  --&gt; script.py:64:84
+   |
+64 | def setup_test_project(registry_name: str, registry_url: str, project_dir: str) -&gt; Path:
+   |                                                                                    ^^^^
+65 |     pyproject_file = Path(project_dir) / &quot;pyproject.toml&quot;
+66 |     pyproject_file.write_text(&quot;...&quot;, encoding=&quot;utf-8&quot;)
+   |
+info: rule `invalid-return-type` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @konstin on 2025-05-28 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 12:46</div>
+            <div class="timeline-body"><p>How about if there are 0 <code>return</code> statements in the function (or if the function <em>only</em> has bare <code>return</code> statements rather than <code>return &lt;variable&gt;</code> statements) we change the message to:</p>
+<pre><code>Function always implicitly returns `None`, which is not assignable to return type `Path`
+</code></pre>
+<p>And add a subdiagnostic that says:</p>
+<pre><code>note: Consider changing your return annotation to `-&gt; None`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 12:47</div>
+            <div class="timeline-body"><p>Hinting at that would be even better, this case usually happens when someone forgot a <code>return</code>, or as happened here, didn't change the return type after removing the <code>return</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-05-28 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-05-28 20:22</div>
+            <div class="timeline-body"><p>Hey! I may have something worth checking out that implements this, I will do a PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-29 00:35</div>
+            <div class="timeline-body"><blockquote>
+<p>this case usually happens when someone forgot a <code>return</code>, or as happened here, didn't change the return type after removing the <code>return</code>.</p>
+</blockquote>
+<p>These do seem like the two likely reasons for this case, but hinting to change the return type to <code>-&gt; None</code> is only the right hint for the latter case, it's the wrong hint for the former case (instead you'd want to add a <code>return</code> statement.) Is there a reason why we think the latter case is more likely?</p>
+<p>ETA: There is of course a third possibility, which is that <code>Path | None</code> would be the right annotation (e.g. maybe this is a placeholder method on a base class that always returns <code>None</code>, but subclasses might return <code>Path</code>).</p>
+<p>Personally I don't really see the current diagnostic as pushing any one of those three possibilities; it's purely stating the observable facts. If we make this change, we are saying we think the first two possibilities (or just the second one) are more likely than the third one. This is probably true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-05-29 10:45</div>
+            <div class="timeline-body"><p>One thing we can consider, other than the number of <code>return</code>s in a function body, is that if the inferred type of the last expression in the function body is compatible with the annotated return type, the user is likely to have forgotten to type <code>return</code> (although this may not be very reliable if the result type is a gradual type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-29 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>These do seem like the two likely reasons for this case, but hinting to change the return type to <code>-&gt; None</code> is only the right hint for the latter case, it's the wrong hint for the former case (instead you'd want to add a <code>return</code> statement.) Is there a reason why we think the latter case is more likely?</p>
+</blockquote>
+<p>No; I agree we should give both hints. I already thumbsed-up Konsti's comment in https://github.com/astral-sh/ty/issues/538#issuecomment-2916186994 saying the same thing! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-30 00:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

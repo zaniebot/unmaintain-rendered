@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>incorrect type narrowing when using `pytest.raises` - astral-sh/ty #783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>incorrect type narrowing when using `pytest.raises`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/783">#783</a>
+        opened by <a href="https://github.com/graipher">@graipher</a>
+        on 2025-07-08 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/graipher">@graipher</a> on 2025-07-08 15:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following example:</p>
+<pre><code class="language-python">import pytest
+from typing import reveal_type
+
+
+class FooError(Exception):
+    foo: str
+
+
+def foo():
+    raise FooError(&quot;foo&quot;)
+
+
+def test_foo():
+    with pytest.raises(FooError) as e:
+        reveal_type(e)
+        foo()
+    assert e.value.foo == &quot;foo&quot;
+</code></pre>
+<p>Both <code>mypy</code> and <code>pyright</code> will consider this OK:</p>
+<pre><code>$ uv run pyright
+/tmp/foo/main.py
+  /tmp/foo/main.py:15:21 - information: Type of &quot;e&quot; is &quot;ExceptionInfo[FooError]&quot;
+0 errors, 0 warnings, 1 information
+
+$ uv run mypy --strict .
+main.py:15: note: Revealed type is &quot;_pytest._code.code.ExceptionInfo[main.FooError]&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<p>But <code>ty</code> finds an error:</p>
+<pre><code>$ uv run ty check .
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+info[revealed-type]: Revealed type
+  --&gt; main.py:15:21
+   |
+13 | def test_foo() -&gt; None:
+14 |     with pytest.raises(FooError) as e:
+15 |         reveal_type(e)
+   |                     ^ `ExceptionInfo[BaseException]`
+16 |         foo()
+17 |     assert e.value.foo == &quot;foo&quot;
+   |
+
+error[unresolved-attribute]: Type `BaseException` has no attribute `foo`
+  --&gt; main.py:17:12
+   |
+15 |         reveal_type(e)
+16 |         foo()
+17 |     assert e.value.foo == &quot;foo&quot;
+   |            ^^^^^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>It seems like the type of <code>e</code> is narrowed to <code>BaseException</code> instead of the actual exception type <code>FooError</code>.</p>
+<p>Here are the overloads of <code>pytest.raises</code>:</p>
+<pre><code class="language-python">@overload
+def raises(
+    expected_exception: type[E] | tuple[type[E], ...],
+    *,
+    match: str | re.Pattern[str] | None = ...,
+    check: Callable[[E], bool] = ...,
+) -&gt; RaisesExc[E]: ...
+
+
+@overload
+def raises(
+    *,
+    match: str | re.Pattern[str],
+    # If exception_type is not provided, check() must do any typechecks itself.
+    check: Callable[[BaseException], bool] = ...,
+) -&gt; RaisesExc[BaseException]: ...
+
+
+@overload
+def raises(*, check: Callable[[BaseException], bool]) -&gt; RaisesExc[BaseException]: ...
+
+
+@overload
+def raises(
+    expected_exception: type[E] | tuple[type[E], ...],
+    func: Callable[..., Any],
+    *args: Any,
+    **kwargs: Any,
+) -&gt; ExceptionInfo[E]: ...
+
+
+def raises(
+    expected_exception: type[E] | tuple[type[E], ...] | None = None,
+    *args: Any,
+    **kwargs: Any,
+) -&gt; RaisesExc[BaseException] | ExceptionInfo[E]:
+    &quot;&quot;&quot;Actual implemenation&quot;&quot;&quot;
+</code></pre>
+<p>Naively, I would expect to be in the first or fourth case here, where the type of the input exception should be part of the return type.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-07-21 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 17:38</div>
+            <div class="timeline-body"><p>Thanks for the report! Without having dug into it deeply, I suspect this is a limitation of our current typevar solver, which we are currently working on improving. CC @dcreager, this may be a useful test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mthuurne">@mthuurne</a> on 2025-08-03 01:31</div>
+            <div class="timeline-body"><p>I made <a href="https://play.ty.dev/5fb78393-dc77-4183-8b0c-d4e5f015727f">a more minimal testcase that doesn't import from pytest</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I made <a href="https://play.ty.dev/5fb78393-dc77-4183-8b0c-d4e5f015727f">a more minimal testcase that doesn't import from pytest</a>.</p>
+</blockquote>
+<p>Thank you very much! That makes it look very much like this is the same issue as https://github.com/astral-sh/ty/issues/501. I'm inclined to leave this open, however, as users will probably search for <code>pytest.raises</code> in the issue tracker if they run into this issue, and this issue has <code>pytest.raises</code> in the title</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-09-05 22:09</div>
+            <div class="timeline-body"><p>A workaround that's probably fine when using pytest but maybe not in production code is to use <code>assert isinstance</code> to narrow the type:</p>
+<pre><code class="language-python">import pytest
+from typing import reveal_type
+
+
+class FooError(Exception):
+    foo: str
+
+
+def foo():
+    raise FooError(&quot;foo&quot;)
+
+
+def test_foo():
+    with pytest.raises(FooError) as e:
+        reveal_type(e)
+        foo()
+	
+	assert isinstance(e.value, FooError)
+	reveal_type(e)
+    assert e.value.foo == &quot;foo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthijsKok">@MatthijsKok</a> on 2025-11-26 19:34</div>
+            <div class="timeline-body"><p>Quick report that this bug is still present in <code>ty 0.0.1-alpha.28 (8c342496a 2025-11-25)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-28 08:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:16 UTC
+    </footer>
+</body>
+</html>

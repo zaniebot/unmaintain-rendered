@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty misses required-field diagnostic for SQLModel (works for BaseModel) - astral-sh/ty #1329</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty misses required-field diagnostic for SQLModel (works for BaseModel)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1329">#1329</a>
+        opened by <a href="https://github.com/Duckling92">@Duckling92</a>
+        on 2025-10-09 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Duckling92">@Duckling92</a> on 2025-10-09 14:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty flags missing required fields for <code>pydantic.BaseModel</code> but not for <code>sqlmodel.SQLModel</code> subclasses, both using Pydantic v2.</p>
+<h3>Minimal repro</h3>
+<pre><code class="language-py">from __future__ import annotations
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
+
+class ExamplePydantic(BaseModel):
+    number: float
+
+
+class ExampleSQLModel(SQLModel):
+    number: float
+
+
+ExampleSQLModel()  # ty: no error (bug)
+ExamplePydantic()  # ty: error (good)
+</code></pre>
+<h3>Expected</h3>
+<p>Expected: Both <code>ExampleSQLModel()</code> and <code>ExamplePydantic()</code> are flagged as missing required field number.
+Actual: Only <code>ExamplePydantic()</code> is flagged, <code>ExampleSQLModel()</code> passes.</p>
+<h3>Environment</h3>
+<p>python: 3.11.10
+sqlmodel: 0.0.27
+OS: MacOS Tahoe (26.0.1)</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (ef52a1940 2025-09-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @AlexWaygood on 2025-10-09 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-09 15:52</div>
+            <div class="timeline-body"><p>I am pretty sure the problem here is that <code>SQLModel</code> defines <code>__new__</code> and <code>__init__</code> with very permissive signatures: https://github.com/fastapi/sqlmodel/blob/main/sqlmodel/main.py#L789-L799</p>
+<p>And I think if we see an explicitly-defined <code>__new__</code> or <code>__init__</code>, we assume that takes precedence over the dataclass-transform-generated one. So we validate the constructor call against the permissive <code>__new__</code> and <code>__init__</code> signatures and see no error.</p>
+<p>But in this case it looks like SQLModel is just passing the arguments through, so its <code>__new__</code> is just a wrapper, and the preferred behavior would be to still validate the arguments against the dataclass-transform-generated constructor.</p>
+<p>But it's a little tricky to determine under exactly which conditions we should make this assumption (that a constructor with permissive signature is just a pass-through.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-09 16:04</div>
+            <div class="timeline-body"><p>For reference, mypy and pyrefly both have the same behavior we do here (catching only the <code>ExamplePydantic()</code> error). Pyright catches both errors.</p>
+<p>@erictraut do you happen to remember what heuristic or algorithm pyright uses here to decide that a custom constructor should be effectively ignored?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-10-09 17:16</div>
+            <div class="timeline-body"><p>Pyright isn't ignoring the custom <code>__new__</code>. It's overriding it with a synthesized <code>__new__</code>. Pyright synthesizes both an <code>__init__</code> and a <code>__new__</code> method for dataclasses. In the case of <code>__new__</code>, it synthesizes a method with the signature <code>def __new__(cls: type[&lt;class&gt;], *args: Any, *kwargs: Any) -&gt; &lt;class&gt;</code>. If it didn't synthesize a <code>__new__</code> and the dataclass didn't provide a custom <code>__new__</code>, then all calls to the constructor would be flagged as an error because <code>object.__new__</code> would be used, and it doesn't support any parameters.</p>
+<p>I'm not convicted that pyright's behavior is correct here.</p>
+<p>It looks like ty is not synthesizing a <code>__new__</code>. If that's the case, how do you avoid the problem with <code>object.__new__</code>? I'm guessing that you're using a heuristic to skip this check?</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class DC:
+    number: int
+
+reveal_type(DC.__new__) # def __new__(cls) -&gt; Self@new
+DC.__new__(DC, 1) # ty reports an error here
+DC(1) # ty does not report an error here
+</code></pre>
+<p>Regardless, it would be preferable for <code>SQLModel</code> to have less permissive type annotations here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-09 17:26</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like ty is not synthesizing a <code>__new__</code>. If that's the case, how do you avoid the problem with <code>object.__new__</code>? I'm guessing that you're using a heuristic to skip this check?</p>
+</blockquote>
+<p>Correct, we skip <code>object.__new__</code> when <code>__new__</code> is called implicitly: https://github.com/astral-sh/ruff/blob/75f3c0e8e6dcd52e8194f9831aef25fddb646685/crates/ty_python_semantic/src/types.rs#L3252</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 00:31</div>
+            <div class="timeline-body"><blockquote>
+<p>then all calls to the constructor would be flagged as an error because <code>object.__new__</code> would be used, and it doesn't support any parameters.</p>
+</blockquote>
+<p>But this problem with the signature of <code>object.__new__</code> is not specific to dataclasses, so &quot;synthesizing a <code>__new__</code> method for dataclasses&quot; wouldn't be a general solution to the problem. Does pyright actually synthesize a <code>__new__</code> method in that form for all classes that would otherwise inherit <code>object.__new__</code>?</p>
+<p>IIRC ty's approach (skipping <code>object.__new__</code>) is roughly based on what happens at runtime, which is that <code>object.__new__</code> actually <a href="https://github.com/python/cpython/blob/main/Objects/typeobject.c#L7108">only enforces its signature when called on a type that overrides <code>__new__</code></a> or that doesn't override <code>__init__</code>, otherwise it accepts any and all arguments without complaint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theelderbeever">@theelderbeever</a> on 2025-10-23 15:33</div>
+            <div class="timeline-body"><p>Possibly related but <code>pydantic</code> is reporting missing required params as well which shouldn't need defined</p>
+<blockquote>
+<p>No arguments provided for required parameters <code>__pydantic_extra__</code>, <code>__pydantic_fields_set__</code>, <code>__pydantic_private__</code> (ty missing-argument)</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-27 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Possibly related but <code>pydantic</code> is reporting missing required params as well which shouldn't need defined</p>
+<blockquote>
+<p>No arguments provided for required parameters <code>__pydantic_extra__</code>, <code>__pydantic_fields_set__</code>, <code>__pydantic_private__</code> (ty missing-argument)</p>
+</blockquote>
+</blockquote>
+<p>I don't think that's related. Let's discuss pydantic separately (in https://github.com/astral-sh/ty/issues/1421 or in a new ticket, if you think this is a distinct problem from #1431)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 15:13</div>
+            <div class="timeline-body"><p>Given that our behavior here matches both mypy and pyrefly, and is correct given the annotations on <code>SQLModel.__new__</code>, I'm inclined to say there's nothing to be done here. But we can keep the issue open for now to collect further user reports, if any, or suggestions of heuristics we could try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Duckling92">@Duckling92</a> on 2025-10-31 14:41</div>
+            <div class="timeline-body"><p>Thanks for the reply. Small correction on my side: <code>mypy</code> only flags the <code>SQLModel</code> case <strong>when the Pydantic mypy plugin is enabled</strong>. Without the plugin, <code>mypy</code> also lets the <code>SQLModel()</code> call pass.</p>
+<p>With the plugin enabled, <code>mypy</code> <em>does</em> catch both cases, while <code>ty</code> only catches the plain <code>BaseModel</code> case - so the behavior still differs.</p>
+<p>Minimal repro:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
+
+class ExamplePydantic(BaseModel):
+    number: float
+
+
+class ExampleSQLModel(SQLModel):
+    number: float
+
+
+ExamplePydantic()   # E: Missing positional argument &quot;number&quot;
+ExampleSQLModel()   # E: Missing positional argument &quot;number&quot;
+</code></pre>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-ini">[tool.mypy]
+plugins = [&quot;pydantic.mypy&quot;]
+</code></pre>
+<p>Command and output:</p>
+<pre><code class="language-bash">mypy example.py
+example.py:15: error: Missing named argument &quot;number&quot; for &quot;ExampleSQLModel&quot;  [call-arg]
+example.py:16: error: Missing named argument &quot;number&quot; for &quot;ExamplePydantic&quot;  [call-arg]
+Found 2 errors in 1 file (checked 1 source file)
+</code></pre>
+<p>Environment:</p>
+<ul>
+<li>python 3.11.9</li>
+<li>pydantic 2.12.3</li>
+<li>sqlmodel 0.0.27</li>
+<li>mypy 1.18.2</li>
+<li>pydantic mypy plugin enabled</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-31 18:10</div>
+            <div class="timeline-body"><p>Thanks for the clarification. It's not clear to me exactly what the pydantic mypy plugin is doing that helps in this case, but it's something we can look at if we ever decide to build in similar special-cased support for pydantic.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

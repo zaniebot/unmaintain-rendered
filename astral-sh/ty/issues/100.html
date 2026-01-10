@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`dict` function-based initialization is rejected - astral-sh/ty #100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`dict` function-based initialization is rejected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/100">#100</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-05-03 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-03 14:34</div>
+            <div class="timeline-body"><p>The following gives: No overload of bound method <code>__init__</code> matches arguments</p>
+<pre><code class="language-python">SESSION_OPTIONS: dict[str, Any] = dict(
+    # Allow models to be read after transactions are closed
+    expire_on_commit=False,
+    # Do not allow implicit re-use of sessions after their context closes
+    close_resets_only=False,
+)
+</code></pre>
+<p>See: https://types.ruff.rs/30b74134-d2d1-42d5-8fa5-e22768dad640</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @AlexWaygood on 2025-05-03 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-03 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 14:42</div>
+            <div class="timeline-body"><p>(Not sure if this is a known issue or not -- @dhruvmanila?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-03 14:49</div>
+            <div class="timeline-body"><p>I think this requires support for variadic and keyword-variadic arguments i.e., resolving the following TODO:</p>
+<p>https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/types/call/bind.rs#L1135-L1138</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-03 15:00</div>
+            <div class="timeline-body"><p>Hmm, maybe not. Let me look at it more closely when I'm at my desk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-07 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-05-10 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-17 18:35</div>
+            <div class="timeline-body"><p>I think this is the same issue as https://github.com/astral-sh/ty/issues/370.</p>
+<p>Here are the overloads for <code>dict</code>:</p>
+<pre><code>info: Possible overloads for bound method `__init__`:
+info:   (self) -&gt; None
+info:   (self: dict[str, _VT], **kwargs: _VT) -&gt; None
+info:   (self, map: SupportsKeysAndGetItem[_KT, _VT], /) -&gt; None
+info:   (self: dict[str, _VT], map: SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -&gt; None
+info:   (self, iterable: Iterable[tuple[_KT, _VT]], /) -&gt; None
+info:   (self: dict[str, _VT], iterable: Iterable[tuple[str, _VT]], /, **kwargs: _VT) -&gt; None
+info:   (self: dict[str, str], iterable: Iterable[list[str]], /) -&gt; None
+info:   (self: dict[bytes, bytes], iterable: Iterable[list[bytes]], /) -&gt; None
+</code></pre>
+<p>Out of which, this is the overload that should match given the parameters above:</p>
+<pre><code>info:   (self: dict[str, _VT], **kwargs: _VT) -&gt; None
+</code></pre>
+<p>which has <code>self</code> annotated which is causing an issue in the manner similar to the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dhruvmanila by @AlexWaygood on 2025-05-17 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-17 18:39</div>
+            <div class="timeline-body"><p>So cool that our diagnostics now surface enough information to debug issues :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-19 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-19 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for inconsistent-mro - astral-sh/ty #983</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for inconsistent-mro</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/983">#983</a>
+        opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a>
+        on 2025-08-14 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-08-14 10:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,
+I discovered a situation where an &quot;inconsistent-mro&quot; error is detected but that is a false positive: there is no TypeError at runtime.</p>
+<p>I'm not a metaclass expert, so I'm not sure if it's a bug from ty or if something else is going on, but I still wanted to report that. Maybe it has to do with the C++ bindings inside shiboken?</p>
+<p><strong>Steps to reproduce</strong></p>
+<pre><code class="language-sh">uv init
+uv add PySide6
+# copy content below into main.py
+uvx ty --version
+uvx ty check
+uv run main.py
+</code></pre>
+<p>Content to paste &quot;main.py&quot;:</p>
+<pre><code class="language-py">from abc import ABCMeta
+from PySide6.QtCore import QObject
+
+
+class Test(type(QObject), ABCMeta):
+    pass
+</code></pre>
+<p>Output:</p>
+<pre><code>uvx ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                                    
+error[inconsistent-mro]: Cannot create a consistent method resolution order (MRO) for class `Test` with bases list `[&lt;class 'type'&gt;, &lt;class 'ABCMeta'&gt;]`
+ --&gt; main.py:5:1
+  |
+5 | / class Test(type(QObject), ABCMeta):
+6 | |     pass
+  | |________^
+  |
+info: rule `inconsistent-mro` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>However &quot;uv run main.py&quot; runs just fine.</p>
+<p>Expected (I guess):
+ty does not raise any error, since the code does not throw a TypeError (as stated in the documentation page of this error).</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.17 (1712284c8 2025-08-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-08-14 10:23</div>
+            <div class="timeline-body"><p>By the way I wanted to find a single uv command to reproduce the problem without having to create the project and everything but I couldn't find it.
+I tried things like <code>uvx --no-project --with PySide6 ty check main.py</code>...
+If it's possible let me know ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 16:07</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I think <code>inconsistent-mro</code> is a bit of a red herring here. The root of the problem is that ty understands the type of <code>type(QObject)</code> to be just the class object <code>builtins.type</code>. Trying to multiply inherit <code>type</code> and <code>ABCMeta</code> does result in an inconsistent-mro error at runtime:</p>
+<pre><code>&gt;&gt;&gt; from abc import ABCMeta
+&gt;&gt;&gt; class C(type, ABCMeta): ...
+...
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    class C(type, ABCMeta): ...
+TypeError: Cannot create a consistent method resolution order (MRO) for bases type, ABCMeta
+</code></pre>
+<p>So given ty's understanding of the types of the two bases, I think we are issuing the <code>inconsistent-mro</code> error correctly. The question is why we understand the type of <code>type(QObject)</code> to be <code>&lt;class 'type'&gt;</code> instead of <code>Shiboken.ObjectType</code> as it is at runtime.</p>
+<p>And I think the reason for this is inaccurate stubs. The <code>QtCore.pyi</code> which I find installed with PySide6 just shows <code>QObject</code> as a regular class inheriting from <code>Shiboken.Object</code>, and the <a href="https://github.com/pyside/pyside-setup/blob/dev/sources/shiboken6/shibokenmodule/Shiboken.pyi#L16">shiboken stub</a> shows <code>Object</code> as a perfectly ordinary class; no metaclass or anything. It doesn't even define anything named <code>ObjectType</code>.</p>
+<p>So given the type information ty is working from, I think inferring the type of <code>type(QObject)</code> as <code>&lt;class 'type'&gt;</code> is correct, and therefore the <code>inconsistent-mro</code> error is also correct.</p>
+<p>FWIW, I tested this same snippet with mypy and pyright. Mypy issues an even more basic &quot;Unsupported dynamic base class 'type'&quot; error, and pyright issues the same inconsistent MRO error that we do.</p>
+<p>So I don't think there is any bug in ty here; if you want this code to type-check, it will require improvements to the PySide6 and/or Shiboken stubs, so that they even recognize the existence of <code>Shiboken.ObjectType</code> (the thing you are trying to inherit from) in the first place.</p>
+<blockquote>
+<p>wanted to find a single uv command to reproduce the problem without having to create the project and everything</p>
+</blockquote>
+<p>Hmm, I'm not aware of how to do this either. I suspect the issue with using <code>--with</code> is that it creates the venv in a place where ty can't find it? Although I'm not sure why it doesn't set the <code>VIRTUAL_ENV</code> environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-14 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

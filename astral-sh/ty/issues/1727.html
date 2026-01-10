@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`vim.diagnostic.setloclist`: Duplicate diagnostics shown after buffer save - astral-sh/ty #1727</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`vim.diagnostic.setloclist`: Duplicate diagnostics shown after buffer save</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1727">#1727</a>
+        opened by <a href="https://github.com/woniulol">@woniulol</a>
+        on 2025-12-02 18:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woniulol">@woniulol</a> on 2025-12-02 18:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Issue</h3>
+<p><code>vim.diagnostic.setloclist()</code> produces duplicated entries after saving the buffer (:w).</p>
+<p>This will cause vim.diagnostic.config virtual text to be duplicated, and prevent usage of the <code>vim.diagnostic.setloclist()</code>.</p>
+<p><img width="1198" height="99" alt="Image" src="https://github.com/user-attachments/assets/9114145c-b254-46a7-a3cc-648f1a59acb9" /></p>
+<h3>Reproduces the issue</h3>
+<p>A minimal nvim config file:</p>
+<pre><code>-- init.lua
+
+local lazypath = vim.fn.stdpath(&quot;data&quot;) .. &quot;/lazy/lazy.nvim&quot;
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = &quot;https://github.com/folke/lazy.nvim.git&quot;
+    local out = vim.fn.system({ &quot;git&quot;, &quot;clone&quot;, &quot;--filter=blob:none&quot;, &quot;--branch=stable&quot;, lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { &quot;Failed to clone lazy.nvim:\n&quot;, &quot;ErrorMsg&quot; },
+            { out,                            &quot;WarningMsg&quot; },
+            { &quot;\nPress any key to exit...&quot; },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
+end
+vim.opt.rtp:prepend(lazypath)
+
+require(&quot;lazy&quot;).setup(
+    {
+        {
+            &quot;neovim/nvim-lspconfig&quot;,
+            dependencies = {
+                { &quot;mason-org/mason.nvim&quot; },
+                { &quot;mason-org/mason-lspconfig.nvim&quot; },
+            },
+            config = function()
+                require(&quot;mason&quot;).setup({})
+                require(&quot;mason-lspconfig&quot;).setup({
+                    automatic_enable = false,
+                    ensure_installed = {
+                        &quot;lua_ls&quot;,
+                        &quot;ty&quot;,
+                    },
+                })
+                -- Ignore other nvim lspconfig fields for this example.
+                vim.lsp.enable(&quot;ty&quot;)
+            end
+        }
+    }
+)
+</code></pre>
+<p><code>.py</code> script to test against</p>
+<pre><code># main.py
+
+def my_func(s: str) -&gt; None:
+    print(s)
+
+a: int = my_func()
+</code></pre>
+<ol>
+<li>open the  with nvim</li>
+<li>check <code>:lua vim.diagnostic.setloclist()</code> (working as expected)</li>
+<li>write the buffer <code>:w</code> (with or without any modification)</li>
+<li>check <code>:lua vim.diagnostic.setloclist()</code>, diagnostic messages will shown as duplicated, e.g.</li>
+</ol>
+<pre><code>main.py|4 col 10-22 error| Object of type `str` is not assignable to `int`
+main.py|4 col 10-22 error| Object of type `str` is not assignable to `int`
+</code></pre>
+<h3>Specs</h3>
+<ul>
+<li>macOS 26.1 (25B78)</li>
+<li>NVIM v0.11.5</li>
+<li>mason.nvim v2.1.0</li>
+<li>ty installed version 0.0.1a29</li>
+<li>lazy.nvim 11.17.5</li>
+</ul>
+<h3>Additional Info</h3>
+<ul>
+<li><code>pyright</code>, <code>lua_ls</code> with same config does not result any duplicates.</li>
+<li>No luck after setting <code>disableLanguageServices = true</code></li>
+</ul>
+<h3>Version</h3>
+<p>0.0.1a29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-12-02 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> removed by @MichaReiser on 2025-12-02 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">editor</span> added by @MichaReiser on 2025-12-02 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Duplicate diagnostics shown after buffer save" to "`vim.diagnostic.setloclist`: Duplicate diagnostics shown after buffer save" by @MichaReiser on 2025-12-02 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 20:26</div>
+            <div class="timeline-body"><p>Any chance you're also using Ruff? Do you see the same issue with Ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 04:38</div>
+            <div class="timeline-body"><p>I'm able to reproduce this using the config that you've provided. There's no need to invoke the <code>vim.diagnostic.setloclist</code>, it even occurs just by saving the buffer.</p>
+<p>https://github.com/user-attachments/assets/4769d4c4-4fd3-481a-a44e-6dd2f0f508a1</p>
+<p>Here are the trace logs:</p>
+<pre><code>[START][2025-12-03 10:04:44] LSP logging initiated
+[INFO][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;Starting RPC client&quot;	{ cmd = { &quot;ty&quot;, &quot;server&quot; }, extra = {} }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ty]&quot;	&quot;init_params&quot;	{ capabilities = { general = { positionEncodings = { &quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot; } }, textDocument = { callHierarchy = { dynamicRegistration = false }, codeAction = { codeActionLiteralSupport = { codeActionKind = { valueSet = { &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.organizeImports&quot; } } }, dataSupport = true, disabledSupport = true, dynamicRegistration = true, honorsChangeAnnotations = true, isPreferredSupport = true, resolveSupport = { properties = { &quot;edit&quot;, &quot;command&quot; } } }, codeLens = { dynamicRegistration = false, resolveSupport = { properties = { &quot;command&quot; } } }, colorProvider = { dynamicRegistration = true }, completion = { completionItem = { commitCharactersSupport = false, deprecatedSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, insertReplaceSupport = true, preselectSupport = false, resolveSupport = { properties = { &quot;additionalTextEdits&quot;, &quot;command&quot; } }, snippetSupport = true, tagSupport = { valueSet = { 1 } } }, completionItemKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 } }, completionList = { itemDefaults = { &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; } }, contextSupport = true, dynamicRegistration = false }, declaration = { linkSupport = true }, definition = { dynamicRegistration = true, linkSupport = true }, diagnostic = { dataSupport = true, dynamicRegistration = false, relatedDocumentSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } } }, documentHighlight = { dynamicRegistration = false }, documentSymbol = { dynamicRegistration = false, hierarchicalDocumentSymbolSupport = true, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } }, tagSupport = { valueSet = { 1 } } }, foldingRange = { dynamicRegistration = false, foldingRange = { collapsedText = true }, foldingRangeKind = { valueSet = { &quot;comment&quot;, &quot;imports&quot;, &quot;region&quot; } }, lineFoldingOnly = true }, formatting = { dynamicRegistration = true }, hover = { contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, dynamicRegistration = true }, implementation = { linkSupport = true }, inlayHint = { dynamicRegistration = true, resolveSupport = { properties = { &quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot; } } }, inlineCompletion = { dynamicRegistration = false }, linkedEditingRange = { dynamicRegistration = false }, onTypeFormatting = { dynamicRegistration = false }, publishDiagnostics = { dataSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } }, versionSupport = true }, rangeFormatting = { dynamicRegistration = true, rangesSupport = true }, references = { dynamicRegistration = false }, rename = { dynamicRegistration = true, honorsChangeAnnotations = true, prepareSupport = true }, selectionRange = { dynamicRegistration = false }, semanticTokens = { augmentsSyntaxTokens = true, dynamicRegistration = false, formats = { &quot;relative&quot; }, multilineTokenSupport = true, overlappingTokenSupport = true, requests = { full = { delta = true }, range = true }, serverCancelSupport = false, tokenModifiers = { &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;documentation&quot;, &quot;defaultLibrary&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;operator&quot;, &quot;decorator&quot; } }, signatureHelp = { dynamicRegistration = false, signatureInformation = { activeParameterSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, noActiveParameterSupport = true, parameterInformation = { labelOffsetSupport = true } } }, synchronization = { didSave = true, dynamicRegistration = false, willSave = true, willSaveWaitUntil = true }, typeDefinition = { linkSupport = true } }, window = { showDocument = { support = true }, showMessage = { messageActionItem = { additionalPropertiesSupport = true } }, workDoneProgress = true }, workspace = { applyEdit = true, configuration = true, diagnostics = { refreshSupport = false }, didChangeConfiguration = { dynamicRegistration = false }, didChangeWatchedFiles = { dynamicRegistration = true, relativePatternSupport = true }, inlayHint = { refreshSupport = true }, semanticTokens = { refreshSupport = true }, symbol = { dynamicRegistration = false, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } } }, workspaceEdit = { changeAnnotationSupport = { groupsOnLabel = true }, normalizesLineEndings = true, resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; } }, workspaceFolders = true } }, clientInfo = { name = &quot;Neovim&quot;, version = &quot;0.12.0-dev+g6d875a03bb&quot; }, initializationOptions = { logFile = &quot;/Users/dhruv/dotfiles/ty.log&quot;, logLevel = &quot;debug&quot; }, processId = 51119, rootPath = &quot;/Users/dhruv/dotfiles&quot;, rootUri = &quot;file:///Users/dhruv/dotfiles&quot;, trace = &quot;off&quot;, workDoneToken = &quot;1&quot;, workspaceFolders = { { name = &quot;/Users/dhruv/dotfiles&quot;, uri = &quot;file:///Users/dhruv/dotfiles&quot; } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, method = &quot;initialize&quot;, params = { capabilities = { general = { positionEncodings = { &quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot; } }, textDocument = { callHierarchy = { dynamicRegistration = false }, codeAction = { codeActionLiteralSupport = { codeActionKind = { valueSet = { &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.organizeImports&quot; } } }, dataSupport = true, disabledSupport = true, dynamicRegistration = true, honorsChangeAnnotations = true, isPreferredSupport = true, resolveSupport = { properties = { &quot;edit&quot;, &quot;command&quot; } } }, codeLens = { dynamicRegistration = false, resolveSupport = { properties = { &quot;command&quot; } } }, colorProvider = { dynamicRegistration = true }, completion = { completionItem = { commitCharactersSupport = false, deprecatedSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, insertReplaceSupport = true, preselectSupport = false, resolveSupport = { properties = { &quot;additionalTextEdits&quot;, &quot;command&quot; } }, snippetSupport = true, tagSupport = { valueSet = { 1 } } }, completionItemKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 } }, completionList = { itemDefaults = { &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; } }, contextSupport = true, dynamicRegistration = false }, declaration = { linkSupport = true }, definition = { dynamicRegistration = true, linkSupport = true }, diagnostic = { dataSupport = true, dynamicRegistration = false, relatedDocumentSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } } }, documentHighlight = { dynamicRegistration = false }, documentSymbol = { dynamicRegistration = false, hierarchicalDocumentSymbolSupport = true, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } }, tagSupport = { valueSet = { 1 } } }, foldingRange = { dynamicRegistration = false, foldingRange = { collapsedText = true }, foldingRangeKind = { valueSet = { &quot;comment&quot;, &quot;imports&quot;, &quot;region&quot; } }, lineFoldingOnly = true }, formatting = { dynamicRegistration = true }, hover = { contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, dynamicRegistration = true }, implementation = { linkSupport = true }, inlayHint = { dynamicRegistration = true, resolveSupport = { properties = { &quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot; } } }, inlineCompletion = { dynamicRegistration = false }, linkedEditingRange = { dynamicRegistration = false }, onTypeFormatting = { dynamicRegistration = false }, publishDiagnostics = { dataSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } }, versionSupport = true }, rangeFormatting = { dynamicRegistration = true, rangesSupport = true }, references = { dynamicRegistration = false }, rename = { dynamicRegistration = true, honorsChangeAnnotations = true, prepareSupport = true }, selectionRange = { dynamicRegistration = false }, semanticTokens = { augmentsSyntaxTokens = true, dynamicRegistration = false, formats = { &quot;relative&quot; }, multilineTokenSupport = true, overlappingTokenSupport = true, requests = { full = { delta = true }, range = true }, serverCancelSupport = false, tokenModifiers = { &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;documentation&quot;, &quot;defaultLibrary&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;operator&quot;, &quot;decorator&quot; } }, signatureHelp = { dynamicRegistration = false, signatureInformation = { activeParameterSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, noActiveParameterSupport = true, parameterInformation = { labelOffsetSupport = true } } }, synchronization = { didSave = true, dynamicRegistration = false, willSave = true, willSaveWaitUntil = true }, typeDefinition = { linkSupport = true } }, window = { showDocument = { support = true }, showMessage = { messageActionItem = { additionalPropertiesSupport = true } }, workDoneProgress = true }, workspace = { applyEdit = true, configuration = true, diagnostics = { refreshSupport = false }, didChangeConfiguration = { dynamicRegistration = false }, didChangeWatchedFiles = { dynamicRegistration = true, relativePatternSupport = true }, inlayHint = { refreshSupport = true }, semanticTokens = { refreshSupport = true }, symbol = { dynamicRegistration = false, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } } }, workspaceEdit = { changeAnnotationSupport = { groupsOnLabel = true }, normalizesLineEndings = true, resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; } }, workspaceFolders = true } }, clientInfo = { name = &quot;Neovim&quot;, version = &quot;0.12.0-dev+g6d875a03bb&quot; }, initializationOptions = { logFile = &quot;/Users/dhruv/dotfiles/ty.log&quot;, logLevel = &quot;debug&quot; }, processId = 51119, rootPath = &quot;/Users/dhruv/dotfiles&quot;, rootUri = &quot;file:///Users/dhruv/dotfiles&quot;, trace = &quot;off&quot;, workDoneToken = &quot;1&quot;, workspaceFolders = { { name = &quot;/Users/dhruv/dotfiles&quot;, uri = &quot;file:///Users/dhruv/dotfiles&quot; } } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, result = { capabilities = { codeActionProvider = { codeActionKinds = { &quot;quickfix&quot; } }, completionProvider = { triggerCharacters = { &quot;.&quot; } }, declarationProvider = true, definitionProvider = true, diagnosticProvider = { identifier = &quot;ty&quot;, interFileDependencies = true, workDoneProgress = true, workspaceDiagnostics = true }, documentHighlightProvider = true, documentSymbolProvider = true, executeCommandProvider = { commands = { &quot;ty.printDebugInformation&quot; }, workDoneProgress = false }, hoverProvider = true, inlayHintProvider = vim.empty_dict(), notebookDocumentSync = { notebookSelector = { { cells = { { language = &quot;python&quot; } } } }, save = false }, positionEncoding = &quot;utf-8&quot;, referencesProvider = true, selectionRangeProvider = true, semanticTokensProvider = { full = true, legend = { tokenModifiers = { &quot;definition&quot;, &quot;readonly&quot;, &quot;async&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;class&quot;, &quot;parameter&quot;, &quot;selfParameter&quot;, &quot;clsParameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;function&quot;, &quot;method&quot;, &quot;keyword&quot;, &quot;string&quot;, &quot;number&quot;, &quot;decorator&quot;, &quot;builtinConstant&quot;, &quot;typeParameter&quot; } }, range = true }, signatureHelpProvider = { retriggerCharacters = { &quot;)&quot; }, triggerCharacters = { &quot;(&quot;, &quot;,&quot; } }, textDocumentSync = { change = 2, openClose = true }, typeDefinitionProvider = true, workspaceSymbolProvider = true }, serverInfo = { name = &quot;ty&quot;, version = &quot;0.0.1-alpha.29 (0c3cae494 2025-11-28)&quot; } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;initialized&quot;, params = vim.empty_dict() }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/didOpen&quot;, params = { textDocument = { languageId = &quot;python&quot;, text = 'def foo(x: str) -&gt; str:\n    return x\n\na: int = foo(&quot;&quot;)\n', uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot;, version = 0 } } }
+[INFO][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ty]&quot;	&quot;server_capabilities&quot;	{ server_capabilities = { codeActionProvider = { codeActionKinds = { &quot;quickfix&quot; } }, completionProvider = { triggerCharacters = { &quot;.&quot; } }, declarationProvider = true, definitionProvider = true, diagnosticProvider = { identifier = &quot;ty&quot;, interFileDependencies = true, workDoneProgress = true, workspaceDiagnostics = true }, documentHighlightProvider = true, documentSymbolProvider = true, executeCommandProvider = { commands = { &quot;ty.printDebugInformation&quot; }, workDoneProgress = false }, hoverProvider = true, inlayHintProvider = vim.empty_dict(), notebookDocumentSync = { notebookSelector = { { cells = { { language = &quot;python&quot; } } } }, save = false }, positionEncoding = &quot;utf-8&quot;, referencesProvider = true, selectionRangeProvider = true, semanticTokensProvider = { full = true, legend = { tokenModifiers = { &quot;definition&quot;, &quot;readonly&quot;, &quot;async&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;class&quot;, &quot;parameter&quot;, &quot;selfParameter&quot;, &quot;clsParameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;function&quot;, &quot;method&quot;, &quot;keyword&quot;, &quot;string&quot;, &quot;number&quot;, &quot;decorator&quot;, &quot;builtinConstant&quot;, &quot;typeParameter&quot; } }, range = true }, signatureHelpProvider = { retriggerCharacters = { &quot;)&quot; }, triggerCharacters = { &quot;(&quot;, &quot;,&quot; } }, textDocumentSync = { change = 2, openClose = true }, typeDefinitionProvider = true, workspaceSymbolProvider = true } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 0, jsonrpc = &quot;2.0&quot;, method = &quot;workspace/configuration&quot;, params = { items = { { scopeUri = &quot;file:///Users/dhruv/dotfiles&quot;, section = &quot;ty&quot; } } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ty]&quot;	&quot;client.request&quot;	1	&quot;textDocument/diagnostic&quot;	{ textDocument = { uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; } }	&lt;function 1&gt;	1
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/diagnostic&quot;, params = { textDocument = { uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ty]&quot;	&quot;client.request&quot;	1	&quot;textDocument/semanticTokens/range&quot;	{ range = { [&quot;end&quot;] = { character = 0, line = 4 }, start = { character = 0, line = 0 } }, textDocument = { uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; } }	&lt;function 1&gt;	1
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 3, jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/semanticTokens/range&quot;, params = { range = { [&quot;end&quot;] = { character = 0, line = 4 }, start = { character = 0, line = 0 } }, textDocument = { uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; } } }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request&quot;	&quot;workspace/configuration&quot;	{ items = { { scopeUri = &quot;file:///Users/dhruv/dotfiles&quot;, section = &quot;ty&quot; } } }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: found handler for&quot;	&quot;workspace/configuration&quot;
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;default_handler&quot;	&quot;workspace/configuration&quot;	{ ctx = '{\n  client_id = 1,\n  method = &quot;workspace/configuration&quot;\n}', result = { items = { { scopeUri = &quot;file:///Users/dhruv/dotfiles&quot;, section = &quot;ty&quot; } } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: callback result&quot;	{ result = { vim.NIL }, status = true }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 0, jsonrpc = &quot;2.0&quot;, result = { vim.NIL } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, method = &quot;client/registerCapability&quot;, params = { registrations = { { id = &quot;ty/workspace/didChangeWatchedFiles&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, registerOptions = { watchers = { { globPattern = { baseUri = &quot;file:///Users/dhruv/dotfiles&quot;, pattern = &quot;**&quot; }, kind = 7 } } } } } } }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request&quot;	&quot;client/registerCapability&quot;	{ registrations = { { id = &quot;ty/workspace/didChangeWatchedFiles&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, registerOptions = { watchers = { { globPattern = { baseUri = &quot;file:///Users/dhruv/dotfiles&quot;, pattern = &quot;**&quot; }, kind = 7 } } } } } }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: found handler for&quot;	&quot;client/registerCapability&quot;
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;default_handler&quot;	&quot;client/registerCapability&quot;	{ ctx = '{\n  client_id = 1,\n  method = &quot;client/registerCapability&quot;\n}', result = { registrations = { { id = &quot;ty/workspace/didChangeWatchedFiles&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, registerOptions = { watchers = { { globPattern = { baseUri = &quot;file:///Users/dhruv/dotfiles&quot;, pattern = &quot;**&quot; }, kind = 7 } } } } } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: callback result&quot;	{ result = vim.NIL, status = true }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, result = vim.NIL }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 3, jsonrpc = &quot;2.0&quot;, result = { data = { 0, 4, 3, 7, 1, 0, 4, 1, 2, 1, 0, 3, 3, 1, 0, 0, 8, 3, 1, 0, 1, 11, 1, 2, 0, 2, 0, 1, 5, 1, 0, 3, 3, 1, 0, 0, 6, 3, 7, 0, 0, 4, 2, 10, 0 } } }
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, result = { items = { { code = &quot;invalid-assignment&quot;, codeDescription = { href = &quot;https://ty.dev/rules#invalid-assignment&quot; }, data = vim.NIL, message = &quot;Object of type `str` is not assignable to `int`&quot;, range = { [&quot;end&quot;] = { character = 16, line = 3 }, start = { character = 9, line = 3 } }, relatedInformation = { { location = { range = { [&quot;end&quot;] = { character = 6, line = 3 }, start = { character = 3, line = 3 } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, message = &quot;Declared type&quot; } }, severity = 1, source = &quot;ty&quot; } }, kind = &quot;full&quot;, resultId = &quot;5f5f3c955f80e275&quot; } }
+[ERROR][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ty]&quot;	&quot;Cannot find request with id 3 whilst attempting to cancel&quot;
+[DEBUG][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;$/cancelRequest&quot;, params = { id = 3 } }
+[TRACE][2025-12-03 10:04:44] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;default_handler&quot;	&quot;textDocument/diagnostic&quot;	{ ctx = '{\n  bufnr = 1,\n  client_id = 1,\n  method = &quot;textDocument/diagnostic&quot;,\n  params = {\n    textDocument = {\n      uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot;\n    }\n  },\n  version = 0\n}', result = { items = { { code = &quot;invalid-assignment&quot;, codeDescription = { href = &quot;https://ty.dev/rules#invalid-assignment&quot; }, data = vim.NIL, message = &quot;Object of type `str` is not assignable to `int`&quot;, range = { [&quot;end&quot;] = { character = 16, line = 3 }, start = { character = 9, line = 3 } }, relatedInformation = { { location = { range = { [&quot;end&quot;] = { character = 6, line = 3 }, start = { character = 3, line = 3 } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, message = &quot;Declared type&quot; } }, severity = 1, source = &quot;ty&quot; } }, kind = &quot;full&quot;, resultId = &quot;5f5f3c955f80e275&quot; } }
+[DEBUG][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, params = { changes = { { type = 3, uri = &quot;file:///Users/dhruv/dotfiles/4913&quot; }, { type = 1, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, { type = 3, uri = &quot;file:///Users/dhruv/dotfiles/t.py~&quot; } } } }
+[DEBUG][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/publishDiagnostics&quot;, params = { diagnostics = { { code = &quot;invalid-assignment&quot;, codeDescription = { href = &quot;https://ty.dev/rules#invalid-assignment&quot; }, data = vim.NIL, message = &quot;Object of type `str` is not assignable to `int`&quot;, range = { [&quot;end&quot;] = { character = 16, line = 3 }, start = { character = 9, line = 3 } }, relatedInformation = { { location = { range = { [&quot;end&quot;] = { character = 6, line = 3 }, start = { character = 3, line = 3 } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, message = &quot;Declared type&quot; } }, severity = 1, source = &quot;ty&quot; } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot;, version = 0 } }
+[DEBUG][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, method = &quot;workspace/inlayHint/refresh&quot; }
+[TRACE][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;notification&quot;	&quot;textDocument/publishDiagnostics&quot;	{ diagnostics = { { code = &quot;invalid-assignment&quot;, codeDescription = { href = &quot;https://ty.dev/rules#invalid-assignment&quot; }, data = vim.NIL, message = &quot;Object of type `str` is not assignable to `int`&quot;, range = { [&quot;end&quot;] = { character = 16, line = 3 }, start = { character = 9, line = 3 } }, relatedInformation = { { location = { range = { [&quot;end&quot;] = { character = 6, line = 3 }, start = { character = 3, line = 3 } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, message = &quot;Declared type&quot; } }, severity = 1, source = &quot;ty&quot; } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot;, version = 0 }
+[TRACE][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;default_handler&quot;	&quot;textDocument/publishDiagnostics&quot;	{ ctx = '{\n  client_id = 1,\n  method = &quot;textDocument/publishDiagnostics&quot;\n}', result = { diagnostics = { { code = &quot;invalid-assignment&quot;, codeDescription = { href = &quot;https://ty.dev/rules#invalid-assignment&quot; }, data = vim.NIL, message = &quot;Object of type `str` is not assignable to `int`&quot;, range = { [&quot;end&quot;] = { character = 16, line = 3 }, start = { character = 9, line = 3 } }, relatedInformation = { { location = { range = { [&quot;end&quot;] = { character = 6, line = 3 }, start = { character = 3, line = 3 } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot; }, message = &quot;Declared type&quot; } }, severity = 1, source = &quot;ty&quot; } }, uri = &quot;file:///Users/dhruv/dotfiles/t.py&quot;, version = 0 } }
+[TRACE][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request&quot;	&quot;workspace/inlayHint/refresh&quot;	nil
+[TRACE][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: found handler for&quot;	&quot;workspace/inlayHint/refresh&quot;
+[TRACE][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;default_handler&quot;	&quot;workspace/inlayHint/refresh&quot;	{ ctx = '{\n  client_id = 1,\n  method = &quot;workspace/inlayHint/refresh&quot;\n}' }
+[DEBUG][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: callback result&quot;	{ result = vim.NIL, status = true }
+[DEBUG][2025-12-03 10:04:46] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, result = vim.NIL }
+[INFO][2025-12-03 10:04:47] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;exit_handler&quot;	{ &lt;1&gt;{ _enabled_capabilities = {}, _is_stopping = false, _log_prefix = &quot;LSP[ty]&quot;, _on_attach_cbs = {}, _on_exit_cbs = {}, _on_init_cbs = {}, _trace = &quot;off&quot;, attached_buffers = { true }, cancel_request = &lt;function 1&gt;, capabilities = { general = { positionEncodings = { &quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot; } }, textDocument = { callHierarchy = { dynamicRegistration = false }, codeAction = { codeActionLiteralSupport = { codeActionKind = { valueSet = { &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.organizeImports&quot; } } }, dataSupport = true, disabledSupport = true, dynamicRegistration = true, honorsChangeAnnotations = true, isPreferredSupport = true, resolveSupport = { properties = { &quot;edit&quot;, &quot;command&quot; } } }, codeLens = { dynamicRegistration = false, resolveSupport = { properties = { &quot;command&quot; } } }, colorProvider = { dynamicRegistration = true }, completion = { completionItem = { commitCharactersSupport = false, deprecatedSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, insertReplaceSupport = true, preselectSupport = false, resolveSupport = { properties = { &quot;additionalTextEdits&quot;, &quot;command&quot; } }, snippetSupport = true, tagSupport = { valueSet = { 1 } } }, completionItemKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 } }, completionList = { itemDefaults = { &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; } }, contextSupport = true, dynamicRegistration = false }, declaration = { linkSupport = true }, definition = { dynamicRegistration = true, linkSupport = true }, diagnostic = { dataSupport = true, dynamicRegistration = false, relatedDocumentSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } } }, documentHighlight = { dynamicRegistration = false }, documentSymbol = { dynamicRegistration = false, hierarchicalDocumentSymbolSupport = true, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } }, tagSupport = { valueSet = { 1 } } }, foldingRange = { dynamicRegistration = false, foldingRange = { collapsedText = true }, foldingRangeKind = { valueSet = { &quot;comment&quot;, &quot;imports&quot;, &quot;region&quot; } }, lineFoldingOnly = true }, formatting = { dynamicRegistration = true }, hover = { contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, dynamicRegistration = true }, implementation = { linkSupport = true }, inlayHint = { dynamicRegistration = true, resolveSupport = { properties = { &quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot; } } }, inlineCompletion = { dynamicRegistration = false }, linkedEditingRange = { dynamicRegistration = false }, onTypeFormatting = { dynamicRegistration = false }, publishDiagnostics = { dataSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } }, versionSupport = true }, rangeFormatting = { dynamicRegistration = true, rangesSupport = true }, references = { dynamicRegistration = false }, rename = { dynamicRegistration = true, honorsChangeAnnotations = true, prepareSupport = true }, selectionRange = { dynamicRegistration = false }, semanticTokens = { augmentsSyntaxTokens = true, dynamicRegistration = false, formats = { &quot;relative&quot; }, multilineTokenSupport = true, overlappingTokenSupport = true, requests = { full = { delta = true }, range = true }, serverCancelSupport = false, tokenModifiers = { &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;documentation&quot;, &quot;defaultLibrary&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;operator&quot;, &quot;decorator&quot; } }, signatureHelp = { dynamicRegistration = false, signatureInformation = { activeParameterSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, noActiveParameterSupport = true, parameterInformation = { labelOffsetSupport = true } } }, synchronization = { didSave = true, dynamicRegistration = false, willSave = true, willSaveWaitUntil = true }, typeDefinition = { linkSupport = true } }, window = { showDocument = { support = true }, showMessage = { messageActionItem = { additionalPropertiesSupport = true } }, workDoneProgress = true }, workspace = { applyEdit = true, configuration = true, diagnostics = { refreshSupport = false }, didChangeConfiguration = { dynamicRegistration = false }, didChangeWatchedFiles = { dynamicRegistration = true, relativePatternSupport = true }, inlayHint = { refreshSupport = true }, semanticTokens = { refreshSupport = true }, symbol = { dynamicRegistration = false, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } } }, workspaceEdit = { changeAnnotationSupport = { groupsOnLabel = true }, normalizesLineEndings = true, resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; } }, workspaceFolders = true } }, commands = {}, config = { cmd = { &quot;ty&quot;, &quot;server&quot; }, filetypes = { &quot;python&quot; }, init_options = { logFile = &quot;/Users/dhruv/dotfiles/ty.log&quot;, logLevel = &quot;debug&quot; }, name = &quot;ty&quot;, root_dir = &quot;/Users/dhruv/dotfiles&quot;, root_markers = { &quot;ty.toml&quot;, &quot;pyproject.toml&quot;, &quot;setup.py&quot;, &quot;setup.cfg&quot;, &quot;requirements.txt&quot;, &quot;.git&quot; } }, dynamic_capabilities = { capabilities = &lt;2&gt;{ [&quot;workspace/didChangeWatchedFiles&quot;] = { { id = &quot;ty/workspace/didChangeWatchedFiles&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, registerOptions = { watchers = { { globPattern = { baseUri = &quot;file:///Users/dhruv/dotfiles&quot;, pattern = &quot;**&quot; }, kind = 7 } } } } } }, client_id = 1, get = &lt;function 2&gt;, register = &lt;function 3&gt;, supports = &lt;function 4&gt;, supports_registration = &lt;function 5&gt;, unregister = &lt;function 6&gt; }, exit_timeout = 3000, flags = {}, get_language_id = &lt;function 7&gt;, handlers = {}, id = 1, initialized = true, is_stopped = &lt;function 8&gt;, messages = { messages = {}, name = &quot;ty&quot;, progress = {}, status = {} }, name = &quot;ty&quot;, notify = &lt;function 9&gt;, offset_encoding = &quot;utf-8&quot;, on_attach = &lt;function 10&gt;, progress = { _idx_read = 0, _idx_write = 0, _items = {}, _size = 51, pending = {}, &lt;metatable&gt; = { __call = &lt;function 11&gt;, __index = { clear = &lt;function 12&gt;, peek = &lt;function 13&gt;, pop = &lt;function 14&gt;, push = &lt;function 15&gt; } } }, registrations = &lt;table 2&gt;, request = &lt;function 16&gt;, request_sync = &lt;function 17&gt;, requests = {}, root_dir = &quot;/Users/dhruv/dotfiles&quot;, rpc = { is_closing = &lt;function 18&gt;, notify = &lt;function 19&gt;, request = &lt;function 20&gt;, terminate = &lt;function 21&gt; }, server_capabilities = { codeActionProvider = { codeActionKinds = { &quot;quickfix&quot; } }, completionProvider = { triggerCharacters = { &quot;.&quot; } }, declarationProvider = true, definitionProvider = true, diagnosticProvider = { identifier = &quot;ty&quot;, interFileDependencies = true, workDoneProgress = true, workspaceDiagnostics = true }, documentHighlightProvider = true, documentSymbolProvider = true, executeCommandProvider = { commands = { &quot;ty.printDebugInformation&quot; }, workDoneProgress = false }, hoverProvider = true, inlayHintProvider = vim.empty_dict(), notebookDocumentSync = { notebookSelector = { { cells = { { language = &quot;python&quot; } } } }, save = false }, positionEncoding = &quot;utf-8&quot;, referencesProvider = true, selectionRangeProvider = true, semanticTokensProvider = { full = true, legend = { tokenModifiers = { &quot;definition&quot;, &quot;readonly&quot;, &quot;async&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;class&quot;, &quot;parameter&quot;, &quot;selfParameter&quot;, &quot;clsParameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;function&quot;, &quot;method&quot;, &quot;keyword&quot;, &quot;string&quot;, &quot;number&quot;, &quot;decorator&quot;, &quot;builtinConstant&quot;, &quot;typeParameter&quot; } }, range = true }, signatureHelpProvider = { retriggerCharacters = { &quot;)&quot; }, triggerCharacters = { &quot;(&quot;, &quot;,&quot; } }, textDocumentSync = { change = 2, openClose = true }, typeDefinitionProvider = true, workspaceSymbolProvider = true }, server_info = { name = &quot;ty&quot;, version = &quot;0.0.1-alpha.29 (0c3cae494 2025-11-28)&quot; }, settings = {}, stop = &lt;function 22&gt;, supports_method = &lt;function 23&gt;, workspace_folders = { { name = &quot;/Users/dhruv/dotfiles&quot;, uri = &quot;file:///Users/dhruv/dotfiles&quot; } }, &lt;metatable&gt; = &lt;3&gt;{ __index = &lt;table 3&gt;, _add_workspace_folder = &lt;function 24&gt;, _all = { &lt;table 1&gt; }, _get_language_id = &lt;function 25&gt;, _get_registration = &lt;function 26&gt;, _notification = &lt;function 27&gt;, _on_detach = &lt;function 28&gt;, _on_error = &lt;function 29&gt;, _on_exit = &lt;function 30&gt;, _process_request = &lt;function 31&gt;, _process_static_registrations = &lt;function 32&gt;, _register = &lt;function 33&gt;, _register_dynamic = &lt;function 34&gt;, _remove_workspace_folder = &lt;function 35&gt;, _resolve_handler = &lt;function 36&gt;, _run_callbacks = &lt;function 37&gt;, _server_request = &lt;function 38&gt;, _supports_registration = &lt;function 39&gt;, _text_document_did_open_handler = &lt;function 40&gt;, _unregister = &lt;function 41&gt;, _unregister_dynamic = &lt;function 42&gt;, cancel_request = &lt;function 43&gt;, create = &lt;function 44&gt;, exec_cmd = &lt;function 45&gt;, initialize = &lt;function 46&gt;, is_stopped = &lt;function 47&gt;, notify = &lt;function 48&gt;, on_attach = &lt;function 49&gt;, request = &lt;function 50&gt;, request_sync = &lt;function 51&gt;, stop = &lt;function 52&gt;, supports_method = &lt;function 53&gt;, write_error = &lt;function 54&gt; } } }
+[DEBUG][2025-12-03 10:04:47] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 4, jsonrpc = &quot;2.0&quot;, method = &quot;shutdown&quot; }
+[DEBUG][2025-12-03 10:04:47] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 4, jsonrpc = &quot;2.0&quot;, result = vim.NIL }
+[DEBUG][2025-12-03 10:04:47] /Users/dhruv/neovim/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;exit&quot; }
+</code></pre>
+<p>I think the issue is that ty is using both pull and publish diagnostics as seen in the logs. The editor is sending the <code>textDocument/diagnostic</code> request which is first populated in the buffer. But, when I save the file, it sends the <code>workspace/didChangeWatchedFiles</code> notification to the server and in response ty sends the <code>textDocument/publishDiagnostics</code> notification which contains the same diagnostics. And, I think Neovim uses separate namespace that contains these diagnostics which means that they're shown twice. Here are the two diagnostic namespace which I presume corresponds to the pull and push part:</p>
+<pre><code class="language-lua">:=vim.diagnostic.get_namespaces()
+{                                                                                                                   
+  [8] = {                                                                                                           
+    name = &quot;nvim.lsp.ty.1&quot;,                                                                                         
+    opts = {},                                                                                                      
+    user_data = {                                                                                                   
+      location_ns = 15,                                                                                             
+      sign_ns = 17,                                                                                                 
+      underline_ns = 16                                                                                             
+    }                                                                                                               
+  },                                                                                                                
+  [11] = {                                                                                                          
+    name = &quot;nvim.lsp.ty.1.ty&quot;,                                                                                      
+    opts = {},                                                                                                      
+    user_data = {                                                                                                   
+      location_ns = 12,                                                                                             
+      sign_ns = 14,                                                                                                 
+      underline_ns = 13                                                                                             
+    }                                                                                                               
+  }                                                                                                                 
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-03 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 04:43</div>
+            <div class="timeline-body"><p>Hmm, but I'm unable to reproduce this in my own config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woniulol">@woniulol</a> on 2025-12-03 06:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Any chance you're also using Ruff? Do you see the same issue with Ruff?</p>
+</blockquote>
+<p>I have tried to changed the <code>ty</code> in my minimum config to <code>ruff</code> and replicated the test against the following <code>main.py</code></p>
+<pre><code>def my_func() -&gt; None:
+   a: int = 123 
+   return 
+</code></pre>
+<p>Warning line <code>main.py|2 col 4-5 warning| Local variable </code>a<code> is assigned to but never used</code> is not duplicated.</p>
+<p>I can ensure that i was only using <code>ty</code> in my first example.</p>
+<pre><code>- LSP log level : WARN
+- Log path: /Users/xxx/.local/state/nvim/lsp.log
+- Log size: 151 KB
+
+vim.lsp: Active Clients ~
+- ty (id: 1)
+  - Version: 0.0.1-alpha.29 (0c3cae494 2025-11-28)
+  - Root directory: ~/develop/temp/try-ruff-lsp
+  - Command: { &quot;ty&quot;, &quot;server&quot; }
+  - Settings: {}
+  - Attached buffers: 1
+
+vim.lsp: Enabled Configurations ~
+- ty:
+  - cmd: { &quot;ty&quot;, &quot;server&quot; }
+  - filetypes: python
+  - root_markers: { &quot;ty.toml&quot;, &quot;pyproject.toml&quot;, &quot;setup.py&quot;, &quot;setup.cfg&quot;, &quot;requirements.txt&quot;, &quot;.git&quot; }
+
+
+vim.lsp: File Watcher ~
+- File watch backend: libuv-watch
+
+vim.lsp: Position Encodings ~
+- No buffers contain mixed position encodings
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 07:26</div>
+            <div class="timeline-body"><p>Thanks @dhruvmanila The logs are very helpful and the fix should be easy. It's interesting that vim sends a <code>didChangeWatchedFiles</code> diagnostic for this file, given that it is an open file.</p>
+<p>I get the impression that this could break our versioning because we now have new content on disk but we also have the unsaved in-editor content that neovim never notified us that it has changed (or that the file was closed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-04 07:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

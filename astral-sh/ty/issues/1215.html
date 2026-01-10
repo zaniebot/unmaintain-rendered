@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Callable` is a class - astral-sh/ty #1215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Callable` is a class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1215">#1215</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-20 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-20 07:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from collections.abc import Callable
+
+t: type = Callable  # Object of type `typing.Callable` is not assignable to `type`
+</code></pre>
+<p>this stems from an issue with typeshed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-20 11:33</div>
+            <div class="timeline-body"><p>This is only true for <code>collections.abc.Callable</code>, not for <code>typing.Callable</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import collections.abc, typing
+&gt;&gt;&gt; isinstance(collections.abc.Callable, type)
+True
+&gt;&gt;&gt; isinstance(typing.Callable, type)
+False
+&gt;&gt;&gt; collections.abc.Callable.__mro__
+(&lt;class 'collections.abc.Callable'&gt;, &lt;class 'object'&gt;)
+&gt;&gt;&gt; typing.Callable.__mro__
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    typing.Callable.__mro__
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 1366, in __getattr__
+    raise AttributeError(attr)
+AttributeError: __mro__. Did you mean: '__or__'?
+</code></pre>
+<p>According to typeshed, <code>typing.Callable</code> and <code>collections.abc.Callable</code> are the same object, and it would require quite deep special casing from us to override typeshed on that point. So I'm not sure this is worth fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-20 15:11</div>
+            <div class="timeline-body"><p>hmmm</p>
+<pre><code class="language-py">from collections.abc import Callable
+
+class A(Callable[int]): # no error
+    pass
+</code></pre>
+<ul>
+<li>#1220</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-21 03:55</div>
+            <div class="timeline-body"><p>@AlexWaygood would it be worth updating the vendored typeshed? if so i'd be happy to do it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> would it be worth updating the vendored typeshed? if so i'd be happy to do it</p>
+</blockquote>
+<p>I think that would be likely to either break existing type checkers, or else have somewhat unexpected effects on their handling of <code>Callable</code>. I'm not sure it's worth the disruption to the ecosystem.</p>
+<p>Is there real-world code where this causes issues? What's the use case needing to consider <code>collections.abc.Callable</code> (but not <code>typing.Callable</code>) an instance of <code>type</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 08:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I think that would be likely to either break existing type checkers</p>
+</blockquote>
+<p>i mean, ty's vendored typeshed, not the upstream one</p>
+<blockquote>
+<p>Is there real-world code where this causes issues?</p>
+</blockquote>
+<p>i have run into it in the past where the <code>typing</code> definition of <code>Callable</code> has caused issues, i think there is some special handling in ty already to avoid this as <code>class C(Callable)</code> isn't reported. imo it's better to iron out this incorrect definition at the root</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 08:18</div>
+            <div class="timeline-body"><blockquote>
+<p>i mean, ty's vendored typeshed, not the upstream one</p>
+</blockquote>
+<p>I see — no, I'd strongly prefer it if we can avoid patching upstream typeshed unless we have a very good reason for it. The patches mypy has applied to typeshed have been a real maintenance headache for them and made syncing typeshed much more complicated for them than it should be because of the frequent merge conflicts. I don't want for us to get into a similar situation.</p>
+<p>Our handling of special forms is quite different to most other type checkers, as you've already observed, so I think it's unlikely that we'll have the same bugs that you've observed with mypy. https://github.com/astral-sh/ty/issues/1220 relates to a branch of code in ty that is already marked as TODO. We actually infer a <code>Todo</code> type currently (which is similar to <code>Unknown</code>, but is explicit about the fact that there's still some missing logic in ty) when <code>Callable</code> is present as a base class.</p>
+<p>So all in all, I don't see sufficient motivation to make any changes with regards to this one. But thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-22 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 08:34</div>
+            <div class="timeline-body"><p>okay, i agree</p>
+<p>i've opened: https://github.com/python/typeshed/pull/14761</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:31 UTC
+    </footer>
+</body>
+</html>

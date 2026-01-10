@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[tool.ty.environment] extra-paths causes a lot of failures and in general works differently from `ty check --extra-search-path` - astral-sh/ty #429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[tool.ty.environment] extra-paths causes a lot of failures and in general works differently from `ty check --extra-search-path`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/429">#429</a>
+        opened by <a href="https://github.com/Guitaricet">@Guitaricet</a>
+        on 2025-05-16 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Guitaricet">@Guitaricet</a> on 2025-05-16 19:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi, I have built a pipeline to run ty on an internal codebase and originally I had to provide a lot of <code>--extra-search-path</code> arguments to make it work properly.</p>
+<p>Now, when configuration files are documented, I wanted to move these from <code>ty check</code> command to my <code>pyproject.toml</code>. However, it seems like they work differently, because when I run</p>
+<pre><code>ty check --project &lt;my_project&gt; --extra-search-path /opt/ros/humble/lib/python3.10/site-packages
+</code></pre>
+<p>I get ~100 diagnostics, but when I add either of:</p>
+<pre><code>[tool.ty.environment]
+extra-paths = [
+    &quot;/opt/ros/humble/lib/python3.10/site-packages&quot;,
+]
+</code></pre>
+<p>I get ~3000 diagnostics (more than 10x). I tried a couple of things to explore what this is related to:</p>
+<pre><code>[tool.ty.environment]
+extra-paths = []
+</code></pre>
+<pre><code>[tool.ty.environment]
+extra-paths = [&quot;stubs&quot;]  # this directory exists, contains a few custom stubs
+</code></pre>
+<p>Every time I get slightly different, but very large number of diagnostics. I can dive deeper into it, but for now I'll just keep using a lot of <code>--extra-search-path</code>.</p>
+<p>This happens on both 0.0.1 alpha 3 and alpha 2</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 19:01</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Are the extra diagnostics mostly failed imports? If so, that might suggest the version with &quot;lots of extra diagnostics&quot; is failing to set up your import paths correctly. Or are they lots of other diagnostics? If the latter, it might suggest that we are actually finding many diagnostics, and the &quot;few diagnostics&quot; version is not finding your first-party code correctly, and thus not even checking it.</p>
+<p>It would be helpful to know what your overall directory structure is, where your <code>pyproject.toml</code> is, and from what directory you are running ty.</p>
+<p>A minimal example that we can reproduce ourselves would be ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-05-20 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-05-20 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-07-10 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-10 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-10 16:28</div>
+            <div class="timeline-body"><p>I'll close this, given we don't have an MRE</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

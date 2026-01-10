@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty does not support conditional imports - astral-sh/ty #708</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty does not support conditional imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/708">#708</a>
+        opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a>
+        on 2025-06-26 09:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2025-06-26 09:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Loving the progress on ty
+Just thought I would flag this issue I was having when type checking conditional imports, which fails on Implicit shadowing of class <code>SymmetricalLogScale</code>. Is there another way do this that would be allowed under ty rules?</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Literal
+
+import numpy as np
+
+try:
+    from matplotlib.scale import LinearScale, LogScale, SymmetricalLogScale
+
+except ImportError:
+    # Implicit shadowing of class `SymmetricalLogScale` here
+    LinearScale, LogScale, SymmetricalLogScale = (None, None, None)
+
+
+if TYPE_CHECKING:
+    from matplotlib.scale import ScaleBase
+
+
+Scale = Literal[&quot;symlog&quot;, &quot;linear&quot;, &quot;log&quot;]
+
+
+def get_scale_with_lim(
+    scale: Scale,
+    lim: tuple[float, float],
+) -&gt; ScaleBase:
+    if LinearScale is None or LogScale is None or SymmetricalLogScale is None:
+        msg = &quot;Matplotlib is not installed. Please install it with the 'plot' extra.&quot;
+        raise ImportError(msg)
+    match scale:
+        case &quot;linear&quot;:
+            return LinearScale(axis=None)
+        case &quot;symlog&quot;:
+            max_abs = max([np.abs(lim[0]), np.abs(lim[1])])
+            return SymmetricalLogScale(
+                axis=None,
+                linthresh=1 if max_abs &lt;= 0 else 1e-3 * max_abs,
+            )
+        case &quot;log&quot;:
+            max_abs = max([np.abs(lim[0]), np.abs(lim[1])])
+            return LogScale(axis=None)
+    # Also does not infer that this is unreachable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 09:26</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>We treat an import as both a declaration and a binding. So if <code>SymmetricalLogScale</code> is successfully imported, it's declared as <code>&lt;class 'SymmetricalLogScale'&gt;</code>. Since we (currently) do not statically determine if that <code>except ImportError</code> branch will be executed or not, we also see the <code>SymmetricalLogScale = None</code> binding and that leads to the error.</p>
+<p>I'm not sure if that's the best idea here, but one way that you could make this work would be to guard the <code>… = (None, None, None)</code> binding with <code>if not TYPE_CHECKING:</code>. This way, <code>SymmetricalLogScale</code> will either have type <code>&lt;class 'SymmetricalLogScale'&gt;</code> (if <code>matplotlib</code> is available), or type <code>Unknown</code>  (if <code>matplotlib</code> is not available). <code>Unknown</code> is a dynamic type that should not cause any downstream type errors.</p>
+<p>Playground example: https://play.ty.dev/86568c8a-0c3e-4d51-acbd-22b28a1608d1 (try removing the <code>optional_library.py</code> tab. The only thing that will change is the inferred type for <code>SomeClass</code>)</p>
+<p>--</p>
+<p>I think it's plausible that we could improve our understanding here for simple <code>try: …; except ImportError: …</code> patterns. In that case, we could mark the <code>try</code> and the <code>except</code> branch as mutually exclusive (only one of them is statically reachable, depending on the success of the import). The type of the imported symbol would then either be the imported type or <code>None</code>, and no diagnostic would be emitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2025-06-26 09:31</div>
+            <div class="timeline-body"><p>The issue with using it not Type checking is that I want to infer class symmetricLogScale | None so I can correctly check for none inside get scale with lim</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-26 16:40</div>
+            <div class="timeline-body"><p>The simplest solution here would be to stop erroring on incompatible declarations, and just consider it our semantics in such cases that we union the declared types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-10-06 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-10-06 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:24</div>
+            <div class="timeline-body"><p>Although it looks a bit silly, the easiest workaround for this today is to change this:</p>
+<pre><code class="language-py">try:
+    from module import C
+except ImportError:
+    C = None
+</code></pre>
+<p>to this:</p>
+<pre><code class="language-py">try:
+    from module import C
+except ImportError:
+    C: None = None
+</code></pre>
+<p>If the assignment of <code>None</code> is also &quot;declared&quot;, then ty is fine with the two declarations and will union type to <code>C | None</code>, as desired.</p>
+<p>I still think that we should consider doing something different in ty here, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

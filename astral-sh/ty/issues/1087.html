@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>assert does not do type narrowing - astral-sh/ty #1087</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>assert does not do type narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1087">#1087</a>
+        opened by <a href="https://github.com/bugnano">@bugnano</a>
+        on 2025-08-22 06:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bugnano">@bugnano</a> on 2025-08-22 06:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If there's a function like this:</p>
+<pre><code class="language-python">def my_function() -&gt; str | None:
+    return &quot;hello&quot;
+</code></pre>
+<p>in some cases I know that the function does not return <code>None</code>.</p>
+<p>When using mypy, I can write a function like so:</p>
+<pre><code class="language-python">def not_none[T](obj: T | None) -&gt; T:
+    assert obj is not None
+    return obj
+</code></pre>
+<p>and if I use it</p>
+<pre><code class="language-python">hi = not_none(my_function()).upper()
+</code></pre>
+<p>mypy correctly understands that the retrun value of <code>not_none</code> is not None, but ty errors out stating that I cannot invoke <code>upper()</code> on None.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-08-22 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-22 06:46</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Type narrowing on <code>assert</code> statements does work. The problem here is that our generics solver is not yet capable enough to solve <code>T</code> as <code>str</code> here. Instead, it solves <code>T</code> as <code>str | None</code>, which is also a solution, but obviously not the intended/best one. Improving this is being tracked in https://github.com/astral-sh/ty/issues/623.</p>
+<p>The non-generic version of this code works just fine: https://play.ty.dev/074988a3-daf8-43ae-93fc-d14c92bf93e0 (notice that we would correctly error on the <code>return obj</code> statement if the <code>assert</code> statement was not there).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-22 06:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:26 UTC
+    </footer>
+</body>
+</html>

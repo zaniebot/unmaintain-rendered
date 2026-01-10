@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add missing match arms code action - astral-sh/ty #1631</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add missing match arms code action</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1631">#1631</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-11-25 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-11-25 13:20</div>
+            <div class="timeline-body"><p>Been looking through the R-A code actions and https://rust-analyzer.github.io/book/assists.html#add_missing_match_arms looks quite cool.</p>
+<p>before:</p>
+<pre><code class="language-py">from enum import Enum
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+def handle_color(c: Color):
+    match c&lt;CURSOR&gt;:
+        case Color.RED:
+            return &quot;red&quot;
+</code></pre>
+<p>after:</p>
+<pre><code class="language-py">from enum import Enum
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+def handle_color(c: Color):
+    match c:
+        case Color.RED:
+            return &quot;red&quot;
+        case Color.GREEN:
+            raise NotImplementedError # (or &quot;...&quot;)
+        case Color.BLUE:
+            raise NotImplementedError
+</code></pre>
+<p>I suppose this could start with a warning diagnostic on the &quot;c&quot; in the match, that we have a non exhaustive match.</p>
+<p>Currently rust emits a diagnostic</p>
+<pre><code class="language-text">missing match arm: Green and Blue not covered (rust-analyzer E0004)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-11-25 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 08:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I suppose this could start with a warning diagnostic on the &quot;c&quot; in the match, that we have a non exhaustive match.</p>
+</blockquote>
+<p>You already get a &quot;non-exhaustiveness&quot; diagnostic if you add a <code>-&gt; str</code> return type annotation to <code>handle_color</code>. In the absence of this, the <code>match</code> does not <em>need</em> to be exhaustive. If you meant to say that we should add a new (opt-in) diagnostic/lint that would discover non-exhaustive <code>match</code> statements either way, that's certainly a reasonable idea. We certainly have all of the necessary information available in control flow analysis today.</p>
+<blockquote>
+<p><a href="https://rust-analyzer.github.io/book/assists.html#add_missing_match_arms">rust-analyzer.github.io/book/assists.html#add_missing_match_arms</a> looks quite cool.</p>
+</blockquote>
+<p>Definitely agree! It's interesting to think about how this could be implemented. I guess we would start with the type that we would currently see, if we were to add a wildcard <code>case _</code> arm to the <code>match</code> statement. For your example above, we would see <code>Color &amp; ~Literal[Color.RED]</code>, which is eagerly simplified to <code>Literal[Color.GREEN, Color.BLUE]</code>. And that union type already contains all of the information needed.</p>
+<p>For cases where the union members are non-singletons, there are probably some questions that we need to answer (if the match subject has a type of <code>A | B</code> with non-final classes <code>A</code> and <code>B</code>, do we provide this auto-fix? Subclasses of <code>A</code> and <code>B</code> would be matched by both patterns, so this becomes order-dependent?). But starting with things like enums sounds like a huge win already.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

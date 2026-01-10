@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`from . import a as b` should still introduce `a` as a local in packages - astral-sh/ty #1485</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`from . import a as b` should still introduce `a` as a local in packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1485">#1485</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-05 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 17:20</div>
+            <div class="timeline-body"><p>This is a followup to https://github.com/astral-sh/ruff/pull/21173 and pertains to behaviours described in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md">imports/nonstandard_conventions.md</a></p>
+<p>Currently <code>from .a import b</code> in an <code>__init__.py(i)</code> can introduce a local for <code>a</code> (via <code>ImportFromSubmoduleDefinitionNodeRef</code>).</p>
+<p>Similarly, <code>from . import a</code> introduces the same local (via <code>ImportFromDefinitionNodeRef</code>).</p>
+<p>We should <em>also</em> support <code>from . import a as c</code> in an <code>__init__.py(i)</code> introducing the local <code>a</code> (via <code>ImportFromSubmoduleDefinitionNodeRef</code>). (Ditto for <code>from whatever.thispackage import a as c</code> - #1484)</p>
+<p>This reflects the fact that the python runtime introduces the submodule attribute for the first import of <code>thispackage.a</code> regardless of how it gets imported, even if you rename it in the import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-11-05 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-11-05 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @Gankra on 2025-11-05 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-11 20:18</div>
+            <div class="timeline-body"><p>For the record, I will die happy if we never ship this. I expect very few people are relying on it, and they probably shouldn't be. But time will tell if the accuracy gods demand it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 20:20</div>
+            <div class="timeline-body"><p>The tricky thing about implementing this is that the syntactic form <code>from . import a as b</code> in an <code>__init__.py</code> may or may not create a submodule attribute <code>a</code>. It does only if <code>a</code> is actually a submodule, but <code>a</code> may be something else entirely. (In which case this statement is just a really strange way to write <code>b = a</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @carljm on 2025-11-11 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-11 20:48</div>
+            <div class="timeline-body"><p>Having now worked in this code a bunch, it's my understanding that we actually refuse to believe that the <code>b = a</code> situation can happen (<a href="https://github.com/astral-sh/ruff/blob/e4374f14ed12873541d9a9ccca7eea92456684f6/crates/ty_python_semantic/src/types/infer/builder.rs#L5768-L5779">look for <code>import_is_self_referential</code> in <code>infer_import_from_definition</code></a>), so in terms of current ty semantics it's actually &quot;safe&quot; to assume that <code>from . import a</code> only ever refers to a submodule if you're in an <code>__init__.py(i)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-11 21:03</div>
+            <div class="timeline-body"><p>With that claim, the implementation of this actually looks a lot like the one I describe in:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/1526</li>
+</ul>
+<p>But instead you check <code>if is_self_import {</code> and roughly duplicate this logic here:</p>
+<p>https://github.com/astral-sh/ruff/blob/e4374f14ed12873541d9a9ccca7eea92456684f6/crates/ty_python_semantic/src/semantic_index/builder.rs#L1481-L1496</p>
+<p>Unfortunately <em>this</em> case actually runs hard into the &quot;ast nodes can introduce at-most one definition&quot; rule, because <code>from . import a as c, b as d</code> would need two <code>ImportFromSubmoduleDefinitionNodeRef</code>, and the Alias nodes are already claimed by <code>ImportFromDefinitionNodeRefs</code>. Maybe I was wrong and you actually can hang them off of <code>Identifier</code>? So some hacky little thing where one gets the <code>Alias</code> and the other gets the <code>Identifier</code> inside the alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @Gankra on 2025-11-11 21:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:40 UTC
+    </footer>
+</body>
+</html>

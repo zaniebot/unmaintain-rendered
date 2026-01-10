@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] Panic 'too many cycle iterations' for recursive star import - astral-sh/ty #444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] Panic 'too many cycle iterations' for recursive star import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/444">#444</a>
+        opened by <a href="https://github.com/anatoli-tsinovoy">@anatoli-tsinovoy</a>
+        on 2025-05-19 08:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anatoli-tsinovoy">@anatoli-tsinovoy</a> on 2025-05-19 08:45</div>
+            <div class="timeline-body"><p>Hi, I'm experiencing the following panic when trying to use <a href="https://github.com/construct/construct">construct</a>, (<a href="https://pypi.org/project/construct/">pypi</a>).</p>
+<p>Attached is an MRE and the output of <code>RUST_BACKTRACE=1 uvx ty check mre.py  -vv</code>.</p>
+<p>Issue appears strongly related to #386 , possibly it has something to do with the multiple <code>*</code> imports used in the library?
+~~Also looks somewhat related to #380  and #256 , though at a glance I don't see any relation to generics.~~</p>
+<p>Let me know if there's anything else I can provide to help. 🙏🏻</p>
+<details>
+
+<h2>File: MRE/mre.py</h2>
+<pre><code class="language-python">from io import BytesIO
+
+from construct import Float32l
+
+
+def main():
+    dummy_io = BytesIO(b&quot;\x00\x00\x00\x00&quot;)
+    print(Float32l.parse_stream(dummy_io))
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+
+</code></pre>
+<h2>File: MRE/uv.lock</h2>
+<pre><code class="language-toml">version = 1
+revision = 2
+requires-python = &quot;==3.13.*&quot;
+
+[[package]]
+name = &quot;construct&quot;
+version = &quot;2.10.70&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/02/77/8c84b98eca70d245a2a956452f21d57930d22ab88cbeed9290ca630cf03f/construct-2.10.70.tar.gz&quot;, hash = &quot;sha256:4d2472f9684731e58cc9c56c463be63baa1447d674e0d66aeb5627b22f512c29&quot;, size = 86337, upload-time = &quot;2023-11-29T08:44:49.545Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/b2/fb/08b3f4bf05da99aba8ffea52a558758def16e8516bc75ca94ff73587e7d3/construct-2.10.70-py3-none-any.whl&quot;, hash = &quot;sha256:c80be81ef595a1a821ec69dc16099550ed22197615f4320b57cc9ce2a672cb30&quot;, size = 63020, upload-time = &quot;2023-11-29T08:44:46.876Z&quot; },
+]
+
+[[package]]
+name = &quot;construct-mre&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;construct&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;construct&quot; }]
+
+</code></pre>
+<h2>File: MRE/pyproject.toml</h2>
+<pre><code class="language-toml">[project]
+name = &quot;construct-mre&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13,&lt;3.14&quot;
+dependencies = [&quot;construct&quot;]
+[tool.ruff]
+target-version = &quot;py313&quot;
+</code></pre>
+<pre><code>$ uv sync
+$ RUST_BACKTRACE=1 uvx ty check mre.py  -vv
+2025-05-19 11:28:15.152214493 WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+2025-05-19 11:28:15.156542092 DEBUG Version: 0.0.1-alpha.5
+2025-05-19 11:28:15.156558632 DEBUG Architecture: x86_64, OS: linux, case-sensitive: case-sensitive
+2025-05-19 11:28:15.156619544 DEBUG Searching for a project in '/root/MRE'
+2025-05-19 11:28:15.156710746 DEBUG Resolving requires-python constraint: `&gt;=3.13, &lt;3.14`
+2025-05-19 11:28:15.156720586 DEBUG Resolved requires-python constraint to: 3.13
+2025-05-19 11:28:15.156819628 DEBUG Resolving requires-python constraint: `&gt;=3.13, &lt;3.14`
+2025-05-19 11:28:15.156826348 DEBUG Resolved requires-python constraint to: 3.13
+2025-05-19 11:28:15.156830298 DEBUG Found project at '/'
+2025-05-19 11:28:15.156844038 DEBUG Searching for a user-level configuration at `/root/.config/ty/ty.toml`
+2025-05-19 11:28:15.156887549 INFO Defaulting to python-platform `linux`
+2025-05-19 11:28:15.15690396 INFO Python version: Python 3.13, platform: linux
+2025-05-19 11:28:15.15691343 DEBUG Adding first-party search path '/'
+2025-05-19 11:28:15.15693106 DEBUG Using vendored stdlib
+2025-05-19 11:28:15.15741041 DEBUG Discovering site-packages paths from sys-prefix `/.venv` (`VIRTUAL_ENV` environment variable')
+2025-05-19 11:28:15.15742474 DEBUG Attempting to parse virtual environment metadata at '/.venv/pyvenv.cfg'
+2025-05-19 11:28:15.157459671 DEBUG Searching for site-packages directory in `sys.prefix` path `/.venv`
+2025-05-19 11:28:15.157469611 DEBUG Resolved site-packages directories for this virtual environment are: [&quot;/.venv/lib/python3.13/site-packages&quot;]
+2025-05-19 11:28:15.157479201 DEBUG Adding site-packages search path '/.venv/lib/python3.13/site-packages'
+2025-05-19 11:28:15.157578523 DEBUG Setting included paths: 1
+2025-05-19 11:28:15.157589554 DEBUG Reloading files for project `***`
+2025-05-19 11:28:15.157637385 DEBUG Starting main loop
+2025-05-19 11:28:15.157645985 DEBUG Waiting for next main loop message.
+2025-05-19 11:28:15.157674185 DEBUG Checking project '***'
+2025-05-19 11:28:15.159653446 INFO Indexed 1 file(s)
+Checking ------------------------------------------------------------ 0/1 files                                                             2025-05-19 11:28:15.159798329 DEBUG Checking file '/root/MRE/mre.py'
+2025-05-19 11:28:15.161136276 DEBUG Resolving dynamic module resolutio
+error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/7edce6e/src/function/execute.rs:209:25 when checking `/root/MRE/mre.py`: `exported_names(Id(2017)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;mre.py&quot;, &quot;-vv&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+  34: &lt;unknown&gt;
+  35: &lt;unknown&gt;
+  36: &lt;unknown&gt;
+  37: &lt;unknown&gt;
+  38: &lt;unknown&gt;
+  39: &lt;unknown&gt;
+  40: &lt;unknown&gt;
+  41: &lt;unknown&gt;
+  42: &lt;unknown&gt;
+  43: &lt;unknown&gt;
+  44: &lt;unknown&gt;
+  45: &lt;unknown&gt;
+  46: &lt;unknown&gt;
+  47: &lt;unknown&gt;
+  48: &lt;unknown&gt;
+  49: &lt;unknown&gt;
+  50: &lt;unknown&gt;
+  51: &lt;unknown&gt;
+  52: &lt;unknown&gt;
+  53: &lt;unknown&gt;
+  54: &lt;unknown&gt;
+  55: &lt;unknown&gt;
+  56: &lt;unknown&gt;
+  57: &lt;unknown&gt;
+  58: &lt;unknown&gt;
+  59: &lt;unknown&gt;
+  60: &lt;unknown&gt;
+  61: &lt;unknown&gt;
+  62: &lt;unknown&gt;
+  63: &lt;unknown&gt;
+  64: &lt;unknown&gt;
+  65: &lt;unknown&gt;
+  66: &lt;unknown&gt;
+  67: &lt;unknown&gt;
+  68: &lt;unknown&gt;
+  69: &lt;unknown&gt;
+  70: &lt;unknown&gt;
+  71: &lt;unknown&gt;
+  72: &lt;unknown&gt;
+  73: &lt;unknown&gt;
+  74: &lt;unknown&gt;
+  75: &lt;unknown&gt;
+  76: &lt;unknown&gt;
+  77: &lt;unknown&gt;
+  78: &lt;unknown&gt;
+  79: &lt;unknown&gt;
+  80: &lt;unknown&gt;
+  81: &lt;unknown&gt;
+  82: &lt;unknown&gt;
+  83: &lt;unknown&gt;
+  84: clone
+
+info: query stacktrace:
+   0: exported_names(Id(202c))
+             at crates/ty_python_semantic/src/semantic_index/re_exports.rs:46
+   1: exported_names(Id(2020))
+             at crates/ty_python_semantic/src/semantic_index/re_exports.rs:46
+   2: exported_names(Id(201e))
+             at crates/ty_python_semantic/src/semantic_index/re_exports.rs:46
+   3: semantic_index(Id(2017))
+             at crates/ty_python_semantic/src/semantic_index.rs:49
+   4: global_scope(Id(2017))
+             at crates/ty_python_semantic/src/semantic_index.rs:138
+   5: member_lookup_with_policy_(Id(2802))
+             at crates/ty_python_semantic/src/types.rs:536
+   6: infer_definition_types(Id(1401))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   7: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+   8: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:84
+
+
+Found 1 diagnostic
+2025-05-19 11:28:15.17109034 WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+2025-05-19 11:28:15.17109648 DEBUG Exiting main loop
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-19 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-19 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-19 12:57</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<blockquote>
+<p>Issue appears strongly related to <a href="https://github.com/astral-sh/ty/issues/386">#386</a> , possibly it has something to do with the multiple <code>*</code> imports used in the library?</p>
+</blockquote>
+<p>Yes, indeed. I managed to minify it to the following MRE, which still involves five files (all originally from <code>construct</code>). There is an obvious cycle there (binary -&gt; construct -&gt; core -&gt; lib -&gt; binary), but the panic goes away if any of the statements here are removed (I have not investigated further).  If some statements are removed (like <code>class Mapping(Adapter): ...</code> in <code>core.py</code>), it leads to a non-deterministic hang.</p>
+<pre><code class="language-py">─────────────────────────────────────────────────────────────────
+# File: binary.py
+─────────────────────────────────────────────────────────────────
+from construct import *
+─────────────────────────────────────────────────────────────────
+
+─────────────────────────────────────────────────────────────────
+# File: construct.py
+─────────────────────────────────────────────────────────────────
+from core import *
+─────────────────────────────────────────────────────────────────
+
+─────────────────────────────────────────────────────────────────
+# File: core.py
+─────────────────────────────────────────────────────────────────
+from lib import *
+
+
+class Mapping(Adapter): ...
+─────────────────────────────────────────────────────────────────
+
+─────────────────────────────────────────────────────────────────
+# File: lib.py
+─────────────────────────────────────────────────────────────────
+from binary import *
+from py3compat import *
+─────────────────────────────────────────────────────────────────
+
+─────────────────────────────────────────────────────────────────
+# File: py3compat.py
+─────────────────────────────────────────────────────────────────
+import sys, platform
+
+PYPY = &quot;__pypy__&quot; in sys.builtin_module_names
+stringtypes = (
+    bytes,
+    str,
+)
+integertypes = (int,)
+unicodestringtype = str
+─────────────────────────────────────────────────────────────────
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[panic] Panic due to 'too many cycle iterations' when importing `construct`" to "[panic] Panic 'too many cycle iterations' for recursive star import" by @sharkdp on 2025-05-19 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-19 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>it leads to a non-deterministic hang.</p>
+</blockquote>
+<p>Is this with parallelism or without?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-19 14:20</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>it leads to a non-deterministic hang.</p>
+</blockquote>
+<p>Is this with parallelism or without?</p>
+</blockquote>
+<p>Only hangs with parallelism. Succeeds single-threaded without any error for all 5! = 120 possible permutations of the file arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-19 16:07</div>
+            <div class="timeline-body"><p>Oh, so even the &quot;too many iterations&quot; panic only reproduces multi-threaded?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-19 16:09</div>
+            <div class="timeline-body"><p>Only if you remove some statements :) I hope that it's related to the issue we discussed in our call today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-19 16:10</div>
+            <div class="timeline-body"><p>Ok, but if you <em>don't</em> remove some statements, there's also a single-threaded runaway iteration issue we need to understand here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-19 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, so even the &quot;too many iterations&quot; panic only reproduces multi-threaded?</p>
+</blockquote>
+<p>No. The panic reproduces single threaded and multi-threaded, as expected. With the MRE from the post above.</p>
+<p>The hang only reproduces multi-threaded, when <code>class Mapping(Adapter): ...</code> is removed. Whether or not it's related to a similar issue, I have no idea. It just seemed likely, given how small this example is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-17 09:16</div>
+            <div class="timeline-body"><p>This seems to be fixed now.</p>
+<p>@sharkdp's repro type checks immediately.</p>
+<p>The MRE from the issue description also completes immediately but I'm probably doing something wrong because ty fails to resolve <code>Float32l</code> (with any version, even as early as the first alpha)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-17 09:32</div>
+            <div class="timeline-body"><p>ah lol... I had a <code>construct.py</code> from @sharkdp's MRE. This is why the import couldn't be resolved. The MRE from the issue author still reproduces</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-27 07:00</div>
+            <div class="timeline-body"><p>There's another repro in https://github.com/astral-sh/ty/issues/1437</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-13 14:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:04 UTC
+    </footer>
+</body>
+</html>

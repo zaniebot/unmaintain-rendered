@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] recursive type alias? - astral-sh/ty #1105</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] recursive type alias?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1105">#1105</a>
+        opened by <a href="https://github.com/jaens">@jaens</a>
+        on 2025-08-28 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaens">@jaens</a> on 2025-08-28 17:37</div>
+            <div class="timeline-body"><p>Error message:</p>
+<pre><code>❯ uvx ty check _repro.py
+
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                          error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `_repro.py`: `infer_scope_types(Id(1001)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.1-alpha.19
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;_repro.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:527
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+<p>Source code:</p>
+<pre><code class="language-python">from pathlib import Path
+
+type DirDict = dict[str, str | DirDict]
+
+
+def path_files_to_dict(path: Path, ignored_names: set[str] | None = None) -&gt; DirDict:
+    &quot;&quot;&quot;Read a directory and the contents of its files into a nested dictionary.&quot;&quot;&quot;
+    if ignored_names is None:
+        ignored_names = set()
+    return {
+        item.name: path_files_to_dict(item, ignored_names) if item.is_dir(follow_symlinks=False) else item.read_text()
+        for item in path.iterdir()
+        if item.name not in ignored_names
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaens">@jaens</a> on 2025-08-28 17:44</div>
+            <div class="timeline-body"><p>Duplicate of https://github.com/astral-sh/ty/issues/256 I assume.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jaens on 2025-08-28 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-28 17:45</div>
+            <div class="timeline-body"><p>This particular issue (though not all of #256) is actually fixed in ty main branch, we just need to make a new release. It works in the playground (which is always updated to latest main branch): https://play.ty.dev/a4b8ccf2-2449-4b44-a709-499077dd0aec</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:27 UTC
+    </footer>
+</body>
+</html>

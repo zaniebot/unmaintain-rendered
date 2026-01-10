@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functions annotated with `typing.Callable` in parameters have no `__name__` - astral-sh/ty #975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Functions annotated with `typing.Callable` in parameters have no `__name__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/975">#975</a>
+        opened by <a href="https://github.com/lmmx">@lmmx</a>
+        on 2025-08-12 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmmx">@lmmx</a> on 2025-08-12 17:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've tried this with <code>typing.Callable</code>, <code>collections.abc.Callable</code>, and <code>typing_extensions.Callable</code> and all give the same error.</p>
+<pre><code class="language-python">error[unresolved-attribute]: Type `(...) -&gt; R` has no attribute `__name__`
+   --&gt; path/to/file.py:104:49
+    |
+102 |             def wrapper(*args, **kwargs):
+103 |                 # Generate cache key
+104 |                 cache_key = self._get_cache_key(func.__name__, args, kwargs)
+    |                                                 ^^^^^^^^^^^^^
+105 |
+106 |                 # Check if result is cached
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>I made a repro (<a href="https://play.ty.dev/e330fea2-2856-47b4-9fb6-21f36768abb6">playground link</a>) and this appears to be only in function params?</p>
+<pre><code class="language-python">from typing import Callable
+
+def foo(arg1: Callable[..., str]) -&gt; str:
+    name_of_foo_arg: str = arg1.__name__
+    return name_of_foo_arg
+
+foo_itself: Callable[Callable[..., str], str] = foo
+name_of_foo_itself: str = foo_itself.__name__
+</code></pre>
+<p>⇣</p>
+<pre><code>Type `(...) -&gt; str` has no attribute `__name__` (unresolved-attribute) [Ln 4, Col 28]
+</code></pre>
+<ul>
+<li><code>foo_itself</code> which has been assigned to the funcdef <code>foo</code> is allowed to have a <code>__name__</code></li>
+<li><code>arg1</code> which is a function passed into <code>foo</code> as a parameter is not allowed to have a <code>__name__</code></li>
+</ul>
+<p>This program would work:</p>
+<pre><code class="language-python">&gt;&gt;&gt; def foo(arg1: Callable[..., str]) -&gt; str:
+...     name_of_arg: str = arg1.__name__
+...     return name_of_arg
+... 
+&gt;&gt;&gt; foo(bar)
+'bar'
+</code></pre>
+<p>Note that a lambda still has a <code>__name__</code></p>
+<pre><code class="language-python">&gt;&gt;&gt; lam = lambda x: &quot;x&quot;
+&gt;&gt;&gt; lam.__name__
+'&lt;lambda&gt;'
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Functions annotated with `typing.Callable`" to "Functions annotated with `typing.Callable` in parameters have no `__name__`" by @lmmx on 2025-08-12 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-12 17:17</div>
+            <div class="timeline-body"><p>Yes, this is an area where ty currently does something differently to other type checkers such as mypy and pyright. It's easy to demonstrate that the behaviour of mypy and pyright is unsound, however -- for example:</p>
+<pre><code class="language-py">from typing import Callable
+
+def foo(arg1: Callable[..., str]) -&gt; str:
+    name_of_foo_arg: str = arg1.__name__
+    return name_of_foo_arg
+    
+class CustomCallable:
+    def __call__(self) -&gt; str:
+        return &quot;foo&quot;
+
+# mypy and pyright both accept this, but it raises an exception at runtime!
+foo(CustomCallable())
+</code></pre>
+<p>The question is: what is a <code>Callable</code> type meant to represent?</p>
+<ol>
+<li>Is it meant to represent &quot;a type that is both callable with a certain signature, <em>and</em> has all the attributes that you usually find on functions&quot;? The fact that mypy and pyright allow you to access a <code>__name__</code> attribute on <code>Callable</code> types would imply that this is their interpretation -- but they're very inconsistent about this, allowing you to pass in types such as <code>CustomCallable</code> above that do not have <code>__name__</code> attributes available.</li>
+<li>Or is it meant to represent &quot;any callable type with a certain signature, but that does not necessarily have any other attributes&quot;&quot;? This is how ty currently interprets <code>Callable</code> types.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-12 17:18</div>
+            <div class="timeline-body"><p>There's related discussion in https://github.com/astral-sh/ty/issues/599, so I'll fold this issue into that one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-12 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-08-12 17:56</div>
+            <div class="timeline-body"><p>Thanks Alex, sorry for the duplicate! Oof that's a mouthful, but fair enough!</p>
+<p>In my case I am using &quot;Callable&quot; because there is no <code>typing.Function</code>, but since this &quot;typing-extensions&quot; library seems to have a <code>FunctionType</code> and you can bundle it with a callable that works for me!</p>
+<p>It does indeed work this way</p>
+<pre><code class="language-python">from types import FunctionType
+from typing import Callable
+
+from ty_extensions import Intersection
+
+CallableFn = Intersection[FunctionType, Callable[[], None]]
+
+        def decorator(
+            func: CallableFn[..., R],
+        ) -&gt; CallableFn[..., R]:
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                cache_key = self._get_cache_key(func.__name__, args, kwargs)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-12 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>In my case I am using &quot;Callable&quot; because there is no <code>typing.Function</code></p>
+</blockquote>
+<p>to be clear: <code>types.FunctionType</code> is in the CPython standard library! And it is the type that all functions are instances of at runtime:</p>
+<pre><code class="language-py">&gt;&gt;&gt; from types import FunctionType
+&gt;&gt;&gt; def f(): ...
+... 
+&gt;&gt;&gt; type(f) is FunctionType
+True
+&gt;&gt;&gt; type((lambda: 42)) is FunctionType
+True
+</code></pre>
+<p>It's just <code>ty_extensions.Intersection</code> that is currently not yet standardised. If you want to use it in your own code, for now you'll need to import it in an <code>if TYPE_CHECKING</code> block, since it doesn't exist at runtime.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support `__slots__` - astral-sh/ty #1268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support `__slots__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1268">#1268</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-09-27 08:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-09-27 08:01</div>
+            <div class="timeline-body"><p><code>__slots__</code> is already handled specially in ty, but should be more fully supported in line with the Python specification.
+<code>__slots__</code> may not be a very commonly used feature, but several major libraries use it (e.g. <a href="https://github.com/python-attrs/attrs/blob/50334f3fe759013f52cc533161e9b474e98bc460/src/attr/_make.py#L2436">attrs</a>), and supporting it could improve inference results and error reporting.</p>
+<p>ref: https://docs.python.org/3/reference/datamodel.html#slots</p>
+<p>Here are the features that should be implemented:</p>
+<ul>
+<li>[ ] Assume that the attributes defined in <code>__slots__</code> are not unresolved</li>
+<li>[ ] Attempting to read/write/declare an attribute that is not defined in <code>__slots__</code> will be reported as an error</li>
+<li>[ ] Defining a class variable to set a default value for a name that is defined in <code>__slots__</code> will be reported as an error</li>
+<li>[ ] Remove <code>__dict__</code> and <code>__weakref__</code> from classes that define <code>__slots__</code></li>
+<li>[ ] An error will be raised if nonempty <code>__slots__</code> are defined for a class derived from a &quot;variable-length&quot; built-in type such as int, bytes, and tuple</li>
+</ul>
+<pre><code class="language-python">class C:
+    __slots__ = (&quot;foo&quot;,)
+
+    def __init__(self, foo, bar):
+        self.foo = foo
+        self.bar = bar  # error
+
+    baz: int  # error (pyright doesn't report this as an error)
+    foo: int = 1  # error
+
+class D:
+    __slots__ = (&quot;bar&quot;,)
+
+d = D()
+reveal_type(d.bar)  # revealed: Any or Unknown
+reveal_type(d.foo)  # error
+d.bar = 1  # ok
+# Classes with `__slots__` defined will not have a `__dict__` by default.
+d.foo = 1  # error
+
+class E:
+    __slots__ = (&quot;foo&quot;, &quot;__dict__&quot;)
+
+    def __init__(self, foo, bar):
+        self.foo = foo
+        self.bar = bar  # ok
+
+# `F` has `__dict__` and `__weakref__`.
+class F: ...
+
+# Even if a class defines `__slots__`, if the superclass has `__dict__` or `__weakref__`,
+# those attributes will be inherited.
+class G(F):
+    __slots__ = (&quot;foo&quot;,)
+
+    def __init__(self, foo, bar):
+        self.foo = foo
+        self.bar = bar  # ok
+
+# error: nonempty __slots__ not supported for subtype of 'int'
+class H(int):
+    __slots__ = (&quot;foo&quot;,)
+</code></pre>
+<p>related: #111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @sharkdp on 2025-09-29 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @AlexWaygood on 2025-10-17 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-10-17 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-11-12 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-12 23:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:33 UTC
+    </footer>
+</body>
+</html>

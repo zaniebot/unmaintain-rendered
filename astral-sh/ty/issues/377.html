@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol with __call__ method hides type errors - astral-sh/ty #377</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Protocol with __call__ method hides type errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/377">#377</a>
+        opened by <a href="https://github.com/ojii">@ojii</a>
+        on 2025-05-14 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ojii">@ojii</a> on 2025-05-14 08:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>Callable</code> is very restricted in what it can express (no kwargs, no optional arguments, etc) and the official Python typing documentation instructs you to use a <code>Protocol</code> subclass with a <code>__call__</code> method instead. However with <code>ty</code> this does not work as expected.</p>
+<p>Given the following code:</p>
+<pre><code class="language-python">from typing import Protocol
+
+
+class MyCallable(Protocol):
+    def __call__(self, arg: int) -&gt; int: ...
+
+
+def func(mc: MyCallable) -&gt; int:
+    return mc(1)
+
+
+# expect to type check
+func(lambda n: 1)
+
+# expect to fail check
+func(lambda: None)
+
+
+def x(arg: int) -&gt; int:
+    return 1
+
+
+# expect to type check
+func(x)
+
+
+def y(arg: str) -&gt; str:
+    return &quot;a&quot;
+
+
+# expect to fail check
+func(y)
+
+
+# expect to type check, but fails with call-non-callable on F
+def func2[F: MyCallable](f: F) -&gt; int:
+    return f(1)
+</code></pre>
+<p>Running <code>ty check file.py</code> everything passes but the check on <code>func2</code>, it is happy with all the calls to <code>func</code> even though half the arguments passed in should fail the type check.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.1 (12f466e46 2025-05-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @sharkdp on 2025-05-14 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-14 10:40</div>
+            <div class="timeline-body"><p>Thanks for the detailed writeup. We currently have only very basic support for protocols, and the naive approach we currently take leads to lots of false negatives, as you say! We'll be working on improving this over the next few weeks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-05-14 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-05-14 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 10:23</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py"># expect to type check
+func(lambda n: 1)
+</code></pre>
+</blockquote>
+<p>I would not expect this to type-check because your protocol states that you must be able to pass a keyword argument <code>arg</code> when calling an object for that object to satisfy your protocol. <code>lambda n: 1</code> has a positional-or-keyword argument, but it is named <code>n</code> rather than <code>arg</code>; <code>(lambda n: 1)(arg=42)</code> fails at runtime. If you change the <code>lambda</code> argument name to <code>arg</code> or make the protocol <code>arg</code> parameter positional-only, however, this example does now type-check as expected on our <code>main</code> branch.</p>
+<p>Most of your other examples now type-check as expected following https://github.com/astral-sh/ruff/pull/20165, except for this one -- we still apparently have a false negative here:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class MyCallable(Protocol):
+    def __call__(self, arg: int, /) -&gt; int: ...
+
+def func(mc: MyCallable): ...
+
+def y(arg: str) -&gt; str:
+    return &quot;a&quot;
+
+# expect to fail check
+func(y)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-12 21:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

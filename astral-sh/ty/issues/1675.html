@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No diagnostic reported for bad use of `@override` if the method has other decorators too - astral-sh/ty #1675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No diagnostic reported for bad use of `@override` if the method has other decorators too</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1675">#1675</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 15:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 15:38</div>
+            <div class="timeline-body"><p>Similar to #1674. We do not currently issue a complaint about this snippet, but pyre (the predecessor to pyrefly, and the reference implementation for PEP 698) <a href="https://pyre-check.org/play?input=from%20typing%20import%20override%0Afrom%20functools%20import%20lru_cache%0A%0Aclass%20Bar%3A%0A%20%20%20%20%40override%0A%20%20%20%20%40lru_cache%0A%20%20%20%20def%20method(self%2C%20x%3A%20int">does</a>%20-%3E%20None%3A%20...):</p>
+<pre><code class="language-py">from typing import override
+from functools import lru_cache
+
+class Bar:
+    @override
+    @lru_cache
+    def method(self, x: int) -&gt; None: ...
+</code></pre>
+<p>The reason why we issue no complaint is that the <code>lru_cache</code> decorator transforms the function definition into an instance of <code>_lru_cache_wrapper</code>. We currently only recognise methods as being <code>@override</code> if they have <code>Type::FunctionLiteral</code> types in our internal model, so the transformation into an instance of <code>_lru_cache_wrapper</code> means that we &quot;forget&quot; that the method was decorated with <code>@override</code>. To fix this issue, we may need to treat the <code>@override</code> decorator more like a type qualifier that &quot;survives&quot; the transformations from a function-literal type to a callable type and then to an <code>_lru_cache_wrapper</code> type.</p>
+<p>Mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=4cae2098f63f2cc2a361bf8ea6da0cae">also issues a diagnostic</a> on this snippet. At time of writing, neither <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.12&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiCEgCbEBQokUwArigMYxhgA2Azptrvk4hGAfRYBDFgAsa1Fp3HdeAIXEgAXNSjaoAASKlyVLTt1DRE6TR1QqwKBGIwpYCgApuxTsAA0UAB7qmCgwAJRQALQAfFAAcmAoxEEAdKnUQA">pyright</a> nor <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN2R0qKAB10YavTABXdAGMGuXFDiduvflErSA%2BnNRyAFjDFi5UVHFUAxJYjF1HdAAJbd%2BoyfROXg4Q6dMGDA6GhgGQ1xMAAo4GCgwABo6fEROdAYASjoAWgA%2BOgA5XHQYNMIK03kLKzoAIVRKaNtcTPtvJ1dtPQNjAMcgkLCIqNj4pJS01izcguLS8sr0EESQaQZoOBJyRBAAYjoAVQ2oCCYBWQUIErgqwYFeGlQGHXRpGmwYJtT0mfy6OAMSjtHyUcLSSjeMAiECFd6fYF0YD4AC%2BMLEKxAZDBYCgpEIihoUAoBwACqQcXiARgcAQ6HISpA2BDntd0IQxAcAMowGB0QwMBjEOCIAD0ouxwTxhF4bFFMHQoswuDkcFFDPEEGZlFZJVFD0odFQADdUNBUNhYPTGVqWRsSnRcMR7egtmIyCN0DljV84Gy6ABeOgwgDMhAAjAAmdHLFGrAwbH3WaAwChoLB4IhkEAooA">pyrefly</a> do, however. Note that pyright has an <a href="https://github.com/microsoft/pyright/issues/11130">open issue from a user</a> that requests this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-29 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-11-29 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-01 23:17</div>
+            <div class="timeline-body"><p>I don't think this is necessary to address before stable release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 23:20</div>
+            <div class="timeline-body"><p>OK</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @AlexWaygood on 2025-12-01 23:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

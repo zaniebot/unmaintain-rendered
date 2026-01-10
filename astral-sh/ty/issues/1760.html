@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-import should treat `__all__` as invalid if it references a symbol that does not exist - astral-sh/ty #1760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-import should treat `__all__` as invalid if it references a symbol that does not exist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1760">#1760</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-04 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-04 16:54</div>
+            <div class="timeline-body"><p>Ref https://github.com/astral-sh/ruff/pull/21779/files/d314aa859dcf9a6ffb006a594d7ca0431dd4fab2#r2589451722</p>
+<p>For example, consider this <code>foo.py</code>:</p>
+<pre><code class="language-python">__all__ = ['__all__', 'TRICKSY']
+</code></pre>
+<p>And this <code>test.py</code>:</p>
+<pre><code class="language-python">from foo import *
+TRICKSY = 1
+</code></pre>
+<p>Even though <code>foo.py</code>'s <code>__all__</code> value is technically valid for <code>test.py</code>, <code>TRICKSY</code> itself does not exist in <code>foo.py</code>. This means <code>from foo import *</code> will fail at runtime.</p>
+<p>We don't recognize this in auto-import, which means we'll offer an import for <code>TRICKSY</code> from <code>test.py</code>. But importing from <code>test.py</code> will result in a runtime error. So we probably shouldn't offer the import.</p>
+<p>(I think this is a low priority issue. And we should be careful about how we go about this, because if we get the check wrong and treat <code>__all__</code> as invalid when it is valid, we'll get the exported interface of a module wrong. That could be worse than potentially offering an incorrect import in the rare case that <code>__all__</code> is itself incorrect. So the decision here might indeed to leave the status quo be.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-12-04 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @BurntSushi on 2025-12-04 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:49 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enforce operator functions include the possible right hand version in their input type - astral-sh/ty #1181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>enforce operator functions include the possible right hand version in their input type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1181">#1181</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-14 01:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-14 01:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">class Left:
+    def __add__(self, other: int) -&gt; int:
+        # here &quot;other&quot; is Right
+        return other + 1  # TypeError here
+
+
+class Right:
+    def __radd__(self, other: Left) -&gt; str:
+        return &quot;i'm string :)&quot;
+
+
+Left() + Right()
+</code></pre>
+<p>here the type of  <code>Left.__add__</code>'s <code>other</code>, should should be <code>int | { __radd__: (other: Left) -&gt; object }</code>, otherwise we should see an error on the last line</p>
+<h1>full form</h1>
+<p>in combination with some of my other issues</p>
+<pre><code class="language-py">class Left:
+    @overload
+    def __add__(self, other: int) -&gt; int: ...
+    @overload
+    def __add__(self, other: object) -&gt; NotImplemented: ...
+
+    def __add__(self, other): ...
+        # here &quot;other&quot; is object
+        if not isinstance(other, int):
+            return NotImplemented
+        return other + 1  # all good :)
+
+
+class Right:
+    def __radd__(self, other: Left) -&gt; str:
+        return &quot;i'm string :)&quot;
+
+
+Left() + Right()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-15 19:45</div>
+            <div class="timeline-body"><p>Yes, the convention that dunder methods should be annotated with the argument types that will cause them to not return <code>NotImplemented</code> is unsound, in the sense that it requires the author of the method's internals to handle the unsupported types (and return <code>NotImplemented</code> for them) without any help from the type-checker to validate that they have done so. That's a known issue, but nonetheless that's the status-quo expectation in the ecosystem.</p>
+<p>I don't see this issue as independently actionable from https://github.com/astral-sh/ty/issues/1150 -- they are both asking for the same change to the status-quo expectation of how dunder methods are annotated, to handle <code>NotImplemented</code> possibility explicitly rather than implicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-15 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-16 04:36</div>
+            <div class="timeline-body"><p>@carljm this issue is demonstrating how the current semantics allow incompatible types to be passed to operator methods</p>
+<p>i understand what you mean about it being a part of the larger problem, I will update the other issue with these details and example</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

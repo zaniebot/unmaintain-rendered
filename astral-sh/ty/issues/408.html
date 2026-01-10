@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;unresolved-attribute&quot; errors within pyyaml - astral-sh/ty #408</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;unresolved-attribute&quot; errors within pyyaml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/408">#408</a>
+        opened by <a href="https://github.com/rofafor">@rofafor</a>
+        on 2025-05-15 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rofafor">@rofafor</a> on 2025-05-15 13:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Package: <a href="https://github.com/yaml/pyyaml">pyyaml</a> 6.0.2</p>
+<p>Code:</p>
+<pre><code class="language-python">import yaml
+
+malformed_yaml = &quot;&quot;&quot;
+a:
+ - 1
+ b: 2
+&quot;&quot;&quot;
+
+try:
+    config = yaml.load(malformed_yaml, Loader=yaml.FullLoader)
+except yaml.YAMLError as exc:
+    print(exc)
+</code></pre>
+<p>Output:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `&lt;module 'yaml'&gt;` has no attribute `FullLoader`
+  --&gt; foo.py:10:47
+   |
+ 9 | try:
+10 |     config = yaml.load(malformed_yaml, Loader=yaml.FullLoader)
+   |                                               ^^^^^^^^^^^^^^^
+11 | except yaml.YAMLError as exc:
+12 |     print(exc)
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+  --&gt; foo.py:11:8
+   |
+ 9 | try:
+10 |     config = yaml.load(malformed_yaml, Loader=yaml.FullLoader)
+11 | except yaml.YAMLError as exc:
+   |        ^^^^^^^^^^^^^^
+12 |     print(exc)
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.3 (144a26d44 2025-05-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 13:27</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Can you say a bit more how you installed <code>PyYAML</code> and how you're running ty? I can not reproduce this. It runs without errors on your file for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-05-15 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rofafor">@rofafor</a> on 2025-05-15 15:53</div>
+            <div class="timeline-body"><p>Sorry for the mess up! I was running this test code on my actual project rather than a new bootstrapped project. It seems that <code>types-pyyaml</code> package is the culprit here:</p>
+<pre><code>% uv init &amp;&amp; uv add ty pyyaml
+
+% uv run ty version
+ty 0.0.1-alpha.3 (144a26d44 2025-05-15)
+
+% uv run ty check foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+All checks passed!
+
+% uv add types-pyyaml &amp;&amp; uv run ty check foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `&lt;module 'yaml'&gt;` has no attribute `FullLoader`
+  --&gt; /Users/rofa/Temp/foo.py:10:47
+   |
+ 9 | try:
+10 |     config = yaml.load(malformed_yaml, Loader=yaml.FullLoader)
+   |                                               ^^^^^^^^^^^^^^^
+11 | except yaml.YAMLError as exc:
+12 |     print(exc)
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `&lt;module 'yaml'&gt;` has no attribute `YAMLError`
+  --&gt; /Users/rofa/Temp/foo.py:11:8
+   |
+ 9 | try:
+10 |     config = yaml.load(malformed_yaml, Loader=yaml.FullLoader)
+11 | except yaml.YAMLError as exc:
+   |        ^^^^^^^^^^^^^^
+12 |     print(exc)
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @sharkdp on 2025-05-15 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-05-15 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 18:21</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I can reproduce this. It looks like we have a bug in our stubs-packages support, because I can not reproduce the same error if it's a non-stub package.</p>
+<p>MRE: https://play.ty.dev/54434464-27dd-436d-9b80-97aa0aa63316
+Same example, non-stubs package: https://play.ty.dev/a15123bd-d02c-48f5-955e-dd8c3493f8c7</p>
+<p>In fact, the playground gives us a hint where the problem may lie: we don't seem to understand the relative import from <code>.loader</code> inside <code>yaml-stubs/__init__.pyi</code>.</p>
+<p>I also added a regression test here: https://github.com/astral-sh/ruff/pull/18123</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 07:07</div>
+            <div class="timeline-body"><p>The interesting message from the logs is:</p>
+<pre><code>2025-05-16 09:06:46.69137 DEBUG Relative module resolution `.loader` failed; could not resolve file `/Users/micha/astral/test/yaml/yaml-stubs/__init__.pyi` to a module
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-16 07:17</div>
+            <div class="timeline-body"><p>The problem is that this call here fails:</p>
+<p>https://github.com/astral-sh/ruff/blob/6b64630635688429bb16a1fad5ca5fb8eebd375c/crates/ty_python_semantic/src/module_resolver/resolver.rs#L112</p>
+<p>because <code>xy-stubs</code> is not a valid module name.</p>
+<p>We need to remove the <code>-stubs</code> extension (but only in the first component) similar to what we do in <code>RelaxedModuleName</code>. Maybe we could add a <code>to_module_name</code> method to <code>RelaxedModuleName</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-05-16 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-16 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

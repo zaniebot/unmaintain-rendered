@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] `infer_definition_types(Id(d67c)): execute: too many cycle iterations` - astral-sh/ty #683</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] `infer_definition_types(Id(d67c)): execute: too many cycle iterations`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/683">#683</a>
+        opened by <a href="https://github.com/remiconnesson">@remiconnesson</a>
+        on 2025-06-19 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/remiconnesson">@remiconnesson</a> on 2025-06-19 16:23</div>
+            <div class="timeline-body"><h1>Minimal Repro</h1>
+<p>Running this working code in a notebook</p>
+<pre><code class="language-python">import weaviate.classes as wvc
+import weaviate
+client = weaviate.connect_to_local()
+
+collection = client.collections.get(&quot;...&quot;)
+
+def bm25_search(query, query_properties):
+    return collection.query.bm25(
+        query=query,
+        query_properties=[*query_properties],
+        limit=3,
+        return_metadata=wvc.query.MetadataQuery.full(),
+    )
+
+
+res = bm25_search(query, query_properties)
+</code></pre>
+<p>with</p>
+<pre><code class="language-shell">$ uv pip list | grep weaviate
+weaviate-client                          4.15.2
+</code></pre>
+<p>results in this panic:</p>
+<pre><code>RUST_BACKTRACE=1 ty check notebooks/04.ipynb
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/09627e4/src/function/execute.rs:212:25 when checking `/home/remi/experiments/llm/002_icpr_ar6/rag/notebooks/04.ipynb`: `infer_definition_types(Id(c960)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;notebooks/04.ipynb&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+  34: &lt;unknown&gt;
+  35: &lt;unknown&gt;
+  36: &lt;unknown&gt;
+  37: &lt;unknown&gt;
+  38: &lt;unknown&gt;
+  39: &lt;unknown&gt;
+  40: &lt;unknown&gt;
+  41: &lt;unknown&gt;
+  42: &lt;unknown&gt;
+  43: &lt;unknown&gt;
+  44: &lt;unknown&gt;
+  45: &lt;unknown&gt;
+  46: &lt;unknown&gt;
+  47: &lt;unknown&gt;
+  48: &lt;unknown&gt;
+  49: &lt;unknown&gt;
+  50: &lt;unknown&gt;
+  51: &lt;unknown&gt;
+  52: &lt;unknown&gt;
+  53: &lt;unknown&gt;
+  54: &lt;unknown&gt;
+  55: &lt;unknown&gt;
+  56: &lt;unknown&gt;
+  57: &lt;unknown&gt;
+  58: &lt;unknown&gt;
+  59: &lt;unknown&gt;
+  60: &lt;unknown&gt;
+  61: &lt;unknown&gt;
+  62: &lt;unknown&gt;
+  63: &lt;unknown&gt;
+  64: &lt;unknown&gt;
+  65: &lt;unknown&gt;
+  66: &lt;unknown&gt;
+  67: &lt;unknown&gt;
+  68: &lt;unknown&gt;
+  69: &lt;unknown&gt;
+  70: &lt;unknown&gt;
+  71: &lt;unknown&gt;
+  72: &lt;unknown&gt;
+  73: &lt;unknown&gt;
+  74: &lt;unknown&gt;
+  75: &lt;unknown&gt;
+  76: &lt;unknown&gt;
+  77: &lt;unknown&gt;
+  78: &lt;unknown&gt;
+  79: &lt;unknown&gt;
+  80: &lt;unknown&gt;
+  81: &lt;unknown&gt;
+  82: &lt;unknown&gt;
+  83: &lt;unknown&gt;
+  84: &lt;unknown&gt;
+  85: &lt;unknown&gt;
+  86: &lt;unknown&gt;
+  87: &lt;unknown&gt;
+  88: &lt;unknown&gt;
+  89: &lt;unknown&gt;
+  90: &lt;unknown&gt;
+  91: &lt;unknown&gt;
+  92: &lt;unknown&gt;
+  93: &lt;unknown&gt;
+  94: &lt;unknown&gt;
+  95: &lt;unknown&gt;
+  96: &lt;unknown&gt;
+  97: &lt;unknown&gt;
+  98: &lt;unknown&gt;
+  99: &lt;unknown&gt;
+ 100: &lt;unknown&gt;
+ 101: &lt;unknown&gt;
+ 102: &lt;unknown&gt;
+ 103: &lt;unknown&gt;
+ 104: &lt;unknown&gt;
+ 105: &lt;unknown&gt;
+ 106: &lt;unknown&gt;
+ 107: &lt;unknown&gt;
+ 108: &lt;unknown&gt;
+ 109: &lt;unknown&gt;
+ 110: &lt;unknown&gt;
+ 111: &lt;unknown&gt;
+ 112: &lt;unknown&gt;
+ 113: &lt;unknown&gt;
+ 114: &lt;unknown&gt;
+ 115: &lt;unknown&gt;
+ 116: &lt;unknown&gt;
+ 117: &lt;unknown&gt;
+ 118: &lt;unknown&gt;
+ 119: &lt;unknown&gt;
+ 120: &lt;unknown&gt;
+ 121: &lt;unknown&gt;
+ 122: &lt;unknown&gt;
+ 123: &lt;unknown&gt;
+ 124: &lt;unknown&gt;
+ 125: &lt;unknown&gt;
+ 126: &lt;unknown&gt;
+ 127: &lt;unknown&gt;
+ 128: &lt;unknown&gt;
+ 129: &lt;unknown&gt;
+ 130: &lt;unknown&gt;
+ 131: &lt;unknown&gt;
+ 132: &lt;unknown&gt;
+ 133: &lt;unknown&gt;
+ 134: &lt;unknown&gt;
+ 135: &lt;unknown&gt;
+ 136: &lt;unknown&gt;
+ 137: &lt;unknown&gt;
+ 138: &lt;unknown&gt;
+ 139: &lt;unknown&gt;
+ 140: &lt;unknown&gt;
+ 141: &lt;unknown&gt;
+ 142: &lt;unknown&gt;
+ 143: &lt;unknown&gt;
+ 144: &lt;unknown&gt;
+ 145: &lt;unknown&gt;
+ 146: &lt;unknown&gt;
+ 147: &lt;unknown&gt;
+
+info: query stacktrace:
+   0: infer_expression_types(Id(b77d))
+             at crates/ty_python_semantic/src/types/infer.rs:243
+   1: infer_definition_types(Id(c99d))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   2: infer_expression_types(Id(b77f))
+             at crates/ty_python_semantic/src/types/infer.rs:243
+   3: infer_definition_types(Id(c99f))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   4: place_by_id(Id(309d))
+             at crates/ty_python_semantic/src/place.rs:597
+   5: member_lookup_with_policy_(Id(2d35))
+             at crates/ty_python_semantic/src/types.rs:561
+   6: infer_definition_types(Id(cb4c))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   7: infer_definition_types(Id(d02f))
+             at crates/ty_python_semantic/src/types/infer.rs:167
+   8: member_lookup_with_policy_(Id(2d2f))
+             at crates/ty_python_semantic/src/types.rs:561
+   9: member_lookup_with_policy_(Id(2d2d))
+             at crates/ty_python_semantic/src/types.rs:561
+  10: infer_scope_types(Id(1001))
+             at crates/ty_python_semantic/src/types/infer.rs:138
+  11: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:88
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-19 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-06-19 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-19 19:49</div>
+            <div class="timeline-body"><p>More minimal repro:</p>
+<pre><code class="language-py">from weaviate.collections.classes.internal import QuerySearchReturnType
+
+x: QuerySearchReturnType
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-19 20:41</div>
+            <div class="timeline-body"><p>And an even more minimal repro:</p>
+<pre><code class="language-py">from weaviate.collections.classes.internal import CrossReferences
+
+x: CrossReferences
+</code></pre>
+<p><code>CrossReferences</code> <a href="https://github.com/weaviate/weaviate-python-client/blob/96b0638517891be49f4973ae3840fcd809080466/weaviate/collections/classes/internal.py#L528">is a recursive type alias</a>, so this is #256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-19 20:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

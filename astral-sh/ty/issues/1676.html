@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add diagnostic warning against shadowing a submodule name in `__init__.py` - astral-sh/ty #1676</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add diagnostic warning against shadowing a submodule name in `__init__.py`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1676">#1676</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 15:46</div>
+            <div class="timeline-body"><p>If you do something like this, it significantly increases the likelihood that ty will get confused when resolving the type of the attribute <code>a.b</code> when <code>a</code> has been imported in another module (should it be resolved to <code>Literal[42]</code> or <code>&lt;module 'a.b'&gt;</code>?:</p>
+<pre><code class="language-md">`a/__init__.py`:
+
+```py
+b = 42
+```
+
+`a/b.py`:
+
+```py
+```
+</code></pre>
+<p>I think it would be helpful to our users if we emitted a diagnostic when a symbol is defined in an <code>__init__.py</code> file that shadows the name of a submodule. In rare occasions, there might be a good reason for doing this, but in those situations you could easily just disable the warning for that <code>__init__.py</code> file in particular.</p>
+<p>A common reason for shadowing submodules like this is to actually prohibit users from importing the submodule -- that can be done if you first import the submodule in <code>__init__.py</code>, and then override it later on in <code>__init__.py</code>. We should therefore consider:</p>
+<ol>
+<li>Skipping the warning if the submodule has a name beginning with a single underscore (this is the convention to mark a submodule as private)</li>
+<li>State in the diagnostic message for the warning that the user could consider renaming their submodule so that it starts with a leading underscore</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-11-29 15:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

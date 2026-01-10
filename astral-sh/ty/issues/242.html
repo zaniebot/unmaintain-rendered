@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ensure that type inference on a high-durability file is also high durability - astral-sh/ty #242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ensure that type inference on a high-durability file is also high durability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/242">#242</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-08-30 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-08-30 19:50</div>
+            <div class="timeline-body"><p>If we can ensure this is the case, it should help our incremental inference perform better.</p>
+<p>One issue here is that low-durability files (in your workspace) can shadow high-durability files (in the stdlib), and in principle this could impact the type inference in the stdlib. This means that any <code>resolve_module</code> is (I think) currently a low-durability query, because it will always access some low-durability import search paths.</p>
+<p>If it helps performance enough, we could decide that we never want type inference within the stdlib to respect shadowed stdlib modules, so that we can keep type inference of the stdlib all high-durability, and not need to revalidate it in depth on incremental changes to user code.</p>
+<p>This maybe should go hand-in-hand with always warning or erroring if a user module <em>does</em> shadow a stdlib module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @carljm on 2024-08-30 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-01 11:19</div>
+            <div class="timeline-body"><p>So, the issue here is that the high durability of stdlib files doesn't yield its full potential because the type inference result of any module with imports depends on <code>resolve_module</code> which always has durability low (because we first start resolving local paths)?</p>
+<p>One alternative is to give <code>File::status</code> a higher durability. That's the only field <code>resolve_module</code> depends on.
+Another alternative is to move the module resolver out of salsa and model <code>Module</code>s as inputs. But that has obvious downsides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-01 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>So, the issue here is that the high durability of stdlib files doesn't yield its full potential because the type inference result of any module with imports depends on <code>resolve_module</code> which always has durability low (because we first start resolving local paths)?</p>
+</blockquote>
+<p>Yes, that's right.</p>
+<blockquote>
+<p>One alternative is to give <code>File::status</code> a higher durability. That's the only field <code>resolve_module</code> depends on.</p>
+</blockquote>
+<p>Wouldn't that mean that adding or removing a file in your workspace root would require re-checking all high-durability queries? I guess maybe that could be fine, assuming adding or removing files doesn't happen that often.</p>
+<p>The solution I was proposing was that we would instead have imports from the stdlib not even consider search paths other than the stdlib. Which is technically wrong (since shadowing is possible), but practically right if we consider shadowing the stdlib itself to be an error (which I think pyright at least does.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 07:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Wouldn't that mean that adding or removing a file in your workspace root would require re-checking all high-durability queries? I guess maybe that could be fine, assuming adding or removing files doesn't happen that often.</p>
+</blockquote>
+<p>Yes, it doesn't solve the problem entirely, but it might be a desired change anyway because it avoids a deep-verify for all third-party code whenever a first-party module is changed.</p>
+<blockquote>
+<p>The solution I was proposing was that we would instead have imports from the stdlib not even consider search paths other than the stdlib. Which is technically wrong (since shadowing is possible), but practically right if we consider shadowing the stdlib itself to be an error (which I think pyright at least does.)</p>
+</blockquote>
+<p>That makes sense. I think we may want to do both where what I suggested reduces deep-verification for third-party code and your suggestion avoids deep-verification for stdlib modules. The only thing we need to be mindful of is that forbidding stdlib modules altogether may be overly-strict for some projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] ensure that type inference on a high-durability file is also high durability" to "ensure that type inference on a high-durability file is also high durability" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

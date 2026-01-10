@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>type inference inside of conditionally defined functions appears incorrect - astral-sh/ty #259</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>type inference inside of conditionally defined functions appears incorrect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/259">#259</a>
+        opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a>
+        on 2025-05-08 02:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-05-08 02:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>Callable[..., Any] &amp; ~None</code> becomes <code>Callable[..., Any] | None</code> inside a function defined within the branch that narrowed to include <code>~None</code></p>
+<p>Minimal repro:</p>
+<p>https://play.ty.dev/ba37c54e-a0ea-4382-87fb-e2f4945868bf</p>
+<p>real world code:</p>
+<p>https://github.com/mikeshardmind/async-utils/blob/7bf094f063a727901539598811d3fd907ccf5342/src/async_utils/task_cache.py#L153-L158</p>
+<p>relevant errors on that real world code with reveal types added:</p>
+<pre><code>info: revealed-type: Revealed type
+   --&gt; src\async_utils\task_cache.py:243:9
+    |
+241 |     else:
+242 |         from typing import reveal_type
+243 |         reveal_type(cache_transform)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `((...) -&gt; tuple[@Todo, dict[str, Any]]) &amp; ~None`
+244 |         def key_func(args: tuple[t.Any, ...], kwds: dict[t.Any, t.Any], /) -&gt; Hashable:
+245 |             reveal_type(cache_transform)
+    |
+
+info: revealed-type: Revealed type
+   --&gt; src\async_utils\task_cache.py:245:13
+    |
+243 |         reveal_type(cache_transform)
+244 |         def key_func(args: tuple[t.Any, ...], kwds: dict[t.Any, t.Any], /) -&gt; Hashable:
+245 |             reveal_type(cache_transform)
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `((...) -&gt; tuple[@Todo, dict[str, Any]]) | None`
+246 |             return make_key(*cache_transform(args, kwds))
+    |
+
+error: lint:call-non-callable: Object of type `None` is not callable
+   --&gt; src\async_utils\task_cache.py:246:30
+    |
+244 |         def key_func(args: tuple[t.Any, ...], kwds: dict[t.Any, t.Any], /) -&gt; Hashable:
+245 |             reveal_type(cache_transform)
+246 |             return make_key(*cache_transform(args, kwds))
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+247 |
+248 |     def wrapper[**P, R](coro: TaskCoroFunc[P, R], /) -&gt; TaskFunc[P, R]:
+    |
+info: `lint:call-non-callable` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>0.0.0-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 04:41</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, narrowing of nonlocal references inside nested functions is an area where we know we need to improve. It's tricky to find the right balance of useful vs sound, since functions are delayed-execution and the name could potentially be reassigned later in the scope (though of course in this case it isn't, and we should be able to see that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-05-08 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 06:39</div>
+            <div class="timeline-body"><p>Just adding a cross-reference to https://github.com/astral-sh/ty/issues/210, which is a related issue (in a non-narrowing setting)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-25 07:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

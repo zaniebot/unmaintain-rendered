@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>map causes &quot;Argument to function `__new__` is incorrect&quot; - astral-sh/ty #771</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>map causes &quot;Argument to function `__new__` is incorrect&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/771">#771</a>
+        opened by <a href="https://github.com/behrenhoff">@behrenhoff</a>
+        on 2025-07-07 09:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/behrenhoff">@behrenhoff</a> on 2025-07-07 09:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider this code:</p>
+<pre><code class="language-py">import re
+
+words = &quot;hello;foo.bar&quot;.split(&quot;;&quot;)
+# words = [&quot;hello&quot;, &quot;foo.bar&quot;]  # no error
+
+re_string = &quot;|&quot;.join(map(re.escape, words))
+# re_string = &quot;|&quot;.join(re.escape(t) for t in words)  # no error
+
+print(re_string)
+</code></pre>
+<p>In the <code>map</code> variant, this causes the error while the variant with the for-loop in join (commented out) passes the checks.</p>
+<p>When you replace the <code>split</code> with <code>words = [&quot;hello&quot;, &quot;foo.bar&quot;]</code>, the error is gone as well, so it also seems to be related to <code>str.split</code> in some way.</p>
+<p>So my guess is something with LiteralString / AnyStr compatibility inside map is not working correctly.</p>
+<p>The error message is:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `__new__` is incorrect
+ --&gt; /tmp/ty.py:6:26
+  |
+4 | # words = [&quot;hello&quot;, &quot;foo.bar&quot;]  # no error
+5 |
+6 | re_string = &quot;|&quot;.join(map(re.escape, words))
+  |                          ^^^^^^^^^ Expected `(LiteralString, /) -&gt; Unknown`, found `def escape(pattern: AnyStr) -&gt; AnyStr`
+7 | # re_string = &quot;|&quot;.join(re.escape(t) for t in words)  # no error
+  |
+info: Matching overload defined here
+    --&gt; stdlib/builtins.pyi:1602:13
+     |
+1600 |     else:
+1601 |         @overload
+1602 |         def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /) -&gt; Self: ...
+     |             ^^^^^^^      ------------------------- Parameter declared here
+1603 |         @overload
+1604 |         def __new__(cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self: ...
+     |
+info: Non-matching overloads for function `__new__`:
+info:   (cls, func: (_T1, _T2, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, _T4, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], /) -&gt; Self
+info:   (cls, func: (_T1, _T2, _T3, _T4, _T5, /) -&gt; _S, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], iter5: Iterable[_T5], /) -&gt; Self
+info:   (cls, func: (...) -&gt; _S, iterable: Iterable[Any], iter2: Iterable[Any], iter3: Iterable[Any], iter4: Iterable[Any], iter5: Iterable[Any], iter6: Iterable[Any], /, *iterables: Iterable[Any]) -&gt; Self
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Note: when I tried to find similar bug reports I found https://github.com/astral-sh/ty/issues/358 - but considering that was closed in May, it might just be a related problem.</p>
+<p>python --version
+Python 3.12.3</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-07-07 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 13:49</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<blockquote>
+<p>In the <code>map</code> variant, this causes the error while the variant with the for-loop in join (commented out) passes the checks.</p>
+<p>When you replace the <code>split</code> with <code>words = [&quot;hello&quot;, &quot;foo.bar&quot;]</code>, the error is gone as well, so it also seems to be related to <code>str.split</code> in some way.</p>
+</blockquote>
+<p>No, I think this is related to the fact that we still infer <code>list[Unknown]</code> for list literals, whereas the type of <code>&quot;hello;foo.bar&quot;.split(&quot;;&quot;)</code> is <code>list[LiteralString]</code>.</p>
+<p>The core issue here seems to be that we do not support passing generic functions to another generic function? A smaller, self-contained example would be:</p>
+<pre><code class="language-py">from typing import Callable
+
+def accepts_callable[T, S](func: Callable[[T], S], arg: T, /) -&gt; S:
+    return func(arg)
+
+def int_identity(x: int) -&gt; int:
+    return x
+
+accepts_callable(int_identity, 0)  # fine
+
+def generic_identity[T](x: T) -&gt; T:
+    return x
+
+accepts_callable(generic_identity, 0)  # Expected `(Literal[0], /) -&gt; Unknown`, found `def generic_identity(x: T) -&gt; T`
+</code></pre>
+<p>https://play.ty.dev/7b627915-028a-442b-a5e1-12b0bd7501de</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-18 23:13</div>
+            <div class="timeline-body"><p>I suspect this is related to #95</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:25</div>
+            <div class="timeline-body"><p>Neither the original snippet nor @sharkdp's repro cause us to emit any diagnostics on the current <code>main</code> branch. Should we close this now, or is it worth adding one/both as a regression test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-06 18:49</div>
+            <div class="timeline-body"><p>I don't think it's necessary to spend time adding regression tests specifically for this symptom. I suspect the ecosystem report on a breakage here would be quite significant, and that we already have regression tests for the underlying cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-06 18:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:16 UTC
+    </footer>
+</body>
+</html>

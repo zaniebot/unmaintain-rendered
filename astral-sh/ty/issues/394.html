@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support forward references in argument-position type expressions in stubs - astral-sh/ty #394</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support forward references in argument-position type expressions in stubs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/394">#394</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-05-14 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-14 18:34</div>
+            <div class="timeline-body"><p>The following <code>.pyi</code> snippet is reported as <code>error[unresolved-reference]: Name </code>_WarnLog<code> used when not defined</code>:</p>
+<pre><code class="language-pyi">_W_co = TypeVar(&quot;_W_co&quot;, bound=_WarnLog | None, default=_WarnLog | None, covariant=True)
+# &lt;snip&gt;
+
+_WarnLog: TypeAlias = list[warnings.WarningMessage]
+</code></pre>
+<p>source:
+https://github.com/numpy/numtype/blob/eee4a2cac6ce3401308df497d868a4ba3be975cb/src/numpy-stubs/testing/_private/utils.pyi#L97-L102</p>
+<p>Forward references like these should be allowed in <code>.pyi</code> stubs, and there should be no need for a <code>from __future__ import annotations</code> or manual stringification or something</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 18:41</div>
+            <div class="timeline-body"><p>Hmm, yes, thanks for the report! I guess any parameter that we special case as being a type expression should be treated as a deferred reference in a stub. (Or maybe it's simpler to just treat <em>all</em> name references in stubs as deferred, because there really aren't use cases for non-type-expression name references in stubs at all?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">stubs</span> added by @carljm on 2025-05-14 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-14 18:43</div>
+            <div class="timeline-body"><blockquote>
+<p>because there really aren't use cases for non-type-expression name references in stubs at all?</p>
+</blockquote>
+<p>I'm not sure that's <em>totally</em> accurate. Aliases like this are not <em>type</em> aliases (the r.h.s. should not be interpreted as a type expression) -- they're just plain aliases: https://github.com/python/typeshed/blob/590f48306c83be5b84b24019fb966341b0fda8aa/stdlib/builtins.pyi#L2008-L2011</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-14 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>because there really aren't use cases for non-type-expression name references in stubs at all?</p>
+</blockquote>
+<p>I type-tests my stubs using <code>.pyi</code> &quot;tests&quot;, usually containing <code>assert_type</code> for acceptance tests and <code># type: ignore[...]</code> for rejection tests. Allowing non-type expressions there can be useful for testing things like inference of function return types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-14 18:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure that's <em>totally</em> accurate. Aliases like this are not <em>type</em> aliases (the r.h.s. should not be interpreted as a type expression)</p>
+</blockquote>
+<p>Fair point. It's something that at least mypy and pyright have no problem with, so I assumed that this behaviour would be in the typing spec in one way or another. But perhaps that's not the case here, after all 🤔 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 19:55</div>
+            <div class="timeline-body"><p>I don't think Alex is disagreeing that we should fix the issue in the OP here; just disagreeing with my musing that maybe <em>all</em> names in stubs should be considered forward references.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support for forward references in stubs" to "support forward references in argument-position type expressions in stubs" by @carljm on 2025-05-30 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 18:33</div>
+            <div class="timeline-body"><p>Following https://github.com/astral-sh/ruff/pull/21401 and https://github.com/astral-sh/ruff/pull/21456, we now support stub-file forward references in class bases, on the right-hand side of explicitly declared type aliases, and in all locations where a type expression is expected (including <code>TypeVar</code> bounds/constraints, etc.). If there are more places where we find that stub authors are expecting forward references to work and they currently don't, then we can consider changing how we treat stub files so that <em>all</em> name lookup in stub files is deferred. For now, however, let's see if the steps we've currently taken are sufficient.</p>
+<p>Further bug reports are welcome, @jorenham, if you find anywhere where we're still emitting clear false positives on stub files!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-29 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-11-29 21:51</div>
+            <div class="timeline-body"><blockquote>
+<p>we now support stub-file forward references in class bases, on the right-hand side of explicitly declared type aliases,</p>
+</blockquote>
+<p>Great, thanks!</p>
+<blockquote>
+<p>Further bug reports are welcome, <a href="https://github.com/jorenham">@jorenham</a>, if you find anywhere where we're still emitting clear false positives on stub files!</p>
+</blockquote>
+<p>Currently, if I run <code>uvx ty check scipy-stubs</code> in the root of <a href="https://github.com/scipy/scipy-stubs/">scipy-stubs</a> (just the current master branch), there are 674 diagnostics. At first glance, most of them appear to be false positives related to generic type aliases and type parameter bounds (<code>invalid-type-arguments</code>).</p>
+<details>
+<summary>Here's the full output, but it's probably easier to clone and run it yourself.</summary>
+
+<pre><code>scipy-stubs/_lib/_bunch.pyi:6:22: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+scipy-stubs/_lib/_ccallback.pyi:60:28: error[invalid-argument-type] `@Todo` is not a valid argument to `Protocol`
+scipy-stubs/_lib/_ccallback.pyi:75:46: error[invalid-argument-type] `@Todo` is not a valid argument to `Protocol`
+scipy-stubs/_lib/_ccallback.pyi:139:9: error[invalid-method-override] Invalid override of method `__getitem__`: Definition is incompatible with `Sequence.__getitem__`
+scipy-stubs/differentiate/_differentiate.pyi:70:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/differentiate/_differentiate.pyi:75:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:76:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:85:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/differentiate/_differentiate.pyi:90:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:91:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:100:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/differentiate/_differentiate.pyi:105:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:106:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:115:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/differentiate/_differentiate.pyi:120:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:121:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:130:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/differentiate/_differentiate.pyi:135:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:136:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:150:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:151:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:163:5: error[invalid-parameter-default] Default value of type `Literal[10]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/differentiate/_differentiate.pyi:164:5: error[invalid-parameter-default] Default value of type `Literal[8]` is not assignable to annotated parameter type `_IntT | CanInt[_IntT] | CanIndex[_IntT]`
+scipy-stubs/integrate/_bvp.pyi:22:38: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:22:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:22:82: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:22:106: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:88:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:95:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:119:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:125:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:126:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:127:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:128:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:131:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:131:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:136:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:137:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:138:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:150:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:168:18: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:169:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:170:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:171:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:177:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:180:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:181:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:182:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:183:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:189:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:194:18: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:195:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:200:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:201:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:209:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:210:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:215:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_bvp.pyi:216:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:27:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/integrate/_ivp/ivp.pyi:27:75: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/integrate/_ivp/ivp.pyi:72:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:72:67: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:73:44: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:73:72: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:76:33: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:94:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:107:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:121:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:135:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:149:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:162:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:176:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ivp/ivp.pyi:190:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_ode.pyi:45:11: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+scipy-stubs/integrate/_ode.pyi:92:45: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+scipy-stubs/integrate/_odepack_py.pyi:40:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:44:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:65:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:69:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:91:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:95:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:117:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:121:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:143:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:147:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:168:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:172:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:194:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:198:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:220:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_odepack_py.pyi:224:25: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/integrate/_rules/_base.pyi:22:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_rules/_base.pyi:25:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/integrate/_rules/_base.pyi:51:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/__init__.pyi:19:60: warning[deprecated] The class `interp2d` is deprecated: `interp2d` has been removed in SciPy 1.14.0.
+
+For legacy code, nearly bug-for-bug compatible replacements are
+`RectBivariateSpline` on regular grids, and `bisplrep`/`bisplev` for
+scattered 2D data.
+
+In new code, for regular grids use `RegularGridInterpolator` instead.
+For scattered data, prefer `LinearNDInterpolator` or
+`CloughTocher2DInterpolator`.
+
+For more details see
+https://scipy.github.io/devdocs/tutorial/interpolate/interp_transition_guide.html
+
+scipy-stubs/interpolate/_cubic.pyi:138:21: error[invalid-type-arguments] Type `float64` is not assignable to upper bound `int | integer[Any]` of type variable `_AxisT`
+scipy-stubs/interpolate/_cubic.pyi:138:33: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/interpolate/_cubic.pyi:142:21: error[invalid-type-arguments] Type `complex128` is not assignable to upper bound `int | integer[Any]` of type variable `_AxisT`
+scipy-stubs/interpolate/_cubic.pyi:142:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/interpolate/_cubic.pyi:146:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/interpolate/_ndbspline.pyi:72:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/_ndbspline.pyi:77:88: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/_rgi.pyi:40:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/_rgi.pyi:53:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/_rgi.pyi:66:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/interpolate/interpolate.pyi:52:29: warning[deprecated] The class `interp2d` is deprecated: `interp2d` has been removed in SciPy 1.14.0.
+
+For legacy code, nearly bug-for-bug compatible replacements are
+`RectBivariateSpline` on regular grids, and `bisplrep`/`bisplev` for
+scattered 2D data.
+
+In new code, for regular grids use `RegularGridInterpolator` instead.
+For scattered data, prefer `LinearNDInterpolator` or
+`CloughTocher2DInterpolator`.
+
+For more details see
+https://scipy.github.io/devdocs/tutorial/interpolate/interp_transition_guide.html
+
+scipy-stubs/io/arff/arffread.pyi:16:22: warning[deprecated] The class `ArffError` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/io/matlab/mio5.pyi:24:22: warning[deprecated] The class `MatlabObject` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/linalg/_decomp_svd.pyi:39:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/linalg/_decomp_svd.pyi:48:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/linalg/_decomp_svd.pyi:57:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/linalg/_decomp_svd.pyi:66:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/linalg/_matfuncs.pyi:219:45: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/linalg/_matfuncs.pyi:221:45: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/linalg/_matfuncs.pyi:223:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/linalg/_matfuncs.pyi:225:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/linalg/_matfuncs.pyi:227:54: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/linalg/_matfuncs.pyi:229:54: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_filters.pyi:583:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:595:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:607:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:619:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:631:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:643:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:725:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:737:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:749:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:761:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:773:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_filters.pyi:785:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+scipy-stubs/ndimage/_measurements.pyi:244:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:248:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:252:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:256:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:258:105: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:262:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:264:120: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:268:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:272:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/ndimage/_measurements.pyi:278:35: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/odr/_odrpack.pyi:57:13: error[unresolved-reference] Name `OdrError` used when not defined
+scipy-stubs/odr/_odrpack.pyi:58:12: error[unresolved-reference] Name `OdrStop` used when not defined
+scipy-stubs/odr/models.pyi:13:34: warning[deprecated] The class `Model` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/odr/odrpack.pyi:66:13: warning[deprecated] The class `OdrError` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/odr/odrpack.pyi:67:12: warning[deprecated] The class `OdrStop` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/optimize/_constraints.pyi:56:22: error[invalid-type-arguments] Type `tuple[Any, ...]` is not assignable to upper bound `AtLeast1D` of type variable `_ShapeT_co@Bounds`
+scipy-stubs/optimize/_differentiable_functions.pyi:35:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:36:32: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:37:34: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:60:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:66:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:72:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:91:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:94:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:95:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:105:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:108:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:109:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:154:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:156:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:157:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:168:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:170:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_differentiable_functions.pyi:171:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_minpack_py.pyi:24:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:25:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:26:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:27:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:53:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:290:28: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:290:55: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:299:31: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:299:62: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:308:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:317:44: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:326:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:335:44: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:344:41: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:353:44: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:362:41: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_minpack_py.pyi:371:44: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+scipy-stubs/optimize/_nonlin.pyi:160:9: error[invalid-method-override] Invalid override of method `setup`: Definition is incompatible with `Jacobian.setup`
+scipy-stubs/optimize/_nonlin.pyi:162:9: error[invalid-method-override] Invalid override of method `update`: Definition is incompatible with `Jacobian.update`
+scipy-stubs/optimize/_nonlin.pyi:192:9: error[invalid-method-override] Invalid override of method `setup`: Definition is incompatible with `GenericBroyden.setup`
+scipy-stubs/optimize/_nonlin.pyi:194:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:211:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:219:9: error[invalid-method-override] Invalid override of method `setup`: Definition is incompatible with `GenericBroyden.setup`
+scipy-stubs/optimize/_nonlin.pyi:221:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:230:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:242:9: error[invalid-method-override] Invalid override of method `setup`: Definition is incompatible with `GenericBroyden.setup`
+scipy-stubs/optimize/_nonlin.pyi:244:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:271:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `Jacobian.solve`
+scipy-stubs/optimize/_nonlin.pyi:273:9: error[invalid-method-override] Invalid override of method `update`: Definition is incompatible with `Jacobian.update`
+scipy-stubs/optimize/_nonlin.pyi:275:9: error[invalid-method-override] Invalid override of method `setup`: Definition is incompatible with `Jacobian.setup`
+scipy-stubs/optimize/_optimize.pyi:45:34: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:45:58: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:46:37: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:92:27: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:97:49: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:106:28: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:156:28: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:231:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:250:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:270:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:290:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:312:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:329:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:347:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:365:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:383:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:384:29: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:385:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:401:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:402:29: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:403:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:420:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:421:29: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:422:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:439:21: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:440:29: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/optimize/_optimize.pyi:441:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_optimize.pyi:650:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/optimize/_trustregion_exact.pyi:63:9: error[invalid-method-override] Invalid override of method `solve`: Definition is incompatible with `BaseQuadraticSubproblem.solve`
+scipy-stubs/optimize/minpack.pyi:40:6: warning[deprecated] The class `OptimizeResult` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/_filter_design.pyi:204:99: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:215:66: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:217:66: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:219:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:219:95: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:223:53: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:227:93: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:229:93: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:233:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:233:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:238:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:238:40: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:238:60: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:243:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:243:40: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:248:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:248:40: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_filter_design.pyi:253:24: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:258:24: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:263:24: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:268:24: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:277:23: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/signal/_filter_design.pyi:277:57: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:281:39: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+scipy-stubs/signal/_filter_design.pyi:281:90: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_filter_design.pyi:425:23: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 3
+scipy-stubs/signal/_lti_conversion.pyi:40:16: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_lti_conversion.pyi:51:64: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_lti_conversion.pyi:59:16: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_lti_conversion.pyi:65:77: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_lti_conversion.pyi:73:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1056:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1065:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1074:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1083:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1092:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1101:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1110:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1119:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1128:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1137:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1146:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/_signaltools.pyi:1155:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/signal/bsplines.pyi:4:21: warning[deprecated] The function `sepfir2d` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/filter_design.pyi:82:12: warning[deprecated] The function `freqz_sos` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/lti_conversion.pyi:4:28: warning[deprecated] The function `normalize` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/lti_conversion.pyi:4:39: warning[deprecated] The function `tf2zpk` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/lti_conversion.pyi:4:47: warning[deprecated] The function `zpk2tf` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:28: warning[deprecated] The function `freqs` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:35: warning[deprecated] The function `freqs_zpk` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:46: warning[deprecated] The function `freqz` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:53: warning[deprecated] The function `freqz_zpk` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:64: warning[deprecated] The function `normalize` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:75: warning[deprecated] The function `tf2zpk` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:5:83: warning[deprecated] The function `zpk2tf` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:29: warning[deprecated] The function `abcd_normalize` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:45: warning[deprecated] The function `cont2discrete` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:60: warning[deprecated] The function `ss2tf` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:67: warning[deprecated] The function `ss2zpk` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:75: warning[deprecated] The function `tf2ss` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/ltisys.pyi:6:82: warning[deprecated] The function `zpk2ss` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/signaltools.pyi:4:28: warning[deprecated] The function `cheby1` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/signaltools.pyi:5:32: warning[deprecated] The function `firwin` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/signaltools.pyi:6:21: warning[deprecated] The class `dlti` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/signaltools.pyi:7:30: warning[deprecated] The function `get_window` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/signal/spectral.pyi:4:30: warning[deprecated] The function `get_window` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/sparse/_bsr.pyi:31:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_bsr.pyi:31:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_bsr.pyi:92:48: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_bsr.pyi:283:48: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_coo.pyi:149:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_coo.pyi:590:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:32:33: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:32:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:34:31: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:34:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:116:45: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_csr.pyi:428:9: error[invalid-method-override] Invalid override of method `transpose`: Definition is incompatible with `_spbase.transpose`
+scipy-stubs/sparse/_dia.pyi:78:48: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_dia.pyi:250:48: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/_dok.pyi:105:9: error[invalid-method-override] Invalid override of method `get`: Definition is incompatible with `dict.get`
+scipy-stubs/sparse/_dok.pyi:109:9: error[invalid-method-override] Invalid override of method `__or__`: Definition is incompatible with `dict.__or__`
+scipy-stubs/sparse/_dok.pyi:111:9: error[invalid-method-override] Invalid override of method `__ror__`: Definition is incompatible with `dict.__ror__`
+scipy-stubs/sparse/_dok.pyi:113:9: error[invalid-method-override] Invalid override of method `__ior__`: Definition is incompatible with `dict.__ior__`
+scipy-stubs/sparse/_dok.pyi:115:9: error[invalid-method-override] Invalid override of method `update`: Definition is incompatible with `MutableMapping.update`
+scipy-stubs/sparse/_dok.pyi:119:9: error[invalid-method-override] Invalid override of method `count_nonzero`: Definition is incompatible with `_spbase.count_nonzero`
+scipy-stubs/sparse/_dok.pyi:592:9: error[invalid-method-override] Invalid override of method `fromkeys`: Definition is incompatible with `_dok_base.fromkeys`
+scipy-stubs/sparse/_dok.pyi:723:9: error[invalid-method-override] Invalid override of method `__getitem__`: Definition is incompatible with `IndexMixin.__getitem__`
+scipy-stubs/sparse/_dok.pyi:742:9: error[invalid-method-override] Invalid override of method `fromkeys`: Definition is incompatible with `_dok_base.fromkeys`
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:34:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:36:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:37:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:49:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:51:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:52:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:64:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:66:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:67:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:80:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:82:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:83:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:95:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:97:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:98:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:111:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:113:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:114:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:126:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:128:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_eigen/lobpcg/lobpcg.pyi:129:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_expm_multiply.pyi:21:41: error[invalid-type-arguments] Type `_ShapeT@_SparseOrDense` is not assignable to upper bound `AtLeast1D` of type variable `_ShapeT_co@sparray`
+scipy-stubs/sparse/linalg/_interface.pyi:498:9: error[invalid-method-override] Invalid override of method `_adjoint`: Definition is incompatible with `MatrixLinearOperator._adjoint`
+scipy-stubs/sparse/linalg/_isolve/_gcrotmk.pyi:42:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/_gcrotmk.pyi:59:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:42:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:54:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:68:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:80:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:94:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:106:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:119:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:148:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:176:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:192:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/iterative.pyi:205:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/lgmres.pyi:39:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/lgmres.pyi:56:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/tfqmr.pyi:35:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/sparse/linalg/_isolve/tfqmr.pyi:48:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+scipy-stubs/special/__init__.pyi:10:5: warning[deprecated] The function `clpmn` is deprecated: This function is deprecated as of SciPy 1.15.0 and will be removed in SciPy 1.17.0. Please use `scipy.special.assoc_legendre_p_all` instead.
+scipy-stubs/special/__init__.pyi:37:5: warning[deprecated] The function `lpmn` is deprecated: This function is deprecated as of SciPy 1.15.0 and will be removed in SciPy 1.17.0. Please use `scipy.special.assoc_legendre_p_all` instead.
+scipy-stubs/special/__init__.pyi:38:5: warning[deprecated] The function `lpn` is deprecated: This function is deprecated as of SciPy 1.15.0 and will be removed in SciPy 1.17.0. Please use `scipy.special.legendre_p_all` instead.
+scipy-stubs/special/_orthogonal.pyi:86:9: error[invalid-method-override] Invalid override of method `__call__`: Definition is incompatible with `poly1d.__call__`
+scipy-stubs/special/_ufuncs.pyi:762:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:764:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:766:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:768:41: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:770:48: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:788:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:790:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:792:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:794:42: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:796:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:814:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:816:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:818:47: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:836:57: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:838:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:840:46: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:842:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:844:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:846:48: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:848:47: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1014:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1016:62: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1018:61: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1045:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1047:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1049:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1051:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1053:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1077:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1089:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1101:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1145:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1147:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1149:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1165:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1167:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1169:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1171:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1200:61: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1202:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1204:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1206:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1208:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1210:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1212:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1214:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1238:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1250:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1262:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1331:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1333:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1335:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1337:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1339:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1341:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1343:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1345:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1380:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1392:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1405:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1417:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1430:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1622:75: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1625:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1629:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1633:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1637:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1641:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1645:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1665:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1669:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1673:64: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1677:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1681:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1685:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1689:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1693:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1697:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1701:76: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1705:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1709:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1729:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1733:72: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1742:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1752:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1762:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1767:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1771:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1775:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1779:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1783:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1787:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1853:87: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1863:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1874:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1885:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1896:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1907:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1918:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1929:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1940:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1974:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1986:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:1998:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2010:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2039:82: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2043:84: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2047:79: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2057:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2068:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2079:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2090:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2101:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2112:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2123:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2134:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2145:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2156:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2167:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2178:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2206:82: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2210:90: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2220:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2231:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2242:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2253:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2264:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2275:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2286:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2297:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2308:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2319:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2330:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/_ufuncs.pyi:2341:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+scipy-stubs/special/orthogonal.pyi:120:11: warning[deprecated] The function `roots_legendre` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:121:11: warning[deprecated] The function `roots_chebyt` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:122:11: warning[deprecated] The function `roots_chebyu` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:123:11: warning[deprecated] The function `roots_chebyc` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:124:11: warning[deprecated] The function `roots_chebys` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:125:11: warning[deprecated] The function `roots_jacobi` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:126:11: warning[deprecated] The function `roots_laguerre` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:127:12: warning[deprecated] The function `roots_genlaguerre` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:128:11: warning[deprecated] The function `roots_hermite` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:129:12: warning[deprecated] The function `roots_hermitenorm` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:130:12: warning[deprecated] The function `roots_gegenbauer` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:131:12: warning[deprecated] The function `roots_sh_legendre` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:132:12: warning[deprecated] The function `roots_sh_chebyt` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:133:12: warning[deprecated] The function `roots_sh_chebyu` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/special/orthogonal.pyi:134:12: warning[deprecated] The function `roots_sh_jacobi` is deprecated: will be removed in SciPy v2.0.0
+scipy-stubs/stats/__init__.pyi:99:5: warning[deprecated] The function `find_repeats` is deprecated: `scipy.stats.find_repeats` is deprecated as of SciPy 1.15.0 and will be removed in SciPy 1.17.0. Please use `numpy.unique`/`numpy.unique_counts` instead.
+scipy-stubs/stats/_distn_infrastructure.pyi:694:9: error[invalid-method-override] Invalid override of method `rvs`: Definition is incompatible with `rv_generic.rvs`
+scipy-stubs/stats/_distn_infrastructure.pyi:884:9: error[invalid-method-override] Invalid override of method `rvs`: Definition is incompatible with `rv_generic.rvs`
+scipy-stubs/stats/_distn_infrastructure.pyi:922:9: error[invalid-method-override] Invalid override of method `generic_moment`: Definition is incompatible with `_rv_mixin.generic_moment`
+scipy-stubs/stats/_distn_infrastructure.pyi:977:9: error[invalid-method-override] Invalid override of method `stats`: Definition is incompatible with `rv_generic.stats`
+scipy-stubs/stats/_distn_infrastructure.pyi:988:9: error[invalid-method-override] Invalid override of method `entropy`: Definition is incompatible with `rv_generic.entropy`
+scipy-stubs/stats/_distn_infrastructure.pyi:995:9: error[invalid-method-override] Invalid override of method `moment`: Definition is incompatible with `rv_generic.moment`
+scipy-stubs/stats/_distn_infrastructure.pyi:1002:9: error[invalid-method-override] Invalid override of method `median`: Definition is incompatible with `rv_generic.median`
+scipy-stubs/stats/_distn_infrastructure.pyi:1009:9: error[invalid-method-override] Invalid override of method `mean`: Definition is incompatible with `rv_generic.mean`
+scipy-stubs/stats/_distn_infrastructure.pyi:1015:9: error[invalid-method-override] Invalid override of method `var`: Definition is incompatible with `rv_generic.var`
+scipy-stubs/stats/_distn_infrastructure.pyi:1022:9: error[invalid-method-override] Invalid override of method `std`: Definition is incompatible with `rv_generic.std`
+scipy-stubs/stats/_distn_infrastructure.pyi:1029:9: error[invalid-method-override] Invalid override of method `interval`: Definition is incompatible with `rv_generic.interval`
+scipy-stubs/stats/_distn_infrastructure.pyi:1038:9: error[invalid-method-override] Invalid override of method `support`: Definition is incompatible with `rv_generic.support`
+scipy-stubs/stats/_distn_infrastructure.pyi:1047:9: error[invalid-method-override] Invalid override of method `__call__`: Definition is incompatible with `rv_continuous.__call__`
+scipy-stubs/stats/_distn_infrastructure.pyi:1056:9: error[invalid-method-override] Invalid override of method `freeze`: Definition is incompatible with `rv_continuous.freeze`
+scipy-stubs/stats/_distn_infrastructure.pyi:1074:9: error[invalid-method-override] Invalid override of method `pdf`: Definition is incompatible with `rv_continuous.pdf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1085:9: error[invalid-method-override] Invalid override of method `logpdf`: Definition is incompatible with `rv_continuous.logpdf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1096:9: error[invalid-method-override] Invalid override of method `cdf`: Definition is incompatible with `rv_continuous.cdf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1107:9: error[invalid-method-override] Invalid override of method `logcdf`: Definition is incompatible with `rv_continuous.logcdf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1118:9: error[invalid-method-override] Invalid override of method `sf`: Definition is incompatible with `rv_continuous.sf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1129:9: error[invalid-method-override] Invalid override of method `logsf`: Definition is incompatible with `rv_continuous.logsf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1140:9: error[invalid-method-override] Invalid override of method `ppf`: Definition is incompatible with `rv_continuous.ppf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1151:9: error[invalid-method-override] Invalid override of method `isf`: Definition is incompatible with `rv_continuous.isf`
+scipy-stubs/stats/_distn_infrastructure.pyi:1155:9: error[invalid-method-override] Invalid override of method `rvs`: Definition is incompatible with `rv_continuous.rvs`
+scipy-stubs/stats/_distribution_infrastructure.pyi:49:42: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:50:44: error[invalid-type-arguments] Type `AtMost1D` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:51:42: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:52:44: error[invalid-type-arguments] Type `AtMost2D` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:53:42: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:54:44: error[invalid-type-arguments] Type `AtMost3D` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:148:44: error[invalid-type-arguments] Type `_ShapeT1@__get__` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@_ParamField`
+scipy-stubs/stats/_distribution_infrastructure.pyi:185:9: error[invalid-method-override] Invalid override of method `get_numerical_endpoints`: Definition is incompatible with `_Domain.get_numerical_endpoints`
+scipy-stubs/stats/_distribution_infrastructure.pyi:189:9: error[invalid-method-override] Invalid override of method `contains`: Definition is incompatible with `_Domain.contains`
+scipy-stubs/stats/_distribution_infrastructure.pyi:193:9: error[invalid-method-override] Invalid override of method `draw`: Definition is incompatible with `_Domain.draw`
+scipy-stubs/stats/_distribution_infrastructure.pyi:250:9: error[invalid-method-override] Invalid override of method `validate`: Definition is incompatible with `_Parameter.validate`
+scipy-stubs/stats/_distribution_infrastructure.pyi:279:48: error[invalid-type-arguments] Type `tuple[int]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:280:48: error[invalid-type-arguments] Type `tuple[int, int]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:281:48: error[invalid-type-arguments] Type `tuple[int, int, int]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:282:49: error[invalid-type-arguments] Type `AtLeast1D` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:319:46: error[invalid-type-arguments] Type `_ShapeT1@support` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:326:38: error[invalid-type-arguments] Type `_ShapeT1@median` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:334:38: error[invalid-type-arguments] Type `_ShapeT1@mode` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:352:38: error[invalid-type-arguments] Type `_ShapeT1@sample` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:361:38: error[invalid-type-arguments] Type `_ShapeT1@sample` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:378:38: error[invalid-type-arguments] Type `_ShapeT1@mean` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:386:38: error[invalid-type-arguments] Type `_ShapeT1@variance` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:394:38: error[invalid-type-arguments] Type `_ShapeT1@standard_deviation` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:402:38: error[invalid-type-arguments] Type `_ShapeT1@skewness` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:412:38: error[invalid-type-arguments] Type `_ShapeT1@kurtosis` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:440:38: error[invalid-type-arguments] Type `_ShapeT1@moment` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:449:38: error[invalid-type-arguments] Type `_ShapeT1@moment` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:453:38: error[invalid-type-arguments] Type `_ShapeT1@moment` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:462:38: error[invalid-type-arguments] Type `_ShapeT1@moment` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:471:38: error[invalid-type-arguments] Type `_ShapeT1@moment` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:483:46: error[invalid-type-arguments] Type `_ShapeT1@entropy` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:490:38: error[invalid-type-arguments] Type `_ShapeT1@logentropy` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:498:38: error[invalid-type-arguments] Type `_ShapeT1@pdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:532:38: error[invalid-type-arguments] Type `_ShapeT1@logpdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:566:38: error[invalid-type-arguments] Type `_ShapeT1@pmf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:600:38: error[invalid-type-arguments] Type `_ShapeT1@logpmf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:635:38: error[invalid-type-arguments] Type `_ShapeT1@cdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:725:38: error[invalid-type-arguments] Type `_ShapeT1@logcdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:829:38: error[invalid-type-arguments] Type `_ShapeT1@ccdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:921:38: error[invalid-type-arguments] Type `_ShapeT1@logccdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1025:38: error[invalid-type-arguments] Type `_ShapeT1@icdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1058:38: error[invalid-type-arguments] Type `_ShapeT1@ilogcdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1092:38: error[invalid-type-arguments] Type `_ShapeT1@iccdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1125:38: error[invalid-type-arguments] Type `_ShapeT1@ilogccdf` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT0_co@_BaseDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1204:38: error[invalid-type-arguments] Type `Self@__neg__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1205:39: error[invalid-type-arguments] Type `Self@__abs__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1209:66: error[invalid-type-arguments] Type `Self@__add__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1211:50: error[invalid-type-arguments] Type `Self@__add__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1213:54: error[invalid-type-arguments] Type `Self@__add__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1215:85: error[invalid-type-arguments] Type `_DistT0@__add__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1215:116: error[invalid-type-arguments] Type `_ShapeT1@__add__` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1217:90: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1219:90: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1221:90: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1223:56: error[invalid-type-arguments] Type `Self@__add__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1228:71: error[invalid-type-arguments] Type `Self@__sub__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1230:55: error[invalid-type-arguments] Type `Self@__sub__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1232:59: error[invalid-type-arguments] Type `Self@__sub__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1236:19: error[invalid-type-arguments] Type `_DistT0@__sub__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1236:50: error[invalid-type-arguments] Type `_ShapeT1@__sub__` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1238:95: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1240:95: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1242:95: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1244:61: error[invalid-type-arguments] Type `Self@__sub__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1249:70: error[invalid-type-arguments] Type `Self@__mul__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1251:54: error[invalid-type-arguments] Type `Self@__mul__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1253:58: error[invalid-type-arguments] Type `Self@__mul__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1257:19: error[invalid-type-arguments] Type `_DistT0@__mul__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1257:50: error[invalid-type-arguments] Type `_ShapeT1@__mul__` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1259:94: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1261:94: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1263:94: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1265:60: error[invalid-type-arguments] Type `Self@__mul__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1269:78: error[invalid-type-arguments] Type `Self@__pow__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1274:75: error[invalid-type-arguments] Type `Self@__truediv__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1276:59: error[invalid-type-arguments] Type `Self@__truediv__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1278:63: error[invalid-type-arguments] Type `Self@__truediv__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1282:19: error[invalid-type-arguments] Type `_DistT0@__truediv__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1282:50: error[invalid-type-arguments] Type `_ShapeT1@__truediv__` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1284:99: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1286:99: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1288:99: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1290:65: error[invalid-type-arguments] Type `Self@__truediv__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1304:26: error[invalid-type-arguments] Type `ContinuousDistribution[_FloatT@__init__, _ShapeT@__init__]` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1322:34: error[invalid-type-arguments] Type `_DistT0@__init__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1324:51: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1326:51: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1328:51: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1343:26: error[invalid-type-arguments] Type `_DistT0@__init__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1353:35: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1363:35: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1373:35: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1402:42: error[invalid-type-arguments] Type `_DistT0@__init__` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1412:51: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1422:51: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1432:51: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1462:48: error[invalid-type-arguments] Type `ContinuousDistribution[floating[Any], _ShapeT@__init__]` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1491:9: error[invalid-method-override] Invalid override of method `kurtosis`: Definition is incompatible with `_BaseDistribution.kurtosis`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1498:86: error[invalid-type-arguments] Type `_DistT0@truncate` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1500:99: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1502:99: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1504:99: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1510:105: error[invalid-type-arguments] Type `_DistT0@order_statistic` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1512:118: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1514:118: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1516:118: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@OrderStatisticDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1522:37: error[invalid-type-arguments] Type `_DistT0@abs` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1524:54: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1526:54: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1528:54: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1534:60: error[invalid-type-arguments] Type `_DistT0@exp` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1536:69: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1538:69: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1540:69: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1546:60: error[invalid-type-arguments] Type `_DistT0@log` is not assignable to upper bound `UnivariateDistribution[Any, _ShapeT]` of type variable `_DistT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1548:69: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1550:69: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_distribution_infrastructure.pyi:1552:69: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@MonotonicTransformedDistribution`
+scipy-stubs/stats/_new_distributions.pyi:48:49: error[invalid-type-arguments] Type `_ShapeT_co@Normal` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@ContinuousDistribution`
+scipy-stubs/stats/_new_distributions.pyi:73:37: error[invalid-type-arguments] Type `_ShapeT@__init__` is not assignable to upper bound `tuple[int, ...]` of type variable `_NDT_co@CanArrayND`
+scipy-stubs/stats/_new_distributions.pyi:74:65: error[invalid-type-arguments] Type `_ShapeT@__init__` is not assignable to upper bound `tuple[int, ...]` of type variable `_NDT_co@CanArrayND`
+scipy-stubs/stats/_new_distributions.pyi:82:62: error[invalid-type-arguments] Type `_ShapeT@__init__` is not assignable to upper bound `tuple[int, ...]` of type variable `_NDT_co@CanArrayND`
+scipy-stubs/stats/_new_distributions.pyi:83:40: error[invalid-type-arguments] Type `_ShapeT@__init__` is not assignable to upper bound `tuple[int, ...]` of type variable `_NDT_co@CanArrayND`
+scipy-stubs/stats/_new_distributions.pyi:97:31: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:99:31: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:101:31: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:103:31: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:105:31: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:107:31: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Normal`
+scipy-stubs/stats/_new_distributions.pyi:123:50: error[invalid-type-arguments] Type `_ShapeT_co@Uniform` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@ContinuousDistribution`
+scipy-stubs/stats/_new_distributions.pyi:150:32: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:152:32: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:154:32: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:156:32: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:158:32: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:160:32: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Uniform`
+scipy-stubs/stats/_new_distributions.pyi:170:47: error[invalid-type-arguments] Type `_ShapeT_co@Binomial` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@DiscreteDistribution`
+scipy-stubs/stats/_new_distributions.pyi:196:33: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_new_distributions.pyi:198:33: error[invalid-type-arguments] Type `tuple[_NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_new_distributions.pyi:200:33: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_new_distributions.pyi:202:33: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_new_distributions.pyi:204:33: error[invalid-type-arguments] Type `tuple[_NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_new_distributions.pyi:206:33: error[invalid-type-arguments] Type `tuple[_NT, _NT, _NT]` is not assignable to upper bound `tuple[_NT, ...]` of type variable `_ShapeT_co@Binomial`
+scipy-stubs/stats/_typing.pyi:53:55: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+Found 674 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 22:27</div>
+            <div class="timeline-body"><p>Thanks, that does seem like a lot! I opened https://github.com/astral-sh/ty/issues/1685 so we remember to look into that</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

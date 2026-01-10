@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang in flax/nnx/variablelib.py - astral-sh/ty #948</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hang in flax/nnx/variablelib.py</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/948">#948</a>
+        opened by <a href="https://github.com/marcelroed">@marcelroed</a>
+        on 2025-08-06 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-06 17:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><img width="1426" height="397" alt="Image" src="https://github.com/user-attachments/assets/cb251375-4e77-4db5-8866-8389dfec12ce" /></p>
+<p>Hi! I just updated to the latest ty version and updated my VSCode plugin, resulting in a huge memory leak and my home server going down. <a href="https://gist.github.com/dcreager/fc53c59b30d7ce71d478dcb2c1c56444">Minimal repro</a> (thanks @dcreager).</p>
+<p>The memory keeps ticking up until it takes 100% of system memory and the OS tries to kill it. This kill also failed, however, so maybe there should be a safety check to limit <code>ty</code>'s memory usage to something reasonable.</p>
+<p>I'm on Ubuntu 24.04 and running Python 3.13. The issue can also be reproduced on macOS.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.17 (1712284 2025-08-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-06 17:27</div>
+            <div class="timeline-body"><p>If you run the latest version of ty from the CLI on that codebase, does the issue repro?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2025-08-06 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> added by @carljm on 2025-08-06 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> removed by @MichaReiser on 2025-08-06 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2025-08-06 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">memory</span> added by @MichaReiser on 2025-08-06 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-06 17:50</div>
+            <div class="timeline-body"><p>Yes, it also does, but only on Linux. I was able to get some more information:</p>
+<p>https://github.com/erfanzar/EasyDeL on current main (da583c435c529c1f98d6a0324d40d7d609ccba4d) produces this issue consistently for me on Ubuntu 24.04, but not on MacOS.</p>
+<p>Running with verbose, I see that it hangs (and increases in memory usage) at least with this file/command:</p>
+<pre><code class="language-sh">RAYON_NUM_THREADS=1 uvx ty check -vvvvv easydel/layers/quantization/linear_nf4.py
+</code></pre>
+<p>Here is the last of the trace:</p>
+<pre><code>  2025-08-06T17:49:28.992919Z DEBUG ty_python_semantic::module_resolver::resolver: Resolving dynamic module resolution paths
+    at crates/ty_python_semantic/src/module_resolver/resolver.rs:327 on ThreadId(2)
+    in ty_project::check_file with file=file(Id(c00))
+    in ty_project::Project::check
+
+  2025-08-06T17:49:28.993065Z DEBUG ty_python_semantic::module_resolver::resolver: Adding editable installation to module resolution path /home/marcel/projects/levanter/src
+    at crates/ty_python_semantic/src/module_resolver/resolver.rs:404 on ThreadId(2)
+    in ty_project::check_file with file=file(Id(c00))
+    in ty_project::Project::check
+
+  2025-08-06T17:49:29.035212Z DEBUG ty_python_semantic::module_resolver::resolver: Module `jaxlib._jax` not found in search paths
+    at crates/ty_python_semantic/src/module_resolver/resolver.rs:74 on ThreadId(2)
+    in ty_project::check_file with file=file(Id(c00))
+    in ty_project::Project::check
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 17:51</div>
+            <div class="timeline-body"><p>Wow, nice find. Any chance you could share the content of that file (or a smaller repro of it)? Are there any special types you're using (are they recursive)? You might also get better results with a debug build of ty, because we strip some traces from production builds (maybe we shouldn't?)</p>
+<p>I know, it's a lot to ask, I'm sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-06 18:00</div>
+            <div class="timeline-body"><p>Did a little more digging, and it seems like the issue is with an import from Flax: https://github.com/google/flax (reproduced on commit 220910f83201427d49ffe9954277ae1aed90921d). Running in that repo gives the exact same issue.</p>
+<pre><code class="language-sh">marcel@fred:~/projects/flax$ RAYON_NUM_THREADS=1 uvx -p 3.13 ty check -vvvvv
+</code></pre>
+<p>Here's the smallest repro I currently have in the Flax repo:</p>
+<pre><code class="language-sh">RAYON_NUM_THREADS=1 uvx -p 3.13 ty check -vvvvv tests/nnx/transforms_test.py
+</code></pre>
+<p>Removing <code>from flax import nnx</code> from that file prevents the issue from happening, so I suspect the issue is somewhere in there.</p>
+<p>I can try this with a debug build of <code>ty</code> tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 18:04</div>
+            <div class="timeline-body"><p>That's a nice find. Regarding linux/mac os. I wonder if that is because we default sys.platform to the hosts platform (I hope that's it. A platform specific bug would e very annoying to narrow down 🥲)</p>
+<p>We can pick the investigation up from here but I also don't want to stop you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-06 18:07</div>
+            <div class="timeline-body"><p>Yeah, I need to tap out for time reasons, but hopefully this is helpful! I'll check back on this later today and help out a bit if it's still unsolved by then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-06 18:19</div>
+            <div class="timeline-body"><p>Nevermind, it was super quick to build and run the debug version of <code>ty</code>.</p>
+<p>Here's what I'm seeing when I get the loop:</p>
+<pre><code>  2025-08-06T18:19:02.518095Z TRACE ty_project::db: Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: infer_expression_type(Id(1952)) } }
+    at crates/ty_project/src/db.rs:57 on ThreadId(2)
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(194e) range=24114..24124 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=24106..24111 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(194f) range=24132..24157 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1947) range=23863..23873 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=23855..23860 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(194b) range=23966..23986 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1940) range=23611..23621 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=23603..23608 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1941) range=23629..23655 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1939) range=23350..23360 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=23342..23347 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(193a) range=23368..23397 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1932) range=23086..23096 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=23078..23083 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1933) range=23104..23133 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(192b) range=22831..22841 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=22823..22828 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(192c) range=22849..22875 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1924) range=22579..22589 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=22571..22576 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1925) range=22597..22623 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(191d) range=22312..22322 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=22304..22309 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(191e) range=22330..22361 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1916) range=22043..22053 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=22035..22040 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1917) range=22061..22091 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(190f) range=21778..21788 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=21770..21775 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1910) range=21796..21825 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1908) range=21523..21533 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=21515..21520 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1909) range=21541..21567 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1901) range=21271..21281 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=21263..21268 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(1902) range=21289..21315 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(18fa) range=21019..21029 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=21011..21016 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(18fb) range=21037..21063 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_expression_types with expression=Id(18c1) range=16711..16722 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_definition_types with range=16703..16708 file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::infer::infer_scope_types with scope=Id(102c) file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_python_semantic::types::check_types with file=File(System(&quot;/home/marcel/projects/flax/flax/nnx/variablelib.py&quot;))
+    in ty_project::check_file with file=file(Id(c00))
+    in ty_project::Project::check
+</code></pre>
+<p>It seems like the source of the issues is <code>flax/nnx/variablelib.py</code>. New minimal repro is:</p>
+<pre><code class="language-sh">uvx ty check flax/nnx/variablelib.py
+</code></pre>
+<p>within https://github.com/google/flax.</p>
+<p>Edit: This also happens on macOS, so I think the platform-dependency was a false alarm. The reason why it seemingly was different on different platforms was because I hadn't installed the dependencies when running my macOS test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-06 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>until it takes 100% of system memory and the OS tries to kill it. This kill also failed, however</p>
+</blockquote>
+<p>@MichaReiser is there anything actionable in this part of the report? Shouldn't we still be responsive to signals if in a deep Salsa query explosion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Large memory leak/infinite loop" to "Hang in flax/nnx/variablelib.py" by @carljm on 2025-08-06 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-07 04:40</div>
+            <div class="timeline-body"><p>@carljm I'm guessing one of the threads got stuck during I/O? That's the only case where I've seen no response to OS signals in the past. Not sure why I/O would be happening in this infinite loop, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser is there anything actionable in this part of the report? Shouldn't we still be responsive to signals if in a deep Salsa query explosion?</p>
+</blockquote>
+<p>Technically yes.</p>
+<p>We have a separate thread that listens for CTRL+C</p>
+<p>https://github.com/astral-sh/ruff/blob/6516db78353c8abd2c030ec6dbc0c2adfb37e07c/crates/ty/src/lib.rs#L140-L146</p>
+<p>Which the main loop handles here</p>
+<p>https://github.com/astral-sh/ruff/blob/6516db78353c8abd2c030ec6dbc0c2adfb37e07c/crates/ty/src/lib.rs#L378-L382</p>
+<p>Now, there can be multiple reasons why ty wouldn't exit:</p>
+<ul>
+<li>The main loop is stuck, e.g. because it is currently rendering diagnostics (that's something we should fix but I don't think it's what's happening here)</li>
+<li><code>db.trigger_cancellation();</code> Sets the salsa cancellation token and it waits for each thread holding a db (all check file operations) to complete (or abort with a panic that we gracefully handle). Now, this only works if the threading code checks if the cancellation token was set. This should happen automatically whenever fetching or validating a salsa query. However, ty will not respond if the stuck code never fetches any salsa query</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 08:11</div>
+            <div class="timeline-body"><p>The expression mentioned at the top of the tracing stack is:</p>
+<p>https://github.com/google/flax/blob/220910f83201427d49ffe9954277ae1aed90921d/flax/nnx/variablelib.py#L807-L815</p>
+<p>Specifically</p>
+<p>https://github.com/google/flax/blob/220910f83201427d49ffe9954277ae1aed90921d/flax/nnx/variablelib.py#L808-L809</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 08:25</div>
+            <div class="timeline-body"><p>I bisected this to https://github.com/astral-sh/ruff/pull/19604 CC: @dcreager</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-08 14:29</div>
+            <div class="timeline-body"><p>This looks like a combinatorial explosion. I was able to create a <a href="https://gist.github.com/dcreager/fc53c59b30d7ce71d478dcb2c1c56444">minimal repro</a>. That file has 13 different in-place dunder methods, all with the same form. If I remove most of them (it doesn't matter which ones), <code>ty</code> completes just fine. But once we get to a certain point, running time and memory usage blows up:</p>
+<pre><code>  1    0.035s
+  2    0.048s
+  3    0.202s
+  4    2.10s
+  5   24.37s
+  6  [hangs]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-08 14:30</div>
+            <div class="timeline-body"><p>Could this be related to the combinatory explosion we're seeing with overload expansion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-08 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Could this be related to the combinatory explosion we're seeing with overload expansion</p>
+</blockquote>
+<p>I <em>think</em> it's unrelated, but I will keep that in mind as I dig into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-08 17:33</div>
+            <div class="timeline-body"><p>This looks likely to be an explosion due to all the bindings of <code>self.value</code> that ultimately depend on the type of <code>self.value</code>, which will probably lead to a massive cycle in inferring the type of <code>self.value</code>. Not sure if the explosion is inherently related to the typevars, or if we could construct a similar example without typevars (using e.g. <code>self: Self</code> instead) that would similarly explode even before astral-sh/ruff#19604.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-08-08 18:02</div>
+            <div class="timeline-body"><p>I ran into the same problem in pyright. In rare cases, I've seen thousands of assignments to a single (unannotated) variable. I try not to be too judgmental about code that pyright users include in bug reports, but these cases were among some of the worst code I've ever seen. :) It should come as no surprise that inference gets very expensive in this case — especially when there are complex and expensive dependencies between the assigned expressions.</p>
+<p>The solution I adopted was a bit of a hack. I added <a href="https://github.com/microsoft/pyright/blob/8b02aa84ec916697e76d5ee69299a89d555ec98c/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L556">a threshold</a> beyond which pyright gives up attempting to infer the type. It falls back to <code>Unknown</code> in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-08 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks likely to be an explosion due to all the bindings of <code>self.value</code> that ultimately depend on the type of <code>self.value</code>, which will probably lead to a massive cycle in inferring the type of <code>self.value</code>.</p>
+</blockquote>
+<p>This does seem to be the root cause, though in this particular case the typevars do exacerbate the issue, since we need to infer the signature of the containing function to determine which generic context binds the <code>V</code> typevar, which is part of the implicit attribute's type.</p>
+<p>It seems like it's enough to add an additional cycle handler around <code>implicit_attribute</code>. (At least for this case!)</p>
+<blockquote>
+<p>I've seen thousands of assignments to a single (unannotated) variable.</p>
+</blockquote>
+<p>@erictraut, do you happen to have the pyright issue handy? If the code is public I'd love to test out my fix on it to see at what point this approach stops working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-08-08 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-08 21:02</div>
+            <div class="timeline-body"><p>I confirmed that with the fix from https://github.com/astral-sh/ruff/pull/19833, we can analyze flax quickly again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-08-09 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>do you happen to have the pyright issue handy</p>
+</blockquote>
+<p>Sorry, I can't find the particular examples. It was many years ago. If I remember correctly, it was something like this:</p>
+<pre><code class="language-python">class Test:
+    def __init__(self):
+        self.x = 1
+
+    def method(self, c: bool):
+        if cond:
+            self.x += 1
+        if cond:
+            self.x += 1
+        if cond:
+            self.x += 1
+        if cond:
+            self.x += 1
+        if cond:
+            self.x += 1
+        ... # Copy another several hundred times
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:22 UTC
+    </footer>
+</body>
+</html>

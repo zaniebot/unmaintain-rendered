@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty not using `PYTHONPATH` and `PYTHONSAFEPATH` - astral-sh/ty #547</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty not using `PYTHONPATH` and `PYTHONSAFEPATH`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/547">#547</a>
+        opened by <a href="https://github.com/yoursvivek">@yoursvivek</a>
+        on 2025-05-30 08:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yoursvivek">@yoursvivek</a> on 2025-05-30 08:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>ty</code> uses <code>--extra-search-path</code> to find addition paths to search for python modules but it seems to ignore site paths defined by standard python variables <code>PYTHONPATH</code><a href="https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH">^1</a> and <code>PYTHONSAFEPATH</code><a href="https://docs.python.org/3/using/cmdline.html#envvar-PYTHONSAFEPATH">^2</a>.</p>
+<p>It would be nice to have ty honor these and avoid endusers from configuring these twice.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-30 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-05-30 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 08:28</div>
+            <div class="timeline-body"><p>It might make sense for us to add support for these search-path sources (especially if other type checkers do), but note that they are not mentioned in https://typing.python.org/en/latest/spec/distributing.html#import-resolution-ordering. Ideally we should also try to update the spec if we make this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yoursvivek">@yoursvivek</a> on 2025-05-30 12:29</div>
+            <div class="timeline-body"><p>I think it should be implied that if python runtime is able to use those packages/modules, so should type checker. Admittedly, I'm not well versed with specs for typing tools.</p>
+<p>I tried to create a simple scenarios and compared <code>ty</code> with <code>mypy</code>, <code>pyright</code>, <code>pyrefly</code> and <code>cPython</code> runtime to do some <em>market survey</em>. Hope it's useful.</p>
+<p>Summary:</p>
+<ol>
+<li>All except <code>ty</code> are honoring <code>PYTHONPATH</code>.</li>
+<li>None are honoring <code>PYTHONSAFEPATH</code>.</li>
+<li><code>pyrefly</code> warns about <code>PYTHONPATH</code> environment variable, informing that other environments might not have it set.</li>
+<li><code>pyright</code> finds <code>a</code> from <code>./a.py</code> instead of <code>mods/a.py</code> unlike others; but does search in <code>mods</code> as demonstrated by finding <code>b</code>. Seems to be related to search path module order, but I haven't investigated further?</li>
+<li>Note, cPython runtime ignores <code>pwd</code> because of safepath.</li>
+</ol>
+<p>Arguably, very few people have to deal with weird search path manipulations, but having predictable, well documented search path resolution similar to runtime is better.</p>
+<p>Side note: My personal foray into manipulating PYTHONPATH/PYTHONSAFEPATH is virtue of large projects with heremetic build systems including codegen. Manipulating search paths allows me to use tools (lsp, linter, typecheck, editor) not managed by build-system to work seamlessly and provide better user experience. I hope I'm not alone who makes such choices.</p>
+<hr />
+<p>Environment:</p>
+<pre><code>❯ uv self version
+uv 0.7.8 (Homebrew 2025-05-23)
+❯ ty version
+ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)
+❯ uv run python --version
+Python 3.13.2
+❯ env | grep -i PYTHON
+PYTHONSAFEPATH=1
+PYTHONPATH=mods
+PYTHONDONTWRITEBYTECODE=1
+❯ uv run python -m site
+sys.path = [
+    '/Users/ocrolus/Projects/misc/tyimports/mods',
+    '/Users/ocrolus/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python313.zip',
+    '/Users/ocrolus/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13',
+    '/Users/ocrolus/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/lib-dynload',
+    '/Users/ocrolus/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/site-packages',
+]
+USER_BASE: '/Users/ocrolus/.local' (exists)
+USER_SITE: '/Users/ocrolus/.local/lib/python3.13/site-packages' (doesn't exist)
+ENABLE_USER_SITE: True
+</code></pre>
+<p>Files:</p>
+<pre><code>❯ tree --noreport 
+.
+├── a.py
+├── c.py
+└── mods
+    ├── __main__.py
+    ├── a.py
+    └── b.py
+</code></pre>
+<p><code>a.py</code></p>
+<pre><code class="language-python">alpha: str = &quot;alpha&quot;
+alpha_str: str = &quot;alpha str&quot;
+</code></pre>
+<p><code>c.py</code></p>
+<pre><code class="language-python">gamma: int = 100
+</code></pre>
+<p><code>mods/__main__.py</code></p>
+<pre><code class="language-python">#!/usr/bin/env python
+
+from typing import TYPE_CHECKING
+from a import alpha, alpha_list
+from b import beta
+
+if TYPE_CHECKING:
+    from a import alpha_str
+    from c import gamma
+
+
+def main() -&gt; None:
+    print(f&quot;{alpha + beta = }&quot;)
+    print(f&quot;{alpha_list = }&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p><code>mods/a.py</code></p>
+<pre><code class="language-python">alpha: int = 1
+alpha_list: list[int] = [1, 2, 3]
+</code></pre>
+<p><code>mods/b.py</code></p>
+<pre><code class="language-python">beta: int = 10
+</code></pre>
+<hr />
+<p>Observations:</p>
+<ol>
+<li>Python runtime on running <code>uv run mods</code> produces. Since <code>./a.py</code> and <code>./c.py</code> are not available therefore both imports in <code>TYPE_CHECKING</code> would have produced error otherwise.</li>
+</ol>
+<pre><code>❯ uv run mods
+alpha + beta = 11
+alpha_list = [1, 2, 3]
+</code></pre>
+<p><em>IMHO this is exactly how type checkers should be able to find modules. In addition they should be able to look into type shedding according to specs.</em></p>
+<ol start="2">
+<li>Pyright</li>
+</ol>
+<pre><code>❯ pyright mods
+/Users/ocrolus/Projects/misc/tyimports/mods/__main__.py
+  /Users/ocrolus/Projects/misc/tyimports/mods/__main__.py:2:22 - error: &quot;alpha_list&quot; is unknown import symbol (reportAttributeAccessIssue)
+  /Users/ocrolus/Projects/misc/tyimports/mods/__main__.py:11:14 - error: Operator &quot;+&quot; not supported for types &quot;str&quot; and &quot;int&quot; (reportOperatorIssue)
+2 errors, 0 warnings, 0 informations 
+</code></pre>
+<ol start="3">
+<li>Mypy</li>
+</ol>
+<pre><code>❯ mypy mods
+mods/__main__.py:6: error: Module &quot;a&quot; has no attribute &quot;alpha_str&quot;; maybe &quot;alpha_list&quot;?  [attr-defined]
+Found 1 error in 1 file (checked 3 source files)
+</code></pre>
+<ol start="4">
+<li>pyrefly</li>
+</ol>
+<pre><code>❯ pyrefly check mods
+ WARN PYTHONPATH environment variable is set to `mods`. Checks in other environments may not include these paths.
+ERROR /Users/ocrolus/Projects/misc/tyimports/mods/__main__.py:6:19-28: Could not import `alpha_str` from `a` [missing-module-attribute]
+ INFO 1 errors shown, 0 errors ignored, 3 modules, 64 transitive dependencies, 17,594 lines, took 0.09s, peak memory physical 78.3 MiB
+</code></pre>
+<ol start="5">
+<li><code>ty</code></li>
+</ol>
+<pre><code>❯ ty check mods
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-import]: Module `a` has no member `alpha_list`
+ --&gt; mods/__main__.py:2:22
+  |
+1 | from typing import TYPE_CHECKING
+2 | from a import alpha, alpha_list
+  |                      ^^^^^^^^^^
+3 | from b import beta
+  |
+info: rule `unresolved-import` is enabled by default
+
+error[unresolved-import]: Cannot resolve imported module `b`
+ --&gt; mods/__main__.py:3:6
+  |
+1 | from typing import TYPE_CHECKING
+2 | from a import alpha, alpha_list
+3 | from b import beta
+  |      ^
+4 |
+5 | if TYPE_CHECKING:
+  |
+info: make sure your Python environment is properly configured: https://github.com/astral-sh/ty/blob/main/docs/README.md#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>5.a <code>ty</code> with extra search path</p>
+<pre><code>❯ ty check --extra-search-path=mods mods 
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-import]: Module `a` has no member `alpha_str`
+ --&gt; mods/__main__.py:6:19
+  |
+5 | if TYPE_CHECKING:
+6 |     from a import alpha_str
+  |                   ^^^^^^^^^
+7 |     from c import gamma
+  |
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 11:15</div>
+            <div class="timeline-body"><p>@natelust has opened a PR implementing this feature in https://github.com/astral-sh/ruff/pull/20016. @natelust -- the survey of other type checkers above seems to indicate that they all respect <code>PYTHONPATH</code> by default, but your PR requires users to opt into the support using a CLI flag. If we add this feature, could you explain why you thought it should be behind a CLI flag -- is there a reason why it would unwelcome to some users? Why shouldn't it be on by default?</p>
+<p>@carljm, I'm curious for your thoughts on whether it's worthwhile to implement this feature. It seems reasonable to me, but I'd love a second opinion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 11:27</div>
+            <div class="timeline-body"><p>If we want this to be opt in, a related question for me is what's the upside compared to e.g. a <code>TY_EXTRA_PATHS</code> environment variable (that adds additional paths)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 14:06</div>
+            <div class="timeline-body"><p>I don't have strong feelings here; it seems reasonable to me to respect PYTHONPATH. I think compatibility with other type checkers is quite valuable, in the absence of strong reasons to do something different. So I would lean towards making this opt-out.</p>
+<p>Not sure we need a warning like pyrefly, but it is important that if we find a PYTHONPATH, we tell the user about it in whatever verbosity level we tell them what venv we are using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/natelust">@natelust</a> on 2025-08-21 16:26</div>
+            <div class="timeline-body"><p>@AlexWaygood thanks for your time looking at this. I have no strong reason for making this opt-in vs opt-out, except that my natural inclination when introducing new features are to keep the existing behavior people have developed work flows around unchanged, and put new additions behind feature flags, in some sense &quot;reverse&quot; deprecating. However I do see that this means that at some point either the default changes and you are in the same situation, or you get a pile of opt-ins that everyone must apply. I would be perfectly happy for searching PYTHONPATH to be the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-20 11:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

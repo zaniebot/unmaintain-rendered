@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture with `as` in `match` statement breaks type narrowing - astral-sh/ty #928</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Capture with `as` in `match` statement breaks type narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/928">#928</a>
+        opened by <a href="https://github.com/mthuurne">@mthuurne</a>
+        on 2025-08-02 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mthuurne">@mthuurne</a> on 2025-08-02 23:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ty.dev/42bb391c-e742-4b01-adf1-7a91cee18a26">testcase in playground</a></p>
+<p>If I check the following code:</p>
+<pre><code class="language-py">from typing import Never, NoReturn
+
+
+def bad_type(value: Never) -&gt; NoReturn:
+    raise TypeError(type(value))
+
+
+def f(value: str | int) -&gt; None:
+    match value:
+        case int() as x:
+            print(&quot;integer:&quot;, x)
+        case str():
+            print(&quot;string&quot;)
+        case _:
+            bad_type(value)
+</code></pre>
+<p>ty reports:</p>
+<pre><code>error[invalid-argument-type]: Argument to function `bad_type` is incorrect
+  --&gt; narrowing_to_never.py:15:22
+   |
+13 |             print(&quot;string&quot;)
+14 |         case _:
+15 |             bad_type(value)
+   |                      ^^^^^ Expected `Never`, found `int`
+   |
+info: Function defined here
+ --&gt; narrowing_to_never.py:4:5
+  |
+4 | def bad_type(value: Never) -&gt; NoReturn:
+  |     ^^^^^^^^ ------------ Parameter declared here
+5 |     raise TypeError(type(value))
+  |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>I would expect it to not report any issues, as the default case is unreachable if a properly typed value is passed.</p>
+<p>When the capture (<code>as x</code>) is removed, no issues are reported. It seems that the capture disables the type narrowing.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-08-04 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-08-04 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-04 18:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:21 UTC
+    </footer>
+</body>
+</html>

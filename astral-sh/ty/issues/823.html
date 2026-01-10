@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redeclaration Questions - astral-sh/ty #823</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Redeclaration Questions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/823">#823</a>
+        opened by <a href="https://github.com/erictraut">@erictraut</a>
+        on 2025-07-14 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-14 19:29</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have some questions about the intended behavior for type declarations in ty.</p>
+<p>My understanding is that ty allows the types of local variables (and parameters) to be declared multiple times with conflicting types as long as all assignments that are reachable from each declaration honor the declared type.</p>
+<pre><code class="language-python">def func(x: int):
+    print(x)
+    x: str = &quot;&quot; # OK
+    x = 1 # Error
+</code></pre>
+<p>I think this works — and is provably type safe — because local variables and parameters are not visible outside of their scope. (I personally think this approach complicates the mental model for type declarations, and it allows for the inadvisable reuse of variables for conflicting uses which harms readability and maintainability, but I understand that some Python developers are OK with this practice.)</p>
+<p>I'm not sure how this redeclaration behavior extends to symbols that are visible outside of their scope. Has this been considered?</p>
+<p>Here's an example:</p>
+<pre><code class="language-python">x: int = 0
+
+def func():
+    global x
+    x: str = &quot;&quot;  # Should this be allowed?
+
+func()
+reveal_type(x)  # ?
+</code></pre>
+<p>Currently, ty reports no errors for this code. Is that intended? Or perhaps it's functionality that is planned but not yet implemented?</p>
+<p>Or consider this:</p>
+<pre><code class="language-python">class A:
+    def method_1(self):
+        self.x: int = 10
+
+    def method_2(self):
+        # Should this redeclaration be allowed?
+        self.x: str = &quot;&quot;
+
+    def method_3(self):
+        # Should this be allowed? What declaration (if any)
+        # is enforced here?
+        self.x = 3.0
+
+a = A()
+
+# What type should be revealed here? Looks like it's order
+# dependent. If I switch the method order in A, I get different
+# results.
+reveal_type(a.x)
+
+# Should this be allowed? What declaration (if any)
+# is enforced here? Looks like this is order dependent too?
+a.x = 0
+</code></pre>
+<p>Or similarly:</p>
+<pre><code class="language-python">class B:
+    y: int = 0
+
+    def __init__(self):
+        self.y: str = &quot;&quot;
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @erictraut on 2025-07-14 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:33</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">def func():
+    global x
+    x: str = &quot;&quot;  # Should this be allowed?
+</code></pre>
+</blockquote>
+<p>This one definitely should not be allowed because it's a SyntaxError:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def func():
+...     global x
+...     x: str = &quot;&quot;
+...     
+  File &quot;&lt;python-input-0&gt;&quot;, line 4
+    x: str = &quot;&quot;
+    ^^^^^^^^^^^
+SyntaxError: annotated name 'x' can't be global
+</code></pre>
+<p>The fact that we don't currently emit an error for it is tracked in https://github.com/astral-sh/ruff/issues/17412. Once we've implemented the syntax error detection, I don't think we need to add an additional diagnostic on top of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:36</div>
+            <div class="timeline-body"><p>I believe your other questions are covered by https://github.com/astral-sh/ty/issues/206, and will be fixed by https://github.com/astral-sh/ruff/pull/18953</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-14 19:42</div>
+            <div class="timeline-body"><blockquote>
+<p>This one definitely should not be allowed because it's a SyntaxError</p>
+</blockquote>
+<p>Wow, I didn't realize that. None of today's popular type checkers (mypy, pyright, pyre, pyrefly, ty) check for that currently.</p>
+<blockquote>
+<p>I believe your other questions are covered by <a href="https://github.com/astral-sh/ty/issues/206">#206</a>, and will be fixed by <a href="https://github.com/astral-sh/ruff/pull/18953">astral-sh/ruff#18953</a></p>
+</blockquote>
+<p>Thanks, I looked for an open issue but didn't find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, I looked for an open issue but didn't find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
+</blockquote>
+<p>Yup, that's correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 20:09</div>
+            <div class="timeline-body"><p>Closing, since I think these are sufficiently covered by https://github.com/astral-sh/ruff/issues/17412 and #206. But thanks for the queries -- we're obviously trying something new here and it's good to think these things through!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-14 20:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

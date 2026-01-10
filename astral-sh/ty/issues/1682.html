@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a non-first-party search path? - astral-sh/ty #1682</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a non-first-party search path?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1682">#1682</a>
+        opened by <a href="https://github.com/adamjstewart">@adamjstewart</a>
+        on 2025-11-29 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-29 16:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Testing out ty for the first time and found that it doesn't support relative imports?</p>
+<p>Steps to reproduce:</p>
+<pre><code class="language-console">&gt; git clone https://github.com/torchgeo/torchgeo.git
+&gt; cd torchgeo
+&gt; pip install .
+&gt; ty check
+error[unresolved-import]: Cannot resolve imported module `.agrifieldnet`
+ --&gt; torchgeo/datamodules/__init__.py:6:7
+  |
+4 | &quot;&quot;&quot;TorchGeo datamodules.&quot;&quot;&quot;
+5 |
+6 | from .agrifieldnet import AgriFieldNetDataModule
+  |       ^^^^^^^^^^^^
+7 | from .bigearthnet import BigEarthNetDataModule
+8 | from .bright import BRIGHTDFC2025DataModule
+  |
+info: Searched in the following paths during module resolution:
+info:   1. .../lib/python3.13/site-packages (extra search path specified on the CLI or in your config file)
+info:   2. .../lib/python3.13/site-packages (extra search path specified on the CLI or in your config file)
+info:   3. .../lib/python3.13/site-packages (extra search path specified on the CLI or in your config file)
+info:   4. /Users/Adam/torchgeo (first-party code)
+info:   5. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+...
+</code></pre>
+<p>Possibly related to https://github.com/astral-sh/ty/issues/839, although in my case, there are no invalid module names anywhere in my path all the way to root (<code>/Users/Adam/torchgeo</code>). Based on that conversation, I'm guessing that relative imports normally are expected to work most of the time, hence why I'm opening an issue.</p>
+<p>Note that I currently have no custom configuration for ty. Let me know if a default <code>--project</code> is required for relative import support.</p>
+<p>@isaaccorley</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-11-29 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-29 17:17</div>
+            <div class="timeline-body"><p>Figured out my problem. I had torchgeo in my local directory <em>and</em> in my PYTHONPATH. If I remove the second copy, relative imports are found fine. So there may be a bug with relative imports when a module is found multiple times?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-29 17:19</div>
+            <div class="timeline-body"><p>(👍 Yeah just confirming that I can't reproduce this on a fresh clone.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 17:21</div>
+            <div class="timeline-body"><p>I think this is the same as https://github.com/astral-sh/ty/issues/870 / https://github.com/astral-sh/ty/issues/1539 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-29 17:27</div>
+            <div class="timeline-body"><p>Can't tell, but happy to close this if the experts think it's a duplicate. The issue isn't that we're failing to resolve any import, but that we are resolving too many imports or in the wrong order. Local scope should always take precedence over PYTHONPATH, as that's how Python imports are ordered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 17:39</div>
+            <div class="timeline-body"><p>Hmm, that's an interesting point. Currently we model <code>PYTHONPATH</code> entries the same way as entries specified using our <a href="https://docs.astral.sh/ty/reference/configuration/#extra-paths"><code>extra-paths</code></a> configuration settings -- they have a priority higher than first-party code, as specified by item (1) in the typing spec's <a href="https://typing.python.org/en/latest/spec/distributing.html#import-resolution-ordering">import resolution ordering</a>. But the <a href="https://docs.python.org/3/library/sys_path_init.html">runtime spec</a> is clear that <code>PYTHONPATH</code> entries come between first-party code and any <code>site-packages</code> search paths.</p>
+<p>One complicating factor, however, is that there are lots of search paths that we treat as first-party but which would at runtime only be present due to editable installations in <code>site-packages</code>. For example, we add an <code>src/</code> search path that by default, and we consider this to be a first-paty search path, but at runtime this search path would be present due to an editable installation in site-packages. At runtime the only &quot;first-party&quot; search path that would take precedence over <code>PYTHONPATH</code> would be the current directory (<code>.</code>), and editable installs in <code>site-packages</code> (<code>./src</code>) would still have a lower priority than any search paths added by <code>PYTHONPATH</code>.</p>
+<p>#1539 <em>would</em> fix the problem you're experiencing, however, even though it's not the fix you're suggesting...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Relative imports not found" to "Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a first-party search path?" by @AlexWaygood on 2025-11-29 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a first-party search path?" to "Should `PYTHONPATH` search paths have a lower priority than first-party search paths? Should `./src` be considered a non-first-party search path?" by @AlexWaygood on 2025-11-29 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2025-11-29 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-29 18:39</div>
+            <div class="timeline-body"><p>Upon reading https://typing.python.org/en/latest/spec/distributing.html#import-resolution-ordering, I would personally interpret this as:</p>
+<ol>
+<li>Type checker-specific configuration (<code>extra-paths</code> makes sense here)</li>
+<li>The thing I'm trying to type check (my local directory here)</li>
+<li>Stubs from the standard library</li>
+<li>Stubs for installed packages (found via the usual import order)</li>
+<li>Installed packages (found via the usual import order)</li>
+<li>Type checker-specific vendored stubs</li>
+</ol>
+<p>Therefore, <code>PYTHONPATH</code> should go into 4 and 5, after the local directory. This also matches import order. I would be curious to know how other type checkers order this, but with mypy, it always preferred the local directory as far as I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-29 18:44</div>
+            <div class="timeline-body"><p>Here are the docs for <a href="https://mypy.readthedocs.io/en/stable/running_mypy.html#how-imports-are-found">mypy's search order</a>:</p>
+<ol>
+<li><code>MYPYPATH</code> env var</li>
+<li><code>mypy_path</code> config flag</li>
+<li>Directory that mypy is run on</li>
+<li>Installed packages</li>
+<li>Typeshed repo</li>
+</ol>
+<p>So this matches my interpretation that installed packages should come after the local directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-30 06:17</div>
+            <div class="timeline-body"><p>As far as I can tell, mypy doesn't respect <code>PYTHONPATH</code> at all, and the typing spec doesn't mention <code>PYTHONPATH</code>, so I don't think either of those provide a useful guide here. I don't think it's correct to equate <code>PYTHONPATH</code> with &quot;installed packages&quot; -- installed packages go into the <code>site-packages</code> directory in a Python installation or virtual environment. <code>PYTHONPATH</code> can be used to point to arbitrary code anywhere, which could be first-party or third-party, and probably isn't &quot;installed&quot; (if it were, it would already be in <code>site-packages</code> and <code>PYTHONPATH</code> wouldn't be needed to point to it.)</p>
+<p>I do think the runtime behavior (that <code>PYTHONPATH</code> entries follow the &quot;current directory or directory of the executed script&quot;) suggests that we should place <code>PYTHONPATH</code> paths after first-party code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-30 06:24</div>
+            <div class="timeline-body"><p>The title of this issue currently asks two questions:</p>
+<blockquote>
+<p>Should PYTHONPATH search paths have a lower priority than first-party search paths?</p>
+</blockquote>
+<p>I suspect the ideal answer here (based on runtime behavior) is &quot;yes&quot;, and we should focus this issue on that change.</p>
+<blockquote>
+<p>Should <code>./src</code> be considered a non-first-party search path?</p>
+</blockquote>
+<p>The answer to this seems to me to clearly be &quot;no&quot;; I'm a bit confused why that would even be a consideration? What would <code>./src</code> be if not first-party? It seems like basically the canonical first-party path.</p>
+<p>EDIT: never mind, I just re-read the above comment that makes the reasoning behind this clear. I still think that &quot;maybe <code>./src</code> should not be first-party&quot; is the wrong framing: it must be first-party, because the most important aspect of &quot;first-party&quot; is checked-by-default (vs just &quot;available as import source&quot;), and <code>./src</code> should be checked by default.</p>
+<p>My suspicion is that trying to mimic runtime behavior too closely might be a can of worms. We can't model all runtime behaviors exactly. For example, the first path on <code>sys.path</code> at runtime may not be the &quot;current directory&quot; at all, it might be the directory containing the executed script. It's not clear how we'd model that, since you don't &quot;execute a script&quot; with ty.</p>
+<p>One thing we could do is add <code>PYTHONPATH</code> to <code>environment.roots</code> instead of to <code>extra-paths</code>, and (if <code>environment.roots</code> is otherwise unset) we could add the <code>PYTHONPATH</code> entries after <code>.</code> and before <code>./src</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2025-11-30 09:47</div>
+            <div class="timeline-body"><blockquote>
+<p>As far as I can tell, mypy doesn't respect <code>PYTHONPATH</code> at all</p>
+</blockquote>
+<p>My &quot;installed&quot; libraries are only available via <code>PYTHONPATH</code>, and mypy finds them. Although mypy may not have any explicit handling of <code>PYTHONPATH</code>, if it tries to import packages, then it respects <code>PYTHONPATH</code>.</p>
+<blockquote>
+<p>I don't think it's correct to equate <code>PYTHONPATH</code> with &quot;installed packages&quot; -- installed packages go into the <code>site-packages</code> directory in a Python installation or virtual environment.</p>
+</blockquote>
+<p>This depends on your mode of &quot;installation&quot;. Many from-source packages managers like Nix, Guix, Spack, and EasyBuild install all packages into unique hashed directories. This allows, e.g., installing 2 different versions of numpy with 4 different BLAS/LAPACK libraries and 3 different compilers. These package managers rely entirely on <code>PYTHONPATH</code> (often via <code>module load</code>) to make installed packages available. While pip/uv/conda are more common on single-user systems, Spack/EasyBuild are more common on multi-user supercomputing systems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-30 11:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I still think that &quot;maybe <code>./src</code> should not be first-party&quot; is the wrong framing: it must be first-party, because the most important aspect of &quot;first-party&quot; is checked-by-default (vs just &quot;available as import source&quot;), and <code>./src</code> should be checked by default.</p>
+</blockquote>
+<p>I don't see how changing <code>./src</code> to become a third-party search path would make any difference here. Even if we accept the premise that the question of which files we should check by default should be decided by whether those files are relative to any first-party search paths, all files in <code>./src</code> would still be checked by default, because <code>.</code> would still be added as a first-party search path, and all files relative to <code>./src</code> are also relative to <code>.</code>.</p>
+<p>Complicating this issue is the fact that we currently actually give <code>./src</code> <em>priority</em> over <code>.</code> in our search-path ordering. The reason for this is to workaround another unfortunate behaviour we currently have. Currently we resolve relative imports by resolving the relative import into an absolute module name relative to the first search path we find that works, and then doing an absolute import of that module name. If <code>.</code> is given higher priority than <code>./src</code>, that means that we often end up resolving the module names of relative imports as <code>src.a.b</code> rather than <code>a.b</code>. (It's possible that this doesn't actually cause many issues in terms of the types we infer, but I think it leads to very confusing diagnostic messages at least!) If we emulated the runtime treatment of relative imports more closely (just treat them as relative to the importing file, don't involve search paths at all), then we might be able to put the priority of <code>./src</code> below <code>.</code> (like it is at runtime), and put the <code>PYTHONPATH</code> search paths in between the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 00:28</div>
+            <div class="timeline-body"><blockquote>
+<p>My &quot;installed&quot; libraries are only available via <code>PYTHONPATH</code>, and mypy finds them. Although mypy may not have any explicit handling of <code>PYTHONPATH</code>, if it tries to import packages, then it respects <code>PYTHONPATH</code>.</p>
+</blockquote>
+<p>I see - my local test was confused by the fact that mypy also applies its <code>py.typed</code> requirement to packages found on <code>PYTHONPATH</code>. So packages on <code>PYTHONPATH</code> are only importable if they contain <code>py.typed</code>.</p>
+<blockquote>
+<p>Many from-source packages managers like Nix, Guix, Spack, and EasyBuild install all packages into unique hashed directories. This allows, e.g., installing 2 different versions of numpy with 4 different BLAS/LAPACK libraries and 3 different compilers. These package managers rely entirely on <code>PYTHONPATH</code></p>
+</blockquote>
+<p>Thanks, I didn't realize this had become a popular technique for Python packages again. It used to be popular years ago with project management tools like <code>zc.buildout</code>.</p>
+<blockquote>
+<p>changing <code>./src</code> to become a third-party search path</p>
+</blockquote>
+<p>I can see an argument that <em>if</em> we see that in fact <code>./src</code> is anyway added to <code>sys.path</code> by an editable install in the Python environment, and isn't explicitly listed in <code>environment.roots</code>, in that scenario we would avoid auto-adding it to <code>environment.roots</code>. In this case we know it ends up on <code>sys.path</code> via an editable install, so we can get more accurate results by just letting it be handled that way, and not auto-adding it to <code>environment.roots</code>.</p>
+<p>I guess the other possibility you might be proposing is that we never auto-add <code>./src</code> to <code>environment.roots</code> and instead always auto-add it to site-package paths if it exists? That seems more iffy to me, since the fact that <code>src/</code> exists in your current directory really isn't sufficient information to tell us that it is placed on <code>sys.path</code> by an editable install. And assuming that seems extra questionable in the case where we have a Python environment and can say conclusively that it doesn't contain an editable install for <code>src</code>.</p>
+<p>I also agree that we should bump the priority of <code>PYTHONPATH</code> below first-party code, as suggested above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>If we emulated the runtime treatment of relative imports more closely (just treat them as relative to the importing file, don't involve search paths at all)</p>
+</blockquote>
+<p>One other note here for posterity, thought it's veering off-topic for this issue: &quot;just treat them as relative to the import file&quot; is not an accurate description of what the runtime does when resolving relative imports. If it were, it would be impossible to get the &quot;attempted relative import with no known parent package&quot; error that you can get at runtime if you use too many dots for your current module's nesting level.</p>
+<p>The <em>way</em> that the runtime takes search paths into account is different from how we currently do, though, specifically this part:</p>
+<blockquote>
+<p>relative to the first search path we find that works</p>
+</blockquote>
+<p>Instead, at runtime modules already &quot;know&quot; (via <code>__package__</code> or <code>__spec__</code> or <code>__name__</code>) what their own fully qualified module name is; this is set when the module is imported. This knowledge effectively &quot;bakes in&quot; the search path entry that was used to import the module, so the runtime doesn't need our reverse-resolution from file to module name at all. But the rest of how relative imports work at runtime is the same as what ty does: the current module's module name, plus the relative import module path, is used to resolve to an absolute module name, which is then imported as as an absolute import. There is no part of Python's import system that resolves relative imports directly via relative filesystem locations (if it did, this would break the abstraction of Python's import system, which supports arbitrary import loaders, including loading from non-filesystem locations.)</p>
+<p>It's not clear to me if or how we can move closer to the runtime system. It seems like it would require a fairly fundamental re-architecting to allow a single File to be two different modules, with different module names (as can happen at runtime with overlapping search paths!), and analyze them separately. This doesn't seem like a good idea.</p>
+<blockquote>
+<p>I think it leads to very confusing diagnostic messages at least</p>
+</blockquote>
+<p>Note also that even if we did resolve relative imports just via relative filesystem locations directly, it <em>still</em> wouldn't help with the &quot;confusing diagnostic messages&quot; issue at all. Once we've resolved the file which is the target of the relative import, we would still need to decide what its module name is, and if we used our current reverse-resolution system to do that, we'd reach the same conclusion that our current relative-import system reaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 19:43</div>
+            <div class="timeline-body"><p>Created https://github.com/astral-sh/ty/issues/1730 to track the latter issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

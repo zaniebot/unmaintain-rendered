@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive &quot;missing-argument&quot; error on variadic function calls with unpacked arguments - astral-sh/ty #583</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive &quot;missing-argument&quot; error on variadic function calls with unpacked arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/583">#583</a>
+        opened by <a href="https://github.com/Ragug">@Ragug</a>
+        on 2025-06-05 03:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ragug">@Ragug</a> on 2025-06-05 03:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Description:</strong></p>
+<p>I encountered this error when using the <code>ty</code> checker with a variadic function call pattern similar to the <code>and_</code> function from SQLAlchemy's source code <a href="https://github.com/sqlalchemy/sqlalchemy/blob/742a3a6f9b320514e51e8f882143665a8edf31b9/lib/sqlalchemy/sql/_elements_constructors.py#L117">link here</a></p>
+<pre><code class="language-python">def and_(initial_condition, *conditions):
+    return &quot; AND &quot;.join((initial_condition,) + conditions)
+
+filters = [&quot;age &gt; 18&quot;, &quot;status = 'active'&quot;]
+if filters:
+    print(and_(*filters))
+if len(filters) &gt; 0:
+    print(and_(*filters))
+</code></pre>
+<p>The <code>ty</code> tool reports a <code>missing-argument</code> error on the lines calling <code>and_(*filters)</code>, even though <code>filters</code> is guaranteed to have at least one element in the current context.</p>
+<p><strong>Error message:</strong></p>
+<pre><code>error[missing-argument]: No argument provided for required parameter `initial_condition` of function `and_`
+</code></pre>
+<p><strong>Why this seems to be a false positive:</strong></p>
+<ul>
+<li>The argument list is unpacked from <code>filters</code> which is checked for non-empty before the call.</li>
+<li>The function requires one positional argument and additional variadic arguments.</li>
+<li>The unpacked <code>filters</code> list provides all required arguments.</li>
+<li>The tool does not seem to consider the runtime length check or unpacking when validating arguments.</li>
+</ul>
+<p><strong>Expected behavior:</strong></p>
+<p>The <code>ty</code> checker should recognize that the unpacked arguments from <code>filters</code> satisfy the required <code>initial_condition</code> parameter, given that <code>filters</code> is verified to be non-empty.</p>
+<p><strong>Additional info:</strong></p>
+<ul>
+<li><code>ty</code> version: <code>ty 0.0.1-alpha.8</code></li>
+<li>Python version: <code>3.12.3</code></li>
+<li>Minimal repro code provided above.</li>
+</ul>
+<p>Thanks for the great tool! Let me know if you need any more details.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-05 04:41</div>
+            <div class="timeline-body"><p>Thank you for providing all the details! I think this might be due to missing support for starred arguments (https://github.com/astral-sh/ty/issues/247) which is mentioned as point 3 in #445.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ragug">@Ragug</a> on 2025-06-05 05:06</div>
+            <div class="timeline-body"><p>Thanks for the quick response! That makes sense—looks like it's related to the starred arguments support, as you mentioned. I’ll keep an eye on (https://github.com/astral-sh/ty/issues/247)  and (https://github.com/astral-sh/ty/issues/445) for updates. Appreciate the great work on this tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-05 06:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

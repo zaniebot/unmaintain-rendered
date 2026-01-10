@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack overflow with generic-protocol recursion - astral-sh/ty #1736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stack overflow with generic-protocol recursion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1736">#1736</a>
+        opened by <a href="https://github.com/correctmost">@correctmost</a>
+        on 2025-12-03 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/correctmost">@correctmost</a> on 2025-12-03 08:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty crashes when checking this code:</p>
+<pre><code class="language-python">from typing import Protocol
+
+class C[T](Protocol):
+    a: 'C[set[T]]'
+
+c: 'C[set[int]]' = C()
+</code></pre>
+<pre><code>thread '&lt;unknown&gt;' (2402366) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-12-03 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-12-03 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-12-03 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 13:50</div>
+            <div class="timeline-body"><p>I ran ty under lldb on this snippet. The looping part of the stacktrace is:</p>
+<pre><code>    frame #3497: 0x0000000101179c3c ty`ty_python_semantic::types::protocol_class::ProtocolInterface::has_relation_to_impl::_$u7b$$u7b$closure$u7d$$u7d$::hf40cf461dc1096b3(other_member=ProtocolMember @ 0x00000001702ab430) at protocol_class.rs:283:18
+    frame #3498: 0x000000010161f4e4 ty`_$LT$I$u20$as$u20$ty_python_semantic..types..constraints..IteratorConstraintsExtension$LT$T$GT$$GT$::when_all::hbb88b0d1f43c4714(self=Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name, ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;, ty_python_semantic::types::protocol_class::{impl#6}::members::{closure_env#0}&gt; @ 0x00000001702ab508, db=&amp;dyn ty_python_semantic::db::Db @ 0x00000001702ab470, f={closure_env#0} @ 0x00000001702ab550) at constraints.rs:150:37
+    frame #3499: 0x0000000100ce09bc ty`ty_python_semantic::types::protocol_class::ProtocolInterface::has_relation_to_impl::he9d90b44947bc1df(self=ProtocolInterface @ 0x00000001702ab500, db=&amp;dyn ty_python_semantic::db::Db @ 0x00000001702ab588, other=ProtocolInterface @ 0x00000001702ab598, inferable=InferableTypeVars @ 0x00000001702ab780, relation=TypeRelation @ 0x00000001702ab7a0, relation_visitor=0x0000000170df70f0, disjointness_visitor=0x0000000170df7168) at protocol_class.rs:281:27
+    frame #3500: 0x0000000100ee7a30 ty`ty_python_semantic::types::instance::_$LT$impl$u20$ty_python_semantic..types..Type$GT$::satisfies_protocol::h59328380805a265b(self=Type @ 0x00000001702ab7d0, db=&amp;dyn ty_python_semantic::db::Db @ 0x00000001702ab740, protocol=ProtocolInstanceType @ 0x00000001702ab7f0, inferable=InferableTypeVars @ 0x00000001702ab800, relation=TypeRelation @ 0x00000001702ab820, relation_visitor=0x0000000170df70f0, disjointness_visitor=0x0000000170df7168) at instance.rs:136:41
+    frame #3501: 0x0000000100b28ef8 ty`ty_python_semantic::types::Type::has_relation_to_impl::_$u7b$$u7b$closure$u7d$$u7d$::h020197c07eecf21f at types.rs:2501:26
+    frame #3502: 0x0000000100fbdcf0 ty`ty_python_semantic::types::cyclic::CycleDetector$LT$Tag$C$T$C$R$GT$::visit::h0ebf05d0aadeb5e2(self=0x0000000170df70f0, item=(ty_python_semantic::types::Type, ty_python_semantic::types::Type, ty_python_semantic::types::TypeRelation) @ 0x00000001702ac850, func={closure_env#19} @ 0x00000001702ac8a0) at cyclic.rs:86:19
+    frame #3503: 0x0000000100ed0eec ty`ty_python_semantic::types::Type::has_relation_to_impl::hf4c3659561405fc1(self=Type @ 0x00000001702ae200, db=&amp;dyn ty_python_semantic::db::Db @ 0x00000001702ad170, target=Type @ 0x00000001702ae220, inferable=InferableTypeVars @ 0x00000001702ae180, relation=TypeRelation @ 0x00000001702ae198, relation_visitor=0x0000000170df70f0, disjointness_visitor=0x0000000170df7168) at types.rs:2500:34
+    frame #3504: 0x000000010117a0e0 ty`ty_python_semantic::types::protocol_class::ProtocolInterface::has_relation_to_impl::_$u7b$$u7b$closure$u7d$$u7d$::_$u7b$$u7b$closure$u7d$$u7d$::h9fe2b0badb31130d(our_member=ProtocolMember @ 0x00000001702ae310) at protocol_class.rs:341:26
+</code></pre>
+<p>(etc. on infinite repeat)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 01:10</div>
+            <div class="timeline-body"><p>This is why the cycle-detection visitor doesn't catch this infinite recursion:</p>
+<pre><code>Protocol instance subtyping: C[Unknown] &lt;: C[set[int]]
+Protocol instance subtyping: C[set[Unknown]] &lt;: C[set[set[int]]]
+Protocol instance subtyping: C[set[set[Unknown]]] &lt;: C[set[set[set[int]]]]
+Protocol instance subtyping: C[set[set[set[Unknown]]]] &lt;: C[set[set[set[set[int]]]]]
+Protocol instance subtyping: C[set[set[set[set[Unknown]]]]] &lt;: C[set[set[set[set[set[int]]]]]]
+Protocol instance subtyping: C[set[set[set[set[set[Unknown]]]]]] &lt;: C[set[set[set[set[set[set[int]]]]]]]
+Protocol instance subtyping: C[set[set[set[set[set[set[Unknown]]]]]]] &lt;: C[set[set[set[set[set[set[set[int]]]]]]]]
+Protocol instance subtyping: C[set[set[set[set[set[set[set[Unknown]]]]]]]] &lt;: C[set[set[set[set[set[set[set[set[int]]]]]]]]]
+Protocol instance subtyping: C[set[set[set[set[set[set[set[set[Unknown]]]]]]]]] &lt;: C[set[set[set[set[set[set[set[set[set[int]]]]]]]]]]
+...
+</code></pre>
+<p>Each time we recurse to the next layer of recursive attribute, we also deepen the recursion of the type parameter type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @AlexWaygood on 2025-12-05 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-12-05 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-09 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

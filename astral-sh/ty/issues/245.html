@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>handle sealed types - astral-sh/ty #245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>handle sealed types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/245">#245</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-08-05 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-08-05 18:29</div>
+            <div class="timeline-body"><p>Some types have a finite number of possible inhabitants. Examples include <code>builtins.bool</code> (the inhabitants are <code>Literal[True]</code> and <code>Literal[False]</code>) and enum types. For such types, we should consider the union of all possible inhabitants as equivalent to the type itself (so for example <code>Literal[True, False]</code>) is equivalent to <code>builtins.bool</code>). We should also take this equivalence into account when resolving negated intersections (so for example <code>builtins.bool &amp; ~Literal[True]</code> is equivalent to <code>Literal[False]</code>; practically this will come up in type narrowing.)</p>
+<p>Tasks here, in the order we'll likely get to them:</p>
+<ul>
+<li>[x] resolve <code>Literal[True] | Literal[False]</code> to <code>builtins.bool</code></li>
+<li>[x] resolve <code>builtins.bool</code> back to <code>Literal[True] | Literal[False]</code> when intersection eliminates a type inhabitant</li>
+<li>[ ] extend the above handling to enum types, when we add them</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 18:37</div>
+            <div class="timeline-body"><p>Other examples of sealed types are the various singletons available in <code>builtins</code> and the stdlib:</p>
+<ul>
+<li><code>NotImplemented</code> (the only possible instance of <code>types.NotImplementedType</code>)</li>
+<li><code>None</code> (the only possible instance of <code>types.NoneType</code>)</li>
+<li><code>...</code> (also aliased as <code>Ellipsis</code>: the only possible instance of <code>types.EllipsisType</code>)</li>
+<li><code>typing.NoDefault</code> (opaque; no public type exposed anywhere)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-18 21:39</div>
+            <div class="timeline-body"><p>Singleton types are a degenerate case of sealed types. They are sealed, but they don't require the handling discussed in this issue, since there is no equivalence to a union (except in the sense that all types are equivalent to a union of just that type, but we don't allow building size-one unions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] handle sealed types" to "handle sealed types" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:16</div>
+            <div class="timeline-body"><p>I think the only non-singleton, non-enum sealed type that we have to worry about in practice is <code>bool</code>. There are <a href="https://github.com/astral-sh/ty/issues/216">some rough edges there</a>, but in general we support the sealedness of <code>bool</code> pretty well at this point. Specific issues with the sealedness of <code>bool</code> are probably better tackled in standalone issues; support for enums is covered by https://github.com/astral-sh/ty/issues/183.</p>
+<p>Closing as completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-11 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

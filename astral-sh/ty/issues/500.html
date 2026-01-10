@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>induct into return types of Callable for typevar solving - astral-sh/ty #500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>induct into return types of Callable for typevar solving</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/500">#500</a>
+        opened by <a href="https://github.com/DouweM">@DouweM</a>
+        on 2025-05-23 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DouweM">@DouweM</a> on 2025-05-23 21:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've confirmed the following works in pyright, mypy, and pyrefly - but not in ty:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+from typing_extensions import (
+    Callable,
+    Generic,
+    TypeVar,
+    assert_type,
+)
+
+T = TypeVar(&quot;T&quot;)
+
+
+@dataclass
+class Agent(Generic[T]):
+    output_type: Callable[..., T]
+
+
+def func() -&gt; int:
+    return 1
+
+
+# pyright, mypy, pyrefly - works
+# ty - `Agent[int]` and `Agent[Unknown]` are not equivalent types + Expected `((...) -&gt; T) | ((...) -&gt; Awaitable[T])`, found `def func() -&gt; int`
+assert_type(Agent(func), Agent[int])
+
+# works
+assert_type(Agent[int](func), Agent[int])
+</code></pre>
+<details>
+
+<p>I'm hoping to also get <code>Callable[..., T] | Callable[..., Awaitable[T]]</code> to be inferred as the ultimate return type of the awaitable if an async function is passed rather than a regular one, but that's more tricky as it's ambiguous which side of the union should be matched. Note that pyright and pyrefly already handle this &quot;correctly&quot;, but not mypy.</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+from typing_extensions import (
+    Awaitable,
+    Callable,
+    Generic,
+    TypeVar,
+    assert_type,
+)
+
+T = TypeVar(&quot;T&quot;)
+
+
+@dataclass
+class Agent(Generic[T]):
+    output_type: Callable[..., T] | Callable[..., Awaitable[T]]
+
+
+async def coro() -&gt; bool:
+    return True
+
+
+# mypy - error: Argument 1 to &quot;Agent&quot; has incompatible type &quot;Callable[[], Coroutine[Any, Any, bool]]&quot;; expected &quot;Callable[..., Never] | Callable[..., Awaitable[Never]]&quot;  [arg-type]
+coro_agent = Agent(coro)
+# pyright, pyrefly - works
+# mypy - error: Expression is of type &quot;Agent[Any]&quot;, not &quot;Agent[bool]&quot;
+# ty - `Agent[bool]` and `Agent[Unknown]` are not equivalent types
+assert_type(coro_agent, Agent[bool])
+
+# works
+assert_type(Agent[bool](coro), Agent[bool])
+</code></pre>
+<p>It would be great to see both work in ty, but I'm also open to suggestions to do the latter in a less ambiguous way!</p>
+<ul>
+<li>This is related to a new PydanticAI feature, if you're curious check out https://github.com/pydantic/pydantic-ai/pull/1785#issuecomment-2905774110</li>
+</ul>
+</details>
+
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infer type of generic class from return type of callable passed to constructor" to "full structural induction for typevar inference" by @carljm on 2025-05-28 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-05-28 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "full structural induction for typevar inference" to "full structural induction for typevar solving" by @carljm on 2025-05-28 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-28 18:20</div>
+            <div class="timeline-body"><p>The first example requires our typevar solver to be more sophisticated; this is a known TODO but I don't think we have an issue for it, so we can use this one.</p>
+<p>The second example may turn out to belong in its own separate issue, but let's worry about that once we have the first covered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "full structural induction for typevar solving" to "induct into return types of Callable for typevar solving" by @carljm on 2025-05-29 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-29 22:32</div>
+            <div class="timeline-body"><p>Narrowing the focus of this issue even more to just return types of Callable -- handling Callable parameter types requires a contravariant constraint, which will require a more sophisticated solver; I'll make a new issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 16:28</div>
+            <div class="timeline-body"><p>With the narrowed scope to just covering return types of Callable, this should be pretty easy to add, just a new match arm in <code>SpecializationBuilder::infer</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-30 23:57</div>
+            <div class="timeline-body"><p>I can look into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-30 23:58</div>
+            <div class="timeline-body"><p>One thing i've seen that is unique here because of the use of <code>@dataclass</code> is that in <code>Bindings::check_types</code> there is a check
+<code>if signature.generic_context.is_some() || signature.inherited_generic_context.is_some()</code>, this is false for (what i believe to be) the <code>Agent.__init__</code>, so it does not get to <code>SpecializationBuilder::infer</code> at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-30 23:59</div>
+            <div class="timeline-body"><p>When i replace <code>Agent</code> with</p>
+<pre><code class="language-py">class Agent(Generic[T]):
+    output_type: Callable[..., T]
+
+    def __init__(self, output_type: Callable[..., T]):
+        self.output_type = output_type
+</code></pre>
+<p>it gets to the infer function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-31 00:05</div>
+            <div class="timeline-body"><p>@MatthewMckee4 let's start with just fixing it for the non-dataclass case, and then we can consider what additional fixes are needed for generic dataclasses (we probably don't set up the inherited generic context for the synthesized <code>__init__</code> method)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-31 00:06</div>
+            <div class="timeline-body"><p>Yeah, sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-31 00:20</div>
+            <div class="timeline-body"><p>@carljm do you know where i could put tests for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-31 00:28</div>
+            <div class="timeline-body"><p>@MatthewMckee4 I think the tests should go in <code>generics/legacy/functions.md</code> and <code>generics/pep695/functions.md</code>. Usually we add exactly the same test cases to each file, but using the legacy TypeVar syntax in one file, and PEP 695 syntax in the other. EDIT: sorry, just realized this issue is about inference of the type of a generic class, so that would belong in <code>generics/legacy/classes.md</code> and <code>generics/pep695/classes.md</code>. Though it would probably be a good idea to also test an example of similar inference based on a passed-in Callable callback when solving typevars for a generic function, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-29 10:06</div>
+            <div class="timeline-body"><p>An initial version of this that only works for the return type of <code>Callable</code>, similar to what https://github.com/astral-sh/ruff/pull/18398 tried to achieve, would be very valuable for <code>async</code>/<code>await</code>. It's not a blocker, but many <code>async</code>/<code>await</code> APIs need to re-map the return type of a callable. And failure to resolve these cases results in <code>Unknown</code> types everywhere. For example:</p>
+<pre><code class="language-py"># contextlib.asynccontextmanager
+def asynccontextmanager(func: Callable[_P, AsyncIterator[_T_co]]) -&gt; Callable[_P, _AsyncGeneratorContextManager[_T_co]]: ...
+
+# asyncio.loop.run_in_executor
+def run_in_executor(self, executor: Executor | None, func: Callable[[Unpack[_Ts]], _T], *args: Unpack[_Ts]) -&gt; Future[_T]: ...
+
+# types.coroutine
+def coroutine(func: Callable[_P, Generator[Any, Any, _R]]) -&gt; Callable[_P, Awaitable[_R]]: ...
+</code></pre>
+<p>I understand that some of these might require an even more sophisticated solver. And maybe adding another case to the current solver is merely a distraction from that goal. But if it's really relatively easy to add, it might have a huge impact on <code>async</code>/<code>await</code>-heavy code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-15 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

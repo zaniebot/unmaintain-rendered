@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support bare/implicit type aliases - astral-sh/ty #221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support bare/implicit type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/221">#221</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-01-09 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 18:56</div>
+            <div class="timeline-body"><p>We already support simple cases of bare type aliases (e.g. <code>MyInt = int</code>) if they fall out correctly from evaluating the RHS as a value expression. But for more complex (and useful!) cases (e.g. <code>MyType = int | str</code>) we fail because we evaluate the RHS as a value expression and it needs to be evaluated as a type expression.</p>
+<p>This requires some heuristics to decide what assignments should be treated as type aliases. (We should explore what other type checkers do here.)</p>
+<p>It will also require a decision about how to handle the use of something we have decided is a type alias, in a value expression. Is this forbidden? Or do we need to have two types for that particular name, one value-expression type and one type-expression type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-09 20:00</div>
+            <div class="timeline-body"><p>Just for reference, we have existing support for non-generic PEP 695 type aliases: <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/pep695_type_aliases.md">mdtests</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-22 11:59</div>
+            <div class="timeline-body"><p>This might also require changes to the LSP (Goto type definition)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] support type aliases (PEP 695, typing.TypeAlias, and bare/implicit)" to "support type aliases (PEP 695, typing.TypeAlias, and bare/implicit)" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 15:38</div>
+            <div class="timeline-body"><p>Here's a common implicit type alias case (from #275): https://play.ty.dev/1fa1c80b-f019-4d7d-8e59-80ad8e5fb2c4</p>
+<pre><code class="language-py">from typing import Literal
+
+HandleDupes = Literal[&quot;keep-first&quot;, &quot;keep-last&quot;, &quot;mean&quot;, None]
+
+def test(handle_dup_idx: HandleDupes = None):
+    if handle_dup_idx in (&quot;keep-first&quot;, &quot;keep-last&quot;):
+        # get possibly-unbound-attribute on next line
+        reveal_type(handle_dup_idx)
+    return None
+</code></pre>
+<p>We should know that the revealed type is <code>Literal[&quot;keep-first&quot;, &quot;keep-last&quot;]</code>, and we do if a PEP 695 type alias is used, or if the <code>HandleDupes</code> type is inlined into the parameter annotation, but we don't understand the implicit type alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support type aliases (PEP 695, typing.TypeAlias, and bare/implicit)" to "support bare/implicit type aliases" by @carljm on 2025-05-30 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:54</div>
+            <div class="timeline-body"><p>Repurposing this issue to cover just bare/implicit type aliases, and added https://github.com/astral-sh/ty/issues/544 for <code>typing.TypeAlias</code>. We already have pretty good support for PEP 695 type aliases (modulo needing better support for recursive aliases.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-08-15 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andythomas">@andythomas</a> on 2025-08-26 20:19</div>
+            <div class="timeline-body"><p>I am not sure if this is also a duplicate as the linked #1025</p>
+<pre><code class="language-python">import numpy
+
+a = [3.2, 4.3]
+b = numpy.int8(a)[0]
+print(b)
+</code></pre>
+<p>It correctly prints <code>3</code> and <code>ty</code> says:</p>
+<pre><code>error[non-subscriptable]: Cannot subscript object of type `signedinteger[_8Bit]` with no `__getitem__` method
+ --&gt; test_np.py:4:5
+  |
+3 | a = [3.2, 4.3]
+4 | b = numpy.int8(a)[0]
+  |     ^^^^^^^^^^^^^
+  |
+info: rule `non-subscriptable` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @MichaReiser on 2025-10-17 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @MichaReiser on 2025-10-17 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 21:06</div>
+            <div class="timeline-body"><p>(Possibly incomplete) list of things that we need to support</p>
+<ul>
+<li>[x] PEP 604 unions</li>
+<li>[x] <code>Literal</code></li>
+<li>[x] <code>LiteralString</code> / <code>NoReturn</code> / <code>Never</code></li>
+<li>[x] <code>Annotated</code></li>
+<li>[x] <code>Optional</code></li>
+<li>[x] <code>Tuple</code></li>
+<li>[x] <code>Union</code></li>
+<li>[x] <code>type[…]</code>, <code>Type[…]</code></li>
+<li>[x] <code>List</code>, <code>Dict</code>, <code>Set</code>, <code>FrozenSet</code>, <code>ChainMap</code>, <code>Counter</code>, <code>DefaultDict</code>, <code>Deque</code>, <code>OrderedDict</code></li>
+<li>[x] <code>Callable[…]</code></li>
+<li>[x] Explicit specialization of implicit type aliases that are generic</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-21 15:09</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/573 and https://github.com/astral-sh/ty/issues/1429 are bugs that were closed as duplicates of https://github.com/astral-sh/ty/issues/544 (TypeAlias support) but don't yet work correctly with that fix landed. I suspect they require the generic type alias support, so we should check them again once that lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-28 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-28 19:40</div>
+            <div class="timeline-body"><p>We now have reasonable support for implicit type aliases, including generic ones. There are a few remaining open points (e.g. usage of <em>unspecialized</em> generic implicit type aliases in type annotations, self-referential generic implicit type aliases). I will open a new ticket listing them next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-28 19:41</div>
+            <div class="timeline-body"><blockquote>
+<p>https://github.com/astral-sh/ty/issues/573 and https://github.com/astral-sh/ty/issues/1429 are bugs that were closed as duplicates of https://github.com/astral-sh/ty/issues/544 (TypeAlias support) but don't yet work correctly with that fix landed. I suspect they require the generic type alias support, so we should check them again once that lands.</p>
+</blockquote>
+<ul>
+<li>#573 will be resolved by https://github.com/astral-sh/ruff/pull/21553</li>
+<li>#1429 will <em>not</em> be resolved by https://github.com/astral-sh/ruff/pull/21553. It looks like that will also require support for generic protocols in the constraint solver. I will reopen it.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 09:42</div>
+            <div class="timeline-body"><blockquote>
+<p>There are a few remaining open points (e.g. usage of <em>unspecialized</em> generic implicit type aliases in type annotations, self-referential generic implicit type aliases).</p>
+</blockquote>
+<p>The first point has already been addressed in https://github.com/astral-sh/ruff/pull/21765. I further opened these two tickets to track the remaining open issues around generic implicit/PEP613 type aliases:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/1739</li>
+<li>https://github.com/astral-sh/ty/issues/1738</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:56 UTC
+    </footer>
+</body>
+</html>

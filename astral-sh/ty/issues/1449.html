@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can not assign object of type ... on type `Self@__init__` with custom `__setattr__` method - astral-sh/ty #1449</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can not assign object of type ... on type `Self@__init__` with custom `__setattr__` method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1449">#1449</a>
+        opened by <a href="https://github.com/karlicoss">@karlicoss</a>
+        on 2025-10-28 00:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-10-28 00:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>While trying to type check some torch code on <code>0.0.1a24</code>, I got some confusing errors, which I narrowed down to this minimal example</p>
+<p>https://play.ty.dev/cda201e7-dab6-422d-9e90-c03c2268a000</p>
+<pre><code>Can not assign object of type `Literal[123]` to attribute `attr` on type `Self@__init__` with custom `__setattr__` method. (unresolved-attribute) [Ln 11, Col 9]
+</code></pre>
+<p>If I change type of <code>value: </code> to <code>int</code> or <code>Any</code>, this type checks in <code>ty</code>. I guess <code>ty</code> is correct, it's just the error message could be improved?</p>
+<p>Also interesting enough, both ty and mypy reveal the type of <code>self.attr</code> as <code>Literal[123]</code> or <code>int</code>, however in runtime this would fail because I haven't actually implemented the <code>__setattr__</code> properly. I guess this is just best effort heuristics since we don't know what happens inside <code>__setattr__</code>?</p>
+<h3>Version</h3>
+<p>0.0.1a24 (latest/playground version db0e921db)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-10-28 00:43</div>
+            <div class="timeline-body"><p>Also in case someone else runs into this -- the original torch code that <code>ty</code> complained about was something like this:</p>
+<pre><code>import torch.nn as nn
+
+class Model(nn.Module):
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.count = 123
+
+    def forward(self):
+        return self.count
+
+
+model = Model()
+print(model.forward())
+</code></pre>
+<p>The error was coming from <code>value: Union[Tensor, &quot;Module&quot;]</code> defined <a href="https://github.com/pytorch/pytorch/blob/47f50cfd456313d8b46fcc7a1f6de477aa0a5aee/torch/nn/modules/module.py#L1976-L1983">here</a>. It worked in runtime for my somewhat unorthodox usecase of torch, but guess <code>ty</code> is correct and I should use <code>nn.Parameter</code> or <code>Buffer</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-28 09:18</div>
+            <div class="timeline-body"><blockquote>
+<p>If I change type of <code>value: </code> to <code>int</code> or <code>Any</code>, this type checks in <code>ty</code>. I guess <code>ty</code> is correct, it's just the error message could be improved?</p>
+</blockquote>
+<p>Yes, I think ty is behaving as expected here, but we can certainly try to improve the error message. I assume it would have been more helpful if we would clearly state something like: &quot;The assignment to the attribute <code>attr</code> calls the custom <code>__setattr__</code> method defined at …, but the call failed for the following reason: Expected <code>str</code> for parameter <code>value</code>, got argument of type <code>int</code>&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-28 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/weebao">@weebao</a> on 2025-11-01 23:57</div>
+            <div class="timeline-body"><p>I'm also getting this for</p>
+<pre><code class="language-python">class Model(nn.Module):
+    def __init__(self, a=4):
+        self.a = a
+</code></pre>
+<pre><code>Can not assign object of type `Unknown | Literal[4]` 
+to attribute `a` on type `Self@__init__` with custom `__setattr__` method. (ty-unresolved-attribute)
+</code></pre>
+<p>I believe ty's mantra is that removing a type annotation should not cause a type error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:27</div>
+            <div class="timeline-body"><p>This is the same issue as https://github.com/astral-sh/ty/issues/1460 -- closing this one as duplicate since that one already has a proposed direction (we should handle <code>__setattr__</code> precedence more like how other type checkers handle it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-03 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

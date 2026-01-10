@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] `infer_scope_types(Id(10403)): execute: too many cycle iterations` - astral-sh/ty #1174</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] `infer_scope_types(Id(10403)): execute: too many cycle iterations`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1174">#1174</a>
+        opened by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a>
+        on 2025-09-11 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-09-11 21:57</div>
+            <div class="timeline-body"><p>uv run ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 42/42 files                                               error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking <code>/Users/&lt;REDACTED&gt;/projects/&lt;REDACTED&gt;/db/database.py</code>: <code>infer_scope_types(Id(10403)): execute: too many cycle iterations</code>
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: 0.0.1-alpha.19 (e9cb838b3 2025-08-19)
+info: Args: [&quot;ty&quot;, &quot;check&quot;]
+info: run with <code>RUST_BACKTRACE=1</code> environment variable to show the full backtrace information
+info: query stacktrace:
+0: check_file_impl(Id(2c00))
+at crates/ty_project/src/lib.rs:527</p>
+<p>Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-09-11 22:04</div>
+            <div class="timeline-body"><p>Error appears to be limited to a single file in my project:</p>
+<pre><code class="language-shell">uv run ty check db/database.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                 error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25
+</code></pre>
+<p>I test ran directly on some other files in the project and they all passed successfully:</p>
+<pre><code class="language-shell">uv run ty check db/models/types.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                 All checks passed!
+
+uv run ty check app/main.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                 All checks passed!
+
+uv run ty check app/dependencies.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                 All checks passed!
+
+</code></pre>
+<p>I can't provide the contents of <code>db/database.py</code> publicly but if there is something specific you would like me to check for, please let me know and I would be happy to check it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-09-11 22:09</div>
+            <div class="timeline-body"><p>Something else of note - I am also running <code>ty server</code> with LSP in PyCharm and it not throwing any error's when checking <code>db/database.py</code>, so based on this, I ran the following with the global install and it worked ok:</p>
+<pre><code class="language-shell">ty check db/database.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                 All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-09-11 22:12</div>
+            <div class="timeline-body"><pre><code class="language-shell">╰─ uv run ty version
+ty 0.0.1-alpha.19 (e9cb838b3 2025-08-19)
+
+
+╰─ ty version
+ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-09-11 22:17</div>
+            <div class="timeline-body"><p>Updated project requirement for ty to <code>&quot;ty&gt;=0.0.1a20&quot;</code> and issue is now resolved:</p>
+<pre><code class="language-shell">╰─ uv sync
+Resolved 102 packages in 3.34s
+      Built &lt;REDACTED&gt; @ file:///Users/&lt;REDACTED&gt;/projects/&lt;REDACTED&gt;
+Prepared 2 packages in 1.03s
+Uninstalled 2 packages in 8ms
+Installed 2 packages in 4ms
+ ~ &lt;REDACTED&gt;==1.6.0.0 (from file:///Users//&lt;REDACTED&gt;/projects/&lt;REDACTED&gt;)
+ - ty==0.0.1a19
+ + ty==0.0.1a20
+
+╰─ uv run ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 42/42 files                                               All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @RandomBrainCode on 2025-09-11 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement the overload call site evaluation algorithm - astral-sh/ty #104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement the overload call site evaluation algorithm</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/104">#104</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-01 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-01 19:33</div>
+            <div class="timeline-body"><p>Reference spec: https://typing.python.org/en/latest/spec/overload.html#overload-call-evaluation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement the call site evaluation algorithm as mentioned in the spec" to "[red-knot] Implement the overload call site evaluation algorithm" by @dhruvmanila on 2025-05-01 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-01 19:35</div>
+            <div class="timeline-body"><p>~I'm marking this as &quot;Alpha&quot; milestone because I want to try to implement some parts of it before then if possible otherwise the complete implementation would be completed before the &quot;Beta&quot; milestone. Happy to move it directly to &quot;Beta&quot; if other prefer.~</p>
+<p>Moved to beta as I don't think I'll have time to implement any part of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-06 01:50</div>
+            <div class="timeline-body"><p>Here's a concrete example of an issue with overloads I ran into trying out ty on some sample code:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def x(func):
+    func = getattr(func, &quot;__func__&quot;, func)
+    reveal_type(func)
+</code></pre>
+<p>This <a href="https://playknot.ruff.rs/97839168-8660-478a-8d6d-303b3faee560">produces</a> <code>Any | None</code> but should be <code>Any</code>. <a href="https://github.com/python/typeshed/blob/4265ee7c72f476e7156949e55784fd82b40e6953/stdlib/builtins.pyi#L1444">Definition in typeshed</a> for reference.</p>
+<p>(Just mentioning this as an example that probably a good number of people trying out the alpha will run into.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Implement the overload call site evaluation algorithm" to "Implement the overload call site evaluation algorithm" by @MichaReiser on 2025-05-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-05-10 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-05-21 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-12 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>This <a href="https://playknot.ruff.rs/97839168-8660-478a-8d6d-303b3faee560">produces</a> <code>Any | None</code> but should be <code>Any</code>. <a href="https://github.com/python/typeshed/blob/4265ee7c72f476e7156949e55784fd82b40e6953/stdlib/builtins.pyi#L1444">Definition in typeshed</a> for reference.</p>
+</blockquote>
+<p>Just to confirm that this should produce <code>Any</code> because the overload matching is ambiguous and so the return type should be <code>Any</code>, is this correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-12 13:55</div>
+            <div class="timeline-body"><p>I think so, I haven't fully worked the example through the spec but Any is clearly the right answer from a user perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-13 04:37</div>
+            <div class="timeline-body"><p>I think it should be <code>Any</code> according to the spec.</p>
+<p>Pasting the definition from the above mentioned linked commit here for better visibility:</p>
+<pre><code class="language-py">@overload
+def getattr(o: object, name: str, /) -&gt; Any: ...
+
+# While technically covered by the last overload, spelling out the types for None, bool
+# and basic containers help mypy out in some tricky situations involving type context
+# (aka bidirectional inference)
+@overload
+def getattr(o: object, name: str, default: None, /) -&gt; Any | None: ...
+@overload
+def getattr(o: object, name: str, default: bool, /) -&gt; Any | bool: ...
+@overload
+def getattr(o: object, name: str, default: list[Any], /) -&gt; Any | list[Any]: ...
+@overload
+def getattr(o: object, name: str, default: dict[Any, Any], /) -&gt; Any | dict[Any, Any]: ...
+@overload
+def getattr(o: object, name: str, default: _T, /) -&gt; Any | _T: ...
+</code></pre>
+<p>And, the call:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def x(func):
+    func = getattr(func, &quot;__func__&quot;, func)
+    reveal_type(func)
+</code></pre>
+<p>The argument types are <code>(Unknown, Literal[&quot;__func__&quot;], Unknown)</code> (can substitute <code>Unknown</code> with <code>Any</code>).</p>
+<p>According to the spec:</p>
+<ol>
+<li>Arity check would filter out the first overload because it only accepts two arguments</li>
+<li>Type checking would keep all the remaining overloads</li>
+<li>Step 3 is skipped since step 2 did not result in errors for all overloads</li>
+<li>Step 4 has no effect, since neither overload has a variadic parameter</li>
+<li>For simplicity, we'll only consider the third argument as that's where the parameter types differ and is more relevant here. All materializations of <code>Unknown</code> are not assignable to any of the (first) 4 (out of the 5) remaining overloads, it's assignable to only the last overload. This means that none of the overloads are filtered out. Here, the return types of the remaining overloads are not equivalent, so the final return type of this call would be <code>Any</code></li>
+</ol>
+<p>This is what ty does in https://github.com/astral-sh/ruff/pull/18607.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-27 15:36</div>
+            <div class="timeline-body"><p>I'm going to mark this as resolved as there's only one step remaining and I think it's easy enough once argument splatting has landed on <code>main</code> and it has it's own issue to keep track of.</p>
+<p>A follow-up here w.r.t. generics is #669.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-27 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:50 UTC
+    </footer>
+</body>
+</html>

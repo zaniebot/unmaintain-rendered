@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>list comprehension with None (falsy) values filtered by condition - astral-sh/ty #680</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>list comprehension with None (falsy) values filtered by condition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/680">#680</a>
+        opened by <a href="https://github.com/pawamoy">@pawamoy</a>
+        on 2025-06-18 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-06-18 14:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">import os
+
+
+def func(param: str) -&gt; str:
+    return param
+
+
+l = [func(val) for var in (&quot;HELLO&quot;, &quot;WORLD&quot;) if (val := os.getenv(var))]
+</code></pre>
+<pre><code class="language-console">% uvx ty check t.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `func` is incorrect
+ --&gt; t.py:8:11
+  |
+8 | l = [func(val) for var in (&quot;HELLO&quot;, &quot;WORLD&quot;) if (val := os.getenv(var))]
+  |           ^^^ Expected `str`, found `str | None`
+  |
+info: Function defined here
+ --&gt; t.py:4:5
+  |
+4 | def func(param: str) -&gt; str:
+  |     ^^^^ ---------- Parameter declared here
+5 |     return param
+  |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Here <code>func</code> cannot ever be called with <code>None</code> since such falsy values are filtered by the list comprehension condition <code>if (val := os.getenv(var))</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 14:59</div>
+            <div class="timeline-body"><p>haven't looked in depth but this might be the same underlying issue as #626</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @carljm on 2025-06-18 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-06-18 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-23 06:35</div>
+            <div class="timeline-body"><blockquote>
+<p>haven't looked in depth but this might be the same underlying issue as <a href="https://github.com/astral-sh/ty/issues/626">#626</a></p>
+</blockquote>
+<p>I don't think so? There's no boolean operator here, and something like the following works just fine:</p>
+<pre><code class="language-py">if val := os.getenv(&quot;HELLO&quot;):
+    func(val)
+</code></pre>
+<p>It looks like we don't record narrowing constraints for generator expressions at all (<a href="https://github.com/astral-sh/ruff/blob/e1809752269c65418f396671afac042bec3b7a86/crates/ty_python_semantic/src/semantic_index/builder.rs#L857-L859">ref</a>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-25 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

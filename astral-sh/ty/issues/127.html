@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silence all diagnostics in unreachable code? - astral-sh/ty #127</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Silence all diagnostics in unreachable code?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/127">#127</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-14 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-14 11:02</div>
+            <div class="timeline-body"><p>Our current approach to silencing only a subset of diagnostics in unreachable sections of code has some issues. They are <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md#limitations-of-the-current-approach">documented here</a>. In short, we still emit false positives in some cases:</p>
+<pre><code class="language-py">if False:
+    x: int = 1
+else:
+    x: str = &quot;a&quot;
+
+if False:
+    # TODO We currently emit a false positive here:
+    # error: [invalid-assignment] &quot;Object of type `Literal[&quot;a&quot;]` is not assignable to `int`&quot;
+    other: int = x
+else:
+    other: str = x
+</code></pre>
+<p>We should re-evaluate if it makes more sense to silence <em>all</em> diagnostics (possibly with a very limited set of exceptions, like <code>reveal_type</code>-messages) in unreachable sections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Silence *all* diagnostics in unreachable code?" to "[red-knot] Silence all diagnostics in unreachable code?" by @sharkdp on 2025-04-14 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Silence all diagnostics in unreachable code?" to "Silence all diagnostics in unreachable code?" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-11 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 11:42</div>
+            <div class="timeline-body"><p>Example from #511:</p>
+<pre><code class="language-py">import sys
+from typing import Union
+
+if sys.version_info &gt;= (3, 10):
+    T = str | None
+else:
+    T = Union[str, None]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> added by @sharkdp on 2025-05-26 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 12:10</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/443 includes another example which we solved (temporarily) by ignoring <code>division-by-zero</code> diagnostics by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-05-27 00:19</div>
+            <div class="timeline-body"><p>(btw the link in the issue description is broken, here's the correct one https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md )</p>
+<hr />
+<p>Another case where silencing all diagnostic might be useful is tests guarded by <code>pytest.skip</code>. pytest.skip is a bit broken atm <a href="https://github.com/astral-sh/ruff/pull/17832#issuecomment-2855425767">due to a different issue</a>, so I just simulated it with <code>sys.exit</code></p>
+<pre><code>from pathlib import Path
+from typing import Never
+import sys
+
+def pytest_skip() -&gt; Never:  # ty: ignore[invalid-return-type]
+    sys.exit(0)
+
+def test_using_path_walk() -&gt; None:
+    if sys.version_info &lt; (3, 12):
+        pytest_skip()
+
+    # Path.walk only available from 3.12
+    Path('.').walk()
+</code></pre>
+<p>Arguably, this test could have been <code>@pytest.mark.skipIf(sys.version_info &lt; (3, 12))</code>, but that would be even harder to support -- not sure if it's possible to propagate this information through <code>pytest.skipIf</code> and back to the type checker? E.g. <code>mypy --python-version 3.11</code> passes the example with <code>pytest.skip()</code>, but not with <code>skipIf</code></p>
+<hr />
+<p>FWIW, in my experience, silencing everything in unreachable branches in mypy hasn't been an issue -- but I can't really remember any case where it wasn't due to <code>sys.version_info</code> guards. And in these cases I have a CI matrix testing all python versions I care about anyway so ultimately they all end up covered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-27 06:19</div>
+            <div class="timeline-body"><p>The unresolved-attribute error on <code>Path('.').walk()</code> should actually disappear in this specific example once we implement #180. You can test this by replacing the <code>pytest_skip()</code> call with <code>return</code> in that example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 08:04</div>
+            <div class="timeline-body"><p>With https://github.com/astral-sh/ruff/pull/18621 merged, we now silence a whole new class of diagnostics in unreachable code (when there is conflicting type information, like in the issue description example). I am currently not aware of any limitations of our approach, except for #667 which I reported separately. It is certainly possible that we are still missing something (issues similar to #667 where we mistakenly report diagnostics when symbols in type annotations are <code>Never</code> or <code>Unknown</code>), but I'm closing this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-17 08:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:51 UTC
+    </footer>
+</body>
+</html>

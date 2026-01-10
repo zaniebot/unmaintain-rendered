@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>return (foo async for foo in bar) incorrectly marked as GeneratorType instead of AsyncGenerator type - astral-sh/ty #1125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>return (foo async for foo in bar) incorrectly marked as GeneratorType instead of AsyncGenerator type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1125">#1125</a>
+        opened by <a href="https://github.com/hinthornw">@hinthornw</a>
+        on 2025-09-03 23:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hinthornw">@hinthornw</a> on 2025-09-03 23:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>(or could be some different root cause. in any case it was unexpected)</p>
+<p>ty flags both of the following as incorrect in alpha.20 regardless of whether it's typed as AsyncIterator or AsyncGenerator, while it passes in previous versions.</p>
+<pre><code class="language-python"># foo.py
+import asyncio
+from collections.abc import AsyncIterator, AsyncGenerator
+
+
+async def consume():
+    for i in range(10):
+        yield i
+
+
+async def fn1() -&gt; AsyncGenerator:
+    return (bar async for bar in consume())
+
+
+async def fn2() -&gt; AsyncIterator:
+    return (bar async for bar in consume())
+
+
+async def both():
+    async for i in await fn1():
+        print(f&quot;foo: {i}&quot;)
+    async for i in await fn2():
+        print(f&quot;foo: {i}&quot;)
+
+
+asyncio.run(both())
+
+</code></pre>
+<pre><code class="language-shell">➜  code git:(main) ✗ uvx --from &quot;ty==0.0.1-alpha.19&quot; ty check foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                  All checks passed!
+</code></pre>
+<p>but:</p>
+<pre><code class="language-shell">➜  code git:(main) ✗ uvx --from &quot;ty==0.0.1-alpha.20&quot; ty check foo.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                  error[invalid-return-type]: Return type does not match returned value
+  --&gt; foo.py:10:20
+   |
+10 | async def foo() -&gt; AsyncGenerator:
+   |                    -------------- Expected `AsyncGenerator[Unknown, None]` because of return type
+11 |     return (bar async for bar in consume())
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `AsyncGenerator[Unknown, None]`, found `GeneratorType[@Todo, @Todo, @Todo]`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+error[invalid-return-type]: Return type does not match returned value
+  --&gt; foo.py:14:20
+   |
+14 | async def foo() -&gt; AsyncIterator:
+   |                    ------------- Expected `AsyncIterator[Unknown]` because of return type
+15 |     return (bar async for bar in consume())
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `AsyncIterator[Unknown]`, found `GeneratorType[@Todo, @Todo, @Todo]`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty==0.0.1-alpha.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hinthornw on 2025-09-03 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hinthornw">@hinthornw</a> on 2025-09-03 23:40</div>
+            <div class="timeline-body"><p>lol premature apologies for the noise</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

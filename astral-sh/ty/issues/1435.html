@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enum literals are no longer considered subtypes of the enum-class instance unioned with `AlwaysTruthy` - astral-sh/ty #1435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enum literals are no longer considered subtypes of the enum-class instance unioned with `AlwaysTruthy`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1435">#1435</a>
+        opened by <a href="https://github.com/github-actions">@github-actions</a>
+        on 2025-10-24 12:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/github-actions">@github-actions</a> on 2025-10-24 12:11</div>
+            <div class="timeline-body"><p>Run listed here: https://github.com/astral-sh/ty/actions/runs/18779122084</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @github-actions[bot] on 2025-10-24 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @github-actions[bot] on 2025-10-24 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-10-24 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 12:27</div>
+            <div class="timeline-body"><p>Minimal repro:</p>
+<pre><code class="language-py">from ty_extensions import AlwaysTruthy, is_subtype_of
+from typing import Literal
+import enum
+
+class X(enum.Enum):
+    A = 1
+
+reveal_type(is_subtype_of(Literal[X.A], X))  # Literal[True]
+reveal_type(is_subtype_of(Literal[X.A], X | AlwaysTruthy))  # Literal[False]!
+</code></pre>
+<p>Almost certainly the immediate cause was https://github.com/astral-sh/ruff/pull/21049, but it looks like that probably just exposed a pre-existing bug of some kind here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Daily property test run failed on Fri Oct 24 2025" to "Enum literals are no longer considered subtypes of the enum-class instance unioned with `AlwaysTruthy`" by @AlexWaygood on 2025-10-24 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 12:31</div>
+            <div class="timeline-body"><p>Okay, the issue is that we now correctly simplify the union <code>X | AlwaysTruthy</code> to <code>AlwaysTruthy</code>: <code>X</code> is a <code>@final</code> class (because it is an enum class with members that doesn't override <code>__bool__</code> or <code>__len__</code>), so all instances of <code>X</code> will always be truthy, so <code>X</code> is a subtype of <code>AlwaysTruthy</code>. But although we now recognise <code>X</code> as a subtype of <code>AlwaysTruthy</code>, we do not yet recognise <code>Literal[X.A]</code> as a subtype of <code>AlwaysTruthy</code>, so this simplification of the union breaks our understanding of the subtype relationship.</p>
+<p>Should be easy to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-10-24 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-24 13:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

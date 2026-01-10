@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mdtest panics with an opaque error message if the last line of an embedded Python file is a `# revealed` assertion - astral-sh/ty #1512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mdtest panics with an opaque error message if the last line of an embedded Python file is a `# revealed` assertion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1512">#1512</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-10 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 10:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>To reproduce, apply this edit to the Ruff <code>main</code> branch:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/async.md b/crates/ty_python_semantic/resources/mdtest/async.md
+index 0d57f4d8f8..e1c08c8b28 100644
+--- a/crates/ty_python_semantic/resources/mdtest/async.md
++++ b/crates/ty_python_semantic/resources/mdtest/async.md
+@@ -10,6 +10,8 @@ async def main():
+     result = await retrieve()
+ 
+     reveal_type(result)  # revealed: int
++
++# revealed: int
+ ```
+</code></pre>
+<p>And then run <code>cargo test -p ty_python_semantic --test=mdtest</code>. The output is this:</p>
+<pre><code>failures:
+
+---- mdtest__async stdout ----
+
+async.md - `async` / `await` - Generic `async` func… (a4b8ea993d302151)
+
+
+thread 'mdtest__async' (27624398) panicked at crates/ty_test/src/parser.rs:289:47:
+Relative line number out of bounds
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    mdtest__async
+
+test result: FAILED. 281 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.31s
+</code></pre>
+<p>The <code># revealed: int</code> assertion is obviously invalid, because there is no line of Python below it containing a <code>reveal_type</code> call. But it would be better if we reported this as an mdtest diagnostic with a clear error message, rather than panicking with an opaque error message. That's the approach we take in other cases -- e.g. if I apply this diff to <code>main</code>:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/async.md b/crates/ty_python_semantic/resources/mdtest/async.md
+index 0d57f4d8f8..c53b8e07ec 100644
+--- a/crates/ty_python_semantic/resources/mdtest/async.md
++++ b/crates/ty_python_semantic/resources/mdtest/async.md
+@@ -9,7 +9,7 @@ async def retrieve() -&gt; int:
+ async def main():
+     result = await retrieve()
+ 
+-    reveal_type(result)  # revealed: int
++    reveal_type(result)  # revealed:
+ ```
+ 
+ ## Generic `async` functions
+</code></pre>
+<p>then mdtest reports:</p>
+<pre><code>────────────────────────────────────────────────────────────────────────── Test for async.md failed ──────────────────────────────────────────────────────────────────────────
+
+async.md - `async` / `await` - Basic (9c6054d8af10676d)
+
+  crates/ty_python_semantic/resources/mdtest/async.md:12 invalid assertion: Must specify which type should be revealed
+  crates/ty_python_semantic/resources/mdtest/async.md:12 used built-in `reveal_type`: add a `# revealed` assertion on this line (original diagnostic: 5 [undefined-reveal] &quot;`reveal_type` used without importing it&quot;)
+  crates/ty_python_semantic/resources/mdtest/async.md:12 unexpected error: 17 [revealed-type] &quot;Revealed type: `int`&quot;
+```
+</code></pre>
+<p>which is a clear error message that identifies the cause of the failing assertion</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-10 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-11-10 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-11-10 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on 2025-11-12 23:29</div>
+            <div class="timeline-body"><p>Hi ! I tried something in the linked PR.
+This is my first contribution to ty, I tried to adhere to the guidelines and contributing guide as much as I could but can't promise stellar work, thanks for tagging the PR as I was not sure about them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-16 08:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:40 UTC
+    </footer>
+</body>
+</html>

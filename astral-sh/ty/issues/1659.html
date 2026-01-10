@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type information not propagated through `match` case statement - astral-sh/ty #1659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type information not propagated through `match` case statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1659">#1659</a>
+        opened by <a href="https://github.com/save-buffer">@save-buffer</a>
+        on 2025-11-27 19:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/save-buffer">@save-buffer</a> on 2025-11-27 19:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi, I noticed that the value of an assignment in a match expression doesn't seem to get propagated into type checking, but I was hoping it would be since it seems relatively straightforward to deduce all the possible values of the assigned variable.</p>
+<p>Version:</p>
+<pre><code>% ty --version
+ty 0.0.1-alpha.28 (8c342496a 2025-11-25)
+</code></pre>
+<p>The &quot;share&quot; button on the playground doesn't seem to be working for me (the link is not appearing in my clipboard!) so here's my repro pasted here. Thanks!</p>
+<pre><code class="language-py">from typing import Literal
+
+
+T = Literal[&quot;+&quot;, &quot;-&quot;, &quot;*&quot;, &quot;/&quot;]
+
+
+def foo(x : str) -&gt; T | None:
+    match fst := x[0]:
+        case &quot;+&quot; | &quot;-&quot;:
+            return fst
+        case _:
+            return None
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28 (8c342496a 2025-11-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-27 19:54</div>
+            <div class="timeline-body"><p>Note that this is not unique to <code>match</code>, we similarly don't refine <code>str</code> to <code>Literal</code> if we see a check in an <code>if</code>, the following complains that <code>return fst</code> does not satisfy <code>T | None</code>:</p>
+<pre><code class="language-py">from typing import Literal
+
+T = Literal[&quot;+&quot;, &quot;-&quot;, &quot;*&quot;, &quot;/&quot;]
+
+def foo(x : str) -&gt; T | None:
+    fst = x[0]
+    if fst == &quot;+&quot;:
+        return fst
+    return None
+</code></pre>
+<p>Related to:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/887</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-27 20:01</div>
+            <div class="timeline-body"><p>Thanks for the report! Python dispatches on <code>match</code> arms based on equality if the <code>match</code> pattern is a literal string, so it's actually unsafe to do this kind of type narrowing. Please see https://github.com/astral-sh/ty/issues/1566</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-27 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-11-27 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/save-buffer">@save-buffer</a> on 2025-11-27 20:03</div>
+            <div class="timeline-body"><p>Got it, thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:45 UTC
+    </footer>
+</body>
+</html>

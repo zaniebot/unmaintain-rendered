@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support &quot;egglog&quot; project layout - astral-sh/ty #1120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support &quot;egglog&quot; project layout</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1120">#1120</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-09-03 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-03 11:41</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/egraphs-good/egglog-python">egglog-python</a> project uses a layout where the Python source code is kept under <code>python/egglog</code> and tests are under <code>python/tests</code>. We can simulate this layout using something like</p>
+<pre><code>▶ tree           
+.
+└── python
+    ├── my_package
+    │   └── __init__.py
+    └── tests
+        └── test.py
+</code></pre>
+<p>with <code>python/my_package/__init__.py</code> containing</p>
+<pre><code class="language-py">class C: ...
+</code></pre>
+<p>and <code>python/tests/test.py</code> containing</p>
+<pre><code class="language-py">from my_package import C
+</code></pre>
+<p>Both <code>pyright</code> and <code>mypy</code> handle this layout just fine without any configuration (I verified that they actually check the source files):</p>
+<pre><code>▶ pyright                 
+0 errors, 0 warnings, 0 informations
+
+▶ mypy .                  
+Success: no issues found in 2 source files
+</code></pre>
+<p><code>pyrefly</code> doesn't work with that layout by default, but if you explicitly pass <code>python</code> as a path, it also works fine:</p>
+<pre><code class="language-py">▶ pyrefly check python/ 
+ INFO 0 errors
+</code></pre>
+<p><code>ty</code> does not support this layout, even if the path is passed explicitly:</p>
+<pre><code>▶ ty check --output-format=concise                                              
+test.py:1:6: error[unresolved-import] Cannot resolve imported module `my_package`
+Found 1 diagnostic
+
+▶ ty check --output-format=concise python                                       
+test.py:1:6: error[unresolved-import] Cannot resolve imported module `my_package`
+Found 1 diagnostic
+</code></pre>
+<p>This can be fixed by passing <code>--extra-search-path python</code>, but I wonder if ty should support this out of the box somehow? At least when calling <code>ty check python</code>?</p>
+<p>Related PR: https://github.com/astral-sh/ruff/pull/20078</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @sharkdp on 2025-09-03 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-09-03 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-03 15:41</div>
+            <div class="timeline-body"><p>I wonder what heuristics other type checkers are using to determine the import root (&quot;project root&quot;) in this case. The answer we want is that the project root is <code>python/</code>. I think our current heuristic, if <code>--project</code> is not specified explicitly on the CLI, is (something like -- would need to double check the code) the project root is wherever we find a <code>pyproject.toml</code> or <code>ty.toml</code> (fallback to CWD if we don't find one?), and then we have a special case for the source code being kept inside a <code>src/</code> subdirectory. Effectively this layout is the same, except with <code>python/</code> instead of <code>src/</code>. We could easily just add <code>python/</code> subdir as an automatically-handled special case, like <code>src/</code>.</p>
+<p>It's also possible to use heuristics involving presence or absence of an <code>__init__.py</code> in a directory (e.g. we decide that <code>python/</code> is a &quot;container&quot; directory, not a top-level package, because it has no <code>__init__.py</code>). But this is risky because lack of <code>__init__.py</code> doesn't mean a module isn't a Python package, it can be a namespace package (and sometimes that's done accidentally because it works fine at runtime, even if there's no intention for it to be a namespace package.)</p>
+<p>It would also be possible to just always add the path given on the CLI as a search path, but this can also lead to confusing errors if a sub-package directory is passed on CLI, and there's a submodule in that directory with a name that clashes with a top-level module name.</p>
+<p>BTW I think the &quot;correct&quot; way to handle this today in ty is not <code>--extra-search-paths</code> but <code>--project</code>, e.g. <code>ty check --project python/</code>. Or of course it can be configured in the <code>pyproject.toml</code> or <code>ty.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-03 16:16</div>
+            <div class="timeline-body"><blockquote>
+<p>BTW I think the &quot;correct&quot; way to handle this today in ty is not <code>--extra-search-paths</code> but <code>--project</code>, e.g. <code>ty check --project python/</code>. Or of course it can be configured in the <code>pyproject.toml</code> or <code>ty.toml</code>.</p>
+</blockquote>
+<p>That will affect pyproject.toml and ty.toml discovery as well as first-party search paths -- I agree <code>--extra-search-path</code> is not the answer here (those search paths take precedence over even the vendored typeshed stubs in module resolution!), but the best way to set this from the command line right now is probably <code>ty check --config &quot;environment.root = ['./python']&quot;</code>. See https://docs.astral.sh/ty/modules/#first-party-modules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-03 16:22</div>
+            <div class="timeline-body"><p>Of course, if the user has a virtual environment activated -- and if you're working on a Python project locally, you'd usually either have one explicitly activated in your shell or you'd use a project-management tool like uv/poetry/hatch/pdm/flit/etc. that always has it implicitly activated prior to executing any commands -- then the <code>./python</code> directory will be added as a search path anyway. It'll be editably installed in the <code>site-packages</code> directory, and so we'd pick up the editable installation naturally if the user invoked ty using <code>uv run ty</code> or <code>uv run --with=ty ty</code>. That's not a good solution for #20078 because a cold editable install of egglog takes forever (it's a maturin-based project, so a cold editable install involves compiling a bunch of Rust code), so that would significantly slow down the execution time of our mypy_primer CI job. Most of our users who are invoking ty on maturin-based projects will be doing so with a warm cache, however; <code>uv run ty check</code> shouldn't take <em>too</em> long for them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-04 16:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder what heuristics other type checkers are using to determine the import root (&quot;project root&quot;) in this case.</p>
+</blockquote>
+<p>The logic mypy uses is documented here: https://mypy.readthedocs.io/en/stable/running_mypy.html#mapping-file-paths-to-modules.</p>
+<p>It's obviously nice that mypy's set of heuristics means that it's able to correctly identify in this case that the <code>python/</code> directory should be added as a first-party <em>search path</em> rather than constituting a first-party <em>package</em>. But what if that heuristic was wrong here? Maybe the user actually <em>did</em> want the <code>python/</code> directory to be a first-party namespace package? If that was the case, then mypy's assumption here would have been incorrect, and the user would have had to wade through ^those (complicated!) mypy docs and figure out that they need to pass <code>--explicit-package-bases</code> to get mypy to do what they want.</p>
+<p>I'm not saying we can't improve our behaviour here. It's obviously really nice UX that mypy and pyright can correctly infer the first-party search path here. But I also really hope that we can stick with something that's simpler and easier to debug/reason about than what mypy has.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-04 19:02</div>
+            <div class="timeline-body"><p>Tbh just special-casing <code>python/</code> along with <code>src/</code> doesn't seem terrible -- it seems unlikely that someone would want a top-level package named &quot;python&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-04 19:05</div>
+            <div class="timeline-body"><p>Yeah, and maturin isn't an _un_popular build backend (all maturin-based projects will have a <code>python/</code> directory IIUC)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-05 11:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

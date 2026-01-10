@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pytest.skip(...) triggers call-non-callable - astral-sh/ty #679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pytest.skip(...) triggers call-non-callable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/679">#679</a>
+        opened by <a href="https://github.com/pawamoy">@pawamoy</a>
+        on 2025-06-18 14:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-06-18 14:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>pytest defines the <code>skip</code> function like this:</p>
+<pre><code class="language-python">_F = TypeVar(&quot;_F&quot;, bound=Callable[..., object])
+_ET = TypeVar(&quot;_ET&quot;, bound=type[BaseException])
+
+
+class _WithException(Protocol[_F, _ET]):
+    Exception: _ET
+    __call__: _F
+
+
+def _with_exception(exception_type: _ET) -&gt; Callable[[_F], _WithException[_F, _ET]]:
+    def decorate(func: _F) -&gt; _WithException[_F, _ET]:
+        func_with_exception = cast(_WithException[_F, _ET], func)
+        func_with_exception.Exception = exception_type
+        return func_with_exception
+
+    return decorate
+
+
+@_with_exception(Skipped)
+def skip(
+    reason: str = &quot;&quot;,
+    *,
+    allow_module_level: bool = False,
+) -&gt; NoReturn:
+    __tracebackhide__ = True
+    raise Skipped(msg=reason, allow_module_level=allow_module_level)
+</code></pre>
+<p>I looks like ty has trouble understanding that <code>_WithException.__call__</code> is a callable. I'm not sure this way of describing <code>__call__</code> in the protocol is officially supported by the typing spec though 🤔</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 14:40</div>
+            <div class="timeline-body"><p>Thanks! This is the same underlying issue as #553</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-18 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-06-18 14:48</div>
+            <div class="timeline-body"><p>Oh thanks, and sorry for missing it! I searched for &quot;pytest skip&quot;, got no result 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 14:56</div>
+            <div class="timeline-body"><p>Great point -- <code>pytest.skip()</code> is probably the more commonly used decorator! I updated the title of the other issue to make it more discoverable 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:12 UTC
+    </footer>
+</body>
+</html>

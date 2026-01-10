@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed exhaustiveness matching on type variable - astral-sh/ty #1404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed exhaustiveness matching on type variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1404">#1404</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-20 12:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-20 12:55</div>
+            <div class="timeline-body"><p>Consider this example where we currently emit a false positive.</p>
+<pre><code class="language-py">from typing import Self
+from enum import Enum
+
+class Answer(Enum):
+    YES = &quot;yes&quot;
+    NO = &quot;no&quot;
+
+    def is_yes(self: Self) -&gt; bool:    # ty: Function can implicitly return `None`, which is not assignable to return type `bool`
+        match self:
+            case Answer.YES:
+                return True
+            case Answer.NO:
+                return False
+</code></pre>
+<p>When the annotation is changed to <code>self: Answer</code>, everything works as expected. But we do not recognize that <code>Self@is_yes</code> with an upper bound of <code>Answer</code> can be narrowed down.</p>
+<p>Similar problems certainly exist for other final types and other narrowing patterns.</p>
+<p>It seems like we can generally simplify a non-inferable typevar <code>T</code> with a <code>final</code> upper bound <code>F</code> to that upper bound <code>F</code>? Or let <code>T</code> share more properties of <code>F</code> (like whether or not we consider it to be <code>final</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @sharkdp on 2025-10-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @sharkdp on 2025-10-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-30 14:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:36 UTC
+    </footer>
+</body>
+</html>

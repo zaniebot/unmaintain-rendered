@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>redundant-cast of type Unknown - astral-sh/ty #332</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>redundant-cast of type Unknown</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/332">#332</a>
+        opened by <a href="https://github.com/tonka3000">@tonka3000</a>
+        on 2025-05-12 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tonka3000">@tonka3000</a> on 2025-05-12 18:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have the following code. <code>getFactory</code> is a C++ binded function and has no typing, so the return type is <code>Unknown</code>.
+ty detect it as redundant cast which is not correct in my opinion.</p>
+<p>Expected behaviour would be the the result of the cast is <code>LDSG3DMeasurementFactory</code> type without a warning.</p>
+<pre><code class="language-sh">warning[redundant-cast]: Value is already of type `Unknown`
+  --&gt; lds_geometry\mech\measurements.py:21:16
+   |
+20 |         fac_man = self.doc.getFactoryManager()
+21 |         return cast(LDSG3DMeasurementFactory, fac_man.getFactory(&quot;LDSG3DMeasurementFactory&quot;))
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.8 (0474b40e1 2025-05-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 19:01</div>
+            <div class="timeline-body"><p>Thanks for the report. We'll need some more information to be able to track down why we incorrectly think the type of the <code>LDSG3DMeasurementFactory</code> symbol in your file here is <code>Unknown</code>. Can you show us how that is defined in <code>lds_geometry\mech\measurements.py</code>? If it's defined through an import in <code>lds_geometry\mech\measurements.py</code>, we may need to see its original definition in the module it's defined in as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2025-05-12 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonka3000">@tonka3000</a> on 2025-05-13 13:47</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I checked it in more detail. It seems to be a general thing when pyi files are involved.
+I use PythonQt (mevis lab) for my bindings and I have not the typical python interpreter file structure.
+The general problem is that both side are <code>Unknown</code> which explains why the <code>redundant_cast</code> is emitted.</p>
+<p>In general I apply the <code>--extra-search-path</code> on the terminal to the internal <code>site-packages</code> folder of the bundled interpreter which includes the pyi files. I assume that the pyi files are not discovered and therefore the types are <code>Unknown</code>.
+I have the same behavior in the ty VSCode extension and I could not find an option for extra-paths like Pylance/Pyright have (<code>python.autoComplete.extraPaths</code>).</p>
+<p>Pylance/Pyright works normally with the same information.</p>
+<p>My structure looks like follow on Windows:</p>
+<ul>
+<li>DLLs</li>
+<li>lib</li>
+<li>site-packages<ul>
+<li>PythonQt<ul>
+<li>LDSCore.pyi</li>
+<li>LDSPLGeom3D.pyi</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><code>--extra-search-path</code> point to site-packages folder (absolute path).</p>
+<p>Not quite sure if there are any flags or missing files that ty would need to read in the pyi files.</p>
+<p>I reduce it to the example below.</p>
+<pre><code class="language-py">from PythonQt.LDSCore import LDSDoc
+from PythonQt.LDSPLGeom3D import LDSGeom3DDoc # LDSGeom3DDoc is Unknown
+
+class FooClass:
+  def __init__(self, doc: LDSDoc):
+    super().__init__()
+    self.doc = doc
+
+  def foo(self):
+    geo_doc = cast(LDSGeom3DDoc, self.doc) # Here the cast is cast(Unknown, Unknown) when pyi files are not read
+</code></pre>
+<p>btw: The code is closed source, I would need to send you that via mail or another communication channel if you see it as required step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonka3000">@tonka3000</a> on 2025-05-13 16:32</div>
+            <div class="timeline-body"><p>Seems to be fixed since <code>0.0.1-alpha.1 (12f466e46 2025-05-13)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-13 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:00 UTC
+    </footer>
+</body>
+</html>

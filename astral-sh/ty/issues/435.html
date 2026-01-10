@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration with pandera dataframe schema validation - astral-sh/ty #435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Integration with pandera dataframe schema validation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/435">#435</a>
+        opened by <a href="https://github.com/josh-gree">@josh-gree</a>
+        on 2025-05-17 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/josh-gree">@josh-gree</a> on 2025-05-17 17:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I assume that this is probably just due to runtime checking hitting ty checking and the two not being possible to have at the same time!? But would be great if ty could understand such patterns?</p>
+<pre><code class="language-py">import pandas as pd
+import pandera.pandas as pa
+from pandera.typing import Series, DataFrame
+
+
+class MySchema(pa.DataFrameModel):
+    id: Series[str] = pa.Field(nullable=False)
+    value: Series[int] = pa.Field(nullable=True)
+
+    class Config:
+        coerce = True
+
+
+@pa.check_types
+def get_data() -&gt; DataFrame[MySchema]:
+    data = [
+        {&quot;id&quot;: &quot;a&quot;, &quot;value&quot;: 1},
+        {&quot;id&quot;: &quot;b&quot;, &quot;value&quot;: 2},
+    ]
+    df = pd.DataFrame(data)
+    # Return directly without validation
+    return df
+
+    # Return with explicit validation
+    # return MySchema.validate(df)
+
+
+# Usage
+result = get_data()
+print(result)
+</code></pre>
+<p>With output from ty of;</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+  --&gt; repro.py:22:12
+   |
+20 |     df = pd.DataFrame(data)
+21 |     # Return directly without validation
+22 |     return df
+   |            ^^ expected `DataFrame[MySchema]`, found `DataFrame`
+23 |
+24 |     # Return with explicit validation
+   |
+  ::: repro.py:15:19
+   |
+14 | @pa.check_types
+15 | def get_data() -&gt; DataFrame[MySchema]:
+   |                   ------------------- Expected `DataFrame[MySchema]` because of return type
+16 |     data = [
+17 |         {&quot;id&quot;: &quot;a&quot;, &quot;value&quot;: 1},
+   |
+info: rule `invalid-return-type` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>(3.10.14) ➜  ty-repro git:(main) ✗ uvx ty --version<br />
+ty 0.0.1-alpha.5 (3b726d87a 2025-05-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-17 19:11</div>
+            <div class="timeline-body"><p>Thank you for reporting this</p>
+<blockquote>
+<p>and the two not being possible to have at the same time</p>
+</blockquote>
+<p>I'm not sure I understand. If you <code>return MySchema.validate(df)</code> instead of <code>return df</code>, then ty reports no error? Isn't that what you want? Runtime validation and no type-check error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/josh-gree">@josh-gree</a> on 2025-05-18 16:32</div>
+            <div class="timeline-body"><p>The <code>@pa.check_types</code>  should be enough - the point is to return a bare df and then the return is validated to be the given schema by the decorator - so doing <code>return MySchema.validate(df)</code> is redundant? If this function doesn't raise an exception then df is <code>MySchema</code> - but thats at runtime and thats kinda what I meant about &quot;the two not being possible to have at the same time&quot; - ty would need to understand the semantics of the pandera lib to know that this function will only ever return a <code>MySchema</code> if it returns a <code>DataFrame</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-20 09:40</div>
+            <div class="timeline-body"><p>Thank you for the clarification. So if I understand correctly, the type checker is supposed to accept a returned value of <code>pandas.DataFrame</code> in a function that is annotated as returning a <code>pandera.typing.DataFrame[MySchema]</code>.</p>
+<p>The latter is defined <a href="https://github.com/unionai-oss/pandera/blob/88bb60909d1cd7c940bd389107f1cc85b048a506/pandera/typing/pandas.py#L155C1-L155C58">here</a>:</p>
+<pre><code class="language-py">class DataFrame(DataFrameBase, pd.DataFrame, Generic[T]):
+</code></pre>
+<p>We can see that <code>pandera.typing.DataFrame</code> a <em>sub</em>class of <code>pandas.DataFrame</code>, so I'm not sure how this is supposed to work? Do other type checkers support this? If so, do you know if they have specialized code / plugins to make this possible? Or am I missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-20 09:43</div>
+            <div class="timeline-body"><p>@sharkdp I think the idea is that the <code>pa.check_types</code> decorator performs the <code>validate</code> call before returning the data frame.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-20 12:41</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/sharkdp">@sharkdp</a> I think the idea is that the <code>pa.check_types</code> decorator performs the <code>validate</code> call before returning the data frame.</p>
+</blockquote>
+<p>I understand how this works at runtime, yes. But that doesn't change the fact that the decorated function (<code>get_data</code>) has a seemingly wrong return type? The decorator can change the return type, sure. But the return type annotation must still be valid for <code>get_data</code> alone, decorated or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 14:22</div>
+            <div class="timeline-body"><p>I agree with @sharkdp. The way Python static type annotations are intended to work with decorators is that <code>get_data</code> needs to be annotated to return whatever type its body returns (<code>pd.DataFrame</code> in this case?), and the <code>pa.check_types</code> decorator would need to take <code>MySchema</code> as an argument, and be a generic function that takes in one <code>Callable</code> type and returns a <code>Callable</code> type which returns the pandera <code>DataFrame[MySchema]</code> type.</p>
+<p>So I don't see any possibility that we would support this pattern as currently written; the type annotations are just incorrect, according to the static typing specification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/josh-gree">@josh-gree</a> on 2025-05-21 10:43</div>
+            <div class="timeline-body"><p>This conclusion makes sense to me - the typing is &quot;wrong&quot; but it needs to be wrong for the decorator to do what you want it to do - so as I thought this is probably just a situation where I would need to ignore the type error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-21 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-21 11:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>diagnostics don't update until the language server is restarted on windows - astral-sh/ty #601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>diagnostics don't update until the language server is restarted on windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/601">#601</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-06-07 08:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-07 08:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>when the language server initially starts, the correct diagnostics are returned, however when subsequent changes are made to the document that would change the diagnostics, the language server still returns the outdated diagnostics.</p>
+<h3>to reproduce</h3>
+<ol>
+<li>create a python file with  a type error in it:<pre><code class="language-py">asdf 
+</code></pre>
+</li>
+<li>(re)start the ty language server</li>
+<li>see the <code>textDocument/diagnostic</code> result:<pre><code>[Trace - 6:14:49 PM] Sending request 'textDocument/diagnostic - (18)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    }
+}
+
+
+[Trace - 6:14:49 PM] Received response 'textDocument/diagnostic - (18)' in 1ms.
+Result: {
+    &quot;items&quot;: [
+        {
+            &quot;code&quot;: &quot;unresolved-reference&quot;,
+            &quot;codeDescription&quot;: {
+                &quot;href&quot;: &quot;https://ty.dev/rules#unresolved-reference&quot;
+            },
+            &quot;message&quot;: &quot;Name `asdf` used when not defined&quot;,
+            &quot;range&quot;: {
+                &quot;end&quot;: {
+                    &quot;character&quot;: 4,
+                    &quot;line&quot;: 0
+                },
+                &quot;start&quot;: {
+                    &quot;character&quot;: 0,
+                    &quot;line&quot;: 0
+                }
+            },
+            &quot;relatedInformation&quot;: [],
+            &quot;severity&quot;: 1,
+            &quot;source&quot;: &quot;ty&quot;
+        }
+    ],
+    &quot;kind&quot;: &quot;full&quot;
+}
+</code></pre>
+</li>
+<li>delete/comment out the line with the type error:<pre><code class="language-py"># asdf
+</code></pre>
+</li>
+<li>check the new <code>textDocument/diagnostics</code> response:<pre><code>[Trace - 6:15:15 PM] Sending request 'textDocument/diagnostic - (29)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    }
+}
+
+
+[Trace - 6:15:15 PM] Received response 'textDocument/diagnostic - (29)' in 1ms.
+Result: {
+    &quot;items&quot;: [
+        {
+            &quot;code&quot;: &quot;unresolved-reference&quot;,
+            &quot;codeDescription&quot;: {
+                &quot;href&quot;: &quot;https://ty.dev/rules#unresolved-reference&quot;
+            },
+            &quot;message&quot;: &quot;Name `asdf` used when not defined&quot;,
+            &quot;range&quot;: {
+                &quot;end&quot;: {
+                    &quot;character&quot;: 4,
+                    &quot;line&quot;: 0
+                },
+                &quot;start&quot;: {
+                    &quot;character&quot;: 0,
+                    &quot;line&quot;: 0
+                }
+            },
+            &quot;relatedInformation&quot;: [],
+            &quot;severity&quot;: 1,
+            &quot;source&quot;: &quot;ty&quot;
+        }
+    ],
+    &quot;kind&quot;: &quot;full&quot;
+}
+</code></pre>
+</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/3f288962-a17d-4e15-ab5a-3964495f16ab" alt="Image" /></p>
+<h3>environment</h3>
+<p>ty vscode extension v2025.15.11531247
+OS: windows 10</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-06-07 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-07 08:48</div>
+            <div class="timeline-body"><p>Interesting. There should have been at least one didChange notification from the client to the server to notify it about the updated file content</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-07 08:55</div>
+            <div class="timeline-body"><p>it looks like <code>textDocument/didChange</code> is being sent</p>
+<details><summary>here's the full trace from when i commented out the line</summary>
+<p>
+
+<pre><code>[Trace - 6:52:48 PM] Sending notification 'textDocument/didChange'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;,
+        &quot;version&quot;: 40
+    },
+    &quot;contentChanges&quot;: [
+        {
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 0,
+                    &quot;character&quot;: 0
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 0,
+                    &quot;character&quot;: 0
+                }
+            },
+            &quot;rangeLength&quot;: 0,
+            &quot;text&quot;: &quot;# &quot;
+        }
+    ]
+}
+
+
+[Trace - 6:52:48 PM] Sending request 'textDocument/diagnostic - (7)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    }
+}
+
+
+[Trace - 6:52:48 PM] Received response 'textDocument/diagnostic - (7)' in 1ms.
+Result: {
+    &quot;items&quot;: [
+        {
+            &quot;code&quot;: &quot;unresolved-reference&quot;,
+            &quot;codeDescription&quot;: {
+                &quot;href&quot;: &quot;https://ty.dev/rules#unresolved-reference&quot;
+            },
+            &quot;message&quot;: &quot;Name `asdf` used when not defined&quot;,
+            &quot;range&quot;: {
+                &quot;end&quot;: {
+                    &quot;character&quot;: 4,
+                    &quot;line&quot;: 0
+                },
+                &quot;start&quot;: {
+                    &quot;character&quot;: 0,
+                    &quot;line&quot;: 0
+                }
+            },
+            &quot;relatedInformation&quot;: [],
+            &quot;severity&quot;: 1,
+            &quot;source&quot;: &quot;ty&quot;
+        }
+    ],
+    &quot;kind&quot;: &quot;full&quot;
+}
+
+
+[Trace - 6:52:48 PM] Sending request 'textDocument/inlayHint - (8)'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    },
+    &quot;range&quot;: {
+        &quot;start&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        },
+        &quot;end&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 6
+        }
+    }
+}
+
+
+[Trace - 6:52:48 PM] Received response 'textDocument/inlayHint - (8)' in 3ms.
+Result: []
+
+
+[Trace - 6:52:48 PM] Sending request 'textDocument/diagnostic - (9)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/typings/test.pyi&quot;
+    }
+}
+
+
+[Trace - 6:52:48 PM] Received response 'textDocument/diagnostic - (9)' in 4ms.
+Result: {
+    &quot;items&quot;: [],
+    &quot;kind&quot;: &quot;full&quot;
+}
+
+
+[Trace - 6:52:48 PM] Sending request 'textDocument/inlayHint - (10)'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    },
+    &quot;range&quot;: {
+        &quot;start&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 0
+        },
+        &quot;end&quot;: {
+            &quot;line&quot;: 0,
+            &quot;character&quot;: 6
+        }
+    }
+}
+
+
+[Trace - 6:52:48 PM] Received response 'textDocument/inlayHint - (10)' in 3ms.
+Result: []
+
+
+[Trace - 6:52:50 PM] Sending request 'textDocument/diagnostic - (11)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/typings/test.pyi&quot;
+    }
+}
+
+
+[Trace - 6:52:50 PM] Received response 'textDocument/diagnostic - (11)' in 2ms.
+Result: {
+    &quot;items&quot;: [],
+    &quot;kind&quot;: &quot;full&quot;
+}
+
+
+[Trace - 6:52:50 PM] Sending request 'textDocument/diagnostic - (12)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///c%3A/Users/user/Documents/asdfads/test.py&quot;
+    }
+}
+
+
+[Trace - 6:52:50 PM] Received response 'textDocument/diagnostic - (12)' in 1ms.
+Result: {
+    &quot;items&quot;: [
+        {
+            &quot;code&quot;: &quot;unresolved-reference&quot;,
+            &quot;codeDescription&quot;: {
+                &quot;href&quot;: &quot;https://ty.dev/rules#unresolved-reference&quot;
+            },
+            &quot;message&quot;: &quot;Name `asdf` used when not defined&quot;,
+            &quot;range&quot;: {
+                &quot;end&quot;: {
+                    &quot;character&quot;: 4,
+                    &quot;line&quot;: 0
+                },
+                &quot;start&quot;: {
+                    &quot;character&quot;: 0,
+                    &quot;line&quot;: 0
+                }
+            },
+            &quot;relatedInformation&quot;: [],
+            &quot;severity&quot;: 1,
+            &quot;source&quot;: &quot;ty&quot;
+        }
+    ],
+    &quot;kind&quot;: &quot;full&quot;
+}
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-07 13:04</div>
+            <div class="timeline-body"><p>Hmm, I need to test this on Windows. It seems to be working fine on mac os</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-07 13:48</div>
+            <div class="timeline-body"><p>I can reproduce this on Windows. The problem is that the URL -&gt; path and path -&gt; URL aren't loseless.</p>
+<p>URL sent from server: <code>/c%3A/Users/Micha/astral/test/create.py</code>
+Converted to path: <code>c:\Users\Micha\astral\test\create.py</code>
+Path converted to URL: <code>/C:/Users/Micha/astral/test/create.py</code></p>
+<p>Note the URL encoding for <code>:</code> in the original URL and the lower case <code>c</code> that now is an uppercase <code>C</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2025-06-07 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-07 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-07 14:01</div>
+            <div class="timeline-body"><p>Fixing this might be a bit more work but probably fairly important.</p>
+<p>My feeling is that we should rewrite our <code>Index</code>. The way it is built makes sense for Ruff, but not for ty. I think we should use <code>File</code> as lookup key instead of <code>Url</code>s. We may need something extra for notebook cells but that's where my knowledge is very limited. Doing so would hopefully also reduce some of the somewhat awkward url -&gt; path and path -&gt; url conversions (Ideally we only ever go from URL to path but never back)</p>
+<p>I'm curious to hear @dhruvmanila's opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "diagnostics don't update until the language server is restarted" to "diagnostics don't update until the language server is restarted on windows" by @DetachHead on 2025-06-07 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-07 14:17</div>
+            <div class="timeline-body"><p>Actually, using <code>File</code> might not be possible because the server's <code>System</code> implementation needs to lookup document's by path. However, <code>AnyPath</code> (I don't recall the exact name of the enum) might be a suitable replacement for <code>Url</code>. It's not clear if we want to store the <code>File</code> on the document for easier lookup</p>
+<p>I think this should work pretty well. We can store the url on <code>TextDocument </code>and <code>NotebookDocument</code> so that we can back when needed. We could also consider storing <code>File</code> on <code>TextDocument</code> and <code>NotebookDocument</code>.</p>
+<p>Most code should then directly use <code>DocumentKey</code> (which can have a <code>path</code> method) instead of having to resolve the key and the path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-09 08:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this should work pretty well. We can store the url on <code>TextDocument </code>and <code>NotebookDocument</code> so that we can back when needed. We could also consider storing <code>File</code> on <code>TextDocument</code> and <code>NotebookDocument</code>.</p>
+</blockquote>
+<p>The issue with this is that the way <code>NotebookDocument</code> is structured, we require the <code>Url</code> to get the <code>NotebookCell</code>. I thought of improving the notebook structure a while ago but couldn't find the time, I might do something when we work on completing the notebook support in the ty server.</p>
+<blockquote>
+<p>Most code should then directly use <code>DocumentKey</code> (which can have a <code>path</code> method) instead of having to resolve the key and the path.</p>
+</blockquote>
+<p>To avoid going back from path to url, it would be useful to have a data structure that holds both. The <code>DocumentKey</code> seems like something that could be used for that as a <code>Url</code> can be used to create it which will then store the <code>Url</code> as well. This doesn't work right now because the <code>LSPSystem</code> requires the path to lookup the document as you've noticed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-09 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-29 09:29</div>
+            <div class="timeline-body"><p>this issue seems to be mostly fixed, but it seems to still occur in some cases. i've been trying for hours to narrow this down to a minimal repo, but i can't figure it out unfortunately, so the steps to reproduce involve cloning my repo:</p>
+<ol>
+<li>clone https://github.com/DetachHead/pytest-robotframework/commit/360a3b3ad171d80f019fe4f26e17d313d4c63164</li>
+<li>run <code>./pw uv sync</code></li>
+<li>open <code>pytest_robotframework/__init__.py</code> in vscode</li>
+<li>remove <a href="https://github.com/DetachHead/pytest-robotframework/blob/360a3b3ad171d80f019fe4f26e17d313d4c63164/pytest_robotframework/__init__.py#L272-L273">one of these <code># ty:ignore</code> comments</a> and notice that the error does not come back</li>
+<li>restart the language server and see that the error comes back</li>
+</ol>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:09 UTC
+    </footer>
+</body>
+</html>

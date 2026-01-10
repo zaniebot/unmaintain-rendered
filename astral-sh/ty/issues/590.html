@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add instance attribute for annotated assignment without RHS in method - astral-sh/ty #590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add instance attribute for annotated assignment without RHS in method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/590">#590</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-06 00:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 00:16</div>
+            <div class="timeline-body"><p>We do not currently infer that <code>Foo</code> has an instance attribute <code>x</code> for something like this:</p>
+<pre><code class="language-py">class Foo:
+    def __init__(self):
+        self.x: int
+
+f = Foo()
+
+# Type `Foo` has no attribute `x` (unresolved-attribute)
+reveal_type(f.x)  # revealed: Unknown
+</code></pre>
+<p>If you're not actually assigning to <code>self.x</code>, I don't really know why you'd do this rather than annotating it in the class body, which seems more explicit:</p>
+<pre><code class="language-py">class Foo:
+    x: int
+</code></pre>
+<p>But <a href="https://github.com/pytest-dev/pytest/blob/3e30eae05fcf37880db1db842d022d873cb2166d/src/_pytest/fixtures.py#L399-L407">popular libraries such as pytest</a> do this, it appears to be supported by <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=4cd4ceb8f42b1d8342e30df4d50535aa">mypy</a> and <a href="https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=MYGwhgzhAEBiD28BcAoa7oBMCmAzaA%2BgQJYB2xALkQBQTYi4CUqGr0dDAdAB5LRkUUKfAF44iaoxQAnbADdsYEAQoBPAA7ZquHoyA">pyright</a>, and it doesn't seem any less safe than annotating an instance attribute in the class body without assigning to it. So I think we should add support for this pattern.</p>
+<p><em>Originally posted by @AlexWaygood in <a href="https://github.com/astral-sh/ty/issues/509#issuecomment-2943691503">#509</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @carljm on 2025-06-06 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 00:17</div>
+            <div class="timeline-body"><p>One question here might be: should we also support <code>self.x: int</code> in a method other than <code>__init__</code>?</p>
+<p>I guess it probably doesn't matter much in practice, and the most consistent / simplest answer will be &quot;yes&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-06 00:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really know why you'd do this rather than annotating it in the class body</p>
+</blockquote>
+<p>Pyright treats an annotated <code>self.x</code> as an instance-only variable whereas the annotated variable in the class body is treated as &quot;an instance variable that can be shadowed by a class variable&quot;, so the two have different meanings for pyright. We recently discussed the idea of standardizing the treatment of <code>x: int</code> in a class body as an instance-only variable if it isn't assigned a value, but that's different from how pyright has historically treated this. I'm open to that idea, but I'd like to see it fleshed out and formalized in the typing spec before I make such a change in pyright. It will potentially cause backward compatibility pain for some pyright (and mypy) users, so I wouldn't want to make the change and then fail to reach a consensus on the standard.</p>
+<blockquote>
+<p>One question here might be: should we also support self.x: int in a method other than <strong>init</strong>? I guess it probably doesn't matter much in practice, and the most consistent / simplest answer will be &quot;yes&quot;.</p>
+</blockquote>
+<p>I think that's the answer all of the other type checkers arrived at as well. This would be another thing that would be good to formalize in the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2025-06-06 04:31</div>
+            <div class="timeline-body"><blockquote>
+<p>One question here might be: should we also support <code>self.x: int</code> in a method other than <code>__init__</code>?</p>
+</blockquote>
+<p>Yes, specially if that method is called in <code>__init__</code>.</p>
+<p>But <code>__init__</code> should be prioritized.
+I think <code>mypy</code> prioritizes the method that comes first (not runs first), and not <code>__init__</code> and I think that's a bug.</p>
+<p>For example this code:</p>
+<pre><code class="language-python">class A:
+	def initVars(self):
+		self.a = None
+
+	def __init__(self):
+		self.a: str | None
+
+	def getA(self) -&gt; str | None:
+		return self.a
+</code></pre>
+<p>Running <code>mypy instance-attr.py --check-untyped-defs</code> gives:</p>
+<pre><code>instance-attr.py:6: error: Attribute &quot;a&quot; already defined on line 3  [no-redef]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2025-06-06 04:38</div>
+            <div class="timeline-body"><p>I mean if an attribute is declared or assigned in <code>__init__</code>, it should not try to infer type of that attribute from assignments in other methods, even if they come before <code>__init__</code>.</p>
+<p>If the attribute is <strong>declared twice</strong>, you can do one of these</p>
+<ul>
+<li>Ignore the type in non-<code>__init__</code> one, or the second one if neither are <code>__init__</code>.</li>
+<li>Check if the types match.</li>
+<li>Give error like <code>mypy</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 16:46</div>
+            <div class="timeline-body"><p>Unlike mypy, our model here doesn't depend at all on ordering of methods.</p>
+<p>I also don't think we will implement a prioritization of methods.</p>
+<p>The rule is this: if the attribute is never declared, its type is the union of all observed RHS values assigned to it, plus <code>Unknown</code> (the latter representing that since it is not declared, external assignments of some other type are also valid.)</p>
+<p>If the attribute is declared, that is its type, and all RHS values assigned to it must be assignable to that type.</p>
+<p>If the attribute is declared multiple places, all of them must declare the same type, or its an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-02 15:31</div>
+            <div class="timeline-body"><p>Closing this as a duplicate of #698 because that has some more information on how to implement it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-02 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:09 UTC
+    </footer>
+</body>
+</html>

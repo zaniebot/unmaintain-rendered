@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`import whatever.thispackage.a.b` in an `__init__.py` should introduce the submodule attribute `a` - astral-sh/ty #1526</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`import whatever.thispackage.a.b` in an `__init__.py` should introduce the submodule attribute `a`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1526">#1526</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-11 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-11 20:36</div>
+            <div class="timeline-body"><p>We do this for <code>from whatever.thispackage.a.b import c</code> but not the equivalent <code>import</code>.</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md#import-of-nested-submodule-in-__init__">Nonstandard-imports contains a test for this</a></p>
+<p>This is just a random inconsistency because <code>ImportFromSubmoduleDefinitionNodeRef</code> is <em>only</em> for <code>from...import</code>.</p>
+<p>The fix would be to introduce an equivalent of this logic:</p>
+<p>https://github.com/astral-sh/ruff/blob/e4374f14ed12873541d9a9ccca7eea92456684f6/crates/ty_python_semantic/src/semantic_index/builder.rs#L1452-L1497</p>
+<p>To here:</p>
+<p>https://github.com/astral-sh/ruff/blob/e4374f14ed12873541d9a9ccca7eea92456684f6/crates/ty_python_semantic/src/semantic_index/builder.rs#L1420-L1422</p>
+<p>And then you need to either:</p>
+<ul>
+<li>change <code>ImportFromSubmoduleDefinitionNode(Ref)</code> to take either an <code>ast::StmtImportFrom</code> <em>or</em> an <code>ast::StmtImport</code> (make an <code>AnyImport</code> enum?)</li>
+<li>introduce <code>ImportSubmoduleDefinitionNode(Ref)</code> that just copy-pastes all the logic</li>
+</ul>
+<p>The enum approach is probably the better one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @Gankra on 2025-11-11 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-11 20:37</div>
+            <div class="timeline-body"><p>I don't have any plans to do this, but this might be a good first issue?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:41 UTC
+    </footer>
+</body>
+</html>

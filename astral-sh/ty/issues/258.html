@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>“no-matching-overload” instantiating logging.StreamHandler - astral-sh/ty #258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>“no-matching-overload” instantiating logging.StreamHandler</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/258">#258</a>
+        opened by <a href="https://github.com/turian">@turian</a>
+        on 2025-05-08 00:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/turian">@turian</a> on 2025-05-08 00:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>error: lint\:no-matching-overload: No overload of bound method `__init__` matches arguments
+</code></pre>
+<p>for this minimal example:</p>
+<pre><code>import logging
+h = logging.StreamHandler()          # ← error
+</code></pre>
+<h2>Why this is unexpected</h2>
+<ul>
+<li><p>The CPython docs and runtime accept a zero-argument constructor that defaults to <code>sys.stderr</code>.</p>
+</li>
+<li><p>typeshed’s <code>logging/__init__.pyi</code> reflects that signature:</p>
+<pre><code>  class StreamHandler(Handler):
+      def __init__(self, stream: IO[str] | None = ...) -&gt; None: ...
+</code></pre>
+</li>
+<li><p>Ty’s own stub—<code>red_knot/builtins/logging.pyi</code>—still exposes the old overloads that take <code>filename</code> | <code>PathLike</code> and therefore rejects the common no-argument form.</p>
+</li>
+</ul>
+<p>Because of that divergence, projects that pass mypy/ruff/mkdocs etc. must add:</p>
+<pre><code>handler = logging.StreamHandler()          # ty: ignore
+</code></pre>
+<p>and then hit issue #130 when the code is split across lines.</p>
+<h2>Repro</h2>
+<ol>
+<li><code>echo 'import logging; logging.StreamHandler()' &gt; t.py</code></li>
+<li><code>ty check t.py</code></li>
+</ol>
+<h2>Expected</h2>
+<p>No diagnostics.</p>
+<h2>Actual</h2>
+<p><code>lint:no-matching-overload</code></p>
+<h2>Proposed fix</h2>
+<p>Import logging and update the <code>StreamHandler</code> overloads in Ty’s stdlib stubs to match typeshed (i.e., make the first positional argument an optional <code>IO[str]</code>, default <code>None</code>).</p>
+<hr />
+<p>This bug is separate from #130 (“unused suppression for type: ignore”) – that issue only appears because we’re forced to ignore this stub mismatch.</p>
+<h3>Version</h3>
+<p>0.0.0-alpha.7 (905a3e1e5 2025-05-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @turian on 2025-05-08 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-08 14:10</div>
+            <div class="timeline-body"><p>Is this issue solved?</p>
+<p>https://play.ty.dev/e7169c70-7716-4ed4-aa4e-cb2e74510acf</p>
+<pre><code>import logging
+import sys
+
+logging.StreamHandler(stream=sys.stdout)
+</code></pre>
+<pre><code>$ uvx ty check foo.py
+error: lint:no-matching-overload: No overload of bound method `__init__` matches arguments
+ --&gt; foo.py:4:1
+  |
+2 | import sys
+3 |
+4 | logging.StreamHandler(stream=sys.stdout)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: `lint:no-matching-overload` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-05-08 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 14:18</div>
+            <div class="timeline-body"><p>Ty doesn't have its own stubs, it uses typeshed.</p>
+<p>I suspect the issue here is that we are actually failing to match on the <code>self</code> annotations of those overloads, for some generics-related reason.</p>
+<p>(This issue also highlights that our diagnostics on a failed call to an overloaded function need some attention: https://github.com/astral-sh/ty/issues/274)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-08 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-05-08 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "logging.StreamHandler() flagged as “no-matching-overload” – ty stub requires  filename while typeshed & stdlib allow zero-arg constructor" to "“no-matching-overload” instantiating logging.StreamHandler" by @carljm on 2025-05-08 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlinkyStitt">@BlinkyStitt</a> on 2025-05-14 23:06</div>
+            <div class="timeline-body"><p>i also see this error with this simple code:</p>
+<pre><code>with tempfile.TemporaryDirectory() as temp_dir:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-19 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-19 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:58 UTC
+    </footer>
+</body>
+</html>

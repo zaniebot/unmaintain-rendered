@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognize user intent when using `--python 3.13` - astral-sh/ty #272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recognize user intent when using `--python 3.13`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/272">#272</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-08 13:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 13:39</div>
+            <div class="timeline-body"><p>For some reason I do this wrong all the time. I run <code>ty check --python 3.13</code> and press enter before I realize that it should be <code>--python-version</code>, not <code>--python</code>. It would be nice to detect this (directory &quot;3.13&quot; does not exist and it successfully parses as a python version) and to show a nice error message (&quot;did you mean <code>--python-version 3.13</code>&quot;)?</p>
+<pre><code>▶ ty check --python 3.13  # oops
+ty failed
+  Cause: Invalid search path settings
+  Cause: Failed to discover the site-packages directory: Invalid `--python` argument: `/home/shark/ecosystem/ami-notifications-api/3.13` could not be canonicalized
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @sharkdp on 2025-05-08 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-05-08 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-08 14:20</div>
+            <div class="timeline-body"><p>We have handling for this in uv https://github.com/astral-sh/uv/blob/fa8db5a8d0bfc9eb3039e788dd7c719ffe85b030/crates/uv-python/src/discovery.rs#L1389-L1491</p>
+<p>Note we actually overload the <code>--python</code> option to support both path and version requests (we use<code>--python-version</code> where it's okay if you resolve with a <em>different</em>  target Python version than we can actually find an interpreter for). We don't treat <code>3.13</code> as a path regardless of if it exists, you'd need to do <code>./3.13</code> for that (which I think is totally fine, given the usage). We haven't seen complaints or confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Note we actually overload the <code>--python</code> option to support both path and version requests</p>
+</blockquote>
+<p>But note that <code>--python</code> has a different meaning in ty. It's not the path to an interpreter, but instead a path to a virtual env (which I do not find very intuitive, to be honest):</p>
+<pre><code>      --python &lt;PATH&gt;
+          Path to the Python installation from which ty resolves type information and third-party dependencies.
+          
+          If not specified, ty will look at the `VIRTUAL_ENV` environment variable.
+          
+          ty will search in the path's `site-packages` directories for type information and third-party imports.
+          
+          This option is commonly used to specify the path to a virtual environment.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-08 14:28</div>
+            <div class="timeline-body"><p>In uv, we support either a full path to the interpreter executable or to a directory (which we will treat as a Python environment and search for the interpreter in canonical locations)</p>
+<p>e.g.</p>
+<pre><code>❯ uv python find .venv
+/Users/zb/workspace/uv/.venv/bin/python3
+❯ uv python find .venv/bin/python3
+/Users/zb/workspace/uv/.venv/bin/python3
+❯ uv python find /usr/local
+/usr/local/bin/python3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 14:31</div>
+            <div class="timeline-body"><p>I don't think we want full Python discovery in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-08 14:35</div>
+            <div class="timeline-body"><p>I don't think that's full Python discovery, those are the trivial cases (i.e., look in <code>bin</code> / <code>Scripts</code> as appropriate for the platform).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-08 14:37</div>
+            <div class="timeline-body"><p>Just to be clear, the complicated parts of &quot;full discovery&quot; are searching the <code>PATH</code>, looking at registry entries  and handling Microsoft Store installs (on Windows), disambiguating <code>CONDA_PREFIX</code> from the base environment, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2025-05-11 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-30 18:11</div>
+            <div class="timeline-body"><p>What's the current way to ensure <code>ty</code> is using system environment for type checking?</p>
+<p>What I've tried:</p>
+<pre><code>ty check test.py -vv --python L:\Software\uv\UV_PYTHON_INSTALL_DIR\cpython-3.11.12-windows-x86_64-none\python.exe`
+ty check test.py -vv --python &quot;C:\Users\Andrej\.local\bin\python.exe&quot;
+</code></pre>
+<p>I've also had an assumption that something like this would work:</p>
+<pre><code>uv tool run --python 3.11 ty check L:\pomoika\test_files\1_test.py -vv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 20:02</div>
+            <div class="timeline-body"><p>@Andrej730 this is a bit off-topic for this specific issue; for better visibility you could open it as a new issue (maybe with a bit more detail about what you expected to see and what happened instead), or if you use Discord you could ask it in our Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-11-13 17:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:59 UTC
+    </footer>
+</body>
+</html>

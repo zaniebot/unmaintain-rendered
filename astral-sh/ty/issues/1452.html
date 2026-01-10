@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classmethods and staticmethods should not be considered instances of `types.FunctionType` - astral-sh/ty #1452</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Classmethods and staticmethods should not be considered instances of `types.FunctionType`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1452">#1452</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-29 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 14:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Classmethods and staticmethods should not be considered instances of <code>types.FunctionType</code>, but they currently are by ty. This means that the following assertion fails:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_subtype_of, TypeOf
+from typing import reveal_type
+import types
+import inspect
+
+class F:
+    @classmethod
+    def f(): ...
+
+type Fff = TypeOf[inspect.getattr_static(F, 'f')]
+static_assert(not is_subtype_of(Fff, types.FunctionType))
+</code></pre>
+<p>It also means that we incorrectly believe that classmethods/staticmethods have attributes such as <code>__kwdefaults__</code> that actually only exist on functions, and it means that we emit false-positive diagnostics if you access an attribute such as <code>__func__</code> that only exists on a classmethod/staticmethod, but not on a function:</p>
+<pre><code class="language-py">inspect.getattr_static(F, 'f').__kwdefaults__  # no error here (false negative)
+inspect.getattr_static(F, 'f').__func__  # error here (false positive)
+</code></pre>
+<p>See https://play.ty.dev/5daebf80-6f88-4bde-83b4-796e3a965665</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-29 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-10-29 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-10-29 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-30 17:13</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/pull/21145. It seems a good fix for this might be somewhat involved; we should probably have separate <code>Type</code> variants for classmethods and staticmethods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-10-30 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

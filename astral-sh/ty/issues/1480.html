@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Machine pytest fixture hidden behind conditional - astral-sh/ty #1480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Time Machine pytest fixture hidden behind conditional</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1480">#1480</a>
+        opened by <a href="https://github.com/mzealey">@mzealey</a>
+        on 2025-11-05 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mzealey">@mzealey</a> on 2025-11-05 09:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Somehow mypy makes this work, but you can see that https://github.com/adamchainz/time-machine/blob/main/src/time_machine/<strong>init</strong>.py#L409 is hidden behind an <code>if HAVE_PYTEST</code> conditional, meaning that it is mentioned by <code>ty</code> as a <code>possibly-missing-attribute</code>.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @sharkdp on 2025-11-05 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @sharkdp on 2025-11-05 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-05 20:07</div>
+            <div class="timeline-body"><p>I don't think mypy has any special handling here, it simply doesn't keep track of the fact that the module attribute might actually not be defined. And you don't see the &quot;undefined symbol&quot; error on <code>if HAVE_PYTEST</code> because it's a 3rd party dependency?</p>
+<p>mypy <em>does</em> have a feature where you can configure that it should assume certain variables/constants to exist (e.g. https://mypy.readthedocs.io/en/stable/config_file.html#confval-always_true). We don't have such a feature, but can certainly consider adding this, such that users could specify a list of variables that ty should consider being set to <code>True</code>/<code>False</code> (similar to how <code>TYPE_CHECKING</code> is treated in a special way).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-05 20:40</div>
+            <div class="timeline-body"><p>I think there are several possible things we could do to improve this scenario, roughly ranked from easiest to hardest:</p>
+<ol>
+<li>Make the &quot;possibly undefined import&quot; diagnostic disabled by default, because it is prone to this kind of false positive. (Same rationale for why we already disabled the &quot;possibly undefined local variable&quot; diagnostic.) I don't know of any other type checker that offers this diagnostic?</li>
+<li>Add the feature @sharkdp mentions, so the user can just explicitly configure that <code>HAVE_PYTEST</code> should always be considered <code>True</code>.</li>
+<li>Add sophisticated handling of <code>try: import ...</code> / <code>except ImportError:</code> such that we consider it a &quot;statically known branch&quot; based on the known presence or absence of the module in our environment.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-05 21:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Add sophisticated handling of <code>try: import ...</code> / <code>except ImportError:</code> such that we consider it a &quot;statically known branch&quot; based on the known presence or absence of the module in our environment.</p>
+</blockquote>
+<p>I've been thinking about this recently, and for what it's worth, we sort-of support this today. If you can somehow turn something that is either of type <code>&lt;module 'xyz'&gt;</code> or of type <code>Unknown</code> into a <code>Literal[True]</code> / <code>Literal[False]</code>, you can define this <code>HAS_XYZ</code> constant and use it to conditionally hide parts of your code, if the optional dependency <code>xyz</code> is not available. I'm not saying we should suggest that users use <em>this exact</em> pattern, but as a demo, this is how this can work today:</p>
+<pre><code class="language-py">try:
+    import xyz  # type: ignore
+except ImportError:
+    pass
+
+HAS_XYZ = bool(is_subtype_of(TypeOf[xyz], ModuleType))
+</code></pre>
+<p>And here is a playground that shows how this can be used to conditionally add an overload, if a given optional dependency is available (something I discussed with @MichaReiser the other day):</p>
+<p>https://play.ty.dev/c4512390-e8c2-4cd8-acd6-a160b42c01f3</p>
+<p>(try removing/renaming the <code>xyz.py</code> tab to simulate the situation in which that dependency is not available)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:39 UTC
+    </footer>
+</body>
+</html>

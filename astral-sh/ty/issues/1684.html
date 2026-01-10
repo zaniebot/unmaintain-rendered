@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect attempts to override prohibited `NamedTuple` attributes - astral-sh/ty #1684</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect attempts to override prohibited `NamedTuple` attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1684">#1684</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-29 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-29 18:25</div>
+            <div class="timeline-body"><p>For example:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import NamedTuple
+&gt;&gt;&gt; class F(NamedTuple):
+...     _asdict = 42
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
+    class F(NamedTuple):
+        _asdict = 42
+  File &quot;/Users/alexw/Library/Application Support/uv/python/cpython-3.14.0-macos-aarch64-none/lib/python3.14/typing.py&quot;, line 3004, in __new__
+    raise AttributeError(&quot;Cannot overwrite NamedTuple attribute &quot; + key)
+AttributeError: Cannot overwrite NamedTuple attribute _asdict
+</code></pre>
+<p>This is separate to the check being added in https://github.com/astral-sh/ruff/pull/21697 because <code>_asdict</code> here is not considered a <code>NamedTuple</code> field either by ty or at runtime (it doesn't have a type annotation). Most assignments in <code>NamedTuple</code> class bodies work fine, even if the assigned symbol has a leading underscore, as long as they don't have type annotations:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import NamedTuple
+&gt;&gt;&gt; class G(NamedTuple):
+...     _whatever = 42
+...     
+&gt;&gt;&gt; 
+</code></pre>
+<p><code>_asdict</code>, however, is a <a href="https://docs.python.org/3/library/collections.html#collections.somenamedtuple._asdict">synthesized method</a> present on all <code>NamedTuple</code> classes, and users are not allowed to override it. The full list of prohibited overrides is at https://github.com/python/cpython/blob/77399436bfc87663f9058b749b6cb598bab273f9/Lib/typing.py#L2939-L2942.</p>
+<p>Mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=a3e1a767632e1843d073a41f2e284a36">detects this</a>, though pyright and pyrefly do not at time of writing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-11-29 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">namedtuples</span> added by @AlexWaygood on 2025-11-29 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-30 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-30 23:42</div>
+            <div class="timeline-body"><p>(This check should probably be added to overrides.rs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-02 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:46 UTC
+    </footer>
+</body>
+</html>

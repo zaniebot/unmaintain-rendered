@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `ParamSpec` - astral-sh/ty #157</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `ParamSpec`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/157">#157</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-26 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-26 18:04</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] support ParamSpec" to "support ParamSpec" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielkelshaw">@danielkelshaw</a> on 2025-05-07 16:43</div>
+            <div class="timeline-body"><p>Just a quick example that doesn't work:</p>
+<pre><code class="language-python">import typing as tp
+
+
+def my_decorator[**P, T](fn: tp.Callable[P, T]) -&gt; tp.Callable[P, T]:
+
+    def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+        print('in decorator..')
+        return fn(*args, **kwargs)
+    
+    return wrapped
+
+
+@my_decorator
+def my_adder(a: int, b: int) -&gt; int:
+    return a + b
+
+print(my_adder(1, 3))
+</code></pre>
+<p>This gives the errors:</p>
+<pre><code class="language-bash">error: lint:invalid-type-form: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+ --&gt; main.py:4:42
+  |
+4 | def my_decorator[**P, T](fn: tp.Callable[P, T]) -&gt; tp.Callable[P, T]:
+  |                                          ^
+5 |
+6 |     def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+  |
+
+error: lint:invalid-type-form: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+ --&gt; main.py:4:64
+  |
+4 | def my_decorator[**P, T](fn: tp.Callable[P, T]) -&gt; tp.Callable[P, T]:
+  |                                                                ^
+5 |
+6 |     def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+  |
+
+Found 2 diagnostics
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-07 16:46</div>
+            <div class="timeline-body"><p>I think it would be useful to not error in this case even without the support of <code>ParamSpec</code>, not sure how hard that would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 09:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it would be useful to not error in this case even without the support of <code>ParamSpec</code>, not sure how hard that would be.</p>
+</blockquote>
+<p>See https://github.com/astral-sh/ruff/pull/18001</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @carljm on 2025-06-11 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dr-Irv">@Dr-Irv</a> on 2025-06-30 00:24</div>
+            <div class="timeline-body"><p>Here's another example where <code>ParamSpec</code> is not accepted as an argument to <code>Protocol</code>.  This example works fine with <code>pyright</code>, <code>mypy</code> and <code>pyrefly</code>:</p>
+<pre><code class="language-python">from typing import Protocol, TypeVar, ParamSpec
+
+# Define a TypeVar for the return type of the callable
+R = TypeVar('R', covariant=True)
+
+# Define a ParamSpec to capture the parameters of the callable
+P = ParamSpec('P')
+
+class LoggableFunction(Protocol[P, R]):
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -&gt; R:
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @carljm on 2025-08-19 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmytro-GL">@dmytro-GL</a> on 2025-09-04 10:46</div>
+            <div class="timeline-body"><p>Here is another one:</p>
+<pre><code>from collections.abc import Callable
+from typing import ParamSpec, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+P = ParamSpec(&quot;P&quot;)
+
+# case #1
+def wrapper(fn: Callable[P, T]) -&gt; Callable[P, T]:
+    def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+        print(&quot;msg&quot;)
+        return fn(*args, **kwargs)
+    return wrapped
+
+# case #2
+def ex2(msg: str):
+    def wrapper(fn: Callable[P, T]) -&gt; Callable[P, T]:
+        def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+            print(msg)
+            return fn(*args, **kwargs)
+        return wrapped
+    return wrapper
+
+# case #3
+def ex3(msg: str):
+    P = ParamSpec(&quot;P&quot;)
+    def wrapper(fn: Callable[P, T]) -&gt; Callable[P, T]:
+        def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+            print(msg)
+            return fn(*args, **kwargs)
+        return wrapped
+    return wrapper
+</code></pre>
+<pre><code>$ uvx ty@0.0.1a20 check x.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                 error[invalid-type-form]: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+  --&gt; x.py:16:30
+   |
+14 | # case #2
+15 | def ex2(msg: str):
+16 |     def wrapper(fn: Callable[P, T]) -&gt; Callable[P, T]:
+   |                              ^
+17 |         def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+18 |             print(msg)
+   |
+info: See the following page for a reference on valid type expressions:
+info: https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions
+info: rule `invalid-type-form` is enabled by default
+
+error[invalid-type-form]: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+  --&gt; x.py:16:49
+   |
+14 | # case #2
+15 | def ex2(msg: str):
+16 |     def wrapper(fn: Callable[P, T]) -&gt; Callable[P, T]:
+   |                                                 ^
+17 |         def wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; T:
+18 |             print(msg)
+   |
+info: See the following page for a reference on valid type expressions:
+info: https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions
+info: rule `invalid-type-form` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>Case 2 doesn't work. pyright doesn't report any issues in all three cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-11-19 19:32</div>
+            <div class="timeline-body"><p>An example from Starlette middleware that gives this error:</p>
+<pre><code class="language-python">import sys
+from typing import Any, Awaitable, Callable, MutableMapping, Protocol
+
+if sys.version_info &gt;= (3, 10):
+    from typing import ParamSpec
+else:
+    from typing_extensions import ParamSpec
+
+Scope = MutableMapping[str, Any]
+Message = MutableMapping[str, Any]
+Receive = Callable[[], Awaitable[Message]]
+Send = Callable[[Message], Awaitable[None]]
+
+ASGIApp = Callable[[Scope, Receive, Send], Awaitable[None]]
+P = ParamSpec(&quot;P&quot;)
+
+
+class _MiddlewareFactory(Protocol[P]):
+    def __call__(
+        self, app: ASGIApp, /, *args: P.args, **kwargs: P.kwargs
+    ) -&gt; ASGIApp: ...
+
+
+class Starlette:
+    def add_middleware(
+        self,
+        middleware_class: _MiddlewareFactory[P],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -&gt; None: ...
+
+
+class MyMiddleware:
+    def __init__(self, app: ASGIApp) -&gt; None: ...
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -&gt; None: ...
+
+
+app = Starlette()
+app.add_middleware(MyMiddleware)
+</code></pre>
+<pre><code>error[invalid-argument-type]: Argument to bound method `add_middleware` is incorrect
+  --&gt; test.py:40:20
+   |
+39 | app = Starlette()
+40 | app.add_middleware(MyMiddleware)
+   |                    ^^^^^^^^^^^^ Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'MyMiddleware'&gt;`
+   |
+info: Method defined here
+  --&gt; test.py:25:9
+   |
+24 | class Starlette:
+25 |     def add_middleware(
+   |         ^^^^^^^^^^^^^^
+26 |         self,
+27 |         middleware_class: _MiddlewareFactory[P],
+   |         --------------------------------------- Parameter declared here
+28 |         *args: P.args,
+29 |         **kwargs: P.kwargs,
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support ParamSpec" to "Support `ParamSpec`" by @dhruvmanila on 2025-12-05 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-12-05 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-05 16:37</div>
+            <div class="timeline-body"><blockquote>
+<p>An example from Starlette middleware that gives this error:</p>
+</blockquote>
+<p>This is still unresolved and is being tracked as a separate issue (https://github.com/astral-sh/ty/issues/1635).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect assignability with Not[] (negation types) and gradual types - astral-sh/ty #767</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect assignability with Not[] (negation types) and gradual types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/767">#767</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-07-05 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-07-05 15:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given <a href="https://play.ty.dev/1d50ef59-232d-4e3b-8166-c1dfbc85c09e">this program</a>:</p>
+<pre><code class="language-python">from ty_extensions import Not, Intersection
+from typing import Any
+
+def f(y: Not[tuple[Any]]):
+    pass
+
+def caller(lst: tuple[int], unannotated):
+    f(lst)
+    f((unannotated,))
+    f((1,))
+</code></pre>
+<p><code>ty</code> rejects all three calls to <code>f()</code>. This is incorrect by my understanding of gradual negation types: <code>Not[tuple[Any]]</code> could materialize to e.g. <code>Not[tuple[str]]</code>, and <code>tuple[int]</code> is assignable to <code>Not[tuple[str]]</code>.</p>
+<p>If we <a href="https://play.ty.dev/9c026880-c0f3-4cf2-9734-2e5923990fe8">change</a> <code>f</code> to take <code>Not[tuple[str]]</code>, ty accepts the first and third call but not the second (<code>f((unannotated,))</code>). This is also incorrect: <code>unannotated</code> could be of some type that makes the tuple disjunct with <code>Not[tuple[str]]</code>.</p>
+<hr />
+<p>I haven't attempted to fully implement this, but here's my thinking on how assignability involving gradual types and negation types could be implemented:</p>
+<p>If <code>T</code> is a non-static (gradual) type, then <code>~T</code> can be transformed into a type of the form <code>T | ~Top[T]</code>, where <code>Top[T]</code> is the top materialization of <code>T</code> (i.e., the union of all possible materializations). That is, the negation of a gradual type consists of the same gradual type, plus any type that is not part of any materialization of the gradual type. <code>Top[T]</code> is a fully static type, which means that we don't need to worry about assigning to a negated gradual type, only to a negated fully static type.</p>
+<p>Next let's consider assignability of a type <code>U</code> to a negated type <code>~T</code>. If <code>U</code> is a fully static type, then we can consider whether the intersection <code>T &amp; U</code> is inhabited. If it is, then <code>U</code> is not assignable to <code>~T</code>. If <code>U</code> is a non-static type, then it is assignable to <code>~T</code> if every materialization of <code>U</code> is disjoint from <code>T</code>. If there is a bottom materialization of <code>U</code> (a materialization that is a subtype of every other materialization), then you could check whether <code>Bottom[U]</code> is disjoint from <code>T</code>. But in Python, the bottom materialization of many gradual types is <code>Never</code>, which is disjoint from everything. (Test case: <code>list[Any]</code> should not be assignable to <code>~Sequence[object]</code>.) I think in practice, you might be able to get this to work by constructing something like the bottom materialization and just not simplifying it to Never, maybe by replacing Any with something that is considered disjoint from every other type.</p>
+<hr />
+<p>The practical significance of all this is limited, since negation types in practice mostly come up in the negative arms of type narrowing constructs, which means we mostly only have to worry about assigning <em>from</em> negation types, not assigning <em>to</em> negation types.</p>
+<p>However, there are cases involving contravariance where the type checker needs to check assignability to a negation type even when we don't use an explicit Not type. Here's an <a href="https://play.ty.dev/961bf1dc-c3fb-47e2-9af3-c7a941f6e4b1">example</a> of a program using implicit negation types that ty incorrectly rejects (mypy and pyright accept it):</p>
+<pre><code class="language-python">from typing import Generic, TypeVar, Any, TypeIs
+
+T_contra = TypeVar(&quot;T_contra&quot;, contravariant=True)
+
+class X(Generic[T_contra]):
+    def __init__(self, x: T_contra) -&gt; None:
+        pass
+
+    def send(self, x: T_contra) -&gt; None:
+        pass
+
+def f(x: X[tuple[Any]]):
+    pass
+
+def is_interesting_tuple(o: object) -&gt; TypeIs[tuple[Any]]:
+    return isinstance(o, tuple) and len(o) == 1 and len(str(o)) % 3 == 0
+
+def doit(o: object):
+    if not is_interesting_tuple(o):
+        x = X(o)
+        # x is of type x[~tuple[Any]]
+        f(x)  # ty: Argument to function `f` is incorrect: Expected `X[tuple[Any]]`, found `X[~tuple[Any]]`
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-07-05 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-10 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:16 UTC
+    </footer>
+</body>
+</html>

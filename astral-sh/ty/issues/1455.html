@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module `nacl` has member `encoding` - astral-sh/ty #1455</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Module `nacl` has member `encoding`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1455">#1455</a>
+        opened by <a href="https://github.com/velikopter">@velikopter</a>
+        on 2025-10-30 01:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/velikopter">@velikopter</a> on 2025-10-30 01:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When checking the codebase of one of my projects, I got this error from ty:</p>
+<pre><code>[0] heli:~/shitcode/vona$ uvx ty check --python /usr
+error[unresolved-attribute]: Module `nacl` has no member `encoding`
+   --&gt; vona/globals/__init__.py:131:29
+    |
+130 |     return (
+131 |         public_key.encode(encoder=nacl.encoding.Base64Encoder)
+    |                                   ^^^^^^^^^^^^^
+132 |         .decode(&quot;utf-8&quot;)
+133 |         .rstrip(&quot;=&quot;)
+    |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+[1] heli:~/shitcode/vona$ 
+</code></pre>
+<p>This is confusing, because the <code>nacl</code> module <em>does</em> have <code>encoding</code>.</p>
+<p>I haven't configured <code>ty</code> in my <code>pyproject.toml</code>.</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.25</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/velikopter">@velikopter</a> on 2025-10-30 01:27</div>
+            <div class="timeline-body"><p>Nevermind, just read the pinned issue, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @velikopter on 2025-10-30 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 14:17</div>
+            <div class="timeline-body"><p>Note that <a href="https://github.com/pyca/pynacl/blob/main/src/nacl/__init__.py"><code>nacl/__init__.py</code></a> does not import the <code>encoding</code> submodule, so requiring it to be explicitly imported before it can be referenced is the intended behavior of ty in this case, not a temporary limitation. This matches the behavior of both mypy and pyright; all three error on <code>import nacl; nacl.encoding</code> (but all are fine with <code>import nacl.encoding; nacl.encoding</code>). The former can succeed sometimes at runtime, but only &quot;by accident&quot; because some other previously-imported module happens to have already imported the <code>nacl.encoding</code> submodule; it's intentional for type-checkers to catch that error-prone situation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:38 UTC
+    </footer>
+</body>
+</html>

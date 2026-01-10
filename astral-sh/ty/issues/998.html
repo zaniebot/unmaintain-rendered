@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace symbols is very slow - astral-sh/ty #998</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace symbols is very slow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/998">#998</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-15 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 07:23</div>
+            <div class="timeline-body"><p>Searching for workspace symbols can be very slow in large projects. We should add some form of caching to workspace symbols to traversing every single file on every request.</p>
+<p>I don't think it's necessary to build a full search index. Using only salsa for caching should probably be fine for an initial version:</p>
+<ul>
+<li>Make <a href="https://github.com/astral-sh/ruff/blob/a0d8ff51dddd7c4d524323d4a8476f3b62e7681f/crates/ty_ide/src/symbols.rs#L74-L90"><code>symbols_for_file</code></a> a salsa query that doesn't take any option and returns all symbols of that file. We could consider making it two queries: One that returns hierarchical and another that returns non-hierarchical symbol information. The most important part is that the query isn't parametrized by the query string. Instead, filtering should happen after collecting all symbols. This gives us per-file caching, which should make subsequent lookups very cheap</li>
+<li>Iterate over all files in <code>workspace_symbols</code> and apply the filtering based on the user input</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-15 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-08-15 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @MichaReiser on 2025-08-15 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 07:24</div>
+            <div class="timeline-body"><p>CC: @BurntSushi, because an alternative is to reuse the index for auto import. But maybe this form of caching would be a good start for auto import too and we can build anything more fancy if the need arises in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-08-15 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @MichaReiser on 2025-08-15 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-08-15 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-23 16:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

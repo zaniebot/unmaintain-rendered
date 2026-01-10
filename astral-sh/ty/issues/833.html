@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pseudo-generic classes to improve inference in untyped code - astral-sh/ty #833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pseudo-generic classes to improve inference in untyped code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/833">#833</a>
+        opened by <a href="https://github.com/erictraut">@erictraut</a>
+        on 2025-07-16 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-16 19:44</div>
+            <div class="timeline-body"><p>I was talking with @carljm, and I mentioned a feature in pyright that I've never really documented. He asked me to provide a brief description here for the benefit of the ty team. This feature is likely a low priority at this time, but it may be something to consider as ty's feature set matures.</p>
+<p>This is a feature that I refer to as &quot;pseudo-generic classes&quot;. When pyright encounters a non-generic class with an unannotated <code>__init__</code> method, it treats the class as though it's generic. Under the covers (and invisible to users), it creates a unique type variable for each <code>__init__</code> parameter. It then uses its normal type inference logic to infer the types of instance variables and method return types.</p>
+<p>Here is an example:</p>
+<p>Code sample in <a href="https://pyright-play.net/?code=GYJw9gtgBANmDm8CWA7eUkQA5hAFygAkBDFAExgFMQAaKAOQHkAVAZQFFmAoLgYxmIBnQVACCAChLkqIAJQAuLlGVQylYFAD6m1EjzbxgyjGB1idAEZ0qAN2MBeJm04KlK94ICuWauNkA6bV19TXFbY1k3d2UjE0DgMDBNYih7KGIo6NjgeMTNC1SoCx53AAEscB98AE9MtQ0bYhhPSmTDY2BXaJUQSjxPEBQobNykjMzyyuo8Wvd6qEbm1ot2ky7uqF7%2BweGO0fyeYgBGQokAJgB2OgAia8jeuybNGZ9xY-9FluTZZQBiDBQeC4D0oTxelDeRw%2BTS%2BFh%2BUH%2BgjwIEOZ1O4ludAAzAAre6UR4wZ7VV7EM7QpbfP7DZHAgmgongt7kz7LeH-XiQLBUAAePH%2BzAAFkgRPBKChqMQ8JQRKQoNRwCAipReMRPEZ0lAsEZPGQwABaMUSkBIXhcDkCYQYEQoMAEYi8fpNGDVKBG6im-xcYhY%2BRiADaqDwdCRtBpIAAulwgA">pyright playground</a></p>
+<pre><code class="language-python">from logging import Handler, NOTSET
+
+class A(Handler):
+    def __init__(self, a, b, level=NOTSET):
+        super().__init__(level)
+        self._foo_a = a
+        self._foo_b = b
+
+    @property
+    def value_a(self):
+        return self._foo_a
+
+    @property
+    def value_b(self):
+        return self._foo_b
+
+a1 = A(27, &quot;&quot;)
+reveal_type(a1.value_a)  # int
+reveal_type(a1.value_b)  # str
+
+a2 = A(&quot;&quot;, 3j)
+reveal_type(a2.value_a)  # str
+reveal_type(a2.value_b)  # complex
+
+# This generates an error because a pseudo-generic
+# class is not actually generic.
+a3: A[int, str, str]
+
+</code></pre>
+<p>This feature should be able to use all of the normal type checker machinery (type inference, constraint solving, etc.), so all of that comes for &quot;free&quot;. The tricky part is finding all of the places where type parameters and generic types are visible to users (diagnostic messages, revealed types, language server hover text, etc.) and make sure that these synthesized type parameters remain invisible to users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> added by @carljm on 2025-07-16 20:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:18 UTC
+    </footer>
+</body>
+</html>

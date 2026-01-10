@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combine starred element types in unpacking - astral-sh/ty #191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combine starred element types in unpacking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/191">#191</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-02-25 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:34</div>
+            <div class="timeline-body"><p>Combine starred element types. For example, in <code>(a, *b, c) = (1, 2, 3, 4)</code>, the <code>Literal[2]</code> and <code>Literal[3]</code> type should be combined into <code>list[int]</code> to be assigned to <code>*b</code>. <strong>(Requires generic support over list)</strong> https://github.com/astral-sh/ruff/blob/c6b311c54643c039d793fb836caf94d22f03cbb4/crates/red_knot_python_semantic/src/types/infer.rs#L1248-L1251</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Combine starred element types. For example, in `(a, *b, c) = (1, 2, 3, 4)`, the `Literal[2]` and `Literal[3]` type should be combined into `list[int]` to be assigned to `*b`. **(Requires generic support over list)** https://github.com/astral-sh/ruff/blob/c6b311c54643c039d793fb836caf94d22f03cbb4/crates/red_knot_python_semantic/src/types/infer.rs#L1248-L1251" to "[red-knot] Combine starred element type in unpacking" by @dhruvmanila on 2025-02-25 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Combine starred element type in unpacking" to "[red-knot] Combine starred element types in unpacking" by @dhruvmanila on 2025-02-25 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:52</div>
+            <div class="timeline-body"><p>(Moving this to Backlog as it requires generic support over list)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Combine starred element types in unpacking" to "Combine starred element types in unpacking" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-11 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:36</div>
+            <div class="timeline-body"><p>I think now that we have generic list, this should be pretty easy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-05-30 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 00:39</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/247#issuecomment-2917656676 gave this example:</p>
+<pre><code>error[unresolved-attribute]: Type `str` has no attribute `pop`
+   --&gt; src/eulertools/lib/utils.py:383:18
+    |
+381 |     prefix, response_key, *answers = line.split(maxsplit=2)
+382 |     try:
+383 |         answer = answers.pop()
+    |                  ^^^^^^^^^^^
+384 |     except IndexError:
+385 |         answer = &quot;&quot;
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>It seems to be this issue, though I'm surprised we wrongly infer <code>str</code> here rather than just inferring <code>Unknown</code> or <code>Todo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 03:20</div>
+            <div class="timeline-body"><p>Yes, this should be easy now. I do have a couple of questions:</p>
+<ol>
+<li><p>What should we infer in <a href="https://github.com/astral-sh/ruff/blob/363f061f0920158c7eedd27825bc39f197543547/crates/ty_python_semantic/resources/mdtest/unpacking.md?plain=1#L106-L116">this error case</a>? Should it be <code>Unknown</code> or <code>list[Unknown</code>? I think the latter makes sense</p>
+<pre><code class="language-py"># error: [invalid-assignment] &quot;Not enough values to unpack: Expected 3 or more&quot;
+[a, *b, c, d] = (1, 2)
+reveal_type(a)  # revealed: Unknown
+# TODO: Should be list[Any] once support for assigning to starred expression is added
+reveal_type(b)  # revealed: Unknown
+reveal_type(c)  # revealed: Unknown
+reveal_type(d)  # revealed: Unknown
+</code></pre>
+</li>
+<li><p>Should the literal types be promoted? In <a href="https://github.com/astral-sh/ruff/blob/363f061f0920158c7eedd27825bc39f197543547/crates/ty_python_semantic/resources/mdtest/unpacking.md?plain=1#L128-L136">this example</a>, should the inferred type be <code>list[Literal[2]]</code> or <code>list[int]</code>?</p>
+<pre><code class="language-py">[a, *b, c] = (1, 2, 3)
+reveal_type(a)  # revealed: Literal[1]
+# TODO: Should be list[int] once support for assigning to starred expression is added
+reveal_type(b)  # revealed: @Todo(starred unpacking)
+reveal_type(c)  # revealed: Literal[3]
+</code></pre>
+</li>
+<li><p>If we do promote the literal types, it would have a side effect in <a href="https://github.com/astral-sh/ruff/blob/363f061f0920158c7eedd27825bc39f197543547/crates/ty_python_semantic/resources/mdtest/unpacking.md?plain=1#L265-L273">this example</a> that we infer <code>list[str]</code> instead of <code>list[LiteralString]</code></p>
+<pre><code class="language-py">(a, *b, c) = &quot;ab&quot;
+reveal_type(a)  # revealed: LiteralString
+# TODO: Should be list[LiteralString] once support for assigning to starred expression is added
+reveal_type(b)  # revealed: @Todo(starred unpacking)
+reveal_type(c)  # revealed: LiteralString
+</code></pre>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 20:29</div>
+            <div class="timeline-body"><p>Re (1), I don't think it's hugely consequential either way, but I agree that if all else is equal, <code>list[Unknown]</code> is preferable.</p>
+<p>Re (2), I would be inclined to initially not promote literals and see if it causes issues in practice. I suspect it's unusual to mutate an unpacked list, but I could be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-03 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty set from `set()` assignable to `MySet` but not to `MySet | None` - astral-sh/ty #1603</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Empty set from `set()` assignable to `MySet` but not to `MySet | None`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1603">#1603</a>
+        opened by <a href="https://github.com/BHSPitMonkey">@BHSPitMonkey</a>
+        on 2025-11-20 23:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BHSPitMonkey">@BHSPitMonkey</a> on 2025-11-20 23:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Playground: https://play.ty.dev/b6d2c6ad-1986-425e-9619-12434e33a223</p>
+<pre><code class="language-python">type StyleSet = set[
+    Literal[
+        &quot;bold&quot;,
+        &quot;italic&quot;,
+        &quot;strike&quot;,
+    ]
+]
+
+s: StyleSet = set()
+# Works as expected
+
+s: StyleSet | None = set()
+# Object of type `set[Unknown]` is not assignable to `StyleSet | None` (invalid-assignment)
+</code></pre>
+<p>The custom subscripted <code>set</code> subtype above has no trouble accepting an empty <code>set()</code>, but <code>ty</code> produces an <code>invalid-assignment</code> when assigned to <code>StyleSet | None</code> (despite this union being wider)</p>
+<h3>Version</h3>
+<p>eb7c098d6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2025-11-20 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-11-20 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-20 23:52</div>
+            <div class="timeline-body"><p>@ibraheemdev Haven't looked into this in depth, but it certainly looks like a bidi issue -- even if we infer <code>set[Unknown]</code> for the RHS (and it seems like we should be able to do better than that with the annotation?) it should definitely be assignable to <code>StyleSet | None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-11-20 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-21 21:43</div>
+            <div class="timeline-body"><p>This should be resolved by https://github.com/astral-sh/ruff/pull/21574. We are correctly using the type context, but promoting to <code>set[str]</code> because we don't see through the union. The confusing diagnostic is because of reinference — we should probably to prioritize https://github.com/astral-sh/ruff/pull/21267 to avoid cases like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-11-21 22:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:43 UTC
+    </footer>
+</body>
+</html>

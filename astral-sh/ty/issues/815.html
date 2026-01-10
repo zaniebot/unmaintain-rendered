@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `pull-types:skip` directive in `callable.md` mdtest - astral-sh/ty #815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove `pull-types:skip` directive in `callable.md` mdtest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/815">#815</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-11 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 11:43</div>
+            <div class="timeline-body"><p>If this diff is applied to the Ruff main branch:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/annotations/callable.md b/crates/ty_python_semantic/resources/mdtest/annotations/callable.md
+index 688dcb321a..60ecbe13b7 100644
+--- a/crates/ty_python_semantic/resources/mdtest/annotations/callable.md
++++ b/crates/ty_python_semantic/resources/mdtest/annotations/callable.md
+@@ -58,8 +58,6 @@ def _(c: Callable[[int, 42, str, False], None]):
+ 
+ ### Missing return type
+ 
+-&lt;!-- pull-types:skip --&gt;
+-
+ Using a parameter list:
+ 
+ ```py
+</code></pre>
+<p>Then the mdtest fails:</p>
+<pre><code>failures:
+
+---- mdtest__annotations_callable stdout ----
+
+callable.md - Callable - Invalid forms - Missing return type (c92a50e3fcef65ab)
+
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 Attempting to &quot;pull types&quot; caused a panic at crates/ty_python_semantic/src/semantic_model.rs:288:44
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 Note: either fix the panic or add the `&lt;!-- pull-types:skip --&gt;` directive to this test
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 Failed to retrieve the inferred type for an `ast::Expr` node passed to `TypeInference::expression_type()`. The `TypeInferenceBuilder` should infer and store types for all `ast::Expr` nodes in any `TypeInference` region it analyzes.
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 
+  crates/ty_python_semantic/resources/mdtest/annotations/callable.md:64 run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER='callable.md - Callable - Invalid forms - Missing return type (c92a50e3fcef65ab)'
+MDTEST_TEST_FILTER='callable.md - Callable - Invalid forms - Missing return type (c92a50e3fcef65ab)' cargo test -p ty_python_semantic --test mdtest -- mdtest__annotations_callable
+
+--------------------------------------------------
+</code></pre>
+<p>That indicates that the ty server would crash if you parameterized <code>Callable</code> in exactly the wrong way and then hovered over it in an IDE. We should fix that by making sure we store a <code>Type</code> for each sub-expression even if it's an invalid type annotation.</p>
+<p>This is the last use of the <code>pull-types:skip</code> directive remaining in our mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-07-11 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-07-11 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-07-11 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lipefree">@lipefree</a> on 2025-07-14 06:59</div>
+            <div class="timeline-body"><p>I will be happy to look into this one !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @lipefree by @AlexWaygood on 2025-07-14 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 16:17</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/ruff/pull/19517</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-05 16:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

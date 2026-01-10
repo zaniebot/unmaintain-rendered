@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] ty crashes with UnboundIterAndGetitemError on Iterable types during type checking - astral-sh/ty #764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] ty crashes with UnboundIterAndGetitemError on Iterable types during type checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/764">#764</a>
+        opened by <a href="https://github.com/SoraKukyo">@SoraKukyo</a>
+        on 2025-07-04 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SoraKukyo">@SoraKukyo</a> on 2025-07-04 10:54</div>
+            <div class="timeline-body"><h3>Bug report: <code>ty</code> panics during type checking on Iterable-related code</h3>
+<p><strong>Description:</strong></p>
+<p>When running <code>ty check</code> as part of pre-commit hooks on my project, I encounter a panic error related to <code>try_iterate()</code> failing on a type assignable to <code>Iterable</code>. The error message suggests that <code>ty</code> tries to iterate over a type but fails due to an unimplemented method.</p>
+<p><strong>Reproduction details:</strong></p>
+<ul>
+<li>Running pre-commit with the <code>ty</code> hook</li>
+<li><code>ty</code> version: (unspecified, latest pre-release)</li>
+<li>OS: Windows x86_64</li>
+<li>Project path: <code>D:\personal\freelance\MyProject\run_scrapyd.py</code> <em>(replaced from original)</em></li>
+</ul>
+<p><strong>Error output snippet:</strong></p>
+<pre><code class="language-log">error[panic]: Panicked at crates\ty_python_semantic\src\types\call\bind.rs:989:70 when checking D:\personal\freelance\MyProject\run_scrapyd.py: try_iterate() should not fail on a type assignable to Iterable: UnboundIterAndGetitemError { dunder_getitem_error: MethodNotAvailable }
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: windows x86_64
+info: Args: [&quot;...\ty.exe&quot;, &quot;check&quot;, &quot;projects/MyProject/scrapy.cfg&quot;, &quot;projects/MyProject/MyProject/spiders/dummy.py&quot;, &quot;projects/MyProject/MyProject/myscript.py&quot;, &quot;run_scrapyd.py&quot;]
+info: run with RUST_BACKTRACE=1 environment variable to show the full backtrace information
+info: query stacktrace:
+0: infer_expression_types(Id(4b84))
+1: infer_definition_types(Id(15e5a))
+</code></pre>
+<p><strong>Additional notes:</strong></p>
+<ul>
+<li>This error started appearing recently, with no relevant code changes.</li>
+<li>The panic breaks the entire pre-commit run.</li>
+<li>The warning <code>ty is pre-release software and not ready for production use</code> is shown.</li>
+<li>I have confirmed the same issue occurs both locally and in CI (GitHub Actions).</li>
+</ul>
+<p>Please let me know if you need any more logs or reproduction steps.</p>
+<hr />
+<p>Thanks for the awesome project! Hope this helps improve stability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-04 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-07-04 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 11:08</div>
+            <div class="timeline-body"><p>Thanks! It'll be hard to debug this without a minimal reproducible example, unfortunately -- are you able to share a self-contained snippet of code that reproduces the panic when you run ty on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SoraKukyo">@SoraKukyo</a> on 2025-07-04 11:17</div>
+            <div class="timeline-body"><p>Thanks for the quick reply!
+The panic occurs when running:
+<code>uv run pre-commit run --all-files</code>
+with my current pre-commit setup (see below). The failure consistently happens on the file <code>run_scrapyd.py</code> which contains this  code:</p>
+<pre><code class="language-python">
+import os
+
+from twisted.internet import reactor
+from twisted.web import server
+
+from scrapyd import get_application
+
+if __name__ == &quot;__main__&quot;:
+    os.environ[&quot;SCRAPYD_CONFIG&quot;] = &quot;scrapyd/scrapyd.conf&quot;
+    application = get_application()
+    site = server.Site(application)
+    reactor.listenTCP(6800, site)  # type: ignore[unresolved-attribute]
+    reactor.run()  # type: ignore[unresolved-attribute]
+</code></pre>
+<p>The error is related to try_iterate() failing on a type assignable to Iterable, specifically pointing to</p>
+<pre><code class="language-css">UnboundIterAndGetitemError { dunder_getitem_error: MethodNotAvailable }
+</code></pre>
+<p>his happens both locally and in CI (GitHub Actions).</p>
+<p>Here is the relevant portion of my <code>.pre-commit-config.yaml</code>:</p>
+<pre><code class="language-yaml">repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.6.6
+    hooks:
+      - id: uv-lock
+  # ... other hooks omitted for brevity ...
+  - repo: local
+    hooks:
+      - id: ty
+        name: type checking
+        entry: uvx ty check
+        language: system
+</code></pre>
+<p>If you need me to isolate this further or provide any other details, please let me know.</p>
+<p>FYI: 2 days ago, everything was working fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>FYI: 2 days ago, everything was working fine!</p>
+</blockquote>
+<p>yeah, the regression was caused by https://github.com/astral-sh/ruff/pull/18987, which was released as part of ty 0.0.1-alpha-13, which we released 2 days ago :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 16:17</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">import os
+
+from twisted.internet import reactor
+from twisted.web import server
+
+from scrapyd import get_application
+
+if __name__ == &quot;__main__&quot;:
+    os.environ[&quot;SCRAPYD_CONFIG&quot;] = &quot;scrapyd/scrapyd.conf&quot;
+    application = get_application()
+    site = server.Site(application)
+    reactor.listenTCP(6800, site)  # type: ignore[unresolved-attribute]
+    reactor.run()  # type: ignore[unresolved-attribute]
+</code></pre>
+</blockquote>
+<p>Thanks, I can reproduce if I save this snippet as <code>foo.py</code> and then run <code>uv run --no-project --with=scrapyd --with=twisted cargo run -p ty check foo.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 16:21</div>
+            <div class="timeline-body"><p>A smaller repro is:</p>
+<pre><code class="language-py">from twisted.web import server
+
+server.Site()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 16:42</div>
+            <div class="timeline-body"><p>Even smaller: run <code>uv run --no-project --with=zope cargo run -p ty check foo.py</code> with this saved as <code>foo.py</code>:</p>
+<pre><code class="language-py">from zope.interface import implementer
+
+implementer()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-07-04 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-05 18:51</div>
+            <div class="timeline-body"><p>And here, finally, is a minimal repro with no third-party dependencies:</p>
+<pre><code class="language-py">from unresolved_module import SomethingUnknown
+
+class Foo(SomethingUnknown): ...
+
+tuple(Foo)
+</code></pre>
+<p>So it looks like the issue is with classes that have <code>Any</code>/<code>Unknown</code> in their MRO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-25 10:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

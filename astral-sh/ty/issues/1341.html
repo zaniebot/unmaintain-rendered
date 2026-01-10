@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distinguish &quot;declared&quot; and &quot;inferred&quot; `Place`s - astral-sh/ty #1341</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Distinguish &quot;declared&quot; and &quot;inferred&quot; `Place`s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1341">#1341</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-13 07:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-13 07:33</div>
+            <div class="timeline-body"><p>A <code>Place</code> is currently either <code>Place::Unbound</code>, <code>Place::Type(type, Boundness::PossiblyUnbound</code> or <code>Place::Type(type, Boundness::Bound)</code>:</p>
+<pre><code class="language-rs">pub(crate) enum Boundness {
+    Bound,
+    PossiblyUnbound,
+}
+
+pub(crate) enum Place&lt;'db&gt; {
+    Type(Type&lt;'db&gt;, Boundness),
+    Unbound,
+}
+</code></pre>
+<p>There is currently no way of tracking if a <code>Place</code> originated from a declaration or if its type has been inferred. However, we still use e.g. <code>Place::Type(type, Boundness::Bound)</code> to mean &quot;definitely declared&quot; in various places. For example, the <code>place_from_declarations</code> query also returns a <code>Place</code> (wrapped in <code>PlaceFromDeclarationsResult</code> -&gt; <code>PlaceAndQualifiers</code> -&gt; <code>Place</code>).</p>
+<p>Similarly, the <code>Member</code> return type of various member-access functions <a href="https://github.com/astral-sh/ruff/blob/9b9c9ae0923762fdea90d1ddd01ee8e7e87064dc/crates/ty_python_semantic/src/member.rs#L14-L18">currently tracks</a> the &quot;declared vs inferred&quot; information separately.</p>
+<p>We should attempt to refactor <code>Place</code> to generally contain metadata about the origin of a particular type.</p>
+<p>Related issue: #1051</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @sharkdp on 2025-10-13 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-10-13 17:40</div>
+            <div class="timeline-body"><p>I remember considering the related issue during astral-sh/ruff#18041. At the time, it was associated with #229.
+The new API for <code>Place</code> I was considering at the time was as follows:</p>
+<pre><code class="language-rust">// Boundness renamed
+pub(crate) enum Definedness {
+    Defined, // Bound renamed
+    PossiblyUndefined, // PossiblyUnbound renamed
+}
+
+pub(crate) enum Place&lt;'db&gt; {
+    // If there is both a declaration and a binding, `Place::Bound` will be used.
+    Bound(Type&lt;'db&gt;, Definedness),
+    Declared(Type&lt;'db&gt;, Definedness),
+    Undefined,
+}
+</code></pre>
+<p>If no one has started working on this yet, I'll get to it.
+Please let me know if you have any comments on the direction of the new API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-14 07:09</div>
+            <div class="timeline-body"><blockquote>
+<p>The new API for Place I was considering at the time was as follows:</p>
+</blockquote>
+<p>Sounds reasonable.</p>
+<blockquote>
+<p>Please let me know if you have any comments on the direction of the new API.</p>
+</blockquote>
+<p>Another idea would be something like the following with just a single variant that holds a <code>Type</code>.</p>
+<pre><code class="language-rs">pub(crate) enum TypeOrigin {
+    Declared,
+    Inferred,
+}
+
+pub(crate) enum Place&lt;'db&gt; {
+    // If there is both a declaration and a binding, `Place::Bound` will be used.
+    Defined(Type&lt;'db&gt;, TypeOrigin, Definedness),
+    Undefined,
+}
+</code></pre>
+<p>I guess it depends on which representation feels the most ergonomic when actually doing the refactor.</p>
+<blockquote>
+<p>If no one has started working on this yet, I'll get to it.</p>
+</blockquote>
+<p>That would be great. If it turns out to be a <em>huge</em> change that affects several other open PRs, <em>maybe</em> it would be better to do this after the beta release? Or maybe there is a smart way of doing this in several smaller steps, where the first step would keep the API of <code>Place</code> mostly intact?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-10-14 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>That would be great. If it turns out to be a huge change that affects several other open PRs, maybe it would be better to do this after the beta release? Or maybe there is a smart way of doing this in several smaller steps, where the first step would keep the API of Place mostly intact?</p>
+</blockquote>
+<p>I think we can start by adding <code>Place::Declared</code> and replacing all current <code>Place::Type</code> with <code>Place::Bound</code> (<code>Place::Inferred</code> would be a better name than <code>Place::Bound</code> for consistency with other existing types such as <code>DeclaredAndInferredType</code>), allowing us to introduce the new API without changing behavior.
+<code>Place::Declared</code> will be used in the next step.</p>
+<p>Alternatively, if we will use <code>Place::{Defined, Undefined}</code> and <code>TypeOrigin</code>, all <code>TypeOrigin</code>s will initially be set to <code>Inferred</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

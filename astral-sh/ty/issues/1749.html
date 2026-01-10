@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix priority of namespace vs non-namespace packages - astral-sh/ty #1749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix priority of namespace vs non-namespace packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1749">#1749</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-03 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 21:33</div>
+            <div class="timeline-body"><p>Consider a directory structure like this:</p>
+<pre><code>path-one/
+   mod/
+      sub1.py
+path-two/
+   mod/
+      __init__.py
+      sub2.py
+</code></pre>
+<p>Where <code>path-one</code> and <code>path-two</code> are both import-search-path entries, in that order (e.g. <code>PYTHONPATH=path-one:path-two&quot;</code> should make this happen both for ty and at runtime).</p>
+<p>At runtime, a non-namespace package <em>anywhere on the search path</em> takes precedence over a namespace package. This means that with the above setup, <code>import mod.sub1</code> fails. Despite being first on the search path, <code>path-one/mod</code> is never considered as a candidate for the <code>mod</code> package, because <code>path-two/mod/__init__.py</code> exists.</p>
+<p>Given <code>import mod</code> in the above scenario, we do prefer <code>path-two/mod/__init__.py</code> over the <code>path-one/mod</code> namespace package. But we wrongly allow <code>import mod.sub1</code> to succeed, resolving to the <code>path-one</code> namespace package.</p>
+<p>In this particular case, that might seem harmless, but it can cause us to import the wrong thing in some scenarios, and it can lead to some very odd inconsistencies with relative imports, documented in <code>import/workspaces.md</code>. Allowing imports of modules in the &quot;should be ignored&quot; namespace package to just fail would allow our &quot;desperate resolution&quot; to kick in (for imports within that &quot;should be ignored&quot; namespace package) and actually give more consistent behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-03 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 21:34</div>
+            <div class="timeline-body"><p>I'm currently marking this a P2 for stable, but it should probably get bumped up in priority if we get many reports of it in the wild, or maybe bumped out of stable entirely if we never do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-12-03 21:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:49 UTC
+    </footer>
+</body>
+</html>

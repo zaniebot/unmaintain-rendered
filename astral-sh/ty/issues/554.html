@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support detecting `Never` for exhausted union of literals - astral-sh/ty #554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support detecting `Never` for exhausted union of literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/554">#554</a>
+        opened by <a href="https://github.com/Andrej730">@Andrej730</a>
+        on 2025-05-30 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-30 18:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>See the snippet below.</p>
+<p>https://play.ty.dev/cfe44b44-5c65-4064-80be-ea24f7126e56</p>
+<pre><code class="language-python">from typing import Literal, assert_never
+
+LType = Literal[&quot;A&quot;, &quot;B&quot;]
+
+def test(l: LType):
+    if l == &quot;A&quot;:
+        pass
+    elif l == &quot;B&quot;:
+        pass
+    else:
+        # Revealed type: `@Todo &amp; ~Literal[&quot;A&quot;] &amp; ~Literal[&quot;B&quot;]` (revealed-type) [Ln 11, Col 21]
+        reveal_type(l)
+        # Argument does not have asserted type `Never` (type-assertion-failure) [Ln 12, Col 9]
+        assert_never(l)
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 18:33</div>
+            <div class="timeline-body"><p>Thanks for the report! We actually already support this, see https://play.ty.dev/70e3d9af-6362-4f04-ab56-d06394e46540</p>
+<p>What's going wrong in your example is our inadequate handling of bare/implicit type aliases, which is #221</p>
+<p>It also works fine with a PEP 695 type alias: https://play.ty.dev/d380cf8f-2e3a-454c-aa98-8b337711907a</p>
+<p>Closing this as duplicate of #221</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-30 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-30 18:39</div>
+            <div class="timeline-body"><p>Thanks for pointing out, I've seen this issue in https://github.com/astral-sh/ty/issues/445, but for some reason didn't connected it to this, thinking it was about type aliases defined with <code>TypeAlias</code> explicitly 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 18:42</div>
+            <div class="timeline-body"><p>We are currently lacking support for both kinds of legacy type aliases, those using <code>TypeAlias</code> and those with no annotation. Hopefully will be fixed before long!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:07 UTC
+    </footer>
+</body>
+</html>

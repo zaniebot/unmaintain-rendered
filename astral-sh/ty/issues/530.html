@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ty` reports unresolved import for `win32gui` despite successful import in Python - astral-sh/ty #530</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ty` reports unresolved import for `win32gui` despite successful import in Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/530">#530</a>
+        opened by <a href="https://github.com/ooopus">@ooopus</a>
+        on 2025-05-28 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ooopus">@ooopus</a> on 2025-05-28 08:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>ty check</code> reports an <code>unresolved-import</code> error for the <code>win32gui</code> module, even though the module can be successfully imported and used in a Python environment where <code>pywin32</code> is installed.</p>
+<p><strong>Steps to Reproduce</strong></p>
+<ol>
+<li><p>Install <code>pywin32</code>:</p>
+<pre><code class="language-bash">pip install pywin32
+</code></pre>
+</li>
+<li><p>Create a Python file (e.g., <code>test.py</code>) with the following content:</p>
+<pre><code class="language-python">import win32gui
+print(&quot;win32gui imported successfully&quot;)
+</code></pre>
+</li>
+<li><p>Verify that the Python script runs successfully and <code>win32gui</code> can be imported:</p>
+<pre><code class="language-bash">python test.py
+</code></pre>
+<p>Output:</p>
+<pre><code>win32gui imported successfully
+</code></pre>
+</li>
+<li><p>Run <code>ty check</code> on the Python file:</p>
+<pre><code class="language-bash">uvx ty check test.py
+</code></pre>
+</li>
+</ol>
+<p><strong>Expected Behavior</strong></p>
+<p><code>ty check</code> should not report any errors, as <code>win32gui</code> is a valid and importable module after installing <code>pywin32</code>.</p>
+<p><strong>Actual Behavior</strong></p>
+<p><code>ty check</code> reports an <code>unresolved-import</code> error:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-import]: Cannot resolve imported module `win32gui`
+ --&gt; test.py:1:8
+  |
+1 | import win32gui
+  |        ^^^^^^^^
+  |
+info: make sure your Python environment is properly configured: https://github.com/astral-sh/ty/blob/main/docs/README.md#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-28 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 09:12</div>
+            <div class="timeline-body"><p>Thanks for the report! Can I double-check two things:</p>
+<ol>
+<li>Which environment are you installing <code>pywin32</code> into -- a virtual environment or your system installation of Python?</li>
+<li>Do you have a virtual environment locally (if so, what directory is it in and have you activated it)?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-05-28 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ooopus">@ooopus</a> on 2025-05-28 09:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the report! Can I double-check two things:</p>
+<ol>
+<li>Which environment are you installing <code>pywin32</code> into -- a virtual environment or your system installation of Python?</li>
+<li>Do you have a virtual environment locally (if so, what directory is it in and have you activated it)?</li>
+</ol>
+</blockquote>
+<ol>
+<li>I have installed pywin32 in both the virtual environment and the system environment</li>
+<li>An error occurs regardless of whether the virtual environment (.venv) is activated.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 10:11</div>
+            <div class="timeline-body"><p>Ohhh, I think <code>win32gui</code> might be a C extension, if I remember correctly? You might need to install <code>types-pywin32</code> for us to be able to resolve the import. If that's the case, then this is #487.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ooopus">@ooopus</a> on 2025-05-28 10:53</div>
+            <div class="timeline-body"><p>Indeed, that's so. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ooopus on 2025-05-28 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 10:54</div>
+            <div class="timeline-body"><p>No problem. Sorry our diagnostics aren't better here. We'll definitely try to improve this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:06 UTC
+    </footer>
+</body>
+</html>

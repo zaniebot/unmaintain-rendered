@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialized `@overload` not respected - astral-sh/ty #655</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specialized `@overload` not respected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/655">#655</a>
+        opened by <a href="https://github.com/galah92">@galah92</a>
+        on 2025-06-14 10:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/galah92">@galah92</a> on 2025-06-14 10:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>According to <a href="https://github.com/matplotlib/matplotlib/blob/f6b77d286fd7617be24c6b8eda21cac4c0056293/lib/matplotlib/figure.pyi#L92">this</a> I expect <code>ty</code> to pickup the return type is <code>Axes3D</code> and not <code>Axes.</code> However:</p>
+<pre><code class="language-bash">➜  Downloads uv init tyoverload
+Initialized project `tyoverload` at `/Users/galah92/Downloads/tyoverload`
+➜  Downloads cd tyoverload
+➜  tyoverload git:(main) ✗ vi main.py
+➜  tyoverload git:(main) ✗ uv add matplotlib ty
+Resolved 13 packages in 1.27s
+Prepared 7 packages in 4.89s
+Installed 12 packages in 108ms
+ + contourpy==1.3.2
+ + cycler==0.12.1
+ + fonttools==4.58.4
+ + kiwisolver==1.4.8
+ + matplotlib==3.10.3
+ + numpy==2.3.0
+ + packaging==25.0
+ + pillow==11.2.1
+ + pyparsing==3.2.3
+ + python-dateutil==2.9.0.post0
+ + six==1.17.0
+ + ty==0.0.1a10
+➜  tyoverload git:(main) ✗ cat main.py
+import matplotlib.pyplot as plt
+
+
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.set_zlim(0, 1)
+➜  tyoverload git:(main) ✗ uv run ty check
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `Axes` has no attribute `set_zlim`
+ --&gt; main.py:6:1
+  |
+4 | fig = plt.figure()
+5 | ax = fig.add_subplot(projection='3d')
+6 | ax.set_zlim(0, 1)
+  | ^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.10 (15bae14c2 2025-06-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 02:24</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>This is because the latest released matplotlib (3.10.3) does not yet include the additional overload for <code>Axes3D</code>: https://github.com/matplotlib/matplotlib/blob/8b8272945441b74d5dd7b5815c88a49608b8926d/lib/matplotlib/figure.pyi#L88</p>
+<p>If I instead <code>uv add &quot;matplotlib @ git+https://github.com/matplotlib/matplotlib&quot;</code> to install the latest matplotlib from github main branch, then your code works without errors.</p>
+<p>Closing since this doesn't appear to be a bug in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-17 02:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:11 UTC
+    </footer>
+</body>
+</html>

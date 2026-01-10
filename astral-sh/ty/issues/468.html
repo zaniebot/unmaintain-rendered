@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement argument type expansion for overload call evaluation - astral-sh/ty #468</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement argument type expansion for overload call evaluation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/468">#468</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2025-05-20 22:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2025-05-20 22:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I don't believe this is a duplicate, apologies if otherwise.</p>
+<pre><code class="language-python">from typing import Any
+class Spam:
+    def __getitem__(self, item: int | slice) -&gt; Any:
+        return (1, 'spam', None)[item]
+</code></pre>
+<p><code>ty</code> reports: <code>`Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Literal[1], Literal[&quot;spam&quot;], None]` (call-non-callable) [Ln 4, Col 16]`</code></p>
+<p>A</p>
+<p>https://play.ty.dev/13c25386-6806-4686-880c-7891a3fb9044</p>
+<h3>Version</h3>
+<p>play.ty.dev reports 0.0.0, but locally <code>ty 0.0.1-alpha.5 (3b726d87a 2025-05-17)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-21 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @sharkdp on 2025-05-21 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-21 07:07</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<p>It looks like we do not properly handle unions in overload resolution. Here's a self-contained example:</p>
+<pre><code class="language-py">from typing import overload
+
+class A: ...
+class B: ...
+
+@overload
+def f(x: A) -&gt; int: return 1
+@overload
+def f(x: B) -&gt; str: return &quot;a&quot;
+def f(x: A | B) -&gt; int | str:
+    raise NotImplementedError
+
+def _(x: A | B):
+    reveal_type(f(x))  # should be int | str, ty: no-matching-overload
+</code></pre>
+<p>(https://play.ty.dev/359d3749-dab4-4857-9bb6-b127aaae0910)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "``__getitem__`` tuple error `call-non-callable`" to "Incorrect overload resolution for union types" by @sharkdp on 2025-05-21 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-21 07:18</div>
+            <div class="timeline-body"><p>Handling this properly will require &quot;forking&quot; the argument-type-checking algorithm in overload resolution for every possible combination of union elements. For a call like <code>f(x, y)</code> with <code>x: X1 | X2</code> and <code>y: Y1 | Y2</code>, we would need to check all combinations <code>(X1, Y1); (X1, Y2); (X2, Y1); (X2, Y2)</code>. If one of these combinations results in a call error, the entire call should fail. Otherwise, the resulting type will be a union of all return types. The important part is that each of these combinations can pick a different overload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-21 07:26</div>
+            <div class="timeline-body"><p>CC: @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @MichaReiser on 2025-05-21 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-21 13:59</div>
+            <div class="timeline-body"><p>Yes, this is exactly the thing that I'm currently working on :)</p>
+<p>I'll convert this issue to be part of #104.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect overload resolution for union types" to "Implement argument type expansion for overload call evaluation" by @dhruvmanila on 2025-05-21 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @dhruvmanila on 2025-05-21 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-05-21 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-04 02:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:05 UTC
+    </footer>
+</body>
+</html>

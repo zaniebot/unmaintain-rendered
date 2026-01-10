@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot resolve imported module `.` - astral-sh/ty #1195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot resolve imported module `.`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1195">#1195</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-09-17 08:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 08:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>ty</code> on <code>asynq</code>, we see errors like:</p>
+<pre><code>asynq/scheduler.py:23:1: error[unresolved-import] Cannot resolve imported module `.`
+asynq/scheduler.py:24:1: error[unresolved-import] Cannot resolve imported module `.`
+asynq/scheduler.py:25:1: error[unresolved-import] Cannot resolve imported module `.`
+asynq/scheduler.py:26:1: error[unresolved-import] Cannot resolve imported module `.`
+asynq/scheduler.py:27:7: error[unresolved-import] Cannot resolve imported module `.async_task`
+</code></pre>
+<p>Folder with <code>scheduler.py</code> file: <a href="https://github.com/quora/asynq/tree/master/asynq"><code>asynq/</code></a></p>
+<h3>Version</h3>
+<p>Current main (ffd650e5fdbd8458065670083ade0316e656b673)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-09-17 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-17 08:08</div>
+            <div class="timeline-body"><p>The same error shows up in this line in <code>bokeh</code>, and there are some similar-looking &quot;Cannot resolve imported module <code>..settings</code> errors as well:</p>
+<p>https://github.com/bokeh/bokeh/blob/62b3e23d53e9a87b6527cf6da5d4e688425f0904/src/bokeh/core/property_aliases.py#L24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-17 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-09-18 03:29</div>
+            <div class="timeline-body"><p>This problem occurs when:</p>
+<ul>
+<li>a module has both a <code>.py</code> and a <code>.pyi</code></li>
+<li>the <code>.py</code> has a relative import (<code>from . import ....</code>)</li>
+</ul>
+<p>this is because <code>relative_module_name</code> invokes <code>file_to_module(importing_file)</code> to resolve <code>.</code>, but <code>file_to_module</code> insists that file &lt;-&gt; module is a bijection, and throws out any answer to the contrary. Since <code>mymodule.pyi</code> claims the module name <code>mymodule</code>, <code>file_to_module</code> believes <code>mymodule.py</code> <em>can't</em> also resolve to <code>mymodule</code>, and so <code>file_to_module</code> returns None, and <code>relative_module_name</code> fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-09-18 03:39</div>
+            <div class="timeline-body"><p>You can trivially fix this by changing this condition in <code>file_to_module</code> to always return <code>Some</code>:</p>
+<pre><code class="language-rs">    if file.path(db) == module_file.path(db) {
+        Some(module)
+    } else {
+        // This path is for a module with the same name but with a different precedence. For example:
+        // ```
+        // src/foo.py
+        // src/foo/__init__.py
+        // ```
+        // The module name of `src/foo.py` is `foo`, but the module loaded by Python is `src/foo/__init__.py`.
+        // That means we need to ignore `src/foo.py` even though it resolves to the same module name.
+        None
+    }
+</code></pre>
+<p>Micha raised the concern of this being possible here, but for whatever reason this is apparently the only situation where it actually happens!</p>
+<ul>
+<li>#869</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-09-25 01:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

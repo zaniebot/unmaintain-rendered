@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected semantic change for stringified annotations - astral-sh/ty #900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected semantic change for stringified annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/900">#900</a>
+        opened by <a href="https://github.com/Geo5">@Geo5</a>
+        on 2025-07-26 22:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Geo5">@Geo5</a> on 2025-07-26 22:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following example:</p>
+<pre><code class="language-python">def str(x: str) -&gt; None: ...
+def bytes(x: &quot;bytes&quot;) -&gt; None: ...
+
+class t: ...
+class t2: ...
+
+class Foo:
+    complex: complex = 1
+    float: &quot;float&quot; = 1.0
+    type: type = set
+
+    def int(self, x: int, z: list) -&gt; None: ...
+    def slice(self, x: &quot;slice&quot;) -&gt; None: ...
+    def t(self, x: t) -&gt; None: ...
+    def t2(self, x: &quot;t2&quot;) -&gt; None: ...
+</code></pre>
+<p><a href="https://play.ty.dev/cfebf8b2-bbc0-4d06-930e-585689a88418">playground</a>
+This has the following errors:</p>
+<pre><code>Variable of type `def bytes(x: Unknown) -&gt; None` is not allowed in a type expression (invalid-type-form) [Ln 2, Col 15]
+Variable of type `float` is not allowed in a type expression (invalid-type-form) [Ln 9, Col 13]
+Variable of type `def slice(self, x: Unknown) -&gt; None` is not allowed in a type expression (invalid-type-form) [Ln 13, Col 25]
+Variable of type `def t2(self, x: Unknown) -&gt; None` is not allowed in a type expression (invalid-type-form) [Ln 15, Col 22]
+</code></pre>
+<p>So it seems like depending on if the annotations are in strings or not they get resolved differently which surprised me for a few reason:</p>
+<ul>
+<li>Mypy is consistent with these (<code>str</code> and <code>bytes</code> are errors, no errors in <code>Foo</code>)</li>
+<li>The same behavior applies when implicitly converting annotations to strings with <code>from __future__ import annotations</code> (which could ofc be done by ruff for example)</li>
+</ul>
+<p>I think this is somewhat related to #899 , as the code without string annotations does not crash, exemplifying the different behavior as well.</p>
+<p>I think there is a test for this in <a href="https://github.com/astral-sh/ruff/blob/c0768dfd96a9432f71149dcb1c64d8fb298ef1a8/crates/ty_python_semantic/resources/mdtest/cycle.md">ruff/crates/ty_python_semantic/resources/mdtest/cycle.md</a></p>
+<p>Note also that in the LSP, the semantic token highlighter thing does not &quot;agree&quot; with the type resolving, i.e. <code>x: int</code> above is not colored as a type like in <code>z: list</code>, but as if it was referencing the int method.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-28 07:20</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<blockquote>
+<p>So it seems like depending on if the annotations are in strings or not they get resolved differently</p>
+</blockquote>
+<p>This seems to be working as intended. Stringified annotations are always deferred, whereas normal annotations are evaluated eagerly (unless you <a href="https://docs.python.org/3.14/whatsnew/3.14.html#pep-649-and-749-deferred-evaluation-of-annotations">are on Python 3.14</a> or have <code>from __future__ import annotations</code>).</p>
+<blockquote>
+<p>Mypy is consistent with these (<code>str</code> and <code>bytes</code> are errors, no errors in <code>Foo</code>)</p>
+</blockquote>
+<p><a href="https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=CYUwZgBAzgLgTgCgB4C5rwJQQLQD4IByA9gHYhoB0VAUKJAEYCeMIUyaAREy1B1noVLkIVCtWoBjADYBDKFAgxKNaXIUwATMrGTZ8iADEiRFNQjmIEogFsADlJCpLN%2B44gBeCAEYzFsFKIZJQgOf0CYDg9vCgAGX3MYRlthROSoqBAYcQsIOggASxIYBAypMAAaCCdCmEqALzQpfNh%2BfGIybXjc8GgmiRASkDLKpw4oPpA%2BHDahTpy84tKKqrQYVsEOkRp5ns1B4ZWQzSmBduFRIA">Pyright also shows an error</a> on the <code>bytes</code> definition, but seems to handle the annotations in the class differently(?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-07-28 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-07-28 08:40</div>
+            <div class="timeline-body"><p>I wonder if it should depend on the python version?
+Runtime <code>get_type_hints</code> on python 3.8 seems to match mypys and pyrights handling:</p>
+<pre><code class="language-python">def str(x: str) -&gt; None: ...
+def bytes(x: &quot;bytes&quot;) -&gt; None: ...
+
+class t: ...
+class t2: ...
+
+class Foo:
+    complex: complex = 1
+    float: &quot;float&quot; = 1.0
+    type: type = set
+
+    def int(self, x: int, z: list) -&gt; None: ...
+    def slice(self, x: &quot;slice&quot;) -&gt; None: ...
+    def t(self, x: t) -&gt; None: ...
+    def t2(self, x: &quot;t2&quot;) -&gt; None: ...
+    
+from typing import get_type_hints as g
+print(g(str))
+print(g(bytes))
+print(g(Foo.int))
+print(g(Foo.slice))
+print(g(Foo.t))
+print(g(Foo.t2))
+import sys
+print(sys.version)
+</code></pre>
+<pre><code>{'x': &lt;class 'str'&gt;, 'return': &lt;class 'NoneType'&gt;}
+{'x': &lt;function bytes at 0x7f6c51b31040&gt;, 'return': &lt;class 'NoneType'&gt;}
+{'x': &lt;class 'int'&gt;, 'z': &lt;class 'list'&gt;, 'return': &lt;class 'NoneType'&gt;}
+{'x': &lt;class 'slice'&gt;, 'return': &lt;class 'NoneType'&gt;}
+{'x': &lt;class '__main__.t'&gt;, 'return': &lt;class 'NoneType'&gt;}
+{'x': &lt;class '__main__.t2'&gt;, 'return': &lt;class 'NoneType'&gt;}
+3.8.5 (default, Jul 20 2020, 23:11:29) 
+[GCC 9.3.0]
+</code></pre>
+<p>But maybe i am only making up excuses for my surprise 😄</p>
+<p>(I don`t have a newer python version in front of me rn, since 3.8 is eol anyways, but i can image it behaves the same until 3.14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-28 09:20</div>
+            <div class="timeline-body"><p>I would think that something like</p>
+<pre><code class="language-py">float: &quot;float&quot; = 1.0
+</code></pre>
+<p>is just fundamentally broken and should be an error. The evaluation of the annotation should be deferred, so it will cyclically depend on the definition of the <code>float</code> symbol itself.</p>
+<p>On the other hand, if you do the following, this is not treated as an error in ty, because we do allow symbols to be redeclared. So here, you're defining a new float called <code>float</code>. This is still problematic, of course, if you later try to use <code>float</code> as a type (e.g. <code>another_float: float = 1.0</code> would also lead to: &quot;Variable of type <code>float</code> is not allowed in a type expression&quot;)</p>
+<pre><code class="language-py">float: float = 1.0
+</code></pre>
+<p>If you think that something is inconsistent, could you please focus on one example? There are so many outputs, it's hard to tell which one you're talking about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-07-29 20:53</div>
+            <div class="timeline-body"><p>Yes sorry for making it so convoluted. I was surprised by:</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import get_type_hints, reveal_type
+class C:
+    def int(self, x: int) -&gt; None:
+        reveal_type(x)
+print(get_type_hints(C.int)[&quot;x&quot;])
+</code></pre>
+<pre><code class="language-sh">&gt; uv run --python 3.14 test.py
+&lt;class 'int'&gt;
+&gt; uv run --python 3.11 test.py 
+&lt;class 'int'&gt;
+&gt; uvx ty check test.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-type-form]: Variable of type `def int(self, x: Unknown) -&gt; None` is not allowed in a type expression
+ --&gt; test.py:4:22
+  |
+2 | from typing import get_type_hints, reveal_type
+3 | class C:
+4 |     def int(self, x: int) -&gt; None:
+  |                      ^^^
+5 |         reveal_type(x)
+6 | print(get_type_hints(C.int)[&quot;x&quot;])
+  |
+info: rule `invalid-type-form` is enabled by default
+
+info[revealed-type]: Revealed type
+ --&gt; test.py:5:21
+  |
+3 | class C:
+4 |     def int(self, x: int) -&gt; None:
+5 |         reveal_type(x)
+  |                     ^ `Unknown`
+6 | print(get_type_hints(C.int)[&quot;x&quot;])
+  |
+
+Found 2 diagnostics
+</code></pre>
+<p>I agree that <code>float: float = ...</code> at module level seems always broken. Inside a class scope like in the example i am less sure.</p>
+<p>Note that on python 3.14 without the <code>__future__</code> import:</p>
+<pre><code class="language-sh">&gt; uv run --python 3.14 test.py
+&lt;function C.int at 0x7ffae6c58e00&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-30 18:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Note that on python 3.14 without the <code>__future__</code> import:</p>
+</blockquote>
+<p>So.. it looks like not even CPython is consistent on how this should be interpreted? :-) Or otherwise I would expect 3.14 to without the <code>__future__</code> import to behave the same as any version with the <code>__future__</code> import? Or are the semantics being changed in 3.14?</p>
+<p>I don't really know what to do about this. I'm not aware of any resources where it is explicitly specified how names in &quot;deferred evaluation&quot; of annotations should be resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-30 18:37</div>
+            <div class="timeline-body"><p>The scoping semantics should be the same with and without quotes. <code>get_type_hints()</code> behavior is not a good guide for what the &quot;right&quot; behavior is; it's buggy and has some weird hacks in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-07-30 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>The scoping semantics should be the same with and without quotes. <code>get_type_hints()</code> behavior is not a good guide for what the &quot;right&quot; behavior is; it's buggy and has some weird hacks in it.</p>
+</blockquote>
+<p>Would you consider more testing with <code>annotationlib.get_annotations()</code> worth it, or is it similarly hacky?</p>
+<p>I noticed the discrepancy by using mypy alongside ty in the first place, not by using <code>typing.get_type_hints( )</code>.</p>
+<p>Maybe its not worth it to think about this edge case too much either way, so if you feel like there is nothing wrong with the behavior then feel free to close the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-07-30 20:37</div>
+            <div class="timeline-body"><p>I would expect <code>get_annotations()</code> to work better in general, but it doesn't resolve nested stringified annotations, and it may also have bugs. In general, resolving stringified annotations at runtime fully reliable is extremely hard and sometimes impossible.</p>
+<p>But I feel strongly that the right behavior is that the name resolution should be the same regardless of whether names are quoted or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-04 17:05</div>
+            <div class="timeline-body"><p>Thanks for the report and discussion! Looking at the examples here, it seems to me that our current handling of deferred name resolution for stringified annotations is reasonable and consistent, and also matches the runtime behavior of all annotations in 3.14+ (presuming they aren't accessed &quot;early&quot;), which I think is (in the long term) the most important compatibility.</p>
+<p>The principles which I believe we apply (I think I'd consider a counter-example to any of these a bug, but I may be missing some subtlety):</p>
+<ol>
+<li>String-quoted annotations resolve names as &quot;deferred&quot;, meaning later definitions in the same scope (which also includes the &quot;current&quot; definition in cases like <code>float: &quot;float&quot; = ...</code>) are considered. This must be true in order for string-quoted annotations to be usable for forward references, which is part of their intended purpose. Thus it is fully expected in general that quoting an annotation can change its interpretation.</li>
+<li>Name references in string-quoted annotations behave the same as in all annotations when <code>from __future__ import annotations</code> is used.</li>
+<li>Deferred resolution (that is, string-quoting or using <code>from __future__ import annotations</code>) doesn't change Python's scoping rules. (This is contrary to the odd behavior of <code>get_type_hints</code> in some cases.)</li>
+</ol>
+<p>We don't yet support 3.14, but when we do, I'd expect to also add the invariant that our name resolution in annotations in 3.14 should match what we do pre-3.14 when <code>from __future__ import annotations</code> is used.</p>
+<p>I don't consider <code>typing.get_type_hints</code> or any other pre-3.14 implementation of &quot;resolve stringified annotations back to runtime values&quot; to be a useful guide to how stringified annotations should resolve in edge cases. (That means the only runtime behavior I consider to be a useful guide to deferred name resolution is the behavior of 3.14 without <code>from __future__ import annotations</code>.)</p>
+<p>In general, my advice to anyone running into inconsistent behavior in these edge cases is to avoid shadowing names in the confusing ways that trigger these inconsistencies.</p>
+<p>The one thing I see in this thread that sounds like a bug in ty is if our semantic highlighting is inconsistent with our type inference. Might be best to file a new issue specifically about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-08-04 23:27</div>
+            <div class="timeline-body"><p>Thank you for taking the time to do the detailed write-up! I think i do now agree that the current behavior is consistent and your mention of &quot;it should match 3.14+ runtime without stringified...&quot; cleared it up for me.</p>
+<p>I think i also know what irritated me in the first place: mypy just feels a bit more useful to me in this edge case, because it seems to special case functions vs classes:</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import reveal_type
+
+class C:
+    def f(self, x: int) -&gt; None: # Should be a forward declaration to C.int
+        reveal_type(x)
+    def g(self, x: float) -&gt; None: # Should be a forward declaration to C.float
+        reveal_type(x)
+    class int: ...
+    def float(self) -&gt; None: ...
+</code></pre>
+<pre><code class="language-console">$ uvx mypy test.py
+test.py:6: note: Revealed type is &quot;test.C.int&quot;
+test.py:8: note: Revealed type is &quot;builtins.float&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<p>i.e. it seems to be deliberately inconsistent and i guess it tries to guess the users meaning.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing not working for inner functions - astral-sh/ty #659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing not working for inner functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/659">#659</a>
+        opened by <a href="https://github.com/galah92">@galah92</a>
+        on 2025-06-15 07:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/galah92">@galah92</a> on 2025-06-15 07:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ty.dev/bc4e0448-5cd5-42cf-8bbd-e61ac1105328">Playground link</a></p>
+<pre><code class="language-python">from collections.abc import Callable
+
+def foo(goo: Callable | None = None):
+    if goo is not None:
+        def inner():
+            goo()
+</code></pre>
+<h3>Version</h3>
+<p>5e02d839d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-06-16 05:34</div>
+            <div class="timeline-body"><p>This is the intended behavior.</p>
+<p>doc: https://github.com/astral-sh/ruff/blob/89d915a1e34144051815dfcbe60ec2cdeb29909e/crates/ty_python_semantic/resources/mdtest/narrow/conditionals/nested.md#narrowing-constraints-introduced-in-the-outer-scope</p>
+<p>This kind of narrowing is only safe in eager nested scopes. Consider the following code, where narrowing is unsound:</p>
+<pre><code class="language-python">from collections.abc import Callable
+
+def foo(goo: Callable[[], int] | None = None):
+    if goo is not None:
+        class Inner:  # eager scope
+            goo()  # int
+        def inner():  # lazy scope
+            return goo()  # int?
+    goo = None
+    inner() # error, not int!
+</code></pre>
+<p>However, narrowing can be safely performed if it's certain that there is no reassignment. It's a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-06-17 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-25 07:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:11 UTC
+    </footer>
+</body>
+</html>

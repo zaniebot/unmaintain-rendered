@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty should error on possibly unbound variable usage after exception, but allow guarded access via `locals()` check - astral-sh/ty #406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty should error on possibly unbound variable usage after exception, but allow guarded access via `locals()` check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/406">#406</a>
+        opened by <a href="https://github.com/diego-pm">@diego-pm</a>
+        on 2025-05-15 10:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/diego-pm">@diego-pm</a> on 2025-05-15 10:28</div>
+            <div class="timeline-body"><p>ty currently does not detect possible unbound variables in a try-except block, as show in the following example:</p>
+<pre><code class="language-python">from typing import reveal_type
+
+def could_raise() -&gt; None: ...
+def foo() -&gt; str: ...  # ty: ignore[invalid-return-type]
+
+try:
+    could_raise()
+    a = foo()
+    could_raise()
+except:
+    reveal_type(a)  # str
+    print(a)  # should error because 'a' is possibly unbound
+    if &quot;a&quot; in locals():
+        reveal_type(a)  # str
+        print(a)  # should pass
+</code></pre>
+<p>Also, the guards <code>&quot;a&quot; in locals()</code> or <code>&quot;a&quot; in globals()</code> should allow accessing the variable wihout error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 11:25</div>
+            <div class="timeline-body"><p>Thank you for your report.</p>
+<blockquote>
+<p>ty currently does not detect possible unbound variables in a try-except block, as show in the following example:</p>
+</blockquote>
+<p>We do detect them, but the <a href="https://github.com/astral-sh/ty/blob/main/docs/reference/rules.md#possibly-unresolved-reference"><code>possibly-unresolved-reference</code></a> rule is disabled by default. When you enable it, you'll see it being emitted for your example: https://play.ty.dev/0c9f4801-c646-45b4-98e5-fc76d458fb89 (notice the setting in the <code>ty.json</code> tab).</p>
+<blockquote>
+<p>Also, the guards <code>&quot;a&quot; in locals()</code> or <code>&quot;a&quot; in globals()</code> should allow accessing the variable wihout error.</p>
+</blockquote>
+<p>This is something that we don't support. It might be difficult to add, but I think it makes sense to discuss this here as a feature request.</p>
+<p>It doesn't look like pyright supports this? And mypy doesn't emit a possibly-unbound diagnostic at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @sharkdp on 2025-05-15 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-05-15 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diego-pm">@diego-pm</a> on 2025-05-15 11:41</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>ty currently does not detect possible unbound variables in a try-except block, as show in the following example:</p>
+</blockquote>
+<p>We do detect them, but the <a href="https://github.com/astral-sh/ty/blob/main/docs/reference/rules.md#possibly-unresolved-reference"><code>possibly-unresolved-reference</code></a> rule is disabled by default. When you enable it, you'll see it being emitted for your example: <a href="https://play.ty.dev/0c9f4801-c646-45b4-98e5-fc76d458fb89">play.ty.dev/0c9f4801-c646-45b4-98e5-fc76d458fb89</a> (notice the setting in the <code>ty.json</code> tab).</p>
+</blockquote>
+<p>Sorry, did not realize that the related rule was disabled by default.</p>
+<blockquote>
+<blockquote>
+<p>Also, the guards <code>&quot;a&quot; in locals()</code> or <code>&quot;a&quot; in globals()</code> should allow accessing the variable wihout error.</p>
+</blockquote>
+<p>This is something that we don't support. It might be difficult to add, but I think it makes sense to discuss this here as a feature request.</p>
+</blockquote>
+<p>That would be a great feature imao. Otherwise, I cannot think of another way for accessing the variable in this scenario, in the except block, without triggering a type error or having to include a type ignore comment.</p>
+<blockquote>
+<p>It doesn't look like pyright supports this? And mypy doesn't emit a possibly-unbound diagnostic at all.</p>
+</blockquote>
+<p>pyright does not support this guard afaik.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diego-pm">@diego-pm</a> on 2025-05-15 12:06</div>
+            <div class="timeline-body"><p>If the feature is too complex to implement, a partial inference that infers the type of <code>a</code> as <code>str | Unkown</code> would still be useful, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-15 12:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It doesn't look like pyright supports this? And mypy doesn't emit a possibly-unbound diagnostic at all.</p>
+</blockquote>
+<p>FWIW, mypy issues the same possibly-unbound diagnostics as pyright if you pass <code>--enable-error-code=possibly-undefined</code> on the CLI — its version of this rule, like ty's, is also disabled by default: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;enable-error-code=possibly-undefined&amp;gist=8518efbb1187bbdd528bf84b23e959f7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>If the feature is too complex to implement, a partial inference that infers the type of <code>a</code> as <code>str | Unkown</code> would still be useful, right?</p>
+</blockquote>
+<p>We track boundness of variables separate from the type. In your example, or in this simpler example below, we can tell for sure that the type is <code>str</code>. But the variable coulds still be unbound. What's not possible is that the variable is bound, but it has some unknown type. That can not happen</p>
+<pre><code class="language-py">def _(flag: bool, a_string: str):
+    if flag:
+        a = a_string
+
+    reveal_type(a)  # type is definitely str, but `a` could be possibly unbound
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-15 15:07</div>
+            <div class="timeline-body"><p>I think implementing support for the <code>&quot;a&quot; in locals()</code> check is feasible, but low priority relative to many other things we need to add, especially considering that existing type checkers do not support it either.</p>
+<p>The typical recommendation is to make <code>try</code> blocks as narrowly scoped as possible, and the example case here is one reason for that. If separate try blocks were used for the two possibly-failing calls, the need to detect whether &quot;a&quot; has been bound or not would not arise.</p>
+<p>But in general, the fact that it is not feasible for a static analyzer to understand all possible patterns for ensuring an invariant that some code path has been taken, is the reason why the <code>possibly-unbound-reference</code> diagnostic is not enabled by default. It ends up requiring that some working code patterns be rewritten to accommodate the capabilities of the static analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:03 UTC
+    </footer>
+</body>
+</html>

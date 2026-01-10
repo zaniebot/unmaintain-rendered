@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`T &amp; &lt;protocol with members 'x'&gt;` should not simplify to `T` if `T.x` is possibly unbound - astral-sh/ty #578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`T &amp; &lt;protocol with members 'x'&gt;` should not simplify to `T` if `T.x` is possibly unbound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/578">#578</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-03 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-03 18:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following snippet:</p>
+<pre><code class="language-py">def b() -&gt; bool:
+    return False
+
+class Foo:
+    if b():
+        x: int = 42
+
+def f(y: Foo):
+    if hasattr(y, &quot;x&quot;):
+        reveal_type(y)  # revealed: Foo
+        print(y.x)  # error[possibly-unbound-attribute]: Attribute `x` on type `Foo` is possibly unbound
+</code></pre>
+<p>https://play.ty.dev/4171e13d-f9e5-432d-baa9-fc25f414647e</p>
+<p>In the <code>hasattr()</code> branch, we narrow the type of <code>y</code> to <code>Foo &amp; &lt;protocol with members 'x'&gt;</code>, but then immediately simplify that intersection to <code>Foo</code>, since we know that all <code>Foo</code> members have an <code>x</code> member. But this simplification is incorrect, because it causes us to then emit a false positive when attempting to access the <code>x</code> member: we report the attribute as possibly unbound, even though the user just checked that it isn't!</p>
+<p>We should only simplify these synthesized-protocol intersections if another element in the intersection has a <em>definitely bound</em> attribute of the relevant name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-06-03 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-03 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-06-03 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-04 19:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:08 UTC
+    </footer>
+</body>
+</html>

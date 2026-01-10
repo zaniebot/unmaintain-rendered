@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unresolved-attribute errors with maturin / pyo3 - astral-sh/ty #1613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unresolved-attribute errors with maturin / pyo3</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1613">#1613</a>
+        opened by <a href="https://github.com/mstarodub">@mstarodub</a>
+        on 2025-11-23 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-11-23 17:02</div>
+            <div class="timeline-body"><p>maturin generates a wildcard import <code>__init__.py</code> for the rust package:
+https://github.com/PyO3/maturin/blob/72d210b06b1e5bd7cc0b24a0f77b9d07e36727ba/src/templates/<strong>init</strong>.py.j2</p>
+<p>and it seems ty is unable to provide completion for functions exported by the <code>#[pymodule]</code> as a result.</p>
+<p>This seems to be a fairly common setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-23 17:07</div>
+            <div class="timeline-body"><p>Are you able to provide a project/sample that has the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-11-23 17:21</div>
+            <div class="timeline-body"><p><code>maturin new</code> creates such a project stucture.</p>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;maturin&gt;=1.10,&lt;2.0&quot;]
+build-backend = &quot;maturin&quot;
+
+[project]
+name = &quot;testpkg&quot;
+requires-python = &quot;&gt;=3.8&quot;
+classifiers = [
+    &quot;Programming Language :: Rust&quot;,
+    &quot;Programming Language :: Python :: Implementation :: CPython&quot;,
+    &quot;Programming Language :: Python :: Implementation :: PyPy&quot;,
+]
+dynamic = [&quot;version&quot;]
+</code></pre>
+<p>Cargo.toml:</p>
+<pre><code class="language-toml">[package]
+name = &quot;testpkg&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = &quot;testpkg&quot;
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+pyo3 = &quot;0.27.0&quot;
+</code></pre>
+<p>src/lib.rs:</p>
+<pre><code class="language-rust">use pyo3::prelude::*;
+
+/// A Python module implemented in Rust.
+#[pymodule]
+mod testpkg {
+    use pyo3::prelude::*;
+
+    /// Formats the sum of two numbers as string.
+    #[pyfunction]
+    fn sum_as_string(a: usize, b: usize) -&gt; PyResult&lt;String&gt; {
+        Ok((a + b).to_string())
+    }
+}
+</code></pre>
+<p>here's a real world example: https://github.com/mstarodub/pyo3-trio</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-23 17:53</div>
+            <div class="timeline-body"><p>Ah ok so I tested this out and the generated project contains (when installed with <code>maturin develop</code>):</p>
+<p><code>.venv/lib/python3.14/site-packages/myturin/__init__.py</code>:</p>
+<pre><code>from .myturin import *
+
+__doc__ = myturin.__doc__
+if hasattr(myturin, &quot;__all__&quot;):
+    __all__ = myturin.__all__
+</code></pre>
+<p>But notably <code>myturin.py</code> does not exist, only <code>.venv/lib/python3.14/site-packages/myturin/myturin.cpython-314-darwin.so</code> does. I am guessing the cpython interpreter deals with reading metadata out of the .so, but <code>ty</code> only analyzes actual py(i) files.</p>
+<p>So your project needs stubs (pyi files), which is presumably why https://github.com/Jij-Inc/pyo3-stub-gen exists?</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 08:17</div>
+            <div class="timeline-body"><p>ty issue related to stubs gen https://github.com/astral-sh/ty/issues/1597</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-11-24 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-24 08:44</div>
+            <div class="timeline-body"><p>It's possible to read some information from the <code>.so</code> and generate stubs internally, iirc pycharm does that, but currently there's no default stubs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-24 17:14</div>
+            <div class="timeline-body"><p>Also related to https://github.com/astral-sh/ty/issues/487</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-24 17:18</div>
+            <div class="timeline-body"><p>In fact I think this is really the same issue as #487, so I will close it as duplicate. The solution to #487 could go beyond just &quot;better diagnostics&quot;, but better (and/or suppressed) diagnostics are clearly the first step here.</p>
+<p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-24 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 17:22</div>
+            <div class="timeline-body"><p>@davidhewitt, I have a very vague memory of having a conversation with you at RustNation UK nearly two years ago about plans you might have had for PyO3 to bundle its own autogenerated stubs to help type checkers out here...? but that's as far as my memory goes 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidhewitt">@davidhewitt</a> on 2025-11-24 21:18</div>
+            <div class="timeline-body"><p>Yep we're working on it! https://pyo3.rs/v0.27.1/type-stub.html</p>
+<p>Also of note is that <code>maturin</code> creates that root <code>__init__.py</code> which just re-exports from the native library because (as far as I know) there is not yet a way to ship a native library plus a tree of <code>.pyi</code> files for it without having a wrapper <code>__init__.py</code>. I forget the fine details of why that doesn't work, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 21:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Yep we're working on it! <a href="https://pyo3.rs/v0.27.1/type-stub.html">pyo3.rs/v0.27.1/type-stub.html</a></p>
+</blockquote>
+<p>Ah nice! We could consider linking to this from our docs</p>
+<blockquote>
+<p>Also of note is that <code>maturin</code> creates that root <code>__init__.py</code> which just re-exports from the native library because (as far as I know) there is not yet a way to ship a native library plus a tree of <code>.pyi</code> files for it without having a wrapper <code>__init__.py</code>. I forget the fine details of why that doesn't work, though.</p>
+</blockquote>
+<p>yup, I think that's https://github.com/python/typing/issues/1333</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidhewitt">@davidhewitt</a> on 2025-11-24 21:35</div>
+            <div class="timeline-body"><p>Yep that looks like it! One day, hopefully 🤞</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:44 UTC
+    </footer>
+</body>
+</html>

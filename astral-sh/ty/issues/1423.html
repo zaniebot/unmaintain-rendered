@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance regression in ty==0.0.1a23 - astral-sh/ty #1423</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Performance regression in ty==0.0.1a23</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1423">#1423</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2025-10-23 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-10-23 16:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I noticed that since version <code>0.0.1-alpha.23</code>  <code>ty</code> was noticeably slower on our codebase,
+and was ultimately able to narrow it down to the following MRE, which takes over 3s to type check on my machine. (it is instant with 0.0.1-alpha.22)</p>
+<pre><code class="language-python">from typing import Self
+
+class A:
+    def __init__(self: Self):
+        self.a = 0
+        self.b = 0
+
+    def foo(self: Self):
+        if self.a:
+            self.b = self.b + 1
+
+    def bar(self: Self):
+        if str(self.b):
+            self.a = self.b
+</code></pre>
+<p>Couple interesting observations:</p>
+<ol>
+<li>the call to <code>str</code> in <code>bar</code> is needed to reproduce the problem</li>
+<li>if I change <code>self.b = self.b + 1</code> to <code>self.b += 1</code> I don't see a problem</li>
+</ol>
+<h3>Version</h3>
+<p>0.0.1-alpha.23</p>
+<p>(I originally noticed this in 0.0.1-alpha.24, which introduced implicit type of self)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-10-23 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-10-23 16:45</div>
+            <div class="timeline-body"><p>Actually, the performance regression is there on <code>0.0.1-alpha.23</code> is I explicitly type self with Self.</p>
+<p>EDIT: I don't see the regression with <code>0.0.1-alpha.22</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Performace regression in ty==0.0.1a24" to "Performace regression in ty==0.0.1a23" by @danielhollas on 2025-10-23 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Performace regression in ty==0.0.1a23" to "Performance regression in ty==0.0.1a23" by @AlexWaygood on 2025-10-23 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-24 06:40</div>
+            <div class="timeline-body"><p>I haven't investigated this closely but we iterate a cycle 190 times before falling back. This is suspiciously close to the 190 iteration limit for unions ;)</p>
+<p>https://github.com/astral-sh/ty/issues/957</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-10-24 08:07</div>
+            <div class="timeline-body"><p>Yeah, annotating <code>self.a:int = 0</code> solves it so Literal math is a suspect.</p>
+<blockquote>
+<p>The operation must be acting on a local variable, as opposed to an attribute or subscript expression or a variable defined in some outer scope</p>
+</blockquote>
+<p>Looks like this pyright heuristic (from the linked issue) would solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-24 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-12-10 00:51</div>
+            <div class="timeline-body"><p>The example I gave now type checks instantly 🎉  (ty 0.0.1-alpha.33)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:37 UTC
+    </footer>
+</body>
+</html>

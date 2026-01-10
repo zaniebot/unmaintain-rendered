@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error when returning dict[str, object] for function declared to return dict[str, str] - astral-sh/ty #1336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error when returning dict[str, object] for function declared to return dict[str, str]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1336">#1336</a>
+        opened by <a href="https://github.com/gjcarneiro">@gjcarneiro</a>
+        on 2025-10-10 18:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gjcarneiro">@gjcarneiro</a> on 2025-10-10 18:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">def foo() -&gt; dict[str, object]:
+    retval: dict[str, str] = {&quot;foo&quot;: &quot;bar&quot;}
+    return retval
+
+def main() -&gt; None:
+    print(foo())
+</code></pre>
+<blockquote>
+<p>Return type does not match returned value: expected <code>dict[str, object]</code>, found <code>dict[str, str]</code> (invalid-return-type) [Ln 3, Col 12]</p>
+</blockquote>
+<p>https://play.ty.dev/e9610be1-3477-4e99-9832-1da48c8f7ca4</p>
+<p>Using <code>object</code> here as a safer alternative to using <code>typing.Any</code>: &quot;Any&quot; is compatible with anything, which can be a problem if you want to catch errors.</p>
+<p>Type <code>str</code>  is a subtype of <code>object</code>, so I don't think this should be an error?</p>
+<h3>Version</h3>
+<p><code>0.0.1-alpha.22</code>
+(previous version didn't complain about this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 18:17</div>
+            <div class="timeline-body"><p>This is an error (and all Python type checkers agree on this) because dictionaries are invariant in their value type, not covariant. That means that while <code>str</code> is a subtype of <code>object</code>, <code>dict[str, str]</code> is not a subtype of <code>dict[str, object]</code>. The reason is that dictionaries are mutable, so <code>dict[str, object]</code> can accept any object in its <code>__setitem__</code> method, while <code>dict[str, str]</code> can accept only strings; this means <code>dict[str, str]</code> cannot be a safe substitute where <code>dict[str, object]</code> is expected.</p>
+<p>It's less of a practical issue in your particular case (a return value) because the function <code>foo</code> doesn't hold on to a reference to the dictionary after it is returned, but we can easily imagine a slightly different case where the returned value is aliased, and it would be unsound to allow this:</p>
+<pre><code class="language-py">def foo(x: dict[str, str]) -&gt; dict[str, object]:
+    return x  # this is an error, but let's pretend it wasn't
+
+d: dict[str, str] = {&quot;foo&quot;: &quot;bar&quot;}
+d2 = foo(d)
+d2[&quot;baz&quot;] = 1
+# now `d` is still typed as `dict[str, str]` but includes a value of type `int`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-10 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gjcarneiro">@gjcarneiro</a> on 2025-10-10 18:27</div>
+            <div class="timeline-body"><p>Ah, it seems you're right, even mypy agrees it's an error.  Strange that this codebase, which used to be check by mypy, then switched to <code>ty 0.0.1-alpha.21</code>, didn't previously flag this as an error, until the upgrade to <code>ty 0.0.1-alpha.22</code>.  Thanks for checking, though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 18:30</div>
+            <div class="timeline-body"><p>Older ty versions didn't flag this because we inferred <code>dict[Unknown, Unknown]</code> for all dict literals, which was clearly not ideal :) and we've now fixed that.</p>
+<p>Not sure why mypy wouldn't have previously flagged it, but if you happen to figure out why, and it represents a missing feature in ty, we'd like to know about it!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:35 UTC
+    </footer>
+</body>
+</html>

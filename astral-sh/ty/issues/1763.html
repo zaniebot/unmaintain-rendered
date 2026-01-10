@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`__builtins__` as the `builtins` module, instead of `Any` - astral-sh/ty #1763</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`__builtins__` as the `builtins` module, instead of `Any`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1763">#1763</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-12-04 21:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-04 21:44</div>
+            <div class="timeline-body"><p>this follows https://github.com/astral-sh/ty/issues/393, which added partial support for <code>__builtins__</code> by having it resolve to <code>Any</code>:</p>
+<pre><code class="language-py">reveal_type(__builtins__)
+</code></pre>
+<pre><code>Revealed type: `Any` (revealed-type) [Ln 1, Col 13]
+</code></pre>
+<p>https://play.ty.dev/9baeb0d8-d23a-40b2-867c-c98a28e17463</p>
+<p>It might be cool to have <code>__builtins__</code> resolve to the actual <code>builtins</code> module. Perhaps by adding a secret hidden phantom ghost import <code>import builtins as __builtins__</code> to each module, but without it being visible, i.e. in a way that it cannot be seen, so that it doesn't appear or show itself to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 21:51</div>
+            <div class="timeline-body"><p>Unfortunately the runtime behavior of <code>__builtins__</code> is really strange and hard to predict. Sometimes it is the builtins module, but sometimes it is just the dictionary of the builtins, and there's no clear way for a static analyzer to know which it will actually be (it depends whether the module is imported or executed -- and in fact the more common case, an imported module, is where <code>__builtins__</code> ends up being a dict, not a module). So trying to do anything more precise than <code>Any</code> will lead to false positives for some cases. That's why we ended up just going with <code>Any</code>: https://github.com/astral-sh/ruff/pull/18118#issuecomment-2884152617</p>
+<p>Ultimately <code>__builtins__</code> is a CPython implementation detail that shouldn't be relied on, so we can't complain too much about it having weird and unpredictable behavior. But <code>Any</code> seems like the best option for dealing with that behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-12-04 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-04 22:29</div>
+            <div class="timeline-body"><p>Hmm yea that sounds annoyingly complicated... It's not really a very interesting feature, or something I'm actively using, so it's also fine by me if you want to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-04 23:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:49 UTC
+    </footer>
+</body>
+</html>

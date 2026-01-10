@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual files are not checked after re-opening from an unsaved edit - astral-sh/ty #798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Virtual files are not checked after re-opening from an unsaved edit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/798">#798</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-07-11 05:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-11 05:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Open a new project in VS Code</li>
+<li>Press <kbd>C-n</kbd> to open a new untitled file</li>
+<li>Select the language as Python</li>
+<li>Update the file content as <code>x</code></li>
+<li>Notice that an unresolved reference diagnostic popup</li>
+<li>Close the file without saving it</li>
+<li>Press <kbd>C-n</kbd> again to open a new untitled file (notice that this will have the same name as in step 2)</li>
+<li>Select the language as Python</li>
+<li>Update the file content as <code>x</code> again</li>
+<li>Notice that no diagnostic popup</li>
+</ol>
+<p>Make sure that <code>ty.diagnosticMode</code> is set to <code>workspace</code>.</p>
+<p>https://github.com/user-attachments/assets/a81b0fa6-369e-447c-8bfc-0fe9d494622e</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-07-11 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-11 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-11 05:48</div>
+            <div class="timeline-body"><p>Looking through the trace logs from server and the client, I've noticed a few things:</p>
+<p>Server does not send any response which are considered invalid as per the server e.g., we receive a text document diagnostic request after an unsaved untitled file is closed and as the server has no snapshot available for it, the server will ignore the request: https://github.com/astral-sh/ruff/blob/b0b65c24ff01dc9095f17b3768cf2b9a336a5a8c/crates/ty_server/src/server/api.rs#L233-L236 but this means that the request is open from the client side as there was no response for this request. The client then isn't sending any <code>textDocument/diagnostic</code> request.</p>
+<p>These are the trace logs for step (6) above. VS Code first clears the file content in the untitled file by sending a <code>didChange</code> notification which I think triggers the diagnostic request from the client. The server responds to that with an empty list because the file is empty. Then, VS Code sends a <code>didClose</code> notification to signal that the virtual file is closed which again is triggering the diagnostic request from the client. Here, the server has no information about the closed file so it doesn't respond to the request id 21. Then, I don't see any client request for diagnostic for the untitled file when I re-open it again.</p>
+<pre><code>[Trace - 10:58:47 AM] Sending notification 'textDocument/didChange'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;untitled:Untitled-1&quot;,
+        &quot;version&quot;: 3
+    },
+    &quot;contentChanges&quot;: [
+        {
+            &quot;range&quot;: {
+                &quot;start&quot;: {
+                    &quot;line&quot;: 0,
+                    &quot;character&quot;: 0
+                },
+                &quot;end&quot;: {
+                    &quot;line&quot;: 0,
+                    &quot;character&quot;: 1
+                }
+            },
+            &quot;rangeLength&quot;: 1,
+            &quot;text&quot;: &quot;&quot;
+        }
+    ]
+}
+
+
+[Trace - 10:58:47 AM] Sending request 'textDocument/diagnostic - (20)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;untitled:Untitled-1&quot;
+    }
+}
+
+
+[Trace - 10:58:47 AM] Sending notification 'textDocument/didClose'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;untitled:Untitled-1&quot;
+    }
+}
+
+
+[Trace - 10:58:47 AM] Received response 'textDocument/diagnostic - (20)' in 5ms.
+Result: {
+    &quot;items&quot;: [],
+    &quot;kind&quot;: &quot;full&quot;
+}
+
+
+[Trace - 10:58:47 AM] Sending request 'textDocument/diagnostic - (21)'.
+Params: {
+    &quot;identifier&quot;: &quot;ty&quot;,
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;untitled:Untitled-1&quot;
+    }
+}
+</code></pre>
+<p>So, I thought that we should send an error response back. This closes the request but it still doesn't make VS Code send us the diagnostic request when the same untitled file is re-opened.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-11 06:08</div>
+            <div class="timeline-body"><p>Well, sending a default success response does resolve the issue i.e., client starts sending the request back again as usual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-07-11 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-11 06:35</div>
+            <div class="timeline-body"><p>I think we should return an error response but it only seems to be working when I use the <code>ServerCancelled</code> error code which makes sense for the diagnostic request but the handler isn't specific to the diagnostic request. And, even with this response, the client will retrigger the diagnostic request because:</p>
+<blockquote>
+<p>error: code and message set in case an exception happens during the diagnostic request. A server is also allowed to return and error with code ServerCancelled indicating that the server can’t compute the result right now. A server can return a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#diagnosticServerCancellationData">DiagnosticServerCancellationData</a> data to indicate whether the client should re-trigger the request. If no data is provided it defaults to { retriggerRequest: true }:</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-11 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:17 UTC
+    </footer>
+</body>
+</html>

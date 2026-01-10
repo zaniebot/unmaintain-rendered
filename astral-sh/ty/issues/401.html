@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unresolved attribute` for `requests.exceptions` - astral-sh/ty #401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unresolved attribute` for `requests.exceptions`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/401">#401</a>
+        opened by <a href="https://github.com/stevelizcano">@stevelizcano</a>
+        on 2025-05-15 07:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stevelizcano">@stevelizcano</a> on 2025-05-15 07:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>uv add requests</code> to my project, I get the <code>unresolved attribute</code> error. I am however able to follow and click the module, and see the code as well.</p>
+<p>Specifically:</p>
+<pre><code>Type `&lt;module 'requests'&gt;` has no attribute `exceptions`ty(unresolved-attribute)
+Unknown
+(module) exceptions
+requests.exceptions
+This module contains the set of Requests' exceptions.
+</code></pre>
+<p>For the following code:</p>
+<pre><code class="language-py">    except requests.exceptions.RequestException as e:
+        logging.error(f&quot;Error downloading PDF from {pdf_url}: {e}&quot;)
+        raise RuntimeError(f&quot;Failed to download PDF: {e}&quot;)
+</code></pre>
+<p>Full output with <code>ty check</code>:</p>
+<pre><code class="language-sh">WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[unresolved-attribute]: Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
+  --&gt; process.py:86:16
+   |
+84 |             except UnicodeDecodeError:
+85 |                 return response.content.decode(response.apparent_encoding, errors='replace')
+86 |         except requests.exceptions.RequestException as e:
+   |                ^^^^^^^^^^^^^^^^^^^
+87 |             print(f&quot;Request failed for {url} (attempt {attempt + 1}/{retries}): {e}&quot;)
+88 |             if attempt &lt; retries - 1:
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+error[unresolved-attribute]: Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
+   --&gt; process.py:198:12
+    |
+196 |         print(f&quot;Saved PDF: {file_path}&quot;)
+197 |         return True
+198 |     except requests.exceptions.RequestException as e:
+    |            ^^^^^^^^^^^^^^^^^^^
+199 |         print(f&quot;Request failed for PDF {url}: {e}&quot;)
+200 |         return False
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.2 (59c45cc60 2025-05-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-05-15 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 08:22</div>
+            <div class="timeline-body"><p>Thank you for reporting this!</p>
+<p>I'm assuming you are attempting to access <code>requests.exceptions.RequestException</code> without explicitly importing <code>requests.exceptions</code>? Like this?</p>
+<pre><code class="language-py">import requests
+
+requests.exceptions.RequestException  # ty: unresolved-attribute
+</code></pre>
+<p>We realize that this works at runtime, but that is just a side-effect from the re-exports <a href="https://github.com/psf/requests/blob/c65c780849563c891f35ffc98d3198b71011c012/src/requests/__init__.py#L165-L176">here</a>. It would be better to use that re-export directly:</p>
+<pre><code class="language-py">requests.RequestException  # works fine
+</code></pre>
+<p>or to import <code>requests.exceptions</code> explicitly:</p>
+<pre><code class="language-py">import requests
+import requests.exceptions
+
+requests.exceptions.RequestException  # works fine
+</code></pre>
+<p>That said, we realize that this is a common thing to do (because it happens to work at runtime, in some cases). See https://github.com/astral-sh/ty/issues/133 and #313 for related discussions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stevelizcano">@stevelizcano</a> on 2025-05-15 11:29</div>
+            <div class="timeline-body"><p>Ah yes that's right! Thank you</p>
+<p>Not sure I should just close the issue then or?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-15 11:33</div>
+            <div class="timeline-body"><p>I think we can probably close it in favor of #133 — thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-15 11:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:02 UTC
+    </footer>
+</body>
+</html>

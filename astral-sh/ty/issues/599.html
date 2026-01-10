@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how do i type a function that has `__name__`/`__qualname__` attributes? - astral-sh/ty #599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>how do i type a function that has `__name__`/`__qualname__` attributes?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/599">#599</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-06-07 07:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-07 07:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>i see that ty fixes the issue that other type checkers have where all <code>Callable</code> types are assumed to have a <code>__name__</code> attribute:</p>
+<pre><code class="language-py">from typing import Callable
+
+def foo(): ...
+
+foo.__name__ # no error
+
+def _(fn: Callable[[], None]):
+    fn.__name__ # error
+</code></pre>
+<p>i know this is the correct behavior, but i'm now encountering false positives on decorators that turn a function into a <code>Callable</code> type:</p>
+<pre><code class="language-py">from contextlib import contextmanager
+
+@contextmanager
+def foo(): ...
+
+foo.__name__ #     Type `(...) -&gt; _GeneratorContextManager[Unknown, None, None]` has no attribute `__name__` (unresolved-attribute)
+</code></pre>
+<p>what's ty's plan to address issues like this? for example will there be a <code>ty_extensions.FunctionType</code> type that can be used to denote a function that has these attributes?</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @DetachHead on 2025-06-07 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "how do i type a function that has a `__name__`/`__qualname__` attributes?" to "how do i type a function that has `__name__`/`__qualname__` attributes?" by @DetachHead on 2025-06-07 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 08:46</div>
+            <div class="timeline-body"><p>For now, you could create a custom protocol that has a <code>__call__</code> method and a <code>__name__</code> attribute:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class FunctionLike[**P, R](Protocol):
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -&gt; R: ...
+    __name__: str
+</code></pre>
+<p>Or you could possibly use <code>ty_extensions.Intersection[types.FunctionType, Callable[[], None]]</code>?</p>
+<blockquote>
+<p>what's ty's plan to address issues like this?</p>
+</blockquote>
+<p>Honestly: we're not yet sure! There's so much code that relies on these <code>types.FunctionType</code> attributes existing on <code>Callable</code> types, that we may have to copy what pyright and mypy do here, even though I agree that it's less sound. If we end up doing that, I think we'd like to provide a sound alternative to <code>Callable</code> that is not assumed to have all the attributes and behaviours that <code>types.FunctionType</code> instances have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-07 09:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Honestly: we're not yet sure! There's so much code that relies on these <code>types.FunctionType</code> attributes existing on <code>Callable</code> types, that we may have to copy what pyright and mypy do here, even though I agree that it's less sound. If we end up doing that, I think we'd like to provide a sound alternative to <code>Callable</code> that is not assumed to have all the attributes and behaviours that <code>types.FunctionType</code> instances have.</p>
+</blockquote>
+<p>that sounds like a good idea, as long as we have the option to ban usage of the old unsafe <code>Callable</code> type.</p>
+<p>honestly it's just a relief that there's finally a type checker where the maintainers are open minded to actually try to solve some of these difficult issues. i've been playing around with ty for a few hours and i've noticed it's already got some great new diagnostics that found issues in my project which went undetected by both mypy and pyright.</p>
+<p>everything you guys have released so far has been amazing and i'm already very impressed with ty despite how unfinished it is. you guys are single-handedly fixing the python ecosystem 🚀🚀🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-06-07 09:09</div>
+            <div class="timeline-body"><p>related #600</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benedikt-bartscher">@benedikt-bartscher</a> on 2025-06-08 12:59</div>
+            <div class="timeline-body"><p>@DetachHead there is not much to add to your words above, i 100% agree!</p>
+<p>Been a user of basedpyright for quite a while now, and I love to see your support and contributions to ty 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 06:31</div>
+            <div class="timeline-body"><p>Going to close this in favor of #1495 which has more recent discussion of the pros and cons of various approaches to this problem. Thanks @DetachHead for raising this issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-13 06:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:09 UTC
+    </footer>
+</body>
+</html>

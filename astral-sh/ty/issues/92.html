@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid argument to `fields` from `dataclasses` - astral-sh/ty #92</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid argument to `fields` from `dataclasses`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/92">#92</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2025-05-07 13:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-07 13:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>fields</code> from <code>dataclasses</code>, ty gives a <code>lint:invalid-argument-type</code> error.</p>
+<p>https://play.ty.dev/331a08e9-3adf-41f4-a4a5-483a964a1b64</p>
+<pre><code class="language-py">from dataclasses import dataclass, fields
+
+
+@dataclass
+class Foo:
+    x: int
+    y: float
+    z: str
+
+
+for field in fields(Foo):
+    print(field.name, field.type)
+</code></pre>
+<pre><code>$ uvx ty check foo.py 
+error: lint:invalid-argument-type: Argument to this function is incorrect
+  --&gt; foo.py:11:21
+   |
+11 | for field in fields(Foo):
+   |                     ^^^ Expected `DataclassInstance`, found `Literal[Foo]`
+12 |     print(field.name, field.type)
+   |
+info: Function defined here
+   --&gt; stdlib\dataclasses.pyi:220:5
+    |
+218 |     ) -&gt; Any: ...
+219 |
+220 | def fields(class_or_instance: DataclassInstance | type[DataclassInstance]) -&gt; tuple[Field[Any], ...]: ...
+    |     ^^^^^^ -------------------------------------------------------------- Parameter declared here
+221 |
+222 | # HACK: `obj: Never` typing matches if object argument is using `Any` type.
+    |
+</code></pre>
+<p>There is a similar error for <code>fields</code> from <code>attrs</code>:</p>
+<pre><code class="language-py">from attrs import define, fields
+
+
+@define
+class Foo:
+    x: int
+    y: float
+    z: str
+
+
+for field in fields(Foo):
+    print(field.name, field.type)
+</code></pre>
+<pre><code>$ uvx ty check foo.py
+error: lint:invalid-argument-type: Argument to this function is incorrect
+  --&gt; foo.py:11:21
+   |
+11 | for field in fields(Foo):
+   |                     ^^^ Expected `type[AttrsInstance]`, found `Literal[Foo]`
+12 |     print(field.name, field.type)
+   |
+info: Function defined here
+   --&gt; .venv\Lib\site-packages\attr\__init__.pyi:311:5
+    |
+309 |     unsafe_hash: bool | None = ...,
+310 | ) -&gt; Callable[[_C], _C]: ...
+311 | def fields(cls: type[AttrsInstance]) -&gt; Any: ...
+    |     ^^^^^^ ------------------------ Parameter declared here
+312 | def fields_dict(cls: type[AttrsInstance]) -&gt; dict[str, Attribute[Any]]: ...
+313 | def validate(inst: AttrsInstance) -&gt; None: ...
+    |
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.5 (ff9000864 2025-05-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-07 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-07 13:40</div>
+            <div class="timeline-body"><p><code>DataclassInstance</code> is a protocol:</p>
+<pre><code class="language-pyi">class DataclassInstance(Protocol):
+    __dataclass_fields__: ClassVar[dict[str, Field[Any]]]
+</code></pre>
+<p>We can probably fix this rather easily by adding a synthesized <code>__dataclass_fields__</code> member to dataclasses (by adding a new case to <code>Type::member_lookup_with_policy</code> or <code>Type::find_name_in_mro_with_policy</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-05-07 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Invalid argument to `fields` from `dataclasses`" to "Invalid argument to `fields` from `dataclasses`" by @MichaReiser on 2025-05-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-07 16:37</div>
+            <div class="timeline-body"><p>@sharkdp can I work on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-07 16:39</div>
+            <div class="timeline-body"><p>@abhijeetbodas2001 go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @abhijeetbodas2001 by @AlexWaygood on 2025-05-07 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-05-08 11:09</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/111</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-05-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-13 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-15 13:02</div>
+            <div class="timeline-body"><p>See also: <a href="https://github.com/astral-sh/ruff/pull/18115">#18115</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:49 UTC
+    </footer>
+</body>
+</html>

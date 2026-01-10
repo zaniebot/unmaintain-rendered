@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>silence import resolution errors from an existing compiled extension module - astral-sh/ty #715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>silence import resolution errors from an existing compiled extension module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/715">#715</a>
+        opened by <a href="https://github.com/Stamppot82">@Stamppot82</a>
+        on 2025-06-27 07:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Stamppot82">@Stamppot82</a> on 2025-06-27 07:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Environment:</strong> ty v0.0.1a12, Python 3.12, macOS, uv project</p>
+<p><strong>Problem:</strong> ty check reports unresolved-import errors for Cython extensions compiled to .so files, despite the imports working correctly at runtime.</p>
+<p><strong>Console Output:</strong></p>
+<pre><code>error[unresolved-import]: Cannot resolve imported module `.math_utils`
+ --&gt; src/__init__.py:5:7
+  |
+5 | from .math_utils import add
+  |       ^^^^^^^^^^
+</code></pre>
+<p><strong>Project Structure:</strong></p>
+<pre><code>src/
+├── __init__.py
+├── math_utils.pyx                    # Cython source
+└── math_utils.cpython-312-darwin.so  # Compiled extension (exists)
+</code></pre>
+<p><strong>Issue:</strong> ty only looks for .py files but not compiled .so extensions. The import from .math_utils import ... fails because ty cannot find a [math_utils.py]</p>
+<p><strong>Expected:</strong> ty should resolve imports from compiled Cython extensions when:</p>
+<p>A .pyx source file exists
+A corresponding .so file is present
+The package is properly built/installed</p>
+<p><strong>Impact:</strong>
+False positives make ty unusable for projects using Cython extensions, which are common in scientific Python, performance-critical libraries, and hybrid codebases.</p>
+<p><strong>Workaround:</strong> None effective (stub files don't work for dynamic imports from compiled extensions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 13:00</div>
+            <div class="timeline-body"><p>We don't plan to add support for inferring types from Cython <code>.pyx</code> sources in the near future, I'm afraid. Just to be able to read that source code (let alone infer types), we'd either have to make major changes to our existing parser or write a new parser.</p>
+<blockquote>
+<p><strong>Workaround:</strong> None effective (stub files don't work for dynamic imports from compiled extensions).</p>
+</blockquote>
+<p>Unfortunately I believe stub files are the only solution to this problem for now, both for ty and any other Python type checker</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 14:40</div>
+            <div class="timeline-body"><p>I think it's very unlikely that we ever attempt to parse <code>.pyx</code> files, unless it becomes a specified typing feature that all Python type checkers support (I think zero type checkers support it today).</p>
+<blockquote>
+<p>stub files don't work for dynamic imports from compiled extensions</p>
+</blockquote>
+<p>Can you say more about this? What's an example of a &quot;dynamic import&quot; that would be supported by parsing <code>pyx</code> files but can't be supported in a stub file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 14:46</div>
+            <div class="timeline-body"><p>see https://github.com/astral-sh/ruff/issues/10250 for the equivalent Ruff issue, which would be a pre-requisite for this even being a possibility</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-27 17:12</div>
+            <div class="timeline-body"><p>If I understand the bug report correctly, the OP isn't expecting ty to parse the extension module or infer precise types for symbols imported from it. Any such symbols can be treated as <code>Unknown</code> if a stub file isn't present.</p>
+<p>The question is whether ty should report an import resolution error here. Other type checkers (including mypy, pyright, and pyrefly) do not report an import resolution error if the import statement targets an extension module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty cannot resolve imports from Cython-compiled extensions (.so files)" to "silence import resolution errors from an existing compiled extension module" by @carljm on 2025-06-27 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 18:22</div>
+            <div class="timeline-body"><p>Yes, I think silencing import errors in that case makes sense. I think it should be based on the existence of a <code>.so</code> file in the import path; <code>.pyx</code> files shouldn't be considered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-06-27 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-06-27 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-27 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2025-06-27 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-27 18:31</div>
+            <div class="timeline-body"><p>FWIW, pyright looks for the following file extensions to identify extension module binaries.</p>
+<pre><code>const supportedNativeLibExtensions = ['.pyd', '.so', '.dylib'];
+</code></pre>
+<p>One additional gotcha ... when trying to resolve module <code>foo</code>, it's not enough to simply look for <code>foo.so</code>, etc. because extension module file names can include compound file extensions that encode additional information like platform details. For example: <code>foo.cpython-32m.so</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 18:34</div>
+            <div class="timeline-body"><p>I'm curious why you found it important to include <code>.pyd</code> files? AFAIK the runtime doesn't ever import from those. Are there cases where you are unable to find a <code>.so</code> or <code>.dylib</code> but you are able to find a <code>.pyd</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-27 18:41</div>
+            <div class="timeline-body"><p>At runtime Python accepts .so files with the suffixes in <code>importlib.machinery.EXTENSION_SUFFIXES</code>:</p>
+<pre><code>&gt;&gt;&gt; import importlib.machinery
+&gt;&gt;&gt; print(importlib.machinery.EXTENSION_SUFFIXES)
+['.cpython-312-darwin.so', '.abi3.so', '.so']
+</code></pre>
+<p>So to be strictly in line with the runtime, type checkers should only allow extension modules with these suffixes. The values are machine and version dependent; from looking at the code <code>.dll</code> is allowed under Cygwin, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-27 18:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm curious why you found it important to include <code>.pyd</code> files? AFAIK the runtime doesn't ever import from those.</p>
+</blockquote>
+<p>My understanding is that the runtime does import &quot;.pyd&quot; files on Windows. I did a quick internet search and asked ChatGPT, and they seem to agree. I don't have a Windows machine handy at the moment though, so I can't confirm myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-27 18:52</div>
+            <div class="timeline-body"><p>I looked at the CPython code and that seems right; grep for <code>PYD_TAGGED_SUFFIX</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 18:54</div>
+            <div class="timeline-body"><p>I suspect we don't want to rely on querying the active interpreter for its <code>importlib.machinery.EXTENSION_SUFFIXES</code>, and would rather hardcode a list of supported suffixes. We could make that list somewhat configured-platform-dependent to try to match some of the runtime behavior, though the it seems low-consequence if we silence an import error from a present shared library for a different platform. I don't think we should try to model the platform tags in <code>.so</code> filenames at all (we should recognize a found <code>.so</code> regardless of its platform tags.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>The question is whether ty should report an import resolution error here. Other type checkers (including mypy, pyright, and pyrefly) do not report an import resolution error if the import statement targets an extension module.</p>
+</blockquote>
+<p>I agree that we want to avoid an <code>unresolved-import</code> error (we already have it on our roadmap to emulate pyright's feature where it is able to resolve modules to C extensions), but I think we probably do want to issue a warning-level diagnostic that the module we've resolved the import to doesn't have any stubs installed, and all members of that module will therefore be inferred as <code>Unknown</code>.</p>
+<p>In terms of the implementation, this will therefore either involve changing our <code>resolve_module</code> query so that it returns a <code>Result</code> rather than an <code>Option</code>, or changing our <code>Module</code> struct so that it distinguishes between modules from which we can infer types and opaque C extensions from which nothing cna be inferred.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Stamppot82">@Stamppot82</a> on 2025-06-27 20:40</div>
+            <div class="timeline-body"><p>To clarify on my initial report; I was lacking a <code>pyi</code> (stub) file, because <code>cythonize</code> did not except the <code>generate_pyi</code> argument, but this is ofcourse off-topic... Manually adding the pyi file did resolve the unresolved-import error.</p>
+<blockquote>
+<p>Any such symbols can be treated as <code>Unknown</code> if a stub file isn't present.</p>
+</blockquote>
+<p>This is indeed do-able!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 20:41</div>
+            <div class="timeline-body"><p>I'll close this as a duplicate of https://github.com/astral-sh/ty/issues/487, but link to the discussion here from that issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-27 20:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>no [unresolved-attribute] in a subclass - astral-sh/ty #1182</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>no [unresolved-attribute] in a subclass</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1182">#1182</a>
+        opened by <a href="https://github.com/andythomas">@andythomas</a>
+        on 2025-09-14 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andythomas">@andythomas</a> on 2025-09-14 17:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Please consider the following stripped down example:</p>
+<pre><code class="language-python">class A:
+    def __init__(self):
+        pass
+
+    def a(self):
+        pass
+
+
+class B(A):
+    def __init__(self):
+        self._a()
+        self.a()
+        super().__init__()
+
+
+var = B()
+var._a()
+var.a()
+</code></pre>
+<p>From <code>ty</code>, I get only one error:</p>
+<pre><code>WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                            error[unresolved-attribute]: Type `B` has no attribute `_a`
+  --&gt; class_ty.py:18:1
+   |
+17 | var = B()
+18 | var._a()
+   | ^^^^^^
+19 | var.a()
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>when I run <code>pyrefly</code> as a sanity check, I get</p>
+<pre><code>ERROR Object of class `B` has no attribute `_a` [missing-attribute]
+  --&gt; /Users/thomasa/Seafile/Work/Projects/matr1x/class_ty.py:11:9
+   |
+11 |         self._a()
+   |         ^^^^^^^
+   |
+ERROR Object of class `B` has no attribute `_a` [missing-attribute]
+  --&gt; /Users/thomasa/Seafile/Work/Projects/matr1x/class_ty.py:17:1
+   |
+17 | var._a()
+   | ^^^^^^
+   |
+ INFO 2 errors
+</code></pre>
+<p>so I imply my example is okay. For what it is worth, <code>mypy</code> also only finds the second error, while <code>pyright</code>also finds both.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-15 07:25</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>ty does not emit a diagnostic in line 11, because we currently still infer <code>Unknown</code> for an unannotated <code>self</code> in methods. We hope to fix this soon. See #159</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-15 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andythomas">@andythomas</a> on 2025-09-15 07:38</div>
+            <div class="timeline-body"><p>You are always so quick to respond. Thank you so much for the explanation!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:30 UTC
+    </footer>
+</body>
+</html>

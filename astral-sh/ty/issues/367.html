@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overloaded function is incompatible with Callable annotation that matches an overload - astral-sh/ty #367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overloaded function is incompatible with Callable annotation that matches an overload</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/367">#367</a>
+        opened by <a href="https://github.com/effigies">@effigies</a>
+        on 2025-05-13 18:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/effigies">@effigies</a> on 2025-05-13 18:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>operator.getitem</code> is <a href="https://github.com/python/typeshed/blob/64875ee375ac2aeb440e12eb2cb557e939463c0a/stdlib/_operator.pyi#L81-L84">defined in typeshed</a>:</p>
+<pre><code class="language-python">@overload
+def getitem(a: Sequence[_T], b: slice, /) -&gt; Sequence[_T]: ...
+@overload
+def getitem(a: SupportsGetItem[_K, _V], b: _K, /) -&gt; _V: ...
+</code></pre>
+<p>Attempting to assign it to a variable with type <code>ty.Callable[[ty.Mapping[K, V], K], V]</code> fails with:</p>
+<pre><code>Object of type `Overload[(a: Sequence[_T], b: slice[Any, Any, Any], /) -&gt; Sequence[_T], (a: SupportsGetItem[_K, _V], b: _K, /) -&gt; _V]` is not assignable to `((Mapping[K, V], K, /) -&gt; V) | None` (invalid-assignment)
+</code></pre>
+<p>Creating my own getitem succeeds:</p>
+<pre><code class="language-py">def mygetitem(a: SupportsGetItem[K, V], b: K, /) -&gt; V:
+    return a[b]
+</code></pre>
+<p>I'm not sure I have the type theory language to describe the situation, but you should be able to define a function that overloads to a broader set of inputs to a variable that accepts a narrower set of inputs. Mypy is okay with this code. (Pyright is okay with it, as long as <code>getterfunc</code> is a parameter to a function, not a standalone variable.)</p>
+<p>https://play.ty.dev/066b782e-0719-46a3-b69f-e2f0aff47190</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 19:12</div>
+            <div class="timeline-body"><p>Thanks for the report! The root cause of this is #95 . Will close as duplicate, but it's useful to add this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-13 19:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:01 UTC
+    </footer>
+</body>
+</html>

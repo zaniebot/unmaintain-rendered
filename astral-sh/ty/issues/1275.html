@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing-Argument Rule Does Not Support Collection Unpacking Notation for Function Parameters - astral-sh/ty #1275</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing-Argument Rule Does Not Support Collection Unpacking Notation for Function Parameters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1275">#1275</a>
+        opened by <a href="https://github.com/aleexharris">@aleexharris</a>
+        on 2025-09-29 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aleexharris">@aleexharris</a> on 2025-09-29 13:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For obvious reasons, the following useful pattern causes issues with ty:</p>
+<pre><code class="language-py">@dataclass
+class Config:
+    a: str
+    b: bool
+    c: float
+
+    def from_file(config_path: str):
+        with open(config_path, &quot;r&quot;) as f:
+            cfg = json.load(f)
+            return Config(**cfg)
+</code></pre>
+<p>I tried to get around this by using object hooks and typed dicts, but I still get the same issues.</p>
+<pre><code class="language-py">ConfigDict = TypedDict(
+    &quot;ConfigDict&quot;,
+    {
+        &quot;a&quot;: str,
+        &quot;b&quot;: bool,
+        &quot;c&quot;: float,
+    },
+)
+
+
+@dataclass
+class Config:
+    a: str
+    b: bool
+    c: float
+
+    def from_file(config_path: str):
+        def object_hook(dct: ConfigDict) -&gt; Config:
+            return Config(**dct)
+
+        with open(config_path, &quot;r&quot;) as f:
+            return json.load(f, object_hook=object_hook)
+</code></pre>
+<p>That still didn't work. The error shown in both cases is this:</p>
+<pre><code class="language-bash">error[missing-argument]: No arguments provided for required parameters `a`, `b`, `c`
+  --&gt; src/config.py:83:20
+   |
+81 |         with open(config_path, &quot;r&quot;) as f:
+82 |             cfg = json.load(f)
+83 |             return Config(**cfg)
+   |                    ^^^^^^^^^^^^^
+info: rule `missing-argument` is enabled by default
+
+</code></pre>
+<p>Please add support for collection unpacking using ** notation and/or highlight a suggested fix. Thanks.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support Collection Unpacking Notation for Function Parameters" to "Missing-Argument Rule Does Not Support Collection Unpacking Notation for Function Parameters" by @aleexharris on 2025-09-29 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 13:24</div>
+            <div class="timeline-body"><p>Thank you for reporting this, please see #247</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-29 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:33 UTC
+    </footer>
+</body>
+</html>

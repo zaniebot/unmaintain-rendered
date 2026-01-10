@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support narrowing on attribute and subscript expressions - astral-sh/ty #164</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support narrowing on attribute and subscript expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/164">#164</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-21 11:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 11:18</div>
+            <div class="timeline-body"><p>Currently, red-knot only supports narrowing on a name expression like <code>x</code> but not on attributes (<code>foo.x</code>) or subscripts (<code>foo[0]</code>).</p>
+<p>For example the following is a false negative as detected in https://github.com/astral-sh/ruff/pull/16888#issuecomment-2742772151:</p>
+<pre><code class="language-py">from typing import Callable, Optional
+
+
+class Config:
+    formatting_function: Optional[Callable[[], None]] = None
+
+
+def process(config: Config):
+    reveal_type(config.formatting_function)  # revealed: () -&gt; None | None
+    if config.formatting_function:
+        # red-knot: Object of type `None` is not callable [lint:call-non-callable]
+        config.formatting_function()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-21 13:02</div>
+            <div class="timeline-body"><p>Narrowing on attributes and subscripts is inherently unsafe due to <a href="https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use">TOCTOU</a>.</p>
+<p>Nevertheless, both Mypy and Pyright do support narrowing subscripts to some extent:</p>
+<p>(playgrounds: <a href="https://mypy-play.net/?mypy=1.15.0&amp;python=3.13&amp;flags=strict&amp;gist=65644b8cbb0d1d6578e3091f3f9406f1">Mypy</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.397&amp;pythonVersion=3.14&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=CYUwZgBGAUBuBcEA2BLAzgFwNqYE4QB8IA5AewDsQBdAGghURXIwEoIBaAPhIpHgFgAUBBERcIWCACGSAPoYAngAcQcLAAYqbCAGIIeQj0pDRYidLmKValFpF6DRMscEnRKSLA1UBw06PFJGXllVS9NbQcMXCE3EQ8IL1tffwDzYKswrFtI-WjDZxAhIA">Pyright</a>)</p>
+<pre><code class="language-python">def f(v: list[str | None], i: int) -&gt; None:
+    reveal_type(v[0])  # str | None
+    reveal_type(v[i])  # str | None
+
+    if v[0]:
+        reveal_type(v[0])  # str
+
+    if v[i]:
+        reveal_type(v[i])  # str | None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-04-14 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-04-14 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-04-14 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-14 07:32</div>
+            <div class="timeline-body"><p>@mtshiba I can't assign this to you (maybe because you haven't commented in this thread), but I understand that you are working on this. I'm assigning myself as a placeholder, so that no-one else starts with this.</p>
+<p>I think it would be good to start with narrowing on attribute expressions, and postpone narrowing on subscript expressions to a later point in time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-04-14 16:05</div>
+            <div class="timeline-body"><p>Yes, I’m currently working on type narrowing for instance attributes, so if you could assign me for this issue, that would be great.</p>
+<p>Subscript expressions support is also interesting. I'm wondering if there's a good idea to solve both at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mtshiba by @sharkdp on 2025-04-14 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-04-14 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-25 15:31</div>
+            <div class="timeline-body"><p>Hi @mtshiba! Just checking in on the status here and whether there is anything that it would be useful for us to review, even if it's just a planned approach or a test suite, to make sure we are all on the same page? We are hoping we can have some form of this feature landed within the next week or two; does that seem possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-04-25 15:44</div>
+            <div class="timeline-body"><p>Since I thought the fix for astral-sh/ruff#17595 was relevant to this issue (though not so relevant as it turned out), I have submitted <a href="https://github.com/astral-sh/ruff/pull/17630">a PR</a> to fix that one first. Please check it.</p>
+<p>A PR to solve this issue is also currently being prepared, but the basic feature should be ready within the next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Support narrowing on attribute and subscript expressions" to "Support narrowing on attribute and subscript expressions" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "alpha" by @MichaReiser on 2025-05-07 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @MichaReiser on 2025-05-08 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2025-05-11 04:22</div>
+            <div class="timeline-body"><p>Another example - the assert on the attribute should narrow the type here. As a Pyright user who makes heavy use of asserts and conditionals to narrow types and uses dataclasses everywhere, I have a <em>lot</em> of these in my codebase, over 1,000 instances 🤣:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+def black_box() -&gt; str | None:
+    return None
+
+@dataclass
+class A:
+    a: str | None = None
+
+b: str | None = black_box()
+assert b is not None
+# pyright - no error
+# ty - no error
+print(b.lower())
+
+a = A()
+a.a = black_box()
+assert a.a is not None
+# pyright - no error
+# ty - warning[possibly-unbound-attribute]: Attribute `lower` on type `str | None` is possibly unbound
+print(a.a.lower())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-05-11 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Alpha" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-05-22 16:07</div>
+            <div class="timeline-body"><p>Just to add another wrinkle here: IMO the correct behaviour depends on whether the code might be multithreaded. Consider this example:</p>
+<pre><code class="language-python">import dataclasses
+import time
+
+@dataclasses.dataclass(frozen=True)
+class Frozen:
+
+    child: str | None
+
+
+@dataclasses.dataclass
+class Mutable:
+
+    child: str | None
+
+
+def should_narrow(x: Frozen):
+    assert x.child is not None
+    time.sleep(10)
+    &quot;&quot;.join(x.child)
+
+
+def should_not_narrow(x: Mutable):
+    assert x.child is not None
+    time.sleep(10)
+    &quot;&quot;.join(x.child)
+</code></pre>
+<p>In the case of using the <code>Frozen</code> dataclass, even though it's not <em>technically</em> immutable, it can be treated as such and we can say with all the confidence we ever can in Python that another thread would not change the type of <code>x.child</code> during the sleep. On the other hand, the <code>Mutable</code> dataclass could have the value of <code>x.child</code> changed by another thread during sleep.</p>
+<p>Currently both mypy and pyright treat both cases as I described with <code>should_narrow</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 16:25</div>
+            <div class="timeline-body"><p>@lengau You are right, but in general Python type checkers have made the decision to not attempt to catch this category of concurrency bug, and support forms of narrowing that are not necessarily sound in the face of concurrent mutation. Most Python objects are mutable, so respecting the possibility of concurrent mutation would dramatically reduce the usability of Python typing, including in code that is never run concurrently.</p>
+<p>Perhaps with the advent of free-threaded Python, this is a choice that the Python static type system will have to revisit in the coming years. It may make sense to consider an opt-in concurrent-strict mode.</p>
+<p>But for now I think ty would hamstring its adoption and usability if it doesn't follow the lead of existing checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 17:09</div>
+            <div class="timeline-body"><p>Do other type checkers narrow across await boundaries in async code because this isn't strictly a multi-threading problem. I still don't think we should invalidate narrowing. It seems to strict.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-05-22 17:19</div>
+            <div class="timeline-body"><p>I believe Pyre tried to do this in a safe(ish) way by invalidating narrowing on any method call (because it could theoretically trigger code that reassigns the attribute). Even that is of course not safe in the presence of multithreading. But this approach turned out to be hard to use in practice; Carl might know more about how that worked out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 17:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe Pyre tried to do this in a safe(ish) way by invalidating narrowing on any method call (because it could theoretically trigger code that reassigns the attribute). Even that is of course not safe in the presence of multithreading. But this approach turned out to be hard to use in practice; Carl might know more about how that worked out.</p>
+</blockquote>
+<p>That sounds very similar to what flowtype does. It confused a lot of people (including myself) and it required a few iterations to &quot;allow&quot; certain methods but I don't remember the details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-05-22 17:49</div>
+            <div class="timeline-body"><p>@carljm that's completely fair.</p>
+<p>Here's an entirely non-concurrent test case where <code>pyright</code> doesn't complain, but where the type narrowing should be reset:</p>
+<pre><code class="language-python">import dataclasses
+
+@dataclasses.dataclass()
+class Parent:
+
+    child: str | None
+
+
+def mutate_child(parent: Parent, new_child: str | None) -&gt; None:
+    parent.child = new_child
+
+
+def tester(x: Parent):
+    assert x.child is not None
+    mutate_child(x, None)
+    &quot;&quot;.join([x.child])
+
+
+parent = Parent(child=&quot;child&quot;)
+tester(parent)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 17:59</div>
+            <div class="timeline-body"><p>Yes, all true, the issue can also occur with async, or with no concurrency at all just via function calls. (I think in practice it may be more likely with free threading than it has been otherwise, but we'll see.) I think the conclusion remains that this is the trade off Python type checkers have chosen and attempts to be more strict (like Pyre) have so far not gone over well. In practice the convenience of narrowing seems to outweigh the unsoundness, which doesn't come up that often.</p>
+<p>Not a lot more to say about the Pyre experience: Pyre tried to roll out &quot;safe&quot; narrowing, and it was really unpopular. It was then rolled back to a slightly less conservative version that did the narrowing, but then invalidated it on function calls. This caused less irritation but people still found it pretty confusing. Meta's new type checker to replace Pyre (Pyrefly) seems to be fully following the lead of mypy and pyright, without any additional strictness around narrowing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2025-05-22 18:07</div>
+            <div class="timeline-body"><p>That makes sense. This may be a good case for <code>info</code> level responses at a later date, especially in the LSP, but under those constraints it makes sense to follow other type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2025-06-01 11:23</div>
+            <div class="timeline-body"><p>I got some <code>ty</code> errors this morning for the <code>invalid-argument-type</code> rule. I searched and found this issue - I believe mine might have the same cause.</p>
+<p>I am using <code>pydantic_extra_types.TimeZoneName</code> in the normal way, per the <a href="https://docs.pydantic.dev/latest/api/pydantic_extra_types_timezone_name/#pydantic_extra_types.timezone_name.TimeZoneName--normal-usage">docs</a>.</p>
+<p>Tested on <code>ty</code> versions <code>0.0.1a6</code> and <code>0.0.1a7</code>.</p>
+<pre><code class="language-python"># model_test.py
+
+from pydantic import BaseModel
+from pydantic_extra_types.timezone_name import TimeZoneName
+
+class TimeZonePolicyData(BaseModel):
+    time_zone_name: TimeZoneName
+
+
+class AmericaNewYorkTimeZonePolicy:
+
+    def get_policy_data(self) -&gt; TimeZonePolicyData:
+        return TimeZonePolicyData(
+            time_zone_name=&quot;America/New_York&quot;,
+        )
+</code></pre>
+<p>Running <code>uv run ty check model_test.py</code> gives</p>
+<pre><code class="language-text">error[invalid-argument-type]: Argument is incorrect
+  --&gt; model_test.py:14:13
+   |
+12 |     def get_policy_data(self) -&gt; TimeZonePolicyData:
+13 |         return TimeZonePolicyData(
+14 |             time_zone_name=&quot;America/New_York&quot;,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Expected `TimeZoneName`, found `Literal[&quot;America/New_York&quot;]`
+15 |         )
+   |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>For comparison, running <code>uv run mypy model_test.py</code> gives:</p>
+<pre><code class="language-text">model_test.py:14: error: Argument &quot;time_zone_name&quot; to &quot;TimeZonePolicyData&quot; has incompatible type &quot;str&quot;; expected &quot;TimeZoneName&quot;  [arg-type]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>(Seems related to https://github.com/pydantic/pydantic-extra-types/issues/316 ?)</p>
+<p>EDIT: We're running both mypy and ty currently (on a new greenfield project, not in production). It's possible to ignore line issues in both, but the mypy ignore directive needs to be first.</p>
+<p>This works:</p>
+<pre><code class="language-python">time_zone_name=&quot;America/New_York&quot;,  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+</code></pre>
+<p>This does not - mypy still complains:</p>
+<pre><code class="language-python"> time_zone_name=&quot;America/New_York&quot;,  # ty: ignore[invalid-argument-type] # type: ignore[arg-type]  
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-01 17:25</div>
+            <div class="timeline-body"><p>That's a completely unrelated issue; mypy and ty both give the same (apparently correct) error.</p>
+<blockquote>
+<p>This does not - mypy still complains</p>
+</blockquote>
+<p>Mypy treats that as commenting out the <code># type: ignore</code>, so it doesn't ignore the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2025-06-02 11:22</div>
+            <div class="timeline-body"><blockquote>
+<p>That's a completely unrelated issue</p>
+</blockquote>
+<p>whoops, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-17 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:10:53 UTC
+    </footer>
+</body>
+</html>

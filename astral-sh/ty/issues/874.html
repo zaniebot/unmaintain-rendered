@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equivalence of single-member enums not fully implemented when deeply nested inside other types - astral-sh/ty #874</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Equivalence of single-member enums not fully implemented when deeply nested inside other types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/874">#874</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-22 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-22 18:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from enum import Enum
+from ty_extensions import static_assert, is_equivalent_to
+from typing import Literal, reveal_type, Protocol
+
+class Foo(Enum):
+    X = 1
+
+static_assert(
+    is_equivalent_to(
+        tuple[Foo] | int | str,
+        str | int | tuple[Literal[Foo.X]]
+    )
+)
+
+class Bar(Protocol):
+    a: Foo
+
+class Baz(Protocol):
+    a: Literal[Foo.X]
+
+static_assert(is_equivalent_to(Bar, Baz))
+</code></pre>
+<p>Both these <code>static_assert</code> calls fail currently, but they should both succeed. I think this should be easily fixable by fiddling with the implementation of <code>Type::normalized()</code> for enums: either we normalize <code>Literal[Foo.X]</code> to <code>Foo</code> if the enum only has a single member, or we normalize <code>Foo</code> to <code>Literal[Foo.X]</code> if <code>Foo</code> only has a single member.</p>
+<p>https://play.ty.dev/441ade21-3807-4571-a0de-e8f317a08599</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-22 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-07-22 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Equivalence of single-member enums not fully implemented when nested inside other types" to "Equivalence of single-member enums not fully implemented when deeply nested inside other types" by @AlexWaygood on 2025-07-22 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-07-23 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 07:18</div>
+            <div class="timeline-body"><p>Thanks, Alex!</p>
+<blockquote>
+<p>I think this should be easily fixable by fiddling with the implementation of <code>Type::normalized()</code></p>
+</blockquote>
+<p>Indeed: https://github.com/astral-sh/ruff/pull/19502</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-23 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-09-23 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:19 UTC
+    </footer>
+</body>
+</html>

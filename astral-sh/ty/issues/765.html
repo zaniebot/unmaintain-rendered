@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang when building divergent tuple type for implicit instance attributes - astral-sh/ty #765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hang when building divergent tuple type for implicit instance attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/765">#765</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-04 13:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 13:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty hangs when checking this file:</p>
+<pre><code class="language-py">from typing import Any
+
+class A:
+    foo: tuple[Any, ...]
+
+class B(A):
+    def __init__(self, parent: &quot;C&quot;, x: tuple[Any]):
+        self.foo = parent.foo + x
+
+class C(A):
+    def __init__(self, parent: B, x: tuple[Any]):
+        self.foo = parent.foo + x
+</code></pre>
+<h3>Version</h3>
+<p>7712c2fd1562a9d3c3d2ea8e7eb2f91b20868abe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-04 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">hang</span> added by @AlexWaygood on 2025-07-04 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-08 10:07</div>
+            <div class="timeline-body"><p>I think this has little to do with instance attributes, and more to do with simplification of tuple types. We correctly attempt to do fixpoint iteration to find the type of <code>B.foo</code>/<code>C.foo</code>. While doing so, we build an increasingly complex tuple type: https://play.ty.dev/5ef6c18e-e6c8-4868-bb51-92d22aea3083. Since we never simplify this to a homogenous <code>tuple[Any, ...]</code>, the iteration never converges. You can verify this by letting <code>ty</code> run for long enough on the snippet above. It should eventually panic with &quot;too many cycle iterations&quot; (why this takes so long is another interesting question).</p>
+<p>Something similar happens for much simpler cases like:</p>
+<pre><code class="language-py">class A:
+    def f(self: &quot;A&quot;, flag: bool):
+        if flag:
+            self.foo = ()
+        else:
+            self.foo = self.foo + (1,)
+</code></pre>
+<p>The solution here, I think, will be to simplify these tuple types to their homogenous supertype when some threshold is passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-08 10:13</div>
+            <div class="timeline-body"><p>When it comes to addition specifically, I've actually been wondering how useful our special-casing for tuple addition really is. It causes problems for tuple subclasses, since the signature of <code>tuple.__add__</code> is inexpressible in the type system. It would be impossible to know if an <code>__add__</code> method definition on a fixed-length tuple subclass was Liskov-compatible with the <code>__add__</code> definition on its <code>tuple</code> superclass just by looking at the <code>__add__</code> signature -- so to make tuple subclasses sound, we would have to forbid ever overriding <code>__add__</code> or <code>__radd__</code> on all tuple subclasses. That feels like it might be unnecessarily restrictive if our special casing for tuple addition isn't actually that useful at the end of the day. I'd like to experiment with just ripping it out altogether.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hang when checking a pair of classes with mutually recursive implicit instance attributes" to "Hang when building divergent tuple type for implicit instance attributes" by @sharkdp on 2025-07-18 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-30 16:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:15 UTC
+    </footer>
+</body>
+</html>

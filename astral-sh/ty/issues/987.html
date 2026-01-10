@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>should allow assignable gradual type in super() - astral-sh/ty #987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>should allow assignable gradual type in super()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/987">#987</a>
+        opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a>
+        on 2025-08-14 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CharlesPerrotMinot">@CharlesPerrotMinot</a> on 2025-08-14 15:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty errors saying the annotation of the <code>cls</code> as <code>type[Any]</code> for a class inheriting from <code>type</code>, in the <strong>init</strong>, is wrong.</p>
+<p>We're getting</p>
+<pre><code>error[invalid-super-argument]: `type[Any]` is not an instance or subclass of `&lt;class 'BuilderMeta'&gt;` in `super(&lt;class 'BuilderMeta'&gt;, type[Any])` call
+    |
+453 |         dct[&quot;use_legacy&quot;] = define_builder_use_legacy()
+454 |         dct[&quot;dict&quot;] = define_builder_dict()
+455 |         instance = super().__new__(cls, name, bases, dct)
+    |                    ^^^^^^^
+456 |         instance.__field_names__ = field_names
+457 |         instance.from_behave_context = define_builder_from_behave_context(instance)
+    |
+info: rule `invalid-super-argument` is enabled by default
+</code></pre>
+<p>Which points to the following code</p>
+<pre><code>class BuilderMeta(type):
+    def __new__(
+        cls: type[Any],
+        name: str,
+        bases: tuple[type, ...],
+        dct: dict[str, Any],
+    ) -&gt; &quot;BuilderMeta&quot;:
+        instance = super().__new__(cls, name, bases, dct)
+</code></pre>
+<p>Works without issues with mypy 1.17.1, with this config:</p>
+<pre><code>allow_subclassing_any=true
+allow_untyped_decorators=true
+ignore_missing_imports = true
+no_warn_return_any=true
+strict=true
+</code></pre>
+<h3>Version</h3>
+<p><a href="https://github.com/astral-sh/ty/releases/tag/0.0.1-alpha.18">0.0.1-alpha.18</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-08-14 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "invalid-super-argument error when subclassing type" to "should allow assignable gradual type in super()" by @carljm on 2025-08-14 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 17:14</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, I think this should be allowed, since <code>type[Any]</code> can materialize to <code>type[BuilderMeta]</code>, which is valid for this <code>super()</code>.</p>
+<p>(You can also change the <code>type[Any]</code> annotation to <code>type[&quot;BuilderMeta&quot;]</code>, which is more precise and should be accurate; then <a href="https://play.ty.dev/16d53ebb-fe05-4c64-a4ac-9d449a41052b">this works in ty</a> today; our problem here is just in not being &quot;forgiving&quot; as we should be with <code>Any</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-08-14 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-13 10:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

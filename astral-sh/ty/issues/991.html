@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error[not-iterable] unexpected behavior with type narrowing - astral-sh/ty #991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error[not-iterable] unexpected behavior with type narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/991">#991</a>
+        opened by <a href="https://github.com/alechouse97">@alechouse97</a>
+        on 2025-08-14 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-08-14 17:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Below is a simple code snippet that is attempting to index the list <code>y</code> by a selection of types. If the index is a slice type, we directly index the list, else list comprehension is used.</p>
+<pre><code class="language-python">import numpy as np
+
+def func(x: int | list | slice | np.ndarray) -&gt; list:
+
+    y = [1, 2, 3, 4, 5, 6]
+
+    rhs = [x] if isinstance(x, int) else x  # rhs should have type (list | slice | ndarray)
+
+    if isinstance(rhs, slice):
+        z = y[rhs]
+    else:  # rhs should be of type (list | ndarray)
+        z = [y[i] for i in rhs]
+    
+    return z
+</code></pre>
+<p>Running <code>ty check</code> results in:</p>
+<pre><code>error[not-iterable]: Object of type `list[Unknown] | (slice[Any, Any, Any] &amp; ~slice[Any, Any, Any]) | (ndarray[@Todo, Unknown] &amp; ~int)` may not be iterable
+  --&gt; tmp.py:12:28
+   |
+10 |         z = y[rhs]
+11 |     else:
+12 |         z = [y[i] for i in rhs]
+   |                            ^^^
+13 |     return z
+   |
+info: It may not have an `__iter__` method or a `__getitem__` method
+info: rule `not-iterable` is enabled by default
+</code></pre>
+<p>On line 12, <code>rhs</code> should either be a list or ndarray, both of which are iterable.</p>
+<p>Is this a bug? A similar error is not reproduced when running mypy or pyright on this example.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 17:48</div>
+            <div class="timeline-body"><p>Thanks for the report! Yes, this is a bug; it boils down to https://github.com/astral-sh/ty/issues/456</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-14 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:23 UTC
+    </footer>
+</body>
+</html>

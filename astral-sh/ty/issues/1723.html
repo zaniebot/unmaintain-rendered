@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot assign a `literal`-based object to its corresponding `collections.abc`-based object - astral-sh/ty #1723</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot assign a `literal`-based object to its corresponding `collections.abc`-based object</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1723">#1723</a>
+        opened by <a href="https://github.com/mflova">@mflova</a>
+        on 2025-12-02 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mflova">@mflova</a> on 2025-12-02 15:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I could not find a similar issue.</p>
+<p>So far I found these problems with <code>dict/Mapping</code> and <code>list/Sequence</code> that seem to be very similar:</p>
+<hr />
+<p>With <code>Mapping</code>-based:</p>
+<pre><code class="language-py">from collections.abc import Sequence
+from typing import Literal, Mapping, TypedDict
+
+def func(my_param: dict[Literal[&quot;a&quot;, &quot;b&quot;], int]) -&gt; None:
+    pass
+func({&quot;a&quot;: 1, &quot;b&quot;: 2})  # OK
+
+def func2(my_param: Mapping[Literal[&quot;a&quot;, &quot;b&quot;], int]) -&gt; None:
+    pass
+
+func2({&quot;a&quot;: 1, &quot;b&quot;: 2})  #  error[invalid-argument-type] Argument to function `func2` is incorrect: Expected `Mapping[Literal[&quot;a&quot;, &quot;b&quot;], int]`, found `dict[Unknown | str, Unknown | int]`
+</code></pre>
+<hr />
+<p>With <code>Sequence</code>-based:</p>
+<pre><code class="language-py">from collections.abc import Sequence
+from typing import Literal, Mapping, TypedDict
+
+
+class MyData(TypedDict):
+    a: int
+    b: int
+
+def func(my_param: list[MyData]) -&gt; None:
+    pass
+
+func([{&quot;a&quot;: 1, &quot;b&quot;: 2}, {&quot;a&quot;: 3, &quot;b&quot;: 4}])  # OK
+
+def func2(my_param: Sequence[MyData]) -&gt; None:
+    pass
+
+func2([{&quot;a&quot;: 1, &quot;b&quot;: 2}, {&quot;a&quot;: 3, &quot;b&quot;: 4}])  #  error[invalid-argument-type] Argument to function `func2` is incorrect: Expected `Sequence[MyData]`, found `list[Unknown | dict[Unknown | str, Unknown | int]]`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-02 15:59</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-02 15:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:48 UTC
+    </footer>
+</body>
+</html>

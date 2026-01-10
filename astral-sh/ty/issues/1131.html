@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-argument-type for annotated `self` argument when a generic context exists - astral-sh/ty #1131</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-argument-type for annotated `self` argument when a generic context exists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1131">#1131</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2025-09-05 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-05 11:27</div>
+            <div class="timeline-body"><p>This came up as part of https://github.com/astral-sh/ruff/pull/18007. Since it can be reproduced on main I created a separate issue &amp; PR to check ecosystem changes.</p>
+<p>Normally annotated self accepts instance of that class a valid argument:</p>
+<pre><code class="language-py">from typing import Self
+
+class C:
+    def m(self: Self, x: int) -&gt; None: ...
+
+c: C = C()
+c.m(1)
+</code></pre>
+<p>But if the method has generics then this would not work:</p>
+<pre><code class="language-py">from typing import Self
+class C:
+    def m[S](self: Self, x: S) -&gt; None: ...
+
+c: C[int] = C()
+# error: [invalid-argument-type] &quot;Argument to bound method `m` is incorrect: Expected `Self@m`, found `C`&quot;
+c.m(1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-05 11:52</div>
+            <div class="timeline-body"><blockquote>
+<p>c: C[int] = C()</p>
+</blockquote>
+<p>I know it's not the key issue here, but it also looks like a bug that you're allowed to <a href="https://play.ty.dev/98ea4515-8f3b-4223-984f-254b089f0e6b">declare this as <code>C[int]</code> when <code>C</code> itself is not a generic class</a>. You can probably remove that annotation from your example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-09-05 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-09-08 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 11:46</div>
+            <div class="timeline-body"><p>In the following example, we can see how <code>Self</code> vanishes from the generic context when using a PEP 695 typevar:</p>
+<p>https://play.ty.dev/7208eaba-cf11-4352-9c9c-46f6968f3aa3</p>
+<pre><code class="language-py">from typing import Self, TypeVar, reveal_type
+from ty_extensions import generic_context
+
+_T = TypeVar(&quot;_T&quot;)
+
+
+class C:
+    def method_with_non_generic_param(self: Self, x: int) -&gt; None: ...
+    def method_with_legacy_typevar(self: Self, x: _T) -&gt; None: ...
+    def method_with_pep695_typevar[T](self: Self, x: T) -&gt; None: ...
+
+
+reveal_type(generic_context(C.method_with_non_generic_param))  # tuple[Self@method_with_non_generic_param]
+reveal_type(generic_context(C.method_with_legacy_typevar))  # tuple[Self@method_with_legacy_typevar, _T@method_with_legacy_typevar]
+reveal_type(generic_context(C.method_with_pep695_typevar))  # tuple[T@method_with_pep695_typevar]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-09-08 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-08 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:28 UTC
+    </footer>
+</body>
+</html>

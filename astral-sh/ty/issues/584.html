@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect subdiagnostic suggestions for `unresolved-reference` diagnostics - astral-sh/ty #584</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect subdiagnostic suggestions for `unresolved-reference` diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/584">#584</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-05 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 11:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://github.com/astral-sh/ruff/pull/18444 added fantastic subdiagnostic suggestions for <code>unresolved-reference</code> diagnostics in methods. They work great for most cases, but for several edge cases they result in incorrect suggestions.</p>
+<hr />
+<p>We should not add the subdiagnostic if the method is a staticmethod: the subdiagnostic does not make much sense here:</p>
+<pre><code class="language-py">class Foo:
+    def __init__(self):
+        self.x = 42
+
+    @staticmethod
+    def static_method():
+        print(x)
+</code></pre>
+<p>Our diagnostic is currently:</p>
+<pre><code>error[unresolved-reference]: Name `x` used when not defined
+  --&gt; foo.py:9:15
+   |
+ 7 |     @staticmethod
+ 8 |     def static_method():
+ 9 |         print(x)
+   |               ^
+10 |
+11 |     @classmethod
+   |
+info: An attribute `x` is available: consider using `self.x`
+info: rule `unresolved-reference` is enabled by default
+</code></pre>
+<hr />
+<p>We should not suggest attributes only available on instances if the method is a classmethod: the subdiagnostic does not make much sense here:</p>
+<pre><code class="language-py">class Foo:
+    def __init__(self):
+        self.x = 42
+
+    @classmethod
+    def class_method(cls):
+        print(x)
+</code></pre>
+<p>Our diagnostic is currently:</p>
+<pre><code>error[unresolved-reference]: Name `x` used when not defined
+ --&gt; bar.py:7:15
+  |
+5 |     @classmethod
+6 |     def class_method(cls):
+7 |         print(x)
+  |               ^
+  |
+info: An attribute `x` is available: consider using `self.x`
+info: rule `unresolved-reference` is enabled by default
+</code></pre>
+<p>This should be fixed by using <code>SubclassOf::from(self.db(), class.default_specialization(self.db()))</code> <a href="https://github.com/astral-sh/ruff/blob/8485dbb324212dab0e26d2afb5929097af129bbf/crates/ty_python_semantic/src/types/infer.rs#L6060">here</a> if it's a classmethod (but still using <code>Type::instance(self.db(), class.default_specialization(self.db()))</code> if it's an instance method).</p>
+<hr />
+<p>The subdiagnostic message always says &quot;consider using <code>self.&lt;attribute&gt;</code>&quot;. But we should inspect the function to check what the name of the first parameter is rather than assuming it's <code>self</code>. Even for instance methods, the name of the first parameter is often not <code>self</code> if it's an instance method on a metaclass, for example:</p>
+<pre><code class="language-py">class Foo:
+    Y = 42
+
+    @classmethod
+    def class_method(cls):
+        print(Y)
+
+
+class Meta(type):
+    Z = 42
+    
+    def instance_metaclass_method(cls):
+        print(Z)
+</code></pre>
+<p>Our current diagnostics:</p>
+<pre><code>error[unresolved-reference]: Name `Y` used when not defined
+ --&gt; baz.py:6:15
+  |
+4 |     @classmethod
+5 |     def class_method(cls):
+6 |         print(Y)
+  |               ^
+  |
+info: An attribute `Y` is available: consider using `self.Y`
+info: rule `unresolved-reference` is enabled by default
+
+error[unresolved-reference]: Name `Z` used when not defined
+  --&gt; baz.py:13:15
+   |
+12 |     def instance_metaclass_method(cls):
+13 |         print(Z)
+   |               ^
+   |
+info: An attribute `Z` is available: consider using `self.Z`
+info: rule `unresolved-reference` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-05 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-06-05 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-06-05 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-05 21:05</div>
+            <div class="timeline-body"><p>Is there a plan to introduce KnownClass::Staticmethod? It seems like it may be useful for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 21:20</div>
+            <div class="timeline-body"><p>Huh, I assumed that we already had a <code>STATIC_METHOD</code> flag on this bitflag, but I guess not! I'd suggest adding it and detecting staticmethods in the same way that we detect classmethods</p>
+<p>https://github.com/astral-sh/ruff/blob/5faf72a4d9b50c6e330165685e57fae14ca68b73/crates/ty_python_semantic/src/types/function.rs#L93</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-05 21:23</div>
+            <div class="timeline-body"><p>Okay thanks, ill have a go at refactoring to use that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-05 21:26</div>
+            <div class="timeline-body"><p>I think detecting staticmethods still requires KnownClass::Staticmethod. I believe this is how we add the bitflag</p>
+<pre><code class="language-rs">Type::ClassLiteral(class) =&gt; {
+    if class.is_known(self.db(), KnownClass::Classmethod) {
+        function_decorators |= FunctionDecorators::CLASSMETHOD;
+        continue;
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 21:32</div>
+            <div class="timeline-body"><p>That's fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-05 21:33</div>
+            <div class="timeline-body"><p>I guess this can be added in another PR? Or should i add it here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-05 23:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess this can be added in another PR? Or should i add it here?</p>
+</blockquote>
+<p>Seems fine to add it in the same PR, it's a simple addition following existing patterns exactly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-27 12:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:11:09 UTC
+    </footer>
+</body>
+</html>
