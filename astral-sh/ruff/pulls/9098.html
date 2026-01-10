@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff_python_formatter: implement &quot;dynamic&quot; line width mode for docstring code formatting - astral-sh/ruff #9098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff_python_formatter: implement &quot;dynamic&quot; line width mode for docstring code formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9098">#9098</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-12-11 18:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 18:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes the internal <code>docstring-code-line-width</code> setting to additionally accept a string value <code>dynamic</code>. When <code>dynamic</code> is set, the line width is dynamically adjusted when reformatting code snippets in docstrings based on the indent level of the docstring. The result is that the reformatted lines from the code snippet should not exceed the &quot;global&quot; line width configuration for the surrounding source.</p>
+<p>This PR does not change the default behavior, although I suspect the default should probably be <code>dynamic</code>.</p>
+<p>Closes #8855</p>
+<h2>Test Plan</h2>
+<p>I added a new configuration to the existing docstring code tests and also added a new set of tests dedicated to the new <code>dynamic</code> mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2023-12-11 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-12-11 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-11 19:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-12-11 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-11 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_code_examples_dynamic_line_width.py</code>:6 on 2023-12-11 23:24</div>
+            <div class="timeline-body"><p>I think we should add a test for the case in which the docstring contents are under-indented, like:</p>
+<pre><code class="language-python">def repeated():
+    &quot;&quot;&quot;
+    First line.
+```py
+class Abcdefghijklmopqrstuvwxyz(Abc, Def, Ghi, Jkl, Mno, Pqr, Stu, Vwx, Yz, A1, A2, A3, A4, A5):
+    def abcdefghijklmnopqrstuvwxyz(self, abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4):
+        def abcdefghijklmnopqrstuvwxyz(abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4):
+            # For 4 space indents, this is just one character shy of
+            # tripping the default line width of 88. So it should not be
+            # wrapped.
+            print(abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4, a567)
+            return 5
+        self.x = doit( 5 )
+    &quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-11 23:25</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-11 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_code_examples_dynamic_line_width.py</code>:6 on 2023-12-11 23:26</div>
+            <div class="timeline-body"><p>In this case, we end up formatting like:</p>
+<pre><code class="language-python">def repeated():
+    &quot;&quot;&quot;
+        First line.
+    ```py
+    class Abcdefghijklmopqrstuvwxyz(Abc, Def, Ghi, Jkl, Mno, Pqr, Stu, Vwx, Yz, A1, A2, A3, A4, A5):
+        def abcdefghijklmnopqrstuvwxyz(self, abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4):
+            def abcdefghijklmnopqrstuvwxyz(abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4):
+                # For 4 space indents, this is just one character shy of
+                # tripping the default line width of 88. So it should not be
+                # wrapped.
+                print(abc, ddef, ghi, jkl, mno, pqr, stu, vwx, yz, a1, a2, a3, a4, a567)
+                return 5
+            self.x = doit( 5 )
+    &quot;&quot;&quot;
+</code></pre>
+<p>That is, we indent relative to the minimally-indented line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-11 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_code_examples_dynamic_line_width.py</code>:6 on 2023-12-11 23:26</div>
+            <div class="timeline-body"><p>(I suspect the code handles this correctly, but it's worth testing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:228 on 2023-12-11 23:27</div>
+            <div class="timeline-body"><p>The &quot;number of ASCII space characters&quot; is, I guess, a little less clear when talking about tabs. Like, to determine the number of tabs, it'd be the number of ASCII space characters divided by the tab width? But IIRC we don't support tabs within docstrings anyway, so perhaps moot here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-11 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:228 on 2023-12-12 00:15</div>
+            <div class="timeline-body"><blockquote>
+<p>But IIRC we don't support tabs within docstrings anyway,</p>
+</blockquote>
+<p>Yeah that's exactly why I used the naming I did. I felt like if I used more generic naming, it might be too easy to accidentally use this method in an inappropriate way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:238 on 2023-12-12 02:37</div>
+            <div class="timeline-body"><p>Nit: We can probably use a <code>u32</code> here considering that we don't support files larger than 32 bytes or even <code>u16</code> because that's the most the formatter <code>Printer</code> supports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:248 on 2023-12-12 02:38</div>
+            <div class="timeline-body"><p>Nit: To me the semantic of <code>next</code> for an indent level isn't immediately clear. I would find<code>increment</code> and <code>decrement</code> easier to understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:75 on 2023-12-12 02:40</div>
+            <div class="timeline-body"><p>That looks too easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-12 02:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:75 on 2023-12-12 13:36</div>
+            <div class="timeline-body"><p>That's what I thought. Hah.</p>
+<p>And I had to do a little trickery to make this work. In particular, asking for a <code>DerefMut&lt;Target=impl Buffer&gt;</code> instead of an <code>impl Buffer</code> in order to make it composable with <code>WithNodeLevel</code>. I pondered for a bit on a better design, but there were multiple choices and it wasn't obvious to me which path to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:238 on 2023-12-12 13:42</div>
+            <div class="timeline-body"><p>Yeah I was trying to figure out what type to use here. I noticed other similar types use <code>u32</code> or <code>u16</code> or whatever.</p>
+<p>I think I do favor using fixed size types here because it provides more of a speed-bump to make sure you're careful about how they're used. On the other hand, these values do ultimately seem to get used for indexing memory, so I also find <code>usize</code> to be reasonable as well.</p>
+<p>I'll switch this over to a <code>u16</code>. Given that it needs to do arithmetic with other <code>u16</code> values, I think that seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_code_examples_dynamic_line_width.py</code>:6 on 2023-12-12 14:12</div>
+            <div class="timeline-body"><p>Ah yeah nice test. I added that and another one where a line, <em>after its indentation has been fixed</em>, just barely exceeds the limit. It wraps as we might expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-12-12 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-12-12 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-12 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:44 UTC
+    </footer>
+</body>
+</html>

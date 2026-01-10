@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `flake8-type-checking` rules to automatically quote runtime-evaluated references - astral-sh/ruff #6001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow <code>flake8-type-checking</code> rules to automatically quote runtime-evaluated references</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6001">#6001</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-23 02:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 02:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This allows us to fix usages like:</p>
+<pre><code class="language-python">from pandas import DataFrame
+
+def baz() -&gt; DataFrame:
+    ...
+</code></pre>
+<p>By quoting the <code>DataFrame</code> in <code>-&gt; DataFrame</code>. Without quotes, moving <code>from pandas import DataFrame</code> into an <code>if TYPE_CHECKING:</code> block will fail at runtime, since Python tries to evaluate the annotation to add it to the function's <code>__annotations__</code>.</p>
+<p>Unfortunately, this does require us to split our &quot;annotation kind&quot; flags into three categories, rather than two:</p>
+<ul>
+<li><code>typing-only</code>: The annotation is only evaluated at type-checking-time.</li>
+<li><code>runtime-evaluated</code>: Python will evaluate the annotation at runtime (like above) -- but we're willing to quote it.</li>
+<li><code>runtime-required</code>: Python will evaluate the annotation at runtime (like above), and some library (like Pydantic) needs it to be available at runtime, so we <em>can't</em> quote it.</li>
+</ul>
+<p>This functionality is gated behind a setting (<code>flake8-type-checking.quote-annotations</code>).</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/5559.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-23 02:52</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 04:41</div>
+            <div class="timeline-body"><p>This &quot;works&quot; on Dagster in that it generates 1834 fixes (and no syntax errors) that generally look right:</p>
+<pre><code class="language-diff">--- a/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
++++ b/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
+@@ -1,5 +1,9 @@
++from typing import TYPE_CHECKING
++
+ from dagster import SourceAsset, TableSchema, asset
+-from pandas import DataFrame
++
++if TYPE_CHECKING:
++    from pandas import DataFrame
+
+ raw_country_populations = SourceAsset(
+     &quot;raw_country_populations&quot;,
+@@ -19,7 +23,7 @@
+
+
+ @asset
+-def country_populations(raw_country_populations) -&gt; DataFrame:
++def country_populations(raw_country_populations) -&gt; &quot;DataFrame&quot;:
+     country_populations = raw_country_populations.copy()
+     country_populations[&quot;change&quot;] = (
+         country_populations[&quot;change&quot;]
+@@ -32,13 +36,13 @@ def country_populations(raw_country_populations) -&gt; DataFrame:
+
+
+ @asset
+-def continent_stats(country_populations: DataFrame) -&gt; DataFrame:
++def continent_stats(country_populations: &quot;DataFrame&quot;) -&gt; &quot;DataFrame&quot;:
+     result = country_populations.groupby(&quot;continent&quot;).agg({&quot;pop2019&quot;: &quot;sum&quot;, &quot;change&quot;: &quot;mean&quot;})
+     return result
+
+
+ @asset
+-def country_stats(country_populations: DataFrame, continent_stats: DataFrame) -&gt; DataFrame:
++def country_stats(country_populations: &quot;DataFrame&quot;, continent_stats: &quot;DataFrame&quot;) -&gt; &quot;DataFrame&quot;:
+     result = country_populations.join(continent_stats, on=&quot;continent&quot;, lsuffix=&quot;_continent&quot;)
+     result[&quot;continent_pop_fraction&quot;] = result[&quot;pop2019&quot;] / result[&quot;pop2019_continent&quot;]
+     return result
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 15:59</div>
+            <div class="timeline-body"><p>Yes! I was wondering yesterday if I misunderstood the purpose of the rule, because it was barely applying. When I realized I needed to add quotes, I briefly started manually adding them, but then realized it was unfeasible to do manually on even a medium-sized codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 16:00</div>
+            <div class="timeline-body"><p>(If you use <code>from __future__ import annotations</code>, you'll also get more of the expected changes, but that's not always feasible to add either depending on your use-case.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-20 23:09</div>
+            <div class="timeline-body"><p>This was blocked as it became too difficult to quote an annotation given just the reference range. It should be unblocked now that we store all expressions in a vector, since we can store an ExpressionId on all references to go from reference to Expr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-10 03:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -1 violations, +0 -0 fixes in 41 projects)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/c04bf6759d7a51dfedf54277e3ba9ac3ee6ebf3c/ibis/common/tests/test_graph_benchmarks.py#L6'>ibis/common/tests/test_graph_benchmarks.py:6:37:</a> RUF100 Unused `noqa` directive (unused: `TCH002`)
++ <a href='https://github.com/ibis-project/ibis/blob/c04bf6759d7a51dfedf54277e3ba9ac3ee6ebf3c/ibis/common/typing.py#L33'>ibis/common/typing.py:33:46:</a> RUF100 Unused `noqa` directive (unused: `TCH002`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/e9ce69aaf62c6da4557aaf0cf5eb8c83cfdb81b7/analytics/views/stats.py#L13'>analytics/views/stats.py:13:31:</a> TCH002 Move third-party import `typing_extensions.TypeAlias` into a type-checking block
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| TCH002 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -1 violations, +0 -0 fixes in 41 projects)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/c04bf6759d7a51dfedf54277e3ba9ac3ee6ebf3c/ibis/common/tests/test_graph_benchmarks.py#L6'>ibis/common/tests/test_graph_benchmarks.py:6:37:</a> RUF100 Unused `noqa` directive (unused: `TCH002`)
++ <a href='https://github.com/ibis-project/ibis/blob/c04bf6759d7a51dfedf54277e3ba9ac3ee6ebf3c/ibis/common/typing.py#L33'>ibis/common/typing.py:33:46:</a> RUF100 Unused `noqa` directive (unused: `TCH002`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/e9ce69aaf62c6da4557aaf0cf5eb8c83cfdb81b7/analytics/views/stats.py#L13'>analytics/views/stats.py:13:31:</a> TCH002 Move third-party import `typing_extensions.TypeAlias` into a type-checking block
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| TCH002 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-10 03:35</div>
+            <div class="timeline-body"><p>The diff of this on Dagster actually looks really good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-10 03:36</div>
+            <div class="timeline-body"><p>For example:</p>
+<pre><code class="language-diff">@@ -25,7 +25,6 @@
+ from dagster._core.events import DagsterEvent
+ from dagster._core.execution.api import create_execution_plan, scoped_job_context
+ from dagster._core.execution.plan.outputs import StepOutputHandle
+-from dagster._core.execution.plan.plan import ExecutionPlan
+ from dagster._core.execution.plan.state import KnownExecutionState
+ from dagster._core.execution.plan.step import ExecutionStep
+ from dagster._core.execution.resources_init import (
+@@ -34,7 +33,6 @@
+ )
+ from dagster._core.instance import DagsterInstance
+ from dagster._core.instance.ref import InstanceRef
+-from dagster._core.log_manager import DagsterLogManager
+ from dagster._core.storage.dagster_run import DagsterRun, DagsterRunStatus
+ from dagster._core.system_config.objects import ResolvedRunConfig, ResourceConfig
+ from dagster._core.utils import make_new_run_id
+@@ -47,6 +45,8 @@
+ from .serialize import PICKLE_PROTOCOL
+
+ if TYPE_CHECKING:
++    from dagster._core.execution.plan.plan import ExecutionPlan
++    from dagster._core.log_manager import DagsterLogManager
+     from dagster._core.definitions.node_definition import NodeDefinition
+
+
+@@ -81,8 +81,8 @@ def _setup_resources(
+         self,
+         resource_defs: Mapping[str, ResourceDefinition],
+         resource_configs: Mapping[str, ResourceConfig],
+-        log_manager: DagsterLogManager,
+-        execution_plan: Optional[ExecutionPlan],
++        log_manager: &quot;DagsterLogManager&quot;,
++        execution_plan: Optional[&quot;ExecutionPlan&quot;],
+         dagster_run: Optional[DagsterRun],
+         resource_keys_to_init: Optional[AbstractSet[str]],
+         instance: Optional[DagsterInstance],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-12-10 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-10 03:38</div>
+            <div class="timeline-body"><p>We may want to add a setting to allow users to either (1) insert <code>__future__</code> or (2) quote annotations or (3) do neither.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-10 03:39</div>
+            <div class="timeline-body"><p>@smackesey -- You may be interested in this (finally resurrected after a long break).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-11 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-12-11 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-11 19:13</div>
+            <div class="timeline-body"><p>I've gone through the changes and it looks good although I'd like to give a second look at it in the evening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-12-11 20:11</div>
+            <div class="timeline-body"><blockquote>
+<p>You may be interested in this</p>
+</blockquote>
+<p>Definitely-- thanks for bringing it back! To spare churn in imports for other engs I like to apply changes in one PR-- is this anywhere on your agenda: https://github.com/astral-sh/ruff/issues/1107? Would be great to apply them both at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 00:45</div>
+            <div class="timeline-body"><p>@smackesey - I'm still interested in supporting that but it won't be merged on the same timeline, since it requires us to build up an import map that we share across modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:694 on 2023-12-12 02:02</div>
+            <div class="timeline-body"><p>Nit: The nesting here feels a bit heavy. Maybe move <code>AnnotationKind</code> out and implement <code>annotation_kind</code> as a constructor/factory function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:685 on 2023-12-12 02:03</div>
+            <div class="timeline-body"><p>I would find some documenting of the kinds similar to what you wrote in the PR summary useful to better understand the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:692 on 2023-12-12 02:04</div>
+            <div class="timeline-body"><p>The documentation mentions <em>and that class is marked as runtime-evaluated</em> but it is unclear to me where this condition is checked inside of the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1516 on 2023-12-12 02:09</div>
+            <div class="timeline-body"><p>Nit: There's some repetitive code across the different <code>visit_*_annotation</code>. Changing the function to instead take <code>AnnotationKind</code> as a parameter and move only the code that is different for all kinds into a match statement may make the code easier to read (it becomes easier to reason about what's different).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:75 on 2023-12-12 02:11</div>
+            <div class="timeline-body"><p>This seems unrelated to your PR but I'm struggling to understand what <em>Import is not available at runtime</em> means in this message. I think it presents a fact that this is the reason why you should quote the imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:98 on 2023-12-12 02:12</div>
+            <div class="timeline-body"><p>Is it possible that the same node has moves, quotes and ignroes or could we use a single hash map and store the <code>kind</code> (Move, quotes, ignores) inside the entry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:31 on 2023-12-12 02:16</div>
+            <div class="timeline-body"><p>I think we had a similar check in typing_only_runtime_import`. It looks complicated and important to get right. Maybe it's worth to factor it out into a dedicated function to avoid repeating it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:234 on 2023-12-12 02:17</div>
+            <div class="timeline-body"><p>Are call expressions a thing in type annotations? What does the type evaluate to? The returned value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:268 on 2023-12-12 02:19</div>
+            <div class="timeline-body"><p>When would this happen? Is it because of a potential subscript or union types with string variants?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/imports.rs</code>:15 on 2023-12-12 02:20</div>
+            <div class="timeline-body"><p>In which situations can the <code>parent_range</code> be <code>None</code>? Shouldn't an import always come from a statement. This might be worth documenting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:996 on 2023-12-12 02:22</div>
+            <div class="timeline-body"><p>We should either document that this function panics if <code>NodeId</code> is not an expression (and rename to <code>expect_expression</code>?) or return <code>Option</code> to let the caller deal with it. I would prefer the latter, assuming that it won't cause <code>expect</code> calls in too many call sites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/reference.rs</code>:30 on 2023-12-12 02:25</div>
+            <div class="timeline-body"><p>Do you think it would improve readability if we call it <code>expression_id</code> to make it clear that it is the expression referencing the reference rather than naming it after its type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:1660 on 2023-12-12 02:28</div>
+            <div class="timeline-body"><p>This part confused me. I admint, mainly because I didn't read carefully but I first thought that what ruff does will create a runtime error.</p>
+<p>maybe explain why it causes a runtime error.</p>
+<p>Or it might be that I got confused because the documentation explains what it does and the example shows when it doesn't work (rather than when it does).</p>
+<p><em>would cause a runtime error because the type is no longer available at runtime.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-12 02:30</div>
+            <div class="timeline-body"><p>Looks good to me, but I only reviewed if I roughly understand what's happening, not if the implemented semantics are correct (because I don't understand thme).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:691 on 2023-12-13 01:08</div>
+            <div class="timeline-body"><p>Here, with &quot;if the annotation is in a class&quot; we're specifically referring to the class scope i.e.,</p>
+<pre><code class="language-python">class Foo:
+	bar: str
+	#    ^^^
+</code></pre>
+<p>Is that correct? If so, it would be worth updating the comment to reflect that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:699 on 2023-12-13 01:11</div>
+            <div class="timeline-body"><p>It's unfortunate that we now have runtime <strong>required</strong> internally but runtime <strong>evaluated</strong> in the user facing option. Maybe we could use either <code>v0.2.0</code> or <code>v0.3.0</code> as a way to rename these options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:234 on 2023-12-13 01:16</div>
+            <div class="timeline-body"><p>Yes!</p>
+<pre><code>In [15]: class Foo:
+    ...:     pass
+    ...: 
+
+In [16]: def foo():
+    ...:     return 42
+    ...: 
+
+In [17]: def bar(f: foo()):
+    ...:     pass
+    ...: 
+
+In [18]: bar.__annotations__
+Out[18]: {'f': 42}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:268 on 2023-12-13 01:39</div>
+            <div class="timeline-body"><p>In the function example, we've mentioned to update the internal quote:</p>
+<blockquote>
+<ul>
+<li>When quoting <code>Series</code> in <code>Series[Literal[&quot;pd.Timestamp&quot;]]</code>, we want <code>&quot;Series[Literal['pd.Timestamp']]&quot;</code>.</li>
+</ul>
+</blockquote>
+<p>With this code, I think that doesn't work, right? Can we use the <code>Stylist</code> to only check for the opposite quote?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:75 on 2023-12-13 01:46</div>
+            <div class="timeline-body"><p>Maybe we could use something like &quot;Import is not <em>used</em> at runtime&quot; or &quot;Import is only used for type hinting&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-12-13 01:51</div>
+            <div class="timeline-body"><p>Thanks! This is a great improvement to the rule. Overall the implementation looks really solid apart from some minor nits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-13 02:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:234 on 2023-12-13 02:18</div>
+            <div class="timeline-body"><p>Lol, but how is this supposed to work without running the code? It seems to compete the purpose of type checking where you want to statically analyse the programs without having to run them.</p>
+<p>Does that mean I can extract sensitive information by adding a fishy type annotation reading local files and submitting the information to a server if any type checker feels like evaluating the type annotation 😨</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:699 on 2023-12-13 02:35</div>
+            <div class="timeline-body"><p>Yes great observation! It's really unfortunate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:699 on 2023-12-13 02:36</div>
+            <div class="timeline-body"><p>Actually, I'm gonna change the internal names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:268 on 2023-12-13 02:36</div>
+            <div class="timeline-body"><p>Yeah sorry, it doesn't do that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:268 on 2023-12-13 02:38</div>
+            <div class="timeline-body"><p>I'll add an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:234 on 2023-12-13 02:41</div>
+            <div class="timeline-body"><p>I don't think this actually works in practice for static analysis tools, but it is grammatically supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:31 on 2023-12-13 02:45</div>
+            <div class="timeline-body"><p>Good call, done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:98 on 2023-12-13 02:47</div>
+            <div class="timeline-body"><p>You can have different actions for members in the same statement. I could use a nested hash map though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:694 on 2023-12-13 02:55</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 02:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:685 on 2023-12-13 02:55</div>
+            <div class="timeline-body"><p>Good call, done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-13 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-13 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-13 03:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:43 UTC
+    </footer>
+</body>
+</html>

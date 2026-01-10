@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a rule to detect string members in runtime-evaluated unions - astral-sh/ruff #9143</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a rule to detect string members in runtime-evaluated unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9143">#9143</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-15 01:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 01:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A common mistake is to add quotes around one member in an <code>X | Y</code>-style type union, as in:</p>
+<pre><code class="language-python">contract_versions_list: list[ContractVersion] | 'QuerySet[ContractVersion]' | None = None
+</code></pre>
+<p>However, doing so will lead to a runtime error if the annotation is runtime-evaluated. This PR lints against such patterns.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/9139.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-15 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2023-12-15 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:32 on 2023-12-15 01:50</div>
+            <div class="timeline-body"><p>Would <code>var: &quot;str | int&quot;</code> be valid too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-15 01:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-15 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-15 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:76 on 2023-12-15 01:53</div>
+            <div class="timeline-body"><p>Does python support indexer types similar to typescript that need traversing?</p>
+<pre><code>type A = Value[int | string]
+</code></pre>
+<p>or is it safe to assume that union types are always top-level?</p>
+<p>Edit: I think this is a valid example for when the union is not top level:</p>
+<pre><code class="language-python">callback: Callable[[str], Awaitable[None | str | &quot;int&quot;]] = on_update
+</code></pre>
+<p>or</p>
+<pre><code class="language-python"># Type checker will infer that all keys in ``z`` are meant to be strings,
+# and that all values in ``z`` are meant to be either strings or ints
+z: Mapping[str, str | int] = {}
+</code></pre>
+<p>Some other examples where I'm not entirely sure if they're valid/we need to handle here</p>
+<pre><code class="language-python">OldS = TypeVar('OldS', int | 'str', str)
+</code></pre>
+<pre><code class="language-python">def inproduct[T: (int | complex, float, complex)](v: Vec[T]) -&gt; T: # Same as Iterable[tuple[T, T]]
+    return sum(x*y for x, y in v)
+</code></pre>
+<p>Do we need to handle <code>Annotated</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-15 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH006.py</code>:4 on 2023-12-15 09:53</div>
+            <div class="timeline-body"><p>Could you add a test case with <code>from __future__ import annotations</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-12-15 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-16 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:32 on 2023-12-16 15:50</div>
+            <div class="timeline-body"><p>Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-16 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:76 on 2023-12-16 15:51</div>
+            <div class="timeline-body"><p>Yup these are all valid and we should already be handling them correctly outside of the specific context of this rule, since these traversals are encoded in the <code>Semantic</code> model (i.e., whether we're in a type definition, and whether it will be evaluated at runtime).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-16 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:76 on 2023-12-16 21:14</div>
+            <div class="timeline-body"><p>Added more tests, thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH006.py</code>:4 on 2023-12-16 21:16</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-16 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-16 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-16 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-16 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:44 UTC
+    </footer>
+</body>
+</html>

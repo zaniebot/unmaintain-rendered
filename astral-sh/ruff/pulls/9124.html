@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `can_omit_optional_parentheses` for expressions with a right most fstring - astral-sh/ruff #9124</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>can_omit_optional_parentheses</code> for expressions with a right most fstring</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9124">#9124</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-12-14 04:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-14 04:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes an issue in our <code>can_omit_optional_parentheses</code> implementation.</p>
+<p>The goal of <code>can_omit_optional_parentheses</code> is to return true when the expression starts or ends with a parenthesized expression.</p>
+<pre><code class="language-python">if a + [
+	parentheses,
+	are,
+	not,
+	required,
+	here
+]: pass
+</code></pre>
+<p>However, our implementation incorrectly traversed into fstrings and other expressions that end with a token. We should skip these
+(similar to other parenthesized expressions) because they're not at the end of the expression (they're wrapped).</p>
+<p>A silly example, but it should do it for illustrating what it is about</p>
+<pre><code class="language-python">if a + f&quot;parentheses are required because the list isn't at the very end, the closing quote is {[1, 2]}&quot;: 
+	pass
+
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added test. The similarity for our old compatibility check remains unchanged. The ecosystem only shows one intentional change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-14 04:46</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li><code>main</code><ul>
+<li><strong>PR #9124</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9124?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9124?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-12-14 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-12-14 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-12-14 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-12-14 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-14 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-14 04:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+5 -4 lines in 1 file in 41 projects)</p>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+5 -4 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/reflex-dev/reflex/blob/e245b6b6a0f90f71c8aba6e0299f4bcc31638330/tests/test_event.py#L239'>tests/test_event.py~L239</a></p>
+<pre><code class="language-diff">     assert spec.args[0][1].equals(Var.create_safe(&quot;testkey&quot;))
+     assert spec.args[1][0].equals(Var.create_safe(&quot;options&quot;))
+     assert spec.args[1][1].equals(Var.create_safe(options))
+-    assert format.format_event(
+-        spec
+-    ) == f'Event(&quot;_remove_cookie&quot;, {{key:`testkey`,options:{json.dumps(options)}}})'
++    assert (
++        format.format_event(spec)
++        == f'Event(&quot;_remove_cookie&quot;, {{key:`testkey`,options:{json.dumps(options)}}})'
++    )
+ 
+ 
+ def test_clear_local_storage():
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+5 -4 lines in 1 file in 41 projects)</p>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+5 -4 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/reflex-dev/reflex/blob/e245b6b6a0f90f71c8aba6e0299f4bcc31638330/tests/test_event.py#L239'>tests/test_event.py~L239</a></p>
+<pre><code class="language-diff">     assert spec.args[0][1].equals(Var.create_safe(&quot;testkey&quot;))
+     assert spec.args[1][0].equals(Var.create_safe(&quot;options&quot;))
+     assert spec.args[1][1].equals(Var.create_safe(options))
+-    assert format.format_event(
+-        spec
+-    ) == f'Event(&quot;_remove_cookie&quot;, {{key:`testkey`,options:{json.dumps(options)}}})'
++    assert (
++        format.format_event(spec)
++        == f'Event(&quot;_remove_cookie&quot;, {{key:`testkey`,options:{json.dumps(options)}}})'
++    )
+ 
+ 
+ def test_clear_local_storage():
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-12-14 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-12-14 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-14 04:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:44 UTC
+    </footer>
+</body>
+</html>

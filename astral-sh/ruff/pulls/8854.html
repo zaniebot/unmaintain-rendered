@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>config: add new `docstring-code-format` knob - astral-sh/ruff #8854</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>config: add new <code>docstring-code-format</code> knob</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8854">#8854</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-27 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 15:36</div>
+            <div class="timeline-body"><p>This PR does the plumbing to make a new formatting option, <code>docstring-code-format</code>, available in the configuration for end users. It is disabled by default (opt-in). It is opt-in at least initially to reflect a conservative posture. The intent is to make it opt-out at some point in the future.</p>
+<p>This was split out from #8811 in order to make #8811 easier to merge. Namely, once this is merged, docstring code snippet formatting will become available to end users. (See comments below for how we arrived at the name.)</p>
+<p>Closes #7146</p>
+<h2>Test Plan</h2>
+<p>Other than the standard test suite, I ran the formatter over the CPython and polars projects to ensure both that the result looked sensible and that tests still passed. At time of writing, one issue that currently appears is that reformatting code snippets trips the long line lint: https://github.com/BurntSushi/polars/actions/runs/7006619426/job/19058868021</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-27 15:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 16:07</div>
+            <div class="timeline-body"><p>There's also a question of whether this ought to be a boolean option at all. @konstin raised this here: https://github.com/astral-sh/ruff/pull/8811#discussion_r1403255043</p>
+<p>That is, we might want the formatter to specifically raise an error if it comes across a snippet that is invalid Python. I somewhat think this would be better as a lint, but it would likely be much easier to implement in the formatter. If it were a lint, then we'd need to refactor the code snippet logic out of the formatter into something more generalized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-11-27 23:48</div>
+            <div class="timeline-body"><p>The change itself looks good to me but I would prefer changing the option name (also on <code>PyFormatOptions</code>).</p>
+<p>Rustfmt uses <a href="https://rust-lang.github.io/rustfmt/?version=v1.6.0&amp;search=#format_code_in_doc_comments"><code>format_code_in_doc_comments</code></a> which we could change to <code>format_code_in_docstrings</code>.</p>
+<p>I prefer the name because</p>
+<ul>
+<li>It's unclear to me what <code>snippets</code> means without prefixing it with <code>code-</code> which I find to verbose</li>
+<li><code>format-embedded</code> might be ambiguous if we start formatting embedded language, let's say SQL or CSS in your Python code (the other way round)</li>
+<li>I'm okay with <code>format-docstring-code</code>, although I find rustfmt's naming clearer.</li>
+</ul>
+<p>I'm okay with using a boolean. I don't think we should bail formatting just because of an incorrect example. Ideally we would emit a warning, but that's tracked as a separate issue.</p>
+<p>The other question: Should this be gated behind preview mode (sorry if this is part of your other PR)? If so, should we emit a warning if it is enabled but the formatter is run without preview mode?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-28 00:25</div>
+            <div class="timeline-body"><p>I like <code>format-code-in-docstrings</code>. I prefer clarity in settings, a little verbosity goes a long way. As I suggested before, I'm also into <code>format-docstring-code</code>. Another option is <code>format-docstring-code-snippets</code>. I think we can consider non-boolean options in the future, but we should start with the simple case.</p>
+<blockquote>
+<p>Should this be gated behind preview mode (sorry if this is part of your other PR)? If so, should we emit a warning if it is enabled but the formatter is run without preview mode?</p>
+</blockquote>
+<p>The idea is opt-in without preview opt-out (i.e. on by default) with preview. Having a &quot;double&quot; opt-in seems overkill.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-28 08:49</div>
+            <div class="timeline-body"><p><code>format-code-in-docstrings</code> sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-28 15:22</div>
+            <div class="timeline-body"><p>We have a winner. <code>format-code-in-docstrings</code> it is!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 22:07</div>
+            <div class="timeline-body"><p>Works for me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "config: add new 'docstring-code' knob" to "config: add new `format-code-in-docstrings` knob" by @BurntSushi on 2023-12-05 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "config: add new `format-code-in-docstrings` knob" to "config: add new `docstring-code-format` knob" by @BurntSushi on 2023-12-11 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 14:58</div>
+            <div class="timeline-body"><p>I think this was talked about internally and not here on the PR, but we ended up settling on <code>docstring-code-format</code> for the name instead. I think we all originally liked <code>format-code-in-docstrings</code>, but once we realized we were going to add another option for controlling the line width in docstring code snippets, the naming became a little trickier. With <code>docstring-code-format</code>, there's a natural name for line width: <code>docstring-code-line-width</code>. That is, the <code>docstring-code-</code> prefix acts as a namespace of sorts with the noun first and the verb second. But <code>format-code-in-docstrings</code> doesn't really have that property, with the verb first and the noun coming afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-12 02:33</div>
+            <div class="timeline-body"><p>Note: <code>docstring-code-line-width</code> should be named <code>docstring-code-line-length</code> to align with the global <code>line-length</code> setting. We only use <code>line-width</code> internally (and we may want to perform an internal rename to use consistent naming internally and externally)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-12-12 04:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-12-12 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2023-12-12 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2023-12-12 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2023-12-12 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-12 17:03</div>
+            <div class="timeline-body"><p>All righty, I think this PR is now in good spot where another review would be good. The probable changes since the last time you looked:</p>
+<ul>
+<li>The <code>docstring-code-line-length</code> option has been added. <strong>It defaults to <code>dynamic</code></strong>, but users can also set a fixed integer too.</li>
+<li>I've added an integration-level test to sanity check that both docstring code options are actually working.</li>
+<li>I've polished up the docs at the setting level and made some small edits to the existing prose formatter docs. I stopped short of adding a new section because I kind of felt like the docs on the setting itself might cover things, but happy to write more if folks think it would be useful.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:2902 on 2023-12-12 17:13</div>
+            <div class="timeline-body"><p>Nit: I'd remove &quot;in the format of doctests&quot;, and just say, &quot;Python code within docstrings&quot;, since this also applies to reStructuredText and Markdown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:2934 on 2023-12-12 17:13</div>
+            <div class="timeline-body"><p>I randomly tend to add ellipses to the start of a sentence like this, but it's totally personal preference :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:2968 on 2023-12-12 17:13</div>
+            <div class="timeline-body"><p>Nit: Oxford comma for consistency :joy: (after &quot;literal blocks&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:3055 on 2023-12-12 17:14</div>
+            <div class="timeline-body"><p>Excellent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:2986 on 2023-12-12 17:15</div>
+            <div class="timeline-body"><p>I would say &quot;This value has the effect&quot; rather than &quot;This setting has the effect&quot;, since the setting is <code>docstring-code-line-length</code>. Or, like:</p>
+<pre><code>The default value for this setting is `&quot;dynamic&quot;`, which has the effect of ensuring...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration.md</code>:87 on 2023-12-12 17:15</div>
+            <div class="timeline-body"><p>I think these need to be removed, since the configuration here is meant to show the <em>default</em> configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_workspace/src/options.rs</code>:2968 on 2023-12-12 17:16</div>
+            <div class="timeline-body"><p>Oof. That's a knife to the heart. In the name of consistency we do evil things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:17</div>
+            <div class="timeline-body"><p>This looks good, but can I request that we add a section like:</p>
+<pre><code class="language-markdown">## Docstring formatting
+
+The Ruff Formatter is capable of formatting Python code within docstrings...
+</code></pre>
+<p>...to <code>formatter.md</code>, just after its <code>## Configuration</code> block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>docs/configuration.md</code>:87 on 2023-12-12 17:20</div>
+            <div class="timeline-body"><p>Is it worth keeping them here, but changing <code>docstring-code-format</code> to its current default value of <code>false</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration.md</code>:87 on 2023-12-12 17:21</div>
+            <div class="timeline-body"><p>Yeah, I think that's fine for visibility. You can mention that it's opt-in for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_workspace/src/options.rs</code>:2934 on 2023-12-12 17:23</div>
+            <div class="timeline-body"><p>Yeah I think I do that sometimes. I'll add it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-12 17:50</div>
+            <div class="timeline-body"><p>@charliermarsh I've added prose docs and fixed up your comments. A review of the prose docs would be great! Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-12-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-12 17:52</div>
+            <div class="timeline-body"><p>Excellent, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:2902 on 2023-12-12 23:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// When this is enabled, Python code examples within docstrings are
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:3018 on 2023-12-12 23:49</div>
+            <div class="timeline-body"><p>Do I remember correctly that we assume a code snipped uses Python when using Markdown or restructured text without specifying the language? If so, should we mention it in the documentation? While we aren't erroring or warning about invalid code snippets just yet, we may want to do so in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-12 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-13 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_workspace/src/options.rs</code>:3018 on 2023-12-13 00:22</div>
+            <div class="timeline-body"><p>I believe it's mentioned here: https://github.com/astral-sh/ruff/pull/8854/files#diff-d5764d76a6dcbb6934375ce2aec4a33aff239beab6ea71c447e624f9c973b63dR151</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-13 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_workspace/src/options.rs</code>:3018 on 2023-12-13 13:06</div>
+            <div class="timeline-body"><p>I've also added a mention of that here in the setting docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-12-13 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-12-13 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-13 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpcloud">@cpcloud</a> on 2023-12-18 13:07</div>
+            <div class="timeline-body"><p>This feature is most excellent, thank you for working on it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:43 UTC
+    </footer>
+</body>
+</html>

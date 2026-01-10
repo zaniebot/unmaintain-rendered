@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-pyi] Expand PYI018 to cover ParamSpecs and TypeVarTuples - astral-sh/ruff #9198</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-pyi] Expand PYI018 to cover ParamSpecs and TypeVarTuples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9198">#9198</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2023-12-19 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-12-19 12:04</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Part of #8771. flake8-pyi will emit a Y018 error for unused TypeVars, ParamSpecs or TypeVarTuples; Ruff currently only emits PYI018 for unused TypeVars.</p>
+<p>This is my first &quot;proper&quot; Ruff PR -- let me know if there's a better way of doing this! Not sure if the repeated calls to <code>match_typing_expr()</code> are ideal.</p>
+<h2>Test Plan</h2>
+<p>I manually updated the fixtures to add some unused ParamSpecs and TypeVarTuples, and then updated the snapshots using <code>cargo insta review</code>. All tests then passed when run using <code>cargo test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pyi018 false negs" to "Expand PYI018 to cover ParamSpecs and TypeVarTuples" by @AlexWaygood on 2023-12-19 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Expand PYI018 to cover ParamSpecs and TypeVarTuples" to "[flake8-pyi] Expand PYI018 to cover ParamSpecs and TypeVarTuples" by @AlexWaygood on 2023-12-19 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-19 12:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-19 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-20 02:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unused_private_type_definition.rs</code>:209 on 2023-12-20 02:45</div>
+            <div class="timeline-body"><p>I might write this like:</p>
+<pre><code class="language-rust">let typevarlike_kind = if semantic.match_typing_expr(f, &quot;TypeVar&quot;)  {
+   &quot;TypeVar&quot;
+} else if ...
+</code></pre>
+<p>But I don't know that what I'm proposing is actually <em>better</em>, I just hadn't seen this pattern before :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-20 03:01</div>
+            <div class="timeline-body"><p>Great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unused_private_type_definition.rs</code>:202 on 2023-12-20 03:05</div>
+            <div class="timeline-body"><p>@AlexWaygood - I made one change here per your comment in the summary. Each call to <code>semantic.match_typing_expr</code> does a lookup internally to map the expression to a &quot;call path&quot;, like <code>[&quot;typing&quot;, &quot;TypeVar&quot;]</code>. However, we can just do that lookup once via <code>semantic.resolve_call_path</code>, then pass the call path to <code>semantic.match_typing_call_path</code>. (<code>semantic.match_typing_expr</code> is just a wrapper around this process, so if we want to do multiple checks, it's more efficient to do the lookup outside of the <code>semantic.match_typing_expr</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-20 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-20 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-20 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unused_private_type_definition.rs</code>:202 on 2023-12-20 07:47</div>
+            <div class="timeline-body"><p>Ahh nice, thanks! Yep, that sounds like it's exactly what I was looking for :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2023-12-20 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:31:44 UTC
+    </footer>
+</body>
+</html>
