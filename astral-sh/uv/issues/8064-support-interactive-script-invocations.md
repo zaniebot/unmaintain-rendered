@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T01:38:11Z
 updated_at: 2025-11-02T19:56:44Z
 url: https://github.com/astral-sh/uv/issues/8064
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Support interactive script invocations
@@ -66,10 +66,6 @@ Originally posted by @Michallote in https://github.com/astral-sh/uv/issues/6548#
 
 ---
 
-_Referenced in [astral-sh/uv#6548](../../astral-sh/uv/issues/6548.md) on 2024-10-10 01:38_
-
----
-
 _Label `cli` added by @zanieb on 2024-10-10 01:39_
 
 ---
@@ -120,10 +116,6 @@ _Comment by @charliermarsh on 2024-12-17 02:03_
 ```
 uv run  --python 3.10 --with boto3 --with requests python
 ```
-
----
-
-_Referenced in [astral-sh/uv#11472](../../astral-sh/uv/issues/11472.md) on 2025-02-13 10:10_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-10T23:34:15Z
 updated_at: 2025-09-12T01:01:45Z
 url: https://github.com/astral-sh/uv/issues/15780
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow enabling pre-releases per index
@@ -76,9 +76,5 @@ _Comment by @stretch4x4 on 2025-09-12 00:59_
 Thank you @zanieb, I assume with that label and title change I should leave this open as a feature request rather than closing it?
 
 Cheers :)
-
----
-
-_Referenced in [astral-sh/uv#16650](../../astral-sh/uv/issues/16650.md) on 2025-11-09 06:21_
 
 ---

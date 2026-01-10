@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-19T13:08:51Z
 updated_at: 2025-09-19T17:15:26Z
 url: https://github.com/astral-sh/uv/issues/15947
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support `uv.lock` and `pylock.toml` as constraints files
@@ -24,10 +24,6 @@ Currently, we only support `requirements.txt`-format files as constraints in the
 ---
 
 _Label `enhancement` added by @konstin on 2025-09-19 13:08_
-
----
-
-_Referenced in [astral-sh/uv#15945](../../astral-sh/uv/issues/15945.md) on 2025-09-19 13:09_
 
 ---
 

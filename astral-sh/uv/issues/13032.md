@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-21T23:12:03Z
 updated_at: 2025-09-07T00:46:04Z
 url: https://github.com/astral-sh/uv/issues/13032
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Include dependencies in `pylock.toml` export
@@ -51,10 +51,6 @@ _For reference, here's the code from my project: <https://codeberg.org/so-rose/b
 
 ---
 
-_Referenced in [astral-sh/uv#13383](../../astral-sh/uv/issues/13383.md) on 2025-05-10 22:39_
-
----
-
 _Comment by @jsirois on 2025-05-10 22:42_
 
 FWIW, the spec does define at least an outer bounds for the format: https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-dependencies
@@ -64,35 +60,15 @@ Presumably that could lead to multiple different valid ways to "find the appropr
 
 ---
 
-_Referenced in [owenlamont/uv-secure#43](../../owenlamont/uv-secure/issues/43.md) on 2025-05-18 04:14_
-
----
-
 _Comment by @jsirois on 2025-05-21 03:28_
 
 Fwiw, here's how Pex decided to interpret the dependencies spec wrt matching dependencies when trying to subset a PEP-751 lock: https://github.com/pex-tool/pex/blob/aa641c0a6102548a3f1baaeb8cc20b1b622e8cc0/pex/resolve/lockfile/pep_751.py#L778-L808
 
 ---
 
-_Referenced in [pantsbuild/pants#22201](../../pantsbuild/pants/issues/22201.md) on 2025-05-21 03:47_
-
----
-
-_Referenced in [astral-sh/uv#14469](../../astral-sh/uv/pulls/14469.md) on 2025-07-10 18:21_
-
----
-
-_Referenced in [pex-tool/pex#2815](../../pex-tool/pex/issues/2815.md) on 2025-07-11 16:28_
-
----
-
 _Comment by @owenlamont on 2025-07-13 03:15_
 
 Hi @brettcannon - did you have more specific examples of the dependencies property format for pylock.toml in PEP 751? Apologies if there was a more appropriate forum to ask about this on. I'd definitely like to be able to parse to pylock.toml file and be able to distinguish direct dependencies from transitive dependencies for some of the tools I'm working on.
-
----
-
-_Referenced in [astral-sh/uv#14783](../../astral-sh/uv/pulls/14783.md) on 2025-07-21 09:14_
 
 ---
 
@@ -273,10 +249,6 @@ Well, brain algorithm, program algorithm, they should amount to same to meet the
 
 ---
 
-_Referenced in [pex-tool/pex#2885](../../pex-tool/pex/issues/2885.md) on 2025-08-25 12:42_
-
----
-
 _Comment by @jsirois on 2025-09-06 19:24_
 
 Ok, I just realized I require less than the spec requires when sub-setting the lock. I can always just grab all dependencies by `name`, even if 1 `name` maps to multiple packages since the spec guarantees those multiple packages will unambiguously filter down to 1 package (via markers) at install time via rule 5 in https://packaging.python.org/en/latest/specifications/pylock-toml/#installation.
@@ -284,9 +256,5 @@ Ok, I just realized I require less than the spec requires when sub-setting the l
 This realization does not help this issue or https://github.com/astral-sh/uv/pull/14783 since the spec requires dependencies to have redundant specificity information for the sake of human readers only, but it does answer my questions by saying - don't worry!, just include all instances of the dependency `name` in the subset - it'll all work out at install time later.
 
 ... except that `name` is not required @#$%!, just uniqueness of the dependency pointer (an implementer could just use the artifact URL for example). I sorta give up. I'll expect `name` and just error with fairly explicit instructions in the unlikely case I ever run across a technically spec-compliant pylock that has dependencies and yet some of those are not identified by at least `name`.
-
----
-
-_Referenced in [aquasecurity/trivy#9632](../../aquasecurity/trivy/pulls/9632.md) on 2025-10-22 08:04_
 
 ---

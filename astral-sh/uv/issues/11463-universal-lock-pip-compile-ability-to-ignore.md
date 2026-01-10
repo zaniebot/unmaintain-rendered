@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T22:59:00Z
 updated_at: 2025-08-28T12:05:49Z
 url: https://github.com/astral-sh/uv/issues/11463
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # universal {lock, pip compile}: ability to ignore wheels for certain platforms during resolution
@@ -111,14 +111,6 @@ _Comment by @paveldikov on 2025-02-14 09:58_
 It's not strictly limited to MacOS wheels, but the prevalence there is (for some inscrutable reason) much higher. And since MacOS is not a very common platform for us, it really draws attention to itself.
 
 Often times users would end up just disabling universal resolution (which is unfortunate), but at the moment we have users who are actively relying on the universal resolution so that they can have repeatable tests across multiple Python versions. (a non-universal constraints file generated for the lower bound will actively fail to install on the higher versions. And the universal file fails to generate due to the 403)
-
----
-
-_Referenced in [astral-sh/uv#11294](../../astral-sh/uv/pulls/11294.md) on 2025-02-28 19:53_
-
----
-
-_Referenced in [astral-sh/uv#9277](../../astral-sh/uv/issues/9277.md) on 2025-04-08 18:53_
 
 ---
 

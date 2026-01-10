@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-02T08:05:31Z
 updated_at: 2025-09-21T15:20:15Z
 url: https://github.com/astral-sh/uv/issues/15625
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Please support getting user consent for ruff download in uv format
@@ -169,9 +169,5 @@ I think either
 I don't have the time to implement either patch right this second, but I'm happy to review.
 
 
-
----
-
-_Referenced in [python-discord/site#1566](../../python-discord/site/pulls/1566.md) on 2025-10-21 20:36_
 
 ---

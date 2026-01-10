@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-26T09:35:48Z
 updated_at: 2025-12-01T11:41:23Z
 url: https://github.com/astral-sh/uv/issues/1980
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `install_git_private_https_pat_and_username` breaks git
@@ -52,14 +52,6 @@ The solution is probably to create a temporary [git config](https://git-scm.com/
 
 ---
 
-_Referenced in [astral-sh/uv#2048](../../astral-sh/uv/issues/2048.md) on 2024-02-28 18:22_
-
----
-
-_Referenced in [astral-sh/uv#2060](../../astral-sh/uv/pulls/2060.md) on 2024-02-28 23:31_
-
----
-
 _Label `bug` removed by @charliermarsh on 2024-03-22 04:14_
 
 ---
@@ -93,10 +85,6 @@ _Reopened by @konstin on 2024-07-01 14:52_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-07-01 21:52_
-
----
-
-_Referenced in [astral-sh/uv#16895](../../astral-sh/uv/pulls/16895.md) on 2025-11-30 01:31_
 
 ---
 

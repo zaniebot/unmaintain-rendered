@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T16:35:02Z
 updated_at: 2025-11-20T14:54:55Z
 url: https://github.com/astral-sh/uv/issues/5605
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Documentation feedback
@@ -33,14 +33,6 @@ _Assigned to @zanieb by @zanieb on 2024-07-30 16:35_
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-30 17:00_
-
----
-
-_Referenced in [astral-sh/uv#5973](../../astral-sh/uv/issues/5973.md) on 2024-08-09 18:22_
-
----
-
-_Referenced in [astral-sh/uv#6000](../../astral-sh/uv/issues/6000.md) on 2024-08-11 14:52_
 
 ---
 
@@ -154,10 +146,6 @@ _Comment by @zanieb on 2024-08-22 23:52_
 - https://github.com/astral-sh/uv/pull/6474 and
 - https://github.com/astral-sh/uv/pull/6455
 
-
----
-
-_Referenced in [astral-sh/uv#6476](../../astral-sh/uv/issues/6476.md) on 2024-08-22 23:58_
 
 ---
 
@@ -328,10 +316,6 @@ _Comment by @charliermarsh on 2024-09-24 12:07_
 
 ---
 
-_Referenced in [anchore/syft#3268](../../anchore/syft/issues/3268.md) on 2024-09-24 12:26_
-
----
-
 _Comment by @jonasdeyson on 2024-09-25 20:10_
 
 The section [Non-editable installs](https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs) led me to a mistake.
@@ -349,10 +333,6 @@ An app project doesn't seem to be installed as editable by default in the venv (
 Since the example Dockerfile shown there is clearly for an application, it got me confused for a while.
 
 I suggest to make it more clear that only library projects are installed in the environment, regardless of the flag `--no-editable`.
-
----
-
-_Referenced in [astral-sh/uv#7704](../../astral-sh/uv/issues/7704.md) on 2024-09-26 11:02_
 
 ---
 
@@ -580,10 +560,6 @@ Reading the documentation it is described how uv.lock is generated (or how we av
 
 ---
 
-_Referenced in [astral-sh/uv#8780](../../astral-sh/uv/pulls/8780.md) on 2024-11-03 19:06_
-
----
-
 _Comment by @dylwil3 on 2024-11-06 17:57_
 
 > So say that I fork SomeRepo, that contains a uv.lock, to a new machine and want to have the exact resolved versions that was installed in the project environment by the creator of SomeRepo. How do I interact with uv.lock to replicate the project environment?
@@ -668,10 +644,6 @@ _Comment by @zanieb on 2024-12-03 14:23_
 > uv sync creates and uses .venv in the parent directory, when the parent directory contains pyproject.toml, and even if the current directory also has a pyproject.toml.
 
 I think this should only be the case if the current directory is a workspace member of the parent directory.
-
----
-
-_Referenced in [astral-sh/uv#9606](../../astral-sh/uv/issues/9606.md) on 2024-12-03 14:26_
 
 ---
 
@@ -771,17 +743,9 @@ _Comment by @zanieb on 2024-12-09 14:54_
 
 ---
 
-_Referenced in [astral-sh/uv#9740](../../astral-sh/uv/pulls/9740.md) on 2024-12-09 15:22_
-
----
-
 _Comment by @abitrolly on 2024-12-09 17:04_
 
 @zanieb it still may worth to mention it somewhere in the middle, or link to relevant cleanup docs. I assume `uv` users are advanced enough to care.
-
----
-
-_Referenced in [astral-sh/astral-sh#92](../../astral-sh/astral-sh/pulls/92.md) on 2024-12-10 05:46_
 
 ---
 
@@ -1117,10 +1081,6 @@ HTH.  :)
 
 ---
 
-_Referenced in [astral-sh/uv#11750](../../astral-sh/uv/pulls/11750.md) on 2025-02-24 18:17_
-
----
-
 _Comment by @zanieb on 2025-02-24 18:24_
 
 I guess I don't really see that as a clear step forward, especially since it clobbers the active link styling.
@@ -1193,10 +1153,6 @@ Should we move the specifics of the nav changes to a different issue to avoid ov
 _Comment by @zanieb on 2025-02-24 20:10_
 
 Let's chat in https://github.com/astral-sh/uv/issues/11757
-
----
-
-_Referenced in [astral-sh/uv#11757](../../astral-sh/uv/issues/11757.md) on 2025-02-24 20:10_
 
 ---
 
@@ -1301,10 +1257,6 @@ I tried this, and it ended up installing dev dependencies in the project in the 
 _Comment by @zanieb on 2025-05-02 13:31_
 
 @krisbrud you'll want to use `uv run --no-sync`. We can make that clearer. (or, set `UV_NO_SYNC`)
-
----
-
-_Referenced in [astral-sh/uv#13686](../../astral-sh/uv/issues/13686.md) on 2025-05-27 18:39_
 
 ---
 
@@ -1482,13 +1434,5 @@ _Comment by @zanieb on 2025-11-20 14:45_
 That's in `uv build` which differs from `uv sync` or `uv run` in that you've explicitly requested that we build distributable artifacts so we follow the legacy behavior defined for setuptools.
 
 It's problematic that we say we won't build it in that first link though. We should clarify that. https://github.com/astral-sh/uv/pull/16788
-
----
-
-_Referenced in [astral-sh/uv#16788](../../astral-sh/uv/pulls/16788.md) on 2025-11-20 14:54_
-
----
-
-_Referenced in [astral-sh/uv#16974](../../astral-sh/uv/issues/16974.md) on 2025-12-04 12:18_
 
 ---

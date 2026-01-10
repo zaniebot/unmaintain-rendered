@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-29T12:21:57Z
 updated_at: 2025-10-31T14:26:38Z
 url: https://github.com/astral-sh/uv/issues/16494
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # build system requirements not properly resolved
@@ -99,10 +99,6 @@ Using `--prerelease=allow` seems correct.
 We do not allow selection of pre-releases in child packages without opt-in at the top-level.
 
 See https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility
-
----
-
-_Referenced in [astral-sh/uv#16496](../../astral-sh/uv/issues/16496.md) on 2025-10-29 14:48_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-29T21:04:05Z
 updated_at: 2025-11-06T14:08:58Z
 url: https://github.com/astral-sh/uv/issues/16503
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv export in a monorepo with workspaces: allow exporting dependencies for a subset of packages
@@ -74,10 +74,6 @@ I think we should allow multiple packages here. I just did it for `uv sync`, but
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-05 17:14_
-
----
-
-_Referenced in [astral-sh/uv#16603](../../astral-sh/uv/pulls/16603.md) on 2025-11-05 17:22_
 
 ---
 

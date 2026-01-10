@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-11T00:09:38Z
 updated_at: 2025-09-03T12:12:27Z
 url: https://github.com/astral-sh/uv/issues/12107
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Updating Documentation for `--all-packages`
@@ -53,10 +53,6 @@ _Assigned to @zanieb by @zanieb on 2025-03-20 22:50_
 _Comment by @zanieb on 2025-03-20 22:51_
 
 If you want to add some docs there I'm happy to review it!
-
----
-
-_Referenced in [astral-sh/uv#12390](../../astral-sh/uv/pulls/12390.md) on 2025-03-22 14:08_
 
 ---
 

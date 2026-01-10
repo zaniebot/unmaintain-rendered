@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T19:50:16Z
 updated_at: 2025-10-21T12:24:16Z
 url: https://github.com/astral-sh/uv/issues/9425
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv add onnxruntime` fails to fetch latest version of package compatible with my environment's Python
@@ -79,18 +79,6 @@ Can I help somehow? I don't know a single thing about rust or `uv`'s inner worki
 
 ---
 
-_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
-
----
-
-_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
-
----
-
-_Referenced in [emcie-co/parlant#530](../../emcie-co/parlant/issues/530.md) on 2025-09-02 04:54_
-
----
-
 _Comment by @AbdealiLoKo on 2025-10-21 12:15_
 
 Came across the same issue ... just wanted to say, `pip` doesn't seem to have an issue here
@@ -108,10 +96,6 @@ Successfully installed coloredlogs-15.0.1 flatbuffers-25.9.23 humanfriendly-10.0
 
 ---
 
-_Referenced in [microsoft/onnxruntime#26375](../../microsoft/onnxruntime/issues/26375.md) on 2025-10-21 12:21_
-
----
-
 _Comment by @konstin on 2025-10-21 12:24_
 
 Thanks for raising this upstream!
@@ -124,9 +108,5 @@ required-environments = ["python_version == '3.9'"]
 ```
 
 This workaround asserts that there are wheels for this Python version.
-
----
-
-_Referenced in [google/magika#1205](../../google/magika/pulls/1205.md) on 2025-10-29 14:16_
 
 ---

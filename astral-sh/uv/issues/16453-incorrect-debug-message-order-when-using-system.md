@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-26T13:42:12Z
 updated_at: 2025-10-28T12:18:14Z
 url: https://github.com/astral-sh/uv/issues/16453
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Incorrect debug message order when using `--system` flag to uv pip interface commands
@@ -138,10 +138,6 @@ _Comment by @DhavalGojiya on 2025-10-26 17:14_
 I mean, is the Python version installed by uv already marked as `externally-managed`, or does it only behave that way temporarily when uv runs its Rust code (during the any uv CLI command execution)
 
 But your reply makes it clear that it is not temporary - the Python version itself comes marked as `externally-managed` when we install it using `uv python install $VERSION`.
-
----
-
-_Referenced in [astral-sh/uv#16463](../../astral-sh/uv/pulls/16463.md) on 2025-10-27 03:17_
 
 ---
 

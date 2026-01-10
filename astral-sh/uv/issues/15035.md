@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-02T23:57:11Z
 updated_at: 2025-08-29T05:44:08Z
 url: https://github.com/astral-sh/uv/issues/15035
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv sync --python-platform` does not update environment when switching to a lower GLIBC-bound platform
@@ -128,18 +128,6 @@ Please feel free if you'd like to try. I think you need to read the `WHEEL` file
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-24 12:35_
-
----
-
-_Referenced in [astral-sh/uv#15483](../../astral-sh/uv/pulls/15483.md) on 2025-08-24 14:09_
-
----
-
-_Referenced in [astral-sh/uv#15484](../../astral-sh/uv/pulls/15484.md) on 2025-08-24 15:42_
-
----
-
-_Referenced in [astral-sh/uv#15486](../../astral-sh/uv/pulls/15486.md) on 2025-08-24 17:47_
 
 ---
 

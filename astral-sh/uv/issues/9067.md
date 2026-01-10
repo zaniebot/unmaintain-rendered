@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T18:06:25Z
 updated_at: 2025-11-06T15:12:05Z
 url: https://github.com/astral-sh/uv/issues/9067
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `ENV UV_SYSTEM_PYTHON=1` still creates `.venv` and dependencies aren't able to be found
@@ -80,10 +80,6 @@ Thank you @zanieb
 ---
 
 _Closed by @theelderbeever on 2024-11-12 19:08_
-
----
-
-_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-10-21 19:20_
 
 ---
 

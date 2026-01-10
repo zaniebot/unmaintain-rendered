@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-03T18:23:37Z
 updated_at: 2025-10-27T18:15:18Z
 url: https://github.com/astral-sh/uv/issues/10293
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Feature Request: Option to Remove Build Artifacts
@@ -91,10 +91,6 @@ This option would be nice, because when scripting for multiple platforms (e.g. W
 ---
 
 _Assigned to @konstin by @konstin on 2025-10-20 09:55_
-
----
-
-_Referenced in [astral-sh/uv#16371](../../astral-sh/uv/pulls/16371.md) on 2025-10-20 10:04_
 
 ---
 

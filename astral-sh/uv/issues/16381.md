@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-21T10:34:12Z
 updated_at: 2025-10-22T16:48:02Z
 url: https://github.com/astral-sh/uv/issues/16381
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv run --python=... removes log folder
@@ -40,14 +40,6 @@ uv 0.9.4 (88f519a3b 2025-10-18)
 ---
 
 _Label `bug` added by @ssbarnea on 2025-10-21 10:34_
-
----
-
-_Referenced in [tox-dev/tox#3632](../../tox-dev/tox/issues/3632.md) on 2025-10-21 10:34_
-
----
-
-_Referenced in [ansible/actions#48](../../ansible/actions/pulls/48.md) on 2025-10-21 10:43_
 
 ---
 

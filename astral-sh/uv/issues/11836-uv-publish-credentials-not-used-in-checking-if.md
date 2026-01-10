@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T17:12:07Z
 updated_at: 2025-08-27T16:19:11Z
 url: https://github.com/astral-sh/uv/issues/11836
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv publish`: Credentials not used in checking if package exists
@@ -71,10 +71,6 @@ _Label `documentation` added by @konstin on 2025-02-27 17:16_
 
 ---
 
-_Referenced in [astral-sh/uv#12652](../../astral-sh/uv/issues/12652.md) on 2025-04-03 14:09_
-
----
-
 _Comment by @kwaegel on 2025-06-20 17:31_
 
 @konstin I'm not entirely sure if this is a documentation bug. I was about to file a new bug report that is effectively this, but I have the regular index authentication provided via `UV_INDEX_MYCOMPANY_{USERNAME,PASSWORD}` and the re-upload check still doesn't work (fails with a 401 Forbidden error). All other commands are able to pull from our private repository (set as the default) just fine, but not `uv publish --index`.
@@ -126,19 +122,7 @@ Using the same workaround as above: embedding the credentials into `check-url`.
 
 ---
 
-_Referenced in [astral-sh/uv#14419](../../astral-sh/uv/pulls/14419.md) on 2025-07-02 13:12_
-
----
-
 _Assigned to @konstin by @konstin on 2025-08-26 15:35_
-
----
-
-_Referenced in [astral-sh/uv#15545](../../astral-sh/uv/pulls/15545.md) on 2025-08-27 08:44_
-
----
-
-_Referenced in [astral-sh/uv#15546](../../astral-sh/uv/pulls/15546.md) on 2025-08-27 09:10_
 
 ---
 

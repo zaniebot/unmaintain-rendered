@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-09T18:57:51Z
 updated_at: 2025-10-09T19:22:09Z
 url: https://github.com/astral-sh/uv/issues/16213
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Publish Standard Slim Docker Image
@@ -36,9 +36,5 @@ _Label `enhancement` added by @rbebb on 2025-10-09 18:57_
 _Comment by @zanieb on 2025-10-09 19:22_
 
 Like `uv:debian-slim`? That exists. I don't think we'll make an additional one for each Python version.
-
----
-
-_Referenced in [astral-sh/uv#16652](../../astral-sh/uv/issues/16652.md) on 2025-11-09 14:01_
 
 ---

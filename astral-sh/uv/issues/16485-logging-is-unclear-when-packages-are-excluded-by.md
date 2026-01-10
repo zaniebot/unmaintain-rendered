@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-28T15:06:57Z
 updated_at: 2025-10-28T15:06:57Z
 url: https://github.com/astral-sh/uv/issues/16485
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Logging is unclear when packages are excluded by release date
@@ -48,9 +48,5 @@ DEBUG Excluding candidates for mlx published after 2025-10-11T00:00:00Z
 ---
 
 _Label `enhancement` added by @ncoghlan on 2025-10-28 15:06_
-
----
-
-_Referenced in [astral-sh/uv#16606](../../astral-sh/uv/pulls/16606.md) on 2025-11-05 21:13_
 
 ---

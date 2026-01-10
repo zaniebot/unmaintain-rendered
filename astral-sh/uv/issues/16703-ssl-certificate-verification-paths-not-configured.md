@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T11:58:09Z
 updated_at: 2025-11-18T16:31:18Z
 url: https://github.com/astral-sh/uv/issues/16703
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # SSL certificate verification paths not configured correctly when Python is installed via uv (in Red Hat UBI8 base image)
@@ -93,10 +93,6 @@ Python 3.11.13
 ---
 
 _Label `bug` added by @winwinashwin on 2025-11-12 11:58_
-
----
-
-_Referenced in [cleanlab/cleanlab-tlm#133](../../cleanlab/cleanlab-tlm/issues/133.md) on 2025-11-12 12:13_
 
 ---
 
@@ -194,10 +190,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 Is using the UBI9 image an option for you?
 
 That said the fact that they made this change in EL9 makes me more comfortable with doing this kind of patch (i.e., there's no specific reason why RHEL wants third-party applications _not_ to use this directory). It'd be kind of nice not to do a patch for older OSes but EL8 is still supported for many years....
-
----
-
-_Referenced in [astral-sh/python-build-standalone#858](../../astral-sh/python-build-standalone/issues/858.md) on 2025-11-18 16:04_
 
 ---
 

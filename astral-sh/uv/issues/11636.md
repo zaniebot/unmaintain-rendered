@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-19T20:01:16Z
 updated_at: 2025-09-11T23:01:42Z
 url: https://github.com/astral-sh/uv/issues/11636
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages
@@ -119,10 +119,6 @@ I'm having the same issue on a private Nexus Pypi index. `uv -v pip install --co
 
 ---
 
-_Referenced in [astral-sh/uv#13737](../../astral-sh/uv/issues/13737.md) on 2025-05-30 18:35_
-
----
-
 _Comment by @matt-dies-tenet3 on 2025-07-23 16:16_
 
 While using a Nexus PyPI proxy as the default index, we've had multiple occurrences of this issue (7 known + verified occurrences in the last 5 days) as well.
@@ -139,10 +135,6 @@ error: Failed to fetch: `https://<internal_index>/simple/botocore/`
 ---
 
 _Label `bug` removed by @charliermarsh on 2025-07-31 00:40_
-
----
-
-_Referenced in [astral-sh/uv#15056](../../astral-sh/uv/issues/15056.md) on 2025-08-04 12:54_
 
 ---
 
@@ -204,10 +196,6 @@ _Comment by @mamoru0916 on 2025-08-27 20:30_
 Here is the full log.
 
 [build.log](https://github.com/user-attachments/files/22013464/build.log)
-
----
-
-_Referenced in [astral-sh/uv#15626](../../astral-sh/uv/pulls/15626.md) on 2025-09-02 11:47_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-01T17:34:30Z
 updated_at: 2025-12-01T19:06:27Z
 url: https://github.com/astral-sh/uv/issues/16912
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Allow nested dependency groups with CLI (`uv add` + `include-group`)
@@ -75,10 +75,6 @@ _Label `enhancement` added by @Avasam on 2025-12-01 17:34_
 _Comment by @zanieb on 2025-12-01 17:42_
 
 This is a duplicate of https://github.com/astral-sh/uv/issues/9054 though I think this one is a bit clearer
-
----
-
-_Referenced in [astral-sh/uv#9054](../../astral-sh/uv/issues/9054.md) on 2025-12-01 17:42_
 
 ---
 

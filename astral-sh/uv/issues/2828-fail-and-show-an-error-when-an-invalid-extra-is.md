@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-05T02:09:40Z
 updated_at: 2025-10-30T10:41:50Z
 url: https://github.com/astral-sh/uv/issues/2828
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # (🎁) Fail and show an error when an invalid extra is requested
@@ -93,10 +93,6 @@ I think part of the problem is that "whether an extra exists" can change over ti
 
 ---
 
-_Referenced in [astral-sh/uv#2829](../../astral-sh/uv/pulls/2829.md) on 2024-04-05 02:51_
-
----
-
 _Comment by @charliermarsh on 2024-04-05 02:53_
 
 I added the warning for `pip install` in https://github.com/astral-sh/uv/pull/2829 (but not going to close this issue until we decide whether to error).
@@ -122,10 +118,6 @@ Based on the threads you linked, it seems the only legitimate middle ground I se
 _Comment by @KotlinIsland on 2024-04-05 03:28_
 
 @charliermarsh Next can you do a reimplementation of python itself, all your projects make sound, well-thought out decisions that fix so many long standing issues with the ecosystem.
-
----
-
-_Referenced in [coherent-oss/coherent.test#5](../../coherent-oss/coherent.test/issues/5.md) on 2024-06-17 14:01_
 
 ---
 
@@ -158,10 +150,6 @@ Let me know if this is the right thread for this message or wether I should file
 _Comment by @konstin on 2024-06-24 07:09_
 
 @karfau That looks like a regression, please file a new issue with details how to reproduce your case!
-
----
-
-_Referenced in [astral-sh/uv#4494](../../astral-sh/uv/issues/4494.md) on 2024-06-24 22:29_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T12:49:18Z
 updated_at: 2025-09-03T14:12:40Z
 url: https://github.com/astral-sh/uv/issues/15659
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # python-version should support multiple versions using newline separated string like actions/setup-python
@@ -79,27 +79,11 @@ _Label `enhancement` added by @ssbarnea on 2025-09-03 12:49_
 
 ---
 
-_Referenced in [astral-sh/uv#12950](../../astral-sh/uv/issues/12950.md) on 2025-09-03 12:50_
-
----
-
-_Referenced in [astral-sh/setup-uv#544](../../astral-sh/setup-uv/issues/544.md) on 2025-09-03 12:51_
-
----
-
 _Comment by @eifinger on 2025-09-03 13:01_
 
 Hi @ssbarnea can you please post an example workflow that would make use of this if we would support it?
 
 We aim to be compatible with setup-python as much as possible but some workflows/use cases can and should be solved differently when using uv
-
----
-
-_Referenced in [ansible/actions#4](../../ansible/actions/issues/4.md) on 2025-09-03 13:11_
-
----
-
-_Referenced in [ansible/actions#5](../../ansible/actions/pulls/5.md) on 2025-09-03 13:25_
 
 ---
 

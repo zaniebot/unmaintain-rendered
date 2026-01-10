@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-27T06:03:58Z
 updated_at: 2025-12-03T13:37:05Z
 url: https://github.com/astral-sh/uv/issues/15544
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `--bounds` has no effect for `--script`
@@ -365,10 +365,6 @@ Not sure whether this is intentional vs bug, but I think it's unintuitive. (`uv 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-03 04:05_
-
----
-
-_Referenced in [astral-sh/uv#16954](../../astral-sh/uv/pulls/16954.md) on 2025-12-03 05:39_
 
 ---
 

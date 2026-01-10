@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-18T00:50:27Z
 updated_at: 2025-09-18T07:10:08Z
 url: https://github.com/astral-sh/uv/issues/14699
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python install` fails to extract archive with "cannot decrypt peer's message"
@@ -91,10 +91,6 @@ Opening the URL in my browser downloads it fine
 
 ---
 
-_Referenced in [astral-sh/uv#14703](../../astral-sh/uv/pulls/14703.md) on 2025-07-18 07:23_
-
----
-
 _Closed by @konstin on 2025-07-20 22:28_
 
 ---
@@ -106,9 +102,5 @@ As a side note this actually seems to be an issue with my Wi-Fi adapter driver, 
 ---
 
 _Label `network` added by @konstin on 2025-09-18 07:10_
-
----
-
-_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T17:16:22Z
 updated_at: 2025-11-20T21:01:48Z
 url: https://github.com/astral-sh/uv/issues/9168
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Configure additional module search paths, like PYTHONPATH
@@ -62,10 +62,6 @@ Since it has so many amazing features, I was thinking that there could be a way 
 
 Hope that this better explains my need.
 
-
----
-
-_Referenced in [astral-sh/uv#10948](../../astral-sh/uv/issues/10948.md) on 2025-01-24 22:41_
 
 ---
 

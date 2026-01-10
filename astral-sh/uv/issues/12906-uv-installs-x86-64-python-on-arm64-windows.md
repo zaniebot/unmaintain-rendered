@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-15T20:45:32Z
 updated_at: 2025-11-28T01:23:00Z
 url: https://github.com/astral-sh/uv/issues/12906
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv installs x86_64 Python on arm64 Windows 
@@ -143,27 +143,7 @@ _Comment by @geofft on 2025-04-28 17:46_
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#387](../../astral-sh/python-build-standalone/pulls/387.md) on 2025-04-28 17:49_
-
----
-
-_Referenced in [astral-sh/uv#13719](../../astral-sh/uv/pulls/13719.md) on 2025-05-29 17:11_
-
----
-
-_Referenced in [astral-sh/uv#13342](../../astral-sh/uv/issues/13342.md) on 2025-06-12 20:55_
-
----
-
 _Renamed from "uv installs and uses x86 Python on new Windows 11 ARM GitHub runners" to "uv installs x86_64 Python on arm64 Windows " by @zanieb on 2025-06-12 20:55_
-
----
-
-_Referenced in [Toufool/AutoSplit#328](../../Toufool/AutoSplit/pulls/328.md) on 2025-06-13 01:51_
-
----
-
-_Referenced in [ankitects/anki#4079](../../ankitects/anki/issues/4079.md) on 2025-06-13 05:33_
 
 ---
 
@@ -172,10 +152,6 @@ _Label `bug` removed by @zanieb on 2025-06-13 12:54_
 ---
 
 _Label `question` added by @zanieb on 2025-06-13 12:54_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#386](../../astral-sh/python-build-standalone/issues/386.md) on 2025-06-13 12:55_
 
 ---
 
@@ -188,10 +164,6 @@ NumPy 2.3.0 came out a few days ago and has Windows ARM binaries. It is changing
 _Comment by @saschanaz on 2025-06-14 16:07_
 
 Can we make a prompt instead though? Either of default value is "wrong" which will only confuse people. 
-
----
-
-_Referenced in [astral-sh/uv#13724](../../astral-sh/uv/pulls/13724.md) on 2025-06-14 18:16_
 
 ---
 
@@ -263,18 +235,6 @@ While switched to aarch64 python it works well, with an acceptable compile time 
 
 Also, as an ARM Windows Laptop user, I would prefer natively running instead of skipping compilation. Moreover it's not intitive to install and even list only x64 pythons when I'm even installed an arm version of uv.
 
-
----
-
-_Referenced in [astral-sh/uv#15693](../../astral-sh/uv/issues/15693.md) on 2025-09-10 08:45_
-
----
-
-_Referenced in [agntcy/slim#914](../../agntcy/slim/pulls/914.md) on 2025-11-06 07:20_
-
----
-
-_Referenced in [jcrist/msgspec#959](../../jcrist/msgspec/pulls/959.md) on 2025-11-27 02:07_
 
 ---
 

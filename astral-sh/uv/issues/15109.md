@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-06T14:23:23Z
 updated_at: 2025-08-21T17:37:12Z
 url: https://github.com/astral-sh/uv/issues/15109
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Respect `GH_HOST` in GitHub Gist resolution
@@ -68,9 +68,5 @@ Also, if the user inputs an Github Enterprise Server gist such as `https://githu
 `GH_HOST` would be useful if we had something like `GH_HOST=github.com uv run --gist 3d90c4e5594ddcdf6dd023a80959c107`, but requires a new cli option for `uv run` and specifying the gist id instead of the gist web url. 
 
 Should we use this issue to support Github Enterprise Server gists for commands such as `uv run https://github.my.company.com/gists/...`  and create another issue for the gist id use case  `GH_HOST=github.com uv run --gist  3d90c4e5594ddcdf6dd023a80959c107`? 
-
----
-
-_Referenced in [astral-sh/uv#15841](../../astral-sh/uv/pulls/15841.md) on 2025-09-14 15:51_
 
 ---

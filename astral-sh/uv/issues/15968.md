@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-09-21T09:15:00Z
 updated_at: 2025-11-21T14:22:10Z
 url: https://github.com/astral-sh/uv/issues/15968
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `Access is denied` error on windows when `uv sync`
@@ -77,14 +77,6 @@ error: Failed to install ruff-0.14.1-py-none-win_amd64.wsl (ruff==0.14.1)
 most likely defender is holding the directory open, need to wait and retry a few times
 
 terrible but that's Windows for you
-
----
-
-_Referenced in [astral-sh/uv#7382](../../astral-sh/uv/issues/7382.md) on 2025-11-10 11:25_
-
----
-
-_Referenced in [astral-sh/uv#16747](../../astral-sh/uv/issues/16747.md) on 2025-11-15 17:03_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-12T11:52:41Z
 updated_at: 2025-12-01T17:42:46Z
 url: https://github.com/astral-sh/uv/issues/9054
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Stacking dependency groups
@@ -49,10 +49,6 @@ _Label `cli` added by @charliermarsh on 2024-11-12 17:47_
 ---
 
 _Label `needs-design` added by @charliermarsh on 2024-11-12 17:47_
-
----
-
-_Referenced in [astral-sh/uv#16912](../../astral-sh/uv/issues/16912.md) on 2025-12-01 17:42_
 
 ---
 

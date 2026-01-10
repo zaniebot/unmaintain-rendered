@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-06T19:21:14Z
 updated_at: 2025-09-08T14:18:51Z
 url: https://github.com/astral-sh/uv/issues/15709
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # bug: Installation destination inference for `uv pip` commands has inconsistent behavior (`UV_PYTHON` a.k.a `--python`)
@@ -117,10 +117,6 @@ _Renamed from "bug: Installation destination inference for `uv pip` commands has
 
 ---
 
-_Referenced in [cachix/devenv#1959](../../cachix/devenv/pulls/1959.md) on 2025-09-06 19:28_
-
----
-
 _Comment by @charliermarsh on 2025-09-06 19:29_
 
 Hmm, this seems right to me? If you tell us a `--python`, then `uv pip install` attempts to install into that `--python`.
@@ -199,9 +195,5 @@ _Label `question` added by @zanieb on 2025-09-08 14:02_
 _Comment by @zanieb on 2025-09-08 14:18_
 
 I think we should be looking more closely at the motivating problem in Nix here. I don't think we should just be hacking more complexity into the `UV_PYTHON` option for this purpose.
-
----
-
-_Referenced in [astral-sh/uv#16106](../../astral-sh/uv/issues/16106.md) on 2025-10-02 19:37_
 
 ---

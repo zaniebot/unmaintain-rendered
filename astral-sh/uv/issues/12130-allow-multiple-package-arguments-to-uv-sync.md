@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-12T07:19:30Z
 updated_at: 2025-11-04T14:17:59Z
 url: https://github.com/astral-sh/uv/issues/12130
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Allow multiple `--package` arguments to `uv sync`
@@ -58,10 +58,6 @@ _Label `needs-decision` added by @charliermarsh on 2025-03-12 21:00_
 
 ---
 
-_Referenced in [astral-sh/uv#12353](../../astral-sh/uv/issues/12353.md) on 2025-03-20 22:44_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:45_
 
 I think we should add support for this, though I wonder if there's ambiguity for operations which target a specific child package? See also #12353 
@@ -76,14 +72,6 @@ e.g.
 
 ---
 
-_Referenced in [astral-sh/uv#13363](../../astral-sh/uv/issues/13363.md) on 2025-05-10 14:51_
-
----
-
-_Referenced in [astral-sh/uv#13570](../../astral-sh/uv/issues/13570.md) on 2025-05-21 11:26_
-
----
-
 _Renamed from "Sync a subset of packages, but not all" to "Allow multiple `--package` arguments to `uv sync`" by @charliermarsh on 2025-05-21 11:26_
 
 ---
@@ -95,10 +83,6 @@ Hi has there been an update to this?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-01 00:19_
-
----
-
-_Referenced in [astral-sh/uv#16543](../../astral-sh/uv/pulls/16543.md) on 2025-11-01 01:33_
 
 ---
 

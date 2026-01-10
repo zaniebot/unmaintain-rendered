@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-04T22:18:49Z
 updated_at: 2025-09-05T15:02:34Z
 url: https://github.com/astral-sh/uv/issues/15690
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Python Rounding Precision Issue Under x86_64 Emulation
@@ -363,20 +363,8 @@ _Closed by @Bradleywboggs on 2025-09-05 14:55_
 
 ---
 
-_Referenced in [oven-sh/bun#19677](../../oven-sh/bun/issues/19677.md) on 2025-09-05 15:00_
-
----
-
 _Comment by @zanieb on 2025-09-05 15:02_
 
 For future reference, it looks like Apple has fixed this per https://github.com/oven-sh/bun/issues/19677#issuecomment-3114724055 but it may not have released yet.
-
----
-
-_Referenced in [astral-sh/ruff#20675](../../astral-sh/ruff/pulls/20675.md) on 2025-10-02 14:33_
-
----
-
-_Referenced in [astral-sh/uv#16195](../../astral-sh/uv/issues/16195.md) on 2025-10-08 23:28_
 
 ---

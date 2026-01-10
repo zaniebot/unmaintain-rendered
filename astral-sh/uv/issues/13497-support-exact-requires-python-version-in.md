@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-16T19:54:58Z
 updated_at: 2025-09-22T20:23:26Z
 url: https://github.com/astral-sh/uv/issues/13497
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support exact `requires-python` version in generating `pylock.toml`
@@ -78,9 +78,5 @@ I'm fine with closing this issue if that's the case.
 _Comment by @ketozhang on 2025-09-22 20:22_
 
 @AndydeCleyre I think what you're seeing warrants another issue. I agree if the source is `pyproject.toml`, then it should copy over it's `requires-python` field. 
-
----
-
-_Referenced in [astral-sh/uv#15995](../../astral-sh/uv/issues/15995.md) on 2025-09-22 21:42_
 
 ---

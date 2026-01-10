@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-24T05:50:42Z
 updated_at: 2025-09-24T08:30:51Z
 url: https://github.com/astral-sh/uv/issues/16009
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Hashes in simple package index defined as dist-info/core-metadata ignored
@@ -85,10 +85,6 @@ _No response_
 ---
 
 _Label `bug` added by @adisbladis on 2025-09-24 05:50_
-
----
-
-_Referenced in [astral-sh/uv#16010](../../astral-sh/uv/pulls/16010.md) on 2025-09-24 06:01_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T21:13:41Z
 updated_at: 2025-09-25T14:37:40Z
 url: https://github.com/astral-sh/uv/issues/6722
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uv sync --no-install-package` without pyproject.toml
@@ -163,10 +163,6 @@ That's one of the missing features that stops me from addopting `uv` (along side
 
 ---
 
-_Referenced in [plugboard-dev/plugboard#65](../../plugboard-dev/plugboard/issues/65.md) on 2025-01-16 13:43_
-
----
-
 _Comment by @danielgafni on 2025-02-04 16:22_
 
 I can suggest a different solution which works `uv sync` natively:
@@ -204,10 +200,6 @@ Oh right. I mean some tools have their own config files (like `ruff.toml`) too, 
 
 ---
 
-_Referenced in [commitizen-tools/commitizen#1351](../../commitizen-tools/commitizen/pulls/1351.md) on 2025-02-21 20:49_
-
----
-
 _Comment by @twmht on 2025-04-13 03:09_
 
 > To add to [@sbidoul](https://github.com/sbidoul) usecase:
@@ -237,10 +229,6 @@ I'm currently encountering the same problem. The version numbers in my pyproject
 _Comment by @charliermarsh on 2025-04-14 12:27_
 
 Yeah we do want to support this. It's entirely possible, it just requires some refactoring.
-
----
-
-_Referenced in [fandsdev/django#789](../../fandsdev/django/pulls/789.md) on 2025-04-24 13:34_
 
 ---
 

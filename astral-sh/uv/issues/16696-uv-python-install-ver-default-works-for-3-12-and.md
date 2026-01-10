@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T01:39:43Z
 updated_at: 2025-11-12T18:34:00Z
 url: https://github.com/astral-sh/uv/issues/16696
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv python install <ver> --default works for 3.12 and 3.14 but not 3.15
@@ -88,10 +88,6 @@ DEBUG Released lock at `C:\Users\johny\AppData\Roaming\uv\python\.lock`
 _Comment by @nooscraft on 2025-11-12 14:15_
 
 @zanieb let me take a look at this :)
-
----
-
-_Referenced in [astral-sh/uv#16706](../../astral-sh/uv/pulls/16706.md) on 2025-11-12 14:56_
 
 ---
 

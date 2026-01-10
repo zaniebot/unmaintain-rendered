@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T14:29:01Z
 updated_at: 2025-09-26T19:15:54Z
 url: https://github.com/astral-sh/uv/issues/9683
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add dedicated error message for dependencies with relative paths
@@ -104,25 +104,5 @@ Is there a better solution or a config I'm missing ?
 
 `uv 0.6.5 (bcbcd0a1e 2025-03-06)`
 
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-03-07 04:18_
-
----
-
-_Referenced in [python/typeshed#12806](../../python/typeshed/pulls/12806.md) on 2025-03-07 04:21_
-
----
-
-_Referenced in [Avasam/typeshed#40](../../Avasam/typeshed/pulls/40.md) on 2025-03-07 04:39_
-
----
-
-_Referenced in [python/typeshed#13974](../../python/typeshed/issues/13974.md) on 2025-05-12 07:40_
-
----
-
-_Referenced in [python/typeshed#14085](../../python/typeshed/pulls/14085.md) on 2025-05-16 20:28_
 
 ---

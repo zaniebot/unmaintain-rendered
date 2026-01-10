@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-24T01:25:43Z
 updated_at: 2025-10-24T09:32:59Z
 url: https://github.com/astral-sh/uv/issues/16428
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python find` does not detect venv Python in CPython 3.13t
@@ -349,10 +349,6 @@ I want to ensure I am using the exactly right version in CI (in this case a free
 ---
 
 _Renamed from "`uv python find` does not detect venv Python in CPython 3.13t and 3.14+ (CI)" to "`uv python find` does not detect venv Python in CPython 3.13t and 3.14t (CI)" by @lmmx on 2025-10-24 08:26_
-
----
-
-_Referenced in [astral-sh/uv#16434](../../astral-sh/uv/issues/16434.md) on 2025-10-24 09:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T10:29:36Z
 updated_at: 2025-11-02T21:21:45Z
 url: https://github.com/astral-sh/uv/issues/14647
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `--torch-backend=auto` fails on systems with multiple GPUs and without `/proc/driver/nvidia/version`
@@ -79,10 +79,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-07-16 12:52_
 _Comment by @charliermarsh on 2025-08-22 15:51_
 
 Sorry, I thought I fixed this!
-
----
-
-_Referenced in [astral-sh/uv#15460](../../astral-sh/uv/pulls/15460.md) on 2025-08-22 17:27_
 
 ---
 

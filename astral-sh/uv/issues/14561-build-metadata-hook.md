@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-11T10:00:16Z
 updated_at: 2025-11-14T17:00:35Z
 url: https://github.com/astral-sh/uv/issues/14561
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Build/Metadata Hook
@@ -77,10 +77,6 @@ is this something that the `uv_build` backend is going to provide at some point 
 
 ---
 
-_Referenced in [marimo-team/marimo#5778](../../marimo-team/marimo/pulls/5778.md) on 2025-07-28 03:16_
-
----
-
 _Comment by @gwdekker on 2025-08-19 06:57_
 
 Another usecase is for `polylith` - a monorepo tool for python. The `hatch` based build backend allows for letting it hook into the build process, while not having hooks available makes it need the workaround doucmented in the polylith docs for `maturin`: https://github.com/DavidVujic/python-polylith/discussions/353
@@ -119,10 +115,6 @@ _Comment by @pygarap on 2025-08-28 02:11_
 
 ---
 
-_Referenced in [astral-sh/uv#16011](../../astral-sh/uv/issues/16011.md) on 2025-09-24 09:09_
-
----
-
 _Comment by @etienne-monier on 2025-10-20 11:44_
 
 Hi,
@@ -141,9 +133,5 @@ I'd consider dynamic versioning support to be "table stakes" for us to consider 
 _Comment by @villapx-path on 2025-11-14 17:00_
 
 Our use case is that we have protobuf files (`*.proto`) that we want to compile into Python modules during the build, so that when clients install the package or during editable installs within a `uv` workspace, there is not an extra, manual step required to call `grpc_tools.protoc`. We needed to switch to hatchling for all of these packages within our workspace containing protobuf messages (we still use `uv_build` for all other packages in the workspace).
-
----
-
-_Referenced in [IndicoDataSolutions/indico-client-python#412](../../IndicoDataSolutions/indico-client-python/pulls/412.md) on 2025-12-09 18:53_
 
 ---

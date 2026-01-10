@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-03T03:52:09Z
 updated_at: 2025-12-03T05:52:06Z
 url: https://github.com/astral-sh/uv/issues/16951
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv cannot pick python3.14t
@@ -71,9 +71,5 @@ _Label `question` added by @charliermarsh on 2025-12-03 04:04_
 ---
 
 _Closed by @charliermarsh on 2025-12-03 05:52_
-
----
-
-_Referenced in [astral-sh/uv#16963](../../astral-sh/uv/issues/16963.md) on 2025-12-03 13:33_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T23:13:41Z
 updated_at: 2025-11-22T15:00:03Z
 url: https://github.com/astral-sh/uv/issues/11121
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # [feat]: Request for more output in stdout/stderr for non-interactive process
@@ -148,10 +148,6 @@ Still TBD, @Gankra would have more details but we're still designing this. See a
 
 ---
 
-_Referenced in [astral-sh/uv#11165](../../astral-sh/uv/pulls/11165.md) on 2025-02-02 13:40_
-
----
-
 _Comment by @robinjhuang on 2025-02-05 22:18_
 
 @webfiltered Did some digging and we realized we might be able to use `RUST_LOG=trace` to get way more output in subprocess. Using string parsing, this seems like a good enough solution to track progress of installations. 
@@ -163,14 +159,6 @@ Leaving this here for anyone else who might benefit.
 _Comment by @konstin on 2025-02-06 09:32_
 
 Please don't parse any `RUST_LOG` output, it is unstable and for internal usage only.
-
----
-
-_Referenced in [janhq/cortex.cpp#2052](../../janhq/cortex.cpp/issues/2052.md) on 2025-02-28 06:29_
-
----
-
-_Referenced in [astral-sh/uv#411](../../astral-sh/uv/issues/411.md) on 2025-03-08 04:15_
 
 ---
 

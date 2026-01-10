@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-06T04:21:00Z
 updated_at: 2025-10-09T16:45:07Z
 url: https://github.com/astral-sh/uv/issues/16133
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv version --bump ...` drops comments just before the version
@@ -88,10 +88,6 @@ _Label `good first issue` added by @konstin on 2025-10-06 09:11_
 _Comment by @konstin on 2025-10-06 09:12_
 
 We need to preserve the decor when changing the version.
-
----
-
-_Referenced in [astral-sh/uv#16141](../../astral-sh/uv/pulls/16141.md) on 2025-10-06 18:45_
 
 ---
 

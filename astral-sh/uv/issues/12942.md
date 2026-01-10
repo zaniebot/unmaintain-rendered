@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-17T12:55:26Z
 updated_at: 2025-11-10T18:53:48Z
 url: https://github.com/astral-sh/uv/issues/12942
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Strange default owner/group when installed as root
@@ -96,10 +96,6 @@ Quick fix suggestions in your CI:
 I tested both. Extracting as root, the files come out as `root:root`. Extracting as a non-root user, they come out with the UID:GID of that user, just like they currently do.
 
 Having a single `/usr/local/bin/uv` common to all users is a completely valid use case IMHO, unless I've missed something in the docs that absolutely prevents it from being a consideration, and this change of ownership inside the tarball seemingly breaks nothing that's currently working, just makes root installs nicer without the extra `chown` step to ensure that a random user on the system doesn't own the binaries.
-
----
-
-_Referenced in [axodotdev/cargo-dist#2195](../../axodotdev/cargo-dist/pulls/2195.md) on 2025-11-10 18:50_
 
 ---
 

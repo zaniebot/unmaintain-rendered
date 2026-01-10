@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-23T15:56:06Z
 updated_at: 2025-10-24T11:12:32Z
 url: https://github.com/astral-sh/uv/issues/16423
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Make importlib.metadata.packages_distributions work with uv build backend
@@ -46,10 +46,6 @@ _Label `enhancement` added by @bunny-therapist on 2025-10-23 15:56_
 _Comment by @bunny-therapist on 2025-10-24 08:16_
 
 I have verified that `importlib.metadata.packages_distributions` works for a built package. It does not work for an _editable_ install, nor with `uv sync --no-editable`.
-
----
-
-_Referenced in [python/importlib_metadata#526](../../python/importlib_metadata/issues/526.md) on 2025-10-24 08:28_
 
 ---
 

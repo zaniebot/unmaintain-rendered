@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-08T17:33:11Z
 updated_at: 2025-10-07T16:24:06Z
 url: https://github.com/astral-sh/uv/issues/15739
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv run` discards free-threaded (3.13t) environments and recreates non-free-threaded ones
@@ -77,19 +77,11 @@ _Assigned to @zanieb by @zanieb on 2025-09-08 17:35_
 
 ---
 
-_Referenced in [astral-sh/uv#15756](../../astral-sh/uv/issues/15756.md) on 2025-09-09 15:37_
-
----
-
 _Comment by @zanieb on 2025-09-16 23:06_
 
 I think this is a duplicate of #12445
 
 Thanks for the MRE!
-
----
-
-_Referenced in [astral-sh/uv#16142](../../astral-sh/uv/pulls/16142.md) on 2025-10-06 23:16_
 
 ---
 

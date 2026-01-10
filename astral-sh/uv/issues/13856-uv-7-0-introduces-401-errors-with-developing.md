@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T07:15:46Z
 updated_at: 2025-09-22T20:07:51Z
 url: https://github.com/astral-sh/uv/issues/13856
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv 7.0 introduces 401 errors with developing private package projects
@@ -76,10 +76,6 @@ Python 3.12.10
 ---
 
 _Label `bug` added by @ketozhang on 2025-06-05 07:15_
-
----
-
-_Referenced in [astral-sh/uv#13452](../../astral-sh/uv/issues/13452.md) on 2025-06-05 17:52_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-18T05:51:06Z
 updated_at: 2025-11-07T03:21:51Z
 url: https://github.com/astral-sh/uv/issues/3116
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv powershell windows only works if you are running powershell as admin
@@ -124,10 +124,6 @@ All below *did not* work correctly:
 - `pip install uv`
 - `sudo pip install uv`
 - `powershell -ExecutionPolicy Bypass -c "pip install uv"`
-
----
-
-_Referenced in [oocular/ready#36](../../oocular/ready/issues/36.md) on 2024-11-06 15:05_
 
 ---
 

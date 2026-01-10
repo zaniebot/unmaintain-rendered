@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-31T06:07:10Z
 updated_at: 2025-10-13T00:28:30Z
 url: https://github.com/astral-sh/uv/issues/15603
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 #  `uv sync --active` can recreate active venv
@@ -415,9 +415,5 @@ On "what to do about it": agree. My mind immediately went to erroring out as abo
 A backwards-compatible fix might be to simply emit a warning "hey, you used `--active` but the venv is no good because $reason, we will re-create it" and proceed with the current behaviour. I'd probably even be happy enough if `uv` just prompted me for confirmation before proceeding with the current behaviour (though that might be considered a breaking change for you guys since the program would be waiting for input at a new location).
 
 Personally I would prefer the erroring approach since if I get that warning I am just going to cancel the operation anyway.
-
----
-
-_Referenced in [astral-sh/uv#16631](../../astral-sh/uv/issues/16631.md) on 2025-11-07 14:42_
 
 ---

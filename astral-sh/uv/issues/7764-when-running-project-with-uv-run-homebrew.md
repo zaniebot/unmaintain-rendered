@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-28T18:42:41Z
 updated_at: 2025-08-24T07:13:28Z
 url: https://github.com/astral-sh/uv/issues/7764
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # When running project with uv run, homebrew-installed dynamic libraries on MacOS are not found.
@@ -40,10 +40,6 @@ Is the Python interpreter different? i.e. are you using a Brew interpreter in on
 
 ---
 
-_Referenced in [astral-sh/uv#7870](../../astral-sh/uv/issues/7870.md) on 2024-10-02 15:56_
-
----
-
 _Comment by @tcwalther on 2024-10-11 13:41_
 
 @zanieb yes, that is probably the case. Thanks for pointing that out.
@@ -57,10 +53,6 @@ Would you consider adding /opt/homebrew/lib to the search path? Given homebrew's
 _Comment by @zanieb on 2024-10-25 20:24_
 
 I'm pretty hesitant to add a special-case like that for all macOS users. We can definitely consider it though.
-
----
-
-_Referenced in [astral-sh/uv#8576](../../astral-sh/uv/issues/8576.md) on 2024-10-25 20:25_
 
 ---
 
@@ -151,10 +143,6 @@ _Comment by @tibbe on 2025-01-29 13:25_
 > Via [#6971](https://github.com/astral-sh/uv/issues/6971), `export DYLD_FALLBACK_LIBRARY_PATH="$HOMEBREW_PREFIX/lib"` in my `.zshrc` has solved this issue for me (with libcairo).
 
 This doesn't work for me. It seems that macOS protections filter out `DYLD_FALLBACK_LIBRARY_PATH` (https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/RuntimeProtections/RuntimeProtections.html). For example, if I set `DYLD_FALLBACK_LIBRARY_PATH` in `~/.zshrc` and start a new shell it's not in `env`. Same in a terminal launched in VSCode.
-
----
-
-_Referenced in [kkovaletp/photoview#560](../../kkovaletp/photoview/pulls/560.md) on 2025-08-08 09:37_
 
 ---
 

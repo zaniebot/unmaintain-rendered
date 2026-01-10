@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-26T18:51:26Z
 updated_at: 2025-10-30T19:00:16Z
 url: https://github.com/astral-sh/uv/issues/7722
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uv sync` handling third party dependencies in `setup.py`
@@ -242,14 +242,6 @@ So if you're not on Linux, we have to download the source distribution and try t
 _Comment by @AyhamSaffar on 2025-01-14 00:04_
 
 Cheers @zanieb and @charliermarsh. I appreciate the help.
-
----
-
-_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:13_
-
----
-
-_Referenced in [stfc/janus-core#421](../../stfc/janus-core/pulls/421.md) on 2025-03-14 19:47_
 
 ---
 

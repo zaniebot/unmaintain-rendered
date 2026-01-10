@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-10-15T17:32:10Z
 updated_at: 2025-10-15T19:10:09Z
 url: https://github.com/astral-sh/uv/issues/16319
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # torch-backend needs to be updated to support cu130
@@ -37,10 +37,6 @@ _Renamed from "torch-backend needs to be update to support cu130" to "torch-back
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-15 17:35_
-
----
-
-_Referenced in [astral-sh/uv#16321](../../astral-sh/uv/pulls/16321.md) on 2025-10-15 18:09_
 
 ---
 

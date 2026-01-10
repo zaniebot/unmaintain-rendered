@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-17T12:21:59Z
 updated_at: 2025-08-22T16:00:21Z
 url: https://github.com/astral-sh/uv/issues/14680
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uvx does not find newly published package version on private index
@@ -147,10 +147,6 @@ mydomain {
 I will try with `--refresh-package package` thanks. 
 
 I am confident it is some kind of caching issue, but to me it looks like it its on uvx side. 
-
----
-
-_Referenced in [SPF-OST/pytrnsys_gui#596](../../SPF-OST/pytrnsys_gui/issues/596.md) on 2025-08-06 15:12_
 
 ---
 

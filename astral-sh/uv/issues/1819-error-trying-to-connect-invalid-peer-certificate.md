@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-21T17:23:09Z
 updated_at: 2025-11-21T09:16:02Z
 url: https://github.com/astral-sh/uv/issues/1819
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # error trying to connect: invalid peer certificate: UnknownIssuer - Even with SSL_CERT_FILE mapped
@@ -179,14 +179,6 @@ _Label `question` added by @zanieb on 2024-02-28 18:29_
 
 ---
 
-_Referenced in [astral-sh/uv#2260](../../astral-sh/uv/issues/2260.md) on 2024-03-07 03:48_
-
----
-
-_Referenced in [astral-sh/uv#4077](../../astral-sh/uv/issues/4077.md) on 2024-06-07 03:00_
-
----
-
 _Comment by @smartexpert on 2024-10-11 06:53_
 
 Quick work around is to activate the environment and configure the SSL_CERT_FILE enviroment variable and then run the command:
@@ -255,10 +247,6 @@ I also found myself here from the great deity google.
 _Comment by @matanco1 on 2025-06-18 15:30_
 
 Under corporate VPN I got the same issue, tried everything, but the only thing that helped me was changing the VPN endpoint (different zone)
-
----
-
-_Referenced in [atuinsh/atuin#1142](../../atuinsh/atuin/issues/1142.md) on 2025-07-07 11:17_
 
 ---
 
@@ -345,9 +333,5 @@ But, I'm hoping this at least points toward a path for further problem-solving b
 -----
 
 No idea where it goes from here, but I just want to thank the maintainers here on uv, the amazing folks who run pythonhosted, and the rest of the community who make this kind of work possible. We can't do what we do without you.
-
----
-
-_Referenced in [pypi/warehouse#15277](../../pypi/warehouse/issues/15277.md) on 2025-11-26 16:38_
 
 ---

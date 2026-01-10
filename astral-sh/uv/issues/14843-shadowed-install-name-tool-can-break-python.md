@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-23T12:33:24Z
 updated_at: 2025-12-01T11:37:36Z
 url: https://github.com/astral-sh/uv/issues/14843
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Shadowed `install_name_tool` can break Python installation
@@ -46,18 +46,6 @@ _No response_
 ---
 
 _Label `bug` added by @zanieb on 2025-07-23 12:33_
-
----
-
-_Referenced in [ankitects/anki#4216](../../ankitects/anki/issues/4216.md) on 2025-07-23 12:33_
-
----
-
-_Referenced in [astral-sh/uv#14869](../../astral-sh/uv/pulls/14869.md) on 2025-07-24 11:44_
-
----
-
-_Referenced in [astral-sh/uv#14893](../../astral-sh/uv/issues/14893.md) on 2025-07-25 12:53_
 
 ---
 

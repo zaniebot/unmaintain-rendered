@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-19T10:50:12Z
 updated_at: 2025-09-19T13:19:11Z
 url: https://github.com/astral-sh/uv/issues/15945
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # install a package with constraint of lock file
@@ -74,9 +74,5 @@ Related issues:
 * https://github.com/astral-sh/uv/issues/5815
 * https://github.com/astral-sh/uv/issues/7768
 
-
----
-
-_Referenced in [opendatateam/udata#3459](../../opendatateam/udata/pulls/3459.md) on 2025-10-03 07:10_
 
 ---

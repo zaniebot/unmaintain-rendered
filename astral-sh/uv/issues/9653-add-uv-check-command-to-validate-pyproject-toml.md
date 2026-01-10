@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-05T03:29:24Z
 updated_at: 2025-11-29T19:30:53Z
 url: https://github.com/astral-sh/uv/issues/9653
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add `uv check` command to validate `pyproject.toml` `uv` configuration
@@ -80,26 +80,6 @@ Another interesting thing that a `uv check` could do: validate the recorded whee
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-12-06 14:13_
-
----
-
-_Referenced in [astral-sh/uv#9662](../../astral-sh/uv/pulls/9662.md) on 2024-12-06 20:13_
-
----
-
-_Referenced in [astral-sh/uv#10176](../../astral-sh/uv/issues/10176.md) on 2024-12-26 17:58_
-
----
-
-_Referenced in [TechnologyBrewery/habushu#224](../../TechnologyBrewery/habushu/pulls/224.md) on 2025-02-13 20:20_
-
----
-
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
-
----
-
 _Comment by @rpdelaney on 2025-04-15 23:10_
 
 `poetry check` validating the pyproject.toml file is useful as a [pre-commit](https://pre-commit.com) hook to catch errors early. It would be appreciated if `uv` could provide this functionality as well.
@@ -115,10 +95,6 @@ Agreed. I'm currently running `uvx --from=validate-pyproject[all] validate-pypro
 _Comment by @j-adamczyk on 2025-06-29 11:41_
 
 +1, this is one of few things that Poetry supports and uv does not that I've run into
-
----
-
-_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-05 22:49_
 
 ---
 

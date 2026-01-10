@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-24T10:52:59Z
 updated_at: 2025-11-29T07:09:17Z
 url: https://github.com/astral-sh/uv/issues/16828
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv build fails to retrieve correct version with setuptools-scm on a release tag
@@ -90,10 +90,6 @@ _Label `question` added by @konstin on 2025-11-27 16:35_
 
 ---
 
-_Referenced in [pypa/setuptools-scm#1238](../../pypa/setuptools-scm/issues/1238.md) on 2025-11-28 11:04_
-
----
-
 _Comment by @greatvovan on 2025-11-28 11:06_
 
 Thanks @konstin, created an [issue](https://github.com/pypa/setuptools-scm/issues/1238) in their project, let's see if they suggest something.
@@ -101,10 +97,6 @@ Thanks @konstin, created an [issue](https://github.com/pypa/setuptools-scm/issue
 ---
 
 _Label `external` added by @konstin on 2025-11-28 11:16_
-
----
-
-_Referenced in [greatvovan/ios-backup-browser#12](../../greatvovan/ios-backup-browser/pulls/12.md) on 2025-11-29 05:37_
 
 ---
 

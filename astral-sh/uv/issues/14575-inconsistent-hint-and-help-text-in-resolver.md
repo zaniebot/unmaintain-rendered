@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-12T12:08:15Z
 updated_at: 2025-09-02T18:11:28Z
 url: https://github.com/astral-sh/uv/issues/14575
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Inconsistent `hint` and `help` text in resolver failure
@@ -74,9 +74,5 @@ Creating virtual environment at: .venv
 _Comment by @zanieb on 2025-09-02 18:11_
 
 I think we want to use `hint:` everywhere and drop `miette` entirely, but I don't know how much work that will be.
-
----
-
-_Referenced in [astral-sh/uv#150](../../astral-sh/uv/issues/150.md) on 2025-12-02 09:42_
 
 ---

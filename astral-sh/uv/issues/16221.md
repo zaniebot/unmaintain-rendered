@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-10T08:01:01Z
 updated_at: 2025-10-10T08:03:31Z
 url: https://github.com/astral-sh/uv/issues/16221
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Feature Request: `UV_PYTHON_EXTRA_INSTALL_DIRS`  lets uv search additional managed Python directories
@@ -51,9 +51,5 @@ A proof-of-concept implementation is available in #16222.
 ---
 
 _Label `enhancement` added by @j178 on 2025-10-10 08:01_
-
----
-
-_Referenced in [astral-sh/uv#16222](../../astral-sh/uv/pulls/16222.md) on 2025-10-10 08:03_
 
 ---

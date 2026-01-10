@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-24T13:49:11Z
 updated_at: 2025-11-12T17:03:23Z
 url: https://github.com/astral-sh/uv/issues/9395
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv sync` with  `--prerelease` fails unexpectedly
@@ -130,14 +130,6 @@ Once I was a bit further along I was going to ask the astral folks if they had a
 
 ---
 
-_Referenced in [astral-sh/uv#12589](../../astral-sh/uv/issues/12589.md) on 2025-03-31 17:21_
-
----
-
-_Referenced in [astral-sh/uv#13819](../../astral-sh/uv/issues/13819.md) on 2025-06-03 14:37_
-
----
-
 _Comment by @foxmulder900 on 2025-08-13 21:09_
 
 > add the transitive dependency as a first-party dependency with a pre-release marker.
@@ -152,10 +144,6 @@ _Renamed from "Uv sync with  `--prerelease` fails unexpectedly" to "uv sync with
 ---
 
 _Renamed from "uv sync with  `--prerelease` fails unexpectedly" to "`uv sync` with  `--prerelease` fails unexpectedly" by @dariocurr on 2025-08-14 08:24_
-
----
-
-_Referenced in [pypa/pip#13608](../../pypa/pip/issues/13608.md) on 2025-10-02 21:17_
 
 ---
 

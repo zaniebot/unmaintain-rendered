@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T10:59:45Z
 updated_at: 2025-09-04T16:43:39Z
 url: https://github.com/astral-sh/uv/issues/6421
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Private repository as a source
@@ -207,10 +207,6 @@ export UV_INDEX_AZUREARTIFACTS_USERNAME=<YOUR_PERSONAL_ACCESS_TOKEN>
 _Comment by @mattiamatrix on 2025-03-17 17:51_
 
 AWS CodeArtifact worked by setting `UV_INDEX_<NAME>_PASSWORD`
-
----
-
-_Referenced in [astral-sh/uv#12666](../../astral-sh/uv/issues/12666.md) on 2025-04-04 09:43_
 
 ---
 

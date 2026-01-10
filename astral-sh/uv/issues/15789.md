@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-11T13:40:46Z
 updated_at: 2025-09-14T13:49:36Z
 url: https://github.com/astral-sh/uv/issues/15789
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Bad error message when pyproject.toml for group doesn't exist
@@ -69,10 +69,6 @@ _Label `help wanted` added by @konstin on 2025-09-11 13:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-14 01:52_
-
----
-
-_Referenced in [astral-sh/uv#15831](../../astral-sh/uv/pulls/15831.md) on 2025-09-14 01:55_
 
 ---
 

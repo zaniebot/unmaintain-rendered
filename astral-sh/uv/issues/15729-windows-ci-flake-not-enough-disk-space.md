@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-08T06:56:20Z
 updated_at: 2025-09-08T13:21:40Z
 url: https://github.com/astral-sh/uv/issues/15729
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Windows CI flake: not enough disk space
@@ -32,10 +32,6 @@ error: Failed to install cpython-3.11.13-[PLATFORM]
 ---
 
 _Label `ci-flake` added by @konstin on 2025-09-08 06:56_
-
----
-
-_Referenced in [astral-sh/uv#15734](../../astral-sh/uv/pulls/15734.md) on 2025-09-08 13:15_
 
 ---
 

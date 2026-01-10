@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-09-09T16:34:47Z
 updated_at: 2025-09-09T16:34:47Z
 url: https://github.com/astral-sh/uv/issues/15760
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv format` cannot be disabled/reconfigured
@@ -29,9 +29,5 @@ There's two parts to this issue, though the overarching request is same, hence w
 When a project has a different formatter already in use in their project, it would be beneficial to be able to configure `uv format` to use that designated formatter. 
 
 Hatch already has an [implementation of this](https://hatch.pypa.io/latest/how-to/static-analysis/behavior/#customize-static-analysis-behavior) which allows selecting dependencies for its `hatch fmt` command and creates a specific environment for running lint and format. uv already has the necessary tooling to create a temporary environment with these specified dependencies, and could most likely implement something like this for `uv format`.
-
----
-
-_Referenced in [astral-sh/uv#15625](../../astral-sh/uv/issues/15625.md) on 2025-09-10 07:34_
 
 ---

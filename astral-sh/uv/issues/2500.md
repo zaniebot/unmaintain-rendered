@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-17T21:18:44Z
 updated_at: 2025-10-15T13:00:22Z
 url: https://github.com/astral-sh/uv/issues/2500
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uv pip list` does not read all system packages in `sys.path` and ignores `system-site-packages`
@@ -335,10 +335,6 @@ oh dang, that's a very helpful pointer (i should've looked where these interpret
 
 ---
 
-_Referenced in [astral-sh/uv#2636](../../astral-sh/uv/pulls/2636.md) on 2024-03-23 19:17_
-
----
-
 _Comment by @ChannyClaus on 2024-04-01 03:07_
 
 after spending a little too much effort and time i've noticed that this may have already been fixed by some other change...? (`requests`, which is installed by `pip` for system python seems to get picked up by `uv` via `--system` flag)
@@ -504,10 +500,6 @@ seems like the issue linked may not be completely green-lit but if/once it's gre
 
 ---
 
-_Referenced in [astral-sh/uv#3341](../../astral-sh/uv/issues/3341.md) on 2024-05-03 15:08_
-
----
-
 _Comment by @danielhollas on 2024-05-10 01:32_
 
 Note for future self: Turns out one can install only specific perl modules, and not the whole perl metapackage. I ended up doing:
@@ -550,23 +542,11 @@ This is very much the same issue as here, but from the text it is not clear whet
 
 ---
 
-_Referenced in [astral-sh/uv#3500](../../astral-sh/uv/pulls/3500.md) on 2024-05-10 03:15_
-
----
-
 _Closed by @konstin on 2024-05-10 06:41_
 
 ---
 
 _Reopened by @konstin on 2024-05-10 07:05_
-
----
-
-_Referenced in [astral-sh/uv#4434](../../astral-sh/uv/issues/4434.md) on 2024-06-21 22:14_
-
----
-
-_Referenced in [astral-sh/uv#4466](../../astral-sh/uv/issues/4466.md) on 2024-06-24 14:47_
 
 ---
 
@@ -695,47 +675,7 @@ I can confirm that this issue also exists on Databricks Runtime Images that are 
 
 ---
 
-_Referenced in [astral-sh/uv#9174](../../astral-sh/uv/issues/9174.md) on 2024-11-18 00:39_
-
----
-
-_Referenced in [astral-sh/uv#9849](../../astral-sh/uv/pulls/9849.md) on 2024-12-12 19:14_
-
----
-
-_Referenced in [astral-sh/uv#11392](../../astral-sh/uv/issues/11392.md) on 2025-02-10 17:34_
-
----
-
 _Renamed from "uv pip list / freeze / show --system do not show all system packages on Fedora" to "`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)" by @zanieb on 2025-02-10 17:52_
-
----
-
-_Referenced in [astral-sh/uv#11601](../../astral-sh/uv/pulls/11601.md) on 2025-02-18 15:43_
-
----
-
-_Referenced in [astral-sh/uv#11622](../../astral-sh/uv/pulls/11622.md) on 2025-02-19 15:21_
-
----
-
-_Referenced in [astral-sh/uv#11670](../../astral-sh/uv/pulls/11670.md) on 2025-03-05 17:04_
-
----
-
-_Referenced in [astral-sh/uv#12800](../../astral-sh/uv/issues/12800.md) on 2025-04-10 11:07_
-
----
-
-_Referenced in [astral-sh/uv#2038](../../astral-sh/uv/issues/2038.md) on 2025-04-15 09:15_
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#146](../../lmstudio-ai/venvstacks/issues/146.md) on 2025-04-28 14:21_
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#144](../../lmstudio-ai/venvstacks/issues/144.md) on 2025-05-07 05:49_
 
 ---
 
@@ -843,10 +783,6 @@ Another way to go would be to have `--skip-installed` take the path-or-paths whe
 
 ---
 
-_Referenced in [astral-sh/uv#4422](../../astral-sh/uv/issues/4422.md) on 2025-08-22 14:12_
-
----
-
 _Comment by @ncoghlan on 2025-08-25 15:21_
 
 https://github.com/lmstudio-ai/venvstacks/pull/249 confirms that turning the lower layer constraints into overrides with a never-matched platform environment marker solves the problem well enough for `venvstacks` to switch over to it.
@@ -857,10 +793,6 @@ That suggests the following potential shape for an opt-in approach in `uv`:
 * `uv pip install --skip-installed` to treat already installed packages as overrides that don't need to be modified
 
 (although given that `uv pip freeze` is intrinsically a read-only operation, maybe it doesn't need the opt-in flag to report all installed packages?)
-
----
-
-_Referenced in [astral-sh/uv#15692](../../astral-sh/uv/issues/15692.md) on 2025-09-05 09:29_
 
 ---
 
@@ -910,10 +842,6 @@ I will keep using `pip` for now, but I'd love to move to `uv` if possible.
 
 ---
 
-_Referenced in [astral-sh/uv#16122](../../astral-sh/uv/issues/16122.md) on 2025-10-06 08:48_
-
----
-
 _Comment by @ncoghlan on 2025-10-09 17:28_
 
 @konstin I unfortunately just learned that the very helpful `--overrides` workaround you suggested above *doesn't* work when using `pylock.toml` as the lock export format (that's also when I picked up that the error message for that case wasn't previously correct: https://github.com/astral-sh/uv/pull/16211).
@@ -925,17 +853,5 @@ Edit: update to reflect changes since I first posted the comment.
 ---
 
 _Renamed from "`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)" to "`uv pip list` does not read all system packages in `sys.path` and ignores `system-site-packages`" by @konstin on 2025-10-15 13:00_
-
----
-
-_Referenced in [astral-sh/uv#16220](../../astral-sh/uv/issues/16220.md) on 2025-10-15 13:00_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2025-10-15 13:00_
-
----
-
-_Referenced in [astral-sh/uv#16541](../../astral-sh/uv/issues/16541.md) on 2025-11-03 02:35_
 
 ---

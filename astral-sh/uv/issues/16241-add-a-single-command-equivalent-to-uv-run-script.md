@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-10T21:47:43Z
 updated_at: 2025-10-22T13:58:34Z
 url: https://github.com/astral-sh/uv/issues/16241
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add a single command equivalent to "uv run --script"
@@ -60,14 +60,6 @@ As both a proof of concept and a useful tool to help me work with uv scripts mor
 ---
 
 _Renamed from "Add uvs command equivalent to "uv run --script"" to "Add a single command equivalent to "uv run --script"" by @treyhunner on 2025-10-11 20:45_
-
----
-
-_Referenced in [astral-sh/uv#11876](../../astral-sh/uv/issues/11876.md) on 2025-10-11 20:49_
-
----
-
-_Referenced in [astral-sh/uv#16334](../../astral-sh/uv/issues/16334.md) on 2025-10-17 03:04_
 
 ---
 

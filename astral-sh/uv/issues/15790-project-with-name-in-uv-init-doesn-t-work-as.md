@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-11T13:43:23Z
 updated_at: 2025-11-30T15:14:50Z
 url: https://github.com/astral-sh/uv/issues/15790
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `--project` with name in `uv init` doesn't work as expect
@@ -49,10 +49,6 @@ And here's the usage, which seems wrong https://github.com/astral-sh/uv/blob/289
 
 ---
 
-_Referenced in [astral-sh/uv#15791](../../astral-sh/uv/pulls/15791.md) on 2025-09-11 14:24_
-
----
-
 _Renamed from "`--project` with name in `uv init` should error" to "`--project` with name in `uv init` doesn't work as expect" by @konstin on 2025-09-11 14:36_
 
 ---
@@ -62,10 +58,6 @@ _Comment by @konstin on 2025-09-11 14:37_
 > `--project` does take an argument. It means "run the command as if you were in the project at this path".
 
 oh I mixed up `--project` and `--package`. I updated the issue description.
-
----
-
-_Referenced in [astral-sh/uv#16674](../../astral-sh/uv/pulls/16674.md) on 2025-11-10 19:30_
 
 ---
 

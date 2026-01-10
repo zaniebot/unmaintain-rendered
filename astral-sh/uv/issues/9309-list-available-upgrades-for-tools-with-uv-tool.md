@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-21T11:03:40Z
 updated_at: 2025-11-24T20:09:09Z
 url: https://github.com/astral-sh/uv/issues/9309
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # List available upgrades for tools with `uv tool list --outdated`
@@ -140,23 +140,11 @@ _Label `help wanted` added by @charliermarsh on 2024-11-21 14:34_
 
 ---
 
-_Referenced in [astral-sh/uv#9636](../../astral-sh/uv/pulls/9636.md) on 2024-12-06 13:28_
-
----
-
 _Comment by @xorander00 on 2024-12-12 04:06_
 
 Just my $0.02, but I think -n/--dry-run is a better flag for it. It's more in line with how other tools handle it, plus it can be a common flag for other sub-commands as well (e.g. install, uninstall, etc).  
   
 Having an option to just list outdated packages would be very useful though, at least for my use-case. I have a script that uses ecosystem-specific tools for various platforms to check for and list all outdated packages. I like to see everything that can be upgraded before actually doing it, just in case it's not necessary or it might take a while and bog down resources.
-
----
-
-_Referenced in [astral-sh/uv#10930](../../astral-sh/uv/issues/10930.md) on 2025-01-24 09:06_
-
----
-
-_Referenced in [griptape-ai/griptape-nodes#918](../../griptape-ai/griptape-nodes/issues/918.md) on 2025-05-03 00:43_
 
 ---
 

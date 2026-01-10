@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T19:54:34Z
 updated_at: 2025-11-17T20:26:04Z
 url: https://github.com/astral-sh/uv/issues/16711
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Pre-release Python version warnings do not account for `python_downloads_json_url`
@@ -25,14 +25,6 @@ _Originally posted by @MeitarR in https://github.com/astral-sh/uv/pull/16619#dis
 ---
 
 _Label `bug` added by @zanieb on 2025-11-12 19:54_
-
----
-
-_Referenced in [astral-sh/uv#16619](../../astral-sh/uv/pulls/16619.md) on 2025-11-12 19:54_
-
----
-
-_Referenced in [astral-sh/uv#16737](../../astral-sh/uv/pulls/16737.md) on 2025-11-14 11:57_
 
 ---
 

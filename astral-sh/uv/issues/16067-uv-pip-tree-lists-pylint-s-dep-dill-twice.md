@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-29T21:07:30Z
 updated_at: 2025-10-01T16:01:43Z
 url: https://github.com/astral-sh/uv/issues/16067
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip tree` lists `pylint`'s dep `dill` twice
@@ -131,10 +131,6 @@ What would expected behaviour here look like? In the default view, should we col
 _Comment by @zanieb on 2025-09-30 17:51_
 
 Since the report is for a single Python version, I think only one of these should be applicable. I think I'd expect us to only show the one that is ultimately relevant.
-
----
-
-_Referenced in [astral-sh/uv#16078](../../astral-sh/uv/pulls/16078.md) on 2025-09-30 18:59_
 
 ---
 

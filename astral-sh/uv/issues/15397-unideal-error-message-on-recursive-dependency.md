@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-20T21:15:41Z
 updated_at: 2025-08-22T14:30:34Z
 url: https://github.com/astral-sh/uv/issues/15397
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Unideal error message on recursive dependency groups (depending on command)
@@ -59,10 +59,6 @@ _Label `error messages` added by @zanieb on 2025-08-20 23:02_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-22 14:03_
-
----
-
-_Referenced in [astral-sh/uv#15453](../../astral-sh/uv/pulls/15453.md) on 2025-08-22 14:08_
 
 ---
 

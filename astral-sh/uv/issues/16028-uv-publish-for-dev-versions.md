@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-25T17:39:27Z
 updated_at: 2025-09-28T09:21:23Z
 url: https://github.com/astral-sh/uv/issues/16028
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv publish for dev versions
@@ -69,10 +69,6 @@ error: Failed to publish `dist/packagex-0.1.0-py3-none-any.whl` to https://uploa
 _Comment by @zanieb on 2025-09-25 18:51_
 
 Sounds like you should either remove the old distributions or pass the specific distributions you want to upload to `uv publish`.
-
----
-
-_Referenced in [astral-sh/uv#16030](../../astral-sh/uv/issues/16030.md) on 2025-09-25 19:22_
 
 ---
 

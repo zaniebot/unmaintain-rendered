@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-19T05:16:31Z
 updated_at: 2025-10-03T06:14:46Z
 url: https://github.com/astral-sh/uv/issues/15941
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Strange issue with multltasking library on ubuntu
@@ -107,10 +107,6 @@ Python 3.12.3
 ---
 
 _Label `bug` added by @quantitative-technologies on 2025-09-19 05:16_
-
----
-
-_Referenced in [astral-sh/uv#15566](../../astral-sh/uv/issues/15566.md) on 2025-09-19 05:34_
 
 ---
 

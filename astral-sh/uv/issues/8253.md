@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T12:47:13Z
 updated_at: 2025-11-27T19:35:32Z
 url: https://github.com/astral-sh/uv/issues/8253
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Explicit index not respected for transitive dependency
@@ -104,22 +104,6 @@ Option 2 of defining transitive dependencies like `C` directly in `A` is not ver
 
 ---
 
-_Referenced in [astral-sh/uv#10850](../../astral-sh/uv/issues/10850.md) on 2025-01-22 14:00_
-
----
-
-_Referenced in [astral-sh/uv#12065](../../astral-sh/uv/issues/12065.md) on 2025-03-08 14:15_
-
----
-
-_Referenced in [astral-sh/uv#12936](../../astral-sh/uv/issues/12936.md) on 2025-04-17 12:53_
-
----
-
-_Referenced in [astral-sh/uv#13035](../../astral-sh/uv/issues/13035.md) on 2025-04-21 23:57_
-
----
-
 _Comment by @NellyWhads on 2025-05-08 05:11_
 
 Hey guys, do you have any further thoughts on this? Using `uv` with multiple packages from separate indices is somewhat painful right now do to a lack of configurability of such a feature.
@@ -130,18 +114,6 @@ Example:
 * both depend on `numpy` (silly example) from the PyPi index
 
 How do we resolve such dependencies without declaring _both_ the `rospy` index and `custom-lib` index as `non-explicit`? Marking both as `non-explicit` leads to poor resolution from unexpected indices.
-
----
-
-_Referenced in [astral-sh/uv#14538](../../astral-sh/uv/issues/14538.md) on 2025-07-10 23:30_
-
----
-
-_Referenced in [astral-sh/uv#15003](../../astral-sh/uv/issues/15003.md) on 2025-07-31 17:55_
-
----
-
-_Referenced in [astral-sh/uv#14651](../../astral-sh/uv/issues/14651.md) on 2025-08-02 20:13_
 
 ---
 
@@ -156,10 +128,6 @@ _Comment by @mikenerone on 2025-09-02 14:52_
 This missing functionality is problematic for me, as well, so +1, but I'm going to go a bit further and say that `uv pip install <package>` should _also_ honor the source configurations. The common use case for this is plugins: my (proprietary) app employs a plugin package architecture. Devs frequently need to test the app locally with different plugin packages installed (all of which are arbitrary and optional, so not dependencies of the main app at all). Currently, we can't simply install the package with `uv pip install` as one would hope, even if we assign those packages to our private package index in `[tool.uv.sources]`. That should work.
 
 Note: currently we work around this by installing from the repo URL or a local clone, but this approach requires extra care, as it introduces the risk that we're testing with a build of the plugin package that doesn't correspond to the latest release.
-
----
-
-_Referenced in [astral-sh/uv#13428](../../astral-sh/uv/issues/13428.md) on 2025-09-05 12:58_
 
 ---
 

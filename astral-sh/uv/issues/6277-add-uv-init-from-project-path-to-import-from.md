@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T21:21:33Z
 updated_at: 2025-08-22T03:16:15Z
 url: https://github.com/astral-sh/uv/issues/6277
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add `uv init --from-project <path>` to import from other tools
@@ -99,14 +99,6 @@ Yeah, it's possible that we want to skip #6164 for now since it brings up some c
 
 ---
 
-_Referenced in [astral-sh/uv#6374](../../astral-sh/uv/pulls/6374.md) on 2024-08-21 20:07_
-
----
-
-_Referenced in [astral-sh/uv#6520](../../astral-sh/uv/issues/6520.md) on 2024-08-23 14:54_
-
----
-
 _Comment by @mrijken on 2024-09-02 06:17_
 
 What is needed to get this merged/released? It will help converting a lot of users  from Poetry to UV, at least for companies which have large number of repo's.
@@ -118,10 +110,6 @@ _Comment by @mrcljx on 2024-09-19 15:45_
 Shameless plug (in case someone stumbles over this issue here and `--from-project` is still WIP): I wrote a script to migrate our Poetry monorepo project to `uv` (keeping versions pinned). I doubt it will work immediately on other projects, but could be a good start.
 
 https://gist.github.com/mrcljx/8e99a7f9fb924a573416f4365ee15873
-
----
-
-_Referenced in [astral-sh/uv#7199](../../astral-sh/uv/issues/7199.md) on 2024-12-31 18:37_
 
 ---
 

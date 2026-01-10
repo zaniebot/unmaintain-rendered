@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-01T15:59:48Z
 updated_at: 2025-10-02T00:11:52Z
 url: https://github.com/astral-sh/uv/issues/16086
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Show variants in `uv pip list`
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2025-10-01 15:59_
 ---
 
 _Label `preview` added by @charliermarsh on 2025-10-01 15:59_
-
----
-
-_Referenced in [astral-sh/uv#16091](../../astral-sh/uv/pulls/16091.md) on 2025-10-01 19:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-15T04:39:54Z
 updated_at: 2025-08-25T14:17:17Z
 url: https://github.com/astral-sh/uv/issues/15297
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Dependent local package becomes editable
@@ -192,9 +192,5 @@ uv init --lib shared
 (cd a && uv add shared)
 ```
 I would want shared to be fetched from PyPI when using `--no-sources`
-
----
-
-_Referenced in [AllenInstitute/aibs-informatics-cdk-lib#45](../../AllenInstitute/aibs-informatics-cdk-lib/pulls/45.md) on 2025-11-06 20:25_
 
 ---

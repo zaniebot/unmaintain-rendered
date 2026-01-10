@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-17T22:41:25Z
 updated_at: 2025-09-25T02:30:49Z
 url: https://github.com/astral-sh/uv/issues/8311
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Clarify or amend output of `--no-package`?
@@ -96,10 +96,6 @@ We still have some room to improve our documentation around this. It was a relat
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-10-18 00:13_
-
----
-
-_Referenced in [astral-sh/uv#7181](../../astral-sh/uv/issues/7181.md) on 2025-02-06 07:49_
 
 ---
 

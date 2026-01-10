@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-23T17:46:35Z
 updated_at: 2025-08-26T17:26:21Z
 url: https://github.com/astral-sh/uv/issues/15474
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv venv -c .` wipes working directory and fails to create a venv
@@ -257,14 +257,6 @@ _Comment by @notatallshaw on 2025-08-26 15:35_
 > * We should _not_ fail to re-create the environment if it's the CWD; it's sort of a weird use-case, but failing does seem like a bug.
 
 To be clear, this isn't a use case for me, it's a typo caused by crosswires in how I think about the command compared to other commands, I'm thinking "I want a venv in this directory" so I accidentally type `uv venv .`. 
-
----
-
-_Referenced in [astral-sh/uv#15537](../../astral-sh/uv/pulls/15537.md) on 2025-08-26 16:19_
-
----
-
-_Referenced in [astral-sh/uv#15538](../../astral-sh/uv/pulls/15538.md) on 2025-08-26 16:35_
 
 ---
 

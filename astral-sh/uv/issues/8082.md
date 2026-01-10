@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T11:21:35Z
 updated_at: 2025-09-29T23:54:27Z
 url: https://github.com/astral-sh/uv/issues/8082
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv pip install failes for wheel URLs with placeholder
@@ -55,10 +55,6 @@ I think I agree. I hadn't seen this pattern before.
 
 ---
 
-_Referenced in [vllm-project/vllm#9244](../../vllm-project/vllm/issues/9244.md) on 2024-10-10 12:00_
-
----
-
 _Comment by @konstin on 2024-10-10 12:12_
 
 It violates the Python packaging specs (the binary distribution spec requires the version to be in the wheel name), so i consider this a bug in their packaging system - Thanks for filing the upstream bug!
@@ -96,10 +92,6 @@ Roger that, will turn to the vllm repo then
 _Comment by @ywang96 on 2024-12-22 09:53_
 
 A few of us from the vLLM project are addressing this issue so that you can use `uv` to install nightly wheels - See https://github.com/vllm-project/vllm/pull/11404
-
----
-
-_Referenced in [astral-sh/uv#10099](../../astral-sh/uv/issues/10099.md) on 2024-12-22 17:58_
 
 ---
 
@@ -172,10 +164,6 @@ error: Failed to install: torch-2.8.0.dev20250408-cp310-cp310-linux_x86_64.whl (
 
 ---
 
-_Referenced in [vllm-project/vllm#24126](../../vllm-project/vllm/issues/24126.md) on 2025-09-02 22:17_
-
----
-
 _Comment by @vadimkantorov on 2025-09-02 22:18_
 
 Seems related:
@@ -227,10 +215,6 @@ vllm = { url = "https://vllm-wheels.s3.amazonaws.com/038e9be4eb7a63189c8980845d8
 [tool.uv]
 override-dependencies = ["outlines-core==0.2.10"]
 ```
-
----
-
-_Referenced in [astral-sh/uv#15647](../../astral-sh/uv/issues/15647.md) on 2025-09-03 00:22_
 
 ---
 
@@ -314,15 +298,7 @@ A key question here is, why are these projects producing these broken wheels? Is
 
 ---
 
-_Referenced in [pytorch/pytorch#163232](../../pytorch/pytorch/pulls/163232.md) on 2025-09-18 01:16_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-27 23:47_
-
----
-
-_Referenced in [astral-sh/uv#16046](../../astral-sh/uv/pulls/16046.md) on 2025-09-28 00:08_
 
 ---
 

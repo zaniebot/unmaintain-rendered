@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-25T14:13:42Z
 updated_at: 2025-11-26T16:15:14Z
 url: https://github.com/astral-sh/uv/issues/16844
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # resolving a circular dependency as `lowest` results in an older version of the project being fetched
@@ -67,10 +67,6 @@ uv==0.9.11
 ---
 
 _Label `bug` added by @neutrinoceros on 2025-11-25 14:13_
-
----
-
-_Referenced in [astropy/astropy#18992](../../astropy/astropy/issues/18992.md) on 2025-11-25 14:16_
 
 ---
 

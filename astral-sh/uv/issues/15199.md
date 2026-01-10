@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-10T11:20:21Z
 updated_at: 2025-09-22T11:26:09Z
 url: https://github.com/astral-sh/uv/issues/15199
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Non-base packages don't collapse versions in resolution conflict traces.
@@ -118,17 +118,9 @@ _Label `error messages` added by @konstin on 2025-08-10 11:20_
 
 ---
 
-_Referenced in [astral-sh/uv#15200](../../astral-sh/uv/pulls/15200.md) on 2025-08-10 11:26_
-
----
-
 _Comment by @konstin on 2025-08-10 11:28_
 
 CC @eh2406 You may be interested in this and https://github.com/astral-sh/uv/pull/15200. I'm interested in what you think about this problem (pubgrub can't see past proxy packages to the base packages) and the attempt in the branch.
-
----
-
-_Referenced in [astral-sh/uv#15201](../../astral-sh/uv/issues/15201.md) on 2025-08-10 11:51_
 
 ---
 

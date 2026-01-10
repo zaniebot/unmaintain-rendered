@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T13:48:05Z
 updated_at: 2025-12-02T17:10:34Z
 url: https://github.com/astral-sh/uv/issues/12584
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add support for PEP 751 lockfiles
@@ -46,10 +46,6 @@ _Comment by @Gankra on 2025-03-31 13:58_
   * [Additions to Marker Expression Syntax](https://peps.python.org/pep-0751/#additions-to-marker-expression-syntax)
 * [PEP 508 - Dependency specification for Python Software Packages](https://peps.python.org/pep-0508/)
 
-
----
-
-_Referenced in [astral-sh/uv#5477](../../astral-sh/uv/issues/5477.md) on 2025-03-31 18:50_
 
 ---
 
@@ -95,14 +91,6 @@ There isn't yet, but there should be eventually. It was made fairly clear in the
 
 ---
 
-_Referenced in [prefix-dev/pixi#3474](../../prefix-dev/pixi/issues/3474.md) on 2025-04-02 04:23_
-
----
-
-_Referenced in [astral-sh/uv#12641](../../astral-sh/uv/issues/12641.md) on 2025-04-03 03:02_
-
----
-
 _Comment by @polothy on 2025-04-04 15:39_
 
 > Supporting pylock.toml as a dependency source for uv pip install, or maybe just uv pip sync?
@@ -112,14 +100,6 @@ Please support `uv pip install` to support the [Lambda zip bundling workflow](ht
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-04-04 17:41_
-
----
-
-_Referenced in [astral-sh/uv#6518](../../astral-sh/uv/issues/6518.md) on 2025-04-05 07:44_
-
----
-
-_Referenced in [copier-org/copier#2079](../../copier-org/copier/pulls/2079.md) on 2025-04-09 11:41_
 
 ---
 
@@ -139,21 +119,9 @@ _Renamed from "Add support for PEP 751" to "Add support for PEP 751 lockfiles" b
 
 ---
 
-_Referenced in [pantsbuild/pants#22201](../../pantsbuild/pants/issues/22201.md) on 2025-04-16 13:31_
-
----
-
-_Referenced in [bazel-contrib/rules_python#2787](../../bazel-contrib/rules_python/issues/2787.md) on 2025-04-18 08:56_
-
----
-
 _Comment by @charliermarsh on 2025-04-18 13:05_
 
 The initial `uv export` support is here: https://github.com/astral-sh/uv/pull/12955
-
----
-
-_Referenced in [EuroPython/discord#138](../../EuroPython/discord/issues/138.md) on 2025-04-18 15:41_
 
 ---
 
@@ -177,38 +145,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-04-21 23:10_
 ---
 
 _Unassigned @Gankra by @charliermarsh on 2025-04-21 23:10_
-
----
-
-_Referenced in [cg-tuwien/ppsurf_modeling#2](../../cg-tuwien/ppsurf_modeling/issues/2.md) on 2025-04-28 16:28_
-
----
-
-_Referenced in [agape-1/pyminispeaker#8](../../agape-1/pyminispeaker/pulls/8.md) on 2025-06-11 00:31_
-
----
-
-_Referenced in [pdm-project/pdm#3574](../../pdm-project/pdm/issues/3574.md) on 2025-07-19 09:31_
-
----
-
-_Referenced in [openzim/_python-bootstrap#54](../../openzim/_python-bootstrap/issues/54.md) on 2025-07-23 14:00_
-
----
-
-_Referenced in [pebble-dev/pebble-firmware#255](../../pebble-dev/pebble-firmware/pulls/255.md) on 2025-07-28 09:49_
-
----
-
-_Referenced in [python-telegram-bot/python-telegram-bot#4899](../../python-telegram-bot/python-telegram-bot/issues/4899.md) on 2025-08-04 03:14_
-
----
-
-_Referenced in [Hirundo-io/llm-behavior-eval#21](../../Hirundo-io/llm-behavior-eval/pulls/21.md) on 2025-08-24 12:49_
-
----
-
-_Referenced in [Bravos-Power/pyoframe#163](../../Bravos-Power/pyoframe/issues/163.md) on 2025-08-31 16:32_
 
 ---
 
@@ -245,9 +181,5 @@ AFAIK workspaces is the main thing that's not standardised yet and supported by 
 _Comment by @konstin on 2025-12-02 17:10_
 
 There's a lot of resolver details that need to be preserved for being able to incrementally change an existing lockfile, this isn't about a specific field, it's about the resolver strategies (https://docs.astral.sh/uv/reference/internals/resolver/). We'd need to specify how a universal resolver works, including the marker forks that uv uses, the aforementioned workspaces, exclude-newer, freshness checks, the fork strategy, prerelease handling and required environments. Some that can be carried in a tool specific table, but if tools don't have the same understanding about how resolvers work, having them edit the same `pylock.toml` leads to a lot of churn with different resolution strategies as well as conflicts over unsupported features, ultimately leading to a worse user experience than with `uv.lock`.
-
----
-
-_Referenced in [bitcoindevkit/bdk-python#29](../../bitcoindevkit/bdk-python/pulls/29.md) on 2025-12-09 03:45_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-11-13T14:10:59Z
 updated_at: 2025-11-13T14:16:17Z
 url: https://github.com/astral-sh/uv/issues/16721
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Ensure all tests which install managed Python versions use the cache
@@ -46,9 +46,5 @@ _Comment by @nooscraft on 2025-11-13 14:14_
 _Comment by @zanieb on 2025-11-13 14:16_
 
 Yes!
-
----
-
-_Referenced in [astral-sh/uv#16723](../../astral-sh/uv/pulls/16723.md) on 2025-11-13 15:06_
 
 ---

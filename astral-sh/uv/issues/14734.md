@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-18T17:14:43Z
 updated_at: 2025-09-16T18:39:10Z
 url: https://github.com/astral-sh/uv/issues/14734
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv sync` should not emit "DEBUG Removing existing directory due to `--clear`" message
@@ -71,14 +71,6 @@ _Comment by @zanieb on 2025-07-31 02:30_
 This may be resolved, I guess I should have included logs of what I was doing 😬 
 
 If nobody sees a clear way to hit that code path I shared, we could close this out for now. The problem still exists though, it'll probably be annoying in the future so if someone is interested it's probably still worth changing?
-
----
-
-_Referenced in [astral-sh/uv#14985](../../astral-sh/uv/issues/14985.md) on 2025-07-31 02:34_
-
----
-
-_Referenced in [astral-sh/uv#15881](../../astral-sh/uv/pulls/15881.md) on 2025-09-15 19:59_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-03T12:54:58Z
 updated_at: 2025-12-03T16:14:15Z
 url: https://github.com/astral-sh/uv/issues/16962
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Consider making the `uv_build` warning heuristic more precise
@@ -42,9 +42,5 @@ _Label `build-backend` added by @EliteTK on 2025-12-03 12:54_
 ---
 
 _Label `needs-design` added by @EliteTK on 2025-12-03 12:57_
-
----
-
-_Referenced in [astral-sh/uv#16961](../../astral-sh/uv/issues/16961.md) on 2025-12-03 12:59_
 
 ---

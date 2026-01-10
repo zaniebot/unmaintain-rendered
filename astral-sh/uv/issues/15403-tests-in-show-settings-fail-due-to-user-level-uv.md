@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-08-21T08:48:03Z
 updated_at: 2025-08-21T22:10:12Z
 url: https://github.com/astral-sh/uv/issues/15403
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Tests in show_settings::* fail due to user-level uv.toml being loaded
@@ -93,10 +93,6 @@ _Label `help wanted` added by @zanieb on 2025-08-21 10:54_
 ---
 
 _Label `testing` added by @zanieb on 2025-08-21 10:54_
-
----
-
-_Referenced in [astral-sh/uv#15434](../../astral-sh/uv/pulls/15434.md) on 2025-08-21 21:10_
 
 ---
 

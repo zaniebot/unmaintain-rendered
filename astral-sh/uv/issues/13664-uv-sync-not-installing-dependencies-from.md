@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-26T18:17:49Z
 updated_at: 2025-08-27T22:00:43Z
 url: https://github.com/astral-sh/uv/issues/13664
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv sync not installing dependencies from workspace members
@@ -305,10 +305,6 @@ dbt-forge = { workspace = true }
 ---
 
 _Closed by @ImadYIdrissi on 2025-05-27 07:22_
-
----
-
-_Referenced in [astral-sh/uv#13749](../../astral-sh/uv/issues/13749.md) on 2025-05-31 06:49_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-01-10T23:25:46Z
 updated_at: 2025-12-02T09:54:04Z
 url: https://github.com/astral-sh/uv/issues/878
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Slow tests
@@ -140,10 +140,6 @@ _Label `internal` added by @charliermarsh on 2024-01-10 23:26_
 
 ---
 
-_Referenced in [astral-sh/uv#875](../../astral-sh/uv/pulls/875.md) on 2024-01-10 23:40_
-
----
-
 _Comment by @konstin on 2024-01-11 10:42_
 
 That's how this list looks for me:
@@ -184,21 +180,9 @@ We can speed up the editables by removing rust and the dtls socket probably by s
 
 ---
 
-_Referenced in [astral-sh/uv#900](../../astral-sh/uv/pulls/900.md) on 2024-01-12 17:18_
-
----
-
-_Referenced in [astral-sh/uv#901](../../astral-sh/uv/pulls/901.md) on 2024-01-12 17:19_
-
----
-
 _Comment by @konstin on 2024-01-15 09:09_
 
 @zanieb Could you update how the original list looks for you after the recent updates?
-
----
-
-_Referenced in [astral-sh/uv#1295](../../astral-sh/uv/pulls/1295.md) on 2024-02-13 04:24_
 
 ---
 
@@ -248,14 +232,6 @@ I've updated the original post to reflect the latest changes on `main`. Notably 
 ---
 
 _Label `help wanted` added by @zanieb on 2024-06-10 16:51_
-
----
-
-_Referenced in [astral-sh/uv#5713](../../astral-sh/uv/issues/5713.md) on 2024-08-01 20:41_
-
----
-
-_Referenced in [astral-sh/uv#8662](../../astral-sh/uv/issues/8662.md) on 2024-10-29 16:10_
 
 ---
 
@@ -473,18 +449,6 @@ or, sorted by name,
 22.285s   uv::it tool_upgrade::tool_upgrade_python_with_all
 23.631s   uv::it tool_upgrade::tool_upgrade_respect_constraints
 15.497s   uv::it tool_upgrade::tool_upgrade_with
-
----
-
-_Referenced in [astral-sh/uv#10645](../../astral-sh/uv/issues/10645.md) on 2025-01-15 21:05_
-
----
-
-_Referenced in [astral-sh/uv#10646](../../astral-sh/uv/issues/10646.md) on 2025-01-15 21:09_
-
----
-
-_Referenced in [astral-sh/uv#10647](../../astral-sh/uv/pulls/10647.md) on 2025-01-15 21:13_
 
 ---
 

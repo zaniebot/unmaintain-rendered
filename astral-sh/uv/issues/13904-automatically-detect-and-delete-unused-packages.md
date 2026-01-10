@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-08T23:28:02Z
 updated_at: 2025-09-24T13:40:06Z
 url: https://github.com/astral-sh/uv/issues/13904
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Automatically detect and delete unused packages
@@ -45,22 +45,10 @@ _Comment by @zanieb on 2025-06-10 12:49_
 
 ---
 
-_Referenced in [astral-sh/uv#12097](../../astral-sh/uv/issues/12097.md) on 2025-06-10 12:50_
-
----
-
-_Referenced in [astral-sh/uv#11650](../../astral-sh/uv/issues/11650.md) on 2025-09-10 14:12_
-
----
-
 _Comment by @Spenhouet on 2025-09-10 14:14_
 
 We have a lot of dependencies and for every dependency we need to perform validations (regulatory requirements).
 Having a feature like this could save us a lot of time.
-
----
-
-_Referenced in [astral-sh/ruff#872](../../astral-sh/ruff/issues/872.md) on 2025-09-10 14:37_
 
 ---
 

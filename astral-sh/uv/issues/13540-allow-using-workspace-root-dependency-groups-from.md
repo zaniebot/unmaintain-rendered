@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-19T17:24:49Z
 updated_at: 2025-09-23T06:36:18Z
 url: https://github.com/astral-sh/uv/issues/13540
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow using workspace root dependency groups from member
@@ -88,10 +88,6 @@ doc = [
 I want the helper package to generate an `sdist` that can be independently tested and have its docs built, so I would like to track its dependencies in its own `pyproject.toml`. This would allow me to use `uv sync --group doc` whether I'm working in the repository root or in an sdist.
 
 Right now, the best option I have is to keep a `doc` extra and use `doc = ["helper_package[doc]"]`, which I was hoping to get away from.
-
----
-
-_Referenced in [astral-sh/uv#13838](../../astral-sh/uv/issues/13838.md) on 2025-06-04 14:50_
 
 ---
 

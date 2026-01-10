@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-17T14:56:35Z
 updated_at: 2025-09-17T15:13:00Z
 url: https://github.com/astral-sh/uv/issues/15914
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Better documentation for `uv sync -v`
@@ -24,10 +24,6 @@ Users often asks about problems that get explained in the verbose logs, and can 
 ---
 
 _Label `documentation` added by @konstin on 2025-09-17 14:56_
-
----
-
-_Referenced in [astral-sh/uv#15915](../../astral-sh/uv/pulls/15915.md) on 2025-09-17 15:01_
 
 ---
 

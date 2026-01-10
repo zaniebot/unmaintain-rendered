@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-16T19:46:56Z
 updated_at: 2025-10-21T09:03:21Z
 url: https://github.com/astral-sh/uv/issues/14090
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Using extra's as markers
@@ -167,10 +167,6 @@ Version:
 $ uv self version
 uv 0.8.22
 ```
-
----
-
-_Referenced in [astral-sh/uv#16379](../../astral-sh/uv/issues/16379.md) on 2025-10-21 08:14_
 
 ---
 

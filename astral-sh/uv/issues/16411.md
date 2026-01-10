@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-22T15:47:47Z
 updated_at: 2025-10-31T01:16:05Z
 url: https://github.com/astral-sh/uv/issues/16411
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `python -m venv` does not work with uv-managed Python installations
@@ -141,10 +141,6 @@ _Comment by @geofft on 2025-10-22 18:02_
 There are a couple of related bugs here. The one you're running into is more astral-sh/python-build-standalone#380 than astral-sh-python/build-standalone#381.
 
 Another workaround for this bug: instead of resolving the symlink yourself, using uv to invoke Python e.g. `uv run --python 3.14 python -m venv` (or just `uvx python3.14 -m venv`) will also skip the symlink. Not sure if that's helpful in the context that you're running Python.
-
----
-
-_Referenced in [SkyLabsAI/workspace#4](../../SkyLabsAI/workspace/issues/4.md) on 2025-10-22 21:55_
 
 ---
 

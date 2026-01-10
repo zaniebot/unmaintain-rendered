@@ -3,21 +3,21 @@ number: 16732
 title: "`--with-requirements script` doesn't work if script doesn't end with `.py`"
 type: issue
 state: closed
-author: majutsushi
+author: janlarres
 labels:
   - bug
 assignees: []
 created_at: 2025-11-14T06:56:23Z
 updated_at: 2025-11-21T02:33:43Z
 url: https://github.com/astral-sh/uv/issues/16732
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `--with-requirements script` doesn't work if script doesn't end with `.py`
 
 ---
 
-_Issue opened by @majutsushi on 2025-11-14 06:56_
+_Issue opened by @janlarres on 2025-11-14 06:56_
 
 ### Summary
 
@@ -68,7 +68,7 @@ Python 3.14.0
 
 ---
 
-_Label `bug` added by @majutsushi on 2025-11-14 06:56_
+_Label `bug` added by @janlarres on 2025-11-14 06:56_
 
 ---
 
@@ -76,10 +76,6 @@ _Comment by @nooscraft on 2025-11-14 09:35_
 
 The fix is to first check whether the file contains PEP 723 inline metadata (# /// script block) before treating it as a requirements.txt. That way, we can avoid misclassifying scripts that embed their own dependencies?
 @konstin 
-
----
-
-_Referenced in [astral-sh/uv#16744](../../astral-sh/uv/pulls/16744.md) on 2025-11-15 02:41_
 
 ---
 

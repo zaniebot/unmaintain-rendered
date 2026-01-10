@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-08-25T12:48:57Z
 updated_at: 2025-08-27T16:42:40Z
 url: https://github.com/astral-sh/uv/issues/15513
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv format` fails to install ruff with access denied on Windows
@@ -166,10 +166,6 @@ Oh that makes sense, thank you!
 _Comment by @zanieb on 2025-08-25 14:35_
 
 We should make this safe to concurrent operations, e.g, by taking a lock to the cache directory.
-
----
-
-_Referenced in [astral-sh/uv#15551](../../astral-sh/uv/pulls/15551.md) on 2025-08-27 14:43_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-08T15:28:22Z
 updated_at: 2025-10-16T07:45:16Z
 url: https://github.com/astral-sh/uv/issues/16192
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Show a better error when a uv lockfile is used in `-r`
@@ -48,10 +48,6 @@ I could take a look at this
 
 ---
 
-_Referenced in [astral-sh/uv#16282](../../astral-sh/uv/pulls/16282.md) on 2025-10-13 13:11_
-
----
-
 _Comment by @cmnemoi on 2025-10-15 14:41_
 
 Hello,
@@ -79,9 +75,5 @@ _Comment by @CakeVision on 2025-10-16 07:45_
 > And this MR has been rejected (https://github.com/astral-sh/uv/pull/16282/files) partially (?) by trying to infer the lock format by analyzing its content.
 
 I had a look during the weekend and it's why it took a bit for me to make a pr here. Took the same approach as the pr mentioned in your reply, but realized it will be error prone to detect that way about one day into development. Would appreciate some help designing this. My best idea so far is to use custom names for the locks based on their type when they are generated, but i'm not familiar enough with uv's design to make an educated choice
-
----
-
-_Referenced in [astral-sh/uv#16889](../../astral-sh/uv/pulls/16889.md) on 2025-12-02 14:02_
 
 ---

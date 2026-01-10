@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T09:22:26Z
 updated_at: 2025-10-01T21:17:28Z
 url: https://github.com/astral-sh/uv/issues/7327
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Issue running a library that internally uses `python -m pip ...`
@@ -341,10 +341,6 @@ My consideration is that the stub type dependencies are never properly maintaine
 
 ---
 
-_Referenced in [holdonprojekt/hcc#1](../../holdonprojekt/hcc/pulls/1.md) on 2025-04-04 15:02_
-
----
-
 _Comment by @bowenliang123 on 2025-04-06 01:50_
 
 > I've got similar problem when use `mypy` uv `uv`. Both `uv run pip mypy --install-types --non-interactive .` and `uv run --with pip mypy --install-types --non-interactive .` failed the tests.
@@ -408,10 +404,6 @@ Uninstalled 3 packages in 27ms
  - python-dotenv==1.1.1
 
 Is this also related to the specifics of how spacy designed this and at the same time WAD from uv perspective?
-
----
-
-_Referenced in [explosion/spaCy#13846](../../explosion/spaCy/issues/13846.md) on 2025-09-30 15:30_
 
 ---
 

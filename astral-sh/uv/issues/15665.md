@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-03T15:04:51Z
 updated_at: 2025-10-07T16:18:41Z
 url: https://github.com/astral-sh/uv/issues/15665
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add a hint on `uv tool update <name>` when the package is pinned to a version
@@ -391,10 +391,6 @@ Sounds good. I'll give it a try until tomorrow and let you know. Thansk for the 
 _Comment by @mdevino on 2025-09-08 12:10_
 
 Hello. Just wanted to say that I couldn't get a working version of this yet, but I'm still looking into it.
-
----
-
-_Referenced in [astral-sh/uv#16081](../../astral-sh/uv/pulls/16081.md) on 2025-10-01 01:26_
 
 ---
 

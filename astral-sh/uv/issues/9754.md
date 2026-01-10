@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-09T22:34:34Z
 updated_at: 2025-10-14T05:50:49Z
 url: https://github.com/astral-sh/uv/issues/9754
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add support for templating and creating projects with uv
@@ -162,10 +162,6 @@ _Label `duplicate` added by @zanieb on 2024-12-10 00:59_
 
 ---
 
-_Referenced in [astral-sh/uv#4759](../../astral-sh/uv/issues/4759.md) on 2024-12-10 00:59_
-
----
-
 _Comment by @zanieb on 2024-12-10 01:00_
 
 Actually sorry to flip flop, I think I'm okay tracking this separately if you're suggesting we define our _own_ template tooling — that's the case, yes?
@@ -223,10 +219,6 @@ Have a look at https://copier.readthedocs.io !
 _Comment by @josecannete on 2025-02-15 14:34_
 
 I think this could be a great addition to uv!
-
----
-
-_Referenced in [astral-sh/uv#8178](../../astral-sh/uv/issues/8178.md) on 2025-02-20 03:35_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-05-21T11:47:15Z
 updated_at: 2025-09-08T16:50:58Z
 url: https://github.com/astral-sh/uv/issues/13572
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv export` does not respect custom index setting from `[tool.uv.sources]` when exporting to `requirements.txt`
@@ -85,10 +85,6 @@ I think for this use case, the user would also need to specify the environment m
 
 ---
 
-_Referenced in [terraform-aws-modules/terraform-aws-lambda#673](../../terraform-aws-modules/terraform-aws-lambda/issues/673.md) on 2025-07-02 09:47_
-
----
-
 _Comment by @rzuckerm on 2025-09-08 15:57_
 
 I also have a use-case for this where I need to export requirements to a `requirements.txt` file and have multiple internal pypi indexes. The way `poetry export` handles this is to add these lines to the top of the `requirements.txt` file:
@@ -130,9 +126,5 @@ I tried a similar experiment where I took the modified `requirements.txt` and us
 - `uv pip install -r /path/to/project/dist/requirements.txt`
 
 That works, too, even if I clear the uv cache (`rm -rf ~/.cache/uv`) before doing the above.
-
----
-
-_Referenced in [bentoml/BentoML#5466](../../bentoml/BentoML/issues/5466.md) on 2025-09-12 09:52_
 
 ---

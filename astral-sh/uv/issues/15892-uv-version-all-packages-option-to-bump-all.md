@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-16T13:49:12Z
 updated_at: 2025-09-16T13:57:14Z
 url: https://github.com/astral-sh/uv/issues/15892
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv version --all-packages` option to bump all workspace members
@@ -51,9 +51,5 @@ That sounds reasonable to me. I think we could also allow repeating `--package` 
 ---
 
 _Label `help wanted` added by @zanieb on 2025-09-16 13:57_
-
----
-
-_Referenced in [astral-sh/uv#15939](../../astral-sh/uv/pulls/15939.md) on 2025-09-18 21:32_
 
 ---

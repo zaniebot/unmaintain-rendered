@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-18T16:36:55Z
 updated_at: 2025-09-17T10:21:27Z
 url: https://github.com/astral-sh/uv/issues/15357
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Stabilize conflicting modules warning
@@ -65,13 +65,5 @@ _Label `enhancement` removed by @konstin on 2025-08-18 16:42_
 ---
 
 _Label `tracking` added by @konstin on 2025-08-18 16:42_
-
----
-
-_Referenced in [mlflow/mlflow#17267](../../mlflow/mlflow/issues/17267.md) on 2025-08-19 11:55_
-
----
-
-_Referenced in [astral-sh/uv#15813](../../astral-sh/uv/issues/15813.md) on 2025-09-12 14:35_
 
 ---

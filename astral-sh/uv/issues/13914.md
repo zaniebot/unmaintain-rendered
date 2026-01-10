@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-09T07:22:13Z
 updated_at: 2025-10-19T12:21:17Z
 url: https://github.com/astral-sh/uv/issues/13914
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv build` in a workspace: output directory is weird/inconsistent
@@ -66,10 +66,6 @@ _Label `bug` added by @dimaqq on 2025-06-09 07:22_
 ---
 
 _Assigned to @konstin by @zanieb on 2025-06-09 14:19_
-
----
-
-_Referenced in [astral-sh/uv#15133](../../astral-sh/uv/pulls/15133.md) on 2025-08-07 12:24_
 
 ---
 

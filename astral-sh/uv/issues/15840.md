@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-14T15:27:28Z
 updated_at: 2025-09-17T14:30:44Z
 url: https://github.com/astral-sh/uv/issues/15840
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Uninterpreted color codes in some error messages
@@ -82,10 +82,6 @@ _Label `bug` added by @fleetingbytes on 2025-09-14 15:27_
 
 ---
 
-_Referenced in [astral-sh/uv#15799](../../astral-sh/uv/issues/15799.md) on 2025-09-14 15:28_
-
----
-
 _Comment by @zanieb on 2025-09-14 15:46_
 
 What terminal and shell are you using?
@@ -95,10 +91,6 @@ What terminal and shell are you using?
 _Comment by @fleetingbytes on 2025-09-14 15:55_
 
 Alacrity and zsh. I can give you their exact versions later. I currently don't have access to my machine.
-
----
-
-_Referenced in [PyO3/maturin#2741](../../PyO3/maturin/pulls/2741.md) on 2025-09-14 16:02_
 
 ---
 
@@ -140,10 +132,6 @@ DEBUG Identified uncached distribution: \x1b[32mnumpy==2.3.3\x1b[39m
 
 ---
 
-_Referenced in [astral-sh/uv#15843](../../astral-sh/uv/pulls/15843.md) on 2025-09-14 18:52_
-
----
-
 _Comment by @charliermarsh on 2025-09-14 18:57_
 
 As far as I can tell, https://github.com/astral-sh/uv/issues/11560 was closed but is still broken:
@@ -167,14 +155,6 @@ Ahh, I see... This was changed in https://github.com/tokio-rs/tracing/pull/3368 
 
 ---
 
-_Referenced in [tokio-rs/tracing#3378](../../tokio-rs/tracing/issues/3378.md) on 2025-09-15 07:26_
-
----
-
 _Closed by @charliermarsh on 2025-09-17 14:30_
-
----
-
-_Referenced in [astral-sh/uv#15913](../../astral-sh/uv/issues/15913.md) on 2025-09-17 14:32_
 
 ---

@@ -3,21 +3,21 @@ number: 15960
 title: centralized virtual environments management out of project like poetry
 type: issue
 state: closed
-author: DuroyGeorge
+author: duroey
 labels:
   - enhancement
 assignees: []
 created_at: 2025-09-20T15:06:37Z
 updated_at: 2025-09-20T16:17:16Z
 url: https://github.com/astral-sh/uv/issues/15960
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # centralized virtual environments management out of project like poetry
 
 ---
 
-_Issue opened by @DuroyGeorge on 2025-09-20 15:06_
+_Issue opened by @duroey on 2025-09-20 15:06_
 
 ### Summary
 
@@ -30,7 +30,7 @@ So I wish uv could be configured to behave like poetry which can create virtual 
 
 ---
 
-_Label `enhancement` added by @DuroyGeorge on 2025-09-20 15:06_
+_Label `enhancement` added by @duroey on 2025-09-20 15:06_
 
 ---
 

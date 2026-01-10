@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-19T20:42:27Z
 updated_at: 2025-09-18T07:10:12Z
 url: https://github.com/astral-sh/uv/issues/9246
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Still don't see retry on request or body error when fetching metadata
@@ -740,10 +740,6 @@ Ok believe I've reproduced by patching `reqwest`.
 
 ---
 
-_Referenced in [astral-sh/uv#9253](../../astral-sh/uv/pulls/9253.md) on 2024-11-19 21:56_
-
----
-
 _Closed by @charliermarsh on 2024-11-19 22:08_
 
 ---
@@ -791,9 +787,5 @@ And then the next request presumably worked because I don't see an error.
 ---
 
 _Label `network` added by @konstin on 2025-09-18 07:10_
-
----
-
-_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-22T14:29:34Z
 updated_at: 2025-09-22T17:25:20Z
 url: https://github.com/astral-sh/uv/issues/15983
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add `--all-variants` option to show debug builds in `uv python list`
@@ -89,10 +89,6 @@ Definitely, that was an oversight.
 
 ---
 
-_Referenced in [astral-sh/uv#15985](../../astral-sh/uv/pulls/15985.md) on 2025-09-22 15:43_
-
----
-
 _Renamed from "uv python list is missing cpython (no-freethreaded) debug builds" to "Add `--all-variants` option to show debug builds in `uv python list`" by @zanieb on 2025-09-22 17:24_
 
 ---
@@ -100,9 +96,5 @@ _Renamed from "uv python list is missing cpython (no-freethreaded) debug builds"
 _Comment by @zanieb on 2025-09-22 17:25_
 
 We should also emit debug builds if it's included in the request, e.g., `uv python list 3.13+debug`
-
----
-
-_Referenced in [astral-sh/uv#16002](../../astral-sh/uv/pulls/16002.md) on 2025-09-23 14:46_
 
 ---

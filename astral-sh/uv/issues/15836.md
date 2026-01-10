@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-14T14:04:19Z
 updated_at: 2025-09-14T15:01:26Z
 url: https://github.com/astral-sh/uv/issues/15836
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Check for a `uv.toml` next to the `uv` executable
@@ -71,9 +71,5 @@ Ah interesting. You probably want something like https://github.com/astral-sh/uv
 _Comment by @Ma-Shell on 2025-09-14 15:01_
 
 Yeah, definitely! A bundling solution would be absolutely amazing and as you mentioned, this is mainly a "workaround". But even using this workaround uv has been an incredible gamechanger considering how hard it was before to get Python Applications running on end-user PCs (unless you were using pyinstaller & co but even there I ran into trouble). For now I just did all the configuration of uv-environment variables in the accompanying bat-file which works but becomes nasty when I want to execute some other uv-commands, as I either have to change the bat-file or set the environment variables manually. This is also the reason, why in my original issue I combined it with the toml-extensions.
-
----
-
-_Referenced in [astral-sh/uv#15751](../../astral-sh/uv/issues/15751.md) on 2025-09-16 02:02_
 
 ---

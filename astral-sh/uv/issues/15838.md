@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-14T14:08:45Z
 updated_at: 2025-09-14T14:09:12Z
 url: https://github.com/astral-sh/uv/issues/15838
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow configuring `UV_TOOL_BIN_DIR` and `UV_PYTHON_BIN_DIR` in the `uv.toml`
@@ -32,9 +32,5 @@ See also
 ---
 
 _Label `configuration` added by @zanieb on 2025-09-14 14:08_
-
----
-
-_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-09-14 14:52_
 
 ---

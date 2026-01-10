@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-15T12:17:06Z
 updated_at: 2025-10-18T14:19:52Z
 url: https://github.com/astral-sh/uv/issues/16312
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long`
@@ -183,10 +183,6 @@ _Label `bug` added by @kdeldycke on 2025-10-15 12:17_
 
 ---
 
-_Referenced in [Nuitka/Nuitka#3637](../../Nuitka/Nuitka/issues/3637.md) on 2025-10-15 12:18_
-
----
-
 _Renamed from "`uv`-installed Python fails on  macOS `arm64` runners" to "`uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long`" by @kdeldycke on 2025-10-15 12:18_
 
 ---
@@ -194,10 +190,6 @@ _Renamed from "`uv`-installed Python fails on  macOS `arm64` runners" to "`uv`-i
 _Comment by @kdeldycke on 2025-10-15 12:34_
 
 Is it possible that this issue be related to: https://github.com/astral-sh/python-build-standalone/issues/783 ?
-
----
-
-_Referenced in [astral-sh/python-build-standalone#783](../../astral-sh/python-build-standalone/issues/783.md) on 2025-10-15 12:34_
 
 ---
 

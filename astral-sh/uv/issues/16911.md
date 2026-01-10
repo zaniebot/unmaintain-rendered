@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-01T17:05:52Z
 updated_at: 2025-12-03T08:45:51Z
 url: https://github.com/astral-sh/uv/issues/16911
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Drop xz-in-ZIP support
@@ -44,10 +44,6 @@ _Added to milestone `v0.10.0` by @woodruffw on 2025-12-01 17:36_
 _Comment by @zanieb on 2025-12-01 17:36_
 
 cc @lengau 
-
----
-
-_Referenced in [pypa/pip#13677](../../pypa/pip/issues/13677.md) on 2025-12-01 17:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-01T05:29:25Z
 updated_at: 2025-11-02T18:27:15Z
 url: https://github.com/astral-sh/uv/issues/16545
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Update UV's JSON Schema on JSON Schema Store
@@ -64,9 +64,5 @@ Typically you can have it point to an external file (e.g., the schema we check-i
 ---
 
 _Closed by @charliermarsh on 2025-11-02 18:27_
-
----
-
-_Referenced in [astral-sh/uv#12994](../../astral-sh/uv/issues/12994.md) on 2025-11-03 13:28_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-02T05:34:41Z
 updated_at: 2025-10-02T18:25:23Z
 url: https://github.com/astral-sh/uv/issues/16095
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv pip list --outdated does not use UV_FIND_LINKS
@@ -38,10 +38,6 @@ Python 3.13.7
 ---
 
 _Label `bug` added by @tomazfs on 2025-10-02 05:34_
-
----
-
-_Referenced in [astral-sh/uv#16103](../../astral-sh/uv/pulls/16103.md) on 2025-10-02 15:50_
 
 ---
 

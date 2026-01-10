@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-24T13:23:42Z
 updated_at: 2025-09-05T12:55:45Z
 url: https://github.com/astral-sh/uv/issues/14239
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # windows: uv fails to install cffi when venv is using pypy interpreter (pip does succeed on the same)
@@ -95,14 +95,6 @@ Python 3.11.11 (0253c85bf5f8, Feb 26 2025, 10:43:25) [PyPy 7.3.19 with MSC v.194
 ---
 
 _Label `bug` added by @ssbarnea on 2025-06-24 13:23_
-
----
-
-_Referenced in [tox-dev/tox-uv#193](../../tox-dev/tox-uv/issues/193.md) on 2025-06-24 13:25_
-
----
-
-_Referenced in [tox-dev/tox-uv#215](../../tox-dev/tox-uv/pulls/215.md) on 2025-06-24 15:09_
 
 ---
 

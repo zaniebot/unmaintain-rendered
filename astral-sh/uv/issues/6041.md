@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-12T19:21:42Z
 updated_at: 2025-09-19T20:11:34Z
 url: https://github.com/astral-sh/uv/issues/6041
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Version conflicts installing lock file when multiple git dependencies rely on another git dependency
@@ -259,10 +259,6 @@ Correct, sorry for the mix-up - I saw the ticket open for "Requirements contain 
 _Comment by @charliermarsh on 2024-10-09 15:04_
 
 No problem. I will look at it -- feel free to create a separate issue.
-
----
-
-_Referenced in [astral-sh/uv#8087](../../astral-sh/uv/issues/8087.md) on 2024-10-10 12:17_
 
 ---
 

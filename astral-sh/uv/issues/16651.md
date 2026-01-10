@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-09T09:07:23Z
 updated_at: 2025-11-10T15:26:14Z
 url: https://github.com/astral-sh/uv/issues/16651
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `torch-tb-profiler==0.4.3` fails to install when specifying  `--torch-backend`
@@ -119,10 +119,6 @@ We should probably remove it from the list. It _is_ present on the PyTorch index
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-09 19:02_
-
----
-
-_Referenced in [astral-sh/uv#16655](../../astral-sh/uv/pulls/16655.md) on 2025-11-09 19:03_
 
 ---
 

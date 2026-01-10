@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T12:04:44Z
 updated_at: 2025-09-08T18:11:42Z
 url: https://github.com/astral-sh/uv/issues/11315
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add `conda` environment support for `--active` flag
@@ -44,10 +44,6 @@ In theory, this also means we'd warn when `CONDA_PREFIX` is set and does not mat
 
 ---
 
-_Referenced in [astral-sh/uv#6612](../../astral-sh/uv/issues/6612.md) on 2025-05-18 10:12_
-
----
-
 _Comment by @RafalSkolasinski on 2025-05-18 18:25_
 
 That'd be a great feature and fill a hole in feature parity with `poetry`, and docs gave me hope it'd already be working:
@@ -74,10 +70,6 @@ VIRTUAL_ENV=$CONDA_PREFIX uv sync --active
 but it'd be great if it worked out of the box. 
 
 It may be my solution for https://github.com/astral-sh/uv/issues/1495 but I love to install set of locked packages into a conda environment and then be able to activate it from anywhere.
-
----
-
-_Referenced in [astral-sh/uv#11273](../../astral-sh/uv/issues/11273.md) on 2025-06-06 10:39_
 
 ---
 

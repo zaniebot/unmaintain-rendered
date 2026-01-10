@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-10-02T07:40:43Z
 updated_at: 2025-10-02T08:46:04Z
 url: https://github.com/astral-sh/uv/issues/16097
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Action Required: Fix Renovate Configuration
@@ -24,10 +24,6 @@ Location: `.github/renovate.json5`
 Error type: The renovate configuration file contains some invalid settings
 Message: Invalid configuration option: packageRules[9].matchDepName
 
-
----
-
-_Referenced in [astral-sh/uv#16098](../../astral-sh/uv/pulls/16098.md) on 2025-10-02 08:34_
 
 ---
 

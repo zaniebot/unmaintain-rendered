@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-28T23:20:07Z
 updated_at: 2025-08-31T14:53:01Z
 url: https://github.com/astral-sh/uv/issues/15577
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # "uv pip install *** --compile-bytecode" fails with obscure message
@@ -91,10 +91,6 @@ _Label `needs-mre` removed by @charliermarsh on 2025-08-31 14:33_
 _Comment by @charliermarsh on 2025-08-31 14:33_
 
 Thanks! That reproduces for me.
-
----
-
-_Referenced in [astral-sh/uv#15608](../../astral-sh/uv/pulls/15608.md) on 2025-08-31 14:40_
 
 ---
 

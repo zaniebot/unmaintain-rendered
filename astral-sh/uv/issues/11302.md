@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T00:19:32Z
 updated_at: 2025-10-12T21:16:50Z
 url: https://github.com/astral-sh/uv/issues/11302
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Start search for projects and virtual environments at script directory (instead of cwd)
@@ -216,10 +216,6 @@ _Label `question` removed by @zanieb on 2025-04-01 17:39_
 
 ---
 
-_Referenced in [astral-sh/uv#12193](../../astral-sh/uv/issues/12193.md) on 2025-04-01 17:41_
-
----
-
 _Comment by @zanieb on 2025-04-01 17:42_
 
 We can consider this. I think it's probably reasonable, but it is breaking and it will be hard to assess how many people rely on the existing behavior.
@@ -314,10 +310,6 @@ If you run `uv run hello.py` in the `foo/` folder to create `foo/.venv`, and the
 _Comment by @karnigen on 2025-04-03 22:39_
 
 `uv` version 0.6.12 appears to be exhibiting different behavior. As a temporary solution, I've implemented a script that always resolves the script path and uses the corresponding virtual environment. The link is provided for those who may find it useful: [uvr](https://github.com/karnigen/uvr). Hopefully, it meets the expectations outlined here.
-
----
-
-_Referenced in [astral-sh/uv#12876](../../astral-sh/uv/issues/12876.md) on 2025-04-14 12:19_
 
 ---
 

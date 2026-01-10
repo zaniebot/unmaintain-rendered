@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-15T14:36:35Z
 updated_at: 2025-12-02T22:50:35Z
 url: https://github.com/astral-sh/uv/issues/9150
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Workspace per project lockfile and virtual environment
@@ -58,10 +58,6 @@ So yes I support an option to have per-workspace-member lockfile, while also kee
 _Comment by @US579 on 2025-08-29 11:19_
 
 +1 are there any update on this?
-
----
-
-_Referenced in [astral-sh/uv#15697](../../astral-sh/uv/issues/15697.md) on 2025-09-05 09:05_
 
 ---
 

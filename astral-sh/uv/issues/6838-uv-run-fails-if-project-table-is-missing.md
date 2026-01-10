@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T22:35:27Z
 updated_at: 2025-09-17T15:48:57Z
 url: https://github.com/astral-sh/uv/issues/6838
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv run fails if project table is missing
@@ -189,10 +189,6 @@ I believe this is being addressed in https://github.com/astral-sh/uv/pull/14113
 ---
 
 _Reopened by @zanieb on 2025-07-15 17:05_
-
----
-
-_Referenced in [astral-sh/uv#14113](../../astral-sh/uv/pulls/14113.md) on 2025-07-15 17:06_
 
 ---
 

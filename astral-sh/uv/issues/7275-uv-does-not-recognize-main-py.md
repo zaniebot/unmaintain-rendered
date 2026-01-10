@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T20:33:40Z
 updated_at: 2025-09-30T11:25:55Z
 url: https://github.com/astral-sh/uv/issues/7275
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv does not recognize __main__.py?
@@ -79,10 +79,6 @@ _Label `enhancement` added by @zanieb on 2024-09-10 22:23_
 
 ---
 
-_Referenced in [astral-sh/uv#7281](../../astral-sh/uv/pulls/7281.md) on 2024-09-11 05:39_
-
----
-
 _Closed by @zanieb on 2024-09-11 13:18_
 
 ---
@@ -96,9 +92,5 @@ Same problem here. Feels uncomfortable to enter sth like `uv run src/projectname
 _Comment by @konstin on 2025-09-30 11:25_
 
 @ghpqans This issue has been solved, please open a new issue following #9452.
-
----
-
-_Referenced in [astral-sh/uv#16764](../../astral-sh/uv/issues/16764.md) on 2025-12-03 17:58_
 
 ---

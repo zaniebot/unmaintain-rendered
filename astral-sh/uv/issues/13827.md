@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T22:37:36Z
 updated_at: 2025-11-03T22:47:20Z
 url: https://github.com/astral-sh/uv/issues/13827
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add support for updating the version of arbitrary files in `uv version —bump`
@@ -134,14 +134,6 @@ Additional prior art can be found in [cargo-release's config](https://github.com
 _Comment by @Gankra on 2025-06-12 19:11_
 
 In general I think this is a good idea and we should eventually support it but it's a *big* project in terms of config design, so I'm not sure we can prioritize it right now.
-
----
-
-_Referenced in [astral-sh/uv#14644](../../astral-sh/uv/issues/14644.md) on 2025-07-16 00:37_
-
----
-
-_Referenced in [astral-sh/uv#14707](../../astral-sh/uv/issues/14707.md) on 2025-07-18 11:37_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-03T20:31:28Z
 updated_at: 2025-10-08T06:22:03Z
 url: https://github.com/astral-sh/uv/issues/16120
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Monorepo/Workspace Layout Adjustments
@@ -189,10 +189,6 @@ basically — this would give Python a pnpm-style workspace, single `uv.lock`, a
 
 Granted, I know this would move away from Python standards a bit, which is probably averse to the goal, I just think it would make it a lot easier to use, IMO. I don't know, I just don't love having multiple sub-folders for seemingly not a ton of reason?
 
-
----
-
-_Referenced in [astral-sh/uv#11325](../../astral-sh/uv/pulls/11325.md) on 2025-10-06 20:26_
 
 ---
 

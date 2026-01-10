@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-21T13:49:26Z
 updated_at: 2025-08-27T15:28:03Z
 url: https://github.com/astral-sh/uv/issues/15415
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv fails to build package with cmake 4.1.0 but system pip succeeds
@@ -678,14 +678,6 @@ _Comment by @zanieb on 2025-08-22 19:13_
 See also
 
 - https://github.com/astral-sh/uv/issues/12564
-
----
-
-_Referenced in [astral-sh/uv#12564](../../astral-sh/uv/issues/12564.md) on 2025-08-22 19:14_
-
----
-
-_Referenced in [astral-sh/uv#15472](../../astral-sh/uv/pulls/15472.md) on 2025-08-23 16:08_
 
 ---
 

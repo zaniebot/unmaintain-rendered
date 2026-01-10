@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-27T11:18:57Z
 updated_at: 2025-11-28T15:03:06Z
 url: https://github.com/astral-sh/uv/issues/16872
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Editable mode ignored when reading from requirement-file
@@ -70,10 +70,6 @@ There's `--editable`/`--no-editable` on the CLI, but when importing from a requi
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-28 13:44_
-
----
-
-_Referenced in [astral-sh/uv#16882](../../astral-sh/uv/pulls/16882.md) on 2025-11-28 14:28_
 
 ---
 

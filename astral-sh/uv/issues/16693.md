@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-11T21:12:56Z
 updated_at: 2025-11-14T10:02:05Z
 url: https://github.com/astral-sh/uv/issues/16693
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv build does not warn or fail when license files do not exist
@@ -130,10 +130,6 @@ Python 3.10.12
 ---
 
 _Label `bug` added by @N-Wouda on 2025-11-11 21:12_
-
----
-
-_Referenced in [astral-sh/uv#16697](../../astral-sh/uv/pulls/16697.md) on 2025-11-12 02:09_
 
 ---
 

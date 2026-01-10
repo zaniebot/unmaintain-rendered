@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-09T16:16:24Z
 updated_at: 2025-11-09T16:16:24Z
 url: https://github.com/astral-sh/uv/issues/16654
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Combine `requires-python` range with explicit Python requests
@@ -30,13 +30,5 @@ If I do `--python >=3.10` and have a `requires-python = ">=3.12"`, we should sea
 ---
 
 _Label `enhancement` added by @zanieb on 2025-11-09 16:16_
-
----
-
-_Referenced in [astral-sh/uv#15694](../../astral-sh/uv/issues/15694.md) on 2025-11-09 16:16_
-
----
-
-_Referenced in [GridTools/gt4py#2410](../../GridTools/gt4py/pulls/2410.md) on 2025-12-03 15:30_
 
 ---

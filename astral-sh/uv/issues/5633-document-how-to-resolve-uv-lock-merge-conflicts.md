@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T20:40:18Z
 updated_at: 2025-11-25T23:11:49Z
 url: https://github.com/astral-sh/uv/issues/5633
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Document how to resolve `uv.lock` merge conflicts
@@ -75,13 +75,5 @@ Just found https://github.com/astral-sh/uv/issues/7533 which covers it. Sorry fo
 _Comment by @zanieb on 2024-12-12 15:21_
 
 👍 yep that's the issue to track. No problem :)
-
----
-
-_Referenced in [astral-sh/uv#11185](../../astral-sh/uv/issues/11185.md) on 2025-02-03 16:24_
-
----
-
-_Referenced in [astral-sh/uv#16348](../../astral-sh/uv/issues/16348.md) on 2025-10-17 19:58_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-06T05:59:11Z
 updated_at: 2025-11-10T16:09:35Z
 url: https://github.com/astral-sh/uv/issues/7945
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Modifying `tool.uv.sources` between production and development
@@ -346,17 +346,9 @@ There was a discussion in Discord in which someone wants to use a workspace sour
 
 ---
 
-_Referenced in [astral-sh/uv#9537](../../astral-sh/uv/issues/9537.md) on 2024-12-03 18:01_
-
----
-
 _Comment by @choucavalier on 2024-12-03 22:07_
 
 I second the need for this functionality. Having some libraries as editable during development and correctly packaging them from git sources for CI/CD pipelines would be great. Right now there's no solution for this.
-
----
-
-_Referenced in [astral-sh/uv#9675](../../astral-sh/uv/issues/9675.md) on 2024-12-06 11:58_
 
 ---
 
@@ -382,17 +374,9 @@ _Label `needs-design` added by @charliermarsh on 2024-12-06 11:59_
 
 ---
 
-_Referenced in [astral-sh/uv#9682](../../astral-sh/uv/issues/9682.md) on 2024-12-06 13:50_
-
----
-
 _Comment by @charliermarsh on 2024-12-08 04:29_
 
 It doesn't solve the broader "prod vs. dev" problem, but I think we should allow conflicting URLs between `project.dependencies` and `tool.uv.sources`. It's legitimately useful and semantically reasonable (and costs us nothing).
-
----
-
-_Referenced in [astral-sh/uv#9718](../../astral-sh/uv/pulls/9718.md) on 2024-12-08 13:45_
 
 ---
 
@@ -403,10 +387,6 @@ https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#the-patch
 https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides
 
 Specifically, Cargo allows defining those settings via config files outside of the project (eg a global machine config) allowing one to override the `Cargo.toml` committed to Git, and thus change how dependencies are sourced locally.
-
----
-
-_Referenced in [astral-sh/uv#11632](../../astral-sh/uv/issues/11632.md) on 2025-02-19 18:41_
 
 ---
 
@@ -443,18 +423,6 @@ this fails when I try to `uv lock` with duplicate entries in sources - is there 
 _Comment by @konstin on 2025-04-08 17:05_
 
 That's indeed a missing feature, specifically that index pinning does not work with `--no-sources`.
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
-
----
-
-_Referenced in [astral-sh/uv#14154](../../astral-sh/uv/issues/14154.md) on 2025-06-20 18:07_
 
 ---
 
@@ -526,10 +494,6 @@ Looks like basically `uv add` and `uv add --dev --editable /some/dependency` and
 
 ---
 
-_Referenced in [astral-sh/uv#15129](../../astral-sh/uv/issues/15129.md) on 2025-09-12 14:05_
-
----
-
 _Comment by @vitschwilk on 2025-11-10 16:09_
 
 I think having a configurable source would be a huge benefit. E.g. when we integrate our module we don't want to deploy multiple dev version to our private pypi repository but want to use editable installs. But in a pipeline scope the paths might differ from a dev environment or might even be referenced form a different repo. 
@@ -557,9 +521,5 @@ Syncing with `uv sync sources=integration` would then provide only the sources i
 The workaround form @waynew did not work for my use case since `uv sync` always uses `dependency-groups.dev`. My use case for `dependency-groups.dev` is something like "unittest" or "coverage", which are always need on a developer machine and on the pipeline. Also I would think running integration tests on a pipeline should include installing the correct version locked version of the dependency overwriting the version in a dev-dependency-group with any version can result is a broken dependency in the deployed version. 
 
 tl:dr: I think being able to specify which sources (group) to use would be very useful for a pipeline use case. I would highly appreciate this feature since it would make uv complete for me.
-
----
-
-_Referenced in [astral-sh/uv#10096](../../astral-sh/uv/issues/10096.md) on 2025-11-12 08:33_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-06T01:32:53Z
 updated_at: 2025-10-06T09:16:02Z
 url: https://github.com/astral-sh/uv/issues/16131
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # I don't understand documentation for version
@@ -68,10 +68,6 @@ _Label `bug` added by @raffaem on 2025-10-06 01:32_
 _Comment by @sterliakov on 2025-10-06 02:20_
 
 Looks like a simple typo in the docs, bumping beta modifier isn't supposed to also bump the patch component.
-
----
-
-_Referenced in [astral-sh/uv#16132](../../astral-sh/uv/pulls/16132.md) on 2025-10-06 04:00_
 
 ---
 

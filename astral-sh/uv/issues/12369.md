@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-21T16:42:07Z
 updated_at: 2025-10-07T09:14:52Z
 url: https://github.com/astral-sh/uv/issues/12369
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # sometimes we want to force `uv publish` to upload anyway
@@ -58,10 +58,6 @@ Uploading $FILE_NAME ($SIZEKiB)
 ---
 
 _Label `enhancement` added by @marc-planard on 2025-03-21 16:42_
-
----
-
-_Referenced in [astral-sh/uv#12370](../../astral-sh/uv/pulls/12370.md) on 2025-03-21 16:49_
 
 ---
 

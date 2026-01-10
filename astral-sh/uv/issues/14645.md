@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T04:02:21Z
 updated_at: 2025-09-11T06:41:28Z
 url: https://github.com/astral-sh/uv/issues/14645
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Extras in dep group self includes are ignored if the extra is in a conflict group
@@ -298,10 +298,6 @@ I'm not clear on that yet.
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-07-28 14:44_
-
----
-
-_Referenced in [astral-sh/uv#15779](../../astral-sh/uv/issues/15779.md) on 2025-09-10 21:39_
 
 ---
 

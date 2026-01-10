@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T19:45:08Z
 updated_at: 2025-09-22T04:21:50Z
 url: https://github.com/astral-sh/uv/issues/7516
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Pyarrow wheel installation failure
@@ -1218,10 +1218,6 @@ _Comment by @charliermarsh on 2024-10-16 12:42_
 _Comment by @jimmy-marmalade on 2024-11-05 20:24_
 
 @charliermarsh is there any other info I can provide to help here?
-
----
-
-_Referenced in [huggingface/speech-to-speech#135](../../huggingface/speech-to-speech/issues/135.md) on 2024-11-15 16:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T16:59:59Z
 updated_at: 2025-10-03T20:52:44Z
 url: https://github.com/astral-sh/uv/issues/6533
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # [wish] A version of the shell script installer that also installs a tool in a single line
@@ -170,10 +170,6 @@ _Comment by @chrisrodrigue on 2024-08-23 22:20_
 
 Just came across #6505… even better!
 
-
----
-
-_Referenced in [astral-sh/uv#6662](../../astral-sh/uv/issues/6662.md) on 2024-08-27 01:49_
 
 ---
 

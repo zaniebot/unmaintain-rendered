@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-31T10:49:07Z
 updated_at: 2025-10-31T14:53:35Z
 url: https://github.com/astral-sh/uv/issues/16533
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv crash with exit code 132 on older CPUs
@@ -162,9 +162,5 @@ Thank you for your help
 ---
 
 _Closed by @eyalmazuz on 2025-10-31 14:53_
-
----
-
-_Referenced in [pola-rs/polars#25116](../../pola-rs/polars/issues/25116.md) on 2025-10-31 14:57_
 
 ---

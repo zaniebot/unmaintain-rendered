@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T12:14:15Z
 updated_at: 2025-09-17T02:41:07Z
 url: https://github.com/astral-sh/uv/issues/8085
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv sync: support `--system` to not install dependencies into venv
@@ -53,10 +53,6 @@ What do we think?
 
 I think that https://github.com/astral-sh/uv/issues/7659 might have a similar motivation. 
 
-
----
-
-_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-10-10 12:15_
 
 ---
 
@@ -472,9 +468,5 @@ Using `pip install --root <directory> <packages>` allows the final artifact of a
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#13129](../../astral-sh/uv/issues/13129.md) on 2025-09-16 13:48_
 
 ---

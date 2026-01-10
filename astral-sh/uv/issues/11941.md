@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-04T05:44:03Z
 updated_at: 2025-11-04T06:52:13Z
 url: https://github.com/astral-sh/uv/issues/11941
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # How to Configure Different Sources for Different `dependency-groups` Like `optional-dependencies`
@@ -128,14 +128,6 @@ I think it would be helpful to add more documentation on `dependency-groups` and
 The only reference to `group` I found in the documentation is in the **conflicts** section: [Conflicting Dependencies](https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies).  
 
 Clarifying this in the official docs would be greatly appreciated! 🚀
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
 
 ---
 

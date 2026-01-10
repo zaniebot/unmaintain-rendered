@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T19:32:33Z
 updated_at: 2025-10-09T08:47:39Z
 url: https://github.com/astral-sh/uv/issues/5734
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Expand environment variables in user-provided index URLs
@@ -29,10 +29,6 @@ Right now, we only support expansion (1) by the shell (of course) and (2) in req
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-08-02 19:32_
-
----
-
-_Referenced in [astral-sh/uv#5119](../../astral-sh/uv/issues/5119.md) on 2024-08-02 19:32_
 
 ---
 
@@ -148,14 +144,6 @@ I'm not sure I understand the concern around env var expansion within a url for 
 
 ---
 
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-09-14 03:14_
-
----
-
-_Referenced in [astral-sh/uv#7660](../../astral-sh/uv/issues/7660.md) on 2024-09-24 21:40_
-
----
-
 _Comment by @woutervh on 2024-10-01 08:24_
 
 "opt-in variables"?  because you don't trust your own environment-variables? That makes zero sense to me.
@@ -163,10 +151,6 @@ _Comment by @woutervh on 2024-10-01 08:24_
 > Currently uv.lock exposes API keys in source URLs which means a lot of users can’t check it into version control.
 
 The source-urls in the lockfile could just use the verbatim non-resolved strings "https://${PYPI_USERNAME}:${PYPI_USERNAME}..." 
-
----
-
-_Referenced in [astral-sh/uv#1384](../../astral-sh/uv/issues/1384.md) on 2024-10-02 23:22_
 
 ---
 
@@ -253,30 +237,6 @@ Akin to index credentials themselves (by keychain) seems like it'd need to be so
 _Comment by @Kristina-Pianykh on 2024-10-22 08:41_
 
 The problem with the first issue is the use of single quotes which tell bash to interpret the string literally. Use double quotes for string interpolation
-
----
-
-_Referenced in [astral-sh/uv#8443](../../astral-sh/uv/issues/8443.md) on 2024-10-22 10:55_
-
----
-
-_Referenced in [astral-sh/uv#8510](../../astral-sh/uv/issues/8510.md) on 2024-10-23 22:37_
-
----
-
-_Referenced in [astral-sh/uv#8529](../../astral-sh/uv/issues/8529.md) on 2024-10-24 14:39_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
-_Referenced in [astral-sh/uv#10096](../../astral-sh/uv/issues/10096.md) on 2024-12-26 14:33_
 
 ---
 
@@ -374,10 +334,6 @@ export UV_INDEX_PRODIGY_PASSWORD=YOUR_PRODIGY_LICENSE_KEY
 uv add prodigy
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#13206](../../astral-sh/uv/issues/13206.md) on 2025-04-29 23:45_
 
 ---
 
@@ -494,14 +450,6 @@ v-cool-private-package = { git = "https://github.com/org/v-cool-private-package.
 ```
 
 It doesn't feel lovely, but works for now 😬 
-
----
-
-_Referenced in [prefix-dev/pixi#3755](../../prefix-dev/pixi/issues/3755.md) on 2025-05-13 08:43_
-
----
-
-_Referenced in [astral-sh/uv#13879](../../astral-sh/uv/pulls/13879.md) on 2025-06-06 04:05_
 
 ---
 
@@ -636,10 +584,6 @@ I am wondering if we are putting too much burden on `uv` to solve this problem w
 When I worked in a research job at a lab funded by government a long time ago, the most security-conscious work was done in an area where they disallowed all Internet access. Everything they used came from the internal network. And the USB ports were disabled so that USB memory sticks weren't an attack vector.
 
 My point is that the best thing for security are comprehensive measures and having very granular security controls within this one tool called `uv` might not be worth the trouble of the complexity they add.
-
----
-
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2025-06-30 16:26_
 
 ---
 

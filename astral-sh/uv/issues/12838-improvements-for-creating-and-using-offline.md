@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-11T15:20:59Z
 updated_at: 2025-11-17T20:13:25Z
 url: https://github.com/astral-sh/uv/issues/12838
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # improvements for creating and using offline mirror for uv-python
@@ -38,21 +38,5 @@ _No response_
 ---
 
 _Label `enhancement` added by @MeitarR on 2025-04-11 15:20_
-
----
-
-_Referenced in [astral-sh/uv#12974](../../astral-sh/uv/pulls/12974.md) on 2025-04-18 20:57_
-
----
-
-_Referenced in [hingebase/mahoraga#6](../../hingebase/mahoraga/issues/6.md) on 2025-04-19 10:15_
-
----
-
-_Referenced in [astral-sh/uv#16475](../../astral-sh/uv/pulls/16475.md) on 2025-10-28 02:12_
-
----
-
-_Referenced in [astral-sh/uv#16669](../../astral-sh/uv/issues/16669.md) on 2025-11-14 20:05_
 
 ---

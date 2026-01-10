@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-25T20:34:22Z
 updated_at: 2025-10-12T21:16:49Z
 url: https://github.com/astral-sh/uv/issues/3271
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `PROJECT_ROOT` in `requirements` uses the working directory
@@ -190,10 +190,6 @@ Hi, @charliermarsh, I noticed the 'needs-decision' label is still applied. Does 
 
 ---
 
-_Referenced in [astral-sh/uv#12973](../../astral-sh/uv/issues/12973.md) on 2025-04-21 01:56_
-
----
-
 _Renamed from "Bug (?): `PACKAGE_ROOT` not working one level up" to "`PROJECT_ROOT` in `requirements` uses the working directory" by @zanieb on 2025-04-30 17:33_
 
 ---
@@ -203,10 +199,6 @@ _Label `needs-decision` removed by @zanieb on 2025-04-30 17:33_
 ---
 
 _Label `needs-design` added by @zanieb on 2025-04-30 17:33_
-
----
-
-_Referenced in [astral-sh/uv#13239](../../astral-sh/uv/issues/13239.md) on 2025-04-30 17:36_
 
 ---
 
@@ -243,10 +235,6 @@ We'll need to drive https://github.com/astral-sh/uv/issues/13239 to consensus in
 _Comment by @m1cr0man on 2025-07-18 21:43_
 
 I see. Are you looking for user feedback in that issue or is it more a matter for maintainers? I'm personally happy with what you have proposed.
-
----
-
-_Referenced in [pebble-dev/pebble-firmware#255](../../pebble-dev/pebble-firmware/pulls/255.md) on 2025-08-01 11:19_
 
 ---
 

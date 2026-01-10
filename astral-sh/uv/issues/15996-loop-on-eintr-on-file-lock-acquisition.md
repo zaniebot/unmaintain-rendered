@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-22T21:48:16Z
 updated_at: 2025-11-11T17:50:08Z
 url: https://github.com/astral-sh/uv/issues/15996
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Loop on `EINTR` on file lock acquisition
@@ -33,10 +33,6 @@ I'm not sure if something below us takes care of this.
 ---
 
 _Label `help wanted` added by @zanieb on 2025-09-22 21:48_
-
----
-
-_Referenced in [astral-sh/uv#15992](../../astral-sh/uv/pulls/15992.md) on 2025-09-22 21:55_
 
 ---
 

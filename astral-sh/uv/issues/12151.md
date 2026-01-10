@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-13T12:55:43Z
 updated_at: 2025-10-19T15:59:35Z
 url: https://github.com/astral-sh/uv/issues/12151
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # python run by uv is not the real python process
@@ -135,10 +135,6 @@ I don't have a strong understand of the spec here, if this actually is part of t
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#16085](../../astral-sh/uv/issues/16085.md) on 2025-10-01 14:43_
 
 ---
 

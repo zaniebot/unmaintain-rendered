@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T13:05:06Z
 updated_at: 2025-08-26T02:27:27Z
 url: https://github.com/astral-sh/uv/issues/14150
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv pip install git+git:// is not allowed
@@ -80,10 +80,6 @@ _Label `enhancement` removed by @konstin on 2025-06-20 15:35_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2025-07-11 02:31_
-
----
-
-_Referenced in [astral-sh/uv#12344](../../astral-sh/uv/issues/12344.md) on 2025-07-11 02:31_
 
 ---
 

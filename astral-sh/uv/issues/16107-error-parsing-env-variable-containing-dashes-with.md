@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-02T20:28:40Z
 updated_at: 2025-10-02T20:47:47Z
 url: https://github.com/astral-sh/uv/issues/16107
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Error parsing env variable containing dashes with --env-file flag
@@ -127,9 +127,5 @@ Tried in another terminal and worked as expected. Will open an issue for them in
 ---
 
 _Closed by @gbassinello on 2025-10-02 20:47_
-
----
-
-_Referenced in [microsoft/vscode-python-environments#887](../../microsoft/vscode-python-environments/issues/887.md) on 2025-10-02 21:02_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-23T08:14:04Z
 updated_at: 2025-10-23T15:48:35Z
 url: https://github.com/astral-sh/uv/issues/16416
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python upgrade` installs cpython-3.11 if pypy-3.11 exists
@@ -85,10 +85,6 @@ Thanks for the report!
 _Comment by @zanieb on 2025-10-23 13:09_
 
 A quick diagnosis... it looks like https://github.com/astral-sh/uv/blob/51e8da2d1c7a15cd30901de565fba2c19413f6da/crates/uv/src/commands/python/install.rs#L215 doesn't construct a request including the implementation, which is problematic.
-
----
-
-_Referenced in [astral-sh/uv#16420](../../astral-sh/uv/pulls/16420.md) on 2025-10-23 14:57_
 
 ---
 

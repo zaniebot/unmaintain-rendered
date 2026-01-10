@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-06T03:56:17Z
 updated_at: 2025-10-21T23:45:07Z
 url: https://github.com/astral-sh/uv/issues/13878
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add a comment to the top of uv.lock files containing the string @generated
@@ -61,14 +61,6 @@ _Comment by @roganartu on 2025-06-09 16:52_
 I agree this is likely subjective, but I'd argue that lockfiles are (usually?) no more reviewable than say generated protobuf files. We should generally be able to trust the tools to do the right thing. I can see some situations where one might want to review them, such as when doing major version bumps or something, but their format and verbosity doesn't really lend itself to review anyway so I suspect the behaviour has long been reinforced to ignore.
 
 It's certainly not just python that has this problem, lockfiles have to represent so much information that there probably isn't really a succinct and readable representation. Ruby, JS, Go, Rust, all have the same "issue" imo.
-
----
-
-_Referenced in [astral-sh/uv#14959](../../astral-sh/uv/issues/14959.md) on 2025-07-29 20:05_
-
----
-
-_Referenced in [astral-sh/uv#16277](../../astral-sh/uv/pulls/16277.md) on 2025-10-13 03:09_
 
 ---
 

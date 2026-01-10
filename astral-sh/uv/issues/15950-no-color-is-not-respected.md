@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-19T13:54:53Z
 updated_at: 2025-09-29T13:38:49Z
 url: https://github.com/astral-sh/uv/issues/15950
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `--no-color` is not respected
@@ -46,10 +46,6 @@ _Label `bug` added by @konstin on 2025-09-19 13:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-27 18:12_
-
----
-
-_Referenced in [astral-sh/uv#16044](../../astral-sh/uv/pulls/16044.md) on 2025-09-27 18:16_
 
 ---
 

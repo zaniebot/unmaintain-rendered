@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-27T13:05:33Z
 updated_at: 2025-09-17T05:49:08Z
 url: https://github.com/astral-sh/uv/issues/13129
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Request for `--root` Support for Multi-Stage Docker Builds
@@ -134,10 +134,6 @@ In short, `pip install --root` has two advantages over using `uv sync` with `UV_
 
 ---
 
-_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2025-09-16 13:27_
-
----
-
 _Comment by @vivodi on 2025-09-16 13:48_
 
 > I don't think the virtual environment itself will add much size to your artifact, but understand the desire for zero ambiguity :)
@@ -179,13 +175,5 @@ Therefore, there is no need to compromise on this issue merely because a venv is
 _Comment by @zanieb on 2025-09-16 19:16_
 
 I think you're underestimating the complexity of maintaining support for something like `--root`.
-
----
-
-_Referenced in [Flexget/Flexget#4372](../../Flexget/Flexget/issues/4372.md) on 2025-10-11 04:08_
-
----
-
-_Referenced in [linuxserver/docker-flexget#25](../../linuxserver/docker-flexget/issues/25.md) on 2025-10-17 14:20_
 
 ---

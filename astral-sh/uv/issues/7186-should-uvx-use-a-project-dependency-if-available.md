@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-08T13:22:20Z
 updated_at: 2025-09-15T12:21:30Z
 url: https://github.com/astral-sh/uv/issues/7186
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Should `uvx` use a project dependency if available?
@@ -31,10 +31,6 @@ Related:
 - #3560 
 
 
-
----
-
-_Referenced in [astral-sh/uv#5903](../../astral-sh/uv/issues/5903.md) on 2024-09-08 13:22_
 
 ---
 
@@ -141,14 +137,6 @@ This would be very easy to implement and save us a lot of keystrokes and mental 
 
 ---
 
-_Referenced in [astral-sh/uv#11129](../../astral-sh/uv/issues/11129.md) on 2025-01-31 20:15_
-
----
-
-_Referenced in [astral-sh/uv#11149](../../astral-sh/uv/issues/11149.md) on 2025-01-31 23:04_
-
----
-
 _Comment by @alxmrs on 2025-02-04 23:15_
 
 Hey! I'm trying to use `uv` as my everything dev tool in Python from here on out, and I find `uvx` / `uv run` to be really confusing. Specifically, I want to use `pytype` as a type checker for my project. This tool performs "transitive" type inference (for lack of a better term), meaning it infers types based on my projects code + all of its underlying dependencies. 
@@ -223,10 +211,6 @@ maybe `uv run` could implicitly add `--with` if a tool is not installed in the e
 
 ---
 
-_Referenced in [astral-sh/uv#13177](../../astral-sh/uv/issues/13177.md) on 2025-05-04 12:43_
-
----
-
 _Comment by @dedebenui on 2025-05-22 08:50_
 
 Adding my two cents, I like the present state of things:
@@ -265,14 +249,6 @@ IMO, uv run ... should be the smart equivalent to python ..., and not take decis
 Alternatively, uv run --tool ipython could be short hand for uv run tool --with ipython ipython (I predict many people searching the difference between uv tool run and uv run --tool, so maybe another name is better)
 
 But again, I think that users creating an alias uvw='uv tool run --with' should suffice.
-
----
-
-_Referenced in [astral-sh/uv#14409](../../astral-sh/uv/issues/14409.md) on 2025-07-02 14:45_
-
----
-
-_Referenced in [astral-sh/uv#15384](../../astral-sh/uv/issues/15384.md) on 2025-08-19 21:58_
 
 ---
 

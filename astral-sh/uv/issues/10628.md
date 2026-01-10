@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-15T10:55:19Z
 updated_at: 2025-10-10T08:29:58Z
 url: https://github.com/astral-sh/uv/issues/10628
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # How to configure uv to use namespace packages?
@@ -129,9 +129,5 @@ _Comment by @woutervhy on 2025-10-10 08:29_
 @rvhaasen 
 Take a look at my example:
 https://github.com/libranet/demo-uv-workspace/tree/main
-
----
-
-_Referenced in [linkml/linkml#2873](../../linkml/linkml/pulls/2873.md) on 2025-10-16 21:37_
 
 ---

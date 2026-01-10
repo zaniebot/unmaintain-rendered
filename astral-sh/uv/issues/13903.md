@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-08T21:01:22Z
 updated_at: 2025-09-22T06:56:40Z
 url: https://github.com/astral-sh/uv/issues/13903
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # How to test my project against multiple major library versions?
@@ -84,10 +84,6 @@ What I originally envisioned was smth like `juju ~= 2.9 OR juju ~= 3.6` where ve
 
 ---
 
-_Referenced in [canonical/operator#1814](../../canonical/operator/issues/1814.md) on 2025-06-12 01:28_
-
----
-
 _Comment by @tapetersen on 2025-06-13 10:38_
 
 I also find myself wanting this and especially being able to lock the resolutions for the different "profiles" for reproducible ci-builds.
@@ -102,9 +98,5 @@ https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies is 
 ---
 
 _Closed by @dimaqq on 2025-09-22 06:56_
-
----
-
-_Referenced in [gerrymanoim/exchange_calendars#501](../../gerrymanoim/exchange_calendars/issues/501.md) on 2025-10-03 11:45_
 
 ---

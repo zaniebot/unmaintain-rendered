@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-01T03:09:33Z
 updated_at: 2025-11-04T02:10:32Z
 url: https://github.com/astral-sh/uv/issues/14383
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Editable Installs with scikit-build-core don't work
@@ -122,10 +122,6 @@ python -c "import hello"
 
 ---
 
-_Referenced in [scikit-build/scikit-build-core#1112](../../scikit-build/scikit-build-core/issues/1112.md) on 2025-07-01 20:45_
-
----
-
 _Comment by @henryiii on 2025-07-01 20:50_
 
 This is a general issue with all isolated builds and editable installs. If you make an isolated build, pip or uv makes an isolated environment, installs scikit-build-core and pybind11 into it, then builds the package pointing at that environment. Then it throws it away once it's done. But for an editable install, you need those requirements later to rebuild! Scikit-build-core actually doesn't need itself to build, but it does need any other packages you request, like pybind11. You'll need to do a non-editable install, and include the build requirements. This is true for all editable backends that need dependencies when rebuilding.
@@ -166,10 +162,6 @@ _Label `bug` added by @charliermarsh on 2025-07-02 00:52_
 
 ---
 
-_Referenced in [astral-sh/uv#14940](../../astral-sh/uv/issues/14940.md) on 2025-07-28 13:26_
-
----
-
 _Comment by @Joseph-Edwards on 2025-11-04 02:10_
 
 A brief question following from @henryiii's comment:
@@ -179,9 +171,5 @@ A brief question following from @henryiii's comment:
 Is there setting I can specify in `pyproject.toml` to enforce this behaviour systematically? Something similar to setting the environment variable `UV_NO_EDITABLE`, perhaps.
 
 I'm happy to elaborate on my specific use case, or to open a separate issue, if either would be desirable.
-
----
-
-_Referenced in [openalea/stat_tool#4](../../openalea/stat_tool/issues/4.md) on 2025-11-17 16:22_
 
 ---

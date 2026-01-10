@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-30T17:36:04Z
 updated_at: 2025-10-12T21:16:50Z
 url: https://github.com/astral-sh/uv/issues/13239
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Change relative path behaviors for `requirements` files
@@ -61,18 +61,10 @@ _Added to milestone `v0.9.0` by @zanieb on 2025-06-20 15:14_
 
 ---
 
-_Referenced in [astral-sh/uv#3271](../../astral-sh/uv/issues/3271.md) on 2025-07-10 13:39_
-
----
-
 _Removed from milestone `v0.9.0` by @zanieb on 2025-10-12 21:16_
 
 ---
 
 _Added to milestone `v0.10.0` by @zanieb on 2025-10-12 21:16_
-
----
-
-_Referenced in [astral-sh/uv#16299](../../astral-sh/uv/issues/16299.md) on 2025-10-14 17:31_
 
 ---

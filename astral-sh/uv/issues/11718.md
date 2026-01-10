@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-22T22:35:44Z
 updated_at: 2025-10-30T11:03:30Z
 url: https://github.com/astral-sh/uv/issues/11718
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv build backend dynamic fields / version
@@ -65,27 +65,7 @@ _Label `needs-decision` added by @konstin on 2025-02-24 13:39_
 
 ---
 
-_Referenced in [canonical/testflinger#537](../../canonical/testflinger/pulls/537.md) on 2025-04-02 20:06_
-
----
-
-_Referenced in [astral-sh/uv#14037](../../astral-sh/uv/issues/14037.md) on 2025-06-14 09:25_
-
----
-
-_Referenced in [astral-sh/uv#14137](../../astral-sh/uv/issues/14137.md) on 2025-06-20 12:45_
-
----
-
 _Label `build-backend` added by @konstin on 2025-06-26 14:40_
-
----
-
-_Referenced in [astral-sh/uv#8714](../../astral-sh/uv/issues/8714.md) on 2025-07-04 11:38_
-
----
-
-_Referenced in [gt-sse-center/copier-UvScaffolding#26](../../gt-sse-center/copier-UvScaffolding/issues/26.md) on 2025-07-18 14:23_
 
 ---
 
@@ -110,18 +90,6 @@ If someone already managed to get this to work, mention me here with a link. I a
 _Comment by @helderco on 2025-08-08 19:18_
 
 Yeah, me too I just changed the version to 0.0.0 and on CI, before `uv publish` I bump with `uv version`. That pipeline already extracts the right version number from git tags.
-
----
-
-_Referenced in [munich-quantum-toolkit/templates#67](../../munich-quantum-toolkit/templates/pulls/67.md) on 2025-09-12 00:15_
-
----
-
-_Referenced in [astral-sh/uv#16011](../../astral-sh/uv/issues/16011.md) on 2025-09-24 09:09_
-
----
-
-_Referenced in [zulip/python-zulip-api#875](../../zulip/python-zulip-api/pulls/875.md) on 2025-10-02 15:11_
 
 ---
 

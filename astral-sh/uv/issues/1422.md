@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T03:58:43Z
 updated_at: 2025-12-02T10:49:45Z
 url: https://github.com/astral-sh/uv/issues/1422
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support custom virtual environment directory names
@@ -157,10 +157,6 @@ _Renamed from "Support "venv/"  virtual environment directory" to "Support custo
 
 ---
 
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:05_
-
----
-
 _Comment by @zanieb on 2024-02-18 08:16_
 
 See also:
@@ -170,18 +166,6 @@ See also:
 ---
 
 _Label `virtualenv` added by @zanieb on 2024-02-18 20:38_
-
----
-
-_Referenced in [astral-sh/uv#1722](../../astral-sh/uv/issues/1722.md) on 2024-02-19 23:56_
-
----
-
-_Referenced in [astral-sh/uv#2248](../../astral-sh/uv/issues/2248.md) on 2024-03-06 18:46_
-
----
-
-_Referenced in [astral-sh/uv#2665](../../astral-sh/uv/pulls/2665.md) on 2024-03-26 14:37_
 
 ---
 
@@ -217,10 +201,6 @@ In this case, being able to configure the name to use somewhere would be very he
 _Comment by @zanieb on 2024-10-09 13:40_
 
 This was sort of accomplished in https://github.com/astral-sh/uv/pull/6834, though it can't be customized outside of projects and the `uv pip` commands won't respect it.
-
----
-
-_Referenced in [xdslproject/xdsl#3294](../../xdslproject/xdsl/pulls/3294.md) on 2024-12-06 14:53_
 
 ---
 

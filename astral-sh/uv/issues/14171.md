@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-20T20:29:16Z
 updated_at: 2025-09-04T12:45:02Z
 url: https://github.com/astral-sh/uv/issues/14171
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Python installation fails during streamed unpack with connection reset error
@@ -292,14 +292,6 @@ _Comment by @zanieb on 2025-06-28 14:50_
 
 ---
 
-_Referenced in [astral-sh/uv#14069](../../astral-sh/uv/issues/14069.md) on 2025-06-30 18:48_
-
----
-
-_Referenced in [astral-sh/uv#14378](../../astral-sh/uv/pulls/14378.md) on 2025-06-30 21:54_
-
----
-
 _Comment by @oconnor663 on 2025-07-01 16:53_
 
 https://github.com/astral-sh/uv/pull/14378 is merged, so the next time this flake happens we'll be looking to see whether it says it retried or not.
@@ -307,10 +299,6 @@ https://github.com/astral-sh/uv/pull/14378 is merged, so the next time this flak
 ---
 
 _Unassigned @oconnor663 by @oconnor663 on 2025-07-01 16:55_
-
----
-
-_Referenced in [astral-sh/uv#14425](../../astral-sh/uv/issues/14425.md) on 2025-07-02 16:55_
 
 ---
 
@@ -329,10 +317,6 @@ Still seeing this
              12 │+  Caused by: error reading a body from connection
              13 │+  Caused by: connection reset
 ```
-
----
-
-_Referenced in [astral-sh/uv#15567](../../astral-sh/uv/pulls/15567.md) on 2025-08-28 09:08_
 
 ---
 
@@ -400,10 +384,6 @@ Puzzled why our logic isn't catching this, connection reset are a kind of IO err
 
 ---
 
-_Referenced in [astral-sh/uv#15675](../../astral-sh/uv/pulls/15675.md) on 2025-09-04 11:26_
-
----
-
 _Comment by @konstin on 2025-09-04 11:28_
 
 It was h2 shadowing the `std::io::Error`.
@@ -411,9 +391,5 @@ It was h2 shadowing the `std::io::Error`.
 ---
 
 _Closed by @konstin on 2025-09-04 12:45_
-
----
-
-_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-26T19:32:41Z
 updated_at: 2025-09-05T21:12:50Z
 url: https://github.com/astral-sh/uv/issues/14917
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Pull in upstream patches for nushell activation script
@@ -63,14 +63,6 @@ Ok, I'm looking into it. FWIW, I'll be pulling in changes from upstream latest s
 As for the test idea, ~it may be difficult/complex to capture stderr from rust unit test(s). Maybe I can utilize [`std::process::Command`](https://doc.rust-lang.org/std/process/struct.Command.html) to ensure the script(s) execute without problems. But this would involve adjusting the CI to ensure certain tools (eg various third-party shells) are installed for certain platforms, and the CI already looks very complex for a newcomer; I'm no stranger to GitHub Actions, though I do find the .github/workflows/setup-dev-drive.ps1 script rather foreign.~
 
 EDIT: I see now that integration tests are written directly in the CI.yml workflow (an overwhelmingly long file). While unconventional per rust standards, this makes writing integration tests easier. I'll look at adding tests for each _supported_ shell.
-
----
-
-_Referenced in [astral-sh/uv#15272](../../astral-sh/uv/pulls/15272.md) on 2025-08-14 08:54_
-
----
-
-_Referenced in [astral-sh/uv#15294](../../astral-sh/uv/issues/15294.md) on 2025-08-15 01:45_
 
 ---
 

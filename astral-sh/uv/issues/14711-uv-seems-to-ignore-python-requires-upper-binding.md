@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T10:35:38Z
 updated_at: 2025-08-24T20:45:42Z
 url: https://github.com/astral-sh/uv/issues/14711
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv seems to ignore python-requires upper-binding
@@ -81,10 +81,6 @@ uv 0.7.21
 ---
 
 _Label `bug` added by @potiuk on 2025-07-18 10:35_
-
----
-
-_Referenced in [apache/airflow#53489](../../apache/airflow/pulls/53489.md) on 2025-07-18 10:54_
 
 ---
 
@@ -219,10 +215,6 @@ Thanks for the pointer interesting discussions - indeed I am learning new things
 
 ---
 
-_Referenced in [astral-sh/uv#14752](../../astral-sh/uv/pulls/14752.md) on 2025-07-20 13:39_
-
----
-
 _Comment by @charliermarsh on 2025-07-20 22:34_
 
 (I amended the docs in https://github.com/astral-sh/uv/pull/14752.)
@@ -234,10 +226,6 @@ _Comment by @potiuk on 2025-07-21 08:52_
 > (I amended the docs in [#14752](https://github.com/astral-sh/uv/pull/14752).)
 
 Nice! Thank you!
-
----
-
-_Referenced in [astral-sh/uv#14958](../../astral-sh/uv/issues/14958.md) on 2025-07-29 18:36_
 
 ---
 
@@ -254,17 +242,5 @@ Sure!
 ---
 
 _Closed by @potiuk on 2025-08-24 20:45_
-
----
-
-_Referenced in [astral-sh/uv#15666](../../astral-sh/uv/issues/15666.md) on 2025-09-03 16:44_
-
----
-
-_Referenced in [apache/airflow#58653](../../apache/airflow/pulls/58653.md) on 2025-11-25 00:28_
-
----
-
-_Referenced in [apache/airflow#58657](../../apache/airflow/pulls/58657.md) on 2025-11-25 00:30_
 
 ---

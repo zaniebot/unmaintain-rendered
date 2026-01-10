@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-20T10:33:12Z
 updated_at: 2025-08-29T07:40:03Z
 url: https://github.com/astral-sh/uv/issues/10052
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # .h not found when building with `uv` but found when using pip and a virtual env
@@ -236,10 +236,6 @@ _Label `compatibility` added by @samypr100 on 2024-12-22 03:35_
 _Comment by @MalcolmMielle on 2024-12-23 16:50_
 
 I'll have a try when I'm back from holidays. Thanks!
-
----
-
-_Referenced in [astral-sh/uv#6088](../../astral-sh/uv/issues/6088.md) on 2025-01-09 03:49_
 
 ---
 

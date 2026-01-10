@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T14:35:07Z
 updated_at: 2025-10-17T14:35:37Z
 url: https://github.com/astral-sh/uv/issues/6440
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # FRs: Commit lint and changelog generation
@@ -134,10 +134,6 @@ I think we need to focus on a lot of other things before this though.
 _Comment by @deadnews on 2024-08-22 15:51_
 
 By the way, there is [git-cliff](https://github.com/orhun/git-cliff), and it works for any projects, not just python ones.
-
----
-
-_Referenced in [astral-sh/uv#6298](../../astral-sh/uv/issues/6298.md) on 2024-10-14 17:52_
 
 ---
 

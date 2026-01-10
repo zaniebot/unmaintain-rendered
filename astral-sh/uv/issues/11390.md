@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T16:22:48Z
 updated_at: 2025-10-23T11:17:12Z
 url: https://github.com/astral-sh/uv/issues/11390
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Maturin projects are incorrecly restored from cache in editable mode
@@ -66,15 +66,7 @@ I just realized my instructions to reproduce the issue were not accurate and cor
 
 ---
 
-_Referenced in [astral-sh/uv#11775](../../astral-sh/uv/issues/11775.md) on 2025-02-27 12:56_
-
----
-
 _Unassigned @konstin by @konstin on 2025-03-04 13:40_
-
----
-
-_Referenced in [astral-sh/uv#15380](../../astral-sh/uv/issues/15380.md) on 2025-08-19 13:15_
 
 ---
 
@@ -87,10 +79,6 @@ This isn't just related to Maturin. I believe any build that generates files tha
 _Comment by @mmastrac on 2025-08-29 16:54_
 
 We just ran into this with a maturin subproject as well. `touch subproject/pyproject.toml` is a workaround.
-
----
-
-_Referenced in [asakatida/chimera#4715](../../asakatida/chimera/pulls/4715.md) on 2025-10-06 02:11_
 
 ---
 

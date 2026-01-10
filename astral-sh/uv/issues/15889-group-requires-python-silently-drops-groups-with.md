@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-16T09:24:12Z
 updated_at: 2025-09-16T13:17:38Z
 url: https://github.com/astral-sh/uv/issues/15889
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Group `requires-python` silently drops groups with `uv pip compile --group`
@@ -51,9 +51,5 @@ _Renamed from "Grouo `requires-python` silently drops groups with `uv pip compil
 _Comment by @zanieb on 2025-09-16 13:17_
 
 Hm yeah I think we should error in the same way we do for projects.
-
----
-
-_Referenced in [astral-sh/uv#16089](../../astral-sh/uv/pulls/16089.md) on 2025-10-01 17:36_
 
 ---

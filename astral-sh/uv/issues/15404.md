@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T11:24:04Z
 updated_at: 2025-10-27T16:17:15Z
 url: https://github.com/astral-sh/uv/issues/15404
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Investigate single item reporters using a length of one
@@ -42,10 +42,6 @@ This would be a great thing for someone to investigate!
 ---
 
 _Renamed from "Investigate single item reports using a length of one" to "Investigate single item reporters using a length of one" by @zanieb on 2025-08-21 11:24_
-
----
-
-_Referenced in [astral-sh/uv#16448](../../astral-sh/uv/pulls/16448.md) on 2025-10-25 11:32_
 
 ---
 

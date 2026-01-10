@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-22T09:08:47Z
 updated_at: 2025-09-25T19:04:50Z
 url: https://github.com/astral-sh/uv/issues/9350
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Generate AWS lambda zips using `uv build`
@@ -80,10 +80,6 @@ _Label `needs-design` added by @zanieb on 2024-11-26 00:13_
 _Comment by @doron98 on 2024-11-27 10:06_
 
 What is tricky is including path dependencies https://github.com/sst/sst/pull/5132
-
----
-
-_Referenced in [astral-sh/uv#8935](../../astral-sh/uv/issues/8935.md) on 2024-11-27 10:18_
 
 ---
 
@@ -297,10 +293,6 @@ def bundle():
 ---
 
 _Label `external` added by @samypr100 on 2025-02-26 04:06_
-
----
-
-_Referenced in [astral-sh/uv#12257](../../astral-sh/uv/issues/12257.md) on 2025-03-18 02:03_
 
 ---
 

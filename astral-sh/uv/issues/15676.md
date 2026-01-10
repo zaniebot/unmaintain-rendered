@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-04T12:11:29Z
 updated_at: 2025-09-11T15:34:50Z
 url: https://github.com/astral-sh/uv/issues/15676
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Wrong behavior of `--only-group` and `--extra`
@@ -295,10 +295,6 @@ Hii @charliermarsh & @zanieb  , Can I work on this ?
 
 Thank you : )
 
-
----
-
-_Referenced in [astral-sh/uv#15788](../../astral-sh/uv/pulls/15788.md) on 2025-09-11 13:33_
 
 ---
 

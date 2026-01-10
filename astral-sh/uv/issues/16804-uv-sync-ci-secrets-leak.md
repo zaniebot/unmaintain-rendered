@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-21T09:35:44Z
 updated_at: 2025-12-03T00:43:02Z
 url: https://github.com/astral-sh/uv/issues/16804
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv sync CI secrets leak
@@ -105,10 +105,6 @@ I wouldn't be opposed to a `UV_HIDE_BUILD_LOGS` option, I guess?
 
 ---
 
-_Referenced in [pymupdf/PyMuPDF#4801](../../pymupdf/PyMuPDF/issues/4801.md) on 2025-11-24 09:14_
-
----
-
 _Comment by @matyx44 on 2025-11-25 08:08_
 
 @zanieb 
@@ -122,10 +118,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-11-28 17:01_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2025-11-28 17:25_
-
----
-
-_Referenced in [astral-sh/uv#16885](../../astral-sh/uv/pulls/16885.md) on 2025-11-28 18:35_
 
 ---
 

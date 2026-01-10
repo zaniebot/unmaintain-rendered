@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-28T07:57:42Z
 updated_at: 2025-12-03T17:50:56Z
 url: https://github.com/astral-sh/uv/issues/16879
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `debug` cli command is missing in `uv pip`
@@ -132,10 +132,6 @@ The pip output can be different from the uv output, so `uv pip` shouldn't invoke
 
 ---
 
-_Referenced in [astral-sh/uv#16908](../../astral-sh/uv/pulls/16908.md) on 2025-12-01 12:28_
-
----
-
 _Closed by @EliteTK on 2025-12-01 18:00_
 
 ---
@@ -194,10 +190,6 @@ It should exit with an error, imo.
 _Comment by @zanieb on 2025-12-03 14:23_
 
 (today it errors and we haven't really gotten complaints so that's a safer starting point)
-
----
-
-_Referenced in [astral-sh/uv#16966](../../astral-sh/uv/pulls/16966.md) on 2025-12-03 14:44_
 
 ---
 

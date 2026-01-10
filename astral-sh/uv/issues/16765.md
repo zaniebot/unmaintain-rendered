@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-17T23:06:59Z
 updated_at: 2025-11-20T19:10:13Z
 url: https://github.com/astral-sh/uv/issues/16765
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `uv init --package` creates invalid pyproject.toml if git username contains quotes
@@ -152,10 +152,6 @@ impl Author {
 _Comment by @konstin on 2025-11-19 09:45_
 
 It's definitely a better idea to use `toml_edit` here than trying to use a template that doesn't do toml escaping.
-
----
-
-_Referenced in [astral-sh/uv#16778](../../astral-sh/uv/pulls/16778.md) on 2025-11-19 17:29_
 
 ---
 

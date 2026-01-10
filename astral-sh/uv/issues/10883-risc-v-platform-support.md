@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T03:28:44Z
 updated_at: 2025-09-29T11:03:18Z
 url: https://github.com/astral-sh/uv/issues/10883
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # RISC-V platform support?
@@ -97,10 +97,6 @@ Seems like we should change our builds to use the extended name? We'll discuss t
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#504](../../astral-sh/python-build-standalone/issues/504.md) on 2025-01-24 04:08_
-
----
-
 _Comment by @ifsheldon on 2025-01-24 05:56_
 
 > the G extension being a shorthand for some other extensions
@@ -108,10 +104,6 @@ _Comment by @ifsheldon on 2025-01-24 05:56_
 Yes, and I remember G actually means "general" in the sense of general computing. 
 
 We could probably follow Rust Platform Support, like supporting [riscv64gc-unknown-linux-gnu](https://doc.rust-lang.org/nightly/rustc/platform-support/riscv64gc-unknown-linux-gnu.html) and [riscv64gc-unknown-linux-musl](https://doc.rust-lang.org/nightly/rustc/platform-support/riscv64gc-unknown-linux-musl.html), since Tier 2 supported targets of Rust means there's meaningful amount of user interest so they are "guaranteed to build" while Tier 3 targets are supported with basically best efforts.
-
----
-
-_Referenced in [astral-sh/uv#10937](../../astral-sh/uv/pulls/10937.md) on 2025-01-24 15:23_
 
 ---
 
@@ -187,14 +179,6 @@ Just one last question for @Xeonacid: Is it easy, you think, to add another buil
 _Comment by @davidism on 2025-09-26 22:09_
 
 I use cibuildwheel to build MarkupSafe, configured with `build-frontend = "build[uv]"`. I'm currently enabling `riscv64` builds, and cibuildwheel fails for `musllinux_riscv64` builds because uv is not available there. I've added an override to use `build` without uv there, but it would be nice if uv binaries were available for that combination.
-
----
-
-_Referenced in [pallets/markupsafe#506](../../pallets/markupsafe/pulls/506.md) on 2025-09-26 22:25_
-
----
-
-_Referenced in [astral-sh/uv#16063](../../astral-sh/uv/issues/16063.md) on 2025-09-29 11:00_
 
 ---
 

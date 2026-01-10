@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-19T20:51:24Z
 updated_at: 2025-09-22T16:59:49Z
 url: https://github.com/astral-sh/uv/issues/15955
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python upgrade` doesn't replace binary in bin home for release candidates
@@ -96,10 +96,6 @@ Installed Python3.14.0rc3 in 2.58s
 ❯ python3.14 --version
 Python 3.14.0rc2
 ```
-
----
-
-_Referenced in [astral-sh/uv#15959](../../astral-sh/uv/pulls/15959.md) on 2025-09-20 11:39_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-01T23:19:32Z
 updated_at: 2025-11-13T19:45:52Z
 url: https://github.com/astral-sh/uv/issues/15022
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv-trampoline`'d entrypoint .exes are not robust to being signed
@@ -219,10 +219,6 @@ _Comment by @paveldikov on 2025-08-04 19:44_
 I wonder if it's more 'proper' to use a resource (`.rsrc`) section in the PE file instead. I think this should be vastly more robust (incl. to the zip extraction problem that #8649 tries to address) though it will possibly be harder to construct this file.
 
 Perhaps easiest to pre-compile the binary with a placeholder resource already embedded & then altering the file post-hoc using `goblin`, `pe` or `exe` to insert the path to python + zipped script?
-
----
-
-_Referenced in [astral-sh/uv#15068](../../astral-sh/uv/pulls/15068.md) on 2025-08-04 22:42_
 
 ---
 

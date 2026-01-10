@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-24T15:52:44Z
 updated_at: 2025-10-30T14:32:51Z
 url: https://github.com/astral-sh/uv/issues/16440
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Use Renovate to manage the Maturin version
@@ -36,9 +36,5 @@ i would like to work on this
 _Comment by @zanieb on 2025-10-30 14:32_
 
 Feel free!
-
----
-
-_Referenced in [astral-sh/uv#16515](../../astral-sh/uv/pulls/16515.md) on 2025-10-30 15:58_
 
 ---

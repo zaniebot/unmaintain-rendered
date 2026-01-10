@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-01T08:48:38Z
 updated_at: 2025-12-04T14:32:46Z
 url: https://github.com/astral-sh/uv/issues/2755
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Unspecific protocol error detected
@@ -126,10 +126,6 @@ Unfortunately, stream resets don't come with any extra info (in the spec), but f
 ---
 
 _Label `network` added by @konstin on 2024-07-02 09:38_
-
----
-
-_Referenced in [astral-sh/uv#4725](../../astral-sh/uv/pulls/4725.md) on 2024-07-02 09:49_
 
 ---
 

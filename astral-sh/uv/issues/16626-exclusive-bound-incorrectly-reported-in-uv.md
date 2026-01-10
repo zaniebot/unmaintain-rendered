@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-06T23:30:31Z
 updated_at: 2025-11-07T15:23:38Z
 url: https://github.com/astral-sh/uv/issues/16626
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Exclusive bound incorrectly reported in uv conflict explanation
@@ -180,10 +180,6 @@ and
 https://github.com/astral-sh/uv/blob/857827da14499b610ffca9731916e3aae041b446/crates/uv-resolver/src/pubgrub/report.rs#L1966
 
 can return `false` because if `min` components of the versions don't match
-
----
-
-_Referenced in [astral-sh/uv#16629](../../astral-sh/uv/pulls/16629.md) on 2025-11-07 05:22_
 
 ---
 

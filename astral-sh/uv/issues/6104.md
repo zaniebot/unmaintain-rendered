@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-15T04:02:33Z
 updated_at: 2025-08-22T11:16:54Z
 url: https://github.com/astral-sh/uv/issues/6104
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv lock is extremely slow with google artifact registry
@@ -144,14 +144,6 @@ TL;DR
 The sync fails with virtual repositories and works with a remote repository on google artifact.
 
 Note: Changing the lock process to use the remote-repository doesn't change the lock time.
-
----
-
-_Referenced in [astral-sh/uv#5073](../../astral-sh/uv/issues/5073.md) on 2024-08-22 17:07_
-
----
-
-_Referenced in [astral-sh/uv#6470](../../astral-sh/uv/pulls/6470.md) on 2024-08-22 23:14_
 
 ---
 

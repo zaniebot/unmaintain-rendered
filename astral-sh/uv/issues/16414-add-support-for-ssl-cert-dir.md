@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-23T03:28:34Z
 updated_at: 2025-11-16T17:48:32Z
 url: https://github.com/astral-sh/uv/issues/16414
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add support for SSL_CERT_DIR
@@ -30,10 +30,6 @@ For validation of ssl_cert_dir_exists, I'd use the approach from [rustls-native-
 ---
 
 _Label `enhancement` added by @samypr100 on 2025-10-23 03:29_
-
----
-
-_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-10-27 16:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-26T03:23:36Z
 updated_at: 2025-11-26T16:33:41Z
 url: https://github.com/astral-sh/uv/issues/16856
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # 0.9.12 breaks installs from requirements.lock
@@ -124,10 +124,6 @@ This is my bad. I will own the fix.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-26 03:25_
-
----
-
-_Referenced in [astral-sh/uv#16857](../../astral-sh/uv/pulls/16857.md) on 2025-11-26 03:29_
 
 ---
 

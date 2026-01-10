@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-07T12:56:57Z
 updated_at: 2025-08-22T10:15:26Z
 url: https://github.com/astral-sh/uv/issues/10359
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # pkgs.dev.azure.com is not cached?
@@ -86,10 +86,6 @@ _Label `cache` added by @charliermarsh on 2025-01-07 13:45_
 
 ---
 
-_Referenced in [astral-sh/uv#10444](../../astral-sh/uv/issues/10444.md) on 2025-01-09 21:02_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-14 23:58_
 
 ---
@@ -131,9 +127,5 @@ _Closed by @charliermarsh on 2025-08-21 18:30_
 _Comment by @KalleDK on 2025-08-22 10:15_
 
 @charliermarsh thanks - I've missed the possibility to change the headers
-
----
-
-_Referenced in [astral-sh/uv#9440](../../astral-sh/uv/issues/9440.md) on 2025-11-03 15:42_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T03:04:50Z
 updated_at: 2025-10-17T08:30:33Z
 url: https://github.com/astral-sh/uv/issues/16334
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Recommend using `--exact` in script shebang lines
@@ -40,9 +40,5 @@ I also see the option of making `uv run` exact by default for isolated environme
 ---
 
 _Label `needs-decision` added by @konstin on 2025-10-17 08:30_
-
----
-
-_Referenced in [lalvarezt/uv-helper#1](../../lalvarezt/uv-helper/issues/1.md) on 2025-11-02 21:34_
 
 ---

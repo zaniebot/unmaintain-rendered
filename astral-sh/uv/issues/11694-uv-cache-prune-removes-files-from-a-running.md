@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T10:28:16Z
 updated_at: 2025-11-28T15:18:07Z
 url: https://github.com/astral-sh/uv/issues/11694
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv cache prune removes files from a running process executed with `uvx`
@@ -89,10 +89,6 @@ Python 3.11.11
 ---
 
 _Label `bug` added by @jezekra1 on 2025-02-21 10:28_
-
----
-
-_Referenced in [astral-sh/uv#12003](../../astral-sh/uv/issues/12003.md) on 2025-03-07 16:11_
 
 ---
 

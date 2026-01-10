@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-12T02:27:05Z
 updated_at: 2025-11-09T14:29:40Z
 url: https://github.com/astral-sh/uv/issues/15800
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Symlinking `.venv/bin` and `.venv/Scripts`
@@ -90,10 +90,6 @@ Case in point:
 
 \* ruff isn't the only tool that would benefit here (until https://github.com/astral-sh/ruff/issues/12352 is implemented). Another current real life example is dprint from a PyPI package. Although there there's an alternative that does work using the method described in the \<details> above: https://github.com/dprint/dprint/issues/859#issuecomment-3194102785 . So maybe this actually also weakens my request ^^"
 
-
----
-
-_Referenced in [astral-sh/ruff#12352](../../astral-sh/ruff/issues/12352.md) on 2025-09-13 01:48_
 
 ---
 

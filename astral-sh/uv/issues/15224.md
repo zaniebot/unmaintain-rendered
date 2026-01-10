@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-11T17:41:40Z
 updated_at: 2025-10-27T06:36:28Z
 url: https://github.com/astral-sh/uv/issues/15224
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv sync` with `--no-editable` should force rebuild/install packages
@@ -137,10 +137,6 @@ It seems pretty unintuitive that using `uv sync --no-editable` could result in a
 
 ---
 
-_Referenced in [astral-sh/uv#15380](../../astral-sh/uv/issues/15380.md) on 2025-08-21 09:43_
-
----
-
 _Comment by @mttbernardini on 2025-10-27 06:35_
 
 > It seems pretty unintuitive that using uv sync --no-editable could result in an older version of your package in the venv, however.
@@ -156,9 +152,5 @@ I can understand `pyproject.toml`-based caching makes sense for editable install
 >  Is it worth special-casing --no-editable to force a rebuild of would-be editable packages?
 
 Or perhaps hash the source files (e.g. by default search for a `src/` directory and hash its contents), possibly with a configuration option orthogonal to `tool.uv.cache-keys` for alternative non-default scenarios? (e.g. flat layouts, where `src/` is not used). In this way you still retain caching for sources that didn't change (which is convenient for a workspace with multiple members).
-
----
-
-_Referenced in [astral-sh/uv#16467](../../astral-sh/uv/issues/16467.md) on 2025-10-27 08:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-29T11:00:49Z
 updated_at: 2025-09-29T11:03:35Z
 url: https://github.com/astral-sh/uv/issues/16063
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # RISC-V64 musllinux binaries
@@ -22,10 +22,6 @@ _Issue opened by @konstin on 2025-09-29 11:00_
 > I use cibuildwheel to build MarkupSafe, configured with `build-frontend = "build[uv]"`. I'm currently enabling `riscv64` builds, and cibuildwheel fails for `musllinux_riscv64` builds because uv is not available there. I've added an override to use `build` without uv there, but it would be nice if uv binaries were available for that combination. 
 
  _Originally posted by @davidism in [#10883](https://github.com/astral-sh/uv/issues/10883#issuecomment-3340651030)_
-
----
-
-_Referenced in [astral-sh/uv#10883](../../astral-sh/uv/issues/10883.md) on 2025-09-29 11:03_
 
 ---
 

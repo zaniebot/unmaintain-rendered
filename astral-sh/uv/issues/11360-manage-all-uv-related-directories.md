@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-09T19:05:27Z
 updated_at: 2025-10-10T08:45:47Z
 url: https://github.com/astral-sh/uv/issues/11360
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Manage all uv-related directories
@@ -59,10 +59,6 @@ This is a great idea and would align better with my proposal of also managing ve
 
 ---
 
-_Referenced in [astral-sh/uv#13605](../../astral-sh/uv/issues/13605.md) on 2025-05-23 15:03_
-
----
-
 _Comment by @mjnd1 on 2025-06-05 08:29_
 
 Mark it down. When will it be completed?
@@ -73,10 +69,6 @@ Mark it down. When will it be completed?
 _Comment by @konstin on 2025-06-05 12:08_
 
 Another option here would be an env var named something like `UV_DATA_ROOT` that, if set, defines a directory where uv creates all of its directories (cache, tools, python interpreter, config) below it.
-
----
-
-_Referenced in [astral-sh/uv#13950](../../astral-sh/uv/issues/13950.md) on 2025-06-10 14:57_
 
 ---
 
@@ -219,31 +211,11 @@ I've marked the comments as "off-topic", as I don't understand why we're debatin
 
 ---
 
-_Referenced in [astral-sh/uv#15834](../../astral-sh/uv/issues/15834.md) on 2025-09-14 14:00_
-
----
-
-_Referenced in [astral-sh/uv#15836](../../astral-sh/uv/issues/15836.md) on 2025-09-14 14:04_
-
----
-
-_Referenced in [astral-sh/uv#15837](../../astral-sh/uv/issues/15837.md) on 2025-09-14 14:07_
-
----
-
-_Referenced in [astral-sh/uv#15838](../../astral-sh/uv/issues/15838.md) on 2025-09-14 14:09_
-
----
-
 _Comment by @zanieb on 2025-09-14 14:10_
 
 I've opened dedicated issues tracking each of your requests here @Ma-Shell, as you've asked for several distinct changes that we can discuss and address separately.
 
 For those following this issue, please upvote the ones relevant to you.
-
----
-
-_Referenced in [astral-sh/uv#15839](../../astral-sh/uv/issues/15839.md) on 2025-09-14 14:12_
 
 ---
 
@@ -289,13 +261,5 @@ Ipython-profiles with hardcoded directories are setting a bad example here.
 I would like a setting or env-var to set the location of the build distributions  
 from `<project-dir>/dist` to  `<project-dir>/var/dist`
 For now you can only set `--out-dir`  on the cli.
-
----
-
-_Referenced in [alienator88/Pearcleaner#373](../../alienator88/Pearcleaner/pulls/373.md) on 2025-10-12 19:07_
-
----
-
-_Referenced in [astral-sh/uv#15954](../../astral-sh/uv/pulls/15954.md) on 2025-10-14 10:24_
 
 ---

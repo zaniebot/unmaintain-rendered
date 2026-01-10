@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-06T12:39:42Z
 updated_at: 2025-09-06T16:52:01Z
 url: https://github.com/astral-sh/uv/issues/15707
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # "uv python list" or "uv run python" open online Python help
@@ -50,10 +50,6 @@ _Renamed from ""uv python list" opens online Python help" to ""uv python list" o
 _Comment by @zanieb on 2025-09-06 13:43_
 
 That's a frustrating quality. How did you install that? We'll either need to detect it's that Python or ask that they add a way to opt-out of that behavior so we query the interpreter.
-
----
-
-_Referenced in [python/pymanager#160](../../python/pymanager/issues/160.md) on 2025-09-06 13:48_
 
 ---
 

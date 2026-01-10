@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T10:30:01Z
 updated_at: 2025-09-14T13:57:55Z
 url: https://github.com/astral-sh/uv/issues/6506
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add support for configuring python install dir with `UV_PYTHON_INSTALL_DIR` on `uv.toml`
@@ -53,21 +53,5 @@ any updates？
 _Comment by @zanieb on 2024-10-31 18:47_
 
 @rainzee updates will be posted when they happen, please don't spam the issue.
-
----
-
-_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-02-09 19:05_
-
----
-
-_Referenced in [astral-sh/uv#15834](../../astral-sh/uv/issues/15834.md) on 2025-09-14 14:00_
-
----
-
-_Referenced in [astral-sh/uv#15835](../../astral-sh/uv/issues/15835.md) on 2025-09-14 14:02_
-
----
-
-_Referenced in [astral-sh/uv#15838](../../astral-sh/uv/issues/15838.md) on 2025-09-14 14:08_
 
 ---

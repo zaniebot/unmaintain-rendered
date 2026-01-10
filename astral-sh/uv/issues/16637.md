@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-11-07T16:45:30Z
 updated_at: 2025-11-10T03:29:22Z
 url: https://github.com/astral-sh/uv/issues/16637
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Stabilize uv Python upgrades
@@ -43,9 +43,5 @@ It is not — this is something we'll do in the next breaking release. The best 
 _Comment by @RafaelJohn9 on 2025-11-10 03:29_
 
 Okay 👍
-
----
-
-_Referenced in [astral-sh/uv#16675](../../astral-sh/uv/issues/16675.md) on 2025-11-10 22:57_
 
 ---

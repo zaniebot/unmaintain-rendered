@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-26T20:41:49Z
 updated_at: 2025-08-27T03:14:14Z
 url: https://github.com/astral-sh/uv/issues/15540
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Test `create_venv_current_working_directory` is failing on Windows
@@ -58,10 +58,6 @@ cc @charliermarsh (I will not get to this right away)
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-26 20:46_
-
----
-
-_Referenced in [astral-sh/uv#15542](../../astral-sh/uv/pulls/15542.md) on 2025-08-27 01:42_
 
 ---
 

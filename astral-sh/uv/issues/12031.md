@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T04:31:20Z
 updated_at: 2025-09-30T14:56:31Z
 url: https://github.com/astral-sh/uv/issues/12031
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv cache seems don't work on github action
@@ -91,10 +91,6 @@ Have you considered using `uv cache prune --ci`? You're probably caching all the
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-14 00:37_
-
----
-
-_Referenced in [ai-glimpse/toyllm#103](../../ai-glimpse/toyllm/pulls/103.md) on 2025-03-14 05:14_
 
 ---
 

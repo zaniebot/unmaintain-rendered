@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-09-10T12:56:03Z
 updated_at: 2025-09-10T13:06:38Z
 url: https://github.com/astral-sh/uv/issues/15767
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Individually specify enabled preview features in configuration
@@ -75,9 +75,5 @@ _Label `configuration` added by @zanieb on 2025-09-10 13:06_
 ---
 
 _Label `help wanted` added by @zanieb on 2025-09-10 13:06_
-
----
-
-_Referenced in [astral-sh/uv#16452](../../astral-sh/uv/pulls/16452.md) on 2025-10-26 07:41_
 
 ---

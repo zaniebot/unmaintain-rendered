@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-05T17:32:41Z
 updated_at: 2025-11-01T08:59:42Z
 url: https://github.com/astral-sh/uv/issues/12686
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv self update` fails in MSYS2 environment
@@ -50,10 +50,6 @@ Python 3.13.2
 ---
 
 _Label `bug` added by @wilson on 2025-04-05 17:32_
-
----
-
-_Referenced in [astral-sh/uv#13672](../../astral-sh/uv/issues/13672.md) on 2025-05-28 11:15_
 
 ---
 
@@ -159,9 +155,5 @@ Would be great if this makes it into your cargo-dist fork.
 _Comment by @eegli on 2025-11-01 08:59_
 
 @zanieb @Gankra since this has been open for a while, would you mind if I claim this issue and open a PR in [the cargo-dist fork](https://github.com/astral-sh/cargo-dist)?
-
----
-
-_Referenced in [astral-sh/cargo-dist#51](../../astral-sh/cargo-dist/pulls/51.md) on 2025-11-07 15:04_
 
 ---

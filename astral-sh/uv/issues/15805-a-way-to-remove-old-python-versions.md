@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-12T09:21:18Z
 updated_at: 2025-09-12T10:48:02Z
 url: https://github.com/astral-sh/uv/issues/15805
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # A way to remove old Python versions
@@ -64,9 +64,5 @@ _Label `help wanted` added by @zanieb on 2025-09-12 10:44_
 _Comment by @konstin on 2025-09-12 10:48_
 
 I could see this become part of the upgrade command, such as `uv python upgrade --uninstall` removing all older version (with the caveat that venvs may still use the interpreter).
-
----
-
-_Referenced in [astral-sh/uv#16018](../../astral-sh/uv/pulls/16018.md) on 2025-09-24 18:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-11T02:14:35Z
 updated_at: 2025-09-11T20:17:08Z
 url: https://github.com/astral-sh/uv/issues/15781
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Expect `uv publish` to generate a `blake2b-256` hash value and send it to the server
@@ -68,10 +68,6 @@ I don't see any harm to us supporting blake2 hashes in the upload payload, but I
 ---
 
 _Assigned to @woodruffw by @woodruffw on 2025-09-11 16:33_
-
----
-
-_Referenced in [astral-sh/uv#15794](../../astral-sh/uv/pulls/15794.md) on 2025-09-11 16:36_
 
 ---
 

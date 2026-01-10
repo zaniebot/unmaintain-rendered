@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-31T15:20:47Z
 updated_at: 2025-10-28T19:52:45Z
 url: https://github.com/astral-sh/uv/issues/12587
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Equivalent of UV_PROJECT_ENVIRONMENT on uv.toml
@@ -94,14 +94,6 @@ We have a team of developers and we get our hands in a mix of projects; from wha
 
 ---
 
-_Referenced in [astral-sh/uv#13720](../../astral-sh/uv/issues/13720.md) on 2025-06-02 22:58_
-
----
-
-_Referenced in [astral-sh/uv#13931](../../astral-sh/uv/issues/13931.md) on 2025-06-09 19:56_
-
----
-
 _Comment by @uu9 on 2025-07-02 04:09_
 
 > I think [#1495](https://github.com/astral-sh/uv/issues/1495) is a better fit for this use-case
@@ -118,14 +110,6 @@ _Comment by @sascharo on 2025-07-02 08:51_
 > This seems more like environment variables used in Docker, which only requires preparing one project environment.
 
 I think its purpose is really just for containers as Docker by design.
-
----
-
-_Referenced in [astral-sh/uv#15163](../../astral-sh/uv/issues/15163.md) on 2025-08-08 09:56_
-
----
-
-_Referenced in [astral-sh/uv#14515](../../astral-sh/uv/issues/14515.md) on 2025-08-19 15:40_
 
 ---
 

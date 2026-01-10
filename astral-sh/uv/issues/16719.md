@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-13T11:53:24Z
 updated_at: 2025-11-20T19:15:28Z
 url: https://github.com/astral-sh/uv/issues/16719
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `uv add` also performs unprompted (and unrelated) toml formatting
@@ -105,14 +105,6 @@ The first change is a bug in how we handle comments, we should fix that in uv.
 The second change is this upstream bug: https://github.com/toml-rs/toml/issues/163
 
 
-
----
-
-_Referenced in [astropy/astropy#18905](../../astropy/astropy/pulls/18905.md) on 2025-11-13 16:00_
-
----
-
-_Referenced in [astral-sh/uv#16734](../../astral-sh/uv/pulls/16734.md) on 2025-11-14 08:47_
 
 ---
 

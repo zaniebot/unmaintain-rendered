@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-18T18:10:18Z
 updated_at: 2025-10-24T10:16:03Z
 url: https://github.com/astral-sh/uv/issues/10008
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Emit index urls in `uv export` same way as `uv pip compile --emit-index-url`
@@ -77,14 +77,6 @@ _Renamed from "feature request: emit index urls in `uv export` same way as `uv p
 
 ---
 
-_Referenced in [astral-sh/uv#12581](../../astral-sh/uv/issues/12581.md) on 2025-03-31 13:10_
-
----
-
-_Referenced in [astral-sh/uv#12580](../../astral-sh/uv/issues/12580.md) on 2025-04-02 14:19_
-
----
-
 _Comment by @zanieb on 2025-04-02 14:20_
 
 As a note, because this is spread out across a few threads: We can't support this because our `--index` features are not representable in `requirements.txt` files. For example, there is no way to represent index pinning or uv's index strategies. It's possible there's something we could do here, but it's an open problem.
@@ -136,30 +128,6 @@ If and when enabling granular indexing is possible, then I imagine the mechanics
 _Comment by @Kugeleis on 2025-04-17 10:45_
 
 Is there a workaround to generate a requirements.txt with entries from [tool.uv.sources]?
-
----
-
-_Referenced in [astral-sh/uv#13371](../../astral-sh/uv/issues/13371.md) on 2025-05-10 12:24_
-
----
-
-_Referenced in [astral-sh/uv#14844](../../astral-sh/uv/issues/14844.md) on 2025-07-23 12:46_
-
----
-
-_Referenced in [astral-sh/uv#15008](../../astral-sh/uv/issues/15008.md) on 2025-07-31 21:34_
-
----
-
-_Referenced in [stac-extensions/mlm#97](../../stac-extensions/mlm/pulls/97.md) on 2025-08-04 20:35_
-
----
-
-_Referenced in [astral-sh/uv#15394](../../astral-sh/uv/issues/15394.md) on 2025-08-21 12:55_
-
----
-
-_Referenced in [astral-sh/uv#15534](../../astral-sh/uv/issues/15534.md) on 2025-08-26 14:16_
 
 ---
 

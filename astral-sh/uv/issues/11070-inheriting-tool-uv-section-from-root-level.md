@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-29T17:02:17Z
 updated_at: 2025-11-03T09:30:13Z
 url: https://github.com/astral-sh/uv/issues/11070
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Inheriting [tool.uv] section from root-level `pyproject.toml` when desired
@@ -93,9 +93,5 @@ _Comment by @tjhunter on 2025-11-03 09:30_
 
 We "solve" this issue with a script that compares shared sections of pyproject.toml and triggers an error if they deviate:
 https://github.com/ecmwf/WeatherGenerator/blob/develop/scripts/check_tomls.py
-
----
-
-_Referenced in [ecmwf/WeatherGenerator#1177](../../ecmwf/WeatherGenerator/pulls/1177.md) on 2025-11-03 09:30_
 
 ---

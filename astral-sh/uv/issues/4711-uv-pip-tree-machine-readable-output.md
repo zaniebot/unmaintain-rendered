@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T21:24:17Z
 updated_at: 2025-11-20T19:07:09Z
 url: https://github.com/astral-sh/uv/issues/4711
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uv pip tree` machine readable output
@@ -25,10 +25,6 @@ e.g. JSON with `-j`. This is useful for interacting with graph tools such as mer
 ---
 
 _Label `cli` added by @ibraheemdev on 2024-07-01 21:24_
-
----
-
-_Referenced in [astral-sh/uv#4439](../../astral-sh/uv/issues/4439.md) on 2024-07-01 21:24_
 
 ---
 
@@ -89,10 +85,6 @@ Oh I'm not really picky about the shape of the JSON output, as long as it is mac
 That's because I'm only interested in creating a Mermaid diagram to visualize dependencies like so: https://kdeldycke.github.io/meta-package-manager/install.html#python-dependencies
 
 So whatever the JSON looks like, I'll have to write a script to generate [the `.mmd` file](https://github.com/kdeldycke/meta-package-manager/blob/main/docs/assets/dependencies.mmd?short_path=61b3aea) out of `uv pip tree` output.
-
----
-
-_Referenced in [astral-sh/uv#4821](../../astral-sh/uv/pulls/4821.md) on 2024-07-04 21:58_
 
 ---
 
@@ -196,14 +188,6 @@ Lol. I just realized I solved this problem myself, as my [Meta Package Manager](
 
 ---
 
-_Referenced in [astral-sh/uv#5627](../../astral-sh/uv/issues/5627.md) on 2024-08-02 19:33_
-
----
-
-_Referenced in [astral-sh/uv#6012](../../astral-sh/uv/issues/6012.md) on 2024-08-12 09:08_
-
----
-
 _Comment by @dsully on 2024-10-12 14:56_
 
 I'm not picky about the output of the JSON either, and it doesn't need to take a tree shape.
@@ -214,29 +198,9 @@ Alternatively if there was a consumable crate that I could depend on to walk the
 
 ---
 
-_Referenced in [astral-sh/uv#10886](../../astral-sh/uv/pulls/10886.md) on 2025-01-23 07:00_
-
----
-
-_Referenced in [oss-review-toolkit/ort#10020](../../oss-review-toolkit/ort/pulls/10020.md) on 2025-03-17 17:39_
-
----
-
-_Referenced in [astral-sh/uv#14021](../../astral-sh/uv/issues/14021.md) on 2025-06-13 12:03_
-
----
-
-_Referenced in [marimo-team/marimo#5358](../../marimo-team/marimo/pulls/5358.md) on 2025-06-19 16:27_
-
----
-
 _Comment by @kapilt on 2025-06-25 17:56_
 
 I'd prefer a tree shape to be able to understand the top level depend, ie which package in a workspace pulled in this dependency.
-
----
-
-_Referenced in [prefix-dev/pixi#4130](../../prefix-dev/pixi/issues/4130.md) on 2025-08-01 18:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T12:39:18Z
 updated_at: 2025-10-14T10:31:44Z
 url: https://github.com/astral-sh/uv/issues/12713
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uvx git+.. failing when trying to run a package from a subfolder.
@@ -131,10 +131,6 @@ Howdy @charliermarsh , this is quite an edge case, and you know much better the 
 
 ---
 
-_Referenced in [oraios/serena#296](../../oraios/serena/issues/296.md) on 2025-07-11 08:13_
-
----
-
 _Comment by @m-aciek on 2025-10-14 09:16_
 
 For me it happens when I try to install from private GitHub repository. Switching to SSH solves the problem. It would be nice if the error message would be more descriptive for this case. Debug log:
@@ -154,9 +150,5 @@ DEBUG Released lock at `/Users/m-aciek/.cache/uv/git-v0/locks/33b3bb97da73f80e`
 _Comment by @konstin on 2025-10-14 10:31_
 
 @m-aciek This is a different problem, please open a new issue for it.
-
----
-
-_Referenced in [astral-sh/uv#16303](../../astral-sh/uv/issues/16303.md) on 2025-10-14 21:54_
 
 ---

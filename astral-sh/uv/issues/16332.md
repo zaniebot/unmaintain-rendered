@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-16T23:53:42Z
 updated_at: 2025-10-28T12:25:32Z
 url: https://github.com/astral-sh/uv/issues/16332
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # option to not create .gitignore in dist/ folder when using uv build
@@ -38,10 +38,6 @@ _Label `enhancement` added by @CangyuanLi on 2025-10-16 23:53_
 ---
 
 _Assigned to @konstin by @konstin on 2025-10-20 09:24_
-
----
-
-_Referenced in [astral-sh/uv#16369](../../astral-sh/uv/pulls/16369.md) on 2025-10-20 09:34_
 
 ---
 

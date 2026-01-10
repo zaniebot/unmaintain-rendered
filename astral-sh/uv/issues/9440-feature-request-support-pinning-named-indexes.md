@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T12:20:58Z
 updated_at: 2025-12-02T17:43:57Z
 url: https://github.com/astral-sh/uv/issues/9440
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Feature request: Support pinning named indexes specified in user-level configuration (uv.toml)
@@ -78,10 +78,6 @@ _Renamed from "Feature request: Support pinning named indexes specified in user 
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-11-27 13:40_
-
----
-
-_Referenced in [astral-sh/uv#10436](../../astral-sh/uv/issues/10436.md) on 2025-01-09 19:23_
 
 ---
 

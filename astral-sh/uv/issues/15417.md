@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-21T14:12:14Z
 updated_at: 2025-09-06T02:48:30Z
 url: https://github.com/astral-sh/uv/issues/15417
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Relative path inconsistency in uv.lock for cache_dir at different depths
@@ -99,9 +99,5 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-04 16:36_
 _Comment by @charliermarsh on 2025-09-06 02:48_
 
 Ahh thanks. I understand. This would be solved by https://github.com/astral-sh/uv/pull/10072.
-
----
-
-_Referenced in [astral-sh/uv#10072](../../astral-sh/uv/pulls/10072.md) on 2025-10-14 06:13_
 
 ---

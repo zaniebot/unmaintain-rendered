@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-02T21:32:25Z
 updated_at: 2025-10-07T11:03:36Z
 url: https://github.com/astral-sh/uv/issues/16108
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # How to prefer cached package version?
@@ -108,13 +108,5 @@ And after prune:
 ```
 
 </details>
-
----
-
-_Referenced in [astral-sh/uv#16286](../../astral-sh/uv/issues/16286.md) on 2025-10-13 19:34_
-
----
-
-_Referenced in [astral-sh/uv#10380](../../astral-sh/uv/issues/10380.md) on 2025-12-11 13:43_
 
 ---

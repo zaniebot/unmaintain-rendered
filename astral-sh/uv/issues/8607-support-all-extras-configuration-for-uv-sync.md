@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-27T11:39:46Z
 updated_at: 2025-09-02T17:37:01Z
 url: https://github.com/astral-sh/uv/issues/8607
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Support `all-extras` configuration for `uv sync` command
@@ -50,10 +50,6 @@ That sounds great!
 
 ---
 
-_Referenced in [litestar-org/litestar#3875](../../litestar-org/litestar/pulls/3875.md) on 2024-11-26 20:06_
-
----
-
 _Comment by @superlopuh on 2024-12-12 08:35_
 
 I would love this also, we have a setup with multiple optional dependency groups, all of which make sense to install in a developer environment to make sure that the tests still pass.
@@ -72,34 +68,6 @@ There is a neat workaround used in Litestar:
 * `litestar[full]` is part of the `dev` dependency group (https://github.com/litestar-org/litestar/blob/f31ef97d6cb725bf9898f55abbb5150b36823f27/pyproject.toml#L119-L121)
 
 This way, the default developer environment comes with all dependencies.
-
----
-
-_Referenced in [astral-sh/uv#11937](../../astral-sh/uv/issues/11937.md) on 2025-03-04 14:08_
-
----
-
-_Referenced in [astral-sh/uv#12429](../../astral-sh/uv/issues/12429.md) on 2025-04-01 07:50_
-
----
-
-_Referenced in [astral-sh/uv#12964](../../astral-sh/uv/pulls/12964.md) on 2025-04-18 12:37_
-
----
-
-_Referenced in [astral-sh/uv#12965](../../astral-sh/uv/pulls/12965.md) on 2025-04-18 12:41_
-
----
-
-_Referenced in [pallets-eco/flask-admin#2618](../../pallets-eco/flask-admin/pulls/2618.md) on 2025-06-06 10:55_
-
----
-
-_Referenced in [kitware-resonant/cookiecutter-resonant#303](../../kitware-resonant/cookiecutter-resonant/pulls/303.md) on 2025-06-17 17:24_
-
----
-
-_Referenced in [astral-sh/uv#15614](../../astral-sh/uv/issues/15614.md) on 2025-09-01 07:30_
 
 ---
 
@@ -157,9 +125,5 @@ dev = [
 ]
 ```
 <img width="964" height="650" alt="Image" src="https://github.com/user-attachments/assets/5b4f4818-33be-4724-a0df-cb1d30d3e8bb" />
-
----
-
-_Referenced in [astral-sh/uv#16380](../../astral-sh/uv/issues/16380.md) on 2025-10-21 10:56_
 
 ---

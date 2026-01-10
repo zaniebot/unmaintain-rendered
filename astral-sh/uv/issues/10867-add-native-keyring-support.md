@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-22T17:54:43Z
 updated_at: 2025-10-21T02:23:54Z
 url: https://github.com/astral-sh/uv/issues/10867
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add native keyring support
@@ -29,14 +29,6 @@ _Label `enhancement` added by @zanieb on 2025-01-22 17:54_
 ---
 
 _Label `needs-design` added by @zanieb on 2025-01-22 17:54_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
-
----
-
-_Referenced in [astral-sh/uv#11130](../../astral-sh/uv/issues/11130.md) on 2025-01-31 14:27_
 
 ---
 

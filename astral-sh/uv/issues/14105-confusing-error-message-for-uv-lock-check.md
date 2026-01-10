@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-17T12:27:11Z
 updated_at: 2025-11-10T17:36:50Z
 url: https://github.com/astral-sh/uv/issues/14105
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # confusing error message for `uv lock --check`
@@ -67,10 +67,6 @@ _Label `error messages` added by @zanieb on 2025-06-17 13:29_
 ---
 
 _Label `help wanted` added by @zanieb on 2025-06-17 13:29_
-
----
-
-_Referenced in [astral-sh/uv#16322](../../astral-sh/uv/pulls/16322.md) on 2025-10-15 18:27_
 
 ---
 

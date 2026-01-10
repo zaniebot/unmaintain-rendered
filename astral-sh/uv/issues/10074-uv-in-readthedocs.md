@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-21T12:01:08Z
 updated_at: 2025-09-02T13:48:44Z
 url: https://github.com/astral-sh/uv/issues/10074
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv in ReadTheDocs
@@ -105,14 +105,6 @@ I personally find this approach more comfortable since I can keep using `sphinx`
 
 ---
 
-_Referenced in [scverse/spatialdata#877](../../scverse/spatialdata/pulls/877.md) on 2025-02-12 19:59_
-
----
-
-_Referenced in [smsearcy/mesh-info#134](../../smsearcy/mesh-info/issues/134.md) on 2025-02-13 22:45_
-
----
-
 _Comment by @coroa on 2025-02-28 21:54_
 
 I combined both approaches to avoid tinkering with the sphinx-build steps including multiple formats, but can still replace the unnecessary sphinx venv setup and install steps (ie. fix the caveat @kmnhan mentioned)
@@ -145,42 +137,6 @@ formats: all
 
 ---
 
-_Referenced in [DeiC-HPC/cotainr#100](../../DeiC-HPC/cotainr/issues/100.md) on 2025-03-14 11:26_
-
----
-
-_Referenced in [DeiC-HPC/cotainr#126](../../DeiC-HPC/cotainr/pulls/126.md) on 2025-03-21 07:26_
-
----
-
-_Referenced in [scikit-rf/scikit-rf#1269](../../scikit-rf/scikit-rf/pulls/1269.md) on 2025-03-29 17:19_
-
----
-
-_Referenced in [welchbj/tt#14](../../welchbj/tt/issues/14.md) on 2025-05-06 01:11_
-
----
-
-_Referenced in [VIDA-NYU/UrbanMapper#49](../../VIDA-NYU/UrbanMapper/pulls/49.md) on 2025-05-08 14:16_
-
----
-
-_Referenced in [jax-ml/jax#28887](../../jax-ml/jax/pulls/28887.md) on 2025-05-21 15:18_
-
----
-
-_Referenced in [GreenBankObservatory/dysh#593](../../GreenBankObservatory/dysh/pulls/593.md) on 2025-05-22 15:55_
-
----
-
-_Referenced in [cpp-linter/cpp-linter#143](../../cpp-linter/cpp-linter/pulls/143.md) on 2025-05-31 02:23_
-
----
-
-_Referenced in [hagenw/sphinxcontrib-katex#144](../../hagenw/sphinxcontrib-katex/pulls/144.md) on 2025-06-13 14:17_
-
----
-
 _Comment by @hagenw on 2025-06-13 14:28_
 
 Another simple solution (assuming your doc dependencies are part of the `dev` dependency group):
@@ -201,10 +157,6 @@ build:
 sphinx:
   configuration: docs/conf.py
 ```
-
----
-
-_Referenced in [lookit/lookit-jspsych#160](../../lookit/lookit-jspsych/issues/160.md) on 2025-07-16 20:39_
 
 ---
 
@@ -235,10 +187,6 @@ build:
     - ~/.local/bin/uv tool install tox --with tox-uv -p 3.13 --managed-python
     - ~/.local/bin/tox run -e docs --
 ```
-
----
-
-_Referenced in [pipecat-ai/pipecat#2371](../../pipecat-ai/pipecat/pulls/2371.md) on 2025-08-06 00:30_
 
 ---
 
@@ -280,9 +228,5 @@ Yes, I do
 ---
 
 _Closed by @cthoyt on 2025-09-02 13:48_
-
----
-
-_Referenced in [sfstoolbox/sfs-python#187](../../sfstoolbox/sfs-python/pulls/187.md) on 2025-09-04 07:22_
 
 ---

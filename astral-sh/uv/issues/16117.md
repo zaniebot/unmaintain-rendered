@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-03T17:41:24Z
 updated_at: 2025-10-13T15:40:31Z
 url: https://github.com/astral-sh/uv/issues/16117
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip install --project ...` ignoring `tool.uv.sources` setting
@@ -142,13 +142,5 @@ Python 3.11.13
 ---
 
 _Label `bug` added by @ncoghlan on 2025-10-03 17:41_
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#270](../../lmstudio-ai/venvstacks/issues/270.md) on 2025-10-03 17:43_
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#276](../../lmstudio-ai/venvstacks/pulls/276.md) on 2025-10-07 13:59_
 
 ---

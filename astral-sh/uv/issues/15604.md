@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-31T06:17:17Z
 updated_at: 2025-09-17T11:04:30Z
 url: https://github.com/astral-sh/uv/issues/15604
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip list` shows system python packages instead of `.venv` python packages
@@ -203,14 +203,6 @@ fn from_prefix_path(path: &Path) -> CondaEnvironmentKind {
 ```
 
 
-
----
-
-_Referenced in [astral-sh/uv#15678](../../astral-sh/uv/pulls/15678.md) on 2025-09-04 13:05_
-
----
-
-_Referenced in [astral-sh/uv#15679](../../astral-sh/uv/pulls/15679.md) on 2025-09-04 13:29_
 
 ---
 

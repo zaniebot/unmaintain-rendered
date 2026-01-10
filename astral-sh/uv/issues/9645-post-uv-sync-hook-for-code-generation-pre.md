@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T18:13:04Z
 updated_at: 2025-09-02T23:15:22Z
 url: https://github.com/astral-sh/uv/issues/9645
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Post-`uv sync` hook for code generation pre development
@@ -52,10 +52,6 @@ I understand. I'll be happy to contribute something like this myself once there'
 _Comment by @afeblot on 2024-12-19 12:15_
 
 I would have used such a hook to apply a patch file on a broken dependency installed in the .venv.
-
----
-
-_Referenced in [astral-sh/uv#11826](../../astral-sh/uv/issues/11826.md) on 2025-02-27 09:34_
 
 ---
 

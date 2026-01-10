@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T18:47:26Z
 updated_at: 2025-08-26T08:27:20Z
 url: https://github.com/astral-sh/uv/issues/1526
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add flag to allow global installs e.g. for CI
@@ -44,10 +44,6 @@ Ya, this has been a blocker to using this to speed up some slow container builds
 
 ---
 
-_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-16 21:07_
-
----
-
 _Comment by @henryiii on 2024-02-16 21:38_
 
 Workaround credit to @matthewfeickert:
@@ -66,10 +62,6 @@ I actually took that from https://github.com/astral-sh/uv/issues/1386#issuecomme
 
 ---
 
-_Referenced in [astral-sh/uv#1550](../../astral-sh/uv/issues/1550.md) on 2024-02-17 00:31_
-
----
-
 _Comment by @zanieb on 2024-02-17 00:40_
 
 This is a duplicate of https://github.com/astral-sh/uv/issues/1374; oops. I'll keep both for now since they're distinct titles.
@@ -82,14 +74,6 @@ _Comment by @hauntsaninja on 2024-02-17 01:01_
 
 ---
 
-_Referenced in [astral-sh/uv#1578](../../astral-sh/uv/issues/1578.md) on 2024-02-17 12:02_
-
----
-
-_Referenced in [rotki/rotki#7499](../../rotki/rotki/pulls/7499.md) on 2024-02-17 13:09_
-
----
-
 _Comment by @yabirgb on 2024-02-17 13:29_
 
 I got this error pointing the env to the python location as @henryiii posted. Did anyone face the same issue? In the docker container it worked fine 
@@ -99,10 +83,6 @@ I got this error pointing the env to the python location as @henryiii posted. Di
 https://github.com/rotki/rotki/pull/7499
 
 
-
----
-
-_Referenced in [astral-sh/uv#1584](../../astral-sh/uv/issues/1584.md) on 2024-02-17 19:35_
 
 ---
 
@@ -166,21 +146,9 @@ https://ryxcommar.com/2024/02/15/how-to-cut-your-python-docker-builds-in-half-wi
 
 ---
 
-_Referenced in [astral-sh/uv#1396](../../astral-sh/uv/issues/1396.md) on 2024-02-19 00:55_
-
----
-
-_Referenced in [astral-sh/uv#1374](../../astral-sh/uv/issues/1374.md) on 2024-02-19 15:46_
-
----
-
 _Comment by @ofek on 2024-02-19 16:24_
 
 Similar to #1396 a `--python` flag would solve this constraint. Additionally, it makes sense to simply use whatever comes first on PATH as a default; users have come to expect this.
-
----
-
-_Referenced in [astral-sh/uv#1705](../../astral-sh/uv/issues/1705.md) on 2024-02-19 16:53_
 
 ---
 
@@ -193,14 +161,6 @@ _Comment by @qthequartermasterman on 2024-02-20 00:36_
 > [rotki/rotki#7499](https://github.com/rotki/rotki/pull/7499)
 
 I see this same error, but only in Python 3.9 and 3.10. Python 3.11 works fine.
-
----
-
-_Referenced in [astral-sh/uv#1761](../../astral-sh/uv/issues/1761.md) on 2024-02-20 15:29_
-
----
-
-_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-20 21:28_
 
 ---
 
@@ -338,14 +298,6 @@ So, if `uv` is installed on a virtualenv, install packages there. If it's on sys
 
 ---
 
-_Referenced in [zenml-io/zenml#2442](../../zenml-io/zenml/pulls/2442.md) on 2024-02-28 08:26_
-
----
-
-_Referenced in [astral-sh/uv#2042](../../astral-sh/uv/issues/2042.md) on 2024-02-28 12:23_
-
----
-
 _Comment by @charliermarsh on 2024-02-28 15:19_
 
 I empathize with that perspective but we still want to guide users towards using virtual environments and make installing into the system Python an opt-in behavior. It's an intentional difference to have a virtual environment-focused workflow by default, and something we plan to continue to do. Manipulating the system Python is generally discouraged and even dangerous (see: [Externally Managed Environments](https://packaging.python.org/en/latest/specifications/externally-managed-environments/)), and I think it's good for us to take advantage of the opportunity to have some different defaults from `pip`, this being one of them.
@@ -371,10 +323,6 @@ FYI, in GitHub Actions, especially if you were setting up a composite action, yo
 ```
 
 This is explicit and will not affect the environment of future steps.
-
----
-
-_Referenced in [astral-sh/uv#2046](../../astral-sh/uv/pulls/2046.md) on 2024-02-28 16:11_
 
 ---
 
@@ -407,10 +355,6 @@ On Linux everything went fine!
 _Comment by @charliermarsh on 2024-02-28 23:02_
 
 Thanks @astrojuanlu -- I'm tracking that here: https://github.com/astral-sh/uv/issues/2056. It's something specific to Windows with Python versions prior to Python 3.12 (i.e., Python 3.12 seems to work).
-
----
-
-_Referenced in [huggingface/huggingface_hub#2072](../../huggingface/huggingface_hub/pulls/2072.md) on 2024-03-01 12:48_
 
 ---
 
@@ -472,31 +416,11 @@ Yes please, you can just link to your comment above, no need to write an extensi
 
 ---
 
-_Referenced in [astral-sh/uv#2242](../../astral-sh/uv/issues/2242.md) on 2024-03-06 15:38_
-
----
-
-_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
-
----
-
-_Referenced in [commaai/agnos-builder#248](../../commaai/agnos-builder/pulls/248.md) on 2024-07-18 10:35_
-
----
-
-_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 12:14_
-
----
-
 _Comment by @jgehrcke on 2024-10-10 12:15_
 
 Great thread. I came here because I want to install dependencies in CI using `uv sync`.
 
 Do we want to support `--system` for `uv sync`? I am proposing this here: https://github.com/astral-sh/uv/issues/8085
-
----
-
-_Referenced in [kedro-org/kedro#4713](../../kedro-org/kedro/issues/4713.md) on 2025-05-29 04:19_
 
 ---
 

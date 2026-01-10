@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-14T13:27:18Z
 updated_at: 2025-11-10T04:16:19Z
 url: https://github.com/astral-sh/uv/issues/16295
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # pixi environment not properly detected from 0.8.18
@@ -287,10 +287,6 @@ Rather than having something pixi specific, I wonder if a better huristic for th
 _Comment by @tdejager on 2025-10-27 10:19_
 
 Good point because you can make non-global conda/micromaba environments as well. But they do move across projects more-or-less.
-
----
-
-_Referenced in [astral-sh/uv#16585](../../astral-sh/uv/pulls/16585.md) on 2025-11-04 06:54_
 
 ---
 

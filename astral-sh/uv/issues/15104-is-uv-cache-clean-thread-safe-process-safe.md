@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T10:33:52Z
 updated_at: 2025-08-30T22:43:40Z
 url: https://github.com/astral-sh/uv/issues/15104
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Is uv cache clean thread-safe / process-safe?
@@ -76,10 +76,6 @@ _Comment by @hutch3232 on 2025-08-06 18:11_
 Good questions - I might be in a strange situation. I will say it has worked incredibly well for us except for this one-off user error situation.
 
 Basically we are using python in containerized workspaces. These workspaces are largely ephemeral - if we left the cache as the default location they'd be wiped out on shutdown. For significant time savings, we created a drive used to store the `uv` cache which we then mount to each ephemeral workspace. These are linux (ubuntu) environments built using Docker fwiw. When running the image, we're all the same "user" i.e., `$USER`, which is how we don't get into horrible unix permissions issues situation when installing into the same cache location. 
-
----
-
-_Referenced in [astral-sh/uv#15115](../../astral-sh/uv/issues/15115.md) on 2025-08-06 18:50_
 
 ---
 

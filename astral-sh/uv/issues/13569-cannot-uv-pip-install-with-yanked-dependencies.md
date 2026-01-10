@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T10:05:29Z
 updated_at: 2025-09-23T09:18:23Z
 url: https://github.com/astral-sh/uv/issues/13569
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Cannot `uv pip install` with yanked dependencies
@@ -84,10 +84,6 @@ My understanding is that yanking a package should not break a previous working i
 Edit: from [PyPI](https://docs.pypi.org/project-management/yanking/):
 
 > A yanked release is a release that is always ignored by an installer, unless it is the only release that matches a [version specifier](https://packaging.python.org/en/latest/specifications/version-specifiers/) (using either == or ===).
-
----
-
-_Referenced in [astral-sh/uv#13308](../../astral-sh/uv/issues/13308.md) on 2025-07-17 14:49_
 
 ---
 

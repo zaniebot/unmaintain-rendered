@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-13T18:29:43Z
 updated_at: 2025-11-18T10:44:04Z
 url: https://github.com/astral-sh/uv/issues/14589
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # thread 'main' panicked at /home/runner/work/uv/uv/crates/uv/src/lib.rs:2276:10:
@@ -47,10 +47,6 @@ Python 3.12.11
 ---
 
 _Label `bug` added by @sdebruyn on 2025-07-13 18:29_
-
----
-
-_Referenced in [tokio-rs/tokio#7144](../../tokio-rs/tokio/issues/7144.md) on 2025-07-13 20:32_
 
 ---
 

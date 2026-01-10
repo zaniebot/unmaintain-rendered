@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-26T18:29:28Z
 updated_at: 2025-11-29T22:13:06Z
 url: https://github.com/astral-sh/uv/issues/16865
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `tool update-shell` uses incorrect logic when `ZDOTDIR` is set by `~/.zshenv`
@@ -70,10 +70,6 @@ _Comment by @LIghtJUNction on 2025-11-26 19:15_
 I think it's fine.
 
 
-
----
-
-_Referenced in [astral-sh/uv#16866](../../astral-sh/uv/pulls/16866.md) on 2025-11-26 19:41_
 
 ---
 

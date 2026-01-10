@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-07T16:00:39Z
 updated_at: 2025-11-07T20:54:15Z
 url: https://github.com/astral-sh/uv/issues/16634
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `uv build` crashes with hatchling when different items in sdist and wheel
@@ -155,10 +155,6 @@ Python 3.12.11
 ---
 
 _Label `bug` added by @rzuckerm on 2025-11-07 16:00_
-
----
-
-_Referenced in [astral-sh/uv#16596](../../astral-sh/uv/issues/16596.md) on 2025-11-07 16:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-06T16:48:46Z
 updated_at: 2025-11-12T13:45:32Z
 url: https://github.com/astral-sh/uv/issues/16616
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Add a hint when a stable version of Python is available
@@ -30,14 +30,6 @@ e.g., if you use a pre-release version of Python in uv run but a stable version 
 ---
 
 _Label `enhancement` added by @zanieb on 2025-11-06 16:48_
-
----
-
-_Referenced in [astral-sh/uv#16608](../../astral-sh/uv/issues/16608.md) on 2025-11-06 16:48_
-
----
-
-_Referenced in [astral-sh/uv#16619](../../astral-sh/uv/pulls/16619.md) on 2025-11-06 18:55_
 
 ---
 

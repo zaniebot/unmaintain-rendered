@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-29T22:36:09Z
 updated_at: 2025-09-04T18:50:23Z
 url: https://github.com/astral-sh/uv/issues/15586
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Caching for managed python installations
@@ -44,10 +44,6 @@ _Label `enhancement` added by @aokellermann on 2025-08-29 22:36_
 _Comment by @zanieb on 2025-08-29 22:42_
 
 There's a `UV_PYTHON_CACHE_DIR`, it's just not on by default.
-
----
-
-_Referenced in [astral-sh/uv#15689](../../astral-sh/uv/pulls/15689.md) on 2025-09-04 18:48_
 
 ---
 

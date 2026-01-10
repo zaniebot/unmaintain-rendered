@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T12:33:02Z
 updated_at: 2025-12-03T15:25:35Z
 url: https://github.com/astral-sh/uv/issues/11883
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add sizes option to the tree command
@@ -116,10 +116,6 @@ _Comment by @pablofueros on 2025-12-03 11:58_
 Thanks for the update!
 
 I've been trying it out. Note that if there are repeated packages, it could be great not to repeat the sizes (look my idea on the 1st comment). This could also be great to make a sumup of the sizes to get the total size of the project (which was my actual concern)
-
----
-
-_Referenced in [astral-sh/uv#15531](../../astral-sh/uv/pulls/15531.md) on 2025-12-03 12:05_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-10T10:50:16Z
 updated_at: 2025-11-10T12:55:22Z
 url: https://github.com/astral-sh/uv/issues/16664
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # macOS: `uv run` panics inside SystemConfiguration when sandboxed (Codex/seatbelt) — "Attempted to create a NULL object"
@@ -168,10 +168,6 @@ _Label `bug` added by @onutc on 2025-11-10 10:50_
 
 ---
 
-_Referenced in [openai/codex#1457](../../openai/codex/issues/1457.md) on 2025-11-10 10:52_
-
----
-
 _Comment by @tekumara on 2025-11-10 11:29_
 
 Network related things, like reqwest, need to be able to lookup `com.apple.SystemConfiguration.configd` which you've explicitly denied in Reproduction B.
@@ -187,13 +183,5 @@ I just upgraded to Codex 0.57.0 and confirm that this is resolved.
 ---
 
 _Closed by @onutc on 2025-11-10 12:55_
-
----
-
-_Referenced in [mullvad/system-configuration-rs#72](../../mullvad/system-configuration-rs/issues/72.md) on 2025-11-10 13:21_
-
----
-
-_Referenced in [astral-sh/uv#16916](../../astral-sh/uv/issues/16916.md) on 2025-12-01 21:43_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-22T06:51:24Z
 updated_at: 2025-11-29T02:30:52Z
 url: https://github.com/astral-sh/uv/issues/16817
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # support configuring `--no-install-project` in `pyproject.toml`
@@ -34,10 +34,6 @@ i mostly have it working, but it breaks whenever i run any command with `uv run`
 ---
 
 _Label `enhancement` added by @DetachHead on 2025-11-22 06:51_
-
----
-
-_Referenced in [tach-org/tach#863](../../tach-org/tach/issues/863.md) on 2025-11-22 07:42_
 
 ---
 
@@ -74,10 +70,6 @@ this is what i had in mind as well, but i'm quite new to maturin and i couldn't 
 _Comment by @konstin on 2025-11-26 15:26_
 
 It's a good idea to track this in maturin too.
-
----
-
-_Referenced in [PyO3/maturin#2877](../../PyO3/maturin/issues/2877.md) on 2025-11-28 13:57_
 
 ---
 

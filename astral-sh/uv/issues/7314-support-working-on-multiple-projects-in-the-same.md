@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T22:47:10Z
 updated_at: 2025-10-21T21:25:32Z
 url: https://github.com/astral-sh/uv/issues/7314
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support working on multiple projects in the same venv
@@ -176,14 +176,6 @@ Consider the case where each project has its own .env, and projects A,B and C ar
 Q1: Am I downloading the dependencies once or three times? 
 Q2: A predates B by three months, C predates B by three months. But I have modified each in the last week.
        Now how many dependencies am I generating not using a workspace?
-
----
-
-_Referenced in [thromer/uv-monorepo-example#1](../../thromer/uv-monorepo-example/pulls/1.md) on 2025-06-29 21:52_
-
----
-
-_Referenced in [datalab-org/datalab-app-plugin-insitu#48](../../datalab-org/datalab-app-plugin-insitu/issues/48.md) on 2025-07-14 10:29_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T09:44:58Z
 updated_at: 2025-11-19T12:22:09Z
 url: https://github.com/astral-sh/uv/issues/7917
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # [feat] uv publish --skip-existing
@@ -156,10 +156,6 @@ One option is adding index url as mandatory parameter to skip-existing: By using
 
 ---
 
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-10-09 13:07_
-
----
-
 _Comment by @konstin on 2024-10-09 13:10_
 
 > e.g. if I have published version 1.0.0, now wants to build and publish 1.0.1 locally, it it will try to upload 1.0.0 as well. I have to manually remove the older versions to make it work.
@@ -181,10 +177,6 @@ _Label `needs-design` added by @konstin on 2024-10-09 15:34_
 _Comment by @TiansuYu on 2024-10-09 15:57_
 
 In my workflow, I would also need to generate a dev version on the fly and publish a random dev version on every merge to main. Please also keep this in mind, when you devise `uv publish`.  (In the end, probably just edit version in `pyproject.toml` in CD, and not interfere the workflow @konstin proposed here.) 
-
----
-
-_Referenced in [astral-sh/uv#8033](../../astral-sh/uv/issues/8033.md) on 2024-10-09 15:59_
 
 ---
 
@@ -232,14 +224,6 @@ _Label `needs-design` removed by @konstin on 2024-10-13 11:58_
 ---
 
 _Label `enhancement` added by @konstin on 2024-10-13 11:58_
-
----
-
-_Referenced in [astral-sh/uv#8531](../../astral-sh/uv/pulls/8531.md) on 2024-10-24 15:59_
-
----
-
-_Referenced in [astral-sh/uv#8631](../../astral-sh/uv/pulls/8631.md) on 2024-10-28 10:29_
 
 ---
 
@@ -328,10 +312,6 @@ I agree that the default functionality of `uv publish` should return an error wh
 _Comment by @Sylphe88 on 2025-02-26 12:45_
 
 We also need this option so our CI can publish the same package version with different content (over different CI executions). We use semver to version our packages and do not allow replacing an existing production packages (1.2.3) however our build/publish tools must allow for this for development versions (1.2.3a0 or 1.2.3.dev0 for instance) which we don't mind to change over time
-
----
-
-_Referenced in [astral-sh/uv#12369](../../astral-sh/uv/issues/12369.md) on 2025-03-21 16:42_
 
 ---
 
@@ -480,14 +460,6 @@ Twine has made bad experiences with this feature, too, and has recently removed 
 > Can this be considered, and if so should i create a new issue?
 
 Feel free to open a new issue (it's better than bumping closed issues).
-
----
-
-_Referenced in [pypa/twine#1265](../../pypa/twine/issues/1265.md) on 2025-09-04 18:42_
-
----
-
-_Referenced in [astral-sh/uv#16774](../../astral-sh/uv/issues/16774.md) on 2025-11-19 11:32_
 
 ---
 

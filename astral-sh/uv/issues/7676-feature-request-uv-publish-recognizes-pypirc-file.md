@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-24T21:44:49Z
 updated_at: 2025-10-29T13:15:46Z
 url: https://github.com/astral-sh/uv/issues/7676
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Feature Request - uv publish recognizes .pypirc file
@@ -131,10 +131,6 @@ I created a wrapper for this: https://github.com/bulletmark/uv-publish.
 
 ---
 
-_Referenced in [langflow-ai/langflow#3919](../../langflow-ai/langflow/pulls/3919.md) on 2024-09-26 23:51_
-
----
-
 _Comment by @cthoyt on 2024-09-27 07:15_
 
 Big agree on this! My workflow uses `twine upload --skip-existing dist/*` locally and relies on the `.pypirc` file. I'm very excited to replace this with `uv publish` if it doesn't require me having to reengineer my local environment.
@@ -145,19 +141,7 @@ The other benefit of the config file is it lets you keep track of multiple index
 
 ---
 
-_Referenced in [astral-sh/uv#7963](../../astral-sh/uv/issues/7963.md) on 2024-10-07 09:12_
-
----
-
-_Referenced in [astral-sh/uv#8352](../../astral-sh/uv/issues/8352.md) on 2024-10-19 07:58_
-
----
-
 _Renamed from "Feature Request - vu publish recognizes .pypirc file" to "Feature Request - uv publish recognizes .pypirc file" by @konstin on 2024-11-03 17:44_
-
----
-
-_Referenced in [astral-sh/uv#8806](../../astral-sh/uv/pulls/8806.md) on 2024-11-04 20:21_
 
 ---
 

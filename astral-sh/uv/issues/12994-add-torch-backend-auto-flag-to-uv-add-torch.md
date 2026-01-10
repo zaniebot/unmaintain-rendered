@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-21T01:51:34Z
 updated_at: 2025-11-03T13:28:28Z
 url: https://github.com/astral-sh/uv/issues/12994
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add `--torch-backend=auto` Flag to `uv add torch`
@@ -98,10 +98,6 @@ this feature throwing me an error, when i add[ this feature](https://docs.astral
 {"torch-backend":"auto","generate-hashes":true,"no-strip-markers":true,"output-file":"requirements.txt","prerelease":"allow","universal":true,"upgrade":true,"verify-hashes":true} is not valid under any of the schemas listed in the 'anyOf' keywordEven Better TOML
 ```
 this is actually what vscode's warning shows!
-
----
-
-_Referenced in [astral-sh/uv#16545](../../astral-sh/uv/issues/16545.md) on 2025-11-01 05:29_
 
 ---
 

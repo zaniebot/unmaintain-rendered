@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-05T14:52:13Z
 updated_at: 2025-11-21T18:49:51Z
 url: https://github.com/astral-sh/uv/issues/16601
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Resolution Order Dependency Causes Incorrect Backtracking
@@ -163,10 +163,6 @@ uv 0.9.7
 ---
 
 _Label `bug` added by @qiulang on 2025-11-05 14:52_
-
----
-
-_Referenced in [xorbitsai/inference#4215](../../xorbitsai/inference/issues/4215.md) on 2025-11-05 14:58_
 
 ---
 

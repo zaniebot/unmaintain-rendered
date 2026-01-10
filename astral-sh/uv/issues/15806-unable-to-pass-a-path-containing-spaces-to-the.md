@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-12T10:13:11Z
 updated_at: 2025-09-18T11:38:38Z
 url: https://github.com/astral-sh/uv/issues/15806
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Unable to pass a path containing spaces to the `--env-file` option of `uv run`
@@ -116,10 +116,6 @@ It's because you can provide multiple values by space-delimiting. Let me see if 
 _Comment by @charliermarsh on 2025-09-12 15:45_
 
 It doesn't look like there's any way to fix it natively in Clap, but I will add our own escaping.
-
----
-
-_Referenced in [astral-sh/uv#15815](../../astral-sh/uv/pulls/15815.md) on 2025-09-12 16:08_
 
 ---
 

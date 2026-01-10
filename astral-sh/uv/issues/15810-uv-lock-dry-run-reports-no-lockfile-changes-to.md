@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-12T13:32:11Z
 updated_at: 2025-09-12T17:57:59Z
 url: https://github.com/astral-sh/uv/issues/15810
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv lock --dry-run` reports "No lockfile changes" to VCS-sourced packages
@@ -92,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-12 15:05_
 _Comment by @charliermarsh on 2025-09-12 16:20_
 
 I think this is because the `--dry-run` changelog only logs based on package version (and the actual package version didn't change). We can add a commit SHA to it, I think.
-
----
-
-_Referenced in [astral-sh/uv#15817](../../astral-sh/uv/pulls/15817.md) on 2025-09-12 16:57_
 
 ---
 

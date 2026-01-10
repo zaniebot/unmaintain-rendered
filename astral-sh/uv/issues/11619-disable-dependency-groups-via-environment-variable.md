@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-19T13:22:24Z
 updated_at: 2025-10-31T03:34:15Z
 url: https://github.com/astral-sh/uv/issues/11619
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Disable dependency groups via environment variable
@@ -52,10 +52,6 @@ _Label `configuration` added by @zanieb on 2025-02-19 15:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-31 01:09_
-
----
-
-_Referenced in [astral-sh/uv#16529](../../astral-sh/uv/pulls/16529.md) on 2025-10-31 01:27_
 
 ---
 

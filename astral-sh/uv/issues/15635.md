@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-02T18:42:18Z
 updated_at: 2025-09-02T20:10:58Z
 url: https://github.com/astral-sh/uv/issues/15635
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv cannot install packages on its own managed Python with virtual environment activated
@@ -74,10 +74,6 @@ _Label `bug` removed by @zanieb on 2025-09-02 19:55_
 ---
 
 _Label `question` added by @zanieb on 2025-09-02 19:55_
-
----
-
-_Referenced in [astral-sh/uv#15639](../../astral-sh/uv/issues/15639.md) on 2025-09-02 19:56_
 
 ---
 

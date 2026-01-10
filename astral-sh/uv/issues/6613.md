@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-25T18:21:44Z
 updated_at: 2025-12-02T15:39:09Z
 url: https://github.com/astral-sh/uv/issues/6613
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Work across multiple drives
@@ -75,10 +75,6 @@ While this is not mentioned in the pnpm thread, I think users who hits this issu
 
 ---
 
-_Referenced in [astral-sh/uv#9500](../../astral-sh/uv/issues/9500.md) on 2024-11-28 12:42_
-
----
-
 _Comment by @Winand on 2025-01-01 23:44_
 
 So I can simply create `uv.toml` in the root folder of a disk with contents `cache-dir = "D:/.uv/cache"`? Do i understand it correctly that uv searches for `uv.toml` in all parent folders of a project?
@@ -87,10 +83,6 @@ So I can simply create `uv.toml` in the root folder of a disk with contents `cac
 > Specifically, uv will search for a pyproject.toml or uv.toml file in the current directory, or in the nearest parent directory.
 
 It means that uv checks each parent folder until it finds the nearest uv.toml file?
-
----
-
-_Referenced in [astral-sh/uv#11721](../../astral-sh/uv/issues/11721.md) on 2025-02-23 09:21_
 
 ---
 
@@ -126,10 +118,6 @@ if ($DriveLetter -in @("D", "E")) {
 ```
 
 It works quite well..
-
----
-
-_Referenced in [invoke-ai/launcher#54](../../invoke-ai/launcher/issues/54.md) on 2025-05-23 21:23_
 
 ---
 

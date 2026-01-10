@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T03:41:05Z
 updated_at: 2025-10-03T10:41:55Z
 url: https://github.com/astral-sh/uv/issues/2685
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Allow pre-releases when using compatible release syntax
@@ -188,14 +188,6 @@ uv pip install --verbose 'papermill~=2.5.0'
 
 ---
 
-_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-03-28 06:39_
-
----
-
-_Referenced in [nteract/papermill#785](../../nteract/papermill/issues/785.md) on 2024-04-02 07:45_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-04-07 22:18_
 
 ---
@@ -285,10 +277,6 @@ You can workaround by adding to a requirement file or constraint file the specif
 
 ---
 
-_Referenced in [ansible/ansible-lint#4800](../../ansible/ansible-lint/issues/4800.md) on 2025-10-03 10:37_
-
----
-
 _Comment by @ssbarnea on 2025-10-03 10:41_
 
 We recently discovered this bug with ansible-lint project where we were forced to add a dependency on a pre-release version of ansible-core if python is 3.14 as there is no release that would work with 3.14 and it will not be for a while.
@@ -299,13 +287,5 @@ We recently discovered this bug with ansible-lint project where we were forced t
 ```
 
 But due to this bug `uv.lock` users are no longer able to install `ansible-lint==25.9.1` because they face this issue with pre-release and we found no practical workarounds for it. Any ideas?
-
----
-
-_Referenced in [ansible/ansible-compat#533](../../ansible/ansible-compat/pulls/533.md) on 2025-10-06 11:29_
-
----
-
-_Referenced in [ansible/ansible-compat#535](../../ansible/ansible-compat/pulls/535.md) on 2025-10-09 17:22_
 
 ---

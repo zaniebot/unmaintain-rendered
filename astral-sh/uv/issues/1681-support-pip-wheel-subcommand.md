@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T08:42:57Z
 updated_at: 2025-11-07T11:57:14Z
 url: https://github.com/astral-sh/uv/issues/1681
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support `pip wheel` subcommand
@@ -61,10 +61,6 @@ _Comment by @sbidoul on 2024-02-21 17:07_
 >  I wonder what we can provide for people who want to generate wheels for all their dependencies though. It makes sense for pre-building and sharing when they aren't distributed by the original package.
 
 I echo this. `pip wheel` is useful to download and build all parts of an app for deployment. For instance in a multi-stage Dockerfile it is common to have a fat build stage with all build tools to create the wheels, then a slim stage which only installs the wheels built in the previous stage. 
-
----
-
-_Referenced in [astral-sh/uv#1760](../../astral-sh/uv/issues/1760.md) on 2024-02-21 17:09_
 
 ---
 
@@ -183,27 +179,11 @@ To second this issue, In our usecase we build the wheel once (`pip wheel . -w di
 
 ---
 
-_Referenced in [astral-sh/uv#3065](../../astral-sh/uv/issues/3065.md) on 2024-04-16 16:59_
-
----
-
-_Referenced in [astral-sh/uv#3163](../../astral-sh/uv/issues/3163.md) on 2024-04-23 16:12_
-
----
-
-_Referenced in [astral-sh/uv#6323](../../astral-sh/uv/issues/6323.md) on 2024-08-21 23:50_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-31 16:47_
 
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-08-31 18:49_
-
----
-
-_Referenced in [astral-sh/uv#7148](../../astral-sh/uv/issues/7148.md) on 2024-09-06 23:47_
 
 ---
 
@@ -225,43 +205,15 @@ The issue is that the new command doesn’t build the dependencies. Neither the 
 
 ---
 
-_Referenced in [pex-tool/pex#2512](../../pex-tool/pex/pulls/2512.md) on 2024-09-13 19:25_
-
----
-
-_Referenced in [pex-tool/pex#2371](../../pex-tool/pex/issues/2371.md) on 2024-09-13 19:31_
-
----
-
 _Comment by @Ralith on 2024-09-16 05:40_
 
 This would be useful for packaging Blender extensions, which need their dependencies bundled as wheels in a subdirectory: https://docs.blender.org/manual/en/dev/advanced/extensions/python_wheels.html
 
 ---
 
-_Referenced in [astral-sh/uv#7811](../../astral-sh/uv/issues/7811.md) on 2024-09-30 15:55_
-
----
-
 _Comment by @sliva0 on 2024-10-02 15:16_
 
 This issue is essential to adopt `uv` in a project I'm working on to make reproducible offline installations possible, and it doesn't seem to move forward. Is there a way I can contribute to working on this as a rust novice?
-
----
-
-_Referenced in [astral-sh/uv#7995](../../astral-sh/uv/issues/7995.md) on 2024-10-08 05:33_
-
----
-
-_Referenced in [blakeblackshear/frigate#14759](../../blakeblackshear/frigate/pulls/14759.md) on 2024-11-03 20:14_
-
----
-
-_Referenced in [blakeblackshear/frigate#14757](../../blakeblackshear/frigate/issues/14757.md) on 2024-11-05 13:57_
-
----
-
-_Referenced in [unioslo/mreg#553](../../unioslo/mreg/pulls/553.md) on 2024-11-10 10:25_
 
 ---
 
@@ -400,10 +352,6 @@ You can get a such a list already using `[uv] pip compile -e $PROJECT_DIR` so fu
 
 ---
 
-_Referenced in [skypilot-org/skypilot#4428](../../skypilot-org/skypilot/issues/4428.md) on 2024-12-02 23:40_
-
----
-
 _Comment by @Spindel on 2024-12-03 16:45_
 
 I've got multiple uses of "pip wheel",  one of them is as many others, artifacts for a build or multi-stage pipeline,  where we also separate dev dependencies (linters, etc)  from real deps, so we can always use the same for child pipelines. Sometimes these end up in a kind of "dev container" that's used as a base, in order to prevent updated packages in repositories from causing new fun issues.
@@ -446,10 +394,6 @@ _Comment by @Skillossus on 2025-02-06 14:53_
 
 ---
 
-_Referenced in [winpython/winpython#1481](../../winpython/winpython/issues/1481.md) on 2025-02-13 18:05_
-
----
-
 _Comment by @omer54463 on 2025-02-14 20:50_
 
 Is anyone working on this feature? I could really use it.
@@ -479,10 +423,6 @@ It would be even better if `uv sync` had an option for dropping a wheel into a d
 
 ---
 
-_Referenced in [astral-sh/uv#12475](../../astral-sh/uv/pulls/12475.md) on 2025-03-26 03:22_
-
----
-
 _Comment by @abhiaagarwal on 2025-03-26 12:11_
 
 I opened a draft MR for this, after looking through uv's cache at work on a whim and realizing uv's cache internal archive format is entirely identical to a wheel (validated with `diff -r -q` between uv/pip wheel) and you can just zip the archive to create a "wheel". It's kind of an open question whether this is correct behavior / something that I should rely on, because from a design perspective, it means that uv is tied to the implementation of its cache resembling a wheel, which _feels_ bad.
@@ -508,14 +448,6 @@ I believe `pip wheel` used to not save wheels for things that were already wheel
 _Comment by @abhiaagarwal on 2025-03-26 16:42_
 
 `uv build --wheel` doesn't technically generate wheels. What does generate wheels is the build backend, which uv calls (via the build frontend). That's kind of the problem here, uv has the unzip wheel => store in cache, but it doesn't have the reverse. I found that by zipping their cache you get a wheel that is hash-equivalent to the indexed wheel.
-
----
-
-_Referenced in [ansys/actions#754](../../ansys/actions/pulls/754.md) on 2025-04-02 15:32_
-
----
-
-_Referenced in [BrokenSource/Pyaket#2](../../BrokenSource/Pyaket/issues/2.md) on 2025-04-18 17:48_
 
 ---
 
@@ -572,22 +504,6 @@ Step 3 could hypothetically be replaced by hacking something out of `uv venv --r
 
 ---
 
-_Referenced in [astral-sh/uv#14384](../../astral-sh/uv/issues/14384.md) on 2025-07-02 13:06_
-
----
-
-_Referenced in [pex-tool/pex#2803](../../pex-tool/pex/pulls/2803.md) on 2025-07-02 18:10_
-
----
-
-_Referenced in [Nitrokey/pynitrokey#610](../../Nitrokey/pynitrokey/issues/610.md) on 2025-07-15 16:40_
-
----
-
-_Referenced in [aspect-build/rules_py#544](../../aspect-build/rules_py/pulls/544.md) on 2025-09-22 03:31_
-
----
-
 _Comment by @akaszynski on 2025-10-29 15:17_
 
 > I thought that I had posted it but I can't find it in here -- `uvx pip download . -d dist` actually works for me so far 🤷
@@ -601,9 +517,5 @@ _Comment by @noonedeadpunk on 2025-11-07 11:57_
 +1 to the discussion. We are also missing equivalent of `pip wheel --requirement` to download/build wheels for third-party packages as part of software deployment process, when we wanna to prepare a local cache based of constraints, which will be served later during installation.
 
 But we don't have a python project to build from, rather a list of requirements. 
-
----
-
-_Referenced in [sandialabs/sceptre-bennu#44](../../sandialabs/sceptre-bennu/pulls/44.md) on 2025-11-24 21:13_
 
 ---

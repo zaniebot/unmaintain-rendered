@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-06T19:01:01Z
 updated_at: 2025-08-30T07:35:21Z
 url: https://github.com/astral-sh/uv/issues/4109
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add a download link for a minor uv version
@@ -62,10 +62,6 @@ Good point! I had some fun with this at my last job... https://github.com/Prefec
 
 ---
 
-_Referenced in [astral-sh/uv#7042](../../astral-sh/uv/issues/7042.md) on 2024-09-04 18:46_
-
----
-
 _Comment by @nikpivkin on 2024-12-12 06:27_
 
 I found this command in the release `curl --proto ‘=https’ --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.5.8/uv-installer.sh | sh`. Why is it not documented [here](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)?
@@ -79,10 +75,6 @@ _Comment by @zanieb on 2024-12-12 14:09_
 ---
 
 _Label `enhancement` added by @zanieb on 2025-01-08 18:38_
-
----
-
-_Referenced in [astral-sh/uv#10404](../../astral-sh/uv/issues/10404.md) on 2025-01-08 18:38_
 
 ---
 

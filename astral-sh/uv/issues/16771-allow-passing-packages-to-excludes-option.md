@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-18T18:10:29Z
 updated_at: 2025-11-21T15:02:05Z
 url: https://github.com/astral-sh/uv/issues/16771
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Allow passing packages to `--excludes` option
@@ -74,9 +74,5 @@ Should we also consider `--exclude-packages ${packageName} ... ${packageName}` a
 _Comment by @zanieb on 2025-11-21 15:02_
 
 We generally can't use space delimited names in the CLI because it creates ambiguous parsing. We usually prefer `,`. There are various places where we allow this (and I'd expect to here) 
-
----
-
-_Referenced in [astral-sh/uv#16808](../../astral-sh/uv/pulls/16808.md) on 2025-11-21 17:14_
 
 ---

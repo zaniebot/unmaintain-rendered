@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T06:10:11Z
 updated_at: 2025-10-17T15:24:14Z
 url: https://github.com/astral-sh/uv/issues/16337
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Unable to install wheel with macosx_14_5 platform tag on macOS 15.6.1
@@ -90,10 +90,6 @@ _Label `question` added by @konstin on 2025-10-17 09:05_
 
 ---
 
-_Referenced in [pypa/packaging.python.org#1933](../../pypa/packaging.python.org/issues/1933.md) on 2025-10-17 09:24_
-
----
-
 _Comment by @anuraaga on 2025-10-17 09:25_
 
 Thanks a lot for the explanation! I couldn't find it anywhere in the docs but it makes sense.
@@ -138,13 +134,5 @@ Thanks for the help on the other issue, I don't know if I would have the will to
 ---
 
 _Closed by @anuraaga on 2025-10-17 15:24_
-
----
-
-_Referenced in [pypa/packaging#435](../../pypa/packaging/issues/435.md) on 2025-10-17 15:57_
-
----
-
-_Referenced in [pypi/warehouse#18959](../../pypi/warehouse/pulls/18959.md) on 2025-10-29 10:15_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-10T03:20:23Z
 updated_at: 2025-10-16T05:22:10Z
 url: https://github.com/astral-sh/uv/issues/16219
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Build failures on python 3.14 but not 3.13.7
@@ -208,9 +208,5 @@ Thanks for your help.
 ---
 
 _Closed by @killcoder on 2025-10-16 05:22_
-
----
-
-_Referenced in [muhammad-fiaz/logly#89](../../muhammad-fiaz/logly/issues/89.md) on 2025-10-16 05:27_
 
 ---

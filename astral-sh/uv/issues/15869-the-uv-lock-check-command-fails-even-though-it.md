@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-15T08:07:55Z
 updated_at: 2025-10-01T15:03:44Z
 url: https://github.com/astral-sh/uv/issues/15869
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # The uv lock --check command fails even though it should pass.
@@ -271,17 +271,9 @@ numpy-old = [{ name = "numpy", specifier = "<2.0.0" }]
 
 ---
 
-_Referenced in [astral-sh/uv#15884](../../astral-sh/uv/pulls/15884.md) on 2025-09-16 02:30_
-
----
-
 _Comment by @zanieb on 2025-09-16 02:38_
 
 I have a patch, but it'll need discussion https://github.com/astral-sh/uv/pull/15884#discussion_r2350517900
-
----
-
-_Referenced in [astral-sh/uv#15909](../../astral-sh/uv/pulls/15909.md) on 2025-09-17 15:50_
 
 ---
 

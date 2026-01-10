@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-01T18:56:22Z
 updated_at: 2025-11-18T15:47:24Z
 url: https://github.com/astral-sh/uv/issues/14401
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Spawning subprocess in build backend fails due to group policy 
@@ -321,9 +321,5 @@ _Comment by @ffyring on 2025-11-18 13:58_
 
 I don't think this is exactly the same:
 My company might not accept / whitelist binaries from astral so we need to sign the python.exe dynamically with our own certificate before it's being used. #10336 seem to concern astral signing before distributing files.
-
----
-
-_Referenced in [astral-sh/uv#10336](../../astral-sh/uv/issues/10336.md) on 2025-11-19 09:27_
 
 ---

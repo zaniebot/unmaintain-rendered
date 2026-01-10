@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-18T19:01:33Z
 updated_at: 2025-10-17T00:48:32Z
 url: https://github.com/astral-sh/uv/issues/7515
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Automate updating of minimum dependencies based on time since initial minor release 
@@ -61,10 +61,6 @@ _Comment by @notatallshaw on 2024-09-18 19:16_
 FYI, this would require the index being queries to support Simple Repository API version 1.1 or later i.e. [PEP 700](https://peps.python.org/pep-0700/).
 
 For indexes which are on  Simple Repository API version 1.0 uv would have no way of getting this data. I mention this because PyTorch appears to still be on 1.0 and I'm sure other popular non-PyPI indexes are on 1.0, so there would need to be a clear warning from uv when using an index that doesn't provide this information.
-
----
-
-_Referenced in [heliophysicsPy/standards#29](../../heliophysicsPy/standards/pulls/29.md) on 2024-09-23 15:56_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-11T11:41:54Z
 updated_at: 2025-09-12T17:11:06Z
 url: https://github.com/astral-sh/uv/issues/15785
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Document the `NO_PROXY` environment variable support and schema
@@ -68,10 +68,6 @@ I'm not a rust developer, I am not sure how things work but are you sure you're 
 
 ---
 
-_Referenced in [seanmonstar/reqwest#2815](../../seanmonstar/reqwest/issues/2815.md) on 2025-09-11 18:26_
-
----
-
 _Comment by @fleetingbytes on 2025-09-12 01:58_
 
 > I'm not a rust developer, I am not sure how things work but are you sure you're including the latest version of the reqwest library?
@@ -117,10 +113,6 @@ _Label `good first issue` added by @zanieb on 2025-09-12 15:35_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-12 16:14_
-
----
-
-_Referenced in [astral-sh/uv#15816](../../astral-sh/uv/pulls/15816.md) on 2025-09-12 16:23_
 
 ---
 

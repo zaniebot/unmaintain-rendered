@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-11T11:33:55Z
 updated_at: 2025-11-13T13:56:17Z
 url: https://github.com/astral-sh/uv/issues/16684
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # bootstrapping problem with keyring in pyproject.toml to access internal index
@@ -83,10 +83,6 @@ uv sync
 ---
 
 _Label `enhancement` added by @woutervh on 2025-11-11 11:33_
-
----
-
-_Referenced in [astral-sh/uv#16704](../../astral-sh/uv/issues/16704.md) on 2025-11-12 13:16_
 
 ---
 

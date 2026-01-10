@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T09:59:44Z
 updated_at: 2025-09-11T19:15:38Z
 url: https://github.com/astral-sh/uv/issues/6314
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support including dependency executables (e.g., `--include-deps`) in `uv tool install`
@@ -81,10 +81,6 @@ _Label `good first issue` added by @zanieb on 2024-08-29 23:10_
 
 ---
 
-_Referenced in [astral-sh/uv#6922](../../astral-sh/uv/issues/6922.md) on 2024-09-08 04:28_
-
----
-
 _Renamed from "uv tool install --install-deps" to "Support including dependency executables (e.g., `--include-deps`) in `uv tool install`" by @zanieb on 2024-09-08 13:36_
 
 ---
@@ -110,10 +106,6 @@ Using ansible as an example, I'll highlight these three packages:
  * `uv tool install --i-want-ponies ansible-core --i-want-ponies ansible-lint ansible`: like the previous, plus it brings in an extra package `ansible-lint` and installs its executable. It doesn't need an explicit additional `--with` if the package is not already a dependency of the top tool.
 
 As a side note, at some point this may end up bringing in too many executables (e.g. from fat packages like `ansible-core`), so possibly there will be a need to grow an additional flag to specify an allow-list of globs to filter executables by name. I'll leave that for a separate ticket.
-
----
-
-_Referenced in [astral-sh/uv#7592](../../astral-sh/uv/pulls/7592.md) on 2024-09-20 17:04_
 
 ---
 
@@ -345,10 +337,6 @@ It's not a bad idea per se, but it means the user would have to know beforehand 
 
 ---
 
-_Referenced in [astral-sh/uv#7312](../../astral-sh/uv/issues/7312.md) on 2025-02-13 15:35_
-
----
-
 _Comment by @MurtadhaInit on 2025-05-03 12:20_
 
 Any updates on this? I think the solution to this issue would greatly increase the value of using uv for me because it means I can safely get rid of pipx which I only use for that purpose (and `ansible` specifically).
@@ -369,21 +357,9 @@ I appreciate all the effort. And thank you for this overall great tool.
 
 ---
 
-_Referenced in [astral-sh/uv#14014](../../astral-sh/uv/pulls/14014.md) on 2025-06-13 05:23_
-
----
-
-_Referenced in [astral-sh/uv#14194](../../astral-sh/uv/issues/14194.md) on 2025-06-21 22:47_
-
----
-
 _Comment by @aaron-ang on 2025-06-27 21:15_
 
 hi @zanieb, I've added some comments to #14014 that addresses my new changes based on your feedback. I understand this feature is a significant change. I hope we can finalize this soon :)
-
----
-
-_Referenced in [ansible/ansible-dev-tools#588](../../ansible/ansible-dev-tools/issues/588.md) on 2025-07-28 16:55_
 
 ---
 

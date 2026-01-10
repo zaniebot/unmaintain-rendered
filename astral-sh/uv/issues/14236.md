@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-24T11:08:08Z
 updated_at: 2025-09-02T09:54:46Z
 url: https://github.com/astral-sh/uv/issues/14236
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add `--torch-backend` flag support to `uv add` command for automatic PyTorch backend configuration
@@ -66,9 +66,5 @@ What is the plan for proxy package indexes for this?
 _Comment by @mohaidoss on 2025-09-02 09:54_
 
 Hello @charliermarsh beside the `uv add` functionality, can we specify `pytorch-backend=auto` in the `pyproject.toml` file ?
-
----
-
-_Referenced in [kyutai-labs/delayed-streams-modeling#131](../../kyutai-labs/delayed-streams-modeling/issues/131.md) on 2025-09-02 09:57_
 
 ---

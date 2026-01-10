@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-03T17:25:54Z
 updated_at: 2025-10-06T17:21:52Z
 url: https://github.com/astral-sh/uv/issues/16116
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Receive an incomplete environment when trying to install packaging==25.0
@@ -64,10 +64,6 @@ happens across Python 3.10-13
 ---
 
 _Label `bug` added by @tqa236 on 2025-10-03 17:25_
-
----
-
-_Referenced in [python/typeshed#14827](../../python/typeshed/issues/14827.md) on 2025-10-03 17:28_
 
 ---
 

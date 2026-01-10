@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-16T16:17:49Z
 updated_at: 2025-12-03T08:17:31Z
 url: https://github.com/astral-sh/uv/issues/15895
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Env var to override `[tool.uv.sources]` for development
@@ -77,10 +77,6 @@ I just found a case where this issue get's substantially more painful too: if yo
 _Comment by @mawildoer on 2025-11-20 21:02_
 
 Highly related issue: #11632 
-
----
-
-_Referenced in [astral-sh/uv#16853](../../astral-sh/uv/pulls/16853.md) on 2025-11-25 23:14_
 
 ---
 

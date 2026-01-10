@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-11T01:40:21Z
 updated_at: 2025-10-29T01:06:35Z
 url: https://github.com/astral-sh/uv/issues/16248
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow non-workspace members in `--package`
@@ -31,9 +31,5 @@ _Label `needs-decision` added by @charliermarsh on 2025-10-11 01:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-29 01:06_
-
----
-
-_Referenced in [astral-sh/uv#16544](../../astral-sh/uv/pulls/16544.md) on 2025-11-01 02:16_
 
 ---

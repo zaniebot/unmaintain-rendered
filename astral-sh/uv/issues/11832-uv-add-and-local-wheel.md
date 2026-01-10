@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T11:47:20Z
 updated_at: 2025-09-02T21:29:00Z
 url: https://github.com/astral-sh/uv/issues/11832
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv add and local wheel
@@ -69,9 +69,5 @@ _Closed by @charliermarsh on 2025-03-01 00:30_
 _Comment by @vadimkantorov on 2025-09-02 21:28_
 
 This is a useful feature, in cases with networked drives (e.g. we have an existing pip wheel cache on a networked drive) in lab enviornments, in this case absolute paths are actually more portable
-
----
-
-_Referenced in [astral-sh/uv#16602](../../astral-sh/uv/issues/16602.md) on 2025-11-06 09:46_
 
 ---

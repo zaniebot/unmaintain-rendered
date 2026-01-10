@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-03T14:45:15Z
 updated_at: 2025-11-11T21:37:49Z
 url: https://github.com/astral-sh/uv/issues/6970
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # [Feature Request] allow exporting virtual environments
@@ -68,10 +68,6 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -> python
 Looks like the `python` executable is a symlink (which is not exactly relocatable). 
 
 Is there anything I'm missing here? 
-
----
-
-_Referenced in [astral-sh/uv#7865](../../astral-sh/uv/issues/7865.md) on 2024-10-02 14:46_
 
 ---
 
@@ -173,26 +169,6 @@ Actually I was not aware of `UV_PYTHON_INSTALL_MIRROR` -- I am curious, is this 
 
 ---
 
-_Referenced in [astral-sh/uv#8186](../../astral-sh/uv/issues/8186.md) on 2024-10-15 09:57_
-
----
-
-_Referenced in [astral-sh/uv#8653](../../astral-sh/uv/issues/8653.md) on 2024-11-07 01:38_
-
----
-
-_Referenced in [astral-sh/uv#13097](../../astral-sh/uv/issues/13097.md) on 2025-04-25 07:56_
-
----
-
-_Referenced in [astral-sh/uv#13304](../../astral-sh/uv/issues/13304.md) on 2025-05-05 16:20_
-
----
-
-_Referenced in [astral-sh/uv#2389](../../astral-sh/uv/issues/2389.md) on 2025-06-11 11:23_
-
----
-
 _Comment by @jlevy on 2025-06-16 21:47_
 
 I only now saw this issue. But I looked at this a few weeks ago as I wanted to make a self-contained, relocatable install directory with a given set of dependencies. It's a bit like a uv-powered PyInstaller:
@@ -211,16 +187,8 @@ And @zanieb perhaps you already know this, but it seemed like it was only a smal
 
 ---
 
-_Referenced in [astral-sh/uv#14602](../../astral-sh/uv/issues/14602.md) on 2025-07-14 14:47_
-
----
-
 _Comment by @jeffmelville on 2025-11-11 21:37_
 
 To hop on this thread, a Python-only uv variant of [pixi-pack](https://pixi.sh/v0.45.0/deployment/pixi_pack/) (or the old conda-pack) would be a great model for the offline deployments I do
-
----
-
-_Referenced in [astral-sh/uv#16973](../../astral-sh/uv/issues/16973.md) on 2025-12-03 19:51_
 
 ---

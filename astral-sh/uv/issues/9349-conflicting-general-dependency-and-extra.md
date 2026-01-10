@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T07:06:57Z
 updated_at: 2025-09-12T14:20:06Z
 url: https://github.com/astral-sh/uv/issues/9349
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Conflicting general dependency and extra transitive dependency
@@ -123,10 +123,6 @@ I would expect that you need to do `uv run --group lavis --no-group base python`
 
 ---
 
-_Referenced in [astral-sh/uv#9355](../../astral-sh/uv/issues/9355.md) on 2024-11-22 14:08_
-
----
-
 _Comment by @charliermarsh on 2024-11-22 14:10_
 
 I guess we could consider (1) removing default groups that conflict when you specify `--group lavis`, or (2) disabling default groups when you specify a group explicitly at all, but both of those seem slightly off to me. \cc @zanieb on CLI
@@ -195,9 +191,5 @@ vllm = ["vllm>=0.10.0"]
 When not installing vllm, I'd like to be able to resolve to `torch==2.8.0` by default, but latest vllm is pinned to `torch==2.7.1` for [reasons](https://github.com/vllm-project/vllm/issues/9554#issuecomment-2426840976).
 
 Any solve for this?
-
----
-
-_Referenced in [astral-sh/uv#15874](../../astral-sh/uv/issues/15874.md) on 2025-09-15 15:17_
 
 ---

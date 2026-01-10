@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-17T16:20:17Z
 updated_at: 2025-09-17T13:12:54Z
 url: https://github.com/astral-sh/uv/issues/3095
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Consider `execv` for `uv run` on Unix
@@ -45,17 +45,9 @@ I could configure my kernel [with interrupt_mode=message](https://jupyter-client
 
 ---
 
-_Referenced in [bluss/pyproject-local-kernel#13](../../bluss/pyproject-local-kernel/issues/13.md) on 2024-07-21 11:54_
-
----
-
 _Comment by @bluss on 2024-07-21 13:55_
 
 Is this still possible, how does the ephemeral venv cleanup work? Is it using a scope based cleanup. I'll file another issue that's related to ipykernel, and maybe we'll find a good solution.
-
----
-
-_Referenced in [astral-sh/uv#5257](../../astral-sh/uv/issues/5257.md) on 2024-07-21 14:01_
 
 ---
 
@@ -82,10 +74,6 @@ uv run --with ipykernel is perfect for the notebook use case, it's very smooth.
 _Comment by @charliermarsh on 2024-07-24 18:56_
 
 Awesome. I did test on my Windows machine and it worked as expected for me, so hopefully good there too...
-
----
-
-_Referenced in [astral-sh/uv#6738](../../astral-sh/uv/pulls/6738.md) on 2024-09-03 17:36_
 
 ---
 
@@ -149,29 +137,9 @@ I think the `Drop` question remains a blocker. I'll leave this open for future c
 
 ---
 
-_Referenced in [astral-sh/uv#11886](../../astral-sh/uv/issues/11886.md) on 2025-03-02 01:09_
-
----
-
-_Referenced in [astral-sh/uv#12658](../../astral-sh/uv/issues/12658.md) on 2025-04-03 19:10_
-
----
-
 _Comment by @zanieb on 2025-04-21 15:38_
 
 More signal handling changes in https://github.com/astral-sh/uv/pull/13017
-
----
-
-_Referenced in [astral-sh/uv#12830](../../astral-sh/uv/issues/12830.md) on 2025-04-21 15:38_
-
----
-
-_Referenced in [astral-sh/uv#13017](../../astral-sh/uv/pulls/13017.md) on 2025-04-21 15:49_
-
----
-
-_Referenced in [astral-sh/uv#14123](../../astral-sh/uv/issues/14123.md) on 2025-06-18 02:53_
 
 ---
 
@@ -187,9 +155,5 @@ Mostly adding as another usecase/reason where child process isn't really the sam
 I still don't have a good Idea how handling cleanup in the general case of using exec instead of spawn would work but for the systemd-case it of course has it's own way of providing ethemereal or persistant directories for services which ideally would be used here as well (passed through env-vars as `$RUNTIMEDIR` and `$CACHEDIR` for those that would be relevant here).
 
 In those cases something that can just set up the environment needed  somewhere specific and not care itself about would be useful but I'm not sure if it's useful enought that uv should include it.
-
----
-
-_Referenced in [astral-sh/uv#16249](../../astral-sh/uv/pulls/16249.md) on 2025-10-12 13:05_
 
 ---

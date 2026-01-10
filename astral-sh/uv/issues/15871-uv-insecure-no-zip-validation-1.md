@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-15T14:20:41Z
 updated_at: 2025-09-17T14:34:51Z
 url: https://github.com/astral-sh/uv/issues/15871
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UV_INSECURE_NO_ZIP_VALIDATION=1
@@ -51,10 +51,6 @@ Can you share the package or more context to how the problem occurs?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-17 14:20_
-
----
-
-_Referenced in [astral-sh/uv#15912](../../astral-sh/uv/pulls/15912.md) on 2025-09-17 14:22_
 
 ---
 

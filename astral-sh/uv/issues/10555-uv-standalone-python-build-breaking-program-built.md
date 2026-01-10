@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-13T07:20:44Z
 updated_at: 2025-09-30T13:29:40Z
 url: https://github.com/astral-sh/uv/issues/10555
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv Standalone Python Build Breaking Program Built with Nuitka
@@ -126,10 +126,6 @@ Please let me know if additional information or logs are required.
 
 ---
 
-_Referenced in [astral-sh/uv#10561](../../astral-sh/uv/issues/10561.md) on 2025-01-13 12:02_
-
----
-
 _Comment by @zanieb on 2025-01-13 20:33_
 
 Where is `_opcode` supposed to come from? Unfortunately, I don't have time to dig into Nuitka's build system so we'll need help diagnosing the cause of the difference.
@@ -178,10 +174,6 @@ _Comment by @zanieb on 2025-01-15 14:53_
 I think standard Python distributions probably dynamically link libatomic so it would automatically be included in your LDFLAGS but python-build-standalone does not.
 
 Thanks for the replies @kayhayen! Ping me if you think I can help.
-
----
-
-_Referenced in [astral-sh/uv#11234](../../astral-sh/uv/issues/11234.md) on 2025-02-05 06:45_
 
 ---
 

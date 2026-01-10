@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-28T18:20:22Z
 updated_at: 2025-10-28T23:39:14Z
 url: https://github.com/astral-sh/uv/issues/16487
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Error download scipy version 1.16.2
@@ -127,10 +127,6 @@ _Label `bug` added by @intexcor on 2025-10-28 18:20_
 _Comment by @intexcor on 2025-10-28 21:59_
 
 https://github.com/scipy/scipy/issues/23857#issuecomment-3444602031
-
----
-
-_Referenced in [scipy/scipy#23857](../../scipy/scipy/issues/23857.md) on 2025-10-28 21:59_
 
 ---
 

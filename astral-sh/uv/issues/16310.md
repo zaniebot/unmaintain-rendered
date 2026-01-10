@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-15T10:28:48Z
 updated_at: 2025-10-17T21:10:33Z
 url: https://github.com/astral-sh/uv/issues/16310
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Hash mismatch for packages
@@ -106,10 +106,6 @@ Python 3.13.8
 ---
 
 _Label `bug` added by @NourEldin-Osama on 2025-10-15 10:28_
-
----
-
-_Referenced in [pytorch/vision#9243](../../pytorch/vision/issues/9243.md) on 2025-10-15 11:13_
 
 ---
 

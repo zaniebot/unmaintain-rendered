@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T23:14:59Z
 updated_at: 2025-10-02T18:27:51Z
 url: https://github.com/astral-sh/uv/issues/6729
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uv sync` always tries to resolve all `optional-dependencies`
@@ -104,10 +104,6 @@ I was bit by this today as well, trying to sync the `mlflow` repository. The `--
 
 ---
 
-_Referenced in [astral-sh/uv#6907](../../astral-sh/uv/issues/6907.md) on 2024-09-03 15:46_
-
----
-
 _Comment by @zanieb on 2024-09-03 17:40_
 
 @arsatiki what do you expect the `--help` output to say?
@@ -117,14 +113,6 @@ _Comment by @zanieb on 2024-09-03 17:40_
 _Comment by @zanieb on 2024-09-03 21:42_
 
 Tracking support in https://github.com/astral-sh/uv/issues/6981
-
----
-
-_Referenced in [astral-sh/uv#6982](../../astral-sh/uv/pulls/6982.md) on 2024-09-03 21:42_
-
----
-
-_Referenced in [astral-sh/uv#6981](../../astral-sh/uv/issues/6981.md) on 2024-09-03 21:42_
 
 ---
 
@@ -153,10 +141,6 @@ Thanks I'll update that.
 _Comment by @zanieb on 2024-09-04 12:47_
 
 See https://github.com/astral-sh/uv/pull/7013
-
----
-
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-09 18:11_
 
 ---
 
@@ -205,10 +189,6 @@ They're only mandatory for constructing the lockfile. If you create a lockfile w
 _Comment by @andres-ito-traversal on 2025-05-08 21:33_
 
 I was bit by something similar today. I would like to be able to generate a uv lock file excluding a particular optional dependency group
-
----
-
-_Referenced in [hiyouga/LLaMA-Factory#8285](../../hiyouga/LLaMA-Factory/issues/8285.md) on 2025-06-04 09:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-01T09:11:33Z
 updated_at: 2025-10-28T14:55:34Z
 url: https://github.com/astral-sh/uv/issues/12597
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Markers for Glibc/manylinux version
@@ -114,10 +114,6 @@ _Label `question` removed by @konstin on 2025-10-24 13:44_
 ---
 
 _Label `enhancement` added by @konstin on 2025-10-24 13:44_
-
----
-
-_Referenced in [wheelnext/pep_xxx_wheel_variants#96](../../wheelnext/pep_xxx_wheel_variants/issues/96.md) on 2025-10-28 14:48_
 
 ---
 

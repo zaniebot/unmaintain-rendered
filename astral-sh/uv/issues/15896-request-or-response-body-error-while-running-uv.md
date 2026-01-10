@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-09-16T16:43:39Z
 updated_at: 2025-09-29T11:07:06Z
 url: https://github.com/astral-sh/uv/issues/15896
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # request or response body error while running uv add
@@ -974,10 +974,6 @@ error: Request failed after 3 retries
 ```
 
 Does the fact that `curl` works reliably on this host indicate that the issue is actually with `uv`? Or is there something here that indicates the issue is still with Artifactory?
-
----
-
-_Referenced in [seanmonstar/reqwest#2802](../../seanmonstar/reqwest/issues/2802.md) on 2025-09-17 14:57_
 
 ---
 

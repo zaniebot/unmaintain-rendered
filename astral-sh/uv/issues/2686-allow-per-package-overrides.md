@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T05:07:07Z
 updated_at: 2025-08-27T23:48:19Z
 url: https://github.com/astral-sh/uv/issues/2686
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Allow per-package overrides
@@ -29,10 +29,6 @@ Thanks! I've been having an amazing time with `uv` so far.
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-03-29 15:59_
-
----
-
-_Referenced in [astral-sh/uv#4422](../../astral-sh/uv/issues/4422.md) on 2024-06-20 11:27_
 
 ---
 
@@ -118,14 +114,6 @@ Thanks! `uv` has been really great in our monorepo.
 
 ---
 
-_Referenced in [stfc/janus-core#420](../../stfc/janus-core/issues/420.md) on 2025-02-14 16:38_
-
----
-
-_Referenced in [stfc/janus-core#421](../../stfc/janus-core/pulls/421.md) on 2025-02-14 17:43_
-
----
-
 _Comment by @rinarakaki on 2025-02-22 09:26_
 
 I want this feature when I know I can safely ignore dependency conflicts.
@@ -135,10 +123,6 @@ I want this feature when I know I can safely ignore dependency conflicts.
 _Comment by @Kitryn on 2025-05-20 04:36_
 
 any update on this? thanks
-
----
-
-_Referenced in [astral-sh/uv#12512](../../astral-sh/uv/issues/12512.md) on 2025-05-30 16:41_
 
 ---
 

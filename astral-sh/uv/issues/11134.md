@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T14:19:45Z
 updated_at: 2025-11-27T09:54:09Z
 url: https://github.com/astral-sh/uv/issues/11134
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Access Denied error in Windows when removing .exe files from `.venv`
@@ -274,10 +274,6 @@ pip list doesnt have the same issue. it must check for empty dist-info and ignor
 
 ---
 
-_Referenced in [astral-sh/uv#13836](../../astral-sh/uv/issues/13836.md) on 2025-06-04 14:06_
-
----
-
 _Comment by @momostein on 2025-06-04 15:38_
 
 As per my duplicate issue #13836, I've been having a relevant issue with the same root cause.
@@ -335,10 +331,6 @@ I would love to see some windows file system expert's opinion on this because I 
 
 ---
 
-_Referenced in [astral-sh/uv#13986](../../astral-sh/uv/issues/13986.md) on 2025-06-17 19:57_
-
----
-
 _Comment by @drmikehenry on 2025-07-17 23:45_
 
 I recently learned of another scenario where using hardlinks on Windows causes problems.  When running two simultaneous CI jobs with Gitlab, frequently one job was unable to fully cleanup the `.venv` directory because the other was actively using the other virtual environment.  The venvs are coupled together because both have their packages hardlinked from the same cache area.  Using `UV_LINK_MODE=copy` decouples these jobs, allowing them to complete successfully.
@@ -387,10 +379,6 @@ Resulting in:
 
 ---
 
-_Referenced in [astral-sh/uv#15108](../../astral-sh/uv/issues/15108.md) on 2025-11-26 18:40_
-
----
-
 _Comment by @nathanjmcdougall on 2025-11-26 18:43_
 
 Up to this point, my team and I at work have had a good experience with using symlink mode on Windows as a workaround to this issue (despite its use being discouraged in the docs).
@@ -407,9 +395,5 @@ error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab
 _Comment by @konstin on 2025-11-27 09:54_
 
 @nathanjmcdougall Can you open a separate issue for that?
-
----
-
-_Referenced in [astral-sh/uv#16877](../../astral-sh/uv/issues/16877.md) on 2025-11-27 19:40_
 
 ---

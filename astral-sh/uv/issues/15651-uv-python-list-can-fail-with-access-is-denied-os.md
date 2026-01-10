@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-03T06:04:46Z
 updated_at: 2025-09-05T14:03:42Z
 url: https://github.com/astral-sh/uv/issues/15651
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python list` can fail with Access is denied. (os error 5)
@@ -311,10 +311,6 @@ _Comment by @konstin on 2025-09-04 16:25_
 We may want to make this non-fatal in `uv python list`, and show the other interpreters despite the error, but the interpreter seems broken in some fashion, apparently related to the Windows Store.
 
 CC @zanieb 
-
----
-
-_Referenced in [astral-sh/uv#15685](../../astral-sh/uv/pulls/15685.md) on 2025-09-04 16:48_
 
 ---
 

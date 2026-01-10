@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-19T02:15:37Z
 updated_at: 2025-09-02T13:45:15Z
 url: https://github.com/astral-sh/uv/issues/15368
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Number of tests failing due to finding `/usr/bin/uv`
@@ -368,10 +368,6 @@ Hm. I'm not sure if we have a great way to isolate these. We'd need to have Pyth
 
 ---
 
-_Referenced in [astral-sh/uv#15379](../../astral-sh/uv/pulls/15379.md) on 2025-08-19 12:54_
-
----
-
 _Comment by @mgorny on 2025-08-23 05:28_
 
 I see a lot of paths there could evaluate to actual system/user directories where some `uv` is installed:
@@ -397,10 +393,6 @@ I'm guessing some random bashing of `sys.prefix = "/dev/null"`, etc.
 _Comment by @mgorny on 2025-08-29 04:37_
 
 Gentle ping. Should I try with this idea?
-
----
-
-_Referenced in [astral-sh/uv#15611](../../astral-sh/uv/pulls/15611.md) on 2025-08-31 19:11_
 
 ---
 

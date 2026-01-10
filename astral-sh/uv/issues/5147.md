@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-17T15:43:52Z
 updated_at: 2025-09-19T19:33:20Z
 url: https://github.com/astral-sh/uv/issues/5147
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # feature: support `--link-mode=symlink`
@@ -75,10 +75,6 @@ We'll also need `std::os::windows::fs::symlink_file` or similar on Windows which
 
 ---
 
-_Referenced in [astral-sh/uv#5208](../../astral-sh/uv/pulls/5208.md) on 2024-07-19 01:41_
-
----
-
 _Comment by @charliermarsh on 2024-07-19 12:41_
 
 Closed by https://github.com/astral-sh/uv/pull/5208. Thanks @danielenricocahall!
@@ -109,10 +105,6 @@ On macOS, you can also clone a directory, but I see that `uv` already does just 
 _Comment by @charliermarsh on 2024-07-20 11:06_
 
 That’s a good idea. We should probably symlink at the directory level.
-
----
-
-_Referenced in [astral-sh/uv#5244](../../astral-sh/uv/issues/5244.md) on 2024-07-20 11:15_
 
 ---
 

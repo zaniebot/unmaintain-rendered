@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-02-14T06:34:28Z
 updated_at: 2025-12-03T19:47:02Z
 url: https://github.com/astral-sh/uv/issues/11502
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # how to add non-source files to package / build backends ?
@@ -143,10 +143,6 @@ OK, just got a notification that the PR checks failed; I had a feeling I'm proba
 
 ---
 
-_Referenced in [astral-sh/uv#12011](../../astral-sh/uv/pulls/12011.md) on 2025-03-06 19:00_
-
----
-
 _Comment by @dd-ssc on 2025-03-06 19:23_
 
 I messed up the first PR https://github.com/astral-sh/uv/pull/12011; second attempt: https://github.com/astral-sh/uv/pull/12017.
@@ -190,10 +186,6 @@ so instead, we copy the additional files to underneath the source code root fold
 ---
 
 _Closed by @dd-ssc on 2025-03-09 10:57_
-
----
-
-_Referenced in [astral-sh/uv#12017](../../astral-sh/uv/pulls/12017.md) on 2025-03-09 18:56_
 
 ---
 

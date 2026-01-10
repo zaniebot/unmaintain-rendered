@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-13T00:19:43Z
 updated_at: 2025-09-14T01:57:12Z
 url: https://github.com/astral-sh/uv/issues/15822
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Call out UV_NO_CACHE=1 in logs
@@ -53,10 +53,6 @@ _Label `enhancement` added by @williamsnell on 2025-09-13 00:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-14 00:55_
-
----
-
-_Referenced in [astral-sh/uv#15828](../../astral-sh/uv/pulls/15828.md) on 2025-09-14 01:06_
 
 ---
 

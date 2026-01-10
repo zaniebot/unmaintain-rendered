@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-14T01:35:25Z
 updated_at: 2025-11-10T12:21:09Z
 url: https://github.com/astral-sh/uv/issues/7382
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Windows permissions errors on `uv remove X` with clean install.
@@ -169,14 +169,6 @@ I am still having this issue regularly. It's always specifically `ruff`. Deletin
 
 ---
 
-_Referenced in [usethis-python/usethis-python#45](../../usethis-python/usethis-python/issues/45.md) on 2024-10-24 00:10_
-
----
-
-_Referenced in [astral-sh/uv#11134](../../astral-sh/uv/issues/11134.md) on 2025-01-31 14:19_
-
----
-
 _Comment by @Jiggly-Balls on 2025-03-31 13:15_
 
 If someone is still having such issues and isn't able to delete their venv folder it may be because some process is holding up the files (which was also the reason why uv remove isn't working). For me `ruff.exe` was running in the background (which was most likely started from the ruff vscode extension) and had to terminate it to be able to delete the venv and fix everything
@@ -190,13 +182,5 @@ I'm still encountering the issue on Windows 10 using uv 0.9.8, but not specifica
 Deleting .venv (and then using `uv add` or modifying pyproject.toml and using `uv lock` & `uv sync`) is a workaround, but it's a shame it doesn't "just work". I've tried a couple of fresh installs following https://docs.astral.sh/uv/getting-started/installation/#standalone-installer (standalone installed via PS as admin) with no luck. I'm using Avast antivirus, but that might not be relevant. I haven't encountered this issue when using virtual environments previously.
 
 Sounds similar to https://github.com/astral-sh/uv/issues/15968, but this issue affects individual files and not necessarily directories.
-
----
-
-_Referenced in [astral-sh/uv#16747](../../astral-sh/uv/issues/16747.md) on 2025-11-15 17:03_
-
----
-
-_Referenced in [astral-sh/uv#15108](../../astral-sh/uv/issues/15108.md) on 2025-11-26 18:40_
 
 ---

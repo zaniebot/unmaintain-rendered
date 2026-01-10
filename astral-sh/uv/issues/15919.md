@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-17T19:48:23Z
 updated_at: 2025-09-18T04:46:10Z
 url: https://github.com/astral-sh/uv/issues/15919
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow `--isolated` with script execution
@@ -35,10 +35,6 @@ _Label `enhancement` added by @zanieb on 2025-09-17 19:48_
 
 ---
 
-_Referenced in [astral-sh/uv#15918](../../astral-sh/uv/issues/15918.md) on 2025-09-17 20:13_
-
----
-
 _Label `good first issue` added by @zanieb on 2025-09-17 20:21_
 
 ---
@@ -46,10 +42,6 @@ _Label `good first issue` added by @zanieb on 2025-09-17 20:21_
 _Comment by @zanieb on 2025-09-17 20:21_
 
 This isn't trivial, but I think it shouldn't be too hard.
-
----
-
-_Referenced in [astral-sh/uv#15924](../../astral-sh/uv/pulls/15924.md) on 2025-09-18 02:14_
 
 ---
 

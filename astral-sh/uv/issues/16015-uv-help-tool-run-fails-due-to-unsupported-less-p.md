@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-24T13:09:49Z
 updated_at: 2025-12-01T18:37:36Z
 url: https://github.com/astral-sh/uv/issues/16015
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv help tool run` fails due to unsupported `less -P` option
@@ -120,20 +120,6 @@ I'm on an older version though. It does eat the content after colon, which surpr
 
 ---
 
-_Comment by @TBTY-Dev on 2025-12-01 14:44_
-
-#16908 #16907 #16878 #13074 
-
----
-
-_Referenced in [astral-sh/uv#16908](../../astral-sh/uv/pulls/16908.md) on 2025-12-01 18:11_
-
----
-
-_Referenced in [astral-sh/uv#16913](../../astral-sh/uv/issues/16913.md) on 2025-12-01 18:36_
-
----
-
 _Comment by @EliteTK on 2025-12-01 18:37_
 
 For now, the prompt is gone, replaced with a title line when paging. But it may make a comeback in the future.
@@ -141,9 +127,5 @@ For now, the prompt is gone, replaced with a title line when paging. But it may 
 ---
 
 _Closed by @EliteTK on 2025-12-01 18:37_
-
----
-
-_Referenced in [astral-sh/uv#16914](../../astral-sh/uv/issues/16914.md) on 2025-12-01 19:21_
 
 ---

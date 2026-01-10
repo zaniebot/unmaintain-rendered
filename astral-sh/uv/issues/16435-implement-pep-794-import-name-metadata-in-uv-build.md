@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-24T11:12:18Z
 updated_at: 2025-10-24T11:12:18Z
 url: https://github.com/astral-sh/uv/issues/16435
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Implement PEP 794 "Import Name Metadata" in uv_build
@@ -29,13 +29,5 @@ _Label `enhancement` added by @konstin on 2025-10-24 11:12_
 ---
 
 _Label `build-backend` added by @konstin on 2025-10-24 11:12_
-
----
-
-_Referenced in [astral-sh/uv#16423](../../astral-sh/uv/issues/16423.md) on 2025-10-24 11:12_
-
----
-
-_Referenced in [astral-sh/uv#16598](../../astral-sh/uv/pulls/16598.md) on 2025-11-05 05:24_
 
 ---

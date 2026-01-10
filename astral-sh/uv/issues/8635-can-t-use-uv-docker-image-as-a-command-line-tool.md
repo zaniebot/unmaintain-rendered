@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-28T13:31:10Z
 updated_at: 2025-10-18T17:59:49Z
 url: https://github.com/astral-sh/uv/issues/8635
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Can't use uv docker image as a command-line tool
@@ -103,10 +103,6 @@ Exactly. But, we'll use `uv` locally, instead.
 
 ---
 
-_Referenced in [astral-sh/uv#11052](../../astral-sh/uv/pulls/11052.md) on 2025-01-29 08:27_
-
----
-
 _Comment by @codethief on 2025-03-27 22:27_
 
 For other people (like me) who ended up here through their favorite search engine and need some context: The error message
@@ -186,10 +182,6 @@ in
     exit 1  # to debug output
   '';
 ```
-
----
-
-_Referenced in [astral-sh/uv#13549](../../astral-sh/uv/pulls/13549.md) on 2025-05-20 07:12_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T03:36:02Z
 updated_at: 2025-10-11T01:22:52Z
 url: https://github.com/astral-sh/uv/issues/6488
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uvx uwsgi` failed to build uwsgi
@@ -248,10 +248,6 @@ Sure. However we currently use the managed Python in our production Docker image
 
 ---
 
-_Referenced in [astral-sh/uv#6934](../../astral-sh/uv/issues/6934.md) on 2024-09-02 17:20_
-
----
-
 _Comment by @wummel on 2024-09-12 06:55_
 
 There is a manual workaround to get uwsgi working by setting environment variables,
@@ -275,10 +271,6 @@ _Comment by @palfrey on 2024-09-29 19:09_
 > export LDFLAGS=~/.local/share/uv/python/cpython-3.12.6-linux-x86_64-gnu/lib/
 
 This mostly worked, but needed [`LIBRARY_PATH`](https://stackoverflow.com/a/4250666/320546) not LDFLAGS
-
----
-
-_Referenced in [astral-sh/uv#8429](../../astral-sh/uv/issues/8429.md) on 2024-10-22 00:39_
 
 ---
 
@@ -327,14 +319,6 @@ $ uv add uwsgi
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#11864](../../astral-sh/uv/issues/11864.md) on 2025-02-28 19:44_
-
----
-
-_Referenced in [docker-library/python#1035](../../docker-library/python/issues/1035.md) on 2025-04-29 08:56_
 
 ---
 

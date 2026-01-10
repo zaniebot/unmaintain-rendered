@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-10T17:28:21Z
 updated_at: 2025-10-11T17:41:35Z
 url: https://github.com/astral-sh/uv/issues/16237
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Wishlist: option to let `uv tool list` show the version of the python interpreter for the tools
@@ -31,10 +31,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @sergiocallegari on 2025-10-10 17:28_
-
----
-
-_Referenced in [astral-sh/uv#15814](../../astral-sh/uv/pulls/15814.md) on 2025-10-10 17:33_
 
 ---
 

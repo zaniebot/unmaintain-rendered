@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T02:23:40Z
 updated_at: 2025-10-06T09:29:32Z
 url: https://github.com/astral-sh/uv/issues/4718
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Detect when managed toolchains are in use during uninstall
@@ -29,34 +29,6 @@ _Label `needs-design` added by @zanieb on 2024-07-02 02:23_
 ---
 
 _Label `enhancement` added by @zanieb on 2024-07-02 02:23_
-
----
-
-_Referenced in [astral-sh/uv#4646](../../astral-sh/uv/pulls/4646.md) on 2024-07-02 02:48_
-
----
-
-_Referenced in [astral-sh/uv#6011](../../astral-sh/uv/issues/6011.md) on 2024-08-11 18:49_
-
----
-
-_Referenced in [astral-sh/uv#7287](../../astral-sh/uv/issues/7287.md) on 2024-09-11 11:41_
-
----
-
-_Referenced in [astral-sh/uv#7892](../../astral-sh/uv/issues/7892.md) on 2024-10-03 14:15_
-
----
-
-_Referenced in [astral-sh/uv#8028](../../astral-sh/uv/issues/8028.md) on 2024-10-09 01:22_
-
----
-
-_Referenced in [astral-sh/uv#8514](../../astral-sh/uv/issues/8514.md) on 2024-10-24 12:31_
-
----
-
-_Referenced in [astral-sh/uv#9579](../../astral-sh/uv/issues/9579.md) on 2025-01-06 05:09_
 
 ---
 
@@ -86,10 +58,6 @@ _Comment by @aretrace on 2025-01-07 23:16_
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-03-15 18:46_
-
----
-
-_Referenced in [topgrade-rs/topgrade#1122](../../topgrade-rs/topgrade/pulls/1122.md) on 2025-04-13 08:00_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-18T21:33:16Z
 updated_at: 2025-09-15T13:54:39Z
 url: https://github.com/astral-sh/uv/issues/15362
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip compile` ignores private index credentials if `pyproject.toml` is not in the current directory
@@ -100,10 +100,6 @@ _Renamed from "`uv pip compile` ignores private index credentials depending on c
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-14 02:18_
-
----
-
-_Referenced in [astral-sh/uv#15844](../../astral-sh/uv/pulls/15844.md) on 2025-09-15 00:11_
 
 ---
 

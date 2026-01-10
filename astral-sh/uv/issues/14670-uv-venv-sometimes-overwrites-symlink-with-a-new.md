@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T19:19:11Z
 updated_at: 2025-11-09T03:06:53Z
 url: https://github.com/astral-sh/uv/issues/14670
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv venv` sometimes overwrites symlink with a new directory
@@ -170,10 +170,6 @@ drwxrwxrwt  15 root  wheel   480B Jul 16 14:23 ..
 drwxr-xr-x   7 zb    wheel   224B Jul 16 14:24 .venv
 drwxr-xr-x   7 zb    wheel   224B Jul 16 14:24 foo
 ```
-
----
-
-_Referenced in [astral-sh/uv#14933](../../astral-sh/uv/pulls/14933.md) on 2025-07-28 06:55_
 
 ---
 

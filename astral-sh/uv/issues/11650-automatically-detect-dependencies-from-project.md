@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-20T00:33:07Z
 updated_at: 2025-09-10T14:12:43Z
 url: https://github.com/astral-sh/uv/issues/11650
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Automatically detect dependencies from project imports (similar to pipreqs)
@@ -57,10 +57,6 @@ _Comment by @zanieb on 2025-02-24 23:11_
 Thanks for the offer, but I think if we worked on this we'd probably want to integrate tightly with Ruff's parser and import analysis.
 
 Your project seems cool though! I think it makes a lot of sense to explore third-party before we do it here.
-
----
-
-_Referenced in [astral-sh/uv#12261](../../astral-sh/uv/issues/12261.md) on 2025-03-18 12:47_
 
 ---
 

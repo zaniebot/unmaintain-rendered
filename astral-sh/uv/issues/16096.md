@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-02T07:30:21Z
 updated_at: 2025-11-24T15:10:36Z
 url: https://github.com/astral-sh/uv/issues/16096
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # keyring test test_simultaneous_multiple_create_delete_single_thread can fail
@@ -154,10 +154,6 @@ Claude tells me that Windows just isn't robust to write-read patterns like this?
 _Comment by @konstin on 2025-11-24 10:12_
 
 Another one: https://github.com/astral-sh/uv/actions/runs/19628968183/job/56203994140
-
----
-
-_Referenced in [astral-sh/uv#16834](../../astral-sh/uv/pulls/16834.md) on 2025-11-24 14:57_
 
 ---
 

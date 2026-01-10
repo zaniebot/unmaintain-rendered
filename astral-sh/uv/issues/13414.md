@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-12T19:39:15Z
 updated_at: 2025-10-13T18:00:52Z
 url: https://github.com/astral-sh/uv/issues/13414
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uvx --from git+https://....git@... ignores the lockfile
@@ -101,10 +101,6 @@ Replying to
 >  Is there any way I can let users run my app with versions pinned to prevent breakages like the ongoing clock incident?
 
 You'll need to pin all the versions in your `pyproject.toml` so it's reflected in the distribution metadata. This is tedious, but the only standards compliant method right now. `uv export | uv add -r -` will do it.
-
----
-
-_Referenced in [astral-sh/uv#13410](../../astral-sh/uv/issues/13410.md) on 2025-05-12 19:48_
 
 ---
 

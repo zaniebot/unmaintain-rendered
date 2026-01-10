@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-17T23:00:11Z
 updated_at: 2025-11-08T20:01:55Z
 url: https://github.com/astral-sh/uv/issues/9174
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Force uv to skip certain (transitive) dependencies
@@ -64,18 +64,6 @@ override-dependencies = [
 _Comment by @danielhollas on 2024-11-18 11:07_
 
 I would just note that this is quite a  dangerous solution to the original problem, since if a package depends on a torch version that is not satisfied by the underlying environment this will result in a broken installation.
-
----
-
-_Referenced in [astral-sh/uv#11012](../../astral-sh/uv/issues/11012.md) on 2025-01-29 18:11_
-
----
-
-_Referenced in [vllm-project/vllm-spyre#61](../../vllm-project/vllm-spyre/issues/61.md) on 2025-03-27 22:01_
-
----
-
-_Referenced in [prefix-dev/pixi#4569](../../prefix-dev/pixi/issues/4569.md) on 2025-09-15 20:41_
 
 ---
 

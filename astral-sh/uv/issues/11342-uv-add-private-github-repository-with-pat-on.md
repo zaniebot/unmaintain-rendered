@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-08T15:16:33Z
 updated_at: 2025-11-26T00:08:02Z
 url: https://github.com/astral-sh/uv/issues/11342
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv add private GitHub repository with PAT on Actions fails
@@ -457,14 +457,6 @@ In a truly generic, "who knows what other layers above and below me are doing" s
 Also in case anyone finds this thread who's working PATs for the first time, for completeness, in all of these approaches you have to start by manually adding the PAT to your CI environment using GitHub's "Secrets and Variables -> Actions" repo settings:
 
 ![Image](https://github.com/user-attachments/assets/d8d4dad8-d573-4689-b0a2-0f45505d5a2e)
-
----
-
-_Referenced in [astral-sh/uv#9576](../../astral-sh/uv/issues/9576.md) on 2025-06-04 03:55_
-
----
-
-_Referenced in [astral-sh/uv#13850](../../astral-sh/uv/pulls/13850.md) on 2025-06-04 21:56_
 
 ---
 

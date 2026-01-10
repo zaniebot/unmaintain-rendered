@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-14T14:02:25Z
 updated_at: 2025-09-14T14:52:03Z
 url: https://github.com/astral-sh/uv/issues/15835
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Ban configuration of directories in the `pyproject.toml`
@@ -39,10 +39,6 @@ _Label `needs-decision` added by @zanieb on 2025-09-14 14:04_
 
 ---
 
-_Referenced in [astral-sh/uv#15838](../../astral-sh/uv/issues/15838.md) on 2025-09-14 14:08_
-
----
-
 _Comment by @Ma-Shell on 2025-09-14 14:44_
 
 > I think a decision here could be a blocker for adding more directory configuration
@@ -56,9 +52,5 @@ _Comment by @zanieb on 2025-09-14 14:52_
 >  is there some inherent connection that everything in uv.toml must also be exposed to pyproject.toml?
 
 Yeah, I think that's basically what would happen with the way things are is structured right now.
-
----
-
-_Referenced in [astral-sh/uv#16918](../../astral-sh/uv/pulls/16918.md) on 2025-12-09 21:38_
 
 ---

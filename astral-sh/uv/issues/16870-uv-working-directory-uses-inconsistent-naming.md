@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-27T09:41:36Z
 updated_at: 2025-11-30T15:59:06Z
 url: https://github.com/astral-sh/uv/issues/16870
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # UV_WORKING_DIRECTORY uses inconsistent naming
@@ -38,10 +38,6 @@ _Label `enhancement` added by @asarkar on 2025-11-27 09:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-28 16:59_
-
----
-
-_Referenced in [astral-sh/uv#16884](../../astral-sh/uv/pulls/16884.md) on 2025-11-28 17:00_
 
 ---
 

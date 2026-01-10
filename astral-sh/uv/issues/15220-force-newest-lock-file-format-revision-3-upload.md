@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-11T13:36:40Z
 updated_at: 2025-09-22T07:36:48Z
 url: https://github.com/astral-sh/uv/issues/15220
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Force newest lock file format (revision = 3, upload-time=...)
@@ -93,10 +93,6 @@ I use a modified version of this repo, https://github.com/a5chin/python-uv, wher
 
 ---
 
-_Referenced in [mint-o-badges/badgr-server#557](../../mint-o-badges/badgr-server/pulls/557.md) on 2025-08-27 07:10_
-
----
-
 _Comment by @11happy on 2025-09-06 10:00_
 
 Hii @zanieb  :) , Can I work on this ?
@@ -108,10 +104,6 @@ Thank you
 _Comment by @zanieb on 2025-09-06 11:53_
 
 Yep!
-
----
-
-_Referenced in [astral-sh/uv#15757](../../astral-sh/uv/pulls/15757.md) on 2025-09-09 15:44_
 
 ---
 
@@ -156,17 +148,5 @@ _Comment by @Silvanoc on 2025-09-22 07:36_
 > [@Silvanoc](https://github.com/Silvanoc) I'd recommend just adding a `tool.uv.required-version` lower bound?
 
 That would force the whole community of the OSS project where I faced the issue to upgrade UV, right? I will try, since it's probably something meaningful to do, but I'm not sure I will get it accepted. Otherwise, I'll need to downgrade my UV with pipx or so.
-
----
-
-_Referenced in [populationgenomics/cpg-flow#130](../../populationgenomics/cpg-flow/pulls/130.md) on 2025-09-22 22:41_
-
----
-
-_Referenced in [open-edge-platform/training_extensions#4965](../../open-edge-platform/training_extensions/pulls/4965.md) on 2025-10-30 12:28_
-
----
-
-_Referenced in [ciscorn/mojxml-py#61](../../ciscorn/mojxml-py/pulls/61.md) on 2025-11-10 15:34_
 
 ---

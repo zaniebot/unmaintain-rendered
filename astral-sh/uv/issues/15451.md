@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-22T12:30:54Z
 updated_at: 2025-08-22T13:50:08Z
 url: https://github.com/astral-sh/uv/issues/15451
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # ZIP file contains trailing contents
@@ -71,10 +71,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-08-22 12:37_
 _Comment by @charliermarsh on 2025-08-22 12:46_
 
 Acknowledging receipt by email, thanks!
-
----
-
-_Referenced in [astral-sh/uv#15452](../../astral-sh/uv/pulls/15452.md) on 2025-08-22 13:34_
 
 ---
 

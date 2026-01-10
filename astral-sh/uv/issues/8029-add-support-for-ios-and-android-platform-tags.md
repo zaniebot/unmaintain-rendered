@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-09T00:51:38Z
 updated_at: 2025-09-03T22:24:53Z
 url: https://github.com/astral-sh/uv/issues/8029
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add support for iOS and Android platform tags
@@ -89,18 +89,6 @@ For reference, this is the patch adding support for iOS to pip: pypa/pip#12962 (
 _Comment by @charliermarsh on 2024-12-28 02:42_
 
 Perfect, thanks!
-
----
-
-_Referenced in [pypa/cibuildwheel#2286](../../pypa/cibuildwheel/pulls/2286.md) on 2025-02-24 06:34_
-
----
-
-_Referenced in [astral-sh/uv#15640](../../astral-sh/uv/pulls/15640.md) on 2025-09-02 20:28_
-
----
-
-_Referenced in [astral-sh/uv#15646](../../astral-sh/uv/pulls/15646.md) on 2025-09-02 23:20_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-09-09T15:37:31Z
 updated_at: 2025-09-19T10:20:19Z
 url: https://github.com/astral-sh/uv/issues/15756
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Documentation on level of support for the free-threaded build
@@ -71,9 +71,5 @@ _Comment by @rgommers on 2025-09-19 10:20_
 It makes sense to me too to change this for >=3.14. Still give it lowest priority, but if it's the only interpreter available then use it. That will make using free-threaded interpreters in CI in particular much easier, since that's often where you only have a single interpreter available, and having to force it with something like `--python='${{ steps.setup-python.outputs.python-path }}'` is very ugly.
 
 Even on user machines I don't think there's a problem, since (a) it'll be very rare for there to be no other interpreter installed at all, and (b) if it really is the only one, then good chance that the user actually wants to be using it.
-
----
-
-_Referenced in [astral-sh/uv#15961](../../astral-sh/uv/pulls/15961.md) on 2025-09-20 18:09_
 
 ---

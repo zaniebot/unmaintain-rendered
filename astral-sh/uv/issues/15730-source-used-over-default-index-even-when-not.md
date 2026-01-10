@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-08T07:27:31Z
 updated_at: 2025-09-08T17:57:42Z
 url: https://github.com/astral-sh/uv/issues/15730
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Source used over default index even when not specified explicitly
@@ -108,9 +108,5 @@ _Comment by @zanieb on 2025-09-08 17:52_
 
 Here's the lockfile: https://gist.github.com/zanieb/e94d8db90c99b75c25dec943492cfec1#file-uv-lock
 and logs: https://gist.github.com/zanieb/e94d8db90c99b75c25dec943492cfec1#file-logs
-
----
-
-_Referenced in [Aleph-Alpha-Research/eval-framework#61](../../Aleph-Alpha-Research/eval-framework/pulls/61.md) on 2025-09-10 08:14_
 
 ---

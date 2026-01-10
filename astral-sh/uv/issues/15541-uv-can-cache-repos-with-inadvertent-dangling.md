@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-27T01:11:28Z
 updated_at: 2025-08-27T22:34:56Z
 url: https://github.com/astral-sh/uv/issues/15541
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv can cache repos with inadvertent dangling symlinks that break uv cache clean
@@ -52,10 +52,6 @@ Thanks, agreed we should probably do better in this case.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-27 01:46_
-
----
-
-_Referenced in [astral-sh/uv#15543](../../astral-sh/uv/pulls/15543.md) on 2025-08-27 02:02_
 
 ---
 

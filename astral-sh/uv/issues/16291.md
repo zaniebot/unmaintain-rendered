@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-14T04:17:22Z
 updated_at: 2025-11-14T15:49:47Z
 url: https://github.com/astral-sh/uv/issues/16291
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow the option to make index explicit when using `uv add`
@@ -94,10 +94,6 @@ I think this should be the way since index are most of the time only used for li
 _Comment by @doddi on 2025-10-21 09:05_
 
 @konstin / @zanieb what are your thoughts? this seems a reasonable request and almost feels like a bug rather than an enhancement? I would like to take a look at this issue if the team thinks it is the correct approach
-
----
-
-_Referenced in [my1e5/uv#3](../../my1e5/uv/pulls/3.md) on 2025-10-31 12:27_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-23T17:51:01Z
 updated_at: 2025-09-22T13:36:47Z
 url: https://github.com/astral-sh/uv/issues/15475
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow `uv venv` to throw error instead of prompting
@@ -122,14 +122,6 @@ And [clear flag docs](https://docs.astral.sh/uv/reference/cli/#uv-venv--clear) a
 > May also be set with the UV_VENV_CLEAR environment variable.
 
 
-
----
-
-_Referenced in [astral-sh/uv#15485](../../astral-sh/uv/pulls/15485.md) on 2025-08-24 17:06_
-
----
-
-_Referenced in [astral-sh/uv#15538](../../astral-sh/uv/pulls/15538.md) on 2025-08-26 16:49_
 
 ---
 

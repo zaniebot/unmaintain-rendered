@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-01-11T17:27:33Z
 updated_at: 2025-12-02T12:40:16Z
 url: https://github.com/astral-sh/uv/issues/888
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support hash checking against `RECORD`
@@ -81,14 +81,6 @@ _Label `security` added by @zanieb on 2024-02-17 04:18_
 
 ---
 
-_Referenced in [astral-sh/uv#1572](../../astral-sh/uv/issues/1572.md) on 2024-02-17 16:57_
-
----
-
-_Referenced in [CycloneDX/cyclonedx-conda#1](../../CycloneDX/cyclonedx-conda/issues/1.md) on 2024-04-27 03:22_
-
----
-
 _Comment by @vors on 2024-08-13 19:21_
 
 Related topic (let me know if I should create a separate issue):
@@ -98,10 +90,6 @@ Currently most python packaging tooling doesn't have any kind of guardrails agai
 @hauntsaninja proposed that we could do a hash check against the `RECORD` file entry and maybe have a flag to fail loudly in case of violation -- that should simultaneously allow clobbering of empty `__init__.py` files and prevent undefined behaviors.
 
 What do you think about this idea? Maybe there is a better way to achieve more strict semantic?
-
----
-
-_Referenced in [astral-sh/uv#16816](../../astral-sh/uv/pulls/16816.md) on 2025-12-02 10:02_
 
 ---
 

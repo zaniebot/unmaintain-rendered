@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-07T20:44:26Z
 updated_at: 2025-08-27T12:32:30Z
 url: https://github.com/astral-sh/uv/issues/5893
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv swallows output from build backend even in verbose mode
@@ -275,15 +275,7 @@ Well, I say "just" but it's probably a bit more complicated to make sure it disp
 
 ---
 
-_Referenced in [astral-sh/uv#6600](../../astral-sh/uv/issues/6600.md) on 2024-08-25 11:42_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-31 23:19_
-
----
-
-_Referenced in [astral-sh/uv#6903](../../astral-sh/uv/pulls/6903.md) on 2024-08-31 23:49_
 
 ---
 

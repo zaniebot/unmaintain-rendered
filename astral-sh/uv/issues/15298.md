@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-15T06:45:49Z
 updated_at: 2025-08-28T07:22:11Z
 url: https://github.com/astral-sh/uv/issues/15298
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UV does not fall back to other indexes when package lacks platform-compatible wheels
@@ -153,10 +153,6 @@ hint: You're on Windows (`win_amd64`), but `pandas` (v2.3.2) only has wheels for
 _Comment by @konstin on 2025-08-21 10:40_
 
 Why does the private repository mirror the release only partially, instead of mirroring all files of a release?
-
----
-
-_Referenced in [astral-sh/uv#15547](../../astral-sh/uv/issues/15547.md) on 2025-08-27 19:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T06:37:56Z
 updated_at: 2025-10-04T03:01:32Z
 url: https://github.com/astral-sh/uv/issues/11655
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv init` fails to create .git directory or .gitignore file when inside git repo
@@ -97,10 +97,6 @@ _Comment by @mason-fabel on 2025-02-20 18:32_
 That makes sense to me. In fact, that's what I initially assumed would happen and led to this issue.
 
 I haven't finished setting up the repo locally, but I'm happy to work on a patch for this. Would `(Some(vcs), Some(existing)) => vcs` be an appropriate solution, or are there other edge cases I'm not aware of in play here?
-
----
-
-_Referenced in [astral-sh/uv#11785](../../astral-sh/uv/pulls/11785.md) on 2025-02-26 01:15_
 
 ---
 

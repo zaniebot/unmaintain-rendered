@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-28T22:05:36Z
 updated_at: 2025-09-19T17:14:11Z
 url: https://github.com/astral-sh/uv/issues/7768
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Could we use `uv.lock` file as constraints when performing a pip install/tool install?
@@ -62,14 +62,6 @@ Thanks!
 ---
 
 _Closed by @Coruscant11 on 2024-09-30 10:35_
-
----
-
-_Referenced in [developmentseed/labs-375-stac-geoparquet-backend#60](../../developmentseed/labs-375-stac-geoparquet-backend/pulls/60.md) on 2025-02-25 15:50_
-
----
-
-_Referenced in [astral-sh/uv#15945](../../astral-sh/uv/issues/15945.md) on 2025-09-19 13:19_
 
 ---
 

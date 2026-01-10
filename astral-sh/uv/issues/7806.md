@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-30T09:17:45Z
 updated_at: 2025-09-07T17:12:30Z
 url: https://github.com/astral-sh/uv/issues/7806
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Don't create .python-version in workspace subprojects
@@ -44,10 +44,6 @@ _Comment by @dimitrivinet on 2024-09-30 16:02_
 
 First time contributor here, didn't think it would send a message here 😅
 Realized I don't have the correct format for the commit message, but how does this look ?
-
----
-
-_Referenced in [astral-sh/uv#7815](../../astral-sh/uv/pulls/7815.md) on 2024-09-30 16:28_
 
 ---
 

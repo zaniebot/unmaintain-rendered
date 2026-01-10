@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-18T12:56:38Z
 updated_at: 2025-10-22T20:33:51Z
 url: https://github.com/astral-sh/uv/issues/14720
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Move environment variable parsing to `EnvironmentOptions`
@@ -132,10 +132,6 @@ You may have picked a hard setting to start with, because the `GitResolver` does
 
 ---
 
-_Referenced in [astral-sh/uv#15001](../../astral-sh/uv/pulls/15001.md) on 2025-07-31 17:27_
-
----
-
 _Comment by @Zaloog on 2025-07-31 17:34_
 
 I started with the `UV_LOG_CONTEXT`, the other two booleans might be more effort like you mentioned above.
@@ -170,10 +166,6 @@ Feel free!
 
 ---
 
-_Referenced in [astral-sh/uv#15937](../../astral-sh/uv/pulls/15937.md) on 2025-09-18 20:37_
-
----
-
 _Comment by @andrey-berenda on 2025-09-18 20:56_
 
 I created the PR #15937
@@ -185,17 +177,9 @@ Can anyone take a look?
 
 ---
 
-_Referenced in [astral-sh/uv#16031](../../astral-sh/uv/pulls/16031.md) on 2025-09-25 20:31_
-
----
-
 _Comment by @andrey-berenda on 2025-09-25 20:46_
 
 I've opened PR #16031. Could someone take a look?
-
----
-
-_Referenced in [astral-sh/uv#16040](../../astral-sh/uv/pulls/16040.md) on 2025-09-26 13:10_
 
 ---
 
@@ -206,21 +190,9 @@ One more PR #16040. This one is for parsing http-timeout
 
 ---
 
-_Referenced in [astral-sh/uv#16109](../../astral-sh/uv/pulls/16109.md) on 2025-10-03 02:57_
-
----
-
-_Referenced in [astral-sh/uv#16223](../../astral-sh/uv/pulls/16223.md) on 2025-10-10 08:35_
-
----
-
 _Comment by @andrey-berenda on 2025-10-11 17:35_
 
 One more PR https://github.com/astral-sh/uv/pull/16223. This one is for parsing concurrency env variables
-
----
-
-_Referenced in [astral-sh/uv#16284](../../astral-sh/uv/pulls/16284.md) on 2025-10-13 15:17_
 
 ---
 
@@ -239,14 +211,6 @@ I just added import `reqwest-retry` and right now `Cargo.toml` is not changed
 And right now all tests have passed
 
 Can anyone take a look?
-
----
-
-_Referenced in [astral-sh/uv#16388](../../astral-sh/uv/pulls/16388.md) on 2025-10-21 14:56_
-
----
-
-_Referenced in [astral-sh/uv#16342](../../astral-sh/uv/pulls/16342.md) on 2025-10-22 08:40_
 
 ---
 

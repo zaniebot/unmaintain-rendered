@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T22:08:49Z
 updated_at: 2025-11-22T09:41:07Z
 url: https://github.com/astral-sh/uv/issues/1369
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # allow auth with headers
@@ -39,10 +39,6 @@ For my own notes, xref to a "blocking" reason in `pip`: https://github.com/pypa/
 _Comment by @davidszotten on 2024-02-21 09:25_
 
 yes it sounds like having this configured per _host as opposed to per _index is one solution to the security issue
-
----
-
-_Referenced in [astral-sh/uv#2438](../../astral-sh/uv/pulls/2438.md) on 2024-03-14 23:24_
 
 ---
 

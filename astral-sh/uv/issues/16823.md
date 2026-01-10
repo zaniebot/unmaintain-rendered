@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-23T15:29:26Z
 updated_at: 2025-11-24T13:55:30Z
 url: https://github.com/astral-sh/uv/issues/16823
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv installs and uninstalls yggdrasil-engine==1.0.0 during each sync
@@ -100,10 +100,6 @@ From reading https://github.com/pypa/pip/blob/f215c5e5175dc6deda4535a7c5bee010c4
 ---
 
 _Renamed from "uv installs and uninstalls tink==1.10.0 during each sync" to "uv installs and uninstalls yggdrasil-engine==1.10.0 during each sync" by @ErliSoares on 2025-11-24 09:47_
-
----
-
-_Referenced in [Unleash/yggdrasil-bindings#44](../../Unleash/yggdrasil-bindings/issues/44.md) on 2025-11-24 09:56_
 
 ---
 

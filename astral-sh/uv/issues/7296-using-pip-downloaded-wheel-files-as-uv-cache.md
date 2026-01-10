@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-11T15:54:31Z
 updated_at: 2025-09-04T05:04:59Z
 url: https://github.com/astral-sh/uv/issues/7296
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Using pip downloaded wheel files as uv cache 
@@ -54,10 +54,6 @@ I tried to find out if `uv` caches downloaded packages somewhere so I can just c
 _Comment by @lmmx on 2024-09-12 09:22_
 
 Relates to #3163
-
----
-
-_Referenced in [astral-sh/uv#3163](../../astral-sh/uv/issues/3163.md) on 2024-09-13 18:40_
 
 ---
 

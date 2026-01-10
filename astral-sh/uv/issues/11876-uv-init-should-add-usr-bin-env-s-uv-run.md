@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T03:42:09Z
 updated_at: 2025-10-11T20:49:26Z
 url: https://github.com/astral-sh/uv/issues/11876
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv init should add #!/usr/bin/env -S uv run
@@ -49,10 +49,6 @@ _Comment by @magistau on 2025-03-22 23:26_
 It's hard to implement properly, because `-S` flag is not a part of [POSIX standard][env]. That is, different `env` implementations may treat it differently, potentially causing issues. IMO a better solution would be introducing a helper executable (say, `uvs`) that could be used instead of `uv run` when a shebang is needed.
 
 [env]: https://pubs.opengroup.org/onlinepubs/9799919799/
-
----
-
-_Referenced in [astral-sh/uv#16241](../../astral-sh/uv/issues/16241.md) on 2025-10-10 21:47_
 
 ---
 

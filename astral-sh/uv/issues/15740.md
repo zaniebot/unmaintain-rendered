@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-08T17:44:56Z
 updated_at: 2025-09-09T12:32:41Z
 url: https://github.com/astral-sh/uv/issues/15740
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Warn when `tool.uv.build-backend` is set but wrong `[build-system]` is configured
@@ -34,10 +34,6 @@ _Label `error messages` added by @zanieb on 2025-09-08 17:45_
 _Comment by @zanieb on 2025-09-08 17:45_
 
 cc @konstin 
-
----
-
-_Referenced in [astral-sh/uv#15750](../../astral-sh/uv/pulls/15750.md) on 2025-09-09 12:23_
 
 ---
 

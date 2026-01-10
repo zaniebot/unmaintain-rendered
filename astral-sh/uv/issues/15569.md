@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-28T11:53:26Z
 updated_at: 2025-11-03T19:25:49Z
 url: https://github.com/astral-sh/uv/issues/15569
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv cache {clean, prune} fails with os error 63
@@ -122,9 +122,5 @@ _Comment by @zanieb on 2025-11-03 19:25_
 I'm actually not sure _how_ to make removal robust to this?
 
 The best I can think of is to update https://github.com/astral-sh/uv/blob/00aa2ab67290f45c3797c1359d027cc38d137d7e/crates/uv-cache/src/removal.rs#L217 to emit a warning and ignore the error.
-
----
-
-_Referenced in [astral-sh/uv#16586](../../astral-sh/uv/issues/16586.md) on 2025-11-04 07:45_
 
 ---

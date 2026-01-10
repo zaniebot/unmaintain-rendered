@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-10T03:20:49Z
 updated_at: 2025-09-25T13:32:01Z
 url: https://github.com/astral-sh/uv/issues/5992
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Markers under universal resolution could have more concise representation 
@@ -45,14 +45,6 @@ Hmm yeah this is a consequence of us strictly writing in DNF form. Your example 
 ---
 
 _Label `wish` added by @charliermarsh on 2024-08-10 03:31_
-
----
-
-_Referenced in [astral-sh/uv#5179](../../astral-sh/uv/issues/5179.md) on 2024-08-10 03:46_
-
----
-
-_Referenced in [astral-sh/uv#6295](../../astral-sh/uv/issues/6295.md) on 2024-08-21 02:39_
 
 ---
 

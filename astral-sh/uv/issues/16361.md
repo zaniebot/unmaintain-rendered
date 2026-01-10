@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-19T16:26:23Z
 updated_at: 2025-10-29T15:31:04Z
 url: https://github.com/astral-sh/uv/issues/16361
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Inconsistent behaviour of `uv add` when passing the `--group` and `-r` flag.
@@ -101,10 +101,6 @@ We can create an empty group here for consistency, or at least we can improve th
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-29 00:18_
-
----
-
-_Referenced in [astral-sh/uv#16490](../../astral-sh/uv/pulls/16490.md) on 2025-10-29 00:38_
 
 ---
 

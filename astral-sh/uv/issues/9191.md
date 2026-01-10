@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-18T10:11:56Z
 updated_at: 2025-10-18T18:55:29Z
 url: https://github.com/astral-sh/uv/issues/9191
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Cache invalidation on local dependencies when using docker
@@ -249,10 +249,6 @@ I'm also using the default settings, which afaict includes VirtioFS, Rosetta, an
 _Comment by @helmut-hoffer-von-ankershoffen on 2024-12-20 19:23_
 
 Same issue on my side - following [this example](https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile) leads to `Uninstalled 1 package [..] Installed 1 package`. Using --verbose on uv run surfaces "Requirement installed, but not fresh", with the requirement being the project itself.
-
----
-
-_Referenced in [speaches-ai/speaches#127](../../speaches-ai/speaches/issues/127.md) on 2025-01-06 18:25_
 
 ---
 

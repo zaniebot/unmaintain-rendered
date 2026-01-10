@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-01T12:25:28Z
 updated_at: 2025-11-07T20:03:11Z
 url: https://github.com/astral-sh/uv/issues/16547
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv build backend lowercases package name in wheel metadata
@@ -118,10 +118,6 @@ I have an initial solution for this, if the uv folks do consider this a bug and 
 _Comment by @charliermarsh on 2025-11-01 19:40_
 
 I think we're unlikely to change our use of normalized names _in general_ (it is intentional) but we could address this case if it's not too invasive.
-
----
-
-_Referenced in [astral-sh/uv#16548](../../astral-sh/uv/pulls/16548.md) on 2025-11-01 20:37_
 
 ---
 

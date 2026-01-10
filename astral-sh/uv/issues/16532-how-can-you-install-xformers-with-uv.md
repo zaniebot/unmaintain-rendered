@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-31T07:18:25Z
 updated_at: 2025-10-31T09:51:45Z
 url: https://github.com/astral-sh/uv/issues/16532
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # How can you install xformers with uv ?
@@ -164,9 +164,5 @@ if you want full working configuration you can look at my [pyproject.toml](https
 ---
 
 _Closed by @muhammad-fiaz on 2025-10-31 09:51_
-
----
-
-_Referenced in [astral-sh/uv#16522](../../astral-sh/uv/issues/16522.md) on 2025-11-04 19:48_
 
 ---

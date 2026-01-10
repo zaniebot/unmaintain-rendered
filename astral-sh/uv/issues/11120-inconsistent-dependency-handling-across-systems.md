@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-30T21:18:23Z
 updated_at: 2025-08-29T00:51:41Z
 url: https://github.com/astral-sh/uv/issues/11120
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Inconsistent Dependency Handling Across Systems with Different `glibc` Versions
@@ -204,15 +204,7 @@ Exactly, this is why I prefer (1), this way I can create the environment with th
 
 ---
 
-_Referenced in [astral-sh/uv#15035](../../astral-sh/uv/issues/15035.md) on 2025-08-02 23:57_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-25 13:27_
-
----
-
-_Referenced in [astral-sh/uv#15515](../../astral-sh/uv/pulls/15515.md) on 2025-08-25 14:20_
 
 ---
 

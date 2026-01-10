@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T09:48:42Z
 updated_at: 2025-12-02T10:01:12Z
 url: https://github.com/astral-sh/uv/issues/8206
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uvx and uv tool not respecting python version in packaged app
@@ -104,14 +104,6 @@ And because example-packaged-app==0.1.0 depends on dearpygui>=1.11.1, we can con
 And because only example-packaged-app==0.1.0 is available and you require example-packaged-app, we can conclude that your requirements are unsatisfiable.
 ```
 To an uninformed end user this error can be confusing. How do you know you need to specify `--python 3.12`?
-
----
-
-_Referenced in [astral-sh/uv#8229](../../astral-sh/uv/issues/8229.md) on 2024-10-15 22:41_
-
----
-
-_Referenced in [astral-sh/uv#6381](../../astral-sh/uv/issues/6381.md) on 2024-10-16 09:55_
 
 ---
 
@@ -268,10 +260,6 @@ _Comment by @my1e5 on 2024-10-16 15:04_
 Thanks @DavidCEllis - good to know, I didn't realise this. 
 
 It seems uvx isn't respecting the `requires-python` field at the moment anyway (https://github.com/astral-sh/uv/issues/6381#issuecomment-2303072011). But that might change with PR https://github.com/astral-sh/uv/pull/7827?
-
----
-
-_Referenced in [astral-sh/uv#11612](../../astral-sh/uv/issues/11612.md) on 2025-02-19 10:56_
 
 ---
 

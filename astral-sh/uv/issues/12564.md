@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-30T21:03:13Z
 updated_at: 2025-08-27T15:28:03Z
 url: https://github.com/astral-sh/uv/issues/12564
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Setting of CLICOLOR_FORCE breaks build backends
@@ -79,17 +79,9 @@ We initially added this to improve the error output of build subprocess, this va
 
 ---
 
-_Referenced in [astral-sh/uv#15415](../../astral-sh/uv/issues/15415.md) on 2025-08-22 19:13_
-
----
-
 _Comment by @zanieb on 2025-08-22 19:14_
 
 See also https://github.com/astral-sh/uv/issues/15415
-
----
-
-_Referenced in [astral-sh/uv#15472](../../astral-sh/uv/pulls/15472.md) on 2025-08-23 16:08_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T00:05:19Z
 updated_at: 2025-11-22T06:51:31Z
 url: https://github.com/astral-sh/uv/issues/1396
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv)
@@ -40,33 +40,9 @@ I did also encounter this when trying to use uv as a drop in replacement for my 
 
 ---
 
-_Referenced in [astral-sh/uv#1501](../../astral-sh/uv/issues/1501.md) on 2024-02-16 15:29_
-
----
-
-_Referenced in [astral-sh/uv#1598](../../astral-sh/uv/issues/1598.md) on 2024-02-18 08:12_
-
----
-
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:12_
-
----
-
-_Referenced in [astral-sh/uv#1422](../../astral-sh/uv/issues/1422.md) on 2024-02-18 08:16_
-
----
-
-_Referenced in [astral-sh/uv#1623](../../astral-sh/uv/issues/1623.md) on 2024-02-18 21:12_
-
----
-
 _Comment by @ofek on 2024-02-18 23:13_
 
 Definitely agree, this is fundamental to allow a single UV installation to be used as a real standalone binary!
-
----
-
-_Referenced in [astral-sh/uv#1374](../../astral-sh/uv/issues/1374.md) on 2024-02-18 23:21_
 
 ---
 
@@ -115,14 +91,6 @@ A few things:
     ❯ docker run --rm python:3.12 python -c "import sys; print(sys.prefix)"
     /usr/local
     ```
-
----
-
-_Referenced in [astral-sh/uv#1336](../../astral-sh/uv/issues/1336.md) on 2024-02-19 02:26_
-
----
-
-_Referenced in [pypa/hatch#1268](../../pypa/hatch/issues/1268.md) on 2024-02-19 03:13_
 
 ---
 
@@ -178,18 +146,6 @@ So I guess if I were uv, I'd figure out what/how I want to do 1374 / 1526 and ma
 
 ---
 
-_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-19 16:24_
-
----
-
-_Referenced in [astral-sh/uv#1831](../../astral-sh/uv/issues/1831.md) on 2024-02-21 21:12_
-
----
-
-_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2024-02-23 00:25_
-
----
-
 _Comment by @wpk-nist-gov on 2024-02-23 00:34_
 
 I'm hoping a solution to this would solve an edge case I'm running into.    I often have a conda environment with nox that then creates virtualenvs.  This leads to both `CONDA_PREFIX` and `VIRTUAL_ENV` variables being set.  With pip, this is easy to work around using `path/to/python -m pip` to install packages in the correct environment (so #1632, which I think is intimately connected to this issue, would solve this).  But having a flag like `--python-executable` or `--prefix` would also solve this, as long as passing such a flag overrides `CONDA_PREFIX` and `VIRTUAL_ENV`.   This would hopefully help wntrblm/nox#762 as well.
@@ -218,10 +174,6 @@ Definitely some things to learn from in the Poetry source: https://github.com/py
 
 ---
 
-_Referenced in [meltano/meltano#8410](../../meltano/meltano/issues/8410.md) on 2024-02-26 23:22_
-
----
-
 _Comment by @fruch on 2024-02-26 23:27_
 
 sharing one use case of using `--prefix` and `--root`, 
@@ -230,10 +182,6 @@ inside a multi stages docker build, one stage is building/collecting all package
 and other stages just copy the content out of into their /usr/local folder.
 
 meanwhile I've worked around using those pip flags, by VIRTUAL_ENV=/user/local, and copy all of /user/local between the layers.
-
----
-
-_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 01:56_
 
 ---
 

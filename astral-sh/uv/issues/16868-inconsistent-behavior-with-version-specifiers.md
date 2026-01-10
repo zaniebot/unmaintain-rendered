@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-26T21:25:58Z
 updated_at: 2025-11-28T14:50:50Z
 url: https://github.com/astral-sh/uv/issues/16868
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Inconsistent behavior with version-specifiers containing 'Exclusive ordered comparison' for Post-Release versions
@@ -192,10 +192,6 @@ _Label `bug` added by @LtdSauce on 2025-11-26 21:25_
 
 ---
 
-_Referenced in [Nitrokey/pynitrokey#707](../../Nitrokey/pynitrokey/issues/707.md) on 2025-11-26 21:27_
-
----
-
 _Renamed from "Inconsistent behavior with PEP440 Exclusive ordered comparison for Post-Release versions" to "Inconsistent behavior with version-specifiers containing 'Exclusive ordered comparison' for Post-Release versions" by @LtdSauce on 2025-11-26 21:54_
 
 ---
@@ -213,10 +209,6 @@ It's because of our use of the sentinel "min" version (`Self::strictly_lower_tha
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-28 13:46_
-
----
-
-_Referenced in [astral-sh/uv#16881](../../astral-sh/uv/pulls/16881.md) on 2025-11-28 14:04_
 
 ---
 

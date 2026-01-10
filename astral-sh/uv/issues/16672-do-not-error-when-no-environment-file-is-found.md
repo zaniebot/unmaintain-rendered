@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-10T17:25:00Z
 updated_at: 2025-11-10T19:26:42Z
 url: https://github.com/astral-sh/uv/issues/16672
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Do not error when no environment file is found
@@ -65,13 +65,5 @@ That would work for me and my use cases. I also want to point out that pipenv's 
 ---
 
 _Label `configuration` added by @zanieb on 2025-11-10 19:26_
-
----
-
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-02 10:42_
-
----
-
-_Referenced in [astral-sh/uv#1384](../../astral-sh/uv/issues/1384.md) on 2025-12-02 10:42_
 
 ---

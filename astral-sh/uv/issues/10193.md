@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-27T14:15:18Z
 updated_at: 2025-11-04T14:34:09Z
 url: https://github.com/astral-sh/uv/issues/10193
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # How to provide publish credentials for an alternative (named) package index?
@@ -112,10 +112,6 @@ _Label `duplicate` added by @zanieb on 2024-12-30 20:17_
 ---
 
 _Label `question` added by @zanieb on 2024-12-30 20:17_
-
----
-
-_Referenced in [astral-sh/uv#14253](../../astral-sh/uv/pulls/14253.md) on 2025-06-25 07:50_
 
 ---
 

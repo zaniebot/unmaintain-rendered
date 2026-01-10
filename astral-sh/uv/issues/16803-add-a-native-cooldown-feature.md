@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-21T04:38:01Z
 updated_at: 2025-11-21T16:00:38Z
 url: https://github.com/astral-sh/uv/issues/16803
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Add a native 'cooldown' feature
@@ -62,9 +62,5 @@ Oops, yes. I searched for 'cooldown' as a keyword and missed that. Thanks @notat
 ---
 
 _Closed by @woodruffw on 2025-11-21 16:00_
-
----
-
-_Referenced in [PlasmaPy/PlasmaPy#3158](../../PlasmaPy/PlasmaPy/issues/3158.md) on 2025-11-26 22:37_
 
 ---

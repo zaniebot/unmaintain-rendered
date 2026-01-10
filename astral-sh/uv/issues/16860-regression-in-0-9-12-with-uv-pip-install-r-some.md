@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-26T13:44:17Z
 updated_at: 2025-11-26T16:33:51Z
 url: https://github.com/astral-sh/uv/issues/16860
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Regression in 0.9.12 with `uv pip install -r <(some command)`
@@ -148,10 +148,6 @@ _No response_
 ---
 
 _Label `bug` added by @alex on 2025-11-26 13:44_
-
----
-
-_Referenced in [pyca/cryptography#13925](../../pyca/cryptography/pulls/13925.md) on 2025-11-26 13:44_
 
 ---
 

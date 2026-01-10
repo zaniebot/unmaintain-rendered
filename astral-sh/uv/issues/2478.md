@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-15T17:45:48Z
 updated_at: 2025-10-10T20:52:30Z
 url: https://github.com/astral-sh/uv/issues/2478
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Enabling local version constraints with dependency range
@@ -135,9 +135,5 @@ torch>=2.1+cpu,<3+cpu ; sys_platform == 'linux'
 ```
 
 I checked with just `torch<3+cpu ; sys_platform == 'linux'` and still the same error (thinking maybe multiple bounds didn't work, for some reason). It does work fine with hard pinning though, e.g. `torch==2.1.0+cpu ; sys_platform == 'linux'`.
-
----
-
-_Referenced in [astral-sh/uv#16216](../../astral-sh/uv/issues/16216.md) on 2025-10-10 18:01_
 
 ---

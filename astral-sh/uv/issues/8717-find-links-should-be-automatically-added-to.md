@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T08:49:58Z
 updated_at: 2025-11-28T08:25:51Z
 url: https://github.com/astral-sh/uv/issues/8717
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `find-links` should be automatically added to `pyproject.toml` after `uv add -f`
@@ -134,10 +134,6 @@ _Label `enhancement` added by @charliermarsh on 2024-11-01 13:29_
 _Comment by @charliermarsh on 2024-11-01 13:30_
 
 We probably won't write `find-links`, but I did leave space open for `[[tool.uv.index]]` entries to have a `find-links` "kind", so we'd add a `[[tool.uv.index]]` entry instead. Somewhat low priority but it's a TODO.
-
----
-
-_Referenced in [astral-sh/uv#9079](../../astral-sh/uv/issues/9079.md) on 2024-11-13 09:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-21T06:41:29Z
 updated_at: 2025-10-21T09:03:39Z
 url: https://github.com/astral-sh/uv/issues/16379
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Conditional sources with markers don't fall back to registry
@@ -70,9 +70,5 @@ Let's track this in https://github.com/astral-sh/uv/issues/14090
 ---
 
 _Closed by @konstin on 2025-10-21 08:53_
-
----
-
-_Referenced in [astral-sh/uv#14090](../../astral-sh/uv/issues/14090.md) on 2025-10-21 09:02_
 
 ---

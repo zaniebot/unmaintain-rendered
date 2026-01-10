@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-31T02:27:11Z
 updated_at: 2025-10-05T10:53:41Z
 url: https://github.com/astral-sh/uv/issues/14985
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Environment removal should use `remove_virtualenv`
@@ -46,10 +46,6 @@ _Comment by @zanieb on 2025-07-31 02:34_
 
 I found these while auditing some `uv_virtualenv::OnExisting::Remove` uses for #14734 and looks like we often remove the virtual environment manually beforehand. I'm... not actually sure we should be doing that? because we handle that case inside `create_venv` which always uses `remove_virtualenv`.
 
-
----
-
-_Referenced in [astral-sh/uv#15007](../../astral-sh/uv/pulls/15007.md) on 2025-07-31 20:12_
 
 ---
 
@@ -119,13 +115,5 @@ https://github.com/astral-sh/uv/blob/00d3aa3780816f5b3da40c0815579ca359653de1/cr
 ---
 
 I think `fs_err` is a drop in replacement and having nice errors when something goes wrong with the filesystem nice to have. Not sure if this affects anything performance wise though. I can open an issue for this (and a pr) if that is something that might add some value.
-
----
-
-_Referenced in [astral-sh/uv#16201](../../astral-sh/uv/pulls/16201.md) on 2025-10-09 09:19_
-
----
-
-_Referenced in [astral-sh/uv#16203](../../astral-sh/uv/pulls/16203.md) on 2025-10-09 11:19_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-13T19:11:45Z
 updated_at: 2025-09-16T22:09:21Z
 url: https://github.com/astral-sh/uv/issues/13435
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Nondeterministic behavior of `uv pip`
@@ -106,14 +106,6 @@ That said, would there be a systematic way to detect and avoid this type of issu
 _Comment by @konstin on 2025-05-13 19:37_
 
 A proper solution could be https://discuss.python.org/t/pre-pep-import-name-metadata/90506
-
----
-
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-05-13 20:55_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---
 

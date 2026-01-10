@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T19:47:01Z
 updated_at: 2025-11-19T16:57:56Z
 url: https://github.com/astral-sh/uv/issues/12759
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv pip install cudaq` fails first time perhaps due to dynamic install_requires
@@ -161,20 +161,12 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-04-08 20:39_
 
 ---
 
-_Referenced in [PrincetonUniversity/cutqc2#14](../../PrincetonUniversity/cutqc2/issues/14.md) on 2025-09-09 21:26_
-
----
-
 _Comment by @ACE07-Sev on 2025-11-16 09:56_
 
 Question. I'm having this issue (I think) in my PR. 
 https://github.com/unitaryfoundation/mitiq/pull/2839
 
 Anything I can do to get `cudaq` to install on the Ubuntu venv? It's a Linux x86 only wheel by the way, so won't work on macos nor windows.
-
----
-
-_Referenced in [NVIDIA/cuda-quantum#3616](../../NVIDIA/cuda-quantum/issues/3616.md) on 2025-11-16 10:02_
 
 ---
 
@@ -187,9 +179,5 @@ You can use <https://docs.astral.sh/uv/reference/settings/#dependency-metadata> 
 _Comment by @lmondada on 2025-11-19 16:57_
 
 Thanks for reporting it. I'll see about fixing this in cudaq. 
-
----
-
-_Referenced in [pypa/setuptools#5120](../../pypa/setuptools/issues/5120.md) on 2025-11-20 09:48_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-24T09:36:26Z
 updated_at: 2025-09-24T20:13:25Z
 url: https://github.com/astral-sh/uv/issues/16012
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UV does not download a python version to satisfy both .python-version and requires-python, even if only-managed is set
@@ -140,9 +140,5 @@ But I guess it's just a matter of keeping your uv installation up to date inform
 _Comment by @zanieb on 2025-09-24 20:13_
 
 This is true :) we'll probably add some sort of remote fallback in the future, but it doesn't exist yet.
-
----
-
-_Referenced in [astral-sh/uv#16061](../../astral-sh/uv/issues/16061.md) on 2025-09-29 07:57_
 
 ---

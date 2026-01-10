@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T23:29:01Z
 updated_at: 2025-12-02T10:42:51Z
 url: https://github.com/astral-sh/uv/issues/1384
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support .env-files
@@ -234,10 +234,6 @@ Here's a non-Python example: Node JS added native support to this feature in Sep
 
 ---
 
-_Referenced in [astral-sh/uv#7357](../../astral-sh/uv/pulls/7357.md) on 2024-09-13 11:25_
-
----
-
 _Comment by @petermbauer on 2024-09-18 06:56_
 
 My use case is to use a separate project-specific Conan Local Cache when entering the respective venv. This simply means setting the `CONAN_USER_HOME` env var to the venv path with `source .venv/bin/activate`.
@@ -256,10 +252,6 @@ _Comment by @zanieb on 2024-09-18 15:24_
 >  Or is this not necessary anymore with uv run (sorry for my ignorance, I haven't really used uv much yet)?
 
 It shouldn't be needed if you use `uv run`, though it's a bit more nuanced than that. Feel free to open a new issue if you run into problems there.
-
----
-
-_Referenced in [astral-sh/uv#7490](../../astral-sh/uv/issues/7490.md) on 2024-09-19 22:22_
 
 ---
 
@@ -324,10 +316,6 @@ EDIT 2: I had a bit of time so I booted into windows, updated powershell as it d
 _Comment by @blakeNaccarato on 2024-09-25 19:07_
 
 I wrote an [isolated script for syncing `.env` with a `tool.dev.env` table in `pyproject.toml`](https://gist.github.com/blakeNaccarato/9871a3a36a1d0156a739af1fbc9a937e) (by default, but it's configurable via CLI) that you can run in a shell profile or in your shell initialization flow. It's barebones and only supports environment variables hard-coded in your `pyproject.toml` (e.g. no secrets), but I'm sure someone could extend it into a full utility. See also [`dump-env`](https://github.com/wemake-services/dump-env) for a feature set supporting secrets and `.env` templating.
-
----
-
-_Referenced in [astral-sh/uv#7743](../../astral-sh/uv/issues/7743.md) on 2024-09-27 18:03_
 
 ---
 
@@ -493,10 +481,6 @@ Yes. opt-out via an externally managed variable makes more sense logically
 (because all other vars are already managed outside .env) 
 than opt-in (use the .env) via a non-.dotenv managed variable.
 
-
----
-
-_Referenced in [astral-sh/uv#8263](../../astral-sh/uv/pulls/8263.md) on 2024-10-16 16:51_
 
 ---
 
@@ -719,10 +703,6 @@ Pipenv has a nice `loading .env file` output when it runs if you have a .env fil
 
 ---
 
-_Referenced in [Gudsfile/sploty#17](../../Gudsfile/sploty/pulls/17.md) on 2024-10-26 20:56_
-
----
-
 _Comment by @jonaslb on 2024-10-27 19:43_
 
 > In https://github.com/astral-sh/uv/pull/8263, some commenters are making the case that this should be opt-in rather than opt-out. I want to open up the conversation for more opinions here before this ships.
@@ -804,10 +784,6 @@ Ii would be nice to also enable the env-file via uv.toml.
 
 ---
 
-_Referenced in [astral-sh/uv#9015](../../astral-sh/uv/issues/9015.md) on 2024-11-12 11:32_
-
----
-
 _Comment by @ReinforcedKnowledge on 2024-11-17 03:38_
 
 Hi!
@@ -827,14 +803,6 @@ Would implementing support for a `.env` file (I think not the most secure as wel
 I guess we can always come up with a way to set up the environment variables from an `.env` file and then remove them 🤔
 
 You can consider my comment useless 😅
-
----
-
-_Referenced in [astral-sh/uv#8810](../../astral-sh/uv/issues/8810.md) on 2024-11-25 12:14_
-
----
-
-_Referenced in [astral-sh/uv#9381](../../astral-sh/uv/issues/9381.md) on 2024-11-26 00:03_
 
 ---
 
@@ -909,10 +877,6 @@ Alternatively you could also just put the UV_INDEX_BLAH env vars in the root `.e
 
 ---
 
-_Referenced in [astral-sh/uv#11673](../../astral-sh/uv/issues/11673.md) on 2025-02-20 17:47_
-
----
-
 _Comment by @gryznar on 2025-03-11 14:26_
 
 For me the whole point of `.env` file is to define project specific variables. I am using it in running pytest tests directly via `pytest` rather than `uv run pytest`. I do not want to have these variables available globally, as every project has different values. Specifying path to `.env` file via another environment variable won't work in this case. Currently I am using `python-dotenv` to achieve that, but having a possibility to set this via setting in `pyproject.toml` would be very neat :)
@@ -980,17 +944,9 @@ _Comment by @LeonarddeR on 2025-04-17 20:42_
 
 ---
 
-_Referenced in [astral-sh/uv#13184](../../astral-sh/uv/issues/13184.md) on 2025-04-28 19:03_
-
----
-
 _Comment by @MaleicAcid on 2025-05-01 07:46_
 
 +1 really need this
-
----
-
-_Referenced in [mongodb-labs/drivers-evergreen-tools#649](../../mongodb-labs/drivers-evergreen-tools/pulls/649.md) on 2025-05-01 15:22_
 
 ---
 
@@ -1028,10 +984,6 @@ But uv is not a python-based executable installed in the venv,
 hence this request.
 
 
-
----
-
-_Referenced in [astral-sh/uv#14134](../../astral-sh/uv/issues/14134.md) on 2025-06-18 18:44_
 
 ---
 
@@ -1074,10 +1026,6 @@ I would like to be able to specify in pyproject.toml that an env-file is loaded 
 like pdm offers https://pdm-project.org/en/latest/usage/scripts/#env_file
 
 often I have projects with non-version-controlled credentials in `.env` file for local development, and then various utility actions as project scripts
-
----
-
-_Referenced in [astral-sh/uv#14500](../../astral-sh/uv/issues/14500.md) on 2025-07-07 22:27_
 
 ---
 
@@ -1144,10 +1092,6 @@ _Comment by @Danipulok on 2025-10-16 13:16_
 Could you please update us on this topic, any plans to support it in the nearest future?
 My question from 2 days ago got some activity, showing people really want it:
 https://github.com/astral-sh/uv/issues/1384#issuecomment-3401292406
-
----
-
-_Referenced in [MITLibraries/timdex-embeddings#13](../../MITLibraries/timdex-embeddings/pulls/13.md) on 2025-10-24 20:30_
 
 ---
 
@@ -1471,13 +1415,5 @@ See
 ---
 
 _Closed by @zanieb on 2025-12-02 10:33_
-
----
-
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-02 10:42_
-
----
-
-_Referenced in [astral-sh/uv#16964](../../astral-sh/uv/issues/16964.md) on 2025-12-03 13:40_
 
 ---

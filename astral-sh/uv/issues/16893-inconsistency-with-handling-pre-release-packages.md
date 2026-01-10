@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-29T18:59:26Z
 updated_at: 2025-11-29T19:45:27Z
 url: https://github.com/astral-sh/uv/issues/16893
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Inconsistency with handling pre-release packages - installing from pypi vs installing from git
@@ -51,10 +51,6 @@ uv 0.9.2 (141369ce7 2025-10-10)
 ---
 
 _Label `bug` added by @Andrej730 on 2025-11-29 18:59_
-
----
-
-_Referenced in [dgtlmoon/changedetection.io#3662](../../dgtlmoon/changedetection.io/issues/3662.md) on 2025-11-29 19:04_
 
 ---
 

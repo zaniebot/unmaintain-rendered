@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-05-24T19:58:11Z
 updated_at: 2025-11-29T10:01:06Z
 url: https://github.com/astral-sh/uv/issues/13640
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Debian/Ubuntu Package
@@ -55,10 +55,6 @@ cargo binstall could work with uv, we provide binaries in the GitHub releases pa
 ---
 
 _Label `enhancement` removed by @konstin on 2025-05-26 20:11_
-
----
-
-_Referenced in [cargo-bins/cargo-binstall#2176](../../cargo-bins/cargo-binstall/issues/2176.md) on 2025-06-01 02:50_
 
 ---
 
@@ -212,10 +208,6 @@ Yes, that could perhaps work. That being said (and apologies for being a bit stu
 
 ---
 
-_Referenced in [astral-sh/uv#16358](../../astral-sh/uv/issues/16358.md) on 2025-10-19 12:02_
-
----
-
 _Comment by @sthen on 2025-10-19 12:21_
 
 I understand why it's not preferred but if these could be uploaded to crates.io with a disclaimer as suggested by @wetneb this would simplify things a lot for downstream OS packagers. Having a single source for these seems more sensible than various OS packagers dealing with it themselves in various different ways.
@@ -231,10 +223,6 @@ I think we'll just publish these to `crates.io` with a `uv-` prefix for now, it 
 ---
 
 _Assigned to @konstin by @zanieb on 2025-10-19 15:58_
-
----
-
-_Referenced in [astral-sh/uv#16591](../../astral-sh/uv/issues/16591.md) on 2025-11-05 04:29_
 
 ---
 

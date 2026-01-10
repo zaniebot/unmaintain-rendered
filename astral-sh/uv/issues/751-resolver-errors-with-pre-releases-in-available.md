@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-03T18:44:20Z
 updated_at: 2025-11-08T19:21:31Z
 url: https://github.com/astral-sh/uv/issues/751
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Resolver errors with pre-releases in available versions do not simplify correctly
@@ -206,10 +206,6 @@ _Assigned to @zanieb by @charliermarsh on 2024-01-04 19:45_
 
 ---
 
-_Referenced in [astral-sh/uv#796](../../astral-sh/uv/pulls/796.md) on 2024-01-05 16:39_
-
----
-
 _Comment by @Eh2406 on 2024-04-10 22:36_
 
 Just brainstorming but perhaps when `--prerelease=allow` is not set the first line should have the iterator past to simplification should contain only normal releases. I.E. `req.simplify(iterator.filter(is_normal))`. 
@@ -225,10 +221,6 @@ I've checked and the error for `echo "tf-models-nightly>2.11.0" | uv pip compile
 _Comment by @zanieb on 2024-12-16 22:19_
 
 @konstin how can I reproduce this?
-
----
-
-_Referenced in [astral-sh/uv#9944](../../astral-sh/uv/pulls/9944.md) on 2024-12-16 22:22_
 
 ---
 

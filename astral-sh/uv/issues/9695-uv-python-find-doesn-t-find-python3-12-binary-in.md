@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T22:28:00Z
 updated_at: 2025-11-05T14:54:58Z
 url: https://github.com/astral-sh/uv/issues/9695
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv python find` doesn't find `python3.12` binary in $PATH when looking for `==3.12.8`
@@ -230,10 +230,6 @@ error: No interpreter found for Python ==3.12.8 in search path
 ```
 
 </details>
-
----
-
-_Referenced in [astral-sh/uv#9697](../../astral-sh/uv/pulls/9697.md) on 2024-12-06 22:55_
 
 ---
 

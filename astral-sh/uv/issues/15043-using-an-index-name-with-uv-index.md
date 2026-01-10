@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-03T19:14:41Z
 updated_at: 2025-09-23T13:07:55Z
 url: https://github.com/astral-sh/uv/issues/15043
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Using an index name with UV_INDEX
@@ -275,10 +275,6 @@ CC @charliermarsh (https://github.com/astral-sh/uv/pull/7747): Is this intended 
 _Comment by @tonnico on 2025-08-07 06:05_
 
 At least it's inconsistent, as a pyproject.toml without a default index and no `UV_` variables set behaves differently.
-
----
-
-_Referenced in [astral-sh/uv#15560](../../astral-sh/uv/issues/15560.md) on 2025-08-27 18:43_
 
 ---
 

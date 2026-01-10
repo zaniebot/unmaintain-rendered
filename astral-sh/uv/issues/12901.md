@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-15T18:02:39Z
 updated_at: 2025-09-12T13:16:51Z
 url: https://github.com/astral-sh/uv/issues/12901
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Managed Python sysconfig returns incorrect path to CC on Amazon Linux 2023
@@ -95,10 +95,6 @@ _Label `bug` added by @nwalters512 on 2025-04-15 18:02_
 
 ---
 
-_Referenced in [PrairieLearn/PrairieLearn#11039](../../PrairieLearn/PrairieLearn/pulls/11039.md) on 2025-04-15 18:02_
-
----
-
 _Comment by @zanieb on 2025-04-16 13:32_
 
 I think this is fixed by https://github.com/astral-sh/uv/pull/12239 (which I just merged)
@@ -164,10 +160,6 @@ It looks like they read `LDSHARED`. I guess we need to update more variables. cc
 _Comment by @zanieb on 2025-05-08 20:32_
 
 You can unblock yourself with `ENV LDSHARED="cc -shared"`
-
----
-
-_Referenced in [astral-sh/uv#13441](../../astral-sh/uv/pulls/13441.md) on 2025-05-14 02:29_
 
 ---
 

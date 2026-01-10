@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-15T19:20:16Z
 updated_at: 2025-11-27T09:47:43Z
 url: https://github.com/astral-sh/uv/issues/3621
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `requirements.txt` allows editable paths to be quoted
@@ -50,14 +50,6 @@ _Comment by @Briandye1987 on 2024-07-01 03:45_
 # Not ok
 "./scripts/packages/black_editable"
 black @ "./scripts/packages/black_editable"
-
----
-
-_Referenced in [astral-sh/uv#10417](../../astral-sh/uv/issues/10417.md) on 2025-01-08 23:18_
-
----
-
-_Referenced in [astral-sh/uv#11592](../../astral-sh/uv/issues/11592.md) on 2025-02-18 14:29_
 
 ---
 

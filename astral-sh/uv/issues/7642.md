@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-23T15:44:39Z
 updated_at: 2025-11-07T23:55:31Z
 url: https://github.com/astral-sh/uv/issues/7642
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Using uv on HPC Clusters
@@ -70,18 +70,6 @@ Related
 _Comment by @zanieb on 2024-09-24 17:14_
 
 Regarding the second point, you could set [reinstall-package](https://docs.astral.sh/uv/reference/settings/#pip_reinstall-package) in your `pyproject.toml` and we'll refresh the cached version of that package. I wonder if we need `--no-cache-package <name>` or `--no-cache-binary`
-
----
-
-_Referenced in [astral-sh/uv#7357](../../astral-sh/uv/pulls/7357.md) on 2024-10-09 12:26_
-
----
-
-_Referenced in [astral-sh/uv#11420](../../astral-sh/uv/issues/11420.md) on 2025-02-11 13:47_
-
----
-
-_Referenced in [astral-sh/uv#14462](../../astral-sh/uv/issues/14462.md) on 2025-07-04 19:40_
 
 ---
 

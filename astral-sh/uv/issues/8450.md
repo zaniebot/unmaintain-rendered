@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T13:06:54Z
 updated_at: 2025-11-06T18:39:27Z
 url: https://github.com/astral-sh/uv/issues/8450
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv pip install` private pypi repo doesn't work when used in docker by default
@@ -265,10 +265,6 @@ As I said, it's likely this is a "Rust networking stack" problem not a "uv" prob
 
 ---
 
-_Referenced in [home-assistant/core#135054](../../home-assistant/core/issues/135054.md) on 2025-01-31 06:16_
-
----
-
 _Comment by @plusls on 2025-02-25 01:03_
 
 A simple patch to fix it:
@@ -328,17 +324,9 @@ This patch modifies reqwest's DNS implementation to hickory. Therefore, it is no
 
 ---
 
-_Referenced in [astral-sh/uv#12016](../../astral-sh/uv/issues/12016.md) on 2025-03-06 19:27_
-
----
-
 _Comment by @zanieb on 2025-03-06 20:47_
 
 I don't fully understand the implications of the hickory resolver, it'd be great if someone had more context on that.
-
----
-
-_Referenced in [astral-sh/uv#11640](../../astral-sh/uv/issues/11640.md) on 2025-03-06 23:39_
 
 ---
 
@@ -505,10 +493,6 @@ _Assigned to @Gankra by @Gankra on 2025-04-11 14:54_
 
 ---
 
-_Referenced in [rust-lang/rust#125692](../../rust-lang/rust/pulls/125692.md) on 2025-04-11 16:06_
-
----
-
 _Comment by @Gankra on 2025-04-11 16:08_
 
 It seems like musl 1.2.4 came with some non-trivial breaking changes that rust is struggling to integrate. There's been a branch open for 1.2.5 for a year:
@@ -548,22 +532,6 @@ Previously tried directly starting from the release docker images ghcr.io/astral
 
 ---
 
-_Referenced in [rust-lang/rust#142682](../../rust-lang/rust/pulls/142682.md) on 2025-06-18 15:30_
-
----
-
-_Referenced in [rust-lang/compiler-team#887](../../rust-lang/compiler-team/issues/887.md) on 2025-06-18 16:59_
-
----
-
-_Referenced in [astral-sh/uv#14941](../../astral-sh/uv/issues/14941.md) on 2025-07-31 11:53_
-
----
-
-_Referenced in [astral-sh/uv#16584](../../astral-sh/uv/pulls/16584.md) on 2025-11-03 23:54_
-
----
-
 _Comment by @zanieb on 2025-11-06 18:39_
 
 This should be fixed in our Docker images as of https://github.com/astral-sh/uv/pull/16584
@@ -571,13 +539,5 @@ This should be fixed in our Docker images as of https://github.com/astral-sh/uv/
 ---
 
 _Closed by @zanieb on 2025-11-06 18:39_
-
----
-
-_Referenced in [Homebrew/homebrew-core#253592](../../Homebrew/homebrew-core/pulls/253592.md) on 2025-11-07 23:32_
-
----
-
-_Referenced in [astral-sh/uv#16741](../../astral-sh/uv/issues/16741.md) on 2025-11-14 17:47_
 
 ---

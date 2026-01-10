@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-03T12:04:29Z
 updated_at: 2025-09-08T15:02:30Z
 url: https://github.com/astral-sh/uv/issues/15655
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # [tool.uv.build-backend.data] directory silently not included
@@ -131,17 +131,5 @@ Thanks for your help @konstin!
 ---
 
 _Closed by @BartSchuurmans on 2025-09-08 15:02_
-
----
-
-_Referenced in [astral-sh/uv#15740](../../astral-sh/uv/issues/15740.md) on 2025-09-08 17:44_
-
----
-
-_Referenced in [astral-sh/uv#15750](../../astral-sh/uv/pulls/15750.md) on 2025-09-09 12:23_
-
----
-
-_Referenced in [astral-sh/uv#15765](../../astral-sh/uv/issues/15765.md) on 2025-09-10 08:45_
 
 ---

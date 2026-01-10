@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-19T16:16:55Z
 updated_at: 2025-09-06T17:44:19Z
 url: https://github.com/astral-sh/uv/issues/14748
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # feat: `UV_PYTHON` but only scoped to `uv venv` and similar internal commands which create a `venv`.
@@ -56,10 +56,6 @@ _Label `enhancement` added by @gabyx on 2025-07-19 16:16_
 
 ---
 
-_Referenced in [cachix/devenv#1959](../../cachix/devenv/pulls/1959.md) on 2025-07-19 16:18_
-
----
-
 _Comment by @konstin on 2025-07-21 11:03_
 
 Can you use one of the other mechanisms to control the Python interpreter, such as the `--python` option, placing the Python you want to use at the top of `PATH`, or `uv python pin`?
@@ -91,9 +87,5 @@ Sort of similar to https://github.com/astral-sh/uv/issues/6645
 ---
 
 _Closed by @gabyx on 2025-09-06 17:44_
-
----
-
-_Referenced in [astral-sh/uv#15709](../../astral-sh/uv/issues/15709.md) on 2025-09-06 19:21_
 
 ---

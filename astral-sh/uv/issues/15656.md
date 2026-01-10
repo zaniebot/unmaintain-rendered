@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-03T12:05:54Z
 updated_at: 2025-09-03T17:54:37Z
 url: https://github.com/astral-sh/uv/issues/15656
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Install dev dependencies of transitive workspace packages when targeting a single package
@@ -67,10 +67,6 @@ But e.g. within a database related workspace package, we have an extra dev depen
 ---
 
 _Label `enhancement` added by @Spenhouet on 2025-09-03 12:05_
-
----
-
-_Referenced in [astral-sh/uv#15657](../../astral-sh/uv/pulls/15657.md) on 2025-09-03 12:09_
 
 ---
 

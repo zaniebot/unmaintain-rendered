@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-20T21:10:00Z
 updated_at: 2025-11-07T07:24:42Z
 url: https://github.com/astral-sh/uv/issues/7604
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Interference with local python releases
@@ -35,10 +35,6 @@ pyenv: version `3.12.6' is not installed (set by /Users/<user>/<dev_path>/sample
 I was trying to go through `~/.config/uv` and `~/.local/` but I am not finding any `json` or other conf file that would allow me to re/point to the right python release `~/.local/share/uv/python/cpython-3.x...` 
 
 Any tips would be appreciated.
-
----
-
-_Referenced in [astral-sh/uv#7562](../../astral-sh/uv/issues/7562.md) on 2024-09-20 21:26_
 
 ---
 
@@ -205,10 +201,6 @@ One detail should be added here for reference, the folder I was tested it in was
 I hope this helps to pin point the exact `uv` behavior.
 
 Otherwise https://github.com/astral-sh/uv/issues/7562 catches the behavior quite well.
-
----
-
-_Referenced in [NanmiCoder/MediaCrawler#673](../../NanmiCoder/MediaCrawler/issues/673.md) on 2025-07-24 03:52_
 
 ---
 

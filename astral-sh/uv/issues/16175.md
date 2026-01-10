@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-08T05:58:26Z
 updated_at: 2025-10-09T17:24:43Z
 url: https://github.com/astral-sh/uv/issues/16175
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Question/Bug: Can't specify exactly 3.14.0 as the Python version
@@ -193,17 +193,9 @@ I've fixed the `>=...` bugs though.
 
 ---
 
-_Referenced in [astral-sh/uv#16208](../../astral-sh/uv/pulls/16208.md) on 2025-10-09 15:35_
-
----
-
 _Comment by @Ahajha on 2025-10-09 15:58_
 
 Wonderful! I'm mostly happy so long as there's a way to get it, though maybe we could attach a `.final` or something as a special hint to not install prereleases? That's a little messy, I'm okay without it
-
----
-
-_Referenced in [astral-sh/uv#16210](../../astral-sh/uv/pulls/16210.md) on 2025-10-09 16:19_
 
 ---
 

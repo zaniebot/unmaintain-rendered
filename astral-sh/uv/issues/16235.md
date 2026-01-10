@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-10T15:56:04Z
 updated_at: 2025-10-15T00:18:13Z
 url: https://github.com/astral-sh/uv/issues/16235
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Do not retry on SSL certificate errors
@@ -49,10 +49,6 @@ _Comment by @assadyousuf on 2025-10-10 21:57_
 _Comment by @Prhmma on 2025-10-10 21:58_
 
 @assadyousuf thanks for letting me know mate, I will pick up something else. \m/
-
----
-
-_Referenced in [astral-sh/uv#16245](../../astral-sh/uv/pulls/16245.md) on 2025-10-15 00:12_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T16:07:31Z
 updated_at: 2025-09-12T13:57:40Z
 url: https://github.com/astral-sh/uv/issues/8949
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add uv.workspace.dependencies to share dependency versions across workspace members
@@ -289,14 +289,6 @@ See also https://github.com/astral-sh/uv/issues/6422
 
 ---
 
-_Referenced in [astral-sh/uv#9811](../../astral-sh/uv/issues/9811.md) on 2024-12-12 03:46_
-
----
-
-_Referenced in [astral-sh/uv#11250](../../astral-sh/uv/issues/11250.md) on 2025-03-04 08:32_
-
----
-
 _Comment by @zeel-04 on 2025-04-10 20:24_
 
 > If I have 20 members and 10 need `temporalio` should I declare in 10 projects the temporal dependency?
@@ -343,10 +335,6 @@ I presume `uv sync && uv sync --inexact --package foo` would work? We can probab
 _Comment by @ahmdatef on 2025-07-23 17:48_
 
 The ways I imagine it is when run `uv add --project X dep-1` uv will be smart enough to check the dependencies of other members, and if it exists in other members it will be appended to the root TOML, else it will be appended to project X's TOML. 
-
----
-
-_Referenced in [astral-sh/uv#15808](../../astral-sh/uv/issues/15808.md) on 2025-09-12 13:05_
 
 ---
 
@@ -425,13 +413,5 @@ Isn't that exactly what is desired here? Having to maintain the constraints is t
 
 
 I don't understand what the problem is exactly, as `tool.uv.sources` already exists and afaik it leaves version constraints empty. If easy migration to other project managers is desired, an option to migrate workspace dependencies can always be added, but the automaintained semver feels enough. It could be only changed on dependency updates and addition, if changes to pyproject on a sync / run / any other command where this could be checked is undesired.
-
----
-
-_Referenced in [astral-sh/uv#13540](../../astral-sh/uv/issues/13540.md) on 2025-09-23 06:36_
-
----
-
-_Referenced in [BERDataLakehouse/spark_notebook#43](../../BERDataLakehouse/spark_notebook/pulls/43.md) on 2025-11-11 22:00_
 
 ---

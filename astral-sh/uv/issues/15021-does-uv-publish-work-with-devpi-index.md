@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-01T22:01:24Z
 updated_at: 2025-08-27T13:59:53Z
 url: https://github.com/astral-sh/uv/issues/15021
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Does `uv publish` work with devpi index?
@@ -72,10 +72,6 @@ I just open up my local devpi webpage and check if the new package is listed ove
 Perhaps nitpicking, if we get a success/failure message from `uv` after the publish, it would be helpful.
 
 `uv` is absolutely awesome! Thanks for all the effort!
-
----
-
-_Referenced in [devpi/devpi#1097](../../devpi/devpi/issues/1097.md) on 2025-08-05 15:39_
 
 ---
 

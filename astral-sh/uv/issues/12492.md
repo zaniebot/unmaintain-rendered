@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-26T17:01:09Z
 updated_at: 2025-08-28T17:00:59Z
 url: https://github.com/astral-sh/uv/issues/12492
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Align the progress bars
@@ -120,10 +120,6 @@ I have a (very basic) implementation which adds a `max_len` field to `BarState` 
 _Comment by @konstin on 2025-05-02 10:22_
 
 A (draft) pull request would be easiest place to discuss the changes, it's often easier to decide if something is viable with some code.
-
----
-
-_Referenced in [astral-sh/uv#13266](../../astral-sh/uv/pulls/13266.md) on 2025-05-02 14:06_
 
 ---
 

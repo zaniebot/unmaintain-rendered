@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T10:47:11Z
 updated_at: 2025-09-19T07:45:23Z
 url: https://github.com/astral-sh/uv/issues/7454
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # ✨ Allow patching third-party packages via new command `uv patch <pkg_name>`
@@ -67,10 +67,6 @@ Usecases:
 
 ---
 
-_Referenced in [astral-sh/uv#8366](../../astral-sh/uv/pulls/8366.md) on 2024-10-21 22:13_
-
----
-
 _Comment by @aretrace on 2024-12-17 15:23_
 
 ✨ YES YES YES ✨
@@ -84,10 +80,6 @@ _Comment by @JonathanPlasse on 2025-01-03 13:26_
 That is exactly what I am looking for to allow using [fake-bpy-module](https://github.com/nutti/fake-bpy-module) with custom properties for Blender add-on development.
 The `patch` workflow is especially need here as the `fake-bpy-module` package is auto-generated and would need every person using it with custom properties to maintain a separate git repository mirroring it with their additional changes for every add-on project.
 With the `patch` workflow, the add-on custom properties would not need to be in to separate repo.
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-01-13 23:46_
 
 ---
 

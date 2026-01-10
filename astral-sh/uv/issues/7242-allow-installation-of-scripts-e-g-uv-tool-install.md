@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-10T06:00:44Z
 updated_at: 2025-10-30T19:04:38Z
 url: https://github.com/astral-sh/uv/issues/7242
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Allow installation of scripts, e.g., `uv tool install --script <path>` or `uv script install`
@@ -80,10 +80,6 @@ https://github.com/kj-9/uv-tool-min-copier
 _Comment by @Werni2A on 2025-01-13 18:52_
 
 Now that a lot of the inline script meta-data (PEP 723) functionality has been merged, something like `uv tool install --script ./script.py` would complement the other CLI commands.
-
----
-
-_Referenced in [astral-sh/uv#10997](../../astral-sh/uv/issues/10997.md) on 2025-01-27 18:53_
 
 ---
 
@@ -178,10 +174,6 @@ _Comment by @shoucandanghehe on 2025-09-12 19:24_
 > but using something like `uv tool install —-script foo —-from /path/to/script.py` could be used to customize the name?
 
 I think this is a bit confusing. Perhaps we could use `--name`, or add an alias with `--alias`
-
----
-
-_Referenced in [astral-sh/uv#16376](../../astral-sh/uv/issues/16376.md) on 2025-10-28 23:53_
 
 ---
 

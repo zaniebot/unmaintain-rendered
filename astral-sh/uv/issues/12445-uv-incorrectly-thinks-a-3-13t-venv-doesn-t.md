@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T18:47:28Z
 updated_at: 2025-10-07T16:24:06Z
 url: https://github.com/astral-sh/uv/issues/12445
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv incorrectly thinks a 3.13t venv doesn't satisfy >=3.8
@@ -78,10 +78,6 @@ _Renamed from "uv incorrectly thinks a 3.13t interpreter doesn't satisfy >=3.8" 
 
 ---
 
-_Referenced in [kornia/kornia-rs#226](../../kornia/kornia-rs/issues/226.md) on 2025-03-24 21:00_
-
----
-
 _Comment by @ngoldbaum on 2025-03-25 14:29_
 
 Sorry to bother you @zanieb - is this a real bug or a PEBCAK issue?
@@ -98,14 +94,6 @@ _Assigned to @zanieb by @zanieb on 2025-03-25 17:25_
 
 ---
 
-_Referenced in [astral-sh/uv#15756](../../astral-sh/uv/issues/15756.md) on 2025-09-09 15:38_
-
----
-
-_Referenced in [astral-sh/uv#15739](../../astral-sh/uv/issues/15739.md) on 2025-09-16 23:06_
-
----
-
 _Comment by @zanieb on 2025-09-16 23:08_
 
 I took a second to look at this and I think we need to change 
@@ -113,10 +101,6 @@ I took a second to look at this and I think we need to change
 https://github.com/astral-sh/uv/blob/8f3583a6e63800b770fec3b7be9b754be9d65602/crates/uv-python/src/discovery.rs#L1673
 
 to avoid filtering the interpreter too aggressively and add some other handling to avoid selection of free-threaded interpreters when not desired.
-
----
-
-_Referenced in [astral-sh/uv#16142](../../astral-sh/uv/pulls/16142.md) on 2025-10-06 23:16_
 
 ---
 

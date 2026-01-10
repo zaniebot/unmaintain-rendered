@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-29T14:48:00Z
 updated_at: 2025-11-02T18:38:10Z
 url: https://github.com/astral-sh/uv/issues/16496
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Build resolutions need different hints
@@ -80,17 +80,9 @@ What should we be recommending instead?
 
 ---
 
-_Referenced in [astral-sh/uv#16494](../../astral-sh/uv/issues/16494.md) on 2025-10-31 03:55_
-
----
-
 _Comment by @konstin on 2025-10-31 09:35_
 
 For now I'd just say that indirect prereleases are not supported in build system requires. We do have `uv build --build-constraint` if you pass e.g. `transitive-package-only-prereleases-in-range-b>=0a1`, but that's not supported in `uv sync`.
-
----
-
-_Referenced in [astral-sh/uv#16550](../../astral-sh/uv/pulls/16550.md) on 2025-11-02 04:22_
 
 ---
 

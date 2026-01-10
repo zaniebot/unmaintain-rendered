@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-20T11:27:07Z
 updated_at: 2025-10-31T14:18:11Z
 url: https://github.com/astral-sh/uv/issues/4422
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Allow dependency name overriding or elimination
@@ -238,50 +238,6 @@ Oh, neat trick!
 
 ---
 
-_Referenced in [astral-sh/uv#4028](../../astral-sh/uv/issues/4028.md) on 2024-08-22 16:41_
-
----
-
-_Referenced in [astral-sh/uv#7214](../../astral-sh/uv/issues/7214.md) on 2024-09-09 11:42_
-
----
-
-_Referenced in [astral-sh/uv#7442](../../astral-sh/uv/pulls/7442.md) on 2024-09-16 21:18_
-
----
-
-_Referenced in [astral-sh/uv#7157](../../astral-sh/uv/issues/7157.md) on 2024-09-20 05:33_
-
----
-
-_Referenced in [astral-sh/uv#8682](../../astral-sh/uv/issues/8682.md) on 2024-10-29 19:54_
-
----
-
-_Referenced in [astral-sh/uv#9073](../../astral-sh/uv/issues/9073.md) on 2024-11-12 23:52_
-
----
-
-_Referenced in [astral-sh/uv#9174](../../astral-sh/uv/issues/9174.md) on 2024-11-18 01:18_
-
----
-
-_Referenced in [astral-sh/uv#9614](../../astral-sh/uv/issues/9614.md) on 2024-12-03 19:07_
-
----
-
-_Referenced in [astral-sh/uv#9713](../../astral-sh/uv/issues/9713.md) on 2024-12-08 03:45_
-
----
-
-_Referenced in [astral-sh/uv#10281](../../astral-sh/uv/issues/10281.md) on 2025-01-03 00:26_
-
----
-
-_Referenced in [astral-sh/uv#11012](../../astral-sh/uv/issues/11012.md) on 2025-01-29 18:11_
-
----
-
 _Comment by @Avasam on 2025-02-03 00:23_
 
 > I realized that this actually is possible today... You can use a never-truthy marker. For example, to remove `typing-extensions`, use an `overrides.txt` like:
@@ -376,14 +332,6 @@ uv run --no-project --no-cache --python 3.11.11 \
 
 ---
 
-_Referenced in [tensorflow/text#1393](../../tensorflow/text/issues/1393.md) on 2025-03-31 13:36_
-
----
-
-_Referenced in [astral-sh/uv#12616](../../astral-sh/uv/issues/12616.md) on 2025-04-02 01:38_
-
----
-
 _Comment by @carolynsoo on 2025-04-03 20:43_
 
 > A use case where you need this functionality is when a package depends on opencv.
@@ -391,10 +339,6 @@ _Comment by @carolynsoo on 2025-04-03 20:43_
 So this is exactly my current issue with uv.. I want only `opencv-python-headless` (on some machines that don't have `libGL.so`), but I depend on wheels that include `opencv-python`.
 
 In root pyproject.toml I've set `sys_platform == 'never'"` for `opencv-python` in `override-dependencies`, but there are still files in various packages (each package has its own `pyproject.toml`, where I tried adding `opencv-python-headless`) that still complain `ModuleNotFoundError: No module named 'cv2'`. Am I missing a step?
-
----
-
-_Referenced in [astral-sh/uv#13175](../../astral-sh/uv/issues/13175.md) on 2025-04-28 13:39_
 
 ---
 
@@ -477,33 +421,9 @@ Update: If the version in `uv.lock` is stale, running `uv lock --upgrade --dry-r
 
 ---
 
-_Referenced in [rstudio/keras3#1511](../../rstudio/keras3/issues/1511.md) on 2025-06-10 12:07_
-
----
-
-_Referenced in [astral-sh/uv#14030](../../astral-sh/uv/issues/14030.md) on 2025-06-13 16:55_
-
----
-
 _Comment by @ncoghlan on 2025-08-22 14:12_
 
 The "use overrides to prevent installation" use case came up again recently in https://github.com/astral-sh/uv/issues/2500#issuecomment-3200409272 (as a way to instruct `uv` to skip installing packages available elsewhere on `sys.path` into the environment currently being updated)
-
----
-
-_Referenced in [astral-sh/uv#2686](../../astral-sh/uv/issues/2686.md) on 2025-08-27 11:04_
-
----
-
-_Referenced in [astral-sh/uv#15566](../../astral-sh/uv/issues/15566.md) on 2025-08-28 13:08_
-
----
-
-_Referenced in [astral-sh/uv#15813](../../astral-sh/uv/issues/15813.md) on 2025-09-12 14:58_
-
----
-
-_Referenced in [astral-sh/uv#13435](../../astral-sh/uv/issues/13435.md) on 2025-09-16 21:33_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-11-27T19:40:50Z
 updated_at: 2025-12-01T20:02:36Z
 url: https://github.com/astral-sh/uv/issues/16877
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Failed to install `jupyterlab-widgets==3.0.16` in Windows via symlink
@@ -120,10 +120,6 @@ error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab
 
 ---
 
-_Referenced in [astral-sh/uv#16894](../../astral-sh/uv/pulls/16894.md) on 2025-11-30 00:55_
-
----
-
 _Comment by @samypr100 on 2025-11-30 01:27_
 
 @nathanjmcdougall Thanks for the details. If possible, could you try the uv build from [this PR](https://github.com/astral-sh/uv/actions/runs/19793348707?pr=16894) to see if it resolves the os error 87 issue (and possibly the os error 1314)?
@@ -221,9 +217,5 @@ Agreed on improving the error message as well, although enabling long paths does
 ---
 
 _Closed by @zanieb on 2025-12-01 20:02_
-
----
-
-_Referenced in [rust-lang/cargo#16328](../../rust-lang/cargo/issues/16328.md) on 2025-12-02 15:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T11:45:17Z
 updated_at: 2025-12-02T10:43:36Z
 url: https://github.com/astral-sh/uv/issues/8862
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv run does not use env-var in .env-file
@@ -222,10 +222,6 @@ No prob, thanks for following up.
 
 ---
 
-_Referenced in [astral-sh/uv#9940](../../astral-sh/uv/issues/9940.md) on 2024-12-16 22:08_
-
----
-
 _Comment by @thanhlq on 2025-06-07 02:49_
 
 For me, I got a very strange problem, when I changed variable in .env file, the uv does not reload the changed variable after a re-run i.e. uv run --env-file .env python app/api
@@ -280,10 +276,6 @@ Why wouldn't we just ask users to declare these env variables once, forget about
 
 ---
 
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-02 10:42_
-
----
-
 _Comment by @zanieb on 2025-12-02 10:43_
 
 I'm going to close this in favor of #16926 which has a bit more targeted of a topic.
@@ -291,9 +283,5 @@ I'm going to close this in favor of #16926 which has a bit more targeted of a to
 ---
 
 _Closed by @zanieb on 2025-12-02 10:43_
-
----
-
-_Referenced in [astral-sh/uv#16964](../../astral-sh/uv/issues/16964.md) on 2025-12-03 13:40_
 
 ---

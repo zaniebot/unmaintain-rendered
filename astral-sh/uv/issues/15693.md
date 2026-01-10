@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-05T06:58:05Z
 updated_at: 2025-09-10T16:18:38Z
 url: https://github.com/astral-sh/uv/issues/15693
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Cannot install polars-lts-cpu on a machine with a Snapdragon X Plus (ARM) processor
@@ -1300,9 +1300,5 @@ Try
 ```
 uv run --python-platform aarch64-pc-windows-msvc python
 ```
-
----
-
-_Referenced in [paucablop/chemotools#198](../../paucablop/chemotools/issues/198.md) on 2025-10-16 12:45_
 
 ---

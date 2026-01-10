@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-13T06:50:58Z
 updated_at: 2025-12-03T18:15:37Z
 url: https://github.com/astral-sh/uv/issues/16718
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # uv run with --project does not run command in project directory as help text says
@@ -102,10 +102,6 @@ is reasonable
 ---
 
 _Label `good first issue` added by @zanieb on 2025-12-03 13:36_
-
----
-
-_Referenced in [astral-sh/uv#16965](../../astral-sh/uv/pulls/16965.md) on 2025-12-03 13:54_
 
 ---
 

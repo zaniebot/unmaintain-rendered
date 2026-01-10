@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-23T15:38:40Z
 updated_at: 2025-12-03T04:06:18Z
 url: https://github.com/astral-sh/uv/issues/15470
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv tree to show package size
@@ -48,10 +48,6 @@ We can show the sizes of the wheels themselves (we store them in the lockfile).
 _Comment by @zanieb on 2025-08-24 14:45_
 
 Then we'll be showing compressed size, but I'm okay with that.
-
----
-
-_Referenced in [astral-sh/uv#15531](../../astral-sh/uv/pulls/15531.md) on 2025-08-26 13:42_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-24T12:52:51Z
 updated_at: 2025-08-22T19:49:09Z
 url: https://github.com/astral-sh/uv/issues/13087
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add `--no-editable` to `uv pip install`
@@ -178,24 +178,8 @@ the `--no-deps` works for me. I just think the hole thing is a little confusing.
 
 ---
 
-_Referenced in [astral-sh/uv#14617](../../astral-sh/uv/issues/14617.md) on 2025-07-14 23:05_
-
----
-
-_Referenced in [open-world-agents/open-world-agents#161](../../open-world-agents/open-world-agents/pulls/161.md) on 2025-08-19 05:21_
-
----
-
-_Referenced in [awslabs/nx-plugin-for-aws#267](../../awslabs/nx-plugin-for-aws/pulls/267.md) on 2025-08-21 04:29_
-
----
-
 _Comment by @mlnrt on 2025-08-22 19:49_
 
 Same here the `--no-deps` in `uv pip install` works for me, and I also find it confusing
-
----
-
-_Referenced in [aws/aws-cdk#35500](../../aws/aws-cdk/pulls/35500.md) on 2025-09-15 18:16_
 
 ---

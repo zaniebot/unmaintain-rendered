@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-16T17:32:34Z
 updated_at: 2025-11-03T12:05:32Z
 url: https://github.com/astral-sh/uv/issues/9942
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Requirements contain conflicting indexes for package `torch` error when using extra markers in both the project and a dependency
@@ -418,18 +418,10 @@ Maybe multiple bugs? Not sure.
 
 ---
 
-_Referenced in [astral-sh/uv#10590](../../astral-sh/uv/issues/10590.md) on 2025-01-14 15:07_
-
----
-
 _Comment by @sh1man999 on 2025-01-21 14:23_
 
 Yeah, I had the same error.
 https://github.com/astral-sh/uv/issues/10590  It's a duplicate
-
----
-
-_Referenced in [astral-sh/uv#10875](../../astral-sh/uv/pulls/10875.md) on 2025-01-22 19:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-05T11:08:57Z
 updated_at: 2025-09-05T15:21:47Z
 url: https://github.com/astral-sh/uv/issues/15701
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv init --build-backend scikit followed by uv run --with jupyter jupyter lab has counterintuitive behaviour concerning rebuilds
@@ -75,13 +75,5 @@ Thanks for the bonus tip, using
 `[tool.uv]
 cache-keys = [{ file = "pyproject.toml" }, { file = "requirements.txt" },  { file = "src/**.*" }]`
 I get exactly the behaviour that I intuitively expected: every change of a source file triggers a rebuild of the python extension.
-
----
-
-_Referenced in [astral-sh/uv#15705](../../astral-sh/uv/pulls/15705.md) on 2025-09-06 10:21_
-
----
-
-_Referenced in [hkant27008/uv-package-manager#1](../../hkant27008/uv-package-manager/pulls/1.md) on 2025-09-12 10:44_
 
 ---

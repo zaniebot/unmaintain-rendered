@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T10:31:36Z
 updated_at: 2025-10-09T13:29:36Z
 url: https://github.com/astral-sh/uv/issues/12712
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Install packages with uv inside docker container without environment
@@ -67,10 +67,6 @@ requests==2.32.3
 ---
 
 _Label `question` added by @brunolnetto on 2025-04-07 10:31_
-
----
-
-_Referenced in [astral-sh/uv#1560](../../astral-sh/uv/issues/1560.md) on 2025-04-08 09:58_
 
 ---
 

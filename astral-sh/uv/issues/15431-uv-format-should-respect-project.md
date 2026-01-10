@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T19:58:47Z
 updated_at: 2025-08-22T16:27:35Z
 url: https://github.com/astral-sh/uv/issues/15431
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv format` should respect `--project`
@@ -29,10 +29,6 @@ _Label `good first issue` added by @zanieb on 2025-08-21 19:58_
 ---
 
 _Label `preview` added by @zanieb on 2025-08-21 19:58_
-
----
-
-_Referenced in [astral-sh/uv#15438](../../astral-sh/uv/pulls/15438.md) on 2025-08-21 22:50_
 
 ---
 

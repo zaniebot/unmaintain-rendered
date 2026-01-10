@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T16:06:44Z
 updated_at: 2025-09-05T09:12:12Z
 url: https://github.com/astral-sh/uv/issues/15666
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv` installs package that is incompatible with environment python version
@@ -79,9 +79,5 @@ Thanks for explaining. I will use `override-dependencies` as a solution then.
 ---
 
 _Closed by @vdyma on 2025-09-05 09:12_
-
----
-
-_Referenced in [google-ai-edge/LiteRT#4421](../../google-ai-edge/LiteRT/issues/4421.md) on 2025-11-06 11:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T19:56:56Z
 updated_at: 2025-10-24T12:45:46Z
 url: https://github.com/astral-sh/uv/issues/16079
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Missing libssh.h headers cause silent hang
@@ -127,10 +127,6 @@ OK, thanks.  Maybe uv could  try to not interleave the error messages, but I gue
 ---
 
 _Closed by @nedbat on 2025-10-01 11:26_
-
----
-
-_Referenced in [ansible/pylibssh#769](../../ansible/pylibssh/issues/769.md) on 2025-10-01 11:28_
 
 ---
 

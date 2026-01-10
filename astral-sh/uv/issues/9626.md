@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T01:21:32Z
 updated_at: 2025-10-25T09:28:23Z
 url: https://github.com/astral-sh/uv/issues/9626
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv monorepo tooling support
@@ -36,10 +36,6 @@ Thank you for your time, and I look forward to your response!
 ---
 
 _Label `wish` added by @samypr100 on 2024-12-08 04:20_
-
----
-
-_Referenced in [astral-sh/uv#9811](../../astral-sh/uv/issues/9811.md) on 2024-12-12 03:27_
 
 ---
 

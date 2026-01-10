@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-01T21:49:30Z
 updated_at: 2025-12-02T01:27:22Z
 url: https://github.com/astral-sh/uv/issues/16917
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Add support for ROCm 6.4 to --torch-backend
@@ -42,10 +42,6 @@ Good call, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-01 23:43_
-
----
-
-_Referenced in [astral-sh/uv#16919](../../astral-sh/uv/pulls/16919.md) on 2025-12-01 23:43_
 
 ---
 

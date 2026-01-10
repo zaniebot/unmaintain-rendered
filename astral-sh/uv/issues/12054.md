@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-07T18:18:59Z
 updated_at: 2025-09-18T07:10:05Z
 url: https://github.com/astral-sh/uv/issues/12054
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # UV fails to fetch during concurrent downloads
@@ -179,9 +179,5 @@ _Closed by @konstin on 2025-07-18 07:20_
 ---
 
 _Label `network` added by @konstin on 2025-09-18 07:10_
-
----
-
-_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T16:59:14Z
 updated_at: 2025-12-03T12:49:12Z
 url: https://github.com/astral-sh/uv/issues/15112
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Add --target and/or --prefix to `pip list`, `pip freeze`, `pip show`
@@ -34,10 +34,6 @@ _Label `enhancement` added by @aivarannamaa on 2025-08-06 16:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-03 05:40_
-
----
-
-_Referenced in [astral-sh/uv#16955](../../astral-sh/uv/pulls/16955.md) on 2025-12-03 05:41_
 
 ---
 

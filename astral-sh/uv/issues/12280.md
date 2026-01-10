@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-18T14:02:01Z
 updated_at: 2025-09-30T16:16:21Z
 url: https://github.com/astral-sh/uv/issues/12280
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Provide feedback and improve doc on keyring index authentication
@@ -131,10 +131,6 @@ _Edit:_ all experiments were done `uv 0.6.7+1 (e0f81f0d4 2025-03-17)` on Debian 
 
 ---
 
-_Referenced in [astral-sh/uv#12313](../../astral-sh/uv/pulls/12313.md) on 2025-03-19 15:17_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:06_
 
 We added keyring lookups for usernames in #12316 
@@ -196,10 +192,6 @@ _Comment by @jtfmumm on 2025-04-04 09:30_
 * The issue you noticed regarding `explicit = true` should be addressed by #12631. 
 * #12651 will ensure that uv retrieves credentials for the index URL rather than the package URL. 
 * #12667 updates the error messages for indexes not configured as `authenticate = "always"`.
-
----
-
-_Referenced in [astral-sh/uv#12667](../../astral-sh/uv/pulls/12667.md) on 2025-04-04 10:16_
 
 ---
 

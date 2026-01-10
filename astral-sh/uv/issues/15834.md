@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-14T14:00:51Z
 updated_at: 2025-09-14T14:04:30Z
 url: https://github.com/astral-sh/uv/issues/15834
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support configuring `UV_TOOL_DIR` in `uv.toml`
@@ -25,18 +25,6 @@ Related #6506
 
 ---
 
-_Referenced in [astral-sh/uv#15835](../../astral-sh/uv/issues/15835.md) on 2025-09-14 14:02_
-
----
-
 _Label `configuration` added by @zanieb on 2025-09-14 14:04_
-
----
-
-_Referenced in [astral-sh/uv#15838](../../astral-sh/uv/issues/15838.md) on 2025-09-14 14:08_
-
----
-
-_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-09-14 14:52_
 
 ---

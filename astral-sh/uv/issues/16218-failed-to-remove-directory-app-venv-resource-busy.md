@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-10T01:00:09Z
 updated_at: 2025-10-23T20:08:54Z
 url: https://github.com/astral-sh/uv/issues/16218
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # failed to remove directory `/app/.venv`: Resource busy
@@ -77,21 +77,9 @@ _Label `bug` added by @toryvan on 2025-10-10 01:00_
 
 ---
 
-_Referenced in [DiamondLightSource/python-copier-template#301](../../DiamondLightSource/python-copier-template/issues/301.md) on 2025-10-17 15:18_
-
----
-
-_Referenced in [DiamondLightSource/python-copier-template#303](../../DiamondLightSource/python-copier-template/pulls/303.md) on 2025-10-21 15:48_
-
----
-
 _Comment by @coretl on 2025-10-21 15:55_
 
 I reported https://github.com/astral-sh/uv/issues/14815 that @zanieb kindly fixed in record time, and we are now running into this issue too. We could avoid this issue if https://github.com/astral-sh/uv/pull/14937 was merged (or some other solution to https://github.com/astral-sh/uv/issues/1495)
-
----
-
-_Referenced in [astral-sh/uv#16394](../../astral-sh/uv/pulls/16394.md) on 2025-10-21 17:40_
 
 ---
 

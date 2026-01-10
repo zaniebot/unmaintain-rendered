@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-12T21:23:58Z
 updated_at: 2025-11-02T20:44:29Z
 url: https://github.com/astral-sh/uv/issues/15821
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv cache size
@@ -39,10 +39,6 @@ _Comment by @charlesnicholson on 2025-09-14 01:13_
 
 ---
 
-_Referenced in [astral-sh/uv#5731](../../astral-sh/uv/issues/5731.md) on 2025-09-14 01:14_
-
----
-
 _Comment by @samypr100 on 2025-09-14 01:45_
 
 Would there be a limitation to using something like `du -hs $(uv cache dir)` for piping it to a script?
@@ -54,10 +50,6 @@ _Comment by @charlesnicholson on 2025-09-14 01:52_
 Checking as quickly as possible if the cache has grown larger than a threshold is a building block to externally disallowing unbounded cache growth. If "prune the cache if it's larger than x GB" can't be done on every uv invocation, then there's no reason to have this because users could just manually prune their caches every now and then.
 
 Additionally, getting the recursive size of a directory is generally extremely slow on Windows.
-
----
-
-_Referenced in [astral-sh/uv#16032](../../astral-sh/uv/pulls/16032.md) on 2025-09-26 06:24_
 
 ---
 

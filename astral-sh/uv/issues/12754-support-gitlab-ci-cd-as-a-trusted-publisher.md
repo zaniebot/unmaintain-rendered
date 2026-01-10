@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T17:51:39Z
 updated_at: 2025-09-12T14:05:07Z
 url: https://github.com/astral-sh/uv/issues/12754
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Support Gitlab CI/CD as a trusted publisher
@@ -295,10 +295,6 @@ _Comment by @jamesharr on 2025-05-20 12:11_
 > Currently, uv only supports GitHub for trusted publishing, but we can add GitLab.
 
 @konstin , let me know if this issue needs any clarification, if the team needs testers, or anything else -- I'll make myself available. My strength just isn't rust or you'd have a patch now ;)
-
----
-
-_Referenced in [astral-sh/uv#15583](../../astral-sh/uv/pulls/15583.md) on 2025-08-29 17:08_
 
 ---
 

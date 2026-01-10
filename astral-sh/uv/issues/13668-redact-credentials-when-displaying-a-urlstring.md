@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-26T22:03:48Z
 updated_at: 2025-11-07T15:33:16Z
 url: https://github.com/astral-sh/uv/issues/13668
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Redact credentials when displaying a `UrlString`
@@ -24,10 +24,6 @@ Recent work (#13560) added the `DisplaySafeUrl` type to make masking credentials
 ---
 
 _Label `security` added by @jtfmumm on 2025-05-26 22:03_
-
----
-
-_Referenced in [astral-sh/uv#13560](../../astral-sh/uv/pulls/13560.md) on 2025-05-26 22:04_
 
 ---
 

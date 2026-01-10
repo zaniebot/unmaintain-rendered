@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T10:16:07Z
 updated_at: 2025-09-08T15:54:47Z
 url: https://github.com/astral-sh/uv/issues/9012
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv remove --group any_group any_package. All deps are removed.
@@ -205,10 +205,6 @@ Thanks for bringing it up. We have some TODOs around this in the codebase but I 
 
 ---
 
-_Referenced in [astral-sh/uv#9973](../../astral-sh/uv/issues/9973.md) on 2024-12-17 15:04_
-
----
-
 _Comment by @inoa-jboliveira on 2024-12-17 15:26_
 
 Hi everyone, I failed to find this issue before writing a new one (sorry!)
@@ -388,10 +384,6 @@ Uninstalled 1 package in 0.59ms
  - httpx==0.28.1
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#13319](../../astral-sh/uv/issues/13319.md) on 2025-05-20 13:14_
 
 ---
 

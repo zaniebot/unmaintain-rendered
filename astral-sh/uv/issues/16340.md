@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T09:52:18Z
 updated_at: 2025-10-20T11:43:19Z
 url: https://github.com/astral-sh/uv/issues/16340
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Incorrect 403 Forbidden during uvx with non existing package
@@ -89,10 +89,6 @@ Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux
 ---
 
 _Label `bug` added by @maltevesper on 2025-10-17 09:52_
-
----
-
-_Referenced in [astral-sh/uv#16353](../../astral-sh/uv/pulls/16353.md) on 2025-10-18 06:43_
 
 ---
 

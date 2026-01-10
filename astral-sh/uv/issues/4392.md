@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-18T17:48:43Z
 updated_at: 2025-11-21T02:02:03Z
 url: https://github.com/astral-sh/uv/issues/4392
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Feature request: Publishing crate docs
@@ -85,10 +85,6 @@ Oh that sounds nice! I didn't know about that 🫨
 
 ---
 
-_Referenced in [prefix-dev/pixi#2002](../../prefix-dev/pixi/issues/2002.md) on 2024-09-07 14:18_
-
----
-
 _Comment by @zanieb on 2025-11-21 02:02_
 
 We're publishing to crates.io now, so these are available.
@@ -96,9 +92,5 @@ We're publishing to crates.io now, so these are available.
 ---
 
 _Closed by @zanieb on 2025-11-21 02:02_
-
----
-
-_Referenced in [astral-sh/uv#16801](../../astral-sh/uv/pulls/16801.md) on 2025-11-21 02:02_
 
 ---

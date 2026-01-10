@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-02T01:38:42Z
 updated_at: 2025-10-31T14:14:13Z
 url: https://github.com/astral-sh/uv/issues/12616
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add `excluded-dependencies` support
@@ -30,10 +30,6 @@ Related:
 ---
 
 _Label `configuration` added by @zanieb on 2025-04-02 01:38_
-
----
-
-_Referenced in [astral-sh/uv#12523](../../astral-sh/uv/issues/12523.md) on 2025-04-02 01:40_
 
 ---
 
@@ -64,26 +60,6 @@ _Comment by @CodeMan62 on 2025-05-23 12:00_
 
 @zanieb  i have a small question can you tell me is this PR #10207 is related to this can I take reference of that and implement it or what I need just small clarification and then I will be good to go 
 EDIT:- sorry I found what to do
-
----
-
-_Referenced in [astral-sh/uv#13618](../../astral-sh/uv/pulls/13618.md) on 2025-05-23 14:31_
-
----
-
-_Referenced in [astral-sh/uv#14135](../../astral-sh/uv/pulls/14135.md) on 2025-06-18 18:44_
-
----
-
-_Referenced in [astral-sh/uv#14220](../../astral-sh/uv/issues/14220.md) on 2025-06-23 16:40_
-
----
-
-_Referenced in [unit8co/darts#2896](../../unit8co/darts/issues/2896.md) on 2025-09-12 22:55_
-
----
-
-_Referenced in [astral-sh/uv#16528](../../astral-sh/uv/pulls/16528.md) on 2025-10-31 01:06_
 
 ---
 

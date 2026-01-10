@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-03T06:49:57Z
 updated_at: 2025-11-03T16:46:35Z
 url: https://github.com/astral-sh/uv/issues/16574
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # The type of the schema's default-groups is incorrect.
@@ -40,10 +40,6 @@ Python 3.10
 ---
 
 _Label `bug` added by @fllesser on 2025-11-03 06:49_
-
----
-
-_Referenced in [astral-sh/uv#16575](../../astral-sh/uv/pulls/16575.md) on 2025-11-03 06:57_
 
 ---
 

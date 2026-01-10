@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-09-12T16:59:21Z
 updated_at: 2025-09-19T12:40:56Z
 url: https://github.com/astral-sh/uv/issues/15818
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `native-auth` store is not read for domain during `uv -v sync`
@@ -37,22 +37,6 @@ _Issue opened by @zanieb on 2025-09-12 16:59_
 > If I login with plain text storage, `UV_PREVIEW_FEATURES=native-auth uv -v sync` also works. 
 
  _Originally posted by @RStreitfeld in [#8810](https://github.com/astral-sh/uv/issues/8810#issuecomment-3285980607)_
-
----
-
-_Referenced in [astral-sh/uv#15872](../../astral-sh/uv/pulls/15872.md) on 2025-09-15 14:44_
-
----
-
-_Referenced in [astral-sh/uv#15873](../../astral-sh/uv/pulls/15873.md) on 2025-09-15 14:44_
-
----
-
-_Referenced in [astral-sh/uv#15877](../../astral-sh/uv/pulls/15877.md) on 2025-09-15 16:17_
-
----
-
-_Referenced in [astral-sh/uv#15879](../../astral-sh/uv/pulls/15879.md) on 2025-09-15 16:40_
 
 ---
 

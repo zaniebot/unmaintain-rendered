@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T22:39:56Z
 updated_at: 2025-10-08T11:12:38Z
 url: https://github.com/astral-sh/uv/issues/6781
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add the option to `uv add` to pin to latest version of package
@@ -127,10 +127,6 @@ You definitely _can_ still pin your packages in your `pyproject.toml`, but I'm n
 
 ---
 
-_Referenced in [astral-sh/uv#7019](../../astral-sh/uv/issues/7019.md) on 2024-09-04 14:04_
-
----
-
 _Comment by @SamEdwardes on 2024-09-05 00:54_
 
 Hi @zanieb thanks for the thoughtful response. I think I agree, it does not make sense for uv to add anything to the CLI at this time to automatically pin to the latest.
@@ -145,14 +141,6 @@ I will try this workflow for a longer period of time and see if I run into any c
 ---
 
 _Closed by @SamEdwardes on 2024-09-05 00:54_
-
----
-
-_Referenced in [astral-sh/uv#7176](../../astral-sh/uv/issues/7176.md) on 2024-09-07 18:41_
-
----
-
-_Referenced in [astral-sh/uv#7177](../../astral-sh/uv/issues/7177.md) on 2024-09-07 18:42_
 
 ---
 
@@ -260,14 +248,6 @@ _Comment by @lbraglia on 2025-02-25 12:13_
 
 ---
 
-_Referenced in [astral-sh/uv#12789](../../astral-sh/uv/issues/12789.md) on 2025-04-09 23:00_
-
----
-
-_Referenced in [MountainGod2/chaturbate_poller#614](../../MountainGod2/chaturbate_poller/pulls/614.md) on 2025-08-18 23:38_
-
----
-
 _Comment by @silverwind on 2025-10-08 11:11_
 
 > I think it's almost always an anti-pattern to pin to the latest version in your pyproject.toml
@@ -275,9 +255,5 @@ _Comment by @silverwind on 2025-10-08 11:11_
 If you are not pinning a dependency in `pyproject.toml` and another package depends on your package, the version of your dependency isn't actually pinned.
 
 I always change the `>=` dependencies that uv creates to `==` and I would really like a `save-exact` option which does this by default. It should be trivial to implement.
-
----
-
-_Referenced in [astral-sh/uv#16595](../../astral-sh/uv/issues/16595.md) on 2025-11-04 18:43_
 
 ---

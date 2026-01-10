@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-24T16:02:50Z
 updated_at: 2025-11-13T05:04:25Z
 url: https://github.com/astral-sh/uv/issues/3248
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Request: Allow --output-file, --annotation-style, etc. multiple times, only use right-most
@@ -37,10 +37,6 @@ Linux
 I'm requesting that instead, the above command write output to (only) `reqs2.txt`, the latest instance of `-o`/`--output-file` on the command line. This is useful when using shell aliases or functions to wrap `uv`, when you specify a "default" output file in the alias or function, while allowing any invocation to easily override that default by specifying the option again, on the command line.
 
 That's how pip-tools behaves, and I make use of that behavior.
-
----
-
-_Referenced in [AndydeCleyre/zpy#29](../../AndydeCleyre/zpy/issues/29.md) on 2024-04-24 16:27_
 
 ---
 
@@ -136,10 +132,6 @@ Yeah, looks like exactly that.
 _Comment by @charliermarsh on 2024-04-25 03:13_
 
 I think you can set this globally with something like https://docs.rs/clap/latest/clap/struct.Command.html#method.args_override_self.
-
----
-
-_Referenced in [astral-sh/uv#3259](../../astral-sh/uv/pulls/3259.md) on 2024-04-25 03:16_
 
 ---
 

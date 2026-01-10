@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T17:56:24Z
 updated_at: 2025-09-03T17:56:54Z
 url: https://github.com/astral-sh/uv/issues/15667
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python list` errors with `Exec format error` on non-native installation
@@ -59,18 +59,10 @@ _Issue opened by @zanieb on 2025-09-03 17:56_
 
 ---
 
-_Referenced in [astral-sh/uv#11940](../../astral-sh/uv/issues/11940.md) on 2025-09-03 17:56_
-
----
-
 _Label `bug` added by @zanieb on 2025-09-03 17:56_
 
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-09-03 17:56_
-
----
-
-_Referenced in [Nuitka/Nuitka#3331](../../Nuitka/Nuitka/issues/3331.md) on 2025-10-12 09:45_
 
 ---

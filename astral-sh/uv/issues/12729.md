@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T20:34:52Z
 updated_at: 2025-11-30T16:06:28Z
 url: https://github.com/astral-sh/uv/issues/12729
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Pyodide support?
@@ -32,10 +32,6 @@ Yep!
 ---
 
 _Label `enhancement` added by @zanieb on 2025-04-07 20:53_
-
----
-
-_Referenced in [astral-sh/uv#12731](../../astral-sh/uv/pulls/12731.md) on 2025-04-07 21:59_
 
 ---
 

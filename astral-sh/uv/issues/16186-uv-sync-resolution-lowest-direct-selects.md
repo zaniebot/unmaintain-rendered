@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-08T12:55:21Z
 updated_at: 2025-10-08T13:53:26Z
 url: https://github.com/astral-sh/uv/issues/16186
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv sync --resolution=lowest-direct` selects incompatible version for `bottleneck` on macOS+arm64
@@ -163,10 +163,6 @@ uv 0.9.0 (39b688653 2025-10-07)
 ---
 
 _Label `bug` added by @neutrinoceros on 2025-10-08 12:55_
-
----
-
-_Referenced in [astropy/astropy#18693](../../astropy/astropy/pulls/18693.md) on 2025-10-08 12:55_
 
 ---
 

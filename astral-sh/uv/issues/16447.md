@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-25T09:37:59Z
 updated_at: 2025-12-03T13:51:26Z
 url: https://github.com/astral-sh/uv/issues/16447
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Test registry_client::tests::test_redirect_to_server_with_credentials is flaky
@@ -91,14 +91,6 @@ _Comment by @musicinmybrain on 2025-10-28 00:40_
 > Ah good catch. I would recommend using nextest if you can, since it provides process-level isolation per test. Other test runners will only be supported on a best-effort basis.
 
 Hmm, this is good to know. It’s likely that trying to package nextest in Fedora specifically for the purpose of testing uv will be too much effort, since nextest has many dependencies, aggressive dependency version bound updates, and frequent releases. It is easy enough to skip this particular test for now. I will have to hope that there is not too much divergence between the results of cargo test and the results of cargo nextest in the future.
-
----
-
-_Referenced in [astral-sh/uv#16143](../../astral-sh/uv/pulls/16143.md) on 2025-11-04 13:30_
-
----
-
-_Referenced in [astral-sh/uv#16768](../../astral-sh/uv/pulls/16768.md) on 2025-11-18 16:00_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-18T08:57:32Z
 updated_at: 2025-10-21T02:30:07Z
 url: https://github.com/astral-sh/uv/issues/9189
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv audit` Command for Security Vulnerability Scanning
@@ -158,10 +158,6 @@ See also the [uv-secure](https://github.com/owenlamont/uv-secure) project, which
 
 ---
 
-_Referenced in [astral-sh/uv#10292](../../astral-sh/uv/pulls/10292.md) on 2025-02-13 15:45_
-
----
-
 _Comment by @colin-kerkhof on 2025-03-13 20:22_
 
 I have been running `uv run --all-groups --with pip-audit pip-audit -l`. That should make sure that every package in the `pyproject.toml` is checked against the database, no?
@@ -279,17 +275,9 @@ Ah, thanks for finding that issue!
 
 ---
 
-_Referenced in [VOICEVOX/voicevox_engine#1616](../../VOICEVOX/voicevox_engine/pulls/1616.md) on 2025-04-17 09:46_
-
----
-
 _Comment by @Avasam on 2025-06-06 08:36_
 
 I personally would like to get vulnerability warnings whenever I install (sync, add, uv pip) à la npm. But I'm fine if its opt in rather than opt out.
-
----
-
-_Referenced in [Toufool/AutoSplit#327](../../Toufool/AutoSplit/pulls/327.md) on 2025-06-09 16:24_
 
 ---
 
@@ -300,18 +288,6 @@ I should've searched for this issue earlier - I am the author of [uv-secure](htt
 In my case uv-secure hits the PyPi json API to request known vulnerabilities per package version and requesting that info in parallel / asynchronously can still take a while - I'm sure the uv devs could do that smarter and more efficiently but you may not want that option always enabled by default. Maybe a _uv audit_ command would be the way to go.
 
 In the short-term if I can find ways to incorporate more of uv into uv-secure (uv-secure is currently pure Python and not as fast as I'd like) I'd be interested to learn ways I could do that.
-
----
-
-_Referenced in [pypa/pip-audit#842](../../pypa/pip-audit/issues/842.md) on 2025-07-11 19:45_
-
----
-
-_Referenced in [astral-sh/uv#7454](../../astral-sh/uv/issues/7454.md) on 2025-07-11 20:45_
-
----
-
-_Referenced in [astral-sh/uv#15053](../../astral-sh/uv/pulls/15053.md) on 2025-08-04 06:54_
 
 ---
 
@@ -359,9 +335,5 @@ _Renamed from "[Feature Request] Add `uv audit` Command for Security Vulnerabili
 _Comment by @zanieb on 2025-10-21 02:30_
 
 Yeah we just don't have the bandwidth to do the design work we'd want to before adding a feature of this size yet, so we're not willing to accept any external contributions for it right now.
-
----
-
-_Referenced in [astral-sh/uv#16646](../../astral-sh/uv/issues/16646.md) on 2025-11-09 02:36_
 
 ---

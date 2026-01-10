@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T16:29:02Z
 updated_at: 2025-09-17T15:48:57Z
 url: https://github.com/astral-sh/uv/issues/8666
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # allow "uv run" to work without a project
@@ -140,10 +140,6 @@ error: No `project` table found in: `/Users/zb/workspace/uv/example/pyproject.to
 
 ---
 
-_Referenced in [astral-sh/uv#8764](../../astral-sh/uv/issues/8764.md) on 2024-11-02 13:59_
-
----
-
 _Comment by @mattp- on 2024-11-05 14:48_
 
 👍 on this, I use uv primarily as a manager to venv's per project, but im not necessarily making changes to the projects im dropping into that would allow me to modify pyproject.toml. Being able to set an env var that silences no-project, but still works when a project dir i go to actually DOES have project settings, would be ideal.
@@ -189,10 +185,6 @@ _Comment by @trim21 on 2024-11-28 05:59_
 I just find that we have a option `tool.uv.package`, maybe we can use this option when `tool.uv.package = false`?
 
 https://github.com/astral-sh/uv/blob/8a27d4d340f7dbdaeb144d4b8f80f3b27cc29ec0/docs/concepts/projects/config.md?plain=1#L147-L148
-
----
-
-_Referenced in [python/typeshed#13311](../../python/typeshed/pulls/13311.md) on 2024-12-26 21:48_
 
 ---
 
@@ -265,14 +257,6 @@ _Comment by @charliermarsh on 2025-01-31 15:12_
 
 ---
 
-_Referenced in [astral-sh/uv#11149](../../astral-sh/uv/issues/11149.md) on 2025-01-31 23:04_
-
----
-
-_Referenced in [python/typeshed#13599](../../python/typeshed/pulls/13599.md) on 2025-03-08 03:13_
-
----
-
 _Comment by @rbavery on 2025-05-21 05:15_
 
 another example https://github.com/567-labs/systematically-improving-rag/tree/main/cohort_2
@@ -292,10 +276,6 @@ I just tested with the current uv main commit and the sequence of commands in th
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-06-17 17:26_
-
----
-
-_Referenced in [astral-sh/uv#14113](../../astral-sh/uv/pulls/14113.md) on 2025-06-17 17:39_
 
 ---
 

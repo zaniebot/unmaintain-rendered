@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-03T16:24:19Z
 updated_at: 2025-10-17T20:03:10Z
 url: https://github.com/astral-sh/uv/issues/11185
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Automatic resolution of merge conflicts in lockfiles
@@ -171,10 +171,6 @@ _Comment by @konstin on 2025-10-17 08:13_
 > If `uv.lock` contains a merge conflict or is otherwise invalid, would it make sense for `uv lock --upgrade` to issue a warning and replace `uv.lock` instead of failing? 🤔
 
 Can you make a separate issue for that? We can discuss this separate the specific behavior for merge conflicts.
-
----
-
-_Referenced in [astral-sh/uv#16348](../../astral-sh/uv/issues/16348.md) on 2025-10-17 19:58_
 
 ---
 

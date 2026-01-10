@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-04T13:38:07Z
 updated_at: 2025-11-04T19:22:38Z
 url: https://github.com/astral-sh/uv/issues/16589
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Spurious lock failure combining no-build with env specifications
@@ -195,10 +195,6 @@ Locking for Python 3.11
 ---
 
 _Label `bug` added by @ncoghlan on 2025-11-04 13:38_
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#306](../../lmstudio-ai/venvstacks/pulls/306.md) on 2025-11-04 13:50_
 
 ---
 

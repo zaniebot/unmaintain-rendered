@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-06T07:38:09Z
 updated_at: 2025-09-19T08:46:16Z
 url: https://github.com/astral-sh/uv/issues/15704
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv cache clean / uv pip install not concurrency safe?
@@ -62,10 +62,6 @@ _Label `bug` added by @tiran on 2025-09-06 07:38_
 
 ---
 
-_Referenced in [python-wheel-build/fromager#756](../../python-wheel-build/fromager/issues/756.md) on 2025-09-06 08:48_
-
----
-
 _Comment by @zanieb on 2025-09-06 12:16_
 
 Yeah this is not safe, see https://docs.astral.sh/uv/concepts/cache/#cache-safety
@@ -95,10 +91,6 @@ _Comment by @zanieb on 2025-09-08 17:35_
 > Why is it not possible to make it safe?
 
 Certainly it's possible, it's a matter of complexity and performance. I'm not sure how hard it'd be.
-
----
-
-_Referenced in [astral-sh/uv#15888](../../astral-sh/uv/pulls/15888.md) on 2025-09-16 08:49_
 
 ---
 

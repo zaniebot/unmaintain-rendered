@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-03T19:53:24Z
 updated_at: 2025-11-05T17:02:42Z
 url: https://github.com/astral-sh/uv/issues/16582
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path
@@ -125,9 +125,5 @@ We are already doing this — we're in the "does not exist" branch of the logic 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-11-05 17:02_
-
----
-
-_Referenced in [astral-sh/uv#16967](../../astral-sh/uv/pulls/16967.md) on 2025-12-03 14:48_
 
 ---

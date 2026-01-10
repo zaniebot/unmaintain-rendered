@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-04T01:46:41Z
 updated_at: 2025-09-03T17:56:43Z
 url: https://github.com/astral-sh/uv/issues/11940
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv python list doesn't recognize foreign-arch installs as installed
@@ -142,10 +142,6 @@ For the python-build-standalone builds in particular, can we not trust ourselves
 
 ---
 
-_Referenced in [astral-sh/uv#13471](../../astral-sh/uv/issues/13471.md) on 2025-05-15 14:31_
-
----
-
 _Comment by @marcelroed on 2025-09-03 17:03_
 
 With `uv` version `0.8.15` on Linux, I'm getting a related issue leading to `uv python list` failing. It works until there is some cross-platform installation in the directory. I'm doing this in order to build cross-platform libraries.
@@ -183,10 +179,6 @@ error: Failed to inspect Python interpreter from first executable in the search 
   Caused by: Failed to query Python interpreter at `/home/marcel/.local/bin/python3.13`
   Caused by: Exec format error (os error 8)
 ```
-
----
-
-_Referenced in [astral-sh/uv#15667](../../astral-sh/uv/issues/15667.md) on 2025-09-03 17:56_
 
 ---
 

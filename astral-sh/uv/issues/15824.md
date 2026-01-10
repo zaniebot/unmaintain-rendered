@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-09-13T01:58:31Z
 updated_at: 2025-09-14T13:10:47Z
 url: https://github.com/astral-sh/uv/issues/15824
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv tool run @latest doesn't reuse cache from specific version run
@@ -65,10 +65,6 @@ That's not quite what's happening -- it's more that `@latest` is internally trea
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-09-14 00:55_
-
----
-
-_Referenced in [astral-sh/uv#15827](../../astral-sh/uv/pulls/15827.md) on 2025-09-14 01:03_
 
 ---
 

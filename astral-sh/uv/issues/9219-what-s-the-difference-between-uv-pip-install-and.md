@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-19T10:20:15Z
 updated_at: 2025-09-27T07:37:07Z
 url: https://github.com/astral-sh/uv/issues/9219
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # What's the difference between `uv pip install` and `uv add`
@@ -207,10 +207,6 @@ Yes `uv pip install polars` will modify the `.venv` in the working directory unl
 
 ---
 
-_Referenced in [langflow-ai/langflow#5237](../../langflow-ai/langflow/pulls/5237.md) on 2024-12-12 18:47_
-
----
-
 _Comment by @dmi3kno on 2024-12-13 10:33_
 
 I know this issue is closed, but I am still slightly confused about the need to (re-)activate a project environment after i add new packages. Lets say i set up my environment like this
@@ -263,38 +259,6 @@ _Comment by @zanieb on 2025-01-24 17:13_
 
 ---
 
-_Referenced in [stfc/janus-core#396](../../stfc/janus-core/pulls/396.md) on 2025-01-31 11:06_
-
----
-
-_Referenced in [marimo-team/marimo#3904](../../marimo-team/marimo/issues/3904.md) on 2025-02-25 00:55_
-
----
-
-_Referenced in [FoundationAgents/OpenManus#338](../../FoundationAgents/OpenManus/pulls/338.md) on 2025-03-10 09:29_
-
----
-
-_Referenced in [readthedocs/readthedocs.org#11766](../../readthedocs/readthedocs.org/issues/11766.md) on 2025-03-18 23:12_
-
----
-
-_Referenced in [Davina0316/open-source-python#4](../../Davina0316/open-source-python/pulls/4.md) on 2025-03-22 04:01_
-
----
-
-_Referenced in [Shounak-Ghosh/ospsd-hw1-python#2](../../Shounak-Ghosh/ospsd-hw1-python/pulls/2.md) on 2025-03-22 04:02_
-
----
-
-_Referenced in [WMD-group/SMACT#404](../../WMD-group/SMACT/pulls/404.md) on 2025-04-02 22:59_
-
----
-
-_Referenced in [marimo-team/marimo#4407](../../marimo-team/marimo/pulls/4407.md) on 2025-04-07 01:51_
-
----
-
 _Comment by @jingyugao on 2025-04-18 02:00_
 
 what is the different of `uv pip` and `uv run pip`? 
@@ -304,10 +268,6 @@ pip 24.3.1 from /Users/dev/.local/share/uv/python/cpython-3.12.9-macos-aarch64-n
 ➜  ~ uv pip --version
 uv-pip 0.6.12 (Homebrew 2025-04-02)
 ```
-
----
-
-_Referenced in [CAREamics/careamics#464](../../CAREamics/careamics/issues/464.md) on 2025-04-30 17:43_
 
 ---
 
@@ -323,14 +283,6 @@ _Comment by @lmBored on 2025-06-05 05:58_
 > ```
 
 `uv-pip` is a package from Homebrew, it's not `uv pip`. If you do brew uninstall uv-pip, then `uv run pip -V` again, you should get the same pip version
-
----
-
-_Referenced in [cocoindex-io/cocoindex#612](../../cocoindex-io/cocoindex/issues/612.md) on 2025-06-11 12:59_
-
----
-
-_Referenced in [usnistgov/microcal-daq#14](../../usnistgov/microcal-daq/issues/14.md) on 2025-08-02 22:45_
 
 ---
 
@@ -358,14 +310,6 @@ _Comment by @ishaanjain on 2025-08-03 13:20_
 > This is also reasonable, though you could omit `uv init` -- there's no need to make a project, since you're not taking advantage of the "project" capabilities (you're not adding `polars` and `marimo` to the project itself -- just to the virtual environment).
 
 @charliermarsh I believe the `pip install polars marimo` command would not work, right? Because `uv venv` does not include pip by default.
-
----
-
-_Referenced in [tursodatabase/turso#2645](../../tursodatabase/turso/pulls/2645.md) on 2025-08-20 12:53_
-
----
-
-_Referenced in [Memory-Experience/momento#5](../../Memory-Experience/momento/pulls/5.md) on 2025-08-20 18:32_
 
 ---
 
@@ -475,13 +419,5 @@ _Comment by @ishaanjain on 2025-09-27 06:32_
 I agree the docs could be more opinionated. I wrote a brief blog post sharing my understanding of when to use `uv add` vs `uv pip install`, in case it's useful to others:
 https://ishaanjain.hashnode.dev/uv
 Happy to adjust if I’ve misunderstood anything.
-
----
-
-_Referenced in [andrew-codechimp/HA-Battery-Notes#3907](../../andrew-codechimp/HA-Battery-Notes/pulls/3907.md) on 2025-10-29 15:35_
-
----
-
-_Referenced in [pouvoirdasha/rutabaga#3](../../pouvoirdasha/rutabaga/issues/3.md) on 2025-12-06 12:17_
 
 ---

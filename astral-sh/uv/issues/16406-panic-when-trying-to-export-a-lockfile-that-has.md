@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-22T08:42:04Z
 updated_at: 2025-10-23T20:07:15Z
 url: https://github.com/astral-sh/uv/issues/16406
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Panic when trying to export a lockfile that has no root
@@ -57,10 +57,6 @@ Python 3.12.11
 ---
 
 _Label `bug` added by @Inujel on 2025-10-22 08:42_
-
----
-
-_Referenced in [astral-sh/uv#16407](../../astral-sh/uv/pulls/16407.md) on 2025-10-22 10:47_
 
 ---
 

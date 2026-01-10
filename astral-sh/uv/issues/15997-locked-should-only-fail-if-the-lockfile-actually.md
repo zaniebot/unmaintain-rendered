@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-22T21:52:21Z
 updated_at: 2025-09-23T11:25:14Z
 url: https://github.com/astral-sh/uv/issues/15997
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `--locked` should only fail if the lockfile actually changes
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-22 21:52_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-09-22 21:52_
-
----
-
-_Referenced in [astral-sh/uv#15994](../../astral-sh/uv/pulls/15994.md) on 2025-09-22 21:52_
 
 ---
 

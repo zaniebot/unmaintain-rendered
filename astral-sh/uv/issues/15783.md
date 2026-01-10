@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-11T07:26:09Z
 updated_at: 2025-09-11T07:41:28Z
 url: https://github.com/astral-sh/uv/issues/15783
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Configuring uv to source Python from conda
@@ -93,9 +93,5 @@ _Comment by @konstin on 2025-09-11 07:41_
 To make the conda Pythons available to uv, the easiest way is to make each one available in `PATH`. uv searches in `PATH`, and if the requested version is available there, it uses it instead of trying a download a managed Python; it will treat conda Python like system installations.
 
 Conda is very different from the environment we usually use, with conda having a separate activation mechanism, a different package and its own index format (https://github.com/astral-sh/uv/issues/1703).
-
----
-
-_Referenced in [KyleKing/textract-py3#16](../../KyleKing/textract-py3/pulls/16.md) on 2025-11-20 04:43_
 
 ---

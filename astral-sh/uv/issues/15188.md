@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-09T05:12:17Z
 updated_at: 2025-08-21T20:56:25Z
 url: https://github.com/astral-sh/uv/issues/15188
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Large test regression with system Python installation over `PYTHON-BIN` changes
@@ -646,10 +646,6 @@ Gentle ping.
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-08-15 03:53_
-
----
-
-_Referenced in [astral-sh/uv#15305](../../astral-sh/uv/pulls/15305.md) on 2025-08-15 12:47_
 
 ---
 

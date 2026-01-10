@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-04-17T16:01:15Z
 updated_at: 2025-09-03T12:50:18Z
 url: https://github.com/astral-sh/uv/issues/12950
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Support 3.14-dev and 3.14t-dev in `python-version`
@@ -30,10 +30,6 @@ See this run: https://github.com/numpy/numpy/actions/runs/14519726744/job/407374
 
 ---
 
-_Referenced in [numpy/numpy#28748](../../numpy/numpy/pulls/28748.md) on 2025-04-17 16:20_
-
----
-
 _Comment by @eifinger on 2025-04-17 16:28_
 
 Thank you for reporting this. I am really grateful that you are always using the latest features and help make this action better for everyone!
@@ -45,10 +41,6 @@ I am looking into it, might take me a bit longer over the Easter weekend.
 _Comment by @ngoldbaum on 2025-04-17 16:32_
 
 No rush!
-
----
-
-_Referenced in [astral-sh/setup-uv#375](../../astral-sh/setup-uv/pulls/375.md) on 2025-04-17 18:51_
 
 ---
 
@@ -72,19 +64,11 @@ Yeah, we don't support `3.14-dev`, that's not an official syntax is it? You can 
 
 ---
 
-_Referenced in [astral-sh/uv#12952](../../astral-sh/uv/pulls/12952.md) on 2025-04-17 21:09_
-
----
-
 _Comment by @Avasam on 2025-06-04 00:07_
 
 `-dev` is how you'd get pre-releases using https://github.com/actions/setup-python#supported-version-syntax for the longest time. But they have added a [`allow-prereleases`](https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#allow-pre-releases) flag in https://github.com/actions/setup-python/releases/tag/v4.6.0 in 2023.
 
 So workflows that need both uv, setup-python and a pre-release (like this one: https://github.com/Toufool/AutoSplit/pull/323/files#diff-52c8399fb1fedace4e7afc3557e43f6cf119f8d73f0853bddec2b79d0ed585ccR90-R103) can still work together with a single matrix number. (it's also nice for mypy that wouldn't understand 3.14-dev)
-
----
-
-_Referenced in [astral-sh/setup-uv#544](../../astral-sh/setup-uv/issues/544.md) on 2025-08-29 12:32_
 
 ---
 

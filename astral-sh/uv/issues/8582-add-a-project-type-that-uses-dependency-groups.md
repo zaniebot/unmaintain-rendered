@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-25T23:43:26Z
 updated_at: 2025-09-19T01:06:10Z
 url: https://github.com/astral-sh/uv/issues/8582
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Add a project type that uses `[dependency-groups]` only and doesn't define a `[project]` table? Sync `dependency-groups.main` by default?
@@ -91,14 +91,6 @@ PEP735 talks about non-package, but there's no way to actually designate somethi
 _Comment by @zanieb on 2024-10-28 14:27_
 
 As far as the PEP is concerned, you designate something as non-packaged by omitting a `[project]` table entirely.
-
----
-
-_Referenced in [astral-sh/uv#8594](../../astral-sh/uv/issues/8594.md) on 2024-10-29 00:43_
-
----
-
-_Referenced in [conda/conda#10633](../../conda/conda/issues/10633.md) on 2024-11-21 15:08_
 
 ---
 

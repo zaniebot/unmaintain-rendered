@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-12T14:12:49Z
 updated_at: 2025-09-18T13:08:15Z
 url: https://github.com/astral-sh/uv/issues/15813
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Better support for conflicting transitive dependencies
@@ -102,10 +102,6 @@ Python 3.12.9
 ---
 
 _Label `bug` added by @Ousret on 2025-09-12 14:12_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-09-12 14:56_
 
 ---
 
@@ -221,10 +217,6 @@ _Comment by @Ousret on 2025-09-14 04:53_
 > is it because files from the the different packages are being written concurrently to the same directories
 
 I am afraid that is correct. My understanding so far is that uv lock a single file/module at a time when the whole package namespace should be.
-
----
-
-_Referenced in [jawah/urllib3.future#266](../../jawah/urllib3.future/issues/266.md) on 2025-09-16 15:47_
 
 ---
 

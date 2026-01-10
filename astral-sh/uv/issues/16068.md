@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T03:16:47Z
 updated_at: 2025-10-02T13:32:16Z
 url: https://github.com/astral-sh/uv/issues/16068
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip install --no-sources` does not fall back to pre-existing dependencies in the environment that satisfy the requirements (uv>=v0.8.18)
@@ -199,10 +199,6 @@ I can look tomorrow, likely a result of my change.
 _Comment by @charliermarsh on 2025-10-01 15:57_
 
 (Apologies this slipped, but it's on my list for today.)
-
----
-
-_Referenced in [astral-sh/uv#16094](../../astral-sh/uv/pulls/16094.md) on 2025-10-02 00:11_
 
 ---
 

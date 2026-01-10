@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T11:02:47Z
 updated_at: 2025-10-23T14:08:46Z
 url: https://github.com/astral-sh/uv/issues/2150
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add `pip list --outdated`
@@ -30,10 +30,6 @@ I use `pip list --outdated` all the time (more than any other form of `pip list`
 ---
 
 _Label `enhancement` added by @konstin on 2024-03-04 11:04_
-
----
-
-_Referenced in [astral-sh/uv#2201](../../astral-sh/uv/issues/2201.md) on 2024-03-05 12:20_
 
 ---
 
@@ -92,10 +88,6 @@ Simple :-) Just getting familiar with the resolver structs and how all the piece
 
 ---
 
-_Referenced in [astral-sh/uv#2582](../../astral-sh/uv/pulls/2582.md) on 2024-03-21 05:34_
-
----
-
 _Comment by @timleslie on 2024-03-21 05:41_
 
 @zanieb I've pushed up a WIP branch as #2582 which explores my first attempt. I'd appreciate any feedback on whether this is an appropriate direction, or whether there's an alternate path that might involve less noisy code 🤔
@@ -116,21 +108,9 @@ waiting for the pull request to be accepted
 
 ---
 
-_Referenced in [astral-sh/uv#2745](../../astral-sh/uv/issues/2745.md) on 2024-04-04 22:45_
-
----
-
-_Referenced in [astral-sh/uv#2948](../../astral-sh/uv/issues/2948.md) on 2024-04-09 23:01_
-
----
-
 _Comment by @AndydeCleyre on 2024-04-11 21:04_
 
 FWIW I think that the lack of `pip list -o` and `pip list --pre` are the last two items I need to replace all usage of pip and pip-tools with `uv` (when installed) in my project, [zpy](https://github.com/AndydeCleyre/zpy/issues/25). Although if `uv` always acts like `--pre`, that would be fine as well.
-
----
-
-_Referenced in [AndydeCleyre/zpy#25](../../AndydeCleyre/zpy/issues/25.md) on 2024-04-11 21:09_
 
 ---
 
@@ -165,10 +145,6 @@ then `uv pip install -U ` them.
 
 ---
 
-_Referenced in [astral-sh/uv#3086](../../astral-sh/uv/issues/3086.md) on 2024-04-17 03:40_
-
----
-
 _Comment by @T-256 on 2024-04-19 14:47_
 
 Just an opinion at here:
@@ -176,10 +152,6 @@ use it as separated command, like `pip update`, which takes `requirements.txt` (
 for current venv and its installed packages in it we can then use `uv pip freeze | uv pip update`.
 
 Also, fwiw I opened a enhancement request for `uv pip freeze` in https://github.com/astral-sh/uv/issues/3141
-
----
-
-_Referenced in [AndydeCleyre/zpy#30](../../AndydeCleyre/zpy/issues/30.md) on 2024-04-24 16:28_
 
 ---
 
@@ -277,10 +249,6 @@ I hope this will be helpful to someone.
 
 ---
 
-_Referenced in [astral-sh/uv#6794](../../astral-sh/uv/issues/6794.md) on 2024-08-30 05:54_
-
----
-
 _Comment by @charliermarsh on 2024-08-30 14:58_
 
 Bun has this now too, it's nice!
@@ -293,10 +261,6 @@ Bun has this now too, it's nice!
 _Comment by @dwt on 2024-09-03 12:22_
 
 Another use case: I use `pip list --outdated` regularly when coming back to a project after some time, to quickly see what work I have ahead of me.
-
----
-
-_Referenced in [astral-sh/uv#7006](../../astral-sh/uv/issues/7006.md) on 2024-09-04 11:29_
 
 ---
 
@@ -406,14 +370,6 @@ Looks like there are different features being discussed here. I propose we use t
 
 ---
 
-_Referenced in [astral-sh/uv#7245](../../astral-sh/uv/issues/7245.md) on 2024-09-10 13:42_
-
----
-
-_Referenced in [astral-sh/uv#7532](../../astral-sh/uv/issues/7532.md) on 2024-09-19 03:06_
-
----
-
 _Comment by @pep-sanwer on 2024-09-27 19:55_
 
 (Apologies for continuing this thread for the not directly `pip --outdated` use case)
@@ -448,10 +404,6 @@ _Comment by @RatulMaharaj on 2024-11-01 22:40_
 I would love for this to be a thing. I mostly use `pnpm` for my node.js projects and to me `uv` feels super familiar because of that.
 
 In that ecosystem, my favourite and most commonly used commands are `pnpm add`, `pnpm remove` and `pnpm outdated`. We already have `uv add` and `uv remove` - I think being able to run `uv outdated` would be awesome too!
-
----
-
-_Referenced in [astral-sh/uv#8872](../../astral-sh/uv/pulls/8872.md) on 2024-11-07 02:10_
 
 ---
 

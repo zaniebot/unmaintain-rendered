@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-09T03:40:02Z
 updated_at: 2025-09-04T14:34:38Z
 url: https://github.com/astral-sh/uv/issues/12072
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Export extras from uv export
@@ -81,10 +81,6 @@ I was trying to wire this up to pants (a build system for monorepos) that subset
 
 ---
 
-_Referenced in [astral-sh/uv#12543](../../astral-sh/uv/issues/12543.md) on 2025-03-29 18:13_
-
----
-
 _Comment by @michael-pplx on 2025-07-20 23:22_
 
 I've encountered the same limitation with Bazel as well. I can achieve what I need using `uv pip compile`, but it is way slower and I'd like for this to be able run in a pre-push hook.
@@ -94,9 +90,5 @@ I've encountered the same limitation with Bazel as well. I can achieve what I ne
 _Comment by @bolinocroustibat on 2025-09-04 14:33_
 
 `pylock.toml` [has extras and dependency groups](https://packaging.python.org/en/latest/specifications/pylock-toml/), it would be great if we could also export the groups in `uv.lock` to `pylock.toml`.
-
----
-
-_Referenced in [astral-sh/uv#16016](../../astral-sh/uv/issues/16016.md) on 2025-09-24 14:27_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-03T18:48:12Z
 updated_at: 2025-09-25T13:34:05Z
 url: https://github.com/astral-sh/uv/issues/13278
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # When does `uv pip` create a `REQUESTED` file?
@@ -92,10 +92,6 @@ _Comment by @notatallshaw on 2025-05-04 14:28_
 Well for pip compatibility you should write it only for packages the user has explicitly requested, not dependencies. Although I've not thought about the edge cases, e.g you install B and then you install A which requires a different version of B.
 
 But never writing it is probably better than always writing it. 
-
----
-
-_Referenced in [pypa/pip#13430](../../pypa/pip/issues/13430.md) on 2025-06-18 20:27_
 
 ---
 

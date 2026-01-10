@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-28T12:49:19Z
 updated_at: 2025-11-05T15:19:16Z
 url: https://github.com/astral-sh/uv/issues/11018
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # failed to rename file [...] Permission denied (os error 13)
@@ -335,10 +335,6 @@ drwxr-xr-x 1 pepmts pepmts 512 Jan 27 17:48 zeAyPNc-E7yCnVVuVVLPs
 _Comment by @BenGale93 on 2025-02-07 09:22_
 
 I also get this issue but find rerunning the command fixes it. Sorry to not be more helpful but it is very difficult to reproduce.
-
----
-
-_Referenced in [astral-sh/uv#11409](../../astral-sh/uv/issues/11409.md) on 2025-02-20 03:55_
 
 ---
 

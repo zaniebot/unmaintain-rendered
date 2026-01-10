@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-30T16:08:29Z
 updated_at: 2025-10-31T17:09:30Z
 url: https://github.com/astral-sh/uv/issues/16517
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UV_LOCKED enables both `--check` and `--locked`
@@ -95,10 +95,6 @@ _Label `good first issue` added by @zanieb on 2025-10-30 16:24_
 _Comment by @zanieb on 2025-10-30 16:24_
 
 (We should remove the environment variable from the `check` argument)
-
----
-
-_Referenced in [astral-sh/uv#16521](../../astral-sh/uv/pulls/16521.md) on 2025-10-30 18:09_
 
 ---
 
@@ -221,10 +217,6 @@ _Comment by @zanieb on 2025-10-31 16:20_
 @pbrousseau-sdx can you share more about the workflow that was used there? Using `uv lock --check` with `UV_LOCKED=1` set is redundant.
 
 We can make the options non-conflicting.
-
----
-
-_Referenced in [astral-sh/uv#16538](../../astral-sh/uv/pulls/16538.md) on 2025-10-31 16:28_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-22T15:58:22Z
 updated_at: 2025-11-12T12:52:27Z
 url: https://github.com/astral-sh/uv/issues/10096
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Allow environment variables expansion in `pyproject.toml`
@@ -93,10 +93,6 @@ foo = { git = "https://${GITHUB_TOKEN}@github.com/fooco/foo.git" }
 ```
 
 edit: just saw the other discussion - perhaps more relevant than here
-
----
-
-_Referenced in [astral-sh/uv#5734](../../astral-sh/uv/issues/5734.md) on 2025-01-08 05:21_
 
 ---
 

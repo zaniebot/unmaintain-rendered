@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-24T03:54:41Z
 updated_at: 2025-09-02T13:11:24Z
 url: https://github.com/astral-sh/uv/issues/2637
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Speed up pyc compilation
@@ -93,14 +93,6 @@ And it speeds things up 2-3x, in the above case from 55s to 20s. Would probably 
 _Comment by @charliermarsh on 2024-03-24 23:13_
 
 I'm cool with shipping that.
-
----
-
-_Referenced in [astral-sh/uv#2642](../../astral-sh/uv/pulls/2642.md) on 2024-03-24 23:41_
-
----
-
-_Referenced in [python/peps#4132](../../python/peps/pulls/4132.md) on 2024-11-21 09:11_
 
 ---
 

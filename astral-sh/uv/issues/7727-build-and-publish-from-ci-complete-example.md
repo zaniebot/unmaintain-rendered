@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-26T20:19:33Z
 updated_at: 2025-09-25T19:04:06Z
 url: https://github.com/astral-sh/uv/issues/7727
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Build and publish from CI complete example
@@ -52,10 +52,6 @@ Here's a complete example: https://github.com/astral-sh/trusted-publishing-examp
 ---
 
 _Unassigned @zanieb by @konstin on 2024-11-03 17:47_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---
 

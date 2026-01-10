@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-28T16:23:59Z
 updated_at: 2025-12-02T10:04:17Z
 url: https://github.com/astral-sh/uv/issues/1156
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add support for environment detection to VSCode
@@ -86,14 +86,6 @@ What might be nice is smart handling of script dependency metadata.
 
 ![image](https://github.com/user-attachments/assets/e5f17bd8-4488-46c0-b392-3e1ecee03ebf)
 
-
----
-
-_Referenced in [astral-sh/uv#11314](../../astral-sh/uv/issues/11314.md) on 2025-02-12 15:05_
-
----
-
-_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-03-21 12:35_
 
 ---
 

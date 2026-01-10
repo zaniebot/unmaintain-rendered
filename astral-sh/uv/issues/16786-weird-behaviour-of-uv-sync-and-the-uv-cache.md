@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-20T10:30:44Z
 updated_at: 2025-11-21T08:44:39Z
 url: https://github.com/astral-sh/uv/issues/16786
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # weird behaviour of uv sync and the uv cache
@@ -145,9 +145,5 @@ _Comment by @kforner on 2025-11-21 08:44_
 
 Thanks, I confirm that `--verify-hashes` fixes it. 
 Is there a reason it is not enabled by default?
-
----
-
-_Referenced in [astral-sh/uv#16816](../../astral-sh/uv/pulls/16816.md) on 2025-11-22 03:05_
 
 ---

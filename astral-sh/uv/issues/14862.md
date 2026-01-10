@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T01:38:03Z
 updated_at: 2025-08-22T23:25:44Z
 url: https://github.com/astral-sh/uv/issues/14862
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv sync fails to find megatron.training due to incomplete package inclusion in Megatron-LM's pyproject.toml
@@ -62,10 +62,6 @@ _Label `question` added by @pjgao on 2025-07-24 01:38_
 
 ---
 
-_Referenced in [astral-sh/uv#11920](../../astral-sh/uv/issues/11920.md) on 2025-07-24 01:38_
-
----
-
 _Comment by @zanieb on 2025-07-24 02:44_
 
 Is there a reason this module should be available? This sounds like a question for the megatron folks.
@@ -96,10 +92,6 @@ _Comment by @pjgao on 2025-07-24 04:50_
 _Comment by @zanieb on 2025-07-24 04:53_
 
 Not right now, no. We don't have a plugin / hook system like that.
-
----
-
-_Referenced in [NVIDIA/Megatron-LM#1704](../../NVIDIA/Megatron-LM/issues/1704.md) on 2025-07-24 04:56_
 
 ---
 

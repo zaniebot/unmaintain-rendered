@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T17:03:31Z
 updated_at: 2025-08-27T19:48:06Z
 url: https://github.com/astral-sh/uv/issues/12441
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv sync` does not respect `build-constraint-dependencies`
@@ -20,14 +20,6 @@ synced_at: 2026-01-10T01:57:28Z
 _Issue opened by @zanieb on 2025-03-24 17:03_
 
 While debugging #12440, we noticed this setting was not properly propagated. These constraints _are_ respected when using `uv pip`.
-
----
-
-_Referenced in [astral-sh/uv#12440](../../astral-sh/uv/issues/12440.md) on 2025-03-24 17:03_
-
----
-
-_Referenced in [astral-sh/uv#12442](../../astral-sh/uv/issues/12442.md) on 2025-03-24 17:12_
 
 ---
 
@@ -42,14 +34,6 @@ uv pip install -r requirements.txt
 ```
 
 Also need to set build constraints: https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies
-
----
-
-_Referenced in [MeltanoLabs/tap-gitlab#110](../../MeltanoLabs/tap-gitlab/pulls/110.md) on 2025-03-24 17:15_
-
----
-
-_Referenced in [astral-sh/uv#12437](../../astral-sh/uv/issues/12437.md) on 2025-03-24 17:53_
 
 ---
 
@@ -72,14 +56,6 @@ Just checking if there is a fix or workaround for sync (not pip install).
 _Comment by @zanieb on 2025-03-25 14:39_
 
 It's still a high priority for us.
-
----
-
-_Referenced in [pypa/setuptools#4919](../../pypa/setuptools/issues/4919.md) on 2025-03-25 17:27_
-
----
-
-_Referenced in [astral-sh/uv#12502](../../astral-sh/uv/pulls/12502.md) on 2025-03-27 01:59_
 
 ---
 

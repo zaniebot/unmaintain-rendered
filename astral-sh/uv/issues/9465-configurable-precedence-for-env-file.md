@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-27T12:21:35Z
 updated_at: 2025-10-21T18:34:56Z
 url: https://github.com/astral-sh/uv/issues/9465
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Configurable Precedence for `--env-file`
@@ -112,10 +112,6 @@ This is exactly how it works when multiple `--env-file` arguments are passed, bu
 
 EDIT: On second thought, these seem to be two different behaviours: Do we override existing env variables vs how do we set the env correctly when parsing a file that has a new variable defined multiple times, and this question seems to be one for the `dotenvy` maintainers who, it looks like, will remedy this behaviour in an upcoming release)
 
-
----
-
-_Referenced in [astral-sh/uv#12812](../../astral-sh/uv/issues/12812.md) on 2025-04-16 13:45_
 
 ---
 

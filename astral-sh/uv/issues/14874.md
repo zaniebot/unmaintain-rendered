@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T16:40:29Z
 updated_at: 2025-10-23T06:51:36Z
 url: https://github.com/astral-sh/uv/issues/14874
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv run --with` can't find installed ruff in subprocess
@@ -126,10 +126,6 @@ Traceback (most recent call last):
     raise FileNotFoundError(scripts_path)
 FileNotFoundError: /Users/zb/.cache/uv/builds-v0/.tmp3PcDUA/bin/ruff
 ```
-
----
-
-_Referenced in [astral-sh/uv#14877](../../astral-sh/uv/pulls/14877.md) on 2025-07-24 20:18_
 
 ---
 

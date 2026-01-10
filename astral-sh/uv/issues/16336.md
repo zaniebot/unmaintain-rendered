@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T05:37:23Z
 updated_at: 2025-10-30T18:09:48Z
 url: https://github.com/astral-sh/uv/issues/16336
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv rebuilds every time when using flat glob pattern `*.{h,c,hpp,cpp}` in `cache-keys`
@@ -47,10 +47,6 @@ Python 3.11.8
 ---
 
 _Label `bug` added by @jgauth on 2025-10-17 05:37_
-
----
-
-_Referenced in [astral-sh/uv#16338](../../astral-sh/uv/pulls/16338.md) on 2025-10-17 08:59_
 
 ---
 

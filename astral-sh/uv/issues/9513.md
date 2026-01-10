@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T18:47:10Z
 updated_at: 2025-11-27T15:24:25Z
 url: https://github.com/astral-sh/uv/issues/9513
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Uploads fail due to setuptools using wrong metadata version for license-file
@@ -124,10 +124,6 @@ https://github.com/pypa/hatch/issues/1819
 
 ---
 
-_Referenced in [yehoshuadimarsky/bcpandas#219](../../yehoshuadimarsky/bcpandas/issues/219.md) on 2024-12-02 01:31_
-
----
-
 _Comment by @SermetPekin on 2024-12-02 20:06_
 
 ```toml
@@ -140,10 +136,6 @@ fixed my issue. as @kbrgl suggested
 
 ---
 
-_Referenced in [replit/river-python#130](../../replit/river-python/pulls/130.md) on 2024-12-04 00:38_
-
----
-
 _Comment by @senges on 2024-12-05 08:09_
 
 If you still want to use setuptools as build backend, a simple workaround is to explicitly provide an empty value for `licence-files` in your `pyproject.toml`:
@@ -151,10 +143,6 @@ If you still want to use setuptools as build backend, a simple workaround is to 
 [tool.setuptools]
 license-files = []
 ```
-
----
-
-_Referenced in [pypa/setuptools#4759](../../pypa/setuptools/issues/4759.md) on 2024-12-17 06:35_
 
 ---
 
@@ -215,14 +203,6 @@ The ideal case would really be a workaround added to `uv` just like in `twine`.
 
 ---
 
-_Referenced in [tpgillam/mt2#71](../../tpgillam/mt2/pulls/71.md) on 2024-12-19 08:12_
-
----
-
-_Referenced in [rst2pdf/rst2pdf#1257](../../rst2pdf/rst2pdf/pulls/1257.md) on 2024-12-24 17:09_
-
----
-
 _Comment by @PeriniM on 2025-01-03 12:46_
 
 I had [semantic-release](https://www.npmjs.com/package/@semantic-release/npm) set up and suddently it stopped working. The problem was that semrel does not support Metadata v2.4 and therefore the fix was to bump the hatchling version:
@@ -241,70 +221,6 @@ Hope it helps!
 
 ---
 
-_Referenced in [gabrieldemarmiesse/python-on-whales#666](../../gabrieldemarmiesse/python-on-whales/pulls/666.md) on 2025-01-10 17:08_
-
----
-
-_Referenced in [iiasa/ixmp#555](../../iiasa/ixmp/pulls/555.md) on 2025-01-16 10:42_
-
----
-
-_Referenced in [rmorshea/python-copier-template#16](../../rmorshea/python-copier-template/pulls/16.md) on 2025-01-17 18:25_
-
----
-
-_Referenced in [astral-sh/uv#10733](../../astral-sh/uv/issues/10733.md) on 2025-01-18 13:49_
-
----
-
-_Referenced in [beancount/beangrow#38](../../beancount/beangrow/pulls/38.md) on 2025-01-26 20:24_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2025-01-28 15:45_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
-
----
-
-_Referenced in [scalableminds/webknossos-libs#1254](../../scalableminds/webknossos-libs/pulls/1254.md) on 2025-02-04 10:31_
-
----
-
-_Referenced in [BfArM-MVH/grz-tools#19](../../BfArM-MVH/grz-tools/pulls/19.md) on 2025-02-21 13:27_
-
----
-
-_Referenced in [fpgmaas/cookiecutter-uv#42](../../fpgmaas/cookiecutter-uv/pulls/42.md) on 2025-02-23 12:34_
-
----
-
-_Referenced in [corydolphin/flask-cors#380](../../corydolphin/flask-cors/pulls/380.md) on 2025-02-24 03:39_
-
----
-
-_Referenced in [scikit-rf/scikit-rf#1260](../../scikit-rf/scikit-rf/pulls/1260.md) on 2025-02-26 19:59_
-
----
-
-_Referenced in [elementsinteractive/twyn#192](../../elementsinteractive/twyn/pulls/192.md) on 2025-02-28 11:54_
-
----
-
-_Referenced in [corydolphin/flask-cors#382](../../corydolphin/flask-cors/issues/382.md) on 2025-03-01 17:58_
-
----
-
-_Referenced in [openclimatefix/ocf-data-sampler#205](../../openclimatefix/ocf-data-sampler/pulls/205.md) on 2025-03-11 15:36_
-
----
-
-_Referenced in [astral-sh/uv#13631](../../astral-sh/uv/pulls/13631.md) on 2025-05-27 20:03_
-
----
-
 _Renamed from "metadata version missmatch in uv 0.5.5" to "Uploads fail due to setuptools using wrong metadata version for license-file" by @konstin on 2025-08-21 08:00_
 
 ---
@@ -316,10 +232,6 @@ _Comment by @khaeru on 2025-11-27 15:19_
 > uv unfortunately can't do anything about this.
 
 The upstream bug has been fixed in a new release (see https://github.com/pypa/setuptools/issues/4759#issuecomment-3557496614), so perhaps this issue can be closed.
-
----
-
-_Referenced in [iiasa/ixmp#614](../../iiasa/ixmp/pulls/614.md) on 2025-11-27 15:20_
 
 ---
 

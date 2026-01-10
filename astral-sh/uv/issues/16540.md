@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-31T19:00:10Z
 updated_at: 2025-11-03T15:56:32Z
 url: https://github.com/astral-sh/uv/issues/16540
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Why it looks like uv is not respecting the manylinux config from PYTHONPATH
@@ -182,9 +182,5 @@ That would also not fix the issue that `uv pip` does not see other python packag
 
 We understand the default behaviour of wanting to be isolated, but this is not something compatible with using `uv` on supercomputers, so we need a way to tell `uv` to consider the environment. 
 
-
----
-
-_Referenced in [ComputeCanada/software-stack#165](../../ComputeCanada/software-stack/issues/165.md) on 2025-11-04 16:54_
 
 ---

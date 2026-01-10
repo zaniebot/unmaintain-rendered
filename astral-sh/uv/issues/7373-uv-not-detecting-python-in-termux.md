@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-13T18:56:42Z
 updated_at: 2025-11-21T23:12:26Z
 url: https://github.com/astral-sh/uv/issues/7373
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv not detecting python in termux
@@ -338,10 +338,6 @@ _Label `uv python` added by @zanieb on 2024-10-04 13:38_
 
 ---
 
-_Referenced in [astral-sh/uv#2408](../../astral-sh/uv/issues/2408.md) on 2024-10-04 13:39_
-
----
-
 _Comment by @Neurovert on 2024-10-25 08:43_
 
 > Interesting, seems like uv is not detecting python in Android (installed as part of the Termux APK). How did you install `uv` within Termux? Downloading an aarch64 binary directly?
@@ -457,10 +453,6 @@ I'm going to keep looking more into this as I suspect the issue is more related 
 
 ---
 
-_Referenced in [astral-sh/uv#9005](../../astral-sh/uv/pulls/9005.md) on 2024-11-11 02:16_
-
----
-
 _Comment by @dead10ck on 2024-11-11 02:50_
 
 I tried my hand at this in #9005. Not sure if this is a good solution, but it seems to work.
@@ -475,19 +467,11 @@ Good to know that there is a solution! Have you tried building the project in te
 
 ---
 
-_Referenced in [FillZpp/sys-info-rs#118](../../FillZpp/sys-info-rs/pulls/118.md) on 2024-11-13 22:55_
-
----
-
 _Comment by @MatiasHiltunen on 2024-11-13 23:06_
 
 About the build error that I posted, there is a pending PR that worked for me to fix the issue above that I got during build process: https://github.com/FillZpp/sys-info-rs/pull/118
 
 Not sure how actively maintained the sys-info crate is as last commit has been 2 years ago
-
----
-
-_Referenced in [astral-sh/uv#9171](../../astral-sh/uv/issues/9171.md) on 2024-11-17 16:34_
 
 ---
 
@@ -633,14 +617,6 @@ By the way, in Termux there is a `$PREFIX` (` /data/data/com.termux/files/`) whi
 _Comment by @zanieb on 2025-02-02 07:02_
 
 @Vinfall please open a new issue with verbose logs.
-
----
-
-_Referenced in [astral-sh/uv#11160](../../astral-sh/uv/issues/11160.md) on 2025-02-02 08:38_
-
----
-
-_Referenced in [astral-sh/uv#13845](../../astral-sh/uv/issues/13845.md) on 2025-06-04 18:36_
 
 ---
 

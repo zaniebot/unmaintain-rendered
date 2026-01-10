@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T21:39:50Z
 updated_at: 2025-10-21T21:38:05Z
 url: https://github.com/astral-sh/uv/issues/16350
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Docker release failing with pull rate limits on image annotations
@@ -29,14 +29,6 @@ https://github.com/astral-sh/uv/actions/runs/18604760378/job/53052217708
 ---
 
 _Label `releases` added by @zanieb on 2025-10-17 21:39_
-
----
-
-_Referenced in [astral-sh/uv#16355](../../astral-sh/uv/pulls/16355.md) on 2025-10-18 19:47_
-
----
-
-_Referenced in [astral-sh/uv#16356](../../astral-sh/uv/pulls/16356.md) on 2025-10-18 19:58_
 
 ---
 

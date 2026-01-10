@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T18:41:19Z
 updated_at: 2025-12-03T08:19:10Z
 url: https://github.com/astral-sh/uv/issues/11632
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Allow `sources` override for `uv sync` / `uv run` by any means [command line, environment variable or config file]
@@ -82,14 +82,6 @@ _Label `enhancement` added by @jpedrick on 2025-02-19 18:41_
 
 ---
 
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
-
----
-
 _Comment by @nat-n on 2025-10-31 15:03_
 
 I agree it would be useful to be able to  override paths in `tool.uv.sources` (e.g. via env var, CLI option, or separate config file) when calling `uv pip install`. My use case is when performing the operation inside a docker container, it can be complicated to replicate the relative paths of sources when mounting all the relevant projects into the container, and I don't want to have to modify the pyproject.toml, hence being able to override those paths would be a nice solution.
@@ -103,14 +95,6 @@ I’m running into the same issue, and an override mechanism would be extremely 
 My scenario: one of my dependencies normally comes from a private index defined in `tool.uv.sources` and `tool.uv.index`. That works for normal installs, but when I’m iterating on that dependency I want to point it to a local checkout instead of publishing a new version every time.
 
 What I need is a way to temporarily override the source — via environment variables, CLI flags, or a local config file — so I can switch between “use the private index” and “use my local path” without touching tracked project settings.
-
----
-
-_Referenced in [astral-sh/uv#15895](../../astral-sh/uv/issues/15895.md) on 2025-11-20 21:02_
-
----
-
-_Referenced in [astral-sh/uv#16853](../../astral-sh/uv/pulls/16853.md) on 2025-11-25 23:14_
 
 ---
 

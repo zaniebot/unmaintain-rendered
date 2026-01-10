@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-03T14:47:10Z
 updated_at: 2025-11-16T08:38:31Z
 url: https://github.com/astral-sh/uv/issues/6971
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # `uvx`  invocation does not propagate `DYLD_FALLBACK_LIBRARY_PATH` to the invoked script on MacOS
@@ -560,23 +560,11 @@ _Renamed from "Allow setting env variables in `uvx`" to "`uvx`  invocation does 
 
 ---
 
-_Referenced in [astral-sh/uv#7870](../../astral-sh/uv/issues/7870.md) on 2024-10-02 15:58_
-
----
-
 _Comment by @agustingomes-therapieland on 2024-10-02 20:11_
 
 @miccoli I would like to thank you because today I learned `DYLD_FALLBACK_LIBRARY_PATH` can solve some of my problems.
 
 Edit: for context, I opened earlier [this issue](https://github.com/astral-sh/uv/issues/7870) which I was having in my virtual env, and using that env variable helped me solve the issue, coincidentally also with WeasyPrint.
-
----
-
-_Referenced in [astral-sh/uv#7764](../../astral-sh/uv/issues/7764.md) on 2024-11-12 16:51_
-
----
-
-_Referenced in [astral-sh/uv#12696](../../astral-sh/uv/issues/12696.md) on 2025-04-08 23:43_
 
 ---
 

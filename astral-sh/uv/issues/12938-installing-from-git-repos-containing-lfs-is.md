@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-17T10:06:31Z
 updated_at: 2025-10-09T06:34:56Z
 url: https://github.com/astral-sh/uv/issues/12938
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # installing from git repos containing LFS is unstable/unreliable
@@ -107,10 +107,6 @@ Linux 5.15.0-1086-azure x86_64 GNU/Linux; Ubuntu 20.04.6 LTS
 ---
 
 _Label `bug` added by @thesofakillers on 2025-04-17 10:06_
-
----
-
-_Referenced in [astral-sh/uv#3312](../../astral-sh/uv/issues/3312.md) on 2025-04-17 10:13_
 
 ---
 
@@ -262,10 +258,6 @@ Glad it's working!
 
 ---
 
-_Referenced in [astral-sh/uv#12975](../../astral-sh/uv/issues/12975.md) on 2025-04-18 21:04_
-
----
-
 _Comment by @thesofakillers on 2025-04-18 21:58_
 
 > The reason it's opt-in is at https://github.com/astral-sh/uv/pull/10335#issuecomment-2585798883
@@ -276,10 +268,6 @@ Hm, doesn't this also apply to regular old pip? In which case the canonical appr
 I guess I'm questioning the reason to introduce a new environment variable and invert the default behaviour when this is already supported natively with `GIT_LFS_SKIP_SMUDGE=1`
 
 I suppose you actively want to "fix" behaviour you disagree with regular pip, fair enough.
-
----
-
-_Referenced in [astral-sh/uv#15419](../../astral-sh/uv/issues/15419.md) on 2025-08-21 15:13_
 
 ---
 

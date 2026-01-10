@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-30T18:49:18Z
 updated_at: 2025-11-04T19:50:12Z
 url: https://github.com/astral-sh/uv/issues/16522
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Automatic CPU/GPU wheel variant selection for all packages (not just PyTorch)
@@ -193,10 +193,6 @@ Thank you for reviewing this request :)
 ---
 
 _Label `enhancement` added by @muhammad-fiaz on 2025-10-30 18:49_
-
----
-
-_Referenced in [astral-sh/uv#7722](../../astral-sh/uv/issues/7722.md) on 2025-10-30 18:59_
 
 ---
 
@@ -1052,10 +1048,6 @@ as you can see there is huge optional dependencies which are hard manage
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#16532](../../astral-sh/uv/issues/16532.md) on 2025-10-31 07:18_
 
 ---
 

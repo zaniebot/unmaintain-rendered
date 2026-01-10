@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-28T14:21:43Z
 updated_at: 2025-09-29T17:23:19Z
 url: https://github.com/astral-sh/uv/issues/16051
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Inconsistent behavior of format = "flat" between find-links and index-url in uv tool run
@@ -111,10 +111,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-28 18:46_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-09-28 18:54_
-
----
-
-_Referenced in [astral-sh/uv#16055](../../astral-sh/uv/pulls/16055.md) on 2025-09-28 19:05_
 
 ---
 

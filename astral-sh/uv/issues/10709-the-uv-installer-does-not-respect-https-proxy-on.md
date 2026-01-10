@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-17T13:38:36Z
 updated_at: 2025-09-17T06:02:16Z
 url: https://github.com/astral-sh/uv/issues/10709
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # The uv installer does not respect HTTPS_PROXY on Windows
@@ -138,10 +138,6 @@ Looks like there's an experimental opt-in for reading system certificate store: 
 
 ---
 
-_Referenced in [astral-sh/uv#10724](../../astral-sh/uv/issues/10724.md) on 2025-01-17 22:56_
-
----
-
 _Comment by @deffi on 2025-01-18 18:31_
 
 Using the system certificate store is crucial if you're behind a corporate proxy, but I'm not sure whether this, by itself, would fix the issue at hand.
@@ -197,25 +193,13 @@ I think the diagnosis that `Net.Webclient.downloadFile` is at fault is key. Here
 
 ---
 
-_Referenced in [astral-sh/uv#15696](../../astral-sh/uv/issues/15696.md) on 2025-09-05 13:29_
-
----
-
 _Renamed from "Proxy authentication doesn't work for `uv self update` on Windows" to "The uv installer does not respect HTTPS_PROXY on Windows" by @zanieb on 2025-09-05 13:35_
-
----
-
-_Referenced in [axodotdev/cargo-dist#2075](../../axodotdev/cargo-dist/pulls/2075.md) on 2025-09-05 13:35_
 
 ---
 
 _Comment by @zanieb on 2025-09-06 11:57_
 
 We're now trying to figure out what the solution is over in https://github.com/axodotdev/cargo-dist/pull/2075, if someone has any Windows proxy API expertise.
-
----
-
-_Referenced in [axodotdev/cargo-dist#2078](../../axodotdev/cargo-dist/pulls/2078.md) on 2025-09-06 20:27_
 
 ---
 
@@ -244,10 +228,6 @@ _Closed by @zanieb on 2025-09-08 12:48_
 _Comment by @zanieb on 2025-09-08 12:49_
 
 (we'll need to upgrade before this is fixed)
-
----
-
-_Referenced in [astral-sh/uv#15807](../../astral-sh/uv/pulls/15807.md) on 2025-09-12 10:45_
 
 ---
 

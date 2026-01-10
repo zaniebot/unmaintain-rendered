@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-01T11:31:13Z
 updated_at: 2025-11-12T22:58:38Z
 url: https://github.com/astral-sh/uv/issues/15618
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv publish: create attestations
@@ -32,10 +32,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @alex on 2025-09-01 11:31_
-
----
-
-_Referenced in [pyca/cryptography#11548](../../pyca/cryptography/issues/11548.md) on 2025-09-01 11:35_
 
 ---
 
@@ -121,9 +117,5 @@ _Comment by @woodruffw on 2025-11-12 22:58_
 > FWIW, from my perspective, if there were a documented and clearly supported way to externally attest things and then upload with `uv`, that'd be a great start. Not as good as all in one, but a start.
 
 Yeah, for this I'm thinking that `uv publish` should probably support `--attestations`, similarly to how `twine upload` does. I'll be poking at that.
-
----
-
-_Referenced in [astral-sh/uv#16731](../../astral-sh/uv/pulls/16731.md) on 2025-11-13 21:34_
 
 ---

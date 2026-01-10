@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T01:29:48Z
 updated_at: 2025-09-10T08:30:29Z
 url: https://github.com/astral-sh/uv/issues/9797
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Should lock file be committed to source control?
@@ -43,34 +43,6 @@ _Closed by @ngaloppo on 2024-12-11 06:10_
 
 ---
 
-_Referenced in [isaac-for-healthcare/i4h-sensor-simulation#3](../../isaac-for-healthcare/i4h-sensor-simulation/pulls/3.md) on 2025-03-05 16:44_
-
----
-
-_Referenced in [strands-agents/samples#11](../../strands-agents/samples/pulls/11.md) on 2025-05-22 15:11_
-
----
-
-_Referenced in [taylorwilsdon/netshow#1](../../taylorwilsdon/netshow/pulls/1.md) on 2025-06-16 16:32_
-
----
-
-_Referenced in [qtile/qtile#5398](../../qtile/qtile/pulls/5398.md) on 2025-07-30 19:26_
-
----
-
-_Referenced in [cadence-workflow/cadence-python-client#6](../../cadence-workflow/cadence-python-client/pulls/6.md) on 2025-08-06 00:31_
-
----
-
-_Referenced in [vllm-project/production-stack#469](../../vllm-project/production-stack/pulls/469.md) on 2025-08-12 08:24_
-
----
-
-_Referenced in [janosh/pymatviz#314](../../janosh/pymatviz/pulls/314.md) on 2025-08-14 08:34_
-
----
-
 _Comment by @IllarionovDimitri on 2025-09-10 07:54_
 
 @zanieb is the recommendation to commit uv.lock is similar for application and libs? 
@@ -81,25 +53,5 @@ from cargo/rust ecosystem i know that:
 - Library crates should not commit a Cargo.lock file, because it’s irrelevant to any downstream consumers of the library—they will have their own Cargo.lock file;  Cargo.lock file for a library crate is ignored by library users.
 
 what would be your suggestion?
-
----
-
-_Referenced in [atlanhq/agent-toolkit#143](../../atlanhq/agent-toolkit/pulls/143.md) on 2025-09-16 05:57_
-
----
-
-_Referenced in [owkin/PyDESeq2#416](../../owkin/PyDESeq2/pulls/416.md) on 2025-09-24 11:41_
-
----
-
-_Referenced in [Quansight-Labs/pytest-run-parallel#138](../../Quansight-Labs/pytest-run-parallel/pulls/138.md) on 2025-10-22 15:16_
-
----
-
-_Referenced in [hms-dbmi/InterSCellar#1](../../hms-dbmi/InterSCellar/pulls/1.md) on 2025-11-14 22:44_
-
----
-
-_Referenced in [omnibenchmark/omnibenchmark#239](../../omnibenchmark/omnibenchmark/pulls/239.md) on 2025-12-05 01:11_
 
 ---

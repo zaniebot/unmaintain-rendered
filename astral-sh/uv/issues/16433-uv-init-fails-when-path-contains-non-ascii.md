@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-24T08:35:42Z
 updated_at: 2025-11-03T00:26:10Z
 url: https://github.com/astral-sh/uv/issues/16433
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv init` fails when path contains non-ASCII characters
@@ -129,10 +129,6 @@ Something like this:
 ```
 error: The current directory (`püthon`) is not a valid package name. Please provide a package name with with `--name`
 ```
-
----
-
-_Referenced in [astral-sh/uv#16554](../../astral-sh/uv/pulls/16554.md) on 2025-11-02 22:08_
 
 ---
 

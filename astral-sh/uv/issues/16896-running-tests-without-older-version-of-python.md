@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-30T14:37:17Z
 updated_at: 2025-11-30T15:22:58Z
 url: https://github.com/astral-sh/uv/issues/16896
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Running tests without older version of python induces error
@@ -98,9 +98,5 @@ Thank you! After installing other version of Python, all related tests passed.
 ---
 
 _Closed by @jimmy312495 on 2025-11-30 15:22_
-
----
-
-_Referenced in [astral-sh/uv#16960](../../astral-sh/uv/pulls/16960.md) on 2025-12-03 09:49_
 
 ---

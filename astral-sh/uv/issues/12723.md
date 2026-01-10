@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T17:30:31Z
 updated_at: 2025-08-27T07:14:01Z
 url: https://github.com/astral-sh/uv/issues/12723
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # The uv build backend should support `RUST_LOG` or something similar
@@ -34,10 +34,6 @@ _Label `enhancement` added by @konstin on 2025-04-07 17:30_
 ---
 
 _Assigned to @konstin by @konstin on 2025-04-07 17:30_
-
----
-
-_Referenced in [astral-sh/uv#15533](../../astral-sh/uv/pulls/15533.md) on 2025-08-26 14:01_
 
 ---
 

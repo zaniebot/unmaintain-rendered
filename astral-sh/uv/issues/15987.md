@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-22T16:28:41Z
 updated_at: 2025-09-22T20:41:09Z
 url: https://github.com/astral-sh/uv/issues/15987
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uvx ruff check fails to spawn Ruff
@@ -177,10 +177,6 @@ Thanks for the help!
 ---
 
 _Closed by @zanieb on 2025-09-22 18:26_
-
----
-
-_Referenced in [astral-sh/uv#15990](../../astral-sh/uv/pulls/15990.md) on 2025-09-22 20:05_
 
 ---
 

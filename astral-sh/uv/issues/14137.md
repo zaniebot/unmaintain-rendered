@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-18T19:22:06Z
 updated_at: 2025-09-14T11:39:59Z
 url: https://github.com/astral-sh/uv/issues/14137
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support reading dynamic project version with `uv version`
@@ -144,17 +144,9 @@ Workaround when using hatch: `$ uvx hatch version`
 
 ---
 
-_Referenced in [bufbuild/protovalidate-python#335](../../bufbuild/protovalidate-python/pulls/335.md) on 2025-07-14 13:45_
-
----
-
 _Comment by @jharb-mirakl on 2025-07-31 09:44_
 
 Workaround when using pdm: `uvx pdm show --version`
-
----
-
-_Referenced in [geldata/gel-cli#1712](../../geldata/gel-cli/pulls/1712.md) on 2025-08-01 16:15_
 
 ---
 
@@ -170,10 +162,6 @@ source = "vcs"
 ```
 
 In my `pyproject.toml`
-
----
-
-_Referenced in [Jelly-RDF/pyjelly#256](../../Jelly-RDF/pyjelly/pulls/256.md) on 2025-08-18 11:35_
 
 ---
 

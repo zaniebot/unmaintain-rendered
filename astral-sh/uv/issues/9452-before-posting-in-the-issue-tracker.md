@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-26T21:15:37Z
 updated_at: 2025-10-15T13:01:23Z
 url: https://github.com/astral-sh/uv/issues/9452
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Before posting in the issue tracker
@@ -92,6 +92,6 @@ _Want to provide feedback on this document? See https://github.com/astral-sh/uv/
 
 ---
 
-_Locked by @zanieb on 2024-11-26 21:15_
+_Locked by @astral-sh on 2024-11-26 21:15_
 
 ---

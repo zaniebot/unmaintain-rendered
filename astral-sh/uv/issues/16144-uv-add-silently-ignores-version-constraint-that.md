@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-07T00:35:58Z
 updated_at: 2025-10-07T01:03:23Z
 url: https://github.com/astral-sh/uv/issues/16144
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv add` silently ignores version constraint that can't be resolved
@@ -82,9 +82,5 @@ apologies for the noise
 ---
 
 _Closed by @DetachHead on 2025-10-07 01:03_
-
----
-
-_Referenced in [pyprojectx/pyprojectx#159](../../pyprojectx/pyprojectx/issues/159.md) on 2025-10-07 01:18_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-03T07:58:11Z
 updated_at: 2025-10-06T16:49:25Z
 url: https://github.com/astral-sh/uv/issues/16112
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv cache` (prune or clean) hangs when another uv process is running
@@ -85,14 +85,6 @@ _Comment by @konstin on 2025-10-06 08:35_
 The lock from `uv run python` is the lock we removed in https://github.com/astral-sh/uv/pull/15990.
 
 The warning was originally user-facing, but removed in https://github.com/astral-sh/uv/pull/7502. We could re-add it as user facing for exclusive locks only if we're confident it doesn't cause https://github.com/astral-sh/uv/issues/7489 (CC @charliermarsh) again.
-
----
-
-_Referenced in [astral-sh/uv#16105](../../astral-sh/uv/issues/16105.md) on 2025-10-06 10:21_
-
----
-
-_Referenced in [astral-sh/uv#16138](../../astral-sh/uv/pulls/16138.md) on 2025-10-06 14:49_
 
 ---
 

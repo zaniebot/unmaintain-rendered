@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-16T18:00:38Z
 updated_at: 2025-11-18T16:23:58Z
 url: https://github.com/astral-sh/uv/issues/15327
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # unknown error (_ssl.c:3103) when using uv
@@ -169,10 +169,6 @@ same story with 3.11 and 3.12
 
 ---
 
-_Referenced in [mkdocstrings/mkdocstrings#796](../../mkdocstrings/mkdocstrings/issues/796.md) on 2025-09-13 10:19_
-
----
-
 _Comment by @ckutlu on 2025-09-13 10:45_
 
 @zsol Thanks for giving it a try! I had a feeling this had strong platform dependence as I don't remember running into this issue on my work laptop which happens to be Ubuntu 24.04 as well.
@@ -280,10 +276,6 @@ I encountered the issue while trying to use the IMAPClient library, noticing tha
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#16703](../../astral-sh/uv/issues/16703.md) on 2025-11-18 14:53_
 
 ---
 

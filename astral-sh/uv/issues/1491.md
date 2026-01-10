@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T14:07:16Z
 updated_at: 2025-11-07T15:38:07Z
 url: https://github.com/astral-sh/uv/issues/1491
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv pip install inconsistent failure on Windows
@@ -1049,10 +1049,6 @@ FWIW, the versions that it tripped up on were `debugpy==1.8.1` and `markdown-it-
 
 ---
 
-_Referenced in [astral-sh/uv#2078](../../astral-sh/uv/issues/2078.md) on 2024-02-29 10:28_
-
----
-
 _Comment by @mkleinbort-ic on 2024-02-29 13:13_
 
 I hit this same error today.
@@ -1206,10 +1202,6 @@ Definitely want to fix this.
 
 ---
 
-_Referenced in [astral-sh/uv#2304](../../astral-sh/uv/issues/2304.md) on 2024-03-08 19:27_
-
----
-
 _Comment by @charliermarsh on 2024-03-09 14:52_
 
 Oh interesting, I just noticed that this is _always_ related (except for one comment here) to persisting to `archive-v0`. But it succeeds if you rerun?
@@ -1269,10 +1261,6 @@ I will own this.
 _Comment by @charliermarsh on 2024-03-13 16:15_
 
 This will take some trial and error. I'll add some improvements in the next release, and then look to folks in this thread for testing.
-
----
-
-_Referenced in [astral-sh/uv#2419](../../astral-sh/uv/pulls/2419.md) on 2024-03-13 16:55_
 
 ---
 
@@ -1642,10 +1630,6 @@ Thanks for the details! I'll investigate.
 
 ---
 
-_Referenced in [astral-sh/uv#4605](../../astral-sh/uv/pulls/4605.md) on 2024-06-27 23:04_
-
----
-
 _Comment by @zanieb on 2024-06-27 23:05_
 
 And I believe I've found a suspicious line :) if you want to give it a try https://github.com/astral-sh/uv/pull/4605
@@ -1708,10 +1692,6 @@ Yeah my guess is we're missing it somewhere but not sure where... I think @zanie
 
 ---
 
-_Referenced in [astral-sh/uv#5076](../../astral-sh/uv/pulls/5076.md) on 2024-07-15 16:01_
-
----
-
 _Comment by @thecityofguanyu on 2024-07-15 16:03_
 
 Looks like @zanieb already pushed a PR and may have found a fix, but should it be useful, here's the IO activity of the thread from https://github.com/astral-sh/uv/issues/1491#issuecomment-2228830850
@@ -1770,10 +1750,6 @@ Ok more fixes coming in the next release.
 
 ---
 
-_Referenced in [astral-sh/uv#5090](../../astral-sh/uv/issues/5090.md) on 2024-07-16 02:08_
-
----
-
 _Comment by @axel-kah on 2024-07-17 16:32_
 
 > Ok more fixes coming in the next release.
@@ -1824,14 +1800,6 @@ I'm open to changing to use the dunce-canonicalized version everywhere, but note
 
 ---
 
-_Referenced in [astral-sh/uv#5440](../../astral-sh/uv/issues/5440.md) on 2024-07-25 10:56_
-
----
-
-_Referenced in [shap/shap#3776](../../shap/shap/pulls/3776.md) on 2024-08-04 09:53_
-
----
-
 _Comment by @Super1Windcloud on 2024-09-20 07:10_
 
 #   There is no doubt that this is a problem caused by hard links, and pnpm often has various problems
@@ -1854,14 +1822,6 @@ my solution: use CLI git bash instead of windows terminal. it works
 _Comment by @wdscxsj on 2025-03-18 03:21_
 
 Same issue with uv 0.6.6 on Windows 10. `link-mode = 'copy'` always works.
-
----
-
-_Referenced in [astral-sh/uv#15108](../../astral-sh/uv/issues/15108.md) on 2025-08-12 15:03_
-
----
-
-_Referenced in [python/mypy#20200](../../python/mypy/issues/20200.md) on 2025-11-07 11:26_
 
 ---
 

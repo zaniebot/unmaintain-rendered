@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-26T14:16:44Z
 updated_at: 2025-08-29T00:01:59Z
 url: https://github.com/astral-sh/uv/issues/15534
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # missing --index-url in `uv pip compile pyproject.toml` for packages that come from `explicit = true` indexes
@@ -546,10 +546,6 @@ torch = [
 and I've checked a pylock.toml generated for `--group jupyter-tensorflow-image`, assuming that the index selection is "inheritable". Which it is clearly is not.
 
 end of offtopic announcement.
-
----
-
-_Referenced in [opendatahub-io/notebooks#2113](../../opendatahub-io/notebooks/pulls/2113.md) on 2025-08-26 15:57_
 
 ---
 

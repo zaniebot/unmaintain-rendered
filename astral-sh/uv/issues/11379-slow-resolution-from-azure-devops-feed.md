@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T08:50:56Z
 updated_at: 2025-10-22T16:54:49Z
 url: https://github.com/astral-sh/uv/issues/11379
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Slow resolution from Azure DevOps feed
@@ -262,10 +262,6 @@ _Renamed from "Slow package resolution from authenticated package index" to "Slo
 _Comment by @thomasaarholt on 2025-02-14 11:49_
 
 We're taking a look internally at fixing this. No promises at timelines. 😅 Thanks for your help!
-
----
-
-_Referenced in [pypa/pip#12991](../../pypa/pip/pulls/12991.md) on 2025-03-09 22:30_
 
 ---
 

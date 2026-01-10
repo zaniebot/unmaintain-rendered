@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T02:32:10Z
 updated_at: 2025-11-08T19:25:28Z
 url: https://github.com/astral-sh/uv/issues/1791
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # UV venv doesn't work on MacOS when Rye is installed
@@ -150,10 +150,6 @@ I find `uv venv -p3.8 spam` doesn't canonicalize symlink.
 https://github.com/astral-sh/uv/blob/5d53040465a67bdfdd31512e2eaa0e195909855e/crates/uv-interpreter/src/python_query.rs#L50-L54
 
 Why only find_default_python canonicalize python? Can we just stop canonicalize?
-
----
-
-_Referenced in [astral-sh/uv#2497](../../astral-sh/uv/issues/2497.md) on 2024-03-17 16:42_
 
 ---
 

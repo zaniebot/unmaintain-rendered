@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T13:06:58Z
 updated_at: 2025-08-27T15:56:18Z
 url: https://github.com/astral-sh/uv/issues/7496
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv exports incomplete requirements if using external packages
@@ -169,14 +169,6 @@ My current workaround is to just manually edit the `uv export` output to add the
 
 ---
 
-_Referenced in [galaxyproject/galaxy#19284](../../galaxyproject/galaxy/pulls/19284.md) on 2024-12-08 12:57_
-
----
-
-_Referenced in [ray-project/ray#47819](../../ray-project/ray/issues/47819.md) on 2024-12-23 14:37_
-
----
-
 _Comment by @ties on 2025-01-02 12:47_
 
 > `uv pip compile` also does not export these by default; the behavior is intentional. Whether we want to support `--emit-index-url` is an open question though.
@@ -211,10 +203,6 @@ Note: this requirements.txt is being fed into a serverless lambda deployment. Ad
 _Comment by @ozancaglayan on 2025-02-21 17:39_
 
 Was trying to migrate from poetry to uv and hit this issue. I do not want to use poetry or uv to install the deps in CI/CD and Dockerfiles so that's why being able to generate requirements.txt files to just use with pip is convenient.
-
----
-
-_Referenced in [astral-sh/uv#12580](../../astral-sh/uv/issues/12580.md) on 2025-03-31 09:18_
 
 ---
 
@@ -258,9 +246,5 @@ _Comment by @rob-steele-active on 2025-08-27 15:56_
 > I know it's not the original question, but there is now the standardized `pylock.toml` format, which solves the index problem for exports, among other improvements.
 
 +1 for this. Supporting it for pylock.toml seems like a fair middleground.
-
----
-
-_Referenced in [astral-sh/uv#16016](../../astral-sh/uv/issues/16016.md) on 2025-09-24 14:27_
 
 ---

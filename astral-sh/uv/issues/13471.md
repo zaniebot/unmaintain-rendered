@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-15T14:31:11Z
 updated_at: 2025-10-30T14:50:28Z
 url: https://github.com/astral-sh/uv/issues/13471
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv python find` can't get the path to a supported arch Python installed with `uv python install`
@@ -127,10 +127,6 @@ _Assigned to @zanieb by @zanieb on 2025-05-15 14:37_
 
 ---
 
-_Referenced in [astral-sh/uv#13472](../../astral-sh/uv/pulls/13472.md) on 2025-05-15 14:49_
-
----
-
 _Comment by @zanieb on 2025-05-15 14:50_
 
 Thanks for the report! It definitely looks like a bug.
@@ -239,10 +235,6 @@ graalpy-3.10.0-windows-x86_64-none                   <download available>
 _Comment by @zanieb on 2025-05-15 21:13_
 
 Oh, it looks like we're filtering it earlier. I can fix that.
-
----
-
-_Referenced in [astral-sh/uv#13475](../../astral-sh/uv/pulls/13475.md) on 2025-05-15 21:13_
 
 ---
 

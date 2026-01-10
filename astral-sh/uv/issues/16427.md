@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-23T19:07:57Z
 updated_at: 2025-11-11T17:27:33Z
 url: https://github.com/astral-sh/uv/issues/16427
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Allow setting a custom value for `uv version --bump`
@@ -91,10 +91,6 @@ also a bit more "intuitive" about the value being set imo?
 _Comment by @zanieb on 2025-10-29 14:11_
 
 I'm okay with that. cc @Gankra and @konstin 
-
----
-
-_Referenced in [astral-sh/uv#16555](../../astral-sh/uv/pulls/16555.md) on 2025-11-02 22:41_
 
 ---
 

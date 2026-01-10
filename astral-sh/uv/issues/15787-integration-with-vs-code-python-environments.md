@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-11T12:26:12Z
 updated_at: 2025-09-13T17:13:21Z
 url: https://github.com/astral-sh/uv/issues/15787
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Integration with VS Code "Python Environments" extension
@@ -92,9 +92,5 @@ I talked about it in context in https://github.com/astral-sh/uv/issues/12197#iss
 Having package installs from the GUI work like you'd expect would be really nice for beginners.   It's really nice using `uv add` and having important packages recorded and versions pinned via the lock file automatically (compared to `pip install ...`, `pip freeze`, copy-paste to `requirements.txt`, and edit down to important packages). Having all that be true via the GUI would be even easier for beginners, who are often initially wary of the terminal.
 
 What I don't know is whether this all also applies when VS Code suggests installing a package, but I would think so (e.g., paraphrasing, "Hey, you need `ipykernel` if you want to use Jupyter notebooks. Do you want me to install it?").
-
----
-
-_Referenced in [astral-sh/uv#15960](../../astral-sh/uv/issues/15960.md) on 2025-09-20 16:16_
 
 ---

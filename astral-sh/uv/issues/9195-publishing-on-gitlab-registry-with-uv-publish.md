@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-18T13:45:26Z
 updated_at: 2025-11-13T14:28:28Z
 url: https://github.com/astral-sh/uv/issues/9195
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Publishing on Gitlab registry with `uv publish` needs extended access rights
@@ -146,10 +146,6 @@ That's indeed confusing! We unfortunately haven't fully figured out what to do w
 _Comment by @ThomasA on 2025-01-22 09:28_
 
 I was having the exact same problem and thanks to this thread, I now know how to solve it. Thanks @ThomasHezard 👍 
-
----
-
-_Referenced in [astral-sh/uv#16432](../../astral-sh/uv/pulls/16432.md) on 2025-10-24 07:51_
 
 ---
 

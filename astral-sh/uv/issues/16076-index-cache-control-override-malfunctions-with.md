@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T14:58:59Z
 updated_at: 2025-10-02T01:17:02Z
 url: https://github.com/astral-sh/uv/issues/16076
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Index cache-control override malfunctions with username in URL
@@ -101,10 +101,6 @@ Yeah that should work -- I will take a look.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-01 15:53_
-
----
-
-_Referenced in [astral-sh/uv#16088](../../astral-sh/uv/pulls/16088.md) on 2025-10-01 16:27_
 
 ---
 

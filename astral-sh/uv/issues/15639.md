@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-02T19:56:03Z
 updated_at: 2025-10-21T07:46:41Z
 url: https://github.com/astral-sh/uv/issues/15639
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # On externally managed errors, hint why a system interpreter was selected
@@ -42,10 +42,6 @@ Thank you
 _Comment by @zanieb on 2025-09-06 11:53_
 
 Yep!
-
----
-
-_Referenced in [astral-sh/uv#16318](../../astral-sh/uv/pulls/16318.md) on 2025-10-15 16:37_
 
 ---
 

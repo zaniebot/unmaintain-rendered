@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-07T08:01:22Z
 updated_at: 2025-09-02T13:06:22Z
 url: https://github.com/astral-sh/uv/issues/15124
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `extra-build-dependencies` docs example is wrong
@@ -41,10 +41,6 @@ _Label `good first issue` added by @zanieb on 2025-08-08 00:56_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-08 09:37_
-
----
-
-_Referenced in [astral-sh/uv#15161](../../astral-sh/uv/pulls/15161.md) on 2025-08-08 09:37_
 
 ---
 
@@ -83,10 +79,6 @@ https://docs.astral.sh/uv/reference/settings/#extra-build-dependencies
 <img width="1058" height="649" alt="Image" src="https://github.com/user-attachments/assets/2d357e52-9616-4446-8f88-76e171a783df" />
 
 I'm not fully following with the revert, but I can see those two cases on main.
-
----
-
-_Referenced in [astral-sh/uv#15622](../../astral-sh/uv/pulls/15622.md) on 2025-09-01 17:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-11T23:18:36Z
 updated_at: 2025-11-20T18:49:25Z
 url: https://github.com/astral-sh/uv/issues/6012
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Software Bill of Materials (SBOM) output
@@ -178,14 +178,6 @@ Maybe this is something you guys can help?
 
 ---
 
-_Referenced in [WeblateOrg/weblate#14106](../../WeblateOrg/weblate/issues/14106.md) on 2025-03-04 16:21_
-
----
-
-_Referenced in [CycloneDX/cyclonedx-python#857](../../CycloneDX/cyclonedx-python/issues/857.md) on 2025-03-05 14:52_
-
----
-
 _Comment by @chrisrodrigue on 2025-04-24 13:44_
 
 Good news: [PEP 770](https://peps.python.org/pep-0770/) was just accepted, which notably reserves the subdirectory `.dist-info/sboms`
@@ -347,10 +339,6 @@ _Assigned to @woodruffw by @woodruffw on 2025-09-24 16:57_
 _Comment by @woodruffw on 2025-09-24 16:58_
 
 Thanks @thomasschafer! I can take a look at those changes now.
-
----
-
-_Referenced in [thomasschafer/uv#4](../../thomasschafer/uv/pulls/4.md) on 2025-10-03 16:13_
 
 ---
 
@@ -816,10 +804,6 @@ to indicate SBOM completeness, use `$.compositions[].dependencies[]` - see https
 
 ---
 
-_Referenced in [thomasschafer/uv#5](../../thomasschafer/uv/pulls/5.md) on 2025-10-20 14:39_
-
----
-
 _Comment by @jkowalleck on 2025-10-20 14:44_
 
 > > these "markers" are constraints, defining UNDER WHICH CIRCUMSTANCES a dependency is about to be used. the information decides whether a component is a dependency and shall be installed. (regardless the constraints, a dependency is a dependency, right?)
@@ -1000,10 +984,6 @@ see https://github.com/astral-sh/uv/issues/6012#issuecomment-3422335660
 
 ---
 
-_Referenced in [CycloneDX/cyclonedx-python#907](../../CycloneDX/cyclonedx-python/issues/907.md) on 2025-10-24 09:50_
-
----
-
 _Comment by @thomasschafer on 2025-10-27 16:01_
 
 @jkowalleck did you have any more thoughts on having the resolved marker under the `cdx:python` namespace, based on @zanieb's thoughts here https://github.com/astral-sh/uv/issues/6012#issuecomment-3422732821?
@@ -1021,10 +1001,6 @@ _Comment by @jkowalleck on 2025-10-27 17:23_
 The python packaging "marker" is for dependencies, still. Using it for components instead makes no sense, or does it? 
 
 Everybody, please be invited to discuss it here https://github.com/CycloneDX/cyclonedx-property-taxonomy/pull/142
-
----
-
-_Referenced in [astral-sh/uv#16523](../../astral-sh/uv/pulls/16523.md) on 2025-10-30 19:26_
 
 ---
 

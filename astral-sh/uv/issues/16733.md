@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-11-14T06:20:09Z
 updated_at: 2025-12-03T09:31:37Z
 url: https://github.com/astral-sh/uv/issues/16733
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Issue with private registry username
@@ -47,14 +47,6 @@ Or maybe I'm overlooking something that allows me to do the same?
 ### Version
 
 0.9.8
-
----
-
-_Referenced in [astral-sh/uv#16739](../../astral-sh/uv/pulls/16739.md) on 2025-11-14 16:55_
-
----
-
-_Referenced in [astral-sh/uv#16748](../../astral-sh/uv/pulls/16748.md) on 2025-11-15 17:06_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-21T13:27:09Z
 updated_at: 2025-11-09T16:20:21Z
 url: https://github.com/astral-sh/uv/issues/15410
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Pyodide should be included in the managed distributions documentation
@@ -26,10 +26,6 @@ cc @hoodmane
 ---
 
 _Label `documentation` added by @zanieb on 2025-08-21 13:27_
-
----
-
-_Referenced in [astral-sh/uv#15411](../../astral-sh/uv/issues/15411.md) on 2025-08-21 13:28_
 
 ---
 

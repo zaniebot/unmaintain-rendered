@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-15T01:53:31Z
 updated_at: 2025-10-17T08:36:04Z
 url: https://github.com/astral-sh/uv/issues/16306
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Workspace members are installed as editable during `uv tool install ./project`
@@ -139,10 +139,6 @@ _Label `bug` added by @zanieb on 2025-10-15 13:49_
 ---
 
 _Renamed from "Can `uv tool install` include workspace dependencies in the installation?" to "Workspace members are installed as editable during `uv tool install ./project`" by @zanieb on 2025-10-15 13:50_
-
----
-
-_Referenced in [astral-sh/uv#16335](../../astral-sh/uv/pulls/16335.md) on 2025-10-17 05:10_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-14T09:25:44Z
 updated_at: 2025-11-14T20:56:47Z
 url: https://github.com/astral-sh/uv/issues/14037
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support Git scm-based versioning in `uv` build backend
@@ -47,19 +47,7 @@ _Label `needs-decision` added by @konstin on 2025-06-18 09:08_
 
 ---
 
-_Referenced in [astral-sh/uv#14137](../../astral-sh/uv/issues/14137.md) on 2025-06-20 12:44_
-
----
-
 _Label `build-backend` added by @konstin on 2025-06-26 14:40_
-
----
-
-_Referenced in [meltano/sdk#3154](../../meltano/sdk/pulls/3154.md) on 2025-07-03 03:40_
-
----
-
-_Referenced in [astral-sh/uv#8714](../../astral-sh/uv/issues/8714.md) on 2025-07-04 11:38_
 
 ---
 
@@ -71,10 +59,6 @@ I think such a solution would work very nicely as a MVP (if not even a final sol
 
 ---
 
-_Referenced in [FAIRmat-NFDI/cookiecutter-nomad-plugin#53](../../FAIRmat-NFDI/cookiecutter-nomad-plugin/issues/53.md) on 2025-07-16 08:53_
-
----
-
 _Comment by @winwinashwin on 2025-07-24 08:49_
 
 Hi,
@@ -83,29 +67,9 @@ Is this feature on the roadmap? This is our last hurdle in ditching setuptools_s
 
 ---
 
-_Referenced in [astral-sh/uv#14946](../../astral-sh/uv/issues/14946.md) on 2025-07-28 20:54_
-
----
-
-_Referenced in [astral-sh/uv#15459](../../astral-sh/uv/issues/15459.md) on 2025-08-22 17:04_
-
----
-
-_Referenced in [astral-sh/uv#16075](../../astral-sh/uv/issues/16075.md) on 2025-09-30 13:27_
-
----
-
 _Comment by @winwinashwin on 2025-10-10 19:14_
 
 Any update on this feature? 
-
----
-
-_Referenced in [dask/dask-sphinx-theme#93](../../dask/dask-sphinx-theme/pulls/93.md) on 2025-10-13 10:24_
-
----
-
-_Referenced in [astral-sh/uv#16497](../../astral-sh/uv/issues/16497.md) on 2025-10-29 14:55_
 
 ---
 

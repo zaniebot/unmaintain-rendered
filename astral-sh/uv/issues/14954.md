@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-29T13:11:54Z
 updated_at: 2025-11-04T08:28:47Z
 url: https://github.com/astral-sh/uv/issues/14954
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv lock --upgrade-package doesn't update git commit hash for individual subdirectory dependencies from the same repository
@@ -120,10 +120,6 @@ I think the "optimal" semantics here are actually a little tricky. Like, if you 
 
 ---
 
-_Referenced in [astral-sh/uv#14684](../../astral-sh/uv/issues/14684.md) on 2025-08-01 02:32_
-
----
-
 _Comment by @charliermarsh on 2025-08-01 02:33_
 
 Would it be an improvement if `--upgrade-package package-a` caused all of `package-a`, `package-b`, and `package-c` to get upgraded...? I dunno, that also seems bad.
@@ -139,10 +135,6 @@ There are some cases where `package-a` may need to use a repo's latest commit, b
 I realize this gets a bit complicated, but as a user I'd prefer to manage the complexity myself of making sure I keep track of the commits used by the different libraries I'm consuming from a git repo. 
 
 I don't think too many users put themselves in this usage pattern, but those who do would probably want to have some control over the commits they're consuming for the different libs. 
-
----
-
-_Referenced in [MountainGod2/chaturbate_poller#614](../../MountainGod2/chaturbate_poller/pulls/614.md) on 2025-08-18 23:38_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-12T01:41:38Z
 updated_at: 2025-10-24T22:23:38Z
 url: https://github.com/astral-sh/uv/issues/15799
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Wrongly recognized platform, unnecessary rebuilds
@@ -130,10 +130,6 @@ Yeah that's good enough, thanks. I was curious if it was `freebsd_14_2_release_a
 
 ---
 
-_Referenced in [astral-sh/uv#15829](../../astral-sh/uv/pulls/15829.md) on 2025-09-14 01:38_
-
----
-
 _Comment by @konstin on 2025-09-14 11:21_
 
 @fleetingbytes Could you share the output of `python -m sysconfig`?
@@ -153,10 +149,6 @@ _Comment by @charliermarsh on 2025-09-14 13:39_
 ---
 
 _Closed by @charliermarsh on 2025-09-14 14:48_
-
----
-
-_Referenced in [astral-sh/uv#15840](../../astral-sh/uv/issues/15840.md) on 2025-09-14 15:27_
 
 ---
 

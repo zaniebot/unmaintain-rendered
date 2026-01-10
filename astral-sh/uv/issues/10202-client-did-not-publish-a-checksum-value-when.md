@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T17:17:05Z
 updated_at: 2025-09-04T15:47:35Z
 url: https://github.com/astral-sh/uv/issues/10202
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Client did not publish a checksum value when using uv publish
@@ -186,10 +186,6 @@ Will there be any progress on that topic, like with the idea of optional paramet
 _Comment by @kohlrabi on 2025-07-25 07:21_
 
 @OliverKleinBST I just noticed this as well, does it prohibit you from using the published package or is it just an annoyance in the artifactory browser?
-
----
-
-_Referenced in [pypa/twine#1258](../../pypa/twine/issues/1258.md) on 2025-08-08 19:59_
 
 ---
 

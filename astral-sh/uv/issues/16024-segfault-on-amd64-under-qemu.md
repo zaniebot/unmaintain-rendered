@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-25T11:13:42Z
 updated_at: 2025-09-25T13:24:44Z
 url: https://github.com/astral-sh/uv/issues/16024
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Segfault on amd64 under QEMU
@@ -111,10 +111,6 @@ qemu: uncaught target signal 11 (Segmentation fault) - core dumped
 
 ---
 
-_Referenced in [rust-lang/rust#147026](../../rust-lang/rust/issues/147026.md) on 2025-09-25 12:47_
-
----
-
 _Label `external` added by @zanieb on 2025-09-25 12:48_
 
 ---
@@ -126,9 +122,5 @@ _Label `bug` removed by @konstin on 2025-09-25 13:20_
 _Comment by @lczyk on 2025-09-25 13:24_
 
 escalated to [rust](https://github.com/rust-lang/rust/issues/147026) and [QEMU](https://gitlab.com/qemu-project/qemu/-/issues/3130)
-
----
-
-_Referenced in [gpo/gpo-platform-configs#132](../../gpo/gpo-platform-configs/issues/132.md) on 2025-12-08 21:58_
 
 ---

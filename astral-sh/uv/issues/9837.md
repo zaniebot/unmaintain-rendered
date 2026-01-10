@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-12T12:47:21Z
 updated_at: 2025-10-30T13:17:55Z
 url: https://github.com/astral-sh/uv/issues/9837
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Feature request: Have MACOSX_DEPLOYMENT_TARGET as uv config or have a default place from where env vars are loaded for uv
@@ -109,10 +109,6 @@ Edit: Tagentially, something like `platform_machine == 'arm64'` isn't considered
 
 ---
 
-_Referenced in [astral-sh/uv#10067](../../astral-sh/uv/pulls/10067.md) on 2025-02-18 09:18_
-
----
-
 _Comment by @uwu-420 on 2025-02-18 09:20_
 
 Good news, it's getting closer, see https://github.com/astral-sh/uv/pull/10067 but it's not just there yet.
@@ -136,10 +132,6 @@ Currently, the specification that macOS wheel installations and wheel builds sho
 
 
 
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#292](../../lmstudio-ai/venvstacks/issues/292.md) on 2025-10-27 15:34_
 
 ---
 

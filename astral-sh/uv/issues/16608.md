@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-06T10:19:07Z
 updated_at: 2025-11-07T15:23:26Z
 url: https://github.com/astral-sh/uv/issues/16608
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Prerelease versions shouldn't satisfy release versions
@@ -125,9 +125,5 @@ _Comment by @notatallshaw on 2025-11-07 15:02_
 Further I would disagree that if someone wrote `>=3.15` and only CPython `3.15.0a1` is currently available they meant anything else, packages authors do exactly this to test against the new pre-releases of CPython. This also matches pip's current behavior which only takes the major, minor, and patch version components from the CPython version and ignores the pre-release component, so for pip `>=3.15` matches `3.15.0a1` for CPython versions (not for Python packages though).
 
 That said, for tools that have the ability to install Python or select from multiple versions of Python, if a user selects `>=3.14` and only  `3.15.0a1` is available then I think there should be a clear warning message. Or if they select  `>=3.15` and `3.15.0a1` is available locally but newer versions are available remotely I think there should be a clear warning message. But when those warning messages trigger exactly I think should be the prerogative of the tool, like uv, to decide what makes sense for their users.
-
----
-
-_Referenced in [astral-sh/uv#16984](../../astral-sh/uv/issues/16984.md) on 2025-12-04 18:05_
 
 ---

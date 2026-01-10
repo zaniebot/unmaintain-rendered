@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-08-22T16:26:02Z
 updated_at: 2025-08-25T12:40:21Z
 url: https://github.com/astral-sh/uv/issues/15458
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Move `uv format` unformatted test file into const
@@ -46,10 +46,6 @@ _Label `testing` added by @zanieb on 2025-08-22 16:26_
 
 ---
 
-_Referenced in [astral-sh/uv#15438](../../astral-sh/uv/pulls/15438.md) on 2025-08-22 16:27_
-
----
-
 _Comment by @pposca on 2025-08-22 20:57_
 
 It seems if you use assert_snapshot!(reference_value, @"snapshot") to compare 2 values, you have to use a @"string literal", so you cannot use a const or var there (at least, I couldn't find the way):
@@ -73,10 +69,6 @@ _Comment by @pposca on 2025-08-23 09:38_
 > Hey. Can i take this one? Please assign
 
 Sorry, I'm about to send a PR.
-
----
-
-_Referenced in [astral-sh/uv#15468](../../astral-sh/uv/pulls/15468.md) on 2025-08-23 09:57_
 
 ---
 

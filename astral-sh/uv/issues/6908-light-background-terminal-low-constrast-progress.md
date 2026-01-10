@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-01T09:57:09Z
 updated_at: 2025-10-30T14:16:30Z
 url: https://github.com/astral-sh/uv/issues/6908
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # light background terminal: low constrast progress bars
@@ -55,10 +55,6 @@ _Label `help wanted` added by @zanieb on 2025-10-29 14:51_
 _Comment by @zanieb on 2025-10-29 14:51_
 
 I don't know if I feel very strongly about this. I'm happy to review a change as long as it's clearly an improvement.
-
----
-
-_Referenced in [astral-sh/uv#16509](../../astral-sh/uv/pulls/16509.md) on 2025-10-30 08:46_
 
 ---
 

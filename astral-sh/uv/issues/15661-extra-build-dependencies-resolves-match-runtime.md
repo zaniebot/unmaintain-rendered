@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T13:26:58Z
 updated_at: 2025-09-04T12:34:54Z
 url: https://github.com/astral-sh/uv/issues/15661
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # extra-build-dependencies resolves match-runtime requirement even when not needed
@@ -122,14 +122,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-04 02:16_
 
 ---
 
-_Referenced in [astral-sh/uv#15671](../../astral-sh/uv/pulls/15671.md) on 2025-09-04 02:34_
-
----
-
 _Closed by @charliermarsh on 2025-09-04 12:34_
-
----
-
-_Referenced in [Aleph-Alpha-Research/eval-framework#61](../../Aleph-Alpha-Research/eval-framework/pulls/61.md) on 2025-09-09 07:25_
 
 ---

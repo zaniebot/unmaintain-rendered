@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T09:13:52Z
 updated_at: 2025-12-04T07:03:02Z
 url: https://github.com/astral-sh/uv/issues/7285
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 #  Failed to hardlink files: Issue with ruff cache
@@ -67,10 +67,6 @@ This only affects uv's performance, not the installed packages.
 
 ---
 
-_Referenced in [invoke-ai/InvokeAI#7585](../../invoke-ai/InvokeAI/issues/7585.md) on 2025-01-22 23:40_
-
----
-
 _Comment by @pplmx on 2025-02-27 08:33_
 
 Hi @konstin,
@@ -118,14 +114,6 @@ Yeah, if you want to use hardlinks, you'd need a separate cache for each drive, 
 _Comment by @charliermarsh on 2025-05-27 02:17_
 
 (If you have further questions, please redirect them to Discord or open a new issue; we prefer that folks don't comment on closed issues.)
-
----
-
-_Referenced in [rcc-uchicago/user-guide#227](../../rcc-uchicago/user-guide/pulls/227.md) on 2025-05-27 17:25_
-
----
-
-_Referenced in [astral-sh/uv#15878](../../astral-sh/uv/issues/15878.md) on 2025-09-15 16:33_
 
 ---
 

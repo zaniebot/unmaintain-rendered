@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-02T14:50:50Z
 updated_at: 2025-10-30T06:09:48Z
 url: https://github.com/astral-sh/uv/issues/5727
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Should `uv sync` sync the full workspace by default?
@@ -83,23 +83,11 @@ This has come up a few times so leaving it open for more discussion.
 
 ---
 
-_Referenced in [astral-sh/uv#6832](../../astral-sh/uv/issues/6832.md) on 2024-09-03 01:21_
-
----
-
 _Comment by @jamesbraza on 2024-09-03 01:25_
 
 I guess a good default behavior is to take a light touch, so maybe not `sync`ing the full workspace by default makes sense.
 
 Perhaps we can add a CLI/config arg to `sync`, something like `--full-workspace`, and provide decent docs on the decision
-
----
-
-_Referenced in [developmentseed/cql2-rs#40](../../developmentseed/cql2-rs/pulls/40.md) on 2024-10-10 20:32_
-
----
-
-_Referenced in [astral-sh/uv#6797](../../astral-sh/uv/issues/6797.md) on 2024-10-30 20:37_
 
 ---
 
@@ -146,10 +134,6 @@ Edit: at the very least, an option to do this (sync everything) that can be set 
 _Comment by @vvuk on 2024-10-30 22:58_
 
 I completely missed the mention of "virtual workspace" vs. project in the initial post here. (There's also no mention of "virtual workspace" on https://docs.astral.sh/uv/concepts/workspaces/) If I just remove the `[project]` section (which was a dummy section -- I thought I needed one!) then I think I'm getting the behaviour that I want, but I'm currently fighting with pytorch still.
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 23:41_
 
 ---
 

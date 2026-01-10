@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T15:33:43Z
 updated_at: 2025-11-07T16:29:20Z
 url: https://github.com/astral-sh/uv/issues/9687
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv pip install ./local/git/repo` locks the git repository, `pip install` does not
@@ -83,9 +83,5 @@ This is present still, on dirty repos (with unstaged changes).
 _Comment by @notatallshaw on 2025-11-07 16:29_
 
 @HaoZeke I would recommend opening a new issue with steps to reproduce 
-
----
-
-_Referenced in [astral-sh/uv#16665](../../astral-sh/uv/issues/16665.md) on 2025-11-10 13:51_
 
 ---

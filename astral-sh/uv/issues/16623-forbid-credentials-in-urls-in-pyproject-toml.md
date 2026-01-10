@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-06T21:54:41Z
 updated_at: 2025-11-12T15:58:21Z
 url: https://github.com/astral-sh/uv/issues/16623
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Forbid credentials in URLs in `pyproject.toml` index definitions
@@ -42,14 +42,6 @@ So, maybe we should forbid these? On the other hand, doing so might be pretty di
 ---
 
 _Label `needs-decision` added by @woodruffw on 2025-11-06 21:54_
-
----
-
-_Referenced in [astral-sh/uv#16622](../../astral-sh/uv/pulls/16622.md) on 2025-11-06 22:17_
-
----
-
-_Referenced in [astral-sh/uv#13668](../../astral-sh/uv/issues/13668.md) on 2025-11-07 15:29_
 
 ---
 

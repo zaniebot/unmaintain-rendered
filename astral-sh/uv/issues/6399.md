@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T01:55:15Z
 updated_at: 2025-11-09T04:17:47Z
 url: https://github.com/astral-sh/uv/issues/6399
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # pyright language server crashes when run from inside venv created by uv
@@ -158,10 +158,6 @@ also reproduced with the [pyright pypi package](https://pypi.org/project/pyright
 
 ---
 
-_Referenced in [DetachHead/basedpyright#613](../../DetachHead/basedpyright/pulls/613.md) on 2024-08-24 03:54_
-
----
-
 _Comment by @DetachHead on 2024-08-24 03:58_
 
 so i tried to investigate this further on my end and came to the conclusion that it's something to do with the `basedpyright-langserver.exe` wrapper binary in `.venv/Scripts`. after installing basdepyright with uv, replacing the one created by uv with the one created by pip makes it work again.
@@ -171,10 +167,6 @@ i also found that passing `shell: true` when launching the language server from 
 ---
 
 _Renamed from "language servers crash when run from inside venv created by uv" to "pyright language server crashes when run from inside venv created by uv" by @DetachHead on 2024-08-24 11:49_
-
----
-
-_Referenced in [DetachHead/basedpyright#1634](../../DetachHead/basedpyright/pulls/1634.md) on 2025-11-09 03:05_
 
 ---
 

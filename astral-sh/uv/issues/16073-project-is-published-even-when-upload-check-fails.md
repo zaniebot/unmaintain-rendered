@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T11:20:36Z
 updated_at: 2025-09-30T14:47:21Z
 url: https://github.com/astral-sh/uv/issues/16073
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Project is published even when upload check fails due to Unautherized 401
@@ -68,9 +68,5 @@ _Label `bug` added by @brainslush on 2025-09-30 11:20_
 ---
 
 _Assigned to @konstin by @zanieb on 2025-09-30 14:47_
-
----
-
-_Referenced in [astral-sh/uv#16323](../../astral-sh/uv/pulls/16323.md) on 2025-10-15 18:44_
 
 ---

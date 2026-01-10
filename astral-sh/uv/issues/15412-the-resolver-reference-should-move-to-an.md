@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T13:30:27Z
 updated_at: 2025-08-23T00:26:17Z
 url: https://github.com/astral-sh/uv/issues/15412
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # The "Resolver" reference should move to an "Internals" section in the reference
@@ -47,10 +47,6 @@ Feel free!
 _Comment by @zanieb on 2025-08-22 21:50_
 
 Note we'll want a redirect to avoid breaking links
-
----
-
-_Referenced in [astral-sh/uv#15465](../../astral-sh/uv/pulls/15465.md) on 2025-08-23 00:03_
 
 ---
 

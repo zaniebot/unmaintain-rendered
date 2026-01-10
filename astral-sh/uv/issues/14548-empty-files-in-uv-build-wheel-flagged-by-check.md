@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-10T19:50:59Z
 updated_at: 2025-09-26T20:53:00Z
 url: https://github.com/astral-sh/uv/issues/14548
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Empty files in uv_build wheel flagged by check-wheel-contents as being duplicates
@@ -120,10 +120,6 @@ _Assigned to @konstin by @zanieb on 2025-07-10 22:40_
 _Comment by @konstin on 2025-07-17 12:05_
 
 Is there a problem with the wheel from uv_build? Having multiple empty `__init__.py` is normal for Python projects, I'm not following why check-wheel-contents is raising an alarm about this.
-
----
-
-_Referenced in [dasch-swiss/dsp-tools#1886](../../dasch-swiss/dsp-tools/pulls/1886.md) on 2025-07-23 14:02_
 
 ---
 

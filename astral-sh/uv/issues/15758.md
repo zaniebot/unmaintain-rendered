@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-09T15:51:41Z
 updated_at: 2025-09-09T19:03:33Z
 url: https://github.com/astral-sh/uv/issues/15758
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # skip username and password during pyx upload when user is already authenticated to pyx
@@ -78,10 +78,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-09 15:52_
 _Comment by @charliermarsh on 2025-09-09 15:53_
 
 (I think this was an unintentional regression, likely my fault.)
-
----
-
-_Referenced in [astral-sh/uv#15759](../../astral-sh/uv/pulls/15759.md) on 2025-09-09 16:01_
 
 ---
 

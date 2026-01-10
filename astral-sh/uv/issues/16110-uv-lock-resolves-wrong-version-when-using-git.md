@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-03T05:45:20Z
 updated_at: 2025-10-03T06:11:41Z
 url: https://github.com/astral-sh/uv/issues/16110
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv lock` resolves wrong version when using git source + dynamic version field in (optional) dependency
@@ -126,9 +126,5 @@ _Comment by @pausz on 2025-10-03 05:49_
 
 Resulting lock file:
 [uv.lock.txt](https://github.com/user-attachments/files/22674949/uv.lock.txt)
-
----
-
-_Referenced in [astral-sh/uv#16343](../../astral-sh/uv/issues/16343.md) on 2025-10-17 13:15_
 
 ---

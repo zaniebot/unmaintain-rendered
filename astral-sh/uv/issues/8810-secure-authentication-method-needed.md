@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-04T15:31:58Z
 updated_at: 2025-11-13T14:02:04Z
 url: https://github.com/astral-sh/uv/issues/8810
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Secure authentication method needed
@@ -318,10 +318,6 @@ As there is already an implementation for keyring within `uv`, I would rely on i
 
 ---
 
-_Referenced in [astral-sh/uv#9165](../../astral-sh/uv/issues/9165.md) on 2024-12-08 01:38_
-
----
-
 _Comment by @farndt on 2024-12-10 14:25_
 
 > [@zanieb](https://github.com/zanieb), what are your concerns about keyring-rs? I would be interested to contribute the keyring credentials feature and would like to understand the constraints
@@ -335,10 +331,6 @@ I am not sure but you could recieve `username` as attribute of the service. For 
 ```
 The [get_attributes](crate::Entry::get_attributes) call will return the values in the
 `username`, `comment`, and `target_alias` fields (using those strings as the attribute names),```
-
----
-
-_Referenced in [astral-sh/uv#9920](../../astral-sh/uv/pulls/9920.md) on 2024-12-15 20:10_
 
 ---
 
@@ -400,10 +392,6 @@ Could we get some help? Thanks in advance!
 _Comment by @zanieb on 2025-02-05 15:55_
 
 I can confirm that I can download the file. I can't really speculate as to why they'd throw a 403 there. This looks unrelated to the topic in this issue though, please see #9452 
-
----
-
-_Referenced in [TechnologyBrewery/habushu#312](../../TechnologyBrewery/habushu/issues/312.md) on 2025-04-01 19:38_
 
 ---
 
@@ -517,10 +505,6 @@ If I login with plain text storage, `UV_PREVIEW_FEATURES=native-auth uv -v sync`
 _Comment by @zanieb on 2025-09-12 16:58_
 
 Thanks @RStreitfeld I'll look into that!
-
----
-
-_Referenced in [astral-sh/uv#15818](../../astral-sh/uv/issues/15818.md) on 2025-09-12 16:59_
 
 ---
 

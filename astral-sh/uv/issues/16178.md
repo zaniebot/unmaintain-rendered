@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-08T06:56:52Z
 updated_at: 2025-10-29T15:00:01Z
 url: https://github.com/astral-sh/uv/issues/16178
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip freeze` with `--quiet` does not output packages
@@ -56,10 +56,6 @@ _Renamed from "`uv pip freeze` combined with `--quiet` does not output packages"
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-10-29 00:54_
-
----
-
-_Referenced in [astral-sh/uv#16491](../../astral-sh/uv/pulls/16491.md) on 2025-10-29 00:57_
 
 ---
 

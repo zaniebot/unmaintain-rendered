@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-09T13:48:19Z
 updated_at: 2025-09-29T05:28:32Z
 url: https://github.com/astral-sh/uv/issues/15190
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv sync does not switch from editable to plain install when run with --no-sources
@@ -88,22 +88,6 @@ _Label `bug` added by @per11235813 on 2025-08-09 13:48_
 _Comment by @zanieb on 2025-08-09 14:52_
 
 Interesting, I can reproduce. Sounds like a bug indeed.
-
----
-
-_Referenced in [astral-sh/uv#15193](../../astral-sh/uv/issues/15193.md) on 2025-08-09 17:09_
-
----
-
-_Referenced in [astral-sh/uv#15224](../../astral-sh/uv/issues/15224.md) on 2025-08-11 18:08_
-
----
-
-_Referenced in [astral-sh/uv#15234](../../astral-sh/uv/pulls/15234.md) on 2025-08-12 09:25_
-
----
-
-_Referenced in [astral-sh/uv#15450](../../astral-sh/uv/pulls/15450.md) on 2025-08-22 11:43_
 
 ---
 

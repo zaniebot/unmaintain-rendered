@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-17T11:51:22Z
 updated_at: 2025-10-27T02:01:02Z
 url: https://github.com/astral-sh/uv/issues/15907
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv tree shows incorrect output for circular dependency trees
@@ -78,10 +78,6 @@ Python 3.12.5
 ---
 
 _Label `bug` added by @chaosct on 2025-09-17 11:51_
-
----
-
-_Referenced in [astral-sh/uv#15908](../../astral-sh/uv/pulls/15908.md) on 2025-09-17 12:14_
 
 ---
 

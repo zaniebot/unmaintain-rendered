@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-19T14:00:39Z
 updated_at: 2025-10-08T21:29:38Z
 url: https://github.com/astral-sh/uv/issues/14746
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv tool install --in` to add packages to an existing tool environment
@@ -102,10 +102,6 @@ _Comment by @pygarap on 2025-07-22 22:39_
 _Comment by @zanieb on 2025-07-23 00:09_
 
 The concept of injecting dependencies into an existing environment is against our design goal of having declarative environments. That's why it's not a part of the interface, and that's why a declarative interface and backend for tools feels like the solution. It's plausible something similar to what you want could come after #12533, but I'm wary of adding imperative interfaces before there's a user-facing declarative backend for that information.
-
----
-
-_Referenced in [astral-sh/uv#15330](../../astral-sh/uv/issues/15330.md) on 2025-08-19 20:49_
 
 ---
 

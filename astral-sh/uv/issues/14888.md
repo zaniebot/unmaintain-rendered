@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-25T10:35:53Z
 updated_at: 2025-09-05T21:13:01Z
 url: https://github.com/astral-sh/uv/issues/14888
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # activate.nu is incompatible with nushell 0.106.0
@@ -79,23 +79,11 @@ Thanks for the report!
 
 ---
 
-_Referenced in [astral-sh/uv#14914](../../astral-sh/uv/pulls/14914.md) on 2025-07-26 06:12_
-
----
-
-_Referenced in [astral-sh/uv#14917](../../astral-sh/uv/issues/14917.md) on 2025-07-26 19:33_
-
----
-
 _Comment by @2bndy5 on 2025-08-14 02:54_
 
 bump.
 
 I was just about to file this as well.
-
----
-
-_Referenced in [astral-sh/uv#15272](../../astral-sh/uv/pulls/15272.md) on 2025-08-14 08:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-12T19:49:52Z
 updated_at: 2025-10-15T20:42:15Z
 url: https://github.com/astral-sh/uv/issues/14580
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv tree --upgradable
@@ -81,10 +81,6 @@ That looks like it might do what I want. Thank you. I'm gonna close this issue a
 ---
 
 _Closed by @ajslater on 2025-07-12 23:19_
-
----
-
-_Referenced in [astral-sh/uv#15102](../../astral-sh/uv/issues/15102.md) on 2025-08-06 10:08_
 
 ---
 

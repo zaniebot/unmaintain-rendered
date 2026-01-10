@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-22T15:53:37Z
 updated_at: 2025-08-24T00:14:31Z
 url: https://github.com/astral-sh/uv/issues/15457
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv run --active seems redundant?
@@ -261,9 +261,5 @@ Perfect, thanks for you help. It might make sense to reflect the distinction beh
 ---
 
 _Closed by @AlKhrulev on 2025-08-24 00:14_
-
----
-
-_Referenced in [vibrantlabsai/ragas#2479](../../vibrantlabsai/ragas/issues/2479.md) on 2025-12-09 14:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-10T13:51:39Z
 updated_at: 2025-11-12T14:06:15Z
 url: https://github.com/astral-sh/uv/issues/16665
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `uv pip install` locking git repository, while `pip` does not
@@ -172,9 +172,5 @@ Thanks for the pointer, this was indeed the issue! I fixed it by manually handli
 ---
 
 _Closed by @Luthaf on 2025-11-12 14:06_
-
----
-
-_Referenced in [metatensor/metatensor#1010](../../metatensor/metatensor/pulls/1010.md) on 2025-11-13 10:33_
 
 ---

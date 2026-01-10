@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-17T18:28:07Z
 updated_at: 2025-09-19T13:50:40Z
 url: https://github.com/astral-sh/uv/issues/15917
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Support `tool.hatch.build.dev-mode-dirs` without requiring project dependencies to be installed
@@ -111,9 +111,5 @@ I see - that's fair.
 Can this be supported with the uv build backend? Or is it already supported?
 
 If so, I can consider switching 👀 
-
----
-
-_Referenced in [DavidVujic/python-polylith#376](../../DavidVujic/python-polylith/issues/376.md) on 2025-09-22 21:57_
 
 ---

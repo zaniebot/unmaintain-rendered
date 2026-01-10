@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T17:16:36Z
 updated_at: 2025-09-23T17:27:57Z
 url: https://github.com/astral-sh/uv/issues/7036
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Can't use tkinter with new venv set up with uv
@@ -131,10 +131,6 @@ for comfort I've then just put the var in my .env file which gets automatically 
 
 ---
 
-_Referenced in [astral-sh/uv#7848](../../astral-sh/uv/issues/7848.md) on 2024-10-01 16:25_
-
----
-
 _Comment by @astrojuanlu on 2024-10-16 07:24_
 
 The quirks page says
@@ -239,10 +235,6 @@ Maybe uv can populate the two environmental variable by default?
 
 ---
 
-_Referenced in [pyinstaller/pyinstaller#8849](../../pyinstaller/pyinstaller/issues/8849.md) on 2024-10-24 14:33_
-
----
-
 _Comment by @sonotley on 2024-10-27 19:26_
 
 So... expanding on the workaround so it works on all platforms, doesn't clobber existing env vars, might work with tk 8.7+, and doesn't bother doing anything if tk is actually working already (given that just because you used uv to write your library there's no guarantee it will be run using the standalone Python builds that uv uses)... we have something like this.
@@ -293,18 +285,6 @@ _Comment by @harrylaulau on 2024-11-09 16:17_
 This issue is mentioned in #6893 
 
 Seems like Tkinter is just unusable for now.
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
-_Referenced in [astral-sh/uv#9715](../../astral-sh/uv/issues/9715.md) on 2024-12-08 09:18_
 
 ---
 
@@ -477,14 +457,6 @@ You can `uv python install --reinstall <version>`
 
 ---
 
-_Referenced in [astral-sh/uv#10270](../../astral-sh/uv/issues/10270.md) on 2025-01-02 10:07_
-
----
-
-_Referenced in [astral-sh/uv#10536](../../astral-sh/uv/issues/10536.md) on 2025-01-12 08:42_
-
----
-
 _Comment by @Satge96 on 2025-02-17 07:15_
 
 I use uv 0.5.30 and updated all the python installs. Still i get the following error:
@@ -492,14 +464,6 @@ I use uv 0.5.30 and updated all the python installs. Still i get the following e
 ImportError: cannot import name 'Variable' from 'tkinter' (unknown location)
 
 Is this related?
-
----
-
-_Referenced in [astral-sh/python-build-standalone#146](../../astral-sh/python-build-standalone/issues/146.md) on 2025-02-28 07:58_
-
----
-
-_Referenced in [oraios/serena#58](../../oraios/serena/issues/58.md) on 2025-04-14 14:07_
 
 ---
 
@@ -546,14 +510,6 @@ I reinstalled the version i am currently using and then resynched my venv so
 
 ---
 
-_Referenced in [actions/setup-python#1102](../../actions/setup-python/issues/1102.md) on 2025-05-20 05:43_
-
----
-
-_Referenced in [niosh-mining/obsplus#282](../../niosh-mining/obsplus/pulls/282.md) on 2025-06-10 19:10_
-
----
-
 _Comment by @DeflateAwning on 2025-06-11 17:01_
 
 To anyone stumbling on this in the future, the process that worked for my team is:
@@ -567,18 +523,6 @@ To test:
 1. Activate the virtual environment: `source .venv/bin/activate`
 2. Run `python -m tkinter`
 3. You should see a basic Tk popup window.
-
----
-
-_Referenced in [ndegroot/transcribetools#8](../../ndegroot/transcribetools/issues/8.md) on 2025-07-08 10:27_
-
----
-
-_Referenced in [astral-sh/uv#10340](../../astral-sh/uv/issues/10340.md) on 2025-08-08 21:29_
-
----
-
-_Referenced in [StraReal/Cryptic#19](../../StraReal/Cryptic/issues/19.md) on 2025-09-16 14:22_
 
 ---
 
@@ -641,21 +585,5 @@ export TK_LIBRARY="$HOME"/.local/share/uv/python/cpython-3.11.6-macos-aarch64-no
 ```
 
 But I don't want to manually pollute my shell with environment variables to make Python work, it would be better if the uv venv made tkinter work out of the box.
-
----
-
-_Referenced in [tonkintaylor/rastr#192](../../tonkintaylor/rastr/issues/192.md) on 2025-09-29 21:19_
-
----
-
-_Referenced in [khaeru/genno#179](../../khaeru/genno/pulls/179.md) on 2025-10-13 22:21_
-
----
-
-_Referenced in [Ev2geny/Sberbank2Excel#74](../../Ev2geny/Sberbank2Excel/issues/74.md) on 2025-10-29 11:41_
-
----
-
-_Referenced in [Ev2geny/Sberbank2Excel#75](../../Ev2geny/Sberbank2Excel/issues/75.md) on 2025-10-29 14:55_
 
 ---

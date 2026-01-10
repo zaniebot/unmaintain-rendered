@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-25T04:02:27Z
 updated_at: 2025-08-27T21:29:47Z
 url: https://github.com/astral-sh/uv/issues/15508
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip install` should support remote `pyproject.toml` files
@@ -114,9 +114,5 @@ Kinda janky. It seems much more elegant to be able to use `uv` directly like:
 ```
 uv pip install -r https://github.com/user/repo/pyproject.toml
 ```
-
----
-
-_Referenced in [astral-sh/uv#15615](../../astral-sh/uv/pulls/15615.md) on 2025-09-01 04:07_
 
 ---

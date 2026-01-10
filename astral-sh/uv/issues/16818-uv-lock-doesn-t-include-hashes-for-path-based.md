@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-22T20:23:02Z
 updated_at: 2025-11-26T01:05:59Z
 url: https://github.com/astral-sh/uv/issues/16818
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # `uv.lock` doesn't include hashes for path-based wheels
@@ -124,10 +124,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-11-23 20:27_
 _Comment by @charliermarsh on 2025-11-23 20:27_
 
 I figured this out. The wheels get filtered out because they don’t match the required Python version, so it ends up emitting an invalid lockfile. We should error in the resolver.
-
----
-
-_Referenced in [astral-sh/uv#16824](../../astral-sh/uv/pulls/16824.md) on 2025-11-23 21:08_
 
 ---
 

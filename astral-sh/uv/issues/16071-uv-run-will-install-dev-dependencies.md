@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T09:47:22Z
 updated_at: 2025-10-02T18:10:48Z
 url: https://github.com/astral-sh/uv/issues/16071
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv run will install dev dependencies
@@ -63,9 +63,5 @@ _Closed by @charliermarsh on 2025-10-02 18:10_
 _Comment by @charliermarsh on 2025-10-02 18:10_
 
 You can also remove `dev` from the list of default groups: https://docs.astral.sh/uv/reference/settings/#default-groups
-
----
-
-_Referenced in [astral-sh/uv#16994](../../astral-sh/uv/issues/16994.md) on 2025-12-05 05:21_
 
 ---

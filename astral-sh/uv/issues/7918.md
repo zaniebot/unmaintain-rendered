@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-04T09:47:39Z
 updated_at: 2025-12-03T00:56:24Z
 url: https://github.com/astral-sh/uv/issues/7918
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # hardlinking dependencies causes issues when trying to delete a `.venv` via python on Windows
@@ -273,10 +273,6 @@ _Comment by @linde12 on 2024-10-06 17:55_
 > (I'm okay with copy by default as long as [Microsoft brings automatic CoW to Dev Drive](https://devblogs.microsoft.com/engineering-at-microsoft/copy-on-write-in-win32-api-early-access/).)
 
 I was actually reading the same post the other day, but was confused as to why we were seeing different behaviors. Especially when i was using `strace` :eyes: Copying the `.pyd` might be the least bad fix IMO
-
----
-
-_Referenced in [astral-sh/uv#7990](../../astral-sh/uv/issues/7990.md) on 2024-10-08 13:15_
 
 ---
 

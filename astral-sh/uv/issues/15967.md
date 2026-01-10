@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-21T06:43:20Z
 updated_at: 2025-09-22T23:48:00Z
 url: https://github.com/astral-sh/uv/issues/15967
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # The command is not in PATH if `--no-cache` is used in `uv tool run`
@@ -55,10 +55,6 @@ _Label `bug` added by @monosans on 2025-09-21 06:43_
 
 ---
 
-_Referenced in [astral-sh/uv#15977](../../astral-sh/uv/pulls/15977.md) on 2025-09-22 05:00_
-
----
-
 _Comment by @my1e5 on 2025-09-22 10:27_
 
 Getting the same on macOS
@@ -70,18 +66,6 @@ $ uvx --with uv==0.8.19 uv tool run --no-cache ty --version
 error: Failed to spawn: `ty`
   Caused by: No such file or directory (os error 2)
 ```
-
----
-
-_Referenced in [astral-sh/uv#15987](../../astral-sh/uv/issues/15987.md) on 2025-09-22 16:42_
-
----
-
-_Referenced in [astral-sh/uv#15989](../../astral-sh/uv/issues/15989.md) on 2025-09-22 18:58_
-
----
-
-_Referenced in [astral-sh/uv#15990](../../astral-sh/uv/pulls/15990.md) on 2025-09-22 20:05_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-17T22:36:17Z
 updated_at: 2025-09-04T18:37:25Z
 url: https://github.com/astral-sh/uv/issues/15334
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Python installed via uv doesn't work with tox
@@ -136,30 +136,14 @@ It looks like the only problem was the missing `pip` in the local `.venv`
 
 ---
 
-_Referenced in [astral-sh/uv#15517](../../astral-sh/uv/issues/15517.md) on 2025-08-26 01:24_
-
----
-
 _Comment by @konstin on 2025-08-26 08:39_
 
 The underlying problem is https://github.com/astral-sh/python-build-standalone/issues/380, which tox seems to run into. Does it work if you use https://github.com/tox-dev/tox-uv instead?
 
 ---
 
-_Referenced in [typeddjango/django-stubs#329](../../typeddjango/django-stubs/issues/329.md) on 2025-09-02 11:37_
-
----
-
 _Comment by @BeRT2me on 2025-09-04 18:37_
 
 Can confirm that using `tox-uv` instead works. 
-
----
-
-_Referenced in [astral-sh/python-build-standalone#801](../../astral-sh/python-build-standalone/issues/801.md) on 2025-09-18 15:46_
-
----
-
-_Referenced in [NLeSC/python-template#703](../../NLeSC/python-template/pulls/703.md) on 2025-11-23 00:32_
 
 ---

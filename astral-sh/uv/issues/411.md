@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-11-13T13:26:35Z
 updated_at: 2025-12-02T09:50:12Z
 url: https://github.com/astral-sh/uv/issues/411
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Add support for a JSON output format for machine readable output throughout uv
@@ -50,18 +50,6 @@ I'd love it, too :)
 
 ---
 
-_Referenced in [astral-sh/uv#1442](../../astral-sh/uv/issues/1442.md) on 2024-02-17 11:36_
-
----
-
-_Referenced in [astral-sh/uv#3021](../../astral-sh/uv/issues/3021.md) on 2024-04-15 11:52_
-
----
-
-_Referenced in [astral-sh/uv#3199](../../astral-sh/uv/issues/3199.md) on 2024-04-25 12:37_
-
----
-
 _Comment by @zanieb on 2024-07-01 21:30_
 
 https://github.com/astral-sh/uv/issues/3199 has relevant context for implementing this in the `uv pip` interfaces
@@ -80,45 +68,9 @@ _Label `cli` added by @zanieb on 2024-07-01 21:30_
 
 ---
 
-_Referenced in [astral-sh/uv#4711](../../astral-sh/uv/issues/4711.md) on 2024-07-01 21:30_
-
----
-
-_Referenced in [astral-sh/uv#9128](../../astral-sh/uv/issues/9128.md) on 2024-11-14 19:41_
-
----
-
-_Referenced in [moreati/ansible-uv#2](../../moreati/ansible-uv/issues/2.md) on 2024-11-29 22:09_
-
----
-
-_Referenced in [astral-sh/uv#10219](../../astral-sh/uv/issues/10219.md) on 2024-12-29 16:35_
-
----
-
-_Referenced in [astral-sh/uv#10448](../../astral-sh/uv/pulls/10448.md) on 2025-01-09 22:03_
-
----
-
-_Referenced in [astral-sh/uv#10596](../../astral-sh/uv/pulls/10596.md) on 2025-01-14 14:11_
-
----
-
-_Referenced in [astral-sh/uv#11121](../../astral-sh/uv/issues/11121.md) on 2025-01-31 22:21_
-
----
-
 _Comment by @robinjhuang on 2025-01-31 23:59_
 
 Would love to have this for non-interactive terminals! Any idea when this will be implemented? @Gankra 
-
----
-
-_Referenced in [astral-sh/uv#11525](../../astral-sh/uv/issues/11525.md) on 2025-02-14 22:12_
-
----
-
-_Referenced in [astral-sh/uv#11698](../../astral-sh/uv/issues/11698.md) on 2025-02-21 17:30_
 
 ---
 
@@ -150,14 +102,6 @@ https://github.com/astral-sh/uv/issues/11121
 
 ---
 
-_Referenced in [astral-sh/uv#12392](../../astral-sh/uv/issues/12392.md) on 2025-03-22 23:27_
-
----
-
-_Referenced in [astral-sh/uv#12387](../../astral-sh/uv/issues/12387.md) on 2025-03-23 11:41_
-
----
-
 _Comment by @robinjhuang on 2025-05-06 06:40_
 
 Is this still planned?
@@ -170,35 +114,11 @@ Yep!
 
 ---
 
-_Referenced in [astral-sh/uv#13633](../../astral-sh/uv/issues/13633.md) on 2025-05-24 00:28_
-
----
-
-_Referenced in [astral-sh/uv#13276](../../astral-sh/uv/issues/13276.md) on 2025-06-13 12:01_
-
----
-
-_Referenced in [astral-sh/uv#14020](../../astral-sh/uv/issues/14020.md) on 2025-06-13 12:03_
-
----
-
 _Renamed from "Output format json" to "Add support for a JSON output format for machine readable output throughout uv" by @zanieb on 2025-06-13 12:03_
 
 ---
 
 _Label `tracking` added by @zanieb on 2025-06-13 12:06_
-
----
-
-_Referenced in [astral-sh/uv#5279](../../astral-sh/uv/issues/5279.md) on 2025-06-13 12:11_
-
----
-
-_Referenced in [astral-sh/uv#14455](../../astral-sh/uv/issues/14455.md) on 2025-07-04 07:37_
-
----
-
-_Referenced in [prefix-dev/pixi#4130](../../prefix-dev/pixi/issues/4130.md) on 2025-08-01 18:23_
 
 ---
 

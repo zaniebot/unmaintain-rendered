@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T07:21:17Z
 updated_at: 2025-10-13T07:55:14Z
 url: https://github.com/astral-sh/uv/issues/1737
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Performance with large git repos
@@ -77,10 +77,6 @@ So I think (I've not mesured rigorously) that with a cold cache, uv is slower th
 
 ---
 
-_Referenced in [scverse/scverse-tutorials#60](../../scverse/scverse-tutorials/issues/60.md) on 2025-03-17 21:08_
-
----
-
 _Comment by @flying-sheep on 2025-03-18 13:56_
 
 > but when the git db cache is pre-populated, subsequent operations will be faster.
@@ -98,10 +94,6 @@ So uv should definitely do that, unless I’m missing something.
 _Comment by @charliermarsh on 2025-03-18 13:58_
 
 Yeah, we tried it here: https://github.com/astral-sh/uv/pull/3950. It just hasn't been done.
-
----
-
-_Referenced in [astral-sh/uv#3287](../../astral-sh/uv/issues/3287.md) on 2025-06-06 12:22_
 
 ---
 

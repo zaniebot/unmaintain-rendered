@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-17T20:22:48Z
 updated_at: 2025-11-04T17:29:07Z
 url: https://github.com/astral-sh/uv/issues/16349
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Alpine Docker image failing to run Python libraries due to mismatched gnu vs musl libraries
@@ -304,10 +304,6 @@ I actually did see this, and paired with being blocked by this issue, I decided 
 ---
 
 _Closed by @TaylorZowtuk on 2025-10-19 17:33_
-
----
-
-_Referenced in [numpy/numpy#30024](../../numpy/numpy/issues/30024.md) on 2025-10-19 17:45_
 
 ---
 

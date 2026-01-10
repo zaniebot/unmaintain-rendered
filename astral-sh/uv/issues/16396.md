@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-21T17:59:49Z
 updated_at: 2025-11-06T02:28:23Z
 url: https://github.com/astral-sh/uv/issues/16396
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv sync includes packages from excluded dependency group when using `--no-group`/`--only-group`
@@ -77,10 +77,6 @@ uv add --dev numpy
 uv run python -c "import typer"  # works
 uv run --no-dev python -c "import numpy"  # works but should not ?
 ```
-
----
-
-_Referenced in [acoular/acoular#548](../../acoular/acoular/pulls/548.md) on 2025-10-24 10:37_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-24T15:16:46Z
 updated_at: 2025-10-29T18:27:54Z
 url: https://github.com/astral-sh/uv/issues/16438
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Any plans to expand the capabilities of `uv build` to allow more control over sdist and wheel contents?
@@ -48,9 +48,5 @@ _Comment by @konstin on 2025-10-29 18:27_
 While we don't plan to keep the uv build backend fixed, there are no plans for the immediate future to support these items. For project layout and inclusion, we try to keep the configuration simple and hard to get wrong by being more restrictive about the directory structure.
 
 Building extensions modules may be supported in the future, currently we recommend using a build backend specializing in your programming language and build tool. It's also possible to split between a native `-core` package and a pure Python library that uses the core package.
-
----
-
-_Referenced in [mkniewallner/migrate-to-uv#27](../../mkniewallner/migrate-to-uv/issues/27.md) on 2025-11-15 11:59_
 
 ---

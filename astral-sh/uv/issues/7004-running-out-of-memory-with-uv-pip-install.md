@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T10:39:34Z
 updated_at: 2025-11-12T18:06:07Z
 url: https://github.com/astral-sh/uv/issues/7004
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Running out of memory with uv pip install
@@ -253,10 +253,6 @@ Can you consider a CI mode (e.g. via an env variable) or some other settings tha
 _Comment by @zanieb on 2025-02-27 14:49_
 
 We can look into it, but unless we have a strong understanding of what's driving memory usage we don't know if there will be an easy lever to reduce it.
-
----
-
-_Referenced in [astral-sh/uv#15279](../../astral-sh/uv/pulls/15279.md) on 2025-08-14 13:54_
 
 ---
 

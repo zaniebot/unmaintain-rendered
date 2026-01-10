@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-20T11:26:12Z
 updated_at: 2025-11-07T06:34:51Z
 url: https://github.com/astral-sh/uv/issues/16372
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # `uv pip compile` is pinning cyclic dependecies to oldest released version
@@ -49,14 +49,6 @@ linux GHA
 ---
 
 _Label `bug` added by @Czaki on 2025-10-20 11:26_
-
----
-
-_Referenced in [napari/napari#8310](../../napari/napari/pulls/8310.md) on 2025-10-20 11:28_
-
----
-
-_Referenced in [napari/napari-plugin-manager#188](../../napari/napari-plugin-manager/pulls/188.md) on 2025-10-20 11:32_
 
 ---
 
@@ -107,9 +99,5 @@ It would be incorrect for us to strip the circular dependency by default, even i
 _Comment by @Czaki on 2025-11-07 06:34_
 
 As I read, the exclude from #16528 will exclude the package from installation, but documentation do not mention anything about local package. Does put `napari` in exclude (for example via `UV_EXCLUDE` env variable) will prevent from install napari using `pip install .` in root of project? 
-
----
-
-_Referenced in [astral-sh/uv#16844](../../astral-sh/uv/issues/16844.md) on 2025-11-25 14:13_
 
 ---

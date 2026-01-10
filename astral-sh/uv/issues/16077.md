@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T17:31:40Z
 updated_at: 2025-10-03T19:36:10Z
 url: https://github.com/astral-sh/uv/issues/16077
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Version `0.8.0` introduced bug in python discovery on Windows
@@ -219,10 +219,6 @@ Not sure now if this is a bug or documentation issue...
 _Comment by @zanieb on 2025-09-30 22:11_
 
 We can adjust the logic to account for that case. uv currently assumes complete control of that directory, yeah.
-
----
-
-_Referenced in [astral-sh/uv#16080](../../astral-sh/uv/pulls/16080.md) on 2025-09-30 22:18_
 
 ---
 

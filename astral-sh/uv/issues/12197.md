@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T21:06:14Z
 updated_at: 2025-09-16T20:30:45Z
 url: https://github.com/astral-sh/uv/issues/12197
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Improve devcontainer experience, particularly when switching from pip to uv.
@@ -272,10 +272,6 @@ Interesting... we'll need to look into that. I wonder if that's why we get a lin
 
 ---
 
-_Referenced in [astral-sh/uv#12291](../../astral-sh/uv/issues/12291.md) on 2025-03-18 17:53_
-
----
-
 _Comment by @jtkiley on 2025-03-24 15:52_
 
 It's probably going to take a bit for me to circle back to more experimentation on this, but I did run across something adjacent that appears interesting.
@@ -283,14 +279,6 @@ It's probably going to take a bit for me to circle back to more experimentation 
 It looks like Microsoft is developing an extension ([currently experimental](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-python-envs)) to handle environments and package management, with the idea being that it will provide a GUI and infrastructure for other extensions that can add support for their tools. In particular, it appears that some built in functionality uses uv if available, and that they're expecting a community extension beyond that (see https://github.com/microsoft/vscode-python-environments/issues/79).
 
 I wonder if this will eventually help clean up at least some the new devcontainer friction. On top of that, a GUI for packages (especially if it's modifying configuration to keep sync between the state of the devcontainer and what a rebuild would produce) would be a big quality of life improvement for the new users I work with (see also, right click-"Add to devcontainer.json" for VSCode extensions). A common question that I answer with an informal demo is how to take the workshop devcontainer/requirements and modify them for their own projects.
-
----
-
-_Referenced in [DiamondLightSource/python-copier-template#245](../../DiamondLightSource/python-copier-template/issues/245.md) on 2025-03-28 10:56_
-
----
-
-_Referenced in [RISE-Maritime/zenoh-cli#68](../../RISE-Maritime/zenoh-cli/pulls/68.md) on 2025-06-17 08:02_
 
 ---
 
@@ -421,10 +409,6 @@ I also built a version with poetry. It's a mixed story.
 3. Fresh devcontainer use case. If I open VS Code, Cmd-Shift-P, add devcontainer configuration files, choose the Python image, and add the uv feature, where do I go from there once the container is built? I'm using that post start check to provide a direction via terminal message. A better alternative may be if uv (via a command) can detect this case (in a devcontainer that doesn't have pyproject.toml) and set an environment variable, otherwise `uv sync`. Then, the uv extension checks that environment variable (or other communication method) and launches a VS Code extension walkthrough. Alternatives could be generating a markdown file and/or providing a web guide. It's different enough from the standard "getting started" use case.
 4. Caching. I didn't get very deep into this, but it's noticable that uv downloads everything on every rebuild (appears that poetry does, too), and pip does not.
 
-
----
-
-_Referenced in [astral-sh/uv#15787](../../astral-sh/uv/issues/15787.md) on 2025-09-13 17:13_
 
 ---
 

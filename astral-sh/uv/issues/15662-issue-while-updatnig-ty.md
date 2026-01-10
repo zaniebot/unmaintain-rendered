@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T13:40:27Z
 updated_at: 2025-09-03T16:12:17Z
 url: https://github.com/astral-sh/uv/issues/15662
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Issue while updatnig `ty`
@@ -113,10 +113,6 @@ It won't upgrade there because you've pinned a specific version at install time.
 
 ---
 
-_Referenced in [astral-sh/uv#15665](../../astral-sh/uv/issues/15665.md) on 2025-09-03 15:04_
-
----
-
 _Comment by @klonuo on 2025-09-03 15:58_
 
 I found the issue while trying now to update uv: 
@@ -138,10 +134,6 @@ That indeed sounds like they're improperly installed uv such that it wasn't isol
 _Comment by @klonuo on 2025-09-03 16:03_
 
 They added their folder in PATH. Didn't cleanup by themselves even after uninstall
-
----
-
-_Referenced in [langflow-ai/langflow#9678](../../langflow-ai/langflow/issues/9678.md) on 2025-09-03 16:11_
 
 ---
 

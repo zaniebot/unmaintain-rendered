@@ -3,21 +3,21 @@ number: 16851
 title: Allow configuring a minimum release age for package resolution
 type: issue
 state: closed
-author: majutsushi
+author: janlarres
 labels:
   - enhancement
 assignees: []
 created_at: 2025-11-25T21:01:49Z
 updated_at: 2025-11-25T22:09:45Z
 url: https://github.com/astral-sh/uv/issues/16851
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Allow configuring a minimum release age for package resolution
 
 ---
 
-_Issue opened by @majutsushi on 2025-11-25 21:01_
+_Issue opened by @janlarres on 2025-11-25 21:01_
 
 ### Summary
 
@@ -37,7 +37,7 @@ _No response_
 
 ---
 
-_Label `enhancement` added by @majutsushi on 2025-11-25 21:01_
+_Label `enhancement` added by @janlarres on 2025-11-25 21:01_
 
 ---
 
@@ -47,12 +47,12 @@ I believe this is covered in https://github.com/astral-sh/uv/issues/14992.
 
 ---
 
-_Comment by @majutsushi on 2025-11-25 22:09_
+_Comment by @janlarres on 2025-11-25 22:09_
 
 You're right, I missed that in my search of previous issues somehow.
 
 ---
 
-_Closed by @majutsushi on 2025-11-25 22:09_
+_Closed by @janlarres on 2025-11-25 22:09_
 
 ---

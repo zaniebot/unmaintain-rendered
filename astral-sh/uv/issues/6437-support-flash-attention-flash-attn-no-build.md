@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T14:04:48Z
 updated_at: 2025-10-28T14:32:51Z
 url: https://github.com/astral-sh/uv/issues/6437
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Support flash attention `flash-attn --no-build-isolation` with `uv sync`
@@ -167,10 +167,6 @@ You can include wheel and setup tools in uv add I think
 
 ---
 
-_Referenced in [astral-sh/uv#6607](../../astral-sh/uv/pulls/6607.md) on 2024-08-25 16:00_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 16:02_
 
 ---
@@ -297,21 +293,9 @@ It is a part of the wheel's cache key. The problem is when we're checking if the
 
 ---
 
-_Referenced in [astral-sh/uv#15248](../../astral-sh/uv/issues/15248.md) on 2025-08-13 03:42_
-
----
-
 _Comment by @zanieb on 2025-08-13 03:43_
 
 We're tracking that in https://github.com/astral-sh/uv/issues/15218
-
----
-
-_Referenced in [Machine-Learning-for-Medical-Language/cnlp_llm#43](../../Machine-Learning-for-Medical-Language/cnlp_llm/issues/43.md) on 2025-08-24 03:46_
-
----
-
-_Referenced in [embeddings-benchmark/mteb#3240](../../embeddings-benchmark/mteb/issues/3240.md) on 2025-10-02 17:33_
 
 ---
 
@@ -575,9 +559,5 @@ Thanks a lot!
 
 
 
-
----
-
-_Referenced in [NVlabs/earth2grid#57](../../NVlabs/earth2grid/issues/57.md) on 2025-10-28 23:16_
 
 ---

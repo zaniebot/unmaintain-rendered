@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T14:14:28Z
 updated_at: 2025-09-24T09:51:04Z
 url: https://github.com/astral-sh/uv/issues/8527
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # `uv pip sync pyproject.toml` does not install all dependencies
@@ -117,10 +117,6 @@ However, `uv pip sync pyproject.toml` as described [in the documentation](https:
 _Comment by @orishamir on 2025-03-06 09:39_
 
 Why should `uv sync` include dependencies but not `uv pip sync`? What is the value of syncing without dependencies?
-
----
-
-_Referenced in [KCL-BMEIS/UltraFlwr#49](../../KCL-BMEIS/UltraFlwr/issues/49.md) on 2025-04-28 19:00_
 
 ---
 

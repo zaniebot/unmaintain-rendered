@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-04T05:00:30Z
 updated_at: 2025-10-06T10:34:52Z
 url: https://github.com/astral-sh/uv/issues/16122
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # uv does not use system site packages like `tree-sitter-*`
@@ -211,10 +211,6 @@ pip install .
 ```
 
 (I noticed that those commands weren't given here as part of the reproduction steps, I assumed that you might have forgotten to add them)
-
----
-
-_Referenced in [termux/termux-packages#26762](../../termux/termux-packages/issues/26762.md) on 2025-10-04 05:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T17:19:54Z
 updated_at: 2025-11-20T18:09:43Z
 url: https://github.com/astral-sh/uv/issues/8178
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # uv init: Project layouts, defaults and terminology
@@ -291,10 +291,6 @@ Also, while I don't disagree with @clbarnes 's justification of `hello.py` (maki
 
 ---
 
-_Referenced in [astral-sh/uv#11192](../../astral-sh/uv/pulls/11192.md) on 2025-02-03 19:55_
-
----
-
 _Comment by @chrish42 on 2025-02-11 16:25_
 
 Also coming here because I love the `uv` experience overall... except for its package layout creation options, which I found really confusing. I wanted to create a src-layout for a library that was going to be packaged and released eventually, and by far most of my time struggling with `uv` was spent trying to figure out how to get that config.
@@ -510,10 +506,6 @@ We started using a monorepo structure and we'd still like to have "apps" which d
 
 It feels like `uv init` is trying to hard to think for the user and does a lot of presets/magic. Adding a `--layout` option to give the user the flexibility to choose the project structure themself would be great.
 In addition a `--build-backend none` option could also help to disable adding a build-backend.
-
----
-
-_Referenced in [astral-sh/uv#13466](../../astral-sh/uv/issues/13466.md) on 2025-08-15 15:10_
 
 ---
 

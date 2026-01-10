@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-25T22:39:34Z
 updated_at: 2025-08-27T20:59:01Z
 url: https://github.com/astral-sh/uv/issues/15521
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UV lock contains package without artifacts (when installing `cuml-cu12`, `ray[data]`, `torch`)
@@ -153,10 +153,6 @@ environments = ["sys_platform == 'linux'"]
 
 ---
 
-_Referenced in [pex-tool/pex#2887](../../pex-tool/pex/issues/2887.md) on 2025-08-27 07:38_
-
----
-
 _Comment by @pimdh on 2025-08-27 07:42_
 
 Okay thanks. This seems consistent with the `pylock.toml` [spec](https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-wheels), which, afaict, does not state that an artifact must be available.
@@ -179,9 +175,5 @@ _Closed by @pimdh on 2025-08-27 07:42_
 _Comment by @jsirois on 2025-08-27 20:47_
 
 I've fixed Pex to deal with packages with no artifacts, but I think this is definitely a spec weakness. As an internal detail in `uv.lock` it makes total sense - uv code can deal with its own format as it sees fit. As an external detail in `pylock.toml` it seems sub-optimal if only because the spec is sub-optimal and, IIUC you can spell uninstallable for the current platform either by doing what uv does now - emit the package with no artifacts, or by simply not emitting that package at all in the lock. IOW the spec is under-specified here for, from what I can tell, is no good reason. It seems like just a confusion inducing unnecessary degree of freedom. All installers must handle both forms of absence.
-
----
-
-_Referenced in [pex-tool/pex#2888](../../pex-tool/pex/pulls/2888.md) on 2025-08-27 20:49_
 
 ---

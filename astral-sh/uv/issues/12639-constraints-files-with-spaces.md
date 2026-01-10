@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-02T21:09:48Z
 updated_at: 2025-11-09T03:16:22Z
 url: https://github.com/astral-sh/uv/issues/12639
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Constraints files with spaces
@@ -78,14 +78,6 @@ You can do `-c` multiple times. Sadly, you can't do that with an environment var
 _Comment by @charliermarsh on 2025-04-03 12:57_
 
 Clap doesn't have any way for us to differentiate in the parsing here. We'd need something like https://github.com/clap-rs/clap/discussions/3796.
-
----
-
-_Referenced in [pypa/cibuildwheel#2322](../../pypa/cibuildwheel/pulls/2322.md) on 2025-04-03 14:13_
-
----
-
-_Referenced in [astral-sh/uv#15806](../../astral-sh/uv/issues/15806.md) on 2025-09-12 10:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T08:36:09Z
 updated_at: 2025-10-30T14:37:53Z
 url: https://github.com/astral-sh/uv/issues/7487
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # dev-dependencies in workspace pyproject.toml not installed with `uv run`
@@ -198,10 +198,6 @@ I really like the idea of having the opt-in on a dependency-by-dependency basis 
 
 ---
 
-_Referenced in [astral-sh/uv#7541](../../astral-sh/uv/issues/7541.md) on 2024-09-20 11:56_
-
----
-
 _Closed by @charliermarsh on 2024-12-26 16:00_
 
 ---
@@ -228,10 +224,6 @@ _Comment by @chuikoffru on 2025-01-28 12:05_
 
 ---
 
-_Referenced in [thromer/uv-monorepo-example#1](../../thromer/uv-monorepo-example/pulls/1.md) on 2025-06-29 21:52_
-
----
-
 _Comment by @anentropic on 2025-08-12 18:27_
 
 I have the opposite problem
@@ -249,10 +241,6 @@ _Comment by @anentropic on 2025-08-12 18:29_
 ah ok, `uv sync --all-packages` does what I need
 
 as mentioned on https://github.com/astral-sh/uv/issues/7541#issuecomment-2487051795 
-
----
-
-_Referenced in [astral-sh/uv#15656](../../astral-sh/uv/issues/15656.md) on 2025-09-03 12:05_
 
 ---
 

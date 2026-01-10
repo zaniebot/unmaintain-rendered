@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-01T17:39:33Z
 updated_at: 2025-09-21T15:13:06Z
 url: https://github.com/astral-sh/uv/issues/11153
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # How to associate optional `override-dependencies` with a specific `optional-dependencies`
@@ -107,14 +107,6 @@ dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
 ```
-
----
-
-_Referenced in [stfc/janus-core#420](../../stfc/janus-core/issues/420.md) on 2025-02-14 16:30_
-
----
-
-_Referenced in [ultralytics/ultralytics#17527](../../ultralytics/ultralytics/pulls/17527.md) on 2025-03-15 14:58_
 
 ---
 

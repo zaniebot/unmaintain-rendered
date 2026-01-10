@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-02T15:35:02Z
 updated_at: 2025-10-31T03:45:28Z
 url: https://github.com/astral-sh/uv/issues/7870
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # Python interpreters inside `/.local/share/uv/python` cannot find brew libraries
@@ -74,10 +74,6 @@ _Reopened by @agustingomes-therapieland on 2024-10-02 16:15_
 ---
 
 _Closed by @agustingomes-therapieland on 2024-10-02 16:15_
-
----
-
-_Referenced in [astral-sh/uv#6971](../../astral-sh/uv/issues/6971.md) on 2024-10-02 20:14_
 
 ---
 

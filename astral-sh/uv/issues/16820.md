@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-23T00:05:24Z
 updated_at: 2025-11-23T23:29:04Z
 url: https://github.com/astral-sh/uv/issues/16820
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # "Permission denied" error inside Codex sandbox on Linux
@@ -134,9 +134,5 @@ _Comment by @zanieb on 2025-11-23 23:29_
 Yeah could you? I'm not sure about the specifics of the Codex sandbox. I'm happy to help but it seems unlikely to me that the the fix will be on our end. The specific call that's failing is probably
 
 https://github.com/astral-sh/uv/blob/107d4e0ac71540059699b6136b000ba8a616ade2/crates/uv-cache/src/lib.rs#L412-L422
-
----
-
-_Referenced in [openai/codex#7242](../../openai/codex/issues/7242.md) on 2025-11-24 13:39_
 
 ---

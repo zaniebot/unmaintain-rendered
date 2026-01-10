@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-12T19:46:51Z
 updated_at: 2025-10-09T07:03:46Z
 url: https://github.com/astral-sh/uv/issues/6042
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # [feat] `uv config` command
@@ -64,10 +64,6 @@ I'm also interested in this. Especially with the addition of multiple packages i
 
 ---
 
-_Referenced in [astral-sh/uv#8861](../../astral-sh/uv/issues/8861.md) on 2024-11-06 15:40_
-
----
-
 _Comment by @sebastian-correa on 2025-03-11 18:12_
 
 I'd like to upvote this suggestion. Is there a system to do voice my support or is it just upvoting the comment?
@@ -81,9 +77,5 @@ A flag like `git config`'s `--show-origin` would be **extremely** useful in this
 _Comment by @CharString on 2025-10-09 07:03_
 
 This feature would make issues like https://github.com/tox-dev/tox-uv/issues/253 much easier to fix. Projects down stream wouldn't have to reimplement the environment and configuration file parsing and merging.
-
----
-
-_Referenced in [tox-dev/tox-uv#254](../../tox-dev/tox-uv/pulls/254.md) on 2025-10-09 07:52_
 
 ---

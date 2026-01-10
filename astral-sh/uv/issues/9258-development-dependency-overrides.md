@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T00:10:49Z
 updated_at: 2025-10-02T19:26:52Z
 url: https://github.com/astral-sh/uv/issues/9258
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Development Dependency Overrides
@@ -224,14 +224,6 @@ override-dependencies = [
 
 ---
 
-_Referenced in [python/typeshed#12806](../../python/typeshed/pulls/12806.md) on 2025-03-07 04:20_
-
----
-
-_Referenced in [Avasam/typeshed#40](../../Avasam/typeshed/pulls/40.md) on 2025-03-07 04:39_
-
----
-
 _Comment by @watsonjj on 2025-04-23 17:14_
 
 > This works for local development, but doesn't solve my problem:
@@ -305,18 +297,6 @@ conflicts = [
 
 Some other issues with a similar topic:
 #12539 #11941 #9537 #7945 #11632 #12681 #12013
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
-
----
-
-_Referenced in [python/typeshed#13974](../../python/typeshed/issues/13974.md) on 2025-05-12 07:40_
-
----
-
-_Referenced in [python/typeshed#14085](../../python/typeshed/pulls/14085.md) on 2025-05-16 20:28_
 
 ---
 

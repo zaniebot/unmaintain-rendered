@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-03T13:40:19Z
 updated_at: 2025-12-03T13:40:19Z
 url: https://github.com/astral-sh/uv/issues/16964
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Allow configuration of uv via loaded `.env` file
@@ -30,9 +30,5 @@ When uv loads `.env` files, it does not respect `UV_*` variables within for its 
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-12-03 13:40_
-
----
-
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-03 13:40_
 
 ---

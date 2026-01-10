@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-14T17:01:56Z
 updated_at: 2025-10-15T00:57:13Z
 url: https://github.com/astral-sh/uv/issues/16297
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Python crash due to stale version
@@ -127,9 +127,5 @@ _Closed by @brian316 on 2025-10-14 23:13_
 _Comment by @zanieb on 2025-10-15 00:57_
 
 Appreciate the report nonetheless, we can always dig deeper if someone else reproduces it.
-
----
-
-_Referenced in [astral-sh/uv#16726](../../astral-sh/uv/issues/16726.md) on 2025-11-13 17:28_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-02T14:18:01Z
 updated_at: 2025-12-02T20:02:23Z
 url: https://github.com/astral-sh/uv/issues/16931
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:23:55Z
 ```
 
 # Which commit does a package on crates.io belong to?
@@ -60,10 +60,6 @@ are you planning to always use the same versions for all subcrates? if so, maybe
 _Comment by @zanieb on 2025-12-02 14:51_
 
 For now, yes. The tag is always going to be on the same commit as a uv version tag, so I think I'd rather try to find a way to just indicate the uv version in each crate when we publish 🤔 perhaps just in the READMEs
-
----
-
-_Referenced in [astral-sh/uv#16939](../../astral-sh/uv/pulls/16939.md) on 2025-12-02 19:08_
 
 ---
 

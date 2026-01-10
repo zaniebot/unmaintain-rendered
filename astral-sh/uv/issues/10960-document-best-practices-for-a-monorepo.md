@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T15:34:48Z
 updated_at: 2025-11-23T10:20:12Z
 url: https://github.com/astral-sh/uv/issues/10960
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # Document best practices for a monorepo
@@ -74,26 +74,6 @@ I'm going to move this over to the `uv` repository, this repository is just for 
 ---
 
 _Label `documentation` added by @zanieb on 2025-01-25 16:46_
-
----
-
-_Referenced in [astral-sh/uv#11070](../../astral-sh/uv/issues/11070.md) on 2025-01-30 13:50_
-
----
-
-_Referenced in [astral-sh/uv#10934](../../astral-sh/uv/issues/10934.md) on 2025-01-30 13:50_
-
----
-
-_Referenced in [astral-sh/uv#9626](../../astral-sh/uv/issues/9626.md) on 2025-01-30 13:53_
-
----
-
-_Referenced in [astral-sh/uv#8302](../../astral-sh/uv/issues/8302.md) on 2025-01-30 13:55_
-
----
-
-_Referenced in [astral-sh/uv#11095](../../astral-sh/uv/issues/11095.md) on 2025-01-30 14:19_
 
 ---
 
@@ -170,10 +150,6 @@ A nice to have would be a visualization (matrix) on workspace interdependencies 
 That is all I'm missing right now, can share more if I encounter other obstacles.
 
 I'm also looking into utilizing Dagger, as described here: [Cracking the Python Monorepo](https://gafni.dev/blog/cracking-the-python-monorepo/)
-
----
-
-_Referenced in [astral-sh/uv#6356](../../astral-sh/uv/issues/6356.md) on 2025-06-17 13:36_
 
 ---
 

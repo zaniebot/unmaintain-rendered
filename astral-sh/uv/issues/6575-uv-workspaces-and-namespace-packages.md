@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T11:26:15Z
 updated_at: 2025-11-20T00:46:08Z
 url: https://github.com/astral-sh/uv/issues/6575
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # uv workspaces and namespace packages
@@ -241,10 +241,6 @@ Which then allows to use a shared root namespace.
 
 ---
 
-_Referenced in [astral-sh/uv#11787](../../astral-sh/uv/issues/11787.md) on 2025-02-26 02:37_
-
----
-
 _Closed by @charliermarsh on 2025-03-03 03:17_
 
 ---
@@ -282,10 +278,6 @@ source = "env"
 variable = "VERSION" <- Your var here
 ```
 https://hatch.pypa.io/1.13/plugins/version-source/env/#pyprojecttoml 
-
----
-
-_Referenced in [astral-sh/uv#10628](../../astral-sh/uv/issues/10628.md) on 2025-05-14 14:41_
 
 ---
 

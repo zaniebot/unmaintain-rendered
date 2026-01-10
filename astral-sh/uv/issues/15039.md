@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-03T05:33:32Z
 updated_at: 2025-08-26T02:24:07Z
 url: https://github.com/astral-sh/uv/issues/15039
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Deepspeed in uv usage
@@ -94,10 +94,6 @@ deepspeed = ["torch"]
 ```
 
 To your `pyproject.toml`?
-
----
-
-_Referenced in [astral-sh/uv#15118](../../astral-sh/uv/issues/15118.md) on 2025-08-06 20:54_
 
 ---
 

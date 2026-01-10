@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-31T04:40:05Z
 updated_at: 2025-09-01T07:36:27Z
 url: https://github.com/astral-sh/uv/issues/15602
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # UI for gui apps completely borked
@@ -67,13 +67,5 @@ I did see that issue, which is why I didn't mention the fonts being borked as we
 _Comment by @konstin on 2025-09-01 07:36_
 
 CC @geofft for identifying whether that's the exact same problem.
-
----
-
-_Referenced in [Teriks/dgenerate#54](../../Teriks/dgenerate/issues/54.md) on 2025-09-02 12:04_
-
----
-
-_Referenced in [astral-sh/uv#15668](../../astral-sh/uv/issues/15668.md) on 2025-09-04 07:07_
 
 ---

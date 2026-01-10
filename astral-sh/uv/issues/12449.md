@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-24T19:57:13Z
 updated_at: 2025-10-14T15:24:34Z
 url: https://github.com/astral-sh/uv/issues/12449
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # exclude-newer should have an extra flag to allow it to skip over packages that don't have publish date information.
@@ -110,20 +110,8 @@ That sounds nice to me.
 
 ---
 
-_Referenced in [mlflow/mlflow#17976](../../mlflow/mlflow/pulls/17976.md) on 2025-09-26 15:15_
-
----
-
 _Comment by @ncoghlan on 2025-10-14 15:24_
 
 I just ran into this with the custom `torch` registries. Since `torch` is explicitly pinned in my use case (and I use `sources`, so it's the *only* package retrieved from the custom registry), a `supports-exclude-newer = false` option in the relevant `tool.uv.index` entries would definitely work as a resolution.
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#10](../../lmstudio-ai/venvstacks/issues/10.md) on 2025-10-14 15:43_
-
----
-
-_Referenced in [pypa/pip#13520](../../pypa/pip/pulls/13520.md) on 2025-10-15 13:35_
 
 ---

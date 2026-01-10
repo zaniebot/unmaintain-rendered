@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-17T19:37:38Z
 updated_at: 2025-09-17T21:16:12Z
 url: https://github.com/astral-sh/uv/issues/15918
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Weird behaviour when running concurrent `uv run --script` with different python versions
@@ -57,10 +57,6 @@ _Comment by @zanieb on 2025-09-17 19:47_
 Can you share verbose logs please?
 
 I'd expect us to perform some locking here per https://github.com/astral-sh/uv/pull/14153 but it's still plausible that these race since we release the lock once we're done updating the environment.
-
----
-
-_Referenced in [astral-sh/uv#15919](../../astral-sh/uv/issues/15919.md) on 2025-09-17 19:48_
 
 ---
 
@@ -273,9 +269,5 @@ I haven't contributed to UV before so I might take some time to get familiar and
 _Comment by @zanieb on 2025-09-17 21:16_
 
 Sweet, let me know if you need help.
-
----
-
-_Referenced in [astral-sh/uv#15924](../../astral-sh/uv/pulls/15924.md) on 2025-09-18 02:14_
 
 ---

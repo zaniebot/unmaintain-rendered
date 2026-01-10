@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-06T11:58:13Z
 updated_at: 2025-11-27T22:35:32Z
 url: https://github.com/astral-sh/uv/issues/13883
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:23:54Z
 ```
 
 # Stronger locking for parallel operations
@@ -80,10 +80,6 @@ I don't know if we should lock for read operations like `uv pip list`. Locking a
 
 ---
 
-_Referenced in [astral-sh/uv#13869](../../astral-sh/uv/pulls/13869.md) on 2025-06-06 12:16_
-
----
-
 _Comment by @petamas on 2025-06-06 15:17_
 
 @konstin 
@@ -136,21 +132,9 @@ Does this happen with `--link-mode copy` too, or only with `--link-mode symlink`
 
 ---
 
-_Referenced in [astral-sh/uv#14153](../../astral-sh/uv/pulls/14153.md) on 2025-06-20 14:07_
-
----
-
 _Comment by @b-phi on 2025-06-24 22:51_
 
 `--link-mode copy` was prohibitively slow in our case, but I don't remember seeing such issues there. I've checked with version 0.7.14 and no longer see these issues. Thank you!
-
----
-
-_Referenced in [astral-sh/uv#15888](../../astral-sh/uv/pulls/15888.md) on 2025-09-16 08:49_
-
----
-
-_Referenced in [astral-sh/uv#15813](../../astral-sh/uv/issues/15813.md) on 2025-09-17 14:55_
 
 ---
 

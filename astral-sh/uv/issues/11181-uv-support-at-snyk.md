@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T12:08:06Z
 updated_at: 2025-09-08T21:12:40Z
 url: https://github.com/astral-sh/uv/issues/11181
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:23:53Z
 ```
 
 # UV support at SNYK
@@ -89,10 +89,6 @@ This one is just for reference so that snyk can track, whereas `pyproject.toml` 
 
 ---
 
-_Referenced in [snyk/snyk-python-plugin#251](../../snyk/snyk-python-plugin/issues/251.md) on 2025-03-19 08:58_
-
----
-
 _Comment by @jasonslay on 2025-03-20 22:21_
 
 We are also switching over to using Snyk and flexing the workaround mentioned by @Rashik-raj.
@@ -105,10 +101,6 @@ _Comment by @jeffgabhart on 2025-04-30 13:58_
 
 Another option for those defining in `pyproject.toml`  is `uv pip compile pyproject.toml -o requirements.txt`
 Also hoping snyk starts to support the `uv.lock`
-
----
-
-_Referenced in [snyk/snyk-python-plugin#268](../../snyk/snyk-python-plugin/issues/268.md) on 2025-05-21 21:03_
 
 ---
 

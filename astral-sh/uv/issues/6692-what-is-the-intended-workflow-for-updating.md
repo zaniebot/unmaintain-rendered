@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T15:14:00Z
 updated_at: 2025-11-25T16:09:48Z
 url: https://github.com/astral-sh/uv/issues/6692
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:23:52Z
 ```
 
 # What is the intended workflow for updating dependencies with uv?
@@ -138,14 +138,6 @@ I interpreted it as that it would ignore whatever the locked version is and as l
 
 If I were right, the help page is a bit confusing then, in that uv is not ignoring the locked version (correctly). 
 
-
----
-
-_Referenced in [astral-sh/uv#2512](../../astral-sh/uv/issues/2512.md) on 2025-07-25 13:58_
-
----
-
-_Referenced in [getsentry/sentry#97818](../../getsentry/sentry/pulls/97818.md) on 2025-08-13 23:21_
 
 ---
 
