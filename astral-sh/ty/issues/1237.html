@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Union normalization performance - astral-sh/ty #1237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Union normalization performance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1237">#1237</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-09-22 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-22 22:29</div>
+            <div class="timeline-body"><p>The new collection literal inference is running into problems with the performance of <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types.rs#L10230">union type normalization</a>. Aggressive literal promotion helps avoid generating large unions, but sometime it is unavoidable. For example, <a href="https://github.com/mitmproxy/mitmproxy/blob/main/test/mitmproxy/io/test_tnetstring.py#L12">this dictionary in <code>mitmproxy</code></a>, or <a href="https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py#L391">this list in CPython</a>.</p>
+<p>I'm not sure if there's potential to improve the performance of normalization itself, or if we should fallback to a wider type if the union of the element types grows too large. It does feel like there's some exponential behavior here that should be avoidable, as the issue arises for unions that <a href="https://github.com/astral-sh/ruff/pull/20360#discussion_r2350263162">are only ~10 elements large</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @ibraheemdev on 2025-09-22 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-22 23:12</div>
+            <div class="timeline-body"><p>Trying to gather some examples. This file seems to run just fine:</p>
+<pre><code class="language-py">X = [
+    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+]
+</code></pre>
+<p>But this one hangs in debug mode:</p>
+<pre><code class="language-py">X = [
+    [0.1],
+    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+]
+</code></pre>
+<p>Both of these seem to run fine in release mode though, maybe we should run mypy-primer in release mode? The <a href="https://github.com/astral-sh/ruff/pull/20360#discussion_r2350263162">issue here</a> was still present in release mode, but I'm not able to reproduce it anymore except by disabling function literal promotion: it seems to run fine if the functions are replaced with class instances, which is strange.</p>
+<p>Checking <a href="https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py#L391">the list literal in CPython</a> still takes ~5 seconds in release mode. https://github.com/astral-sh/ruff/pull/20477 brings that down to ~1.5s, so that may be a potential path forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-23 00:13</div>
+            <div class="timeline-body"><p>I expect https://github.com/astral-sh/ruff/pull/20477/files should help a lot here, as it memoizes subtype checks, and most of the cost of union normalization is subtype checks. (The rest should be type equivalence checks, which we could also try to memoize.) Unfortunately that change currently seems to trigger some non-deterministic deadlock in multi-threaded Salsa fixpoint iteration.</p>
+<p>I think it would really be useful to know, in the smaller examples, where the exponential blow-up comes from. It is expected that union normalization is O(n^2), because we compare every new element to each existing element. But it seems like that doesn't fully account for the blow-up we see. I wonder if just taking that 10-element function literal example and printing every equivalence and subtype check would reveal where the blow-up is.</p>
+<p>The strange thing about the function literal type example is that function literal types are singletons, so subtype and equivalence checks should be extremely simple for them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-23 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>The strange thing about the function literal type example is that function literal types are singletons, so subtype and equivalence checks should be extremely simple for them.</p>
+</blockquote>
+<p>For subtyping (but not assignability), we're currently <a href="https://github.com/astral-sh/ruff/blob/edb920b4d5079e28f39a909e0c4c2d8b4b11dc7a/crates/ty_python_semantic/src/types/function.rs#L961-L967">checking if the normalization of the function types are equal</a> before checking the identity of the function literal and their signatures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-23 18:00</div>
+            <div class="timeline-body"><p>This file takes ~15s to type-check with function literal promotion disabled, in release mode. Caching <code>is_subtype_of</code> brings that down to ~1.5s, and further caching <code>is_equivalent_to</code> brings that down to ~0.15s.</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def fun1(): ...
+def fun2(): ...
+def fun3(): ...
+def fun4(): ...
+def fun5(): ...
+def fun6(): ...
+def fun7(): ...
+def fun8(): ...
+def fun9(): ...
+
+X = [
+    [fun1, 1],
+    [fun2, 1],
+    [fun3, 1],
+    [fun4, 1],
+    [fun5, 1],
+    [fun6, 1],
+    [fun7, 1],
+    [fun8, 1],
+    [fun9, 1],
+]
+
+def f[T](x: Iterable[T]): ...
+
+f(X)
+</code></pre>
+<p>There's definitely some exponential behavior here, we end up performing ~270M calls to <code>is_subtype_of</code>/<code>is_equivalent_to</code> for a list of 9 elements, from ~130M for 8 elements.</p>
+<p>However, I don't see the same exponential growth in terms of the elements of the CPython list, that one is still polynomial, so the exponential explosion may be specific to function literals (which is no longer a problem now that we perform eager promotion, at least for collection literals), and something to do with the specific signature of <code>f</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 14:31</div>
+            <div class="timeline-body"><p>All the examples here seem to have greatly improved following recent changes to our union simplification. I expect our union simplification is still at least quadratic in the worst case -- and I expect that we will still want to implement heuristics where we abort union building, instead falling back to <code>Unknown</code> or similar, in some cases with catastrophically huge unions. But ISTM that the pressure is off here to make immediate changes to improve our union simplification performance.</p>
+<p>The two big recent changes to union simplification were https://github.com/astral-sh/ruff/pull/20650 and https://github.com/astral-sh/ruff/pull/20602.</p>
+<hr />
+<blockquote>
+<p>But this one hangs in debug mode:</p>
+<pre><code class="language-py">X = [
+    [0.1],
+    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+]
+</code></pre>
+</blockquote>
+<p>This is no longer the case on <code>main</code>.</p>
+<blockquote>
+<p>Checking <a href="https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py?rgh-link-date=2025-09-22T23%3A12%3A39.000Z#L391">the list literal in CPython</a> still takes ~5 seconds in release mode. <a href="https://github.com/astral-sh/ruff/pull/20477">astral-sh/ruff#20477</a> brings that down to ~1.5s, so that may be a potential path forward.</p>
+</blockquote>
+<p>On <code>main</code>, checking the <code>Lib/test/test_ast</code> directory in CPython still takes ~6s for me in debug mode, but is now down to &lt;1s for me in release mode on <code>main</code>.</p>
+<blockquote>
+<pre><code class="language-py">from typing import reveal_type
+
+def fun1(): ...
+def fun2(): ...
+def fun3(): ...
+def fun4(): ...
+def fun5(): ...
+def fun6(): ...
+def fun7(): ...
+def fun8(): ...
+def fun9(): ...
+
+X = [
+    [fun1, 1],
+    [fun2, 1],
+    [fun3, 1],
+    [fun4, 1],
+    [fun5, 1],
+    [fun6, 1],
+    [fun7, 1],
+    [fun8, 1],
+    [fun9, 1],
+]
+
+def f[T](x: Iterable[T]): ...
+
+f(X)
+</code></pre>
+</blockquote>
+<p>This snippet now type-checks nearly instantaneously for me on <code>main</code> in both debug and release mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 00:01</div>
+            <div class="timeline-body"><p>I'm going to close this issue, as the reported cases all seem to perform well now. There are of course still likely optimizations to be made, but I'm not sure this issue is tracking anything specific anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 00:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

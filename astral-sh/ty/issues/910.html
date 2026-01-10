@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>open3d check error - astral-sh/ty #910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>open3d check error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/910">#910</a>
+        opened by <a href="https://github.com/hyhmrright">@hyhmrright</a>
+        on 2025-07-29 02:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hyhmrright">@hyhmrright</a> on 2025-07-29 02:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>uvx ty check .\mesh.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.                                   
+warning[possibly-unbound-attribute]: Attribute `geometry` on type `&lt;module 'open3d'&gt;` is possibly unbound
+  --&gt; mesh.py:21:16
+   |
+20 |     # 构建新的点云
+21 |     down_pcd = o3d.geometry.PointCloud()
+   |                ^^^^^^^^^^^^
+22 |     down_pcd.points = o3d.utility.Vector3dVector(grouped[['x', 'y', 'z']].values)
+   |
+info: rule `possibly-unbound-attribute` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-07-29 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-29 06:41</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>The <code>open3d</code> module imports <code>geometry</code> conditionally based on whether a GPU is available or not. It's either defined <a href="https://github.com/isl-org/Open3D/blob/1c48fcd897d305a121f5a8db6cabde5dd2d6526e/python/open3d/__init__.py#L70">in this branch</a> or <a href="https://github.com/isl-org/Open3D/blob/1c48fcd897d305a121f5a8db6cabde5dd2d6526e/python/open3d/__init__.py#L104">in this branch</a>. Ignoring all the other checks and some <code>try…except</code> blocks, a simplified version looks like this:</p>
+<pre><code class="language-py">__DEVICE_API__ = &quot;cpu&quot;
+
+if _pybind_cuda.open3d_core_cuda_device_count() &gt; 0:
+    # define `geometry`
+
+    __DEVICE_API__ = &quot;cuda&quot;
+
+if __DEVICE_API__ == &quot;cpu&quot;:
+    # define `geometry`
+</code></pre>
+<p>We can not statically determine whether <code>_pybind_cuda.open3d_core_cuda_device_count() &gt; 0</code> is true, so ty doesn't know if that first branch is executed.</p>
+<p>And since that first branch could have been executed, ty doesn't know whether <code>__DEVICE_API__</code> is <code>&quot;cpu&quot;</code> or <code>&quot;cuda&quot;</code>. Which is why the truthiness of the <code>__DEVICE_API__ == &quot;cpu&quot;</code> check can also not be statically determined. And consequently, we emit a <code>possibly-unbound-attribute</code> diagnostic, because we conclude that <code>geometry</code> might not be defined.</p>
+<p>In <em>theory</em> it might be possible to somehow determine that these two branches are mutually exclusive, but I don't know if any type checker can perform a sophisticated control flow analysis like this, which would require evaluating that second branch based <em>on the assumption</em> that the first branch is executed or not.</p>
+<p>That said, it might be reasonable for us to think about silencing <code>possibly-unbound-attribute</code> by default, or silencing it for attribute accesses on module literals specifically. It's easy to imagine that there are similar scenarios in which we can't fully analyze whether an attribute is definitely set or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 02:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

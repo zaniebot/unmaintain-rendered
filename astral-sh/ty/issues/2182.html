@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem inferring nested generic classes with defaults - astral-sh/ty #2182</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problem inferring nested generic classes with defaults</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2182">#2182</a>
+        opened by <a href="https://github.com/cmp0xff">@cmp0xff</a>
+        on 2025-12-23 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2025-12-23 09:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>ty</code> cannot infer nested generic classes with default values properly.</p>
+<p>https://play.ty.dev/4ec45154-7726-41f8-b65c-920188c3c124</p>
+<pre><code class="language-py">from typing import Any, Generic
+from collections.abc import Sequence
+from typing_extensions import TypeVar, Self, reveal_type
+
+_OrderableT = TypeVar(&quot;_OrderableT&quot;, default=Any)
+
+class Interval(Generic[_OrderableT]):
+    def __new__(cls, left: _OrderableT, right: _OrderableT) -&gt; Self:
+        return cls()
+
+IntervalT = TypeVar(&quot;IntervalT&quot;, bound=Interval, default=Interval)
+
+S2 = TypeVar(&quot;S2&quot;)
+
+class IntervalIndex(Generic[S2]):
+    def __new__(cls, data: Sequence[IntervalT]) -&gt; &quot;IntervalIndex[IntervalT]&quot;:
+        return cls()
+
+reveal_type(Interval(0, 1))  # type checkers all give Interval[int]
+reveal_type(IntervalIndex([Interval(0, 1)]))  # mypy gives IntervalIndex[Interval[int]], ty gives IntervalIndex[Unknown]
+</code></pre>
+<h3>Version</h3>
+<p>5ea30c4c5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-23 11:09</div>
+            <div class="timeline-body"><p>Hmm, I hoped this might be fixed by https://github.com/astral-sh/ruff/pull/21930, but it doesn't seem like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-23 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-23 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2026-01-08 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Pre-stable 1" by @carljm on 2026-01-08 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-08 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

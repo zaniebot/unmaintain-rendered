@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simplify intersections of overlapping covariant generic protocols - astral-sh/ty #1824</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>simplify intersections of overlapping covariant generic protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1824">#1824</a>
+        opened by <a href="https://github.com/danielpopescu">@danielpopescu</a>
+        on 2025-12-09 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielpopescu">@danielpopescu</a> on 2025-12-09 14:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Type error in this code</p>
+<pre><code class="language-py">def fold_left[T, U](lst: Iterable[T], init: U, f: Callable[[U, T], U]) -&gt; U:
+    def fold_left_it(it: Iterator[T], init: U, f: Callable[[U, T], U]) -&gt; U:
+        elem: T | None = next(it, None)
+        return fold_left_it(it, f(init, elem), f) if elem is not None else init
+
+    if isinstance(lst, Iterator):
+        it: Iterator[T] = lst
+
+        return fold_left_it(it, init, f)
+    return fold_left_it(iter(lst), init, f)
+
+</code></pre>
+<p>error ty     invalid-assignment    Object of type <code>Iterable[T@fold_left] &amp; Iterator[object]</code> is not assignable to <code>Iterator[T@fold_left]</code></p>
+<p>mypy and pyright work fine ....</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-09 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @carljm on 2025-12-09 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-12-09 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-09 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Iterable, Iterator, isinstance type error" to "simplify intersections of overlapping generic protocols" by @carljm on 2025-12-09 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 17:49</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Yeah, this is a bug. We should simplify the intersection <code>Iterable[T@fold_left] &amp; Iterator[object]</code> to <code>Iterator[T@fold_left]</code>.</p>
+<p>The key factor here is that both <code>Iterable</code> and <code>Iterator</code> share an <code>__iter__</code> method. This means that it is not possible for an <code>Iterable</code> of one type to also be an <code>Iterator</code> of a different type, which means we have to unify the typevars in this intersection. And since both <code>Iterable</code> and <code>Iterator</code> are covariant, we can unify them, resulting in <code>Iterable[T@fold_left] &amp; Iterator[T@fold_left]</code>, which simplifies to <code>Iterator[T@fold_left]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "simplify intersections of overlapping generic protocols" to "simplify intersections of overlapping covariant generic protocols" by @carljm on 2026-01-08 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support finding packages installed into Debian `dist-packages` directories - astral-sh/ty #1323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support finding packages installed into Debian `dist-packages` directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1323">#1323</a>
+        opened by <a href="https://github.com/Hyask">@Hyask</a>
+        on 2025-10-08 08:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Hyask">@Hyask</a> on 2025-10-08 08:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reproducer is quite simple:</p>
+<pre><code>root@ubuntu-noble:~/test# cat - &gt;test.py &lt;&lt;EOD
+import apt
+
+print(apt.apt_pkg.version_compare(&quot;1.2.3&quot;, &quot;1.2.4&quot;))
+print(apt.apt_pkg.version_compare(&quot;1.2.4&quot;, &quot;1.2.3&quot;))
+EOD
+root@ubuntu-noble:~/test# python3 test.py
+-1
+1
+root@ubuntu-noble:~/test# ty check test.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 fileserror[unresolved-import]: Cannot resolve imported module `apt`
+ --&gt; test.py:1:8
+  |
+1 | import apt
+  |        ^^^
+2 |
+3 | print(apt.apt_pkg.version_compare(&quot;1.2.3&quot;, &quot;1.2.4&quot;))
+  |
+info: Searched in the following paths during module resolution:
+info:   1. /root/test (first-party code)
+info:   2. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+root@ubuntu-noble:~/test#
+</code></pre>
+<p>Some packages (like <code>apt</code>) are usually best installed from the system, when writing system tools, so having a <code>pyproject.toml</code> file isn't really a viable option.
+Just for the sake of it, I've tried adding a simple one with no dependencies specified, but as expected, it doesn't change the behavior.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.21 (01fca5525 2025-10-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-10-08 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-10-08 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-08 16:40</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Assuming that you installed <code>ty</code> (using e.g. <code>uv install ty</code> or <code>pip install ty</code>) into the same system Python interpreter which has access to the <code>apt</code> package, then I think this is a duplicate of https://github.com/astral-sh/ty/issues/989.</p>
+<p>If that is not the case, then I don't think that ty should make any assumption here; you should explicitly use the <code>--python</code> option (either via CLI or in a <code>ty.toml</code>) to specify the Python environment that should be used for checking this script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-08 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hyask">@Hyask</a> on 2025-10-08 21:57</div>
+            <div class="timeline-body"><p>Kind of duplicate, but also not completely. My original test was with a <code>ty</code> installed with <code>snap install --edge astral-ty</code>, but it behaves exactly the same with <code>pip install --break-system-packages ty</code>.</p>
+<p>In any of those situations, I can't manage to make <code>ty</code> discover the system packages, even manually with <code>--python</code>.</p>
+<p>I believe that's because the system packages don't live in a <code>site-packages</code> folder, but rather in a <code>dist-packages</code> one: <code>/usr/lib/python3/dist-packages/apt</code>. No matter which path I give to <code>ty</code>, I always end-up with the following error:</p>
+<pre><code>  Cause: Failed to discover the site-packages directory
+</code></pre>
+<p>@carljm I'll leave you reopen the issue if you think that's a sufficiently different problem than #989, otherwise, thanks for the quick answer :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-08 22:03</div>
+            <div class="timeline-body"><p>Good observation! I think that's a different problem indeed. Our installed-packages discovery just doesn't know about <code>dist-packages</code> at all. That's not a standard upstream Python thing, it's a Debian-specific invention. But still, it exists on many real systems, and we should support it.</p>
+<p>I'll reopen this issue and convert it to being about <code>dist-packages</code> support. It should be easy enough to add support for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-10-08 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @carljm on 2025-10-08 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ty` doesn't find system packages" to "support finding packages installed into Debian `dist-packages` directories" by @carljm on 2025-10-08 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-10-08 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bendini">@bendini</a> on 2026-01-05 16:45</div>
+            <div class="timeline-body"><p>I was just about to report this issue and discovered it already existed.</p>
+<p>This came up as an issue for me in Ubuntu 24.04 LTS when looking at code in a new folder that didn't already contain a .venv subfolder (it otherwise works fine when one has been configured), which then made the ty settings invalid and generated hundreds of false-positive issues in my code that are already on the ignore list in the pyproject.toml because it was no longer able to recognize the list of issues to be ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BrianSipos">@BrianSipos</a> on 2026-01-08 20:12</div>
+            <div class="timeline-body"><p>Is there any workaround for this on Debian/Ubuntu using existing command options? Or must a virtualenv be used to avoid the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 23:28</div>
+            <div class="timeline-body"><p>You could use <code>PYTHONPATH</code> or the <code>extra-paths</code> config and point it at the dist-packages directory; that's not an exact 1:1 (it won't process <code>.pth</code> files / editable installs) but it would probably work for most real-world cases. Or you could use a venv.</p>
+<p>I think this issue is actually pretty easy to fix -- in fact I just had Claude put up a PR that should fix it: https://github.com/astral-sh/ruff/pull/22466</p>
+<p>But this PR still requires validation on a real Debian/Ubuntu system, and I don't have time to do that at the moment -- so if anyone is motivated to see this issue fixed faster, your help validating and reviewing the PR would be welcome!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

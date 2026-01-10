@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global version guard is not applied in functions - astral-sh/ty #1165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Global version guard is not applied in functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1165">#1165</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2025-09-10 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2025-09-10 16:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I tried adding ty to <em>svcs</em> in https://github.com/hynek/svcs/pull/141 since it's heavy on typing stuff and I've encountered this: https://play.ty.dev/004edf8e-54d0-4a7c-897b-78ebcfa2cdf8</p>
+<p>Basically I want to define a function depending on the Python version and use different APIs. If I pull the version_info check into the function, it passes.</p>
+<pre><code class="language-py">import sys, inspect
+from collections.abc import Callable
+
+
+if sys.version_info &gt;= (3, 10):
+
+    def _robust_signature(factory: Callable) -&gt; inspect.Signature | None:
+        try:
+            # Provide the locals so that `eval_str` will work even if the user
+            # places the `Container` under a `if TYPE_CHECKING` block.
+            sig = inspect.signature(
+                factory,
+                locals={&quot;Container&quot;: object()},
+                eval_str=True,
+            )
+        except Exception:  # noqa: BLE001
+            # Retry without `eval_str` since if the annotation is &quot;svcs.Container&quot;
+            # the eval will fail due to it not finding the `svcs` module
+            try:
+                sig = inspect.signature(factory)
+            except Exception:  # noqa: BLE001
+                return None
+
+        return sig
+else:
+
+    def _robust_signature(factory: Callable) -&gt; inspect.Signature | None:
+        try:
+            return inspect.signature(factory)
+        except Exception:  # noqa: BLE001
+            return None
+
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> added by @carljm on 2025-09-10 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-10 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 16:16</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, it looks like we should probably skip checking any scope whose definition isn't reachable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

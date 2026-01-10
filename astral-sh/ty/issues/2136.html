@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments - astral-sh/ty #2136</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2136">#2136</a>
+        opened by <a href="https://github.com/nwalters512">@nwalters512</a>
+        on 2025-12-20 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nwalters512">@nwalters512</a> on 2025-12-20 22:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider this code:</p>
+<pre><code class="language-py">from typing import TypedDict
+
+
+class Bar(TypedDict):
+    baz: float
+
+foo: dict[str, Bar] = { &quot;a&quot;: { &quot;baz&quot;: 1 } }
+
+foo[&quot;b&quot;] = { &quot;baz&quot;: 2 }
+</code></pre>
+<p>I would expect the assignment on the last line to be considered correct/valid, and this is how Pyright (<a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgCYAiSAxjAFD1UA2AhgM6tQBCzIAFEQjKUaASgBctKFKgAjZgC8xUYIzDM6tYGDBLS1GAG1WMEABouPALpQAvFADeUAETMnSx07ny3UAIxQAX0D6LTADTydrOw8vHwAmQKA">playground link</a>) and mypy (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=137841c602f4c59751b049f2eec2bbb1">playground link</a>) treat it. However, <code>ty</code> reports an error:</p>
+<pre><code>Invalid subscript assignment with key of type `Literal[&quot;b&quot;]` and value of type `dict[Unknown | str, Unknown | int]` on object of type `dict[str, Bar]` (invalid-assignment) [Ln 9, Col 1]
+</code></pre>
+<p>The initial assignment/initialization of <code>foo</code> demonstrates that <code>ty</code> can correctly infer that a plain dictionary (<code>{ &quot;baz&quot;: 1 }</code>) is assignable to type <code>Bar</code>; it just seemingly can't do that for a later assignment to a dictionary's items.</p>
+<p>Playground link: https://play.ty.dev/8b35242f-36a7-4cb3-9e15-8416f0c509de</p>
+<h3>Version</h3>
+<p>ty 0.0.5 (d37b7dbd9 2025-12-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 15:01</div>
+            <div class="timeline-body"><p>Thanks! Definitely a bug, though it might be a little tricky to fix.</p>
+<p>When we see <code>foo[&quot;b&quot;] = { &quot;baz&quot;: 2 }</code>, we need to use the type context of the expected type for values of the <code>foo</code> dictionary to inform the way we infer the dictionary literal on the right-hand side of the assignment statement. The reason why this might be tricky is that to do this in a generalized way, we ideally would not special-case dictionaries, but treat all objects with <code>__setitem__</code> methods the same way. So in terms of our implementation, I could imagine that this might look like:</p>
+<ol>
+<li>Synthesize a type variable <code>T</code></li>
+<li>Ask the constraint solver what the best solution for <code>T</code> would be if <code>type(foo).__setitem__(foo, &quot;b&quot;, &lt;instance of T&gt;)</code> must succeed. In this instance, it would hopefully solve <code>T</code> as being <code>Bar</code></li>
+<li>Given this solution for <code>T</code>, use that solution as type context to inform type inference of the dictionary literal on the right-hand side of this assignment</li>
+</ol>
+<p>cc. @ibraheemdev for bidirectional inference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-12-22 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-22 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Valid assignment to `dict[str, TypedDict]` is rejected" to "Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments" by @AlexWaygood on 2025-12-22 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 16:41</div>
+            <div class="timeline-body"><p>I'm not sure there'd be a need for synthesized typevars here, any more than anywhere else in bidirectional checking. I think this is just one case of the general issue (which I recall came up recently, though I can't seem to find an issue for it) that we should use type context for implicit calls to dunders just like we do for any other call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 16:49</div>
+            <div class="timeline-body"><p>I'm not an expert on our bidirectional-inference machinery so it's very possible I'm missing something, but how do we know what the type context for inferring the right-hand side even needs to be without invoking the constraint solver here? We have to infer a type for the right-hand side of the assignment before we pass that type into the call to <code>__setitem__</code>. But in order to infer the right-hand side of the assignment, we need to know what the type context needs to be in order for the call to <code>__setitem__</code> to succeed.</p>
+<p>That's why I mentioned we might first want to call <code>__setitem__</code> with a synthesised TypeVar (without emitting diagnostics) to establish the type context, then infer the right-hand side of the assignment using that context, then after that call <code>__setitem__</code> again with the inferred type of the right-hand side (with diagnostics switched on).</p>
+<p>The other issue you were thinking of was probably https://github.com/astral-sh/ty/issues/2043</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 17:01</div>
+            <div class="timeline-body"><p>Yes, #2043 is the one I was thinking of.</p>
+<blockquote>
+<p>we need to know what the type context needs to be in order for the call to <strong>setitem</strong> to succeed.</p>
+</blockquote>
+<p>Isn't that just &quot;the annotated type accepted by <code>__setitem__</code>&quot;? I think that's generally how our bidirectional inference works for any call. It doesn't require calling the function with a synthesized typevar -- we just look at the parameter type on the callable, because we match arguments to parameters before doing type inference on the arguments. (Of course there are complexities with overloads, which then requires multi-inference.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 17:03</div>
+            <div class="timeline-body"><p>Okay cool, I was indeed missing something obvious :-) that sounds like a much easier way of doing things, yup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 05:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

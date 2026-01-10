@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Narrowing on match with multiple case - astral-sh/ty #2041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type Narrowing on match with multiple case</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2041">#2041</a>
+        opened by <a href="https://github.com/Polandia94">@Polandia94</a>
+        on 2025-12-17 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Polandia94">@Polandia94</a> on 2025-12-17 21:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Type Narrowing on a match class with multiple cases is not working correctly.
+If there is only one case is working fine. On pylance, and mypy the same example works</p>
+<p>playground link https://play.ty.dev/30d20c1a-1fd3-4fdc-a495-675c0eb2dee8
+on mypy https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=c5e206614ccee154996e4363afe72549</p>
+<pre><code class="language-py">class BaseClass: ...
+class Implementation(BaseClass): ...
+class ImplementationWithValue(BaseClass):
+   value: int
+class OtherImplementationWithValue(BaseClass):
+   value: int
+def get_instance() -&gt; BaseClass:
+    return ImplementationWithValue()
+instance = get_instance()
+match instance:
+    case ImplementationWithValue():
+        pass
+    case OtherImplementationWithValue():
+        pass
+    case _:
+        raise Exception()
+reveal_type(instance) # BaseClass on ty, but ImplementationWithValue | OtherImplementationWithValue on pylance and mypy
+instance.value # Object of type BaseClass has no attribute value
+match instance:
+    case ImplementationWithValue():
+        pass
+    case _:
+        raise Exception()
+reveal_type(instance) # ImplementationWithValue
+instance.value # works
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 21:30</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>This may be related to #690, but I'm not entirely sure whether it's that, or a limitation in our match handling, so I'll leave it open as a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-17 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-12-17 21:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

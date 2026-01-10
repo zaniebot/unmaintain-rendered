@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive `unsupported-operator` errors for value-constrained type variable - astral-sh/ty #1972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive `unsupported-operator` errors for value-constrained type variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1972">#1972</a>
+        opened by <a href="https://github.com/varchasgopalaswamy">@varchasgopalaswamy</a>
+        on 2025-12-17 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/varchasgopalaswamy">@varchasgopalaswamy</a> on 2025-12-17 02:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm probably doing something wrong, but I can't figure it out. Here's a simple example of what I'm trying to do</p>
+<pre><code class="language-python">from typing import * 
+
+Scalar = TypeVar(&quot;Scalar&quot;, int,float)
+
+def test(a:Scalar) -&gt; Scalar: 
+    return a * 2
+
+reveal_type(test(10.0)) # should be float 
+reveal_type(test(10)) # should be int 
+</code></pre>
+<p><a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIANFCMQG7HkA2A%2BvAsQFBcDKAxi0pQAvIRIUQACgBEAoSBk1UMKsGZhyMAJQ8AJsWCxiAZxhTyALnnNK2qAFoAfFBuVLULlG%2B1iMAK4gKFDkUABUUABMPHSMLOwkUjCm5gCMAAwAdOnaurFMbBzESSlSGblAA">Pyright</a> works fine.</p>
+<p>Mypy works, though I can't find a way to share a link to a playground.</p>
+<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0AqOgB10ogMoBjVFFSU6AXjoAVZjABqcgBTCQUmXN0AaTugZGwUXKgYBKUaMwwwjeAy2pE%2B2ZVt0AtAB8dN5yiCLodFF0lDAMAK6UkaiCdABMDuixAG4wMgD6TMQwWgxuWgCMAAyEVbb2WTC5BUUlZXDu1fUgRiDxDNBwJOSIIADEdACqA1AQTHRg8eiSA7jocJlOLmC8NDb56PE02DCUWvjhrHYBwR2UiKLRMXGJkWC6AHJHJ-d0wPgAX10oh6IDIsUspEIDFoUAoEwACqQIVBSHQ0Fg8Pg6JI1pA2IkbBA1oRRBNxDAYHQABYMBjEOCIAD0TPBzlRhF4bCZMHQTMwuEkcCZuPQ%2BMJqz5C14dFQ2VQ0FQ2FgOLxEAJlCJazouGIkqGojIDGpa38uUocGJkSUugAzIQKhkQCCAb1UCsILkAGLQGAUDE4AjDEAAoA">pyrefly</a> has no trouble with the operator, but thinks it's a bad return type. However, it's able to correctly infer the return types.</p>
+<p><a href="https://play.ty.dev/f46e6884-cb9d-438e-a359-fdf38388ddc6">ty</a> gives an unsupported operator error, and says the type of <code>test(10.0)</code> is <code>float | int</code>. Is there a more correct way to do what I'm trying to do?</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sillocan">@Sillocan</a> on 2025-12-17 04:32</div>
+            <div class="timeline-body"><p>Using type parameter lists does work in this case.</p>
+<pre><code class="language-python">from typing import * 
+
+Scalar = TypeVar(&quot;Scalar&quot;, int,float)
+
+def test[Scalar](a:Scalar) -&gt; Scalar: 
+    return a * 2
+
+reveal_type(test(10.0)) # should be float 
+reveal_type(test(10)) # should be int 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-17 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-12-17 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-17 08:36</div>
+            <div class="timeline-body"><p>Thank you for reporting this. That is a bug.</p>
+<p>The union <code>float | int</code> comes from <a href="https://docs.astral.sh/ty/reference/typing-faq/#why-does-ty-show-int-float-when-i-annotate-something-as-float">this special case</a>, but we should not error on the multiplication in the function body.</p>
+<blockquote>
+<p>Using type parameter lists does work in this case.</p>
+</blockquote>
+<p>That's not equivalent. <code>test[Scalar](…)</code> overrides the global <code>TypeVar</code> with a new-style (PEP 695) type variable <em>without any constraints</em>. The equivalent for the OP example would have to include the TypeVar constraints as well:</p>
+<pre><code class="language-py">def test[Scalar: (int, float)](a:Scalar) -&gt; Scalar: 
+    return a * 2
+
+reveal_type(test(10.0))
+reveal_type(test(10))
+</code></pre>
+<p>And in that case, it demonstrates the same issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @sharkdp on 2025-12-17 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/varchasgopalaswamy">@varchasgopalaswamy</a> on 2025-12-17 13:58</div>
+            <div class="timeline-body"><p>Just FYI, same thing happens to add, sub, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Having trouble with a simple generic function" to "False-positive `unsupported-operator` errors for value-constrained type variable" by @AlexWaygood on 2025-12-17 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 14:07</div>
+            <div class="timeline-body"><p>Here's a minimal repro for the <code>unsupported-operator</code> bug:</p>
+<pre><code class="language-py">def f[T: (int, float)](x: T) -&gt; T:
+    x + x  # error: [unsupported-operator]
+    return x
+</code></pre>
+<p>It's not specific to <code>int</code>/<code>float</code> -- it also repros if the <code>TypeVar</code> bounds are <code>(int, str)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-19 09:43</div>
+            <div class="timeline-body"><p>Adding a note here that we have an existing test for this with a TODO: https://github.com/astral-sh/ruff/blob/e177cc2a5a5d5e25c06ea6b0bbac9209f37fe756/crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md?plain=1#L241-L261</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-08 16:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

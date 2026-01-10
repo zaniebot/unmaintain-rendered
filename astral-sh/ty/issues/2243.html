@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] too many cycle iterations when checking Callable type alias with narwhals.LazyFrame - astral-sh/ty #2243</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] too many cycle iterations when checking Callable type alias with narwhals.LazyFrame</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2243">#2243</a>
+        opened by <a href="https://github.com/matthiaskaeding">@matthiaskaeding</a>
+        on 2025-12-27 22:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthiaskaeding">@matthiaskaeding</a> on 2025-12-27 22:54</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p><code>ty check</code> panics with &quot;too many cycle iterations&quot; when checking code that uses a <code>Callable</code> type alias with <code>narwhals.LazyFrame</code> as parameter and return types.</p>
+<h2>Minimal Reproduction</h2>
+<pre><code class="language-python">&quot;&quot;&quot;Minimal reproduction for ty panic.&quot;&quot;&quot;
+from typing import Callable
+
+import narwhals as nw
+
+Builder = Callable[[nw.LazyFrame], nw.LazyFrame]
+
+
+def get_builder() -&gt; Builder:
+    return _builder
+
+
+def _builder(df: nw.LazyFrame) -&gt; nw.LazyFrame:
+    native = df._compliant_frame.native
+    return nw.from_native(native).lazy()
+</code></pre>
+<p>Save as <code>repro.py</code> and run:</p>
+<pre><code class="language-bash">ty check repro.py
+</code></pre>
+<h2>Error Output</h2>
+<pre><code>error[panic]: Panicked at .../execute.rs:321:21 when checking `repro.py`: `is_redundant_with_impl(Id(...)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+</code></pre>
+<details>
+<summary>Full stack trace</summary>
+
+<pre><code>error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/55e5e7d/src/function/execute.rs:321:21 when checking `/tmp/ty_repro10.py`: `is_redundant_with_impl(Id(a058)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: Platform: macos aarch64
+info: Version: 0.0.4 (c1e6188b1 2025-12-18)
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;/tmp/ty_repro10.py&quot;]
+info: query stacktrace:
+   0: infer_definition_types(Id(cdf0))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+   1: infer_deferred_types(Id(ce09))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+   2: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9409))
+             at crates/ty_python_semantic/src/types.rs:9708
+   3: inferable_typevars_inner(Id(4d09))
+             at crates/ty_python_semantic/src/types/generics.rs:336
+             cycle heads: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9408)) -&gt; iteration = 200, TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9407)) -&gt; iteration = 200
+   4: infer_definition_types(Id(cf3a))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+   5: cached_protocol_interface(Id(b8cb))
+             at crates/ty_python_semantic/src/types/protocol_class.rs:870
+   6: is_equivalent_to_object_inner(Id(a409))
+             at crates/ty_python_semantic/src/types/instance.rs:699
+   7: infer_deferred_types(Id(f5c9))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+             cycle heads: is_equivalent_to_object_inner(Id(a404)) -&gt; iteration = 200, cached_protocol_interface(Id(b84b)) -&gt; iteration = 200, cached_protocol_interface(Id(b832)) -&gt; iteration = 200, TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9407)) -&gt; iteration = 200
+   8: FunctionType &lt; 'db &gt;::signature_(Id(4451))
+             at crates/ty_python_semantic/src/types/function.rs:839
+   9: infer_definition_types(Id(f5c9))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  10: cached_protocol_interface(Id(b84b))
+             at crates/ty_python_semantic/src/types/protocol_class.rs:870
+             cycle heads: infer_definition_types(Id(f5c5)) -&gt; iteration = 200
+  11: infer_deferred_types(Id(f5c5))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+             cycle heads: is_equivalent_to_object_inner(Id(a404)) -&gt; iteration = 200
+  12: FunctionType &lt; 'db &gt;::signature_(Id(444f))
+             at crates/ty_python_semantic/src/types/function.rs:839
+  13: infer_definition_types(Id(f5c5))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  14: cached_protocol_interface(Id(b832))
+             at crates/ty_python_semantic/src/types/protocol_class.rs:870
+  15: is_equivalent_to_object_inner(Id(a404))
+             at crates/ty_python_semantic/src/types/instance.rs:699
+  16: infer_definition_types(Id(cdf1))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  17: infer_definition_types(Id(cdf3))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  18: infer_deferred_types(Id(ce0a))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+  19: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9408))
+             at crates/ty_python_semantic/src/types.rs:9708
+  20: infer_definition_types(Id(cdee))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  21: infer_deferred_types(Id(ce05))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+  22: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(9407))
+             at crates/ty_python_semantic/src/types.rs:9708
+  23: infer_definition_types(Id(680b))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  24: ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_(Id(b406))
+             at crates/ty_python_semantic/src/types/class.rs:1524
+  25: Type &lt; 'db &gt;::member_lookup_with_policy_(Id(2c19))
+             at crates/ty_python_semantic/src/types.rs:881
+  26: infer_definition_types(Id(1405))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+  27: infer_scope_types(Id(1002))
+             at crates/ty_python_semantic/src/types/infer.rs:69
+  28: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:534
+</code></pre>
+</details>
+
+<h2>Environment</h2>
+<ul>
+<li>ty version: 0.0.4 (c1e6188b1 2025-12-18)</li>
+<li>Platform: macOS aarch64 (Darwin 24.6.0)</li>
+<li>Python: 3.11.12</li>
+<li>narwhals: 2.1.2</li>
+</ul>
+<h2>Notes</h2>
+<p>The panic appears to be triggered by the combination of:</p>
+<ol>
+<li>A <code>Callable</code> type alias using <code>nw.LazyFrame</code> as both parameter and return type</li>
+<li>A function returning an instance of that Callable type</li>
+<li>The function body accessing <code>df._compliant_frame.native</code> and calling <code>nw.from_native(...).lazy()</code></li>
+</ol>
+<p>Removing any of these elements causes the panic to disappear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Panic: too many cycle iterations when checking Callable type alias with narwhals.LazyFrame" to "[panic] too many cycle iterations when checking Callable type alias with narwhals.LazyFrame" by @matthiaskaeding on 2025-12-27 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @mtshiba on 2025-12-28 05:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-28 17:59</div>
+            <div class="timeline-body"><p>This minimization was very painful, but I think I pulled everything out into one file.</p>
+<p>One of the annoying things was this was fixed on later versions of narwhals, so I initially couldn't reproduce.</p>
+<p>The crash only happens on 3.14 instead of 3.11 because I could not get the statement orders to work without lazy names, but it should still be the same crash at it's core.</p>
+<p>This code:</p>
+<details>
+<summary>Collapsed because long</summary>
+
+<pre><code class="language-py">from enum import auto, Enum
+from collections.abc import Sequence, Callable
+from typing import Protocol, Self, Any, TypeVar, TypeAlias
+
+CompliantDataFrameAny: TypeAlias = &quot;CompliantDataFrame[Any]&quot;
+CompliantLazyFrameAny: TypeAlias = &quot;CompliantLazyFrame[Any, Any, Any]&quot;
+CompliantFrameAny: TypeAlias = &quot;CompliantDataFrameAny | CompliantLazyFrameAny&quot;
+CompliantFrameT_co = TypeVar(
+    &quot;CompliantFrameT_co&quot;, bound=CompliantFrameAny, covariant=True
+)
+CompliantFrameT = TypeVar(&quot;CompliantFrameT&quot;, bound=CompliantFrameAny)
+EvalNames: TypeAlias = Callable[[CompliantFrameT], Sequence[str]]
+CompliantExprAny: TypeAlias = &quot;CompliantExpr[Any]&quot;
+CompliantExprT = TypeVar(&quot;CompliantExprT&quot;, bound=CompliantExprAny)
+ExprT = TypeVar(&quot;ExprT&quot;, bound=CompliantExprAny)
+CompliantSeriesAny: TypeAlias = &quot;CompliantSeries[Any]&quot;
+CompliantSeriesOrNativeExprAny: TypeAlias = &quot;CompliantSeriesAny | NativeExpr&quot;
+SeriesT = TypeVar(&quot;SeriesT&quot;, bound=CompliantSeriesOrNativeExprAny)
+FrameT = TypeVar(&quot;FrameT&quot;, bound=CompliantFrameAny)
+CompliantSeriesOrNativeExprT = TypeVar(
+    &quot;CompliantSeriesOrNativeExprT&quot;, bound=CompliantSeriesOrNativeExprAny
+)
+EvalSeries: TypeAlias = Callable[
+    [CompliantFrameT], Sequence[CompliantSeriesOrNativeExprT]
+]
+
+class CompliantNamespace(Protocol[CompliantFrameT, CompliantExprT]):
+    _implementation: Implementation
+    _version: Version
+
+    def when(
+        self, predicate: CompliantExprT
+    ) -&gt; CompliantWhen[CompliantFrameT, Any, CompliantExprT]: ...
+
+IntoExpr: TypeAlias = &quot;SeriesT&quot;
+class CompliantWhen(Protocol[FrameT, SeriesT, ExprT]):
+
+    def then(
+        self, value: IntoExpr[SeriesT, ExprT], /
+    ) -&gt; CompliantThen[FrameT, SeriesT, ExprT, Self]:
+        return self._then.from_when(self, value)
+
+WhenT_contra = TypeVar(
+    &quot;WhenT_contra&quot;, bound=CompliantWhen[Any, Any, Any], contravariant=True
+)
+class NativeExpr(Protocol): ...
+class Version(Enum):
+    V1 = auto()
+    V2 = auto()
+    MAIN = auto()
+
+class CompliantColumn(Protocol):
+    &quot;&quot;&quot;Common parts of `Expr`, `Series`.&quot;&quot;&quot;
+
+    _version: Version
+
+    def __add__(self, other: Any) -&gt; Self: ...
+
+    def __narwhals_namespace__(self) -&gt; CompliantNamespace[Any, Any]: ...
+
+class CompliantExpr(
+    CompliantColumn, Protocol[CompliantFrameT]
+):
+    def __narwhals_namespace__(self) -&gt; CompliantNamespace[CompliantFrameT, Self]: ...
+    @classmethod
+    def from_column_names(
+        cls,
+        evaluate_column_names: EvalNames[CompliantFrameT],
+    ) -&gt; Self: ...
+    @classmethod
+    def from_column_indices(
+        cls, *column_indices: int
+    ) -&gt; Self: ...
+    @staticmethod
+    def _eval_names_indices(indices: Sequence[int], /) -&gt; EvalNames[CompliantFrameT]:
+        def fn(df: CompliantFrameT) -&gt; Sequence[str]:
+            column_names = df.columns
+            return [column_names[i] for i in indices]
+
+        return fn
+
+    def all(self) -&gt; Self: ...
+    def any(self) -&gt; Self: ...
+    def count(self) -&gt; Self: ...
+    def min(self) -&gt; Self: ...
+
+class CompliantThen(
+    CompliantExpr[FrameT], Protocol[FrameT, SeriesT, ExprT, WhenT_contra]
+):
+    _call: EvalSeries[FrameT, SeriesT]
+
+class CompliantGroupBy(Protocol):
+
+    @property
+    def compliant(self) -&gt; CompliantFrameT_co: ...
+
+CompliantExprT_contra = TypeVar(
+    &quot;CompliantExprT_contra&quot;, bound=CompliantExprAny, contravariant=True
+)
+
+class CompliantDataFrame(
+    Protocol[CompliantExprT_contra],
+):
+    def with_columns(self, *exprs: CompliantExprT_contra) -&gt; Self: ...
+
+
+class CompliantLazyFrame(
+    Protocol,
+):
+    def group_by(
+        self,
+    ) -&gt; CompliantGroupBy: ...
+</code></pre>
+</details>
+
+<p>Crashes with the stack trace:</p>
+<details>
+<summary>Collapsed because long</summary>
+
+<pre><code>error[panic]: Panicked at C:\Users\runneradmin\.cargo\git\checkouts\salsa-e6f3bb7c2a062968\ce80691\src\function\execute.rs:321:21 when checking `D:\python_projects\repro-narwhals\issue.py`: `infer_deferred_types(Id(772d)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: windows x86_64
+info: Version: 0.0.7 (cf82a04b5 2025-12-24)
+info: Args: [&quot;C:\\Users\\GiGaGon\\AppData\\Local\\uv\\cache\\archive-v0\\x1LGjCZA-slfQngMhuLzR\\Scripts\\ty.exe&quot;, &quot;check&quot;, &quot;--python-version&quot;, &quot;3.14&quot;, &quot;issue.py&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(8403))
+             at crates\ty_python_semantic\src\types.rs:9753
+   1: infer_definition_types(Id(7711))
+             at crates\ty_python_semantic\src\types\infer.rs:103
+   2: infer_deferred_types(Id(7728))
+             at crates\ty_python_semantic\src\types\infer.rs:145
+   3: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(8402))
+             at crates\ty_python_semantic\src\types.rs:9753
+   4: infer_definition_types(Id(7714))
+             at crates\ty_python_semantic\src\types\infer.rs:103
+   5: infer_definition_types(Id(7716))
+             at crates\ty_python_semantic\src\types\infer.rs:103
+   6: infer_deferred_types(Id(772e))
+             at crates\ty_python_semantic\src\types\infer.rs:145
+   7: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(8401))
+             at crates\ty_python_semantic\src\types.rs:9753
+   8: is_redundant_with_impl(Id(9002))
+             at crates\ty_python_semantic\src\types.rs:2037
+   9: infer_deferred_types(Id(140c))
+             at crates\ty_python_semantic\src\types\infer.rs:145
+  10: infer_scope_types(Id(1000))
+             at crates\ty_python_semantic\src\types\infer.rs:69
+  11: check_file_impl(Id(c00))
+             at crates\ty_project\src\lib.rs:548
+</code></pre>
+</details>
+
+<p>Good luck to anyone else that wants to look into this/minimize it further, I'm out of energy myself. I didn't look into it closely but it's probably something related to recursive protocols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2025-12-28 22:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Good luck to anyone else that wants to look into this/minimize it further, I'm out of energy myself. I didn't look into it closely but it's probably something related to recursive protocols.</p>
+</blockquote>
+<p>I'm <a href="https://github.com/narwhals-dev/narwhals/pulls?q=is%3Apr+is%3Aclosed+label%3Atyping">likely to blame</a> for the typing in <code>narwhals</code> 😅</p>
+<p>Indeed, I mentioned on our discord recently that I didn't expect <code>ty</code> to work for us yet due to the fiddly protocols.</p>
+<p>But for this example, there are a couple of odd things as well:</p>
+<ol>
+<li><code>nw.LazyFrame</code> is generic, but every usage here would be <code>nw.LazyFrame[Unknown]</code></li>
+<li><code>nw.LazyFrame._compliant_frame.native</code> is not public API - it should be using <code>nw.LazyFrame.to_native</code></li>
+<li><code>nw.from_native</code> is heavily overloaded, and IIRC <code>ty</code> doesn't support all the features I used in the most recent update to them</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-28 23:25</div>
+            <div class="timeline-body"><p>I don't think the original example was the cause of the crash, at least I hope. The <code>narwhals</code> library itself does have at least one crash when you run ty on it, so it would be very difficult if not impossible to figure out if this example was just exposing ty to that original crash, or if it's actually it's own unique thing.</p>
+<p>Also just for some more context on the minimized version, how I do them is I get a copy of the source code, run the example, and delete code until the crash stops happening, which is why some of the classes are missing methods/bases/generic arguments. That's also why I'm not 100% certain that it's the exact same issue, just that it is an issue. Since it's also a cycle based crash any change to the source code can change stack/message, so there's that too. The minimized version doesn't include the original example since when I was copying all the code from different files into one file I noticed that eventually ty crashed without having run through the example, so I stopped there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-29 07:19</div>
+            <div class="timeline-body"><p>~~With lazy evaluation of implicit union aliases (astral-sh/ruff#22238 addresses this), these examples no longer appear to panic.~~ No, I tried again and the panic persisted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 08:23</div>
+            <div class="timeline-body"><p>@MeGaGiGaGon thank you this is very useful. I pointed Claude at it and it was able to minimize the problem further:</p>
+<pre><code class="language-py">&quot;&quot;&quot;Minimal reproduction for ty cycle crash (20 lines).
+ 
+Regression test for https://github.com/astral-sh/ty/issues/2243
+ 
+The crash requires this specific combination:
+1. A TypeVar with a forward-reference union bound: `TypeVar(&quot;T&quot;, bound=&quot;X[Any] | int&quot;)`
+2. A Callable type alias using that TypeVar: `TypeAlias = Callable[[T], None]`
+3. A Protocol using Self in a method returning another Protocol with that TypeVar
+4. A subclass Protocol inheriting from the parent with the TypeVar
+5. Another Protocol using ExprT (bounded by forward ref) in a method
+ 
+Run with: ty check --python-version 3.14
+Expected: Should not crash with &quot;too many cycle iterations&quot;
+&quot;&quot;&quot;
+from collections.abc import Callable
+from typing import Protocol, Self, Any, TypeVar, TypeAlias
+ 
+FrameT = TypeVar(&quot;FrameT&quot;, bound=&quot;Frame[Any] | int&quot;)
+Fn: TypeAlias = Callable[[FrameT], None]
+ExprT = TypeVar(&quot;ExprT&quot;, bound=&quot;Expr[Any]&quot;)
+ 
+class NS(Protocol[FrameT, ExprT]):
+    def when(self) -&gt; Then[FrameT]: ...
+ 
+class Expr(Protocol[FrameT]):
+    def ns(self) -&gt; NS[FrameT, Self]: ...
+    @classmethod
+    def col(cls, f: Fn[FrameT]) -&gt; Self: ...
+ 
+class Then(Expr[FrameT], Protocol[FrameT]):
+    pass
+ 
+class Frame(Protocol[ExprT]):
+    def with_columns(self, e: ExprT) -&gt; None: ...
+</code></pre>
+<p>What's worth noting is that both MREs are slightly different from the original report as they panic in <code>infer_deferred_types</code> and not <code>is_redundant_with_impl</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2025-12-29 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2026-01-09 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

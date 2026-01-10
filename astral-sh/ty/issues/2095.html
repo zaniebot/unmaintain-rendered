@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lambdas returning `Unknown` type result in wrong result type in generic function calls (e.g. `map`) - astral-sh/ty #2095</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>lambdas returning `Unknown` type result in wrong result type in generic function calls (e.g. `map`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2095">#2095</a>
+        opened by <a href="https://github.com/karlicoss">@karlicoss</a>
+        on 2025-12-18 23:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-12-18 23:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/aa9c704f-34b4-4290-8b91-efa576696917</p>
+<pre><code class="language-py">lstr: list[str] = ['a', 'bb', 'ccc']
+
+def str2int_fun(s: str) -&gt; int:
+    return int(s)
+
+reveal_type(str2int_fun)  # reveals def str2int_fun(s: str) -&gt; int
+ints_fun = map(str2int_fun, lstr) 
+reveal_type(ints_fun)  # reveals map[int] (as expected)
+</code></pre>
+<p>Above works fine -- now let's define the same function as a lambda</p>
+<pre><code class="language-py">str2int_lam = lambda s: int(s)
+
+reveal_type(str2int_lam)  # reveals (s) -&gt; Unknown (both on 0.0.3 and 0.0.1a35)
+ints_lam = map(str2int_lam, lstr)
+reveal_type(ints_lam)  # reveals map[Unknown | str] on 0.0.3; map[Unknown] on 0.0.1a35
+</code></pre>
+<p><code>map[Unknown | str]</code> is odd! Seems like something could be wrong with the type variable resolution and it somehow grabbed the type of iterable (list) we're mapping over?</p>
+<p>Thought it could have to do with overloads, but if I define my own simple map function still same behaviour:</p>
+<pre><code class="language-py">from typing import Callable
+def map2[T, R](f: Callable[[T], R], l: list[T]) -&gt; list[R]:
+    raise RuntimeError(&quot;whatever&quot;)
+
+reveal_type(map2(str2int_fun, lstr))  # reveals list[int]
+reveal_type(map2(str2int_lam, lstr))  # reveals list[Unknown | str]
+</code></pre>
+<p>I checked whether it was somehow an issue with functions returning <code>Unknown</code>, but seems like it works correctly in that case (at in terms of least not gaining <code>| str</code>!) https://play.ty.dev/9d801483-8fb9-44fe-9943-520e2f12fb53</p>
+<p>Also works fine if we do something like <code>fun = cast(Callable[[str], Unknown], None)</code></p>
+<p>(hopefully not a dupe 😅)</p>
+<h3>Version</h3>
+<p>ty 0.0.3 / latest main</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 12:18</div>
+            <div class="timeline-body"><p>Thanks for the report. I haven't looked too closely but our type inference for lambdas at the moment is currently very limited (see https://github.com/astral-sh/ty/issues/181). The trouble is that most of the time, unlike a function defined using <code>def</code>, you need to infer the type of the lambda expression based on its surrounding context. That gets complicated quite quickly, so it's not something we've really started yet.</p>
+<p><code>map[Unknown | str]</code> does seem clearly incorrect, though (<code>map[Unknown]</code> would be better), so it does look like something else might be going on here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 19:22</div>
+            <div class="timeline-body"><p>The <code>map[Unknown | str]</code> behavior here is now fixed, so what remains is just #181</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-08 19:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

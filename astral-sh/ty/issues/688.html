@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-return-type` false positive on constrained generic - astral-sh/ty #688</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-return-type` false positive on constrained generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/688">#688</a>
+        opened by <a href="https://github.com/gusutabopb">@gusutabopb</a>
+        on 2025-06-21 05:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2025-06-21 05:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Similar to #621, but doesn't involve narrowing/<code>isinstance</code> checks:</p>
+<pre><code class="language-python">import polars as pl
+
+def with_column_x[T: pl.DataFrame | pl.LazyFrame](df: T) -&gt; T:
+    return df.with_columns(pl.lit(True).alias(&quot;x&quot;))
+</code></pre>
+<p>Both <code>DataFrame</code> and <code>LazyFrame</code> classes have a <code>with_columns</code> method that returns an object of the same type, so the above should be valid. However, <code>ty</code> complains about it:</p>
+<pre><code>Return type does not match returned value: expected `T`, found `DataFrame | LazyFrame`
+</code></pre>
+<p>ty doesn't complain about the following generic-less variations:</p>
+<pre><code class="language-python"># Variation 1
+def with_column_x(df: pl.DataFrame | pl.LazyFrame) -&gt; pl.DataFrame | pl.LazyFrame:
+    return df.with_columns(pl.lit(True).alias(&quot;x&quot;))
+</code></pre>
+<pre><code class="language-python"># Variation 2
+type Frame = pl.DataFrame | pl.LazyFrame
+
+def with_column_x(df: Frame) -&gt; Frame:
+    return df.with_columns(pl.lit(True).alias(&quot;x&quot;))
+</code></pre>
+<p>The generic-less variations however don't communicate that the return type will be exactly the same as the input type, so they have a slightly different meaning.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.11 (1ae703836 2025-06-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-21 20:33</div>
+            <div class="timeline-body"><p>The issue title here says &quot;constrained generic&quot;, but the code example shows a union upper bound, which is different from a constrained typevar.</p>
+<p>I don't think allowing the code as shown would be sound, since <code>DataFrame.with_columns</code> is annotated to return <code>DataFrame</code>. Consider that there could be a subclass of <code>DataFrame</code>, let's call it <code>DataFrameSub</code>, which doesn't override <code>DataFrame.with_columns</code>, so <code>DataFrameSub.with_columns</code> also returns <code>DataFrame</code>. An instance of <code>DataFrameSub</code> is a valid argument to <code>with_column_x</code> (it is a subtype of <code>DataFrame | LazyFrame</code>), but the return type of such a call should also be <code>DataFrameSub</code>, and at runtime it would be <code>DataFrame</code> instead.</p>
+<p>Using a constrained typevar <code>T: (pl.DataFrame, pl.LazyFrame)</code> should make this sound, because then the typevar can be solved only to one of those two precise types, not a subtype.</p>
+<p>Also, even with the bound typevar, if <code>DataFrame.with_columns</code> and <code>LazyFrame.with_columns</code> both returned <code>typing.Self</code>, that should also make this valid. (Because then the result of a call to <code>DataFrameSub.with_columns()</code> would be a <code>DataFrameSub</code>).</p>
+<p>To use simpler self-contained examples, this code corresponds to the example given above, and should be an error:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+class A:
+    def method(self) -&gt; A:
+        return self
+
+class B:
+    def method(self) -&gt; B:
+        return self
+
+def f[T: A | B](x: T) -&gt; T:
+    return x.method()  # error, `A | B` is not assignable to `T`
+</code></pre>
+<p>This code using a constrained typevar should be valid:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+class A:
+    def method(self) -&gt; A:
+        return self
+
+class B:
+    def method(self) -&gt; B:
+        return self
+
+def f[T: (A, B)](x: T) -&gt; T:
+    return x.method()
+</code></pre>
+<p>And this code with <code>Self</code> return types and a bound typevar should also be valid:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import Self
+
+class A:
+    def method(self) -&gt; Self:
+        return self
+
+class B:
+    def method(self) -&gt; Self:
+        return self
+
+def f[T: A | B](x: T) -&gt; T:
+    return x.method()
+</code></pre>
+<p>Currently ty does not allow any of these, and we should allow the latter two. Mypy and pyright both correctly allow the latter two, but not the first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-06-21 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2025-06-26 05:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Using a constrained typevar T: (pl.DataFrame, pl.LazyFrame) should make this sound, because then the typevar can be solved only to one of those two precise types, not a subtype.</p>
+</blockquote>
+<p>Sorry, that's what my original example should've been. I mixed up type union and type constraint syntax.</p>
+<blockquote>
+<p>This code using a constrained typevar should be valid:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+class A:
+    def method(self) -&gt; A:
+        return self
+
+class B:
+    def method(self) -&gt; B:
+        return self
+
+def f[T: (A, B)](x: T) -&gt; T:
+    return x.method() #
+</code></pre>
+</blockquote>
+<p>Good to know. This is what my case boils down to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`invalid-return-type` false positive on constrained generic with type union" to "`invalid-return-type` false positive on constrained generic" by @carljm on 2025-06-26 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2026-01-09 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

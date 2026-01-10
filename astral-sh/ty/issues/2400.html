@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang/OOM on generic function wrapping a method with many overloads - astral-sh/ty #2400</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hang/OOM on generic function wrapping a method with many overloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2400">#2400</a>
+        opened by <a href="https://github.com/jelle-openai">@jelle-openai</a>
+        on 2026-01-08 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2026-01-08 17:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given this file:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+# /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [&quot;githubkit&quot;]
+# ///
+from typing import Callable, ParamSpec, TypeVar
+
+from githubkit.webhooks import parse_obj
+
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;, covariant=True)
+
+
+def wrap_non_retryable(fn: Callable[P, R]) -&gt; Callable[P, R]:
+    def _wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+        raise Exception
+
+    return _wrapped
+
+
+safe_parse_obj = wrap_non_retryable(parse_obj)
+
+</code></pre>
+<p><code>uvx ty check tybugoom.py</code> takes a huge amount of memory and never finishes (well, maybe I wasn't patient enough).</p>
+<p>I haven't tried to minimize away the third-party library, but parse_obj is at https://github.com/yanyongyu/githubkit/blob/daec39c41e7cc0e13924647bb061950ba4fa1b68/githubkit/webhooks/<strong>init</strong>.py#L12, it's a method from a class that's bound to a local variable.</p>
+<h3>Version</h3>
+<p>ty 0.0.10 (d18902cdc 2026-01-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2026-01-08 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2026-01-08 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2026-01-08 17:50</div>
+            <div class="timeline-body"><p>OK managed to get rid of the third-party library. <code>parse_obj</code> is an overloaded function with like 50 definitions, I'm guessing something is O(bad) in the number of overloads?</p>
+<p><code>uvx ty check</code> on this still reproes the hang:</p>
+<pre><code class="language-python">from typing import Callable, ParamSpec, TypeVar, overload, Union, Literal, Any, Mapping
+
+
+class WebhookEvent: pass
+class WorkflowRunEvent(WebhookEvent): pass
+class BranchProtectionConfigurationEvent(WebhookEvent): pass
+class BranchProtectionRuleEvent(WebhookEvent): pass
+class CheckRunEvent(WebhookEvent): pass
+class CheckSuiteEvent(WebhookEvent): pass
+class CodeScanningAlertEvent(WebhookEvent): pass
+class CommitCommentEvent(WebhookEvent): pass
+class CreateEvent(WebhookEvent): pass
+class CustomPropertyEvent(WebhookEvent): pass
+class CustomPropertyValuesEvent(WebhookEvent): pass
+class DeleteEvent(WebhookEvent): pass
+class DependabotAlertEvent(WebhookEvent): pass
+class DeployKeyEvent(WebhookEvent): pass
+class DeploymentEvent(WebhookEvent): pass
+class DeploymentProtectionRuleEvent(WebhookEvent): pass
+class DeploymentReviewEvent(WebhookEvent): pass
+class DeploymentStatusEvent(WebhookEvent): pass
+class DiscussionEvent(WebhookEvent): pass
+class DiscussionCommentEvent(WebhookEvent): pass
+class ForkEvent(WebhookEvent): pass
+class GithubAppAuthorizationEvent(WebhookEvent): pass
+class GollumEvent(WebhookEvent): pass
+class InstallationEvent(WebhookEvent): pass
+class InstallationRepositoriesEvent(WebhookEvent): pass
+class InstallationTargetEvent(WebhookEvent): pass
+class IssueCommentEvent(WebhookEvent): pass
+class IssueDependenciesEvent(WebhookEvent): pass
+class IssuesEvent(WebhookEvent): pass
+class LabelEvent(WebhookEvent): pass
+class MarketplacePurchaseEvent(WebhookEvent): pass
+class MemberEvent(WebhookEvent): pass
+class MembershipEvent(WebhookEvent): pass
+class MergeGroupEvent(WebhookEvent): pass
+class MetaEvent(WebhookEvent): pass
+class MilestoneEvent(WebhookEvent): pass
+class OrgBlockEvent(WebhookEvent): pass
+class OrganizationEvent(WebhookEvent): pass
+class PackageEvent(WebhookEvent): pass
+class PageBuildEvent(WebhookEvent): pass
+class PersonalAccessTokenRequestEvent(WebhookEvent): pass
+class PingEvent(WebhookEvent): pass
+class ProjectCardEvent(WebhookEvent): pass
+class ProjectEvent(WebhookEvent): pass
+class ProjectColumnEvent(WebhookEvent): pass
+class ProjectsV2Event(WebhookEvent): pass
+class ProjectsV2ItemEvent(WebhookEvent): pass
+class ProjectsV2StatusUpdateEvent(WebhookEvent): pass
+class PublicEvent(WebhookEvent): pass
+class PullRequestEvent(WebhookEvent): pass
+class PullRequestReviewCommentEvent(WebhookEvent): pass
+class PullRequestReviewEvent(WebhookEvent): pass
+class PullRequestReviewThreadEvent(WebhookEvent): pass
+class PushEvent(WebhookEvent): pass
+class RegistryPackageEvent(WebhookEvent): pass
+class ReleaseEvent(WebhookEvent): pass
+class RepositoryAdvisoryEvent(WebhookEvent): pass
+class RepositoryEvent(WebhookEvent): pass
+class RepositoryDispatchEvent(WebhookEvent): pass
+class RepositoryImportEvent(WebhookEvent): pass
+
+class RepositoryRulesetEvent(WebhookEvent): pass
+class RepositoryVulnerabilityAlertEvent(WebhookEvent): pass
+class SecretScanningAlertEvent(WebhookEvent): pass
+class SecretScanningAlertLocationEvent(WebhookEvent): pass
+class SecretScanningScanEvent(WebhookEvent): pass
+class SecurityAdvisoryEvent(WebhookEvent): pass
+class SecurityAndAnalysisEvent(WebhookEvent): pass
+
+class SponsorshipEvent(WebhookEvent): pass
+class StarEvent(WebhookEvent): pass
+class StatusEvent(WebhookEvent): pass
+class SubIssuesEvent(WebhookEvent): pass
+class TeamAddEvent(WebhookEvent): pass
+class TeamEvent(WebhookEvent): pass
+class WatchEvent(WebhookEvent): pass
+class WorkflowDispatchEvent(WebhookEvent): pass
+class WorkflowJobEvent(WebhookEvent): pass
+
+type EventNameType = str
+
+class WN:
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;branch_protection_configuration&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;BranchProtectionConfigurationEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;branch_protection_rule&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;BranchProtectionRuleEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;check_run&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CheckRunEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;check_suite&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CheckSuiteEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;code_scanning_alert&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CodeScanningAlertEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;commit_comment&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CommitCommentEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;create&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CreateEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;custom_property&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CustomPropertyEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;custom_property_values&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;CustomPropertyValuesEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;delete&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeleteEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;dependabot_alert&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DependabotAlertEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;deploy_key&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeployKeyEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;deployment&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeploymentEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;deployment_protection_rule&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeploymentProtectionRuleEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;deployment_review&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeploymentReviewEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;deployment_status&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DeploymentStatusEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;discussion&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DiscussionEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;discussion_comment&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;DiscussionCommentEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;fork&quot;], payload: Mapping[str, Any]) -&gt; &quot;ForkEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;github_app_authorization&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;GithubAppAuthorizationEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;gollum&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;GollumEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;installation&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;InstallationEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;installation_repositories&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;InstallationRepositoriesEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;installation_target&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;InstallationTargetEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;issue_comment&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;IssueCommentEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;issue_dependencies&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;IssueDependenciesEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;issues&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;IssuesEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;label&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;LabelEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;marketplace_purchase&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;MarketplacePurchaseEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;member&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;MemberEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;membership&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;MembershipEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;merge_group&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;MergeGroupEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;meta&quot;], payload: Mapping[str, Any]) -&gt; &quot;MetaEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;milestone&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;MilestoneEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;org_block&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;OrgBlockEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;organization&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;OrganizationEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;package&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PackageEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;page_build&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PageBuildEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;personal_access_token_request&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PersonalAccessTokenRequestEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;ping&quot;], payload: Mapping[str, Any]) -&gt; &quot;PingEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;project_card&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectCardEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;project&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;project_column&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectColumnEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;projects_v2&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectsV2Event&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;projects_v2_item&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectsV2ItemEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;projects_v2_status_update&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ProjectsV2StatusUpdateEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;public&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PublicEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;pull_request&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PullRequestEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;pull_request_review_comment&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PullRequestReviewCommentEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;pull_request_review&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PullRequestReviewEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;pull_request_review_thread&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;PullRequestReviewThreadEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;push&quot;], payload: Mapping[str, Any]) -&gt; &quot;PushEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;registry_package&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RegistryPackageEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;release&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;ReleaseEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository_advisory&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryAdvisoryEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository_dispatch&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryDispatchEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository_import&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryImportEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository_ruleset&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryRulesetEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;repository_vulnerability_alert&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;RepositoryVulnerabilityAlertEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;secret_scanning_alert&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SecretScanningAlertEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;secret_scanning_alert_location&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SecretScanningAlertLocationEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;secret_scanning_scan&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SecretScanningScanEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;security_advisory&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SecurityAdvisoryEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;security_and_analysis&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SecurityAndAnalysisEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;sponsorship&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SponsorshipEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;star&quot;], payload: Mapping[str, Any]) -&gt; &quot;StarEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;status&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;StatusEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;sub_issues&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;SubIssuesEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;team_add&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;TeamAddEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(name: Literal[&quot;team&quot;], payload: Mapping[str, Any]) -&gt; &quot;TeamEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;watch&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;WatchEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;workflow_dispatch&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;WorkflowDispatchEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;workflow_job&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;WorkflowJobEvent&quot;: ...
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: Literal[&quot;workflow_run&quot;], payload: Mapping[str, Any]
+    ) -&gt; &quot;WorkflowRunEvent&quot;: ...
+
+    @overload
+    @staticmethod
+    def parse_obj(
+        name: EventNameType, payload: Mapping[str, Any]
+    ) -&gt; &quot;WebhookEvent&quot;: ...
+
+    @overload
+    @staticmethod
+    def parse_obj(name: str, payload: Mapping[str, Any]) -&gt; &quot;WebhookEvent&quot;: ...
+
+    @staticmethod
+    def parse_obj(
+        name: Union[EventNameType, str], payload: Mapping[str, Any]
+    ) -&gt; &quot;WebhookEvent&quot;:
+        raise Exception
+
+parse_obj = WN.parse_obj
+
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;, covariant=True)
+
+
+def wrap_non_retryable(fn: Callable[P, R]) -&gt; Callable[P, R]:
+    def _wrapped(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+        raise Exception
+
+    return _wrapped
+
+
+safe_parse_obj = wrap_non_retryable(parse_obj)
+
+</code></pre>
+<p>But if there's only 10 overloads it finishes quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 18:28</div>
+            <div class="timeline-body"><p>Thank you so much for narrowing the issue down to a one file repro.</p>
+<p>This sounds related to https://github.com/astral-sh/ty/issues/1337</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2026-01-08 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @MichaReiser on 2026-01-08 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hang/OOM on generic function wrapping a method" to "Hang/OOM on generic function wrapping a method with many overloads" by @carljm on 2026-01-08 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-09 11:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

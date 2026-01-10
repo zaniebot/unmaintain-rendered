@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docstrings for reexported functions do not fall back to implementation definition - astral-sh/ty #2150</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docstrings for reexported functions do not fall back to implementation definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2150">#2150</a>
+        opened by <a href="https://github.com/Jammf">@Jammf</a>
+        on 2025-12-21 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jammf">@Jammf</a> on 2025-12-21 20:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When hovering a reexported function from a module with a <code>.pyi</code> stub file, the docstring from the stub file definition is (correctly) shown instead of the implementation docstring. However, if the stub definition does not have a docstring, then the docstring is missing on hover instead of falling back to the implementation docstring.</p>
+<pre><code class="language-python">## a/b.py
+def foo() -&gt; None:
+    &quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+    pass
+
+def bar() -&gt; None:
+    &quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+    pass
+
+
+## a/__init__.pyi
+def foo() -&gt; None: 
+    &quot;&quot;&quot;Stub docstring&quot;&quot;&quot;
+    ...
+
+def bar() -&gt; None: 
+    ...
+
+
+## a/__init__.py
+from .b import foo as foo
+from .b import bar as bar
+
+
+## main.py
+from a import foo  # Stub docstring
+from a import bar  # &lt;missing docstring&gt;
+</code></pre>
+<p>This is in contrast to the following example that works as expected, when the stub file <code>a/__init__.pyi</code> is renamed to <code>a/b.pyi</code>:</p>
+<pre><code class="language-python">## a/b.py
+def foo() -&gt; None:
+    &quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+    pass
+
+def bar() -&gt; None:
+    &quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+    pass
+
+
+## a/b.pyi          &lt;-- Renamed
+def foo() -&gt; None: 
+    &quot;&quot;&quot;Stub docstring&quot;&quot;&quot;
+    ...
+
+def bar() -&gt; None: 
+    ...
+
+
+## a/__init__.py
+from .b import foo as foo
+from .b import bar as bar
+
+
+## main.py
+from a import foo  # Stub docstring
+from a import bar  # Implementation docstring
+</code></pre>
+<p>Playground link: https://play.ty.dev/74d4d6ee-8ced-41da-b0c6-bf8167f510ae</p>
+<p>Possibly related: https://github.com/astral-sh/ty/issues/788#issuecomment-3175228024</p>
+<h3>Version</h3>
+<p>ty 0.0.5 (d37b7dbd9 2025-12-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-21 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jammf">@Jammf</a> on 2025-12-21 21:12</div>
+            <div class="timeline-body"><p>Module-level attributes seem to have a similar issue, except in their case even a <code>.pyi</code> for the implementation file doesn't fall back correctly when stub docstring is omitted:</p>
+<pre><code class="language-python">## a/b.py
+FOO = 3
+&quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+
+BAR = 4
+&quot;&quot;&quot;Implementation docstring&quot;&quot;&quot;
+
+
+## a/b.pyi 
+FOO: int
+&quot;&quot;&quot;Stub docstring&quot;&quot;&quot;
+
+BAR: int
+
+
+## main.py
+from a.b import FOO  # Stub docstring
+from a.b import BAR  # MISSING docstring!
+</code></pre>
+<p>https://play.ty.dev/dae79e23-d61b-4d23-8962-f9b9e67a60da</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-22 12:26</div>
+            <div class="timeline-body"><p>Thanks. There's a related issue where we want to show the docstring of the overriden function if the override doesn't have a docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-22 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-09 04:28</div>
+            <div class="timeline-body"><p>I was going to say this is going to be tricky but actually our stub-mapping logic is so stringly typed I think it actually handles this well. The place where it falls short is I think we aren't applying &quot;resolve aliases&quot; logic -- we probably end up succesfully grabbing the Definition that the <code>import</code> defines, but don't chase it further to get the actual function:</p>
+<p>https://github.com/astral-sh/ruff/blob/f9f7a6901bc78f7429c6b2393d747350ac704f33/crates/ty_python_semantic/src/types/ide_support.rs#L1281-L1283</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-09 04:41</div>
+            <div class="timeline-body"><p>This <em>might</em> be a good-first-issue but I think Micha would have a better intuition on that (I think the thing that needs to be done is conceptually simple and we do it elsewhere, I'm not certain how trivial it is to actually make the code do that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 11:16</div>
+            <div class="timeline-body"><p>Feels a bit tough for a good first issue, but maybe help wanted.</p>
+<p>We may still need a separate approach to handle <code>@override</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`map(str, cmd)` fails with `Sequence[str] &amp; ~str`, succeeds with `Sequence[str]` - astral-sh/ty #2091</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`map(str, cmd)` fails with `Sequence[str] &amp; ~str`, succeeds with `Sequence[str]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2091">#2091</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-18 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 22:02</div>
+            <div class="timeline-body"><p>From #2087:</p>
+<pre><code class="language-py">from typing import Sequence, reveal_type
+
+def test(command: Sequence[str] | str) -&gt; str:
+    reveal_type(command)  # Sequence[str]
+    parts = map(str, command)  # works
+    if isinstance(command, str):
+        return command
+    else:
+        reveal_type(command)  # Sequence[str] &amp; ~str
+        parts = map(str, command)  # fails with &quot;not assignable to `Iterable[Buffer]`&quot;
+        return ' '.join(parts)
+
+print(test('echo hello'))
+print(test(['echo', 'hello']))
+</code></pre>
+<p>The first <code>map</code> works, the second one fails; the only difference is the intersection with <code>~str</code>. It should not be possible for that to cause the assignment to fail, if the other intersection component succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-18 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @carljm on 2025-12-18 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-12-18 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 22:12</div>
+            <div class="timeline-body"><p>If <code>T</code>, <code>U</code> and <code>S</code> are all fully static, <code>T &amp; ~U</code> is only assignable to <code>S</code> if <code>T</code> is a subtype of <code>S</code> and <code>U</code> is disjoint from <code>S</code>.</p>
+<p>I think what's happening here is <code>Sequence[str]</code> is a subtype of <code>Iterable[Buffer]</code> but <code>str</code> is not disjoint from <code>Iterable[Buffer]</code>, meaning that <code>Sequence[str] &amp; ~str</code> is not a subtype of <code>Iterable[Buffer]</code>, because all three types are fully static.</p>
+<p>I'm not sure this has anything to do with protocols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-12-18 22:25</div>
+            <div class="timeline-body"><p>https://play.ty.dev/6c580aa1-8aec-4e21-8950-b7ec53abd987</p>
+<pre><code class="language-py">from typing import Sequence, reveal_type
+
+def test(command: Sequence[str] | int) -&gt; str:
+    reveal_type(command)  # Sequence[str] | int
+    if isinstance(command, int):
+        return str(command)
+    else:
+        reveal_type(command)  # Sequence[str] &amp; ~int
+        parts = map(str, command)  # fails with &quot;not assignable to `Iterable[Buffer]`&quot;
+    return ' '.join(parts)
+
+print(test(123))
+print(test(['echo', 'hello']))
+</code></pre>
+<p>it still fails when the type is <code>Sequence[str] | int</code>, and <code>int</code> is definitely disjoint from <code>Sequence[str]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 22:40</div>
+            <div class="timeline-body"><p>Hmm interesting. I can dig in more tomorrow if Carl doesn't beat me to it while I'm asleep :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 22:41</div>
+            <div class="timeline-body"><blockquote>
+<p>If <code>T</code>, <code>U</code> and <code>S</code> are all fully static, <code>T &amp; ~U</code> is only assignable to <code>S</code> if <code>T</code> is a subtype of <code>S</code> and <code>U</code> is disjoint from <code>S</code></p>
+</blockquote>
+<p>How do you reach this conclusion? I don't think that's right. In general, <code>T &amp; U</code> is assignable to <code>S</code> if <code>T</code> is assignable to <code>S</code> or if <code>U</code> is assignable to <code>S</code>. This is the nature of an intersection: <code>T &amp; U</code> is always a smaller type than either <code>T</code> or <code>U</code> alone. So if <code>T</code> is assignable to <code>S</code>, it does not matter at all what <code>U</code> is (whether it's a negation type or not). (It sounds like you might be describing the logic for <code>T | ~U</code> rather than for <code>T &amp; ~U</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 22:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure this has anything to do with protocols.</p>
+</blockquote>
+<p>Yes, it's definitely possible that it doesn't.</p>
+<p>One thing I observed is that <code>str</code> is not assignable to <code>Buffer</code>, so we shouldn't expect <code>Sequence[str]</code> to be assignable to <code>Iterable[Buffer]</code> in the first place. Which suggests that with the intersection we are maybe resolving the wrong overload for <code>map.__new__</code>?</p>
+<p>This might be about overload resolution and/or bidirectional checking, rather than protocols?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "issue with intersections and Protocol assignability" to "`map(str, cmd)` fails with `Sequence[str] & ~str`, succeeds with `Sequence[str]`" by @carljm on 2025-12-18 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> removed by @carljm on 2025-12-18 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 11:44</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>If <code>T</code>, <code>U</code> and <code>S</code> are all fully static, <code>T &amp; ~U</code> is only assignable to <code>S</code> if <code>T</code> is a subtype of <code>S</code> and <code>U</code> is disjoint from <code>S</code></p>
+</blockquote>
+<p>How do you reach this conclusion? I don't think that's right. In general, <code>T &amp; U</code> is assignable to <code>S</code> if <code>T</code> is assignable to <code>S</code> or if <code>U</code> is assignable to <code>S</code>. This is the nature of an intersection: <code>T &amp; U</code> is always a smaller type than either <code>T</code> or <code>U</code> alone. So if <code>T</code> is assignable to <code>S</code>, it does not matter at all what <code>U</code> is (whether it's a negation type or not). (It sounds like you might be describing the logic for <code>T | ~U</code> rather than for <code>T &amp; ~U</code>.)</p>
+</blockquote>
+<p>Right, sorry, I got that completely backwards. I was reading the first of <a href="https://github.com/astral-sh/ruff/blob/e177cc2a5a5d5e25c06ea6b0bbac9209f37fe756/crates/ty_python_semantic/src/types.rs#L2428-L2497">these two branches</a>, when I should have been reading the second one.</p>
+<p>It still seems <em>unlikely</em> to me that this is protocol-related, given that our <code>Type::Intersection</code> branches are higher than our <code>Type::ProtocolInstance()</code> branch in <code>Type::has_relation_to_impl</code>. But it's possible...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-05 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-05 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-08 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 18:00</div>
+            <div class="timeline-body"><p>This may be related to #1880 ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

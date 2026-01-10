@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI provided directory path and include - astral-sh/ty #936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CLI provided directory path and include</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/936">#936</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-05 07:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-05 07:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>dir1/
+└─ test.py
+dir2/
+└─ test.py
+</code></pre>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ty.src]
+include = [&quot;dir1&quot;]
+</code></pre>
+<pre><code>&gt; ty check dir1 -v
+INFO Indexed 1 file(s) in 0.005s
+All checks passed!
+
+&gt; ty check dir2 -v 
+INFO Indexed 0 file(s) in 0.005s
+WARN No python files found under the given path(s)
+All checks passed!
+
+&gt; ty check dir2/test.py -v
+INFO Indexed 1 file(s) in 0.003s
+All checks passed!
+</code></pre>
+<p>i would expect ty check dir2 -v to index 1 file (dir2/test.py)
+when i remove the config from pyproject.toml it behaves as expected</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-08-05 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-08-05 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-05 09:35</div>
+            <div class="timeline-body"><p>I was having a look at this and it seems that every file was going through this function here:
+https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/walk.rs#L74-L84</p>
+<pre><code class="language-rust">    pub(crate) fn is_file_included(
+        &amp;self,
+        path: &amp;SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -&gt; IncludeResult {
+        match self.match_included_paths(path, mode) {
+            None =&gt; IncludeResult::NotIncluded,
+            Some(CheckPathMatch::Partial) =&gt; self.src_filter.is_file_included(path, mode),
+            Some(CheckPathMatch::Full) =&gt; IncludeResult::Included,
+        }
+    }
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/walk.rs#L34-L59</p>
+<pre><code class="language-rust">    fn match_included_paths(
+        &amp;self,
+        path: &amp;SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -&gt; Option&lt;CheckPathMatch&gt; {
+        match mode {
+            GlobFilterCheckMode::TopDown =&gt; Some(CheckPathMatch::Partial),
+            GlobFilterCheckMode::Adhoc =&gt; {
+                self.included_paths
+                    .iter()
+                    .filter_map(|included_path| {
+                        if let Ok(relative_path) = path.strip_prefix(included_path) {
+                            // Exact matches are always included
+                            if relative_path.as_str().is_empty() {
+                                Some(CheckPathMatch::Full)
+                            } else {
+                                Some(CheckPathMatch::Partial)
+                            }
+                        } else {
+                            None
+                        }
+                    })
+                    .max()
+            }
+        }
+    }
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/glob.rs#L48-L61</p>
+<pre><code class="language-rust">    pub(crate) fn is_file_included(
+        &amp;self,
+        path: &amp;SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -&gt; IncludeResult {
+        if self.exclude.match_file(path, mode) {
+            IncludeResult::Excluded
+        } else if self.include.match_file(path) {
+            IncludeResult::Included
+        } else {
+            IncludeResult::NotIncluded
+        }
+    }
+}
+</code></pre>
+<p>It seems that the walk always uses <code>GlobFilterCheckMode::TopDown</code> which results in <code>CheckPathMatch::Partial</code> which always check for includes and excludes, so the <code>test.py</code> ends being classified as <code>NotIncluded</code>.</p>
+<p>The comments mentions that explicitly provided paths should always be included, but I believe it only works for the explicitly declared path, not it sub files and folders.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-05 09:58</div>
+            <div class="timeline-body"><p>that analysis makes sense. It's also not entirely clear if we want the behavior described above. E.g it becomes more ambiguous with non directory includes, e.g. <code>[&quot;**/lib.py&quot;]</code>. Should  <code>dir2/main.py</code> be included or not (probably not?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-07 23:24</div>
+            <div class="timeline-body"><p>What do you think about implementing the following behavior?</p>
+<h1>Option 1</h1>
+<p><strong>Ignore includes/excludes from pyproject.toml:</strong></p>
+<ul>
+<li>When the user explicitly provides specific paths as arguments (e.g., <code>ty check dir2</code>, <code>ty check src/file.py</code>)</li>
+</ul>
+<p><strong>Use includes/excludes from pyproject.toml:</strong></p>
+<ul>
+<li>When no explicit paths are provided and the tool needs to discover files automatically (e.g., <code>ty check</code> with no arguments)</li>
+<li>When the user provides <code>--project</code> and points to a specific project</li>
+</ul>
+<p>The drawback is that it might be surprising to ignore includes/excludes if the user provides a path containing a pyproject.toml file (e.g., <code>ty check project_folder</code> or <code>ty check .</code> while PWD is a project). As an alternative we might consider the following rules:</p>
+<h1>Option 2</h1>
+<p><strong>Ignore includes/excludes from pyproject.toml:</strong></p>
+<ul>
+<li>When the user explicitly provides specific files (<code>ty check src/file.py</code>)</li>
+<li>When the user explicitly provides a folder that does not contain a pyproject.toml file (e.g., <code>ty check dir1/</code>)</li>
+</ul>
+<p><strong>Use includes/excludes from pyproject.toml:</strong></p>
+<ul>
+<li>When no explicit paths are provided and the tool needs to discover files automatically (e.g., <code>ty check</code> with no arguments)</li>
+<li>When the user provides <code>--project</code> and points to a specific project (e.g., <code>ty check --project my_project</code>)</li>
+<li>When the user provides a folder that contains a pyproject.toml file (e.g., <code>ty check .</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-08 07:43</div>
+            <div class="timeline-body"><p>Thanks for coming up with those options.</p>
+<p>I don't think we should always ignore <code>include</code> and <code>exclude</code> if a path's provided. That prevents users from e.g. excluding all jupyter notebooks or directories they don't care about. It would also result in ty traversing into <code>.git</code> directories (and <code>.venv</code>, <code>node_modules</code>) which is unlikely what users want. That's why I think Option 1 isn't viable.</p>
+<p>The other reason why I don't think it's feasible to ignore <code>include</code> and <code>exclude</code> (which applies to both options) is that you can write <code>ty check app --exclude &quot;**/*.ipynb&quot;</code>. We can't just ignore the second argument.</p>
+<p>That's why I'm still leaning towards adding an implicit <code>dir/**/*</code> include if the user runs <code>check dir</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-08 10:04</div>
+            <div class="timeline-body"><p>I see what you mean, it makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-10 13:46</div>
+            <div class="timeline-body"><p>The ecosystem results in https://github.com/astral-sh/ruff/pull/19841#issuecomment-3170656463 are interesting. <code>streamlit</code> has <code>lib/streamlit</code> in the <a href="https://github.com/streamlit/streamlit/blob/6951eef787318ff8b0cc0ec08180842895167136/ty.toml#L19-L20">include configuration</a>. That means, running <code>ty check lib</code> only checks the <code>streamlit</code> folder, which matches my expectation.</p>
+<p>However, running <code>ty check lib/tests</code> checks no files, which I at least find confusing. However, it also matches Ruff's behavior, as @leandrobbraga pointed out on their PR.</p>
+<p>Users can use a negative exclude to get the desired behavior, but it's not very obvious:</p>
+<pre><code class="language-toml">[src]
+exclude = [&quot;lib/*&quot;, &quot;!lib/streamline&quot;]
+</code></pre>
+<p>and it gets pretty verbose when including multiple folders per level</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-31 15:30</div>
+            <div class="timeline-body"><p>We should make a decision on this before stable based on feedback. But I currently aren't convinced that we should change anything (we haven't received more feedback on this, suggesting that what we have is intuitive)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-31 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-12-31 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 09:37</div>
+            <div class="timeline-body"><p>I'll close this for now, given that we haven't received any other feedback that this is confusing. If you come across this issue and do find the existing behavior confusing, please open a new issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-09 09:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer more-nested path when reverse-resolving file to module name and search paths overlap - astral-sh/ty #1730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer more-nested path when reverse-resolving file to module name and search paths overlap</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1730">#1730</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-02 19:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 19:42</div>
+            <div class="timeline-body"><p>Sometimes we might have overlapping search paths, where the outer path (say <code>.</code>) is a higher-priority search path than the inner path (say <code>./src</code>). If a file inside <code>./src</code> (say <code>./src/foo/bar.py</code>) does <code>from . import baz</code>, we currently reverse-resolve the module name of <code>./src/foo/bar.py</code> as <code>src.foo.bar</code> (rather than <code>foo.bar</code>) and then import <code>./src/foo/baz.py</code> as the module name <code>src.foo.baz</code>.</p>
+<p>It would be better if we always preferred the inner, or more precise, matching search path instead. So <code>./src/foo/bar.py</code> would then reverse-resolve to the module name <code>foo.bar</code> (instead of <code>src.foo.bar</code>), even though <code>.</code> comes before <code>./src</code> in the search paths. And then our relative import would import <code>foo.baz</code> instead of <code>src.foo.baz</code>.</p>
+<p>See https://github.com/astral-sh/ty/issues/1682#issuecomment-3603223786 for more on how this relates to runtime behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-02 21:26</div>
+            <div class="timeline-body"><p>This is something I had mulled a few times, and if it's not abjectly wrong for unpleasant historical reasons, I definitely agree this is what we should prefer. On paper all that this requires is changing <code>file_to_module</code> so that <code>search_paths.find_map()</code> is instead <code>search_paths.filter_map().min_by(path.len())</code>.</p>
+<p>However I got skittish about how that might interact once you pass the absolute module to <code>resolve_module</code> and the search paths haven't actually been reordered (didn't think about it hard enough to come up with a concrete example).</p>
+<p>I'm also a bit fuzzy on the interaction with desperate module resolution -- almost by definition desperate module resolution will produce a shorter path than normal module resolution, but that doesn't mean it should be preferred?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 01:14</div>
+            <div class="timeline-body"><p>I think this doesn't need to consider desperate resolution. This is to better handle the case of nested explicit search paths (whether both explicit paths are from <code>environment.roots</code>, eg the default case of <code>.</code> and <code>./src</code>, or if the nested one is e.g. from an editable-installed subproject in a workspace), while desperate resolution handles the case where something that maybe should be a nested search path wasn't discovered/specified as one upfront at all. The two are thus complementary, and also well-aligned because with this fix we'll end up preferring the more-nested path in both cases, whether we are falling back to desperate resolution, or have nested explicit paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-03 18:03</div>
+            <div class="timeline-body"><p>I cleaned up the workspace tests that motivated this issue a bit and include an editables and extra-paths variation of the problem:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/21745/</li>
+</ul>
+<p>With some subsequent fixups I did, the ordering you propose now works perfectly, while the reverse ordering which editables have(!!!!) is still broken in a subtle and complex way that desperate resolution can't actually handle. So the change described here is well-motivated.</p>
+<p>The problem is that one is a namespace package and the other is a regular package, and we act inconsistently when we can see both of those and the namespace package comes first. We can resolve <code>a.subnamespace.realmod</code> (<code>from .realmod</code>) but not <code>a.subnamespace</code> (<code>from .</code>).</p>
+<p>This dodges desperate resolution because <code>file_to_module</code> successfully resolves <code>.&lt;self&gt;</code> to <code>a.subnamespace.whatever</code> which we can then use to compute the absolute form of <code>.</code> (<code>a.subnamespace</code>).  When we then append <code>realmod</code> to it, that once again successfully resolves. However when we try to resolve <code>a.subnamespace</code> on its own we somehow realize &quot;hey wait something's wrong&quot; and refuse to resolve it. Desperate resolution can't do anything about it because we've already locked in the module name <code>a.subnamespace</code> instead of <code>subnamespace</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:34</div>
+            <div class="timeline-body"><p>I think the root cause of that weird behavior is #1749 (which I just filed, after exploring that scenario)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-12-03 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 09:45</div>
+            <div class="timeline-body"><p>I also came across this yesterday and was surprised that this isn't causing more mischief.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

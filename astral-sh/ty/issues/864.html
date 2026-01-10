@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>provide more diagnostic context for invalid-context-manager - astral-sh/ty #864</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>provide more diagnostic context for invalid-context-manager</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/864">#864</a>
+        opened by <a href="https://github.com/jelly">@jelly</a>
+        on 2025-07-21 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jelly">@jelly</a> on 2025-07-21 15:34</div>
+            <div class="timeline-body"><p>(The error initially reported below is a true positive, but our diagnostic message for bad context manager method implementations should describe why we consider <code>__enter__</code> or <code>__exit__</code> wrongly implemented. That is, we should propagate the actual call error encountered.)</p>
+<h3>Summary</h3>
+<details>
+
+<p>Testing ty on our Cockpit Python code found a false positive in our custom contextmanager which takes an argument:</p>
+<pre><code class="language-python">import os
+from typing import Any
+
+class Handle(int):
+    &quot;&quot;&quot;An integer subclass that makes it easier to work with file descriptors&quot;&quot;&quot;
+
+    def __new__(cls, fd: int = -1) -&gt; 'Handle':
+        return super(Handle, cls).__new__(cls, fd)
+
+    # separate __init__() to set _needs_close mostly to keep pylint quiet
+    def __init__(self, fd: int = -1):
+        super().__init__()
+        self._needs_close = fd != -1
+
+    def __bool__(self) -&gt; bool:
+        return self != -1
+
+    def close(self) -&gt; None:
+        if self._needs_close:
+            self._needs_close = False
+            os.close(self)
+
+    def __eq__(self, value: object) -&gt; bool:
+        if int.__eq__(self, value):  # also handles both == -1
+            return True
+
+        if not isinstance(value, int):  # other object is not an int
+            return False
+
+        if not self or not value:  # when only one == -1
+            return False
+
+        return os.path.sameopenfile(self, value)
+
+    def __del__(self) -&gt; None:
+        if self._needs_close:
+            self.close()
+
+    def __enter__(self) -&gt; 'Handle':
+        return self
+
+    def __exit__(self, _type: type, _value: object, _traceback: object) -&gt; None:
+        self.close()
+
+    @classmethod
+    def open(cls, *args: Any, **kwargs: Any) -&gt; 'Handle':
+        return cls(os.open(*args, **kwargs))
+
+    def steal(self) -&gt; 'Handle':
+        self._needs_close = False
+        return self.__class__(int(self))
+
+dir_fd = os.open('/', os.O_RDONLY)
+with Handle.open('tmp', os.O_RDONLY, dir_fd=dir_fd) as fd:
+    print(fd)
+</code></pre>
+<p>Error:</p>
+<pre><code>error[invalid-context-manager]: Object of type `Handle` cannot be used with `with` because it does not correctly implement `__exit__`
+  --&gt; contenxt-manager-ty-issue.py:80:6
+   |
+79 | dir_fd = os.open('/', os.O_RDONLY)
+80 | with Handle.open('tmp', os.O_RDONLY, dir_fd=dir_fd) as fd:
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+81 |     print(fd)
+   |
+info: rule `invalid-context-manager` is enabled by default
+</code></pre>
+</details>
+
+<p>I managed to reduce this to down to:</p>
+<pre><code class="language-python">class TestContextManager:
+    def __init__(self, name: str) -&gt; None:
+        self.name = name
+
+    def __enter__(self) -&gt; 'TestContextManager':
+        return self
+
+    def __exit__(self, _type: type, _value: object, _traceback: object) -&gt; None:
+        ...
+
+with TestContextManager('something') as foo:
+    ...
+</code></pre>
+<p>Which gives:</p>
+<pre><code>error[invalid-context-manager]: Object of type `TestContextManager` cannot be used with `with` because it does not correctly implement `__exit__`
+  --&gt; foo.py:11:6
+   |
+ 9 |         ...
+10 |
+11 | with TestContextManager('something') as foo:
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |     ...
+   |
+info: rule `invalid-context-manager` is enabled by default
+</code></pre>
+<h3>Version</h3>
+<p>ty ruff/0.12.4+31 (c2380fa0e 2025-07-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 15:46</div>
+            <div class="timeline-body"><p>Thanks for the report! I think this error is correct, though our diagnostic could definitely be more informative here.</p>
+<p>The three arguments to <code>__exit__</code> are all set to <code>None</code> in case there is no exception, so the annotation <code>_type: type</code> is not correct. It should be <code>type | None</code> (or more precisely it could be <code>type[BaseException] | None</code>). But the key part is that <code>| None</code> must be included. If I include that, the error goes away: https://play.ty.dev/a1ff10ae-ffc2-42f7-b32a-212213ed34db</p>
+<p>(Note the same issue in principle applies to <code>_value</code> and <code>_traceback</code> arguments also, but it doesn't show up here because you annotate those as <code>object</code>, which already includes <code>None</code>.)</p>
+<p>I will leave this issue open but re-purpose it to describe an improvement to the diagnostic message here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 15:48</div>
+            <div class="timeline-body"><p>I was typing out exactly the same message as @carljm. Here's a demonstration in the REPL of why it's important that the <code>type_</code> parameter in your <code>__exit__</code> method needs to have an annotation that indicates it can accept <code>None</code> being passed in -- if no exception is raised in the <code>with</code> block, <code>None</code> will be passed for all three non-<code>self</code> parameters to <code>__exit__</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __enter__(self): return self
+...     def __exit__(self, type_, value, traceback):
+...         print(f&quot;{type_=}, {value=}, {traceback=}&quot;)
+...         
+&gt;&gt;&gt; with Foo():
+...     pass
+...     
+type_=None, value=None, traceback=None
+</code></pre>
+<p>So ty is essentially warning you that the function says it can only accept instances of <code>type</code>, but it might be passed <code>None</code> as a result of the <code>with</code> block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "invalid-context-manager wrongly raised for a contextmanager which takes an argument" to "provide more diagnostic context for invalid-context-manager" by @carljm on 2025-07-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-07-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelly">@jelly</a> on 2025-07-21 16:08</div>
+            <div class="timeline-body"><p>Thanks for the quick replies, I didn't make the connection of &quot;does not correctly implement <code>__exit__</code>&quot; being related to the typing of <code>__exit__</code>. Maybe the diagnostic can also highly the <code>__exit__</code> implementation?</p>
+<p>(Also really impressive that <code>ty</code> caught this as mypy/pyrefly didn't warn about it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

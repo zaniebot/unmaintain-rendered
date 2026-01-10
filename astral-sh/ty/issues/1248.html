@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>better gradual guarantee for un-annotated dict (and other container?) literals - astral-sh/ty #1248</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>better gradual guarantee for un-annotated dict (and other container?) literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1248">#1248</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-09-24 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-09-24 16:10</div>
+            <div class="timeline-body"><p>In the ecosystem, we see this kind of pattern:</p>
+<pre><code class="language-py">def f(a: int, b: str): ...
+
+x = { &quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot; }
+
+# Expected `int` found `Unknown | int | str`
+f(x[&quot;a&quot;], x[&quot;b&quot;])
+# or
+f(**x)
+</code></pre>
+<p>In this case, an un-annotated dict literal is used implicitly as a heterogeneous <code>TypedDict</code>. We (along with mypy and pyrefly) throw errors on these calls, because we infer the type of <code>x</code> as <code>dict[str, Unknown | int | str]</code>. (Pyrefly infers <code>dict[str, int | str]</code>, mypy <code>dict[str, object]</code>.)</p>
+<p>Pyright avoids this problem by falling back to <code>dict[str, Unknown]</code> rather than inferring a union value type, when the dict contents look heterogeneous.</p>
+<p>A similar problem can occur with list literals (e.g. <code>x = [1, &quot;a&quot;]; f(x[0], x[1])</code>). We do see this in the ecosystem too, but it's less common than with dictionaries (probably because tuples are an attractive alternative, and implicit heterogeneity is supported for tuples).</p>
+<p>Perhaps ideally this would be solved by inferring a more precise heterogeneous &quot;implicit TypedDict&quot; type for these literals, but this gets very difficult to handle correctly with mutations.</p>
+<p>If we do implement a &quot;gradual mode&quot; vs &quot;strict mode&quot;, it may be worth emulating pyright's behavior in the &quot;gradual mode&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-09-24 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">gradual-guarantee</span> added by @carljm on 2025-09-24 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 08:13</div>
+            <div class="timeline-body"><p>FWIW, I think we should prioritize this. <a href="https://github.com/astral-sh/ruff/pull/20523#issuecomment-3325399343">2,471 new diagnostics</a> is a massive amount. That averages to 17 new diagnostics per ecosystem project. They are obviously not evenly distributed, but a lot of projects are affected. I also see these errors in some local Python codebases (mypy_primer, ecosystem-analyzer) that previously had very few diagnostics. It may also not be immediately clear to users what is even going on:</p>
+<pre><code class="language-py">state = {&quot;name&quot;: &quot;ABC&quot;, &quot;counter&quot;: 0}
+
+state[&quot;counter&quot;] += 1  # Operator `+=` is unsupported between objects of type `str` and `Literal[1]`
+
+print(state[&quot;name&quot;].lower())  # Attribute `lower` on type `Unknown | str | int` may be missing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-09-25 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-25 14:34</div>
+            <div class="timeline-body"><p>Tentatively putting this in the beta milestone, but it's still not clear to me if we should unconditionally do this, or make it subject to a config parameter that would also toggle the unioning with <code>Unknown</code> that we do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 14:03</div>
+            <div class="timeline-body"><p>Instead of falling back to <code>Unknown</code>, we could potentially return <a href="https://github.com/python/typing/issues/566"><code>AnyOf[ValueType1, ValueType2, …]</code></a>? This is similarly forgiving to <code>Unknown</code>, but would allow us to use auto-completions when typing e.g. <code>state[&quot;name&quot;].lo&lt;CURSOR&gt;</code>.</p>
+<p>This would require a change to the aggregation logic <a href="https://github.com/astral-sh/ruff/blob/00c8851ef8d643434340577f1b1ee65b5e728ac1/crates/ty_python_semantic/src/types/ide_support.rs#L107">here</a>, where we currently reduce the completions for a union type to the <em>intersection</em> of the completions on the element types. This logic is correct, but we did already question whether unioning would be the more practically useful way of combining completions  when we originally introduced it.</p>
+<p>Another way to achieve similar results was suggested by @carljm, where we could track two different types for each expression. The &quot;correct&quot; type and a &quot;best guess&quot; type for LSP use cases. For the strong-gradual-guarantee case, we could return <code>Unknown</code> as the &quot;correct&quot; type, and <code>int | str</code> as the &quot;best guess&quot; type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-30 07:19</div>
+            <div class="timeline-body"><p>Where ty's current behavior definitely differs from mypy, pyrefly is when you explicitly annotate with <code>dict[str, Any]</code> in an attempt to get rid of these errors. Because we always prefer the inferred type (see also #136):</p>
+<pre><code class="language-py">from typing import Any
+
+state: dict[str, Any] = {&quot;name&quot;: &quot;ABC&quot;, &quot;counter&quot;: 0}
+
+state[&quot;counter&quot;] += 1  # Still an error!
+print(state[&quot;name&quot;].lower())  # Still an error!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-17 07:18</div>
+            <div class="timeline-body"><p>With the latest changes in https://github.com/astral-sh/ruff/pull/20927, my last comment here is not relevant anymore. So I will move this from Beta to GA. Feel free to move it back if anyone disagrees.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @sharkdp on 2025-10-17 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @sharkdp on 2025-10-17 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 00:13</div>
+            <div class="timeline-body"><p>Since I filed this issue, <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN2UYANxiooAfSbEYAHXRzMMMHTAAKVIk7oGAGjrZNcBpQCUmwhblz8dALx1gdGSFTPNARj3PsbpyABMznQAvlbo%2BADa3s4AunZ0-nR0AMR0MJTUlHDWhACuxJioDDCqwNFICcEmSanouGkZvHq56HC4LZhhgiJikswl%2BNUpdJgQAMYMEUaUeqz8AD500zFy3aISUgNRLrFDqXOrwut90qqR5TF7S8ZhtfXpmXB0uOhpEAwAFul0Y2JQiGE1OcdiAYnpgT5QSY5KleHI1AAqBGDOQgHQgXIMaBwEjkRAgVIAVSxUHepBULQmEBe2XkWCUKl4NCK4nQuRo2HSZ00c2qAFoAHzXSgA15JAQwBi5SivMDOABy7M5Ioc%2BFCIFR6LIgjAUFIhAYtCgFFSAAVSDq9UsMDgCD8XpA2NKitT0IQYXQAMowGB0D4MBjEOCIAD0Ie1Sj1hF4bBDMHQIcwuDGcBDYwdECdlBdLxDjModFQQlQ0FQ2Fg9vQjudWJez2Itda7vQZE%2BLz5IiyrvizgAzIR3IENegQMF0agqSIAGLQGAUNBYPBEMijoA">Pyrefly seems to have implemented</a> a version of the &quot;infer implicit TypedDict&quot; approach for dict literals with heterogeneous value types. It prevents some mutations that would change the type of a specific key, but allows others unsoundly:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def f(a: int, b: str): ...
+
+x = { &quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot; }  # shows `dict[str, int | str]` in inlay hint
+
+x[&quot;b&quot;] = 2  # error, even though the &quot;official&quot; type is dict[str, int | str]
+x.update({&quot;b&quot;: 2})  # no error, unsound
+
+reveal_type(x)  # dict[str, int | str]
+reveal_type(x[&quot;a&quot;])  # int
+reveal_type(x[&quot;b&quot;])  # str
+
+# no errors on either call:
+
+f(x[&quot;a&quot;], x[&quot;b&quot;])
+# or
+f(**x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">gradual-guarantee</span> removed by @AlexWaygood on 2025-12-19 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-08 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-08 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

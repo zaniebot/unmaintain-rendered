@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type error with FastAPI/Starlette CORSMiddleWare and add_middleware - astral-sh/ty #2406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type error with FastAPI/Starlette CORSMiddleWare and add_middleware</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2406">#2406</a>
+        opened by <a href="https://github.com/norbusan">@norbusan</a>
+        on 2026-01-08 23:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/norbusan">@norbusan</a> on 2026-01-08 23:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>FastAPI's CORSMiddleware is normally used with add_middleware as in:</p>
+<pre><code>app.add_middleware(
+    middleware_class=CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=settings.CORS_CREDENTIALS,
+    allow_methods=settings.CORS_METHODS,
+    allow_headers=settings.CORS_HEADERS,
+)
+</code></pre>
+<p>Unfortunately, that does not type correctly with ty:</p>
+<pre><code>error[invalid-argument-type]: Argument to bound method `add_middleware` is incorrect
+  --&gt; src/core/main.py:41:5
+   |
+39 | # Add middlewares, mounts, routers, etc...
+40 | app.add_middleware(
+41 |     middleware_class=CORSMiddleware,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
+42 |     allow_origins=settings.CORS_ORIGINS,
+43 |     allow_credentials=settings.CORS_CREDENTIALS,
+   |
+info: Method defined here
+   --&gt; .venv/lib/python3.13/site-packages/starlette/applications.py:124:9
+    |
+122 |         self.router.host(host, app=app, name=name)  # pragma: no cover
+123 |
+124 |     def add_middleware(
+    |         ^^^^^^^^^^^^^^
+125 |         self,
+126 |         middleware_class: _MiddlewareFactory[P],
+    |         --------------------------------------- Parameter declared here
+127 |         *args: P.args,
+128 |         **kwargs: P.kwargs,
+    |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>According to the related discussion in the fastapi github repo https://github.com/fastapi/fastapi/discussions/10968 the type hints in starlette are correct, see this comment: https://github.com/fastapi/fastapi/discussions/10968#discussioncomment-11004407</p>
+<h3>Version</h3>
+<p>0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 23:33</div>
+            <div class="timeline-body"><p>Thanks! This looks like the same as #1635?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-08 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/norbusan">@norbusan</a> on 2026-01-09 09:41</div>
+            <div class="timeline-body"><p>@AlexWaygood sorry for the noise, searched for CORSMiddleware but nothing showed up. Yes, that is a duplicate.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:56 UTC
+    </footer>
+</body>
+</html>

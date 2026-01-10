@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>handle binary operators input parameters safely and special-case `NotImplementedType` as a return type - astral-sh/ty #1150</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>handle binary operators input parameters safely and special-case `NotImplementedType` as a return type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1150">#1150</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-08 06:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-08 06:07</div>
+            <div class="timeline-body"><h2>summary</h2>
+<p>operators are unsafe when they return <code>NotImplemented</code>:</p>
+<pre><code class="language-py">from types import NotImplementedType
+
+
+class A:
+    def __or__(self, other: object) -&gt; str:
+        return NotImplemented
+
+class B:
+    def __ror__(self, other: object) -&gt; int:
+        return 1
+
+x = A() | B()
+x # static: str, runtime: int
+</code></pre>
+<p>operators are unsafe when the right hand side is anticipated:</p>
+<pre><code class="language-py">class Left:
+    def __add__(self, other: int) -&gt; int:
+        # here &quot;other&quot; is Right
+        return other + 1  # TypeError here
+
+
+class Right:
+    def __radd__(self, other: Left) -&gt; str:
+        return &quot;i'm string :)&quot;
+
+left = Left()
+left + 1  # no error, left accepts `int`
+left + &quot;&quot; # error, left only accepts `int`
+left + Right()  # no error, but left still only accepts `int`
+</code></pre>
+<h1>body</h1>
+<p>https://play.ty.dev/88221963-684d-46c5-a36d-d4c104de716d</p>
+<p>here the result is <code>int | _NotImplementedType</code>, but it's impossible for it to be <code>_NotImplementedType</code> (due to runtime semantics), which should be removed when using the operator syntax</p>
+<p>relevant issues:</p>
+<ul>
+<li>https://github.com/DetachHead/basedpyright/issues/1465</li>
+<li>https://github.com/DetachHead/basedpyright/issues/1092</li>
+</ul>
+<p>additionally, having <code>NotImplementedType</code> in the return position should dicatate the resolution of the result:
+https://play.ty.dev/1cfab337-6b92-4c15-9ac5-9bbf42bd1ae9</p>
+<p>here, the result should not be <code>int | NotImplementedType</code>, it should be <code>int | str</code></p>
+<p>we could implement an optional rule that will enforce the usage of <code>NotImplementedType</code> into the signature when it is used in a return position, in order to preserve backwards compatibility</p>
+<h3>input parameter</h3>
+<p>for the second case where the the input parameter is passed an invalid type, i would expect an error on the invalid call, and would expect only corectly typed operators to be supported:</p>
+<pre><code class="language-py">class CanRightAdd[T]:
+    def __radd__(self, other: T, /) -&gt; object: ...
+
+class Left:
+    @overload
+    def __add__(self, other: int) -&gt; int: ...
+    @overload
+    def __add__(self, other: CanRightAdd[Left] &amp; Not[int]) -&gt; NotImplementedType: ...
+
+    def __add__(self, other):
+        if isinstance(other, int):
+            return other + 1
+        return NotImplemented
+        
+
+Left() + Right()    # expect no error, and works at runtime 😊
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-08 09:58</div>
+            <div class="timeline-body"><p>I'd advise not using <code>NotImplementedType</code> in return-type annotations. (I'd probably advise not using it in annotations anywhere, actually!) The convention that typeshed and most other type annotations use is that a dunder method that could return either <code>T</code> or the <code>NotImplemented</code> singleton is annotated as always returning <code>T</code>. To support that convention, ty already implements the opposite special-casing to the one you're asking for here, so that we do not emit an <code>invalid-return-type</code> diagnostic on code like this:</p>
+<pre><code class="language-py">class F:
+    def __or__(self, other) -&gt; F:
+        if not isinstance(other, F):
+            return NotImplemented
+        return self
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-08 14:23</div>
+            <div class="timeline-body"><p>the issue is that it is unsound, the way to correct the ecosystem is to encode the runtime semantics and include <code>NotImplementedType</code>, do you have any suggestion as to why this isn't a good idea that would both address the unsoundness described the the op and not break the ecosystem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-08 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>the issue is that it is unsound</p>
+</blockquote>
+<p>what specifically are you saying is unsound?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-08 14:59</div>
+            <div class="timeline-body"><p>the second example in the op</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-09-08 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-09-08 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-08 15:51</div>
+            <div class="timeline-body"><p>Ah, sorry, I missed the playground link in your OP. Playground links are great, but I find it really helpful if the snippet in question is pasted into an issue body as well -- it makes it easier for me to follow what we're discussing :-)</p>
+<p>For other folks' reference, the example is this:</p>
+<pre><code class="language-py">from types import NotImplementedType
+
+class A:
+    def __or__(self, other) -&gt; int | NotImplementedType:
+        return NotImplemented
+
+class B:
+    def __ror__(self, other) -&gt; int:
+        return 1
+
+reveal_type(A() | B())  # revealed: int | _NotImplementedType
+                        # but at runtime it will always be `int`!
+</code></pre>
+<p>But I think I would prefer to solve this by simply issuing a diagnostic if anybody uses <code>NotImplementedType</code> in a return-type annotation, where the diagnostic tells the user what to do instead. As you've pointed out, we won't understand it correctly if they do use it in a return-type annotation; and doing so runs counter to the conventional way that methods like this are annotated in the Python ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-08 15:54</div>
+            <div class="timeline-body"><p>I think I agree with the OP here that, all else equal, explicitly using <code>NotImplementedType</code> in return-type annotations would be a strictly more-capable and more-sound way of annotating these dunder methods, compared to the status-quo approach. And I think we could actually support it without breaking users of the current approach? So I think it's certainly something worth considering. But I don't think it's high priority, certainly not right now, so I'd be inclined to leave this open but defer it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-08 16:05</div>
+            <div class="timeline-body"><p>Perhaps it might be strictly more capable and strictly more sound to explicitly use <code>NotImplementedType</code> in a return annotation. Supporting both conventions at once in ty might be tricky, though. I assume the desirable state here is something like this?</p>
+<pre><code class="language-py">from typing import overload, Self
+from types import NotImplementedType
+
+class F:
+    @overload
+    def __or__(self, other: &quot;F&quot;) -&gt; Self: ...
+    @overload
+    def __or__(self, other: object) -&gt; NotImplementedType: ...
+    def __or__(self, other: object) -&gt; &quot;F&quot; | NotImplementedType:
+        if isinstance(other, F):
+            return self
+        return NotImplemented
+
+F() | 42  # this will raise TypeError at runtime, so we should emit a diagnostic
+          # but that wouldn't be detected via our current logic
+          # (the `__or__` call &quot;succeeds&quot;, it just returns `NotImplemented`)
+</code></pre>
+<p>and we'd also need to rework our logic that figures out whether <code>__or__</code> or <code>__ror__</code> takes precedence, etc. etc.</p>
+<p>It would be a fair amount of work for us, and all to support an alternative convention that's far more verbose than the current, widely used convention. I think the benefits here would be really quite marginal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-08 23:00</div>
+            <div class="timeline-body"><blockquote>
+<p>For other folks' reference, the example is this:</p>
+</blockquote>
+<p>that's the wrong example, the second one demonstrated the unsoundness</p>
+<p>i've updated the op to be clearer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-09 07:18</div>
+            <div class="timeline-body"><p>Hmm, thanks. That's interesting for sure, but the unsoundness only occurs there because both dunders have their parameters unannotated, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-09 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, thanks. That's interesting for sure, but the unsoundness only occurs there because both dunders have their parameters unannotated, right?</p>
+</blockquote>
+<p>no, it's unsound because it's retuning <code>NotImplemented</code> which the calls the RHS, and the assumption that this will never happen is unsound</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-09 07:58</div>
+            <div class="timeline-body"><p>Right. But under the existing convention, a dunder method's parameters should be annotated as only accepting types which would <em>not</em> cause that dunder method to return <code>NotImplemented</code>. If <code>other</code> is annotated with <code>Never</code> in <code>A.__or__</code>, reflecting the fact that there is no type that can be passed in which will cause the method not to return <code>NotImplemented</code>, ty infers the correct result: https://play.ty.dev/88221963-684d-46c5-a36d-d4c104de716d</p>
+<p>I suppose we currently don't do any checks that validate this, though. E.g. for this example, we should probably complain that the method is annotated as accepting <code>object</code>, but actually just returns <code>NotImplemented</code> if <code>object</code> is passed in: https://play.ty.dev/88221963-684d-46c5-a36d-d4c104de716d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-09 14:30</div>
+            <div class="timeline-body"><p>this is completely true, but it's not possible to represent every possible condition in the type system</p>
+<p>also, this is especially true for <code>__eq__</code>, which <strong>must</strong> accept <code>object</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-14 10:27</div>
+            <div class="timeline-body"><blockquote>
+<p>a dunder method's parameters should be annotated as only accepting types which would not cause that dunder method to return <code>NotImplemented</code></p>
+</blockquote>
+<p>@AlexWaygood actually, this is not true, see #1181</p>
+<pre><code class="language-py">class Left:
+    def __add__(self, other: int) -&gt; int:
+        # at runtime, &quot;other&quot; is `Right`
+        return other + 1  # TypeError here
+
+
+class Right:
+    def __radd__(self, other: Left) -&gt; str:
+        return &quot;i'm string :)&quot;
+
+
+Left() + Right()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-15 19:45</div>
+            <div class="timeline-body"><p>#1181 doesn't demonstrate anything that contradicts what @AlexWaygood said, as far as I can see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-16 04:40</div>
+            <div class="timeline-body"><blockquote>
+<p>#1181 doesn't demonstrate anything that contradicts what @AlexWaygood said, as far as I can see.</p>
+</blockquote>
+<blockquote>
+<p>a dunder method's parameters should be annotated as only accepting types which would not cause that dunder method to return NotImplemented.</p>
+</blockquote>
+<p>i understand your perspective, I feel this statement results in unsafe code, so I disagree with it and consider it not true. i believe &quot;a method should be annotated with the type that it accepts&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "special-case `NotImplementedType` as a return type on operator methods" to "handle binary operators input parameters safely and special-case `NotImplementedType` as a return type" by @KotlinIsland on 2025-09-17 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-23 18:09</div>
+            <div class="timeline-body"><p>There's some &quot;upstream&quot; discussion of this in https://github.com/python/typing/issues/1548</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-09 02:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

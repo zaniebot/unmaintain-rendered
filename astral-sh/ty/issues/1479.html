@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement &quot;tagged union&quot; narrowing for namedtuples and arbitrary nominal types - astral-sh/ty #1479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement &quot;tagged union&quot; narrowing for namedtuples and arbitrary nominal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1479">#1479</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-04 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-04 14:49</div>
+            <div class="timeline-body"><pre><code class="language-py">class A:
+    tag: Literal[&quot;a&quot;]
+
+class B:
+    tag: Literal[&quot;b&quot;]
+
+def _(x: A | B):
+    if x.tag == &quot;a&quot;:
+        reveal_type(x)  # revealed: A
+    else:
+        reveal_type(x)  # revealed: B
+</code></pre>
+<pre><code>        </code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-11-04 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typeddict</span> added by @carljm on 2025-11-06 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 17:08</div>
+            <div class="timeline-body"><p>Mypy refers to this feature as narrowing using &quot;tagged unions&quot;; it's documented <a href="https://mypy.readthedocs.io/en/stable/literal_types.html#tagged-unions">here</a>. The feature is not typeddict-specific; mypy also supports tagged-union narrowing for unions of normal classes:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+from typing import Literal
+
+@dataclass
+class A:
+    tag: Literal[&quot;foo&quot;]
+    data: list[str]
+
+@dataclass
+class B:
+    tag: Literal[&quot;bar&quot;]
+    data: list[str]
+
+def f(obj: A | B):
+    if obj.tag == &quot;foo&quot;:
+        reveal_type(obj)  # revealed: __main__.A
+    else:
+        reveal_type(obj)  # revealed: __main__.B
+</code></pre>
+<p>and even unions of <code>NamedTuple</code>s:</p>
+<pre><code class="language-py">from typing import NamedTuple, Literal
+
+class A(NamedTuple):
+    tag: Literal[&quot;foo&quot;]
+    data: list[str]
+
+class B(NamedTuple):
+    tag: Literal[&quot;bar&quot;]
+    data: list[str]
+
+def f(obj: A | B):
+    if obj[0] == &quot;foo&quot;:
+        reveal_type(obj)  # revealed: __main__.A
+    else:
+        reveal_type(obj)  # revealed: __main__.B
+    
+    if obj.tag == &quot;foo&quot;:
+        reveal_type(obj)
+    else:
+        reveal_type(obj)
+</code></pre>
+<p>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=9cd1b8ea80140517218e175e50bdda70
+https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=b90fb9dbe1b184306163181f7b8af867</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typeddict</span> removed by @AlexWaygood on 2025-11-09 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "narrow TypedDicts via tests of an element" to "Implement "tagged union" narrowing for typeddicts and nominal types" by @AlexWaygood on 2025-11-09 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement "tagged union" narrowing for typeddicts and nominal types" to "Implement "tagged union" narrowing for typeddicts, namedtuples and arbitrary nominal types" by @AlexWaygood on 2025-11-09 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-10 20:53</div>
+            <div class="timeline-body"><p>On https://github.com/astral-sh/ruff/pull/21363, we see 2,160 new diagnostics because we now start to understand some large unions in the pydantic code base, such as <a href="https://github.com/pydantic/pydantic/blob/27c95fd56e217f6cfc6ee96e07e1fb0646ef0d49/pydantic-core/python/pydantic_core/core_schema.py#L4106-L4159">this one</a> (also see the &quot;fun&quot; comment above). And pydantic makes use of this feature a lot (checking for <code>schema['type']</code>). It seems slightly more dramatic than it actually is, because we make no attempt at reducing the number of diagnostics on a single line, and we currently emit &gt;50 diagnostics for each &quot;invalid&quot; key access on large unions of <code>TypedDict</code>s such as <code>CoreSchema</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-10 20:58</div>
+            <div class="timeline-body"><p>It seems like this might not be a big lift to add -- if we synthesize a protocol type to intersect with, the support for testing against attributes should just fall out? And we could synthesize an implicit TypedDict type to intersect with; once our disjointness etc implementation for TypedDict is correct, that should also make this &quot;just work&quot;?</p>
+<p>EDIT: One tricky thing might be deciding how correct to be in our handling of equality tests here, since for e.g. <code>obj.attr = &quot;foo&quot;</code> technically the protocol type to synthesize would not be a protocol having attribute <code>attr</code> of type <code>Literal[&quot;foo&quot;]</code>, but rather some representation of 'can be equal to <code>Literal[&quot;foo&quot;]</code>'.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-11-10 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-10 21:04</div>
+            <div class="timeline-body"><blockquote>
+<p>if we synthesize a protocol type to intersect with</p>
+</blockquote>
+<p>Is it possible to formulate this as a (normal) protocol? Both freqtrade and pydantic narrow based on a key, not based on an attribute. Is it enough to add a <code>def __getitem__(self, key: Literal[&quot;special_key&quot;]) -&gt; Any</code> for these cases (since we already synthesize <code>__getitem__</code> methods with literal parameter types for <code>TypedDict</code>s)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-10 21:07</div>
+            <div class="timeline-body"><p>My suggestion above was that we would use <code>Protocol</code> for attribute-based tagged narrowing, and implicit TypedDict types for dictionary-style (<code>__getitem__</code> based) structural typing, rather than trying to also do the latter through <code>Protocol</code>. But it's possible we could make it work via protocol types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 21:12</div>
+            <div class="timeline-body"><p>there's also some interesting questions around the intersections of <code>Callable</code> types... if we have two <code>TypedDict</code>s like so:</p>
+<pre><code class="language-py">class TD1(TypedDict):
+    x: Literal[&quot;foo&quot;]
+
+class TD2(TypedDict):
+    x: Literal[&quot;bar&quot;]
+
+def f(td: TD1 | TD2):
+    if td[&quot;x&quot;] == &quot;foo&quot;:
+        reveal_type(td)
+</code></pre>
+<p>inside the <code>if</code> branch, it seems appealing to synthesize a protocol that looks like this and intersect with it:</p>
+<pre><code class="language-py">class P(Protocol):
+    def __getitem__(self, item: Literal[&quot;x&quot;]) -&gt; Literal[&quot;foo&quot;]: ...
+</code></pre>
+<p>And we'd hope for that intersection to simplify as</p>
+<pre><code>(TD1 | TD2) &amp; P
+=&gt; (TD1 &amp; P) | (TD2 &amp; P)
+=&gt; TD1 | Never
+=&gt; TD1
+</code></pre>
+<p>I think the left-hand side of the union should work out fine: <code>TD1 &amp; P</code> should simplify to <code>TD1</code>. But I'm not sure <code>TD2 &amp; P</code> will simplify to <code>Never</code> with our current implementations of intersections for <code>Callable</code> types and <code>Protocol</code> types. In order for it to simplify to <code>Never</code> naturally, you'd have to have <code>&lt;Callable</code> type of TD2.<strong>getitem</strong>&gt; &amp; <Callable type of P.__getitem__><code>simplify to</code>Never`. But I think in fact, it works like this:</p>
+<pre><code>CallableTypeOf[TD2.__getitem__] &amp; CallableTypeOf[P.__getitem__]
+=&gt; ((self, value: Literal[&quot;x&quot;], /) -&gt; Literal[&quot;bar&quot;]) &amp; ((self, value: Literal[&quot;x&quot;], /) -&gt; Literal[&quot;foo&quot;])
+=&gt; (self, value: Literal[&quot;x&quot;], /) -&gt; Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-10 21:30</div>
+            <div class="timeline-body"><p>Yes, this kind of thing is why I think it might be simpler to use synthesized TypedDict types for key-based narrowing, and rely on dedicated special-cased handling of TypedDict types? Fully implementing all structural typing (including <code>TypedDict</code> itself??) via <code>Protocol</code> feels like it ought to be possible, but there are likely many dragons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Fully implementing all structural typing (including <code>TypedDict</code> itself??) via <code>Protocol</code> feels like it ought to be possible, but there are likely many dragons.</p>
+</blockquote>
+<p>100%</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-15 05:54</div>
+            <div class="timeline-body"><p>I've tackled a similar problem before (https://github.com/astral-sh/ruff/pull/19064), and the conclusion was that we needed to check the <code>Protocol</code> property members. A <code>Protocol</code> that simply has an attribute of a certain type cannot have covariance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-12-04 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-12-23 19:37</div>
+            <div class="timeline-body"><p>Tagged <code>TypedDict</code> narrowing is now supported. For example:</p>
+<pre><code class="language-py">from typing import TypedDict, Literal, reveal_type
+
+class Foo(TypedDict):
+    tag: Literal[&quot;foo&quot;]
+
+class Bar(TypedDict):
+    tag: Literal[42]
+
+class Baz(TypedDict):
+    tag: Literal[b&quot;baz&quot;]  # `BytesLiteral`
+
+class Bing(TypedDict):
+    tag: Literal[&quot;bing&quot;]
+
+def _(u: Foo | Bar | Baz | Bing):
+    if u[&quot;tag&quot;] == &quot;foo&quot;:
+        reveal_type(u)  # revealed: Foo
+    elif u[&quot;tag&quot;] == 42:
+        reveal_type(u)  # revealed: Bar
+    elif u[&quot;tag&quot;] == b&quot;baz&quot;:
+        reveal_type(u)  # revealed: Baz
+    else:
+        reveal_type(u)  # revealed: Bing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 19:43</div>
+            <div class="timeline-body"><p>Filed https://github.com/astral-sh/ty/issues/2192 as follow-up to support enum-literal discriminators.</p>
+<p>Will keep this issue open for namedtuples and nominal instances. (Could split those out except I think it's possible the implementation might be largely shared?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement "tagged union" narrowing for typeddicts, namedtuples and arbitrary nominal types" to "Implement "tagged union" narrowing for namedtuples and arbitrary nominal types" by @carljm on 2025-12-23 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2026-01-09 15:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`discord.py`: Checking `audit_logs.py` takes very long - astral-sh/ty #1887</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`discord.py`: Checking `audit_logs.py` takes very long</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1887">#1887</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-15 11:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-15 11:18</div>
+            <div class="timeline-body"><p>Checking <code>audit_logs.py</code> dominates the entire type-checking time:</p>
+<ul>
+<li>wall-time: 380ms</li>
+<li><a href="https://github.com/Rapptz/discord.py/blob/master/discord/audit_logs.py"><code>audit_logs.py</code></a>: <code>/home/micha/astral/discord.py/discord/audit_logs.py</code> took more than 100ms (340.341158ms)</li>
+</ul>
+<p>I haven't looked into what's special about <code>audit_logs.py</code> (or something it imports), that explains its long type-checking time.</p>
+<p>There are some other &quot;slow&quot; files but none takes as long as <code>audit_logs.py</code>:</p>
+<pre><code>INFO Checking file `/home/micha/astral/discord.py/discord/ext/commands/bot.py` took more than 100ms (104.770849ms)
+INFO Checking file `/home/micha/astral/discord.py/discord/client.py` took more than 100ms (121.575732ms)
+INFO Checking file `/home/micha/astral/discord.py/discord/http.py` took more than 100ms (117.107697ms)
+INFO Checking file `/home/micha/astral/discord.py/discord/guild.py` took more than 100ms (124.385833ms)
+INFO Checking file `/home/micha/astral/discord.py/discord/message.py` took more than 100ms (147.963634ms)
+INFO Checking file `/home/micha/astral/discord.py/discord/state.py` took more than 100ms (103.881121ms)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-12-15 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-15 11:22</div>
+            <div class="timeline-body"><p>We can also see this in profiles where most threads finish after 180ms, but then there's one thread that just keeps going</p>
+<p>https://share.firefox.dev/3KAw91E</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-15 11:44</div>
+            <div class="timeline-body"><p>We see the same pattern on macos and linux. It's more notable on my Linux machine because it has more cores, but each core has worse single-core performance compared to my mac</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-15 17:15</div>
+            <div class="timeline-body"><p>One thing that stands out to me is that we call <code>is_redundant_with</code> a lot... Like a ton:</p>
+<ul>
+<li>Total queries executed: 56,481</li>
+<li>is_redundant_with queries: 42,628</li>
+<li>Percentage: ~75.5% (42,628 / 56,481)</li>
+</ul>
+<p>https://gist.github.com/MichaReiser/0ba51a38663ef7a9de13641a50d1719f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-09 00:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

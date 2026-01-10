@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losing type with Pydantic RootModel - astral-sh/ty #1365</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Losing type with Pydantic RootModel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1365">#1365</a>
+        opened by <a href="https://github.com/vlashada">@vlashada</a>
+        on 2025-10-15 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vlashada">@vlashada</a> on 2025-10-15 23:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>model_validate_json(&quot;&quot;)</code>, the type becomes unknown.</p>
+<pre><code class="language-python">from abc import ABC
+from typing import Literal, Union, reveal_type
+
+from pydantic import BaseModel, RootModel
+
+
+class A(BaseModel):
+    name: Literal[&quot;A&quot;]
+
+
+class B(BaseModel):
+    name: Literal[&quot;A&quot;]
+
+
+AORB = RootModel[Union[A, B]]
+
+reveal_type(AORB.model_validate_json(&quot;&quot;)) # Revealed type: `Unknown`
+</code></pre>
+<p>When I hover the method, I get the following type revealed:</p>
+<pre><code>bound method &lt;class 'RootModel[A | B]'&gt;.model_validate_json(
+    json_data: str | bytes | bytearray,
+    *,
+    strict: bool | None = None,
+    context: Any | None = None,
+    by_alias: bool | None = None,
+    by_name: bool | None = None
+) -&gt; RootModel[A | B]
+</code></pre>
+<h3>Version</h3>
+<p>73520e4ac</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 08:02</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>The signature of <code>model__validate_json</code> is here: https://github.com/pydantic/pydantic/blob/41cafa95c5fce8e1bb7af58c0f5bccb68a6ff389/pydantic/main.py#L726-L736</p>
+<p>There are a two things missing in ty to support this:</p>
+<ul>
+<li>An implicit annotation of <code>type[Self]</code> for the <code>cls</code> attribute of <code>@classmethod</code>s. This is part of #159</li>
+<li>Solving typevars inside <code>type[…]</code>. This is tracked in https://github.com/astral-sh/ty/issues/501, which itself is currently being worked on (see also #623)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-10-16 08:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-10-16 08:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthijsKok">@MatthijsKok</a> on 2026-01-08 19:57</div>
+            <div class="timeline-body"><p>As of <code>ty 0.0.10 (d18902cdc 2026-01-07)</code>, the revealed type is <code>RootModel[A | B]</code> for the code block above.
+This can be closed.</p>
+<pre><code>~ ❱ uvx ty --version
+ty 0.0.10 (d18902cdc 2026-01-07)
+~ ❱ uvx --with=&quot;pydantic==2.12.5&quot; ty check ty_pydantic_rootmodel.py
+Installed 6 packages in 48ms
+info[revealed-type]: Revealed type
+  --&gt; ty_pydantic_rootmodel.py:17:13
+   |
+15 | AORB = RootModel[Union[A, B]]
+16 |
+17 | reveal_type(AORB.model_validate_json(&quot;&quot;)) # Revealed type: `Unknown`
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `RootModel[A | B]`
+   |
+
+Found 1 diagnostic
+</code></pre>
+<p><img width="902" height="399" alt="Image" src="https://github.com/user-attachments/assets/bdd5ecfa-faf6-4402-b29d-de2e8526ed27" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-08 19:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

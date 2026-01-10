@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>better narrowing from conditional terminals and NoReturn calls - astral-sh/ty #690</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>better narrowing from conditional terminals and NoReturn calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/690">#690</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-21 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-21 19:57</div>
+            <div class="timeline-body"><p>Currently, a narrowing constraint is just an expression. We don't support boolean connectives of narrowing constraints -- we just track an implicit AND of multiple narrowing constraints per definition. Since we have no way to represent an <code>OR</code> of narrowing constraints, when we merge control flow paths we just discard any narrowing constraint that is present on only one path.</p>
+<p>This means that we fail to preserve some valid narrowing information in a case like this one:</p>
+<pre><code class="language-py">class A: pass
+class B: pass
+class C: pass
+
+def _(x: A | B | C):
+    if isinstance(x, A):
+        pass
+    elif isinstance(x, B):
+        pass
+    else:
+        return
+
+    reveal_type(x)  # should be `A | (B &amp; ~A)`, we currently reveal `A | B | C`
+</code></pre>
+<p>https://play.ty.dev/21e55e75-9ca4-46ca-ac62-24f1a6abecb1</p>
+<p>This also impacts narrowing from <code>NoReturn</code> calls (e.g. <code>sys.exit</code>) in a conditional branch.</p>
+<p>This problem also blocks progress on #626, since the fix for that issue requires &quot;breaking up&quot; a test expression like <code>if isinstance(x, A) or isinstance(x, B)</code> into two separate narrowing constraints (where today it is just one narrowing constraint, with the <code>or</code> handled in <code>narrow.rs</code>), and our inability to represent an <code>OR</code> of two separate narrowing constraints means that a fix for #626 regresses our current understanding of narrowing from such expressions</p>
+<p>One way to fix this might be to reuse our TDD implementation for reachability constraints, and use it also for narrowing constraints. This could even simplify the use-def map, since it would mean we'd only need to track a single narrowing constraint per definition (it could be an AND of multiple other constraints).</p>
+<p>An even deeper fix could be to treat every new narrowing of a definition as a new &quot;definition&quot; of that symbol, and just use visibility constraints to decide which such &quot;definitions&quot; are visible. This approach could also fix #685.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-06-21 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support better preservation of narrowing constraints in control flow joins" to "better preserve narrowing constraints in control flow joins" by @carljm on 2025-06-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-21 19:59</div>
+            <div class="timeline-body"><p>cc @TomerBin re #626</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @carljm on 2025-07-25 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-07-25 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "better preserve narrowing constraints in control flow joins" to "better narrowing from conditional terminals and NoReturn calls" by @carljm on 2025-12-16 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-20 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-20 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2026-01-09 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect class attributes set by metaclasses `__init__` method - astral-sh/ty #1138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect class attributes set by metaclasses `__init__` method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1138">#1138</a>
+        opened by <a href="https://github.com/strangemonad">@strangemonad</a>
+        on 2025-09-06 01:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/strangemonad">@strangemonad</a> on 2025-09-06 01:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not sure if this is a patito-specific issue or a more general metaclass lookup issue.</p>
+<p>https://play.ty.dev/2e6bfe16-f59c-46f0-82c0-aaebcacb942d</p>
+<p>Context</p>
+<ul>
+<li>polars is a popular dataframe library</li>
+<li>patito allows you to define the schema of individual rows as pydantic models</li>
+<li>This code checks in pyright/basepyright. I haven't checked mypy, pyre or others.</li>
+</ul>
+<p>The implementation relies on a metaclass to define some of this behavior.</p>
+<p>In particular in the following code</p>
+<pre><code class="language-python">import patito as pt
+
+class Person(pt.Model):
+    name: str
+
+results = Person.DataFrame(...)
+</code></pre>
+<p>The <code>Person.DataFrame</code> class var is added by the <code>patito.pydantic.ModelMetaclass(PydanticModelMetaclass)</code>. It's a common and convenient shortcut for the getting a dataframe constructor that's already bound to the correct generic type var and run time model class to allow for runtime schema validation. The alternative would be something like the following.</p>
+<pre><code>results = pt.DataFrame[Person]().set_model(Person)
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-09-08 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 07:19</div>
+            <div class="timeline-body"><p>Thank you for reporting this. I agree that we should support this.</p>
+<p>A self-contained example would be the following (https://play.ty.dev/d9452eef-2aa2-475e-a887-48fd63896a23):</p>
+<pre><code class="language-py">class Meta(type):
+    def __init__(cls, name, bases, namespace, **kwargs) -&gt; None:
+        cls.DataFrame = 1
+
+class C(metaclass=Meta):
+    pass
+
+reveal_type(C.DataFrame)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Patito metaclass classvar is reported as error[unresolved-attribute]" to "Detect class attributes set by metaclasses `__init__` method" by @sharkdp on 2025-09-08 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 02:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

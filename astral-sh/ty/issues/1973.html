@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`check` and `check --watch` have different results - astral-sh/ty #1973</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`check` and `check --watch` have different results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1973">#1973</a>
+        opened by <a href="https://github.com/fosskers">@fosskers</a>
+        on 2025-12-17 02:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-17 02:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi there, thanks for <code>ty</code>.</p>
+<p>In experimenting with <code>--watch</code> today I noticed that it reports fewer results than a normal <code>ty check</code> does. I'm running it like:</p>
+<pre><code>uv run ty check FOO/ --watch
+</code></pre>
+<p>Currently, this reports no errors under <code>FOO/</code>. However without <code>--watch</code> it reports 9.</p>
+<h3>Version</h3>
+<p>0.0.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 03:25</div>
+            <div class="timeline-body"><p>Can you share a minimal example we can use to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-17 04:51</div>
+            <div class="timeline-body"><p>Unfortunately the code is not open source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-17 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @AlexWaygood on 2025-12-17 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 07:58</div>
+            <div class="timeline-body"><p>Would you be able to share the logs when running <code>ty check FOO -v</code> and <code>ty check FOO -v --watch</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 14:13</div>
+            <div class="timeline-body"><p>Can you produce it with a minimized example of the code then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-17 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 01:22</div>
+            <div class="timeline-body"><p>Caught in the wild: just <code>uv run ty check</code> yields 25 results, while <code>--watch</code> only detects 16.</p>
+<p>I'm not seeing anything particularly incriminating in the output of <code>-v</code>, other than some files taking more than 100ms to check. Note though that <code>-v</code> with <code>--watch</code> doesn't really work, as <code>--watch</code> clears the screen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 01:23</div>
+            <div class="timeline-body"><p><code>--watch</code> just found 20 diagnostics, yet I changed absolutely nothing. Non-determinism? Race conditions in parallel checks? Timeouts?</p>
+<p>I'm on <code>0.0.4</code> at the moment.</p>
+<p>Update: It's back down to 16 ... now back up to 21.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 07:10</div>
+            <div class="timeline-body"><p>Do you see the difference on the first run of <code>ty check --watch</code> or are the diagnostics only different after you made changes (and check ran multiple times?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 07:18</div>
+            <div class="timeline-body"><p>If I activate <code>ty check --watch</code>, kill it, then reactivate, then repeat, yes I see it alternating between 16 results and 20 results, with no other code changes from me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 07:22</div>
+            <div class="timeline-body"><p>With kill and reactivate, you mean you stop ty, then re-run the command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 07:25</div>
+            <div class="timeline-body"><p>Correct, via <code>Ctrl-C</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 07:26</div>
+            <div class="timeline-body"><p>Very interesting:</p>
+<ul>
+<li>ty doesn't use any persistent caching. Each run is a fresh run</li>
+<li>The <code>--watch</code> and non-watch use the exact same code paths. The only difference is that <code>ty check</code> (without watch) exits the main loop immediately after check completed once</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 07:31</div>
+            <div class="timeline-body"><p>Tried to kill my editor and run <code>ty</code> in isolation to see if my LSP was somehow <code>touch</code>ing files and confusing <code>--watch</code>, but no, same observed behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-12-19 07:52</div>
+            <div class="timeline-body"><pre><code class="language-rust">    fn watch(mut self, db: &amp;mut ProjectDatabase) -&gt; Result&lt;ExitStatus&gt; {
+        tracing::debug!(&quot;Starting watch mode&quot;);
+        let sender = self.sender.clone();
+        let watcher = watch::directory_watcher(move |event| {
+            sender.send(MainLoopMessage::ApplyChanges(event)).unwrap();
+        })?;
+
+        self.watcher = Some(ProjectWatcher::new(watcher, db));
+        self.run(db)?;
+
+        Ok(ExitStatus::Success)
+    }
+</code></pre>
+<p>Could multiple events be fighting to apply changes at the same time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Could multiple events be fighting to apply changes at the same time?</p>
+</blockquote>
+<p>That should only be an issue for subsequent runs of the watch, but not the initial run. Also, updates abort all pending checks and ty then restarts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 11:14</div>
+            <div class="timeline-body"><p>I tried to reproduce the issue by running ty on <code>discord.py</code> in watch mode but it always reported the same number of diagnostics.</p>
+<p>But I put up https://github.com/astral-sh/ruff/pull/22078, which should hopefully make this easier to debug.</p>
+<p>By chance, do any of the flaky diagnostics say something about <code>Divergent</code>? There are some rare cases where we experience non-determinism in ty and maybe they only happen to show up in watch moide (for reasons?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 09:34</div>
+            <div class="timeline-body"><p>I'll close this as I haven't been able to reproduce, which makes the issue non-actionable for us. Feel free to comment on this issue if you're still experiencing this problem or open a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-09 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

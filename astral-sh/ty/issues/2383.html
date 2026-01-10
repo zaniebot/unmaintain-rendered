@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overload resolution fails to match through `ThreadPoolExecutor.submit()` - astral-sh/ty #2383</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overload resolution fails to match through `ThreadPoolExecutor.submit()`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2383">#2383</a>
+        opened by <a href="https://github.com/bcmills">@bcmills</a>
+        on 2026-01-07 22:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bcmills">@bcmills</a> on 2026-01-07 22:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/00383569-b7bd-4b82-addd-1d9b11b03560:</p>
+<pre><code class="language-py">from typing import overload
+import concurrent.futures
+import time
+
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+@overload
+def print_time(now: float | None, /) -&gt; None: ...
+
+@overload
+def print_time(*, now: float | None = None) -&gt; None: ...
+
+def print_time(now: float | None = None):
+    if now is None:
+        now = time.time()
+    print(now)
+
+print_time(now=42)
+
+executor.submit(print_time, now=42)
+</code></pre>
+<p><code>ty</code> correctly allows the direct call to <code>print_time</code>, but erroneously rejects the one indirected through <code>executor.submit()</code>:</p>
+<pre><code>Argument to bound method `submit` is incorrect: Expected `Overload[(now: int | float | None, /) -&gt; Unknown, (*, now: int | float | None = None) -&gt; Unknown]`, found `Literal[42]` (invalid-argument-type) [Ln 20, Col 29]
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Overload resolution erroneously fails to match through `ThreadPoolExecutor.submit()`" to "Overload resolution fails to match through `ThreadPoolExecutor.submit()`" by @bcmills on 2026-01-07 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @carljm on 2026-01-07 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-07 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @carljm on 2026-01-07 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 19:35</div>
+            <div class="timeline-body"><p>Likely overloads + ParamSpec</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

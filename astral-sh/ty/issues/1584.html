@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parameter-already-assigned when unpacking list in function call - astral-sh/ty #1584</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>parameter-already-assigned when unpacking list in function call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1584">#1584</a>
+        opened by <a href="https://github.com/Castavo">@Castavo</a>
+        on 2025-11-18 15:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Castavo">@Castavo</a> on 2025-11-18 15:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When unpacking a list inside a function call, it seems as though ty interprets it as filling up all arguments available in the function.</p>
+<p>The following :</p>
+<pre><code class="language-py">def test(l1: str, l2: str, other: float):
+    ...
+
+test(*[&quot;a&quot;, &quot;b&quot;], other=0.1)
+</code></pre>
+<p>(Also found in <a href="https://play.ty.dev/a20f2bb1-e1bf-4556-aa4a-6bc8a49baf46">playground</a>)</p>
+<p>Gives both <code>invalid-argument-type</code> and <code>parameter-already-assigned</code>.</p>
+<p>I would have expected ty to be more lenient here: trust the keyword assignment of <code>other</code>, and then fill the rest of the arguments with the unpacked list</p>
+<h3>Version</h3>
+<p>7a739d6b7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @carljm on 2025-11-18 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:08</div>
+            <div class="timeline-body"><p>Thanks for the report! This is a bit tricky, as it seems like the only heuristic available is &quot;try different expansions and see what works&quot;. It looks like our current behavior <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=3c3caa77b6362b2f5325a1cc91e3b897">matches mypy</a> and <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSImMYABAC7x0AUUAjIjXHQE4A0NUAEwcufGrjoALGNw5gouVHQCUiADroaWmoV0b96BlyYAqANpqQqS-0vZLAXX4Tp3ALwAGQq2UheIAFc6aDgSckQQAGIaAFVgqAg6UhowAPQAY2DcdDgDKlowXG4AWyUAfXQA4uwZJnwOCENlGgBaAD5OHnVNbW4YOgDuTTBLADkqmtkaYHwAX0sNPxAyPvlSQjpcYqgKaIAFUlWoZLQsPHwadOzIAHNBpQhswg1ogGUYGBpJOjpiOEQAPQAlbUY6EIo3AEwdAAzC4dJwAFXdC3e5ZGEpIo0VAAN1Q0FQ2Fgl2uEDu3Ae2XExHRoQ0ZCk2RaOJkcEemjcNEsAGZvIIFugQLN-KhMhAWQAxaAwCinHAEMJCoA">pyrefly</a>, but <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.9&amp;reportUnreachable=true&amp;code=CYUwZgBALiDOUAoA2BGAXBeAnANBJATBtngPZQAWIWGYSpAhlAJRoBQEnEAdL2-zHgIAVAG0ARA3F5xAI3EBdMpWoBeAAzcUzNkA">pyright does better</a>.</p>
+<p>We do better with <a href="https://play.ty.dev/10b1d57f-2d7d-4391-8e28-fc03f872b2c0">a tuple unpacking</a>, where the length is tracked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:46</div>
+            <div class="timeline-body"><blockquote>
+<p>the only heuristic available is &quot;try different expansions and see what works&quot;.</p>
+</blockquote>
+<p>Actually this isn't right; I was thinking the heuristic needed to be based on the parameter annotations and assignability of argument types, but in this case we could do better simply by avoiding double-assigning an argument to a parameter. That seems quite doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-20 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wes-sleeman">@wes-sleeman</a> on 2025-11-21 20:42</div>
+            <div class="timeline-body"><p>Thought: Would it be possible to add an <code>Option&lt;int&gt;</code> to the representation of the list type (along with the generic parameter) which is <code>Some(length)</code> if a fixed length is known and <code>None</code> if the length isn't known? That would help with things like this without adding <em>too</em> much extra tracking burden… The current behaviour could be maintained if the length is <code>None</code>, but if a known length is present then much better tuple-style handling could be performed.</p>
+<p>Possible edge case handling:</p>
+<ul>
+<li>Passing a list across a function boundary (arg or return) would automatically scrub the length field.</li>
+<li><code>append</code>/<code>pop</code>/etc. can be handled cleverly by modifying the length field.</li>
+<li>Anything hit that we haven't thought of can be a <code>length = None</code> with a TODO as it would be &quot;no worse&quot; than current behaviour.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-21 20:49</div>
+            <div class="timeline-body"><p>@wes-sleeman Lists are currently handled in ty (and I think in other Python type checkers too?) entirely via the generalized handling for generic types that is available for user-defined types as well. So there is no &quot;representation of the list type&quot; per se -- or rather, the representation is a very general one that is the same as the representation of any instance of any user-defined class (based entirely on the definition of <code>class list</code> in typeshed). So adding this kind of logic is not just a quick addition to an existing special-cased &quot;list&quot; type; it would be adding an entirely new system for special-cased handling of lists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-21 21:07</div>
+            <div class="timeline-body"><p>It is plausible that we might add some generalized &quot;length narrowing&quot; support that could potentially be applied to any class with <code>__len__</code> (https://github.com/astral-sh/ty/issues/560#issuecomment-3013041690 describes a plan for this); then it's additionally plausible that we could add such &quot;narrowing&quot; information to a newly-created list literal.</p>
+<p>But I think this is not really necessary in order to fix the case in the OP here; all we need is smarter argument-matching that avoids creating &quot;multiple arguments assigned to parameter&quot; errors when they are easily avoidable by adjusting the unpacking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wes-sleeman">@wes-sleeman</a> on 2025-11-21 22:47</div>
+            <div class="timeline-body"><p>@carljm Ah, okay. I was looking at the <a href="https://github.com/astral-sh/ruff/blob/ddc1417f22599ceaa998c1ee4053c657afb2d577/crates/ruff_python_ast/src/generated.rs#L9588-L9596">ListExpr in Ruff's AST</a> and thinking we might be able to add something in there (like how it's got the elts or how the tuple tracks if it's parenthesised) and thread it through. I assume it's not as simple as putting a len check on the correct <code>parse_list_*</code> call? I'll take a deeper look into how it's handled for tups as I'm pretty new to this codebase and am still struggling a bit to figure out what code runs when. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-22 02:32</div>
+            <div class="timeline-body"><p>Determining the length of a list literal in the AST is not difficult; we don't need an extra field for that, we can just count the elements. Representation of a list literal in the AST is not the same as the representation of an arbitrary list type in the type checker (in <code>crates/ty_python_semantic</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boon-in-Oz">@Boon-in-Oz</a> on 2026-01-07 00:28</div>
+            <div class="timeline-body"><p>Can I assume a fix for this would also fix <code>No overload of bound method '__init__' matches arguments</code> for the following?</p>
+<pre><code>data = [1, 2, 3]
+test = QtGui.QColor(*data, 127)
+</code></pre>
+<p>where one of the overloads for QColor in the type stubs is</p>
+<pre><code>@typing.overload
+def __init__(self, r: int, g: int, b: int, a: int = ...) -&gt; None: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 00:31</div>
+            <div class="timeline-body"><p>@Boon-in-Oz seems quite likely, yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-07 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-07 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-09 11:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

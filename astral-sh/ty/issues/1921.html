@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty check takes very long time with generic protocols - astral-sh/ty #1921</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty check takes very long time with generic protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1921">#1921</a>
+        opened by <a href="https://github.com/n-gao">@n-gao</a>
+        on 2025-12-16 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/n-gao">@n-gao</a> on 2025-12-16 11:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is a follow up to #1874.</p>
+<p>I cannot pin point exactly what causes this issue but the following code takes a very long time to check</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import Any, Callable, Protocol
+
+
+class M[R](Protocol):
+    def __call__(self, r: R, /) -&gt; R: ...
+
+
+class A[S, R](Protocol):
+    def get(self, s: S) -&gt; R: ...
+    def set(self, s: S, r: R) -&gt; S: ...
+    def bind(self, s: S) -&gt; B[S, R]: ...
+    def merge[R2](self, other: A[S, R2]) -&gt; A[S, tuple[R, R2]]: ...
+    def nest[U](self, inner: A[R, U]) -&gt; A[S, U]: ...
+    def at(self, idx: Any) -&gt; A[S, R]: ...
+    def apply(self, s: S, modifier: M[R]) -&gt; S: ...
+
+
+class B[S, R](Protocol):
+    def focus[R2](self, where: Callable[[R], R2]) -&gt; B[S, R2]: ...
+    def get(self, s: S) -&gt; R: ...
+    def set(self, s: S, r: R) -&gt; S: ...
+    def apply(self, s: S, modifier: M[R]) -&gt; S: ...
+    def at(self, idx: Any) -&gt; B[S, R]: ...
+    def merge[R2](self, other: A[S, R2]) -&gt; B[S, tuple[R, R2]]: ...
+
+
+class Impl[S, R](A[S, R]):
+    def apply(self, s: S, modifier: M[R]) -&gt; S:
+        return self.set(s, modifier(self.get(s)))
+
+</code></pre>
+<p>Output:</p>
+<pre><code>time uv run ty check ./test.py
+All checks passed!
+uv run ty check ./test.py  3.06s user 0.19s system 97% cpu 3.349 total
+</code></pre>
+<p>Removing the <code>apply</code> function from the definition of <code>Impl</code> results in a huge speedup:</p>
+<pre><code>time uv run ty check ./test.py
+All checks passed!
+uv run ty check ./test.py  0.02s user 0.02s system 39% cpu 0.122 total
+</code></pre>
+<p>For our whole codebase this slowdown makes <code>ty</code> unusable as it freezes. This was a minimal example where I could narrow the slower type checking times.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.35 (3188a56be 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty check takes very long time with generics" to "ty check takes very long time with generic protocols" by @n-gao on 2025-12-16 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-12-16 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-12-16 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-12-16 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-16 16:31</div>
+            <div class="timeline-body"><p>Thanks for the report and minimized example! We'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-08 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-08 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2026-01-09 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

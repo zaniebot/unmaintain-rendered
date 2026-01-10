@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to correctly type async context managers with overloads - astral-sh/ty #2057</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to correctly type async context managers with overloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2057">#2057</a>
+        opened by <a href="https://github.com/ddanier">@ddanier</a>
+        on 2025-12-18 10:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ddanier">@ddanier</a> on 2025-12-18 10:12</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm kind of desperate on this one, as nothing seems to work. I have an async context manager using some overloads. Nay combination I so far tried to use fails the <code>ty</code> type check. See the following code for examples:</p>
+<pre><code class="language-python">from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+from typing import AsyncContextManager, overload, reveal_type
+
+# Not using overloads - works as expected
+
+@asynccontextmanager
+async def test_contextmanager_plain(val: str | int) -&gt; AsyncIterator[str]:
+    yield &quot;hello world&quot;
+
+reveal_type(test_contextmanager_plain)
+
+async def call_asynccontextmanager_plain():
+    async with test_contextmanager_plain(123) as x:
+        reveal_type(x)
+
+# Using async context manager types
+
+@overload
+def test_contextmanager_using_types(val: str) -&gt; AsyncContextManager[str]: ...
+@overload
+def test_contextmanager_using_types(val: int) -&gt; AsyncContextManager[str]: ...
+@asynccontextmanager
+async def test_contextmanager_using_types(val: str | int) -&gt; AsyncIterator[str]:
+    yield &quot;hello world&quot;
+
+reveal_type(test_contextmanager_using_types)
+
+async def call_asynccontextmanager_using_types():
+    async with test_contextmanager_using_types(123) as x:
+        reveal_type(x)
+
+# Using async iterator types (although this sounds wrong)
+
+@overload
+def test_contextmanager_using_wrong_types(val: str) -&gt; AsyncIterator[str]: ...
+@overload
+def test_contextmanager_using_wrong_types(val: int) -&gt; AsyncIterator[str]: ...
+@asynccontextmanager
+async def test_contextmanager_using_wrong_types(val: str | int) -&gt; AsyncIterator[str]:
+    yield &quot;hello world&quot;
+
+reveal_type(test_contextmanager_using_wrong_types)
+
+async def call_asynccontextmanager_using_wrong_types():
+    async with test_contextmanager_using_wrong_types(123) as x:
+        reveal_type(x)
+
+# # Using the decorator in overloads
+
+@overload
+@asynccontextmanager
+async def test_contextmanager_with_decorator(val: str) -&gt; AsyncIterator[str]: ...
+@overload
+@asynccontextmanager
+async def test_contextmanager_with_decorator(val: int) -&gt; AsyncIterator[str]: ...
+@asynccontextmanager
+async def test_contextmanager_with_decorator(val: str | int) -&gt; AsyncIterator[str]:
+    yield &quot;hello world&quot;
+
+reveal_type(test_contextmanager_with_decorator)
+
+async def call_asynccontextmanager_with_decorator():
+    async with test_contextmanager_with_decorator(123) as x:
+        reveal_type(x)
+</code></pre>
+<p>The <code>ty</code> result is:</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; ty_test.py:11:13
+   |
+ 9 |     yield &quot;hello world&quot;
+10 |
+11 | reveal_type(test_contextmanager_plain)
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^ `(val: str | int) -&gt; _AsyncGeneratorContextManager[str, None]`
+12 |
+13 | async def call_asynccontextmanager_plain():
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:15:21
+   |
+13 | async def call_asynccontextmanager_plain():
+14 |     async with test_contextmanager_plain(123) as x:
+15 |         reveal_type(x)
+   |                     ^ `str`
+16 |
+17 | # Using async context manager types
+   |
+
+error[invalid-argument-type]: Argument to function `asynccontextmanager` is incorrect
+  --&gt; ty_test.py:23:1
+   |
+21 | @overload
+22 | def test_contextmanager_using_types(val: int) -&gt; AsyncContextManager[str]: ...
+23 | @asynccontextmanager
+   | ^^^^^^^^^^^^^^^^^^^^ Expected `(...) -&gt; AsyncIterator[Unknown]`, found `Overload[(val: str) -&gt; AbstractAsyncContextManager[str, bool | None], (val: int) -&gt; AbstractAsyncContextManager[str, bool | None]]`
+24 | async def test_contextmanager_using_types(val: str | int) -&gt; AsyncIterator[str]:
+25 |     yield &quot;hello world&quot;
+   |
+info: Function defined here
+   --&gt; stdlib/contextlib.pyi:177:5
+    |
+175 |         ) -&gt; bool | None: ...
+176 |
+177 | def asynccontextmanager(func: Callable[_P, AsyncIterator[_T_co]]) -&gt; Callable[_P, _AsyncGeneratorContextManager[_T_co]]:
+    |     ^^^^^^^^^^^^^^^^^^^ ---------------------------------------- Parameter declared here
+178 |     &quot;&quot;&quot;@asynccontextmanager decorator.
+    |
+info: rule `invalid-argument-type` is enabled by default
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:27:13
+   |
+25 |     yield &quot;hello world&quot;
+26 |
+27 | reveal_type(test_contextmanager_using_types)
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `(...) -&gt; _AsyncGeneratorContextManager[Unknown, None]`
+28 |
+29 | async def call_asynccontextmanager_using_types():
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:31:21
+   |
+29 | async def call_asynccontextmanager_using_types():
+30 |     async with test_contextmanager_using_types(123) as x:
+31 |         reveal_type(x)
+   |                     ^ `str | Unknown`
+32 |
+33 | # Using async iterator types (although this sounds wrong)
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:43:13
+   |
+41 |     yield &quot;hello world&quot;
+42 |
+43 | reveal_type(test_contextmanager_using_wrong_types)
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Overload[(val: str) -&gt; _AsyncGeneratorContextManager[str | None, None], (val: int) -&gt; _AsyncGeneratorContextManager[str | None, None]]`
+44 |
+45 | async def call_asynccontextmanager_using_wrong_types():
+   |
+
+error[invalid-context-manager]: Object of type `AsyncIterator[str] | _AsyncGeneratorContextManager[str | None, None]` cannot be used with `async with` because the methods `__aenter__` and `__aexit__` are possibly missing
+  --&gt; ty_test.py:46:16
+   |
+45 | async def call_asynccontextmanager_using_wrong_types():
+46 |     async with test_contextmanager_using_wrong_types(123) as x:
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+47 |         reveal_type(x)
+   |
+info: rule `invalid-context-manager` is enabled by default
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:47:21
+   |
+45 | async def call_asynccontextmanager_using_wrong_types():
+46 |     async with test_contextmanager_using_wrong_types(123) as x:
+47 |         reveal_type(x)
+   |                     ^ `CoroutineType[Any, Any, str | None]`
+48 |
+49 | # # Using the decorator in overloads
+   |
+
+error[invalid-argument-type]: Argument to function `asynccontextmanager` is incorrect
+  --&gt; ty_test.py:52:1
+   |
+51 | @overload
+52 | @asynccontextmanager
+   | ^^^^^^^^^^^^^^^^^^^^ Expected `(...) -&gt; AsyncIterator[Unknown]`, found `def test_contextmanager_with_decorator(val: str) -&gt; CoroutineType[Any, Any, AsyncIterator[str]]`
+53 | async def test_contextmanager_with_decorator(val: str) -&gt; AsyncIterator[str]: ...
+54 | @overload
+   |
+info: Function defined here
+   --&gt; stdlib/contextlib.pyi:177:5
+    |
+175 |         ) -&gt; bool | None: ...
+176 |
+177 | def asynccontextmanager(func: Callable[_P, AsyncIterator[_T_co]]) -&gt; Callable[_P, _AsyncGeneratorContextManager[_T_co]]:
+    |     ^^^^^^^^^^^^^^^^^^^ ---------------------------------------- Parameter declared here
+178 |     &quot;&quot;&quot;@asynccontextmanager decorator.
+    |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `asynccontextmanager` is incorrect
+  --&gt; ty_test.py:55:1
+   |
+53 | async def test_contextmanager_with_decorator(val: str) -&gt; AsyncIterator[str]: ...
+54 | @overload
+55 | @asynccontextmanager
+   | ^^^^^^^^^^^^^^^^^^^^ Expected `(...) -&gt; AsyncIterator[Unknown]`, found `def test_contextmanager_with_decorator(val: int) -&gt; CoroutineType[Any, Any, AsyncIterator[str]]`
+56 | async def test_contextmanager_with_decorator(val: int) -&gt; AsyncIterator[str]: ...
+57 | @asynccontextmanager
+   |
+info: Function defined here
+   --&gt; stdlib/contextlib.pyi:177:5
+    |
+175 |         ) -&gt; bool | None: ...
+176 |
+177 | def asynccontextmanager(func: Callable[_P, AsyncIterator[_T_co]]) -&gt; Callable[_P, _AsyncGeneratorContextManager[_T_co]]:
+    |     ^^^^^^^^^^^^^^^^^^^ ---------------------------------------- Parameter declared here
+178 |     &quot;&quot;&quot;@asynccontextmanager decorator.
+    |
+info: rule `invalid-argument-type` is enabled by default
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:61:13
+   |
+59 |     yield &quot;hello world&quot;
+60 |
+61 | reveal_type(test_contextmanager_with_decorator)
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `(val: str | int) -&gt; _AsyncGeneratorContextManager[str, None]`
+62 |
+63 | async def call_asynccontextmanager_with_decorator():
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:65:21
+   |
+63 | async def call_asynccontextmanager_with_decorator():
+64 |     async with test_contextmanager_with_decorator(123) as x:
+65 |         reveal_type(x)
+   |                     ^ `Unknown | str`
+   |
+
+Found 12 diagnostics
+</code></pre>
+<p>As you see the only variant thats actually working as expected is the one without the overloads.</p>
+<p>The variant &quot;using async context manager types&quot; tells me the arguments to <code>@asynccontextmanager</code> are wrong cause of the overloads. Also the return type of <code>test_contextmanager_using_types</code> is set to <code>Unknown</code> instead of <code>str</code>.</p>
+<p>With the last alpha version I was using the &quot;wrong&quot; typing version, which worked (but was pretty obviously wrong). Now it also complains about the <code>@asynccontextmanager</code> arguments plus has the wrong return type for the context manager (<code>CoroutineType[Any, Any, str | None]</code>, which even if you skip the coroutine part is still <code>str | None</code> instead of just <code>str</code>).</p>
+<p>I then tried to using decorators in the overloads, as I thought this might just set the correct type, but again the arguments to <code>@asynccontextmanager</code> are wrong plus the return type of the context manager is <code>Unknown | str</code> instead of just <code>str</code>.</p>
+<p>Is this still a restriction of the beta state of <code>ty</code> (btw. 🥳 for getting to beta, love the project) or am I doing something wrong?</p>
+<p><strong>Note:</strong> <code>mypy</code> does allow the version with (I think) correct typing, but the return value is still <code>Any</code>, so this also is not completely working there.</p>
+<h3>Version</h3>
+<p>0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ddanier on 2025-12-18 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @sharkdp on 2025-12-18 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @sharkdp on 2025-12-18 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @sharkdp on 2025-12-18 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 13:10</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This looks like a bug indeed (I did not have time to look into it further).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-18 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddanier">@ddanier</a> on 2025-12-19 06:52</div>
+            <div class="timeline-body"><p>Thanks for your feedback, this means I'm not doing something wrong, which is nice to know. Now waiting for a fix 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-23 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 19:18</div>
+            <div class="timeline-body"><p>It looks like we are treating the overload implementation function as overloaded <em>before</em> applying decorators to it, which is wrong -- we should first apply the decorators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 19:32</div>
+            <div class="timeline-body"><p>Probably the same issue as #2278?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

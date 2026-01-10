@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected `invalid-return-type` when using narrowed dict as argument to dataclass - astral-sh/ty #1167</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected `invalid-return-type` when using narrowed dict as argument to dataclass</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1167">#1167</a>
+        opened by <a href="https://github.com/jbree">@jbree</a>
+        on 2025-09-10 16:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbree">@jbree</a> on 2025-09-10 16:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I expect the return value to be properly typed with no errors, because following the <code>if</code> condition, <code>res</code> should be known to be a <code>dict</code></p>
+<p>https://play.ty.dev/caceacc9-cb4a-4193-b021-d2f9a8723ee3</p>
+<h3>Version</h3>
+<p>playground 8770b9550</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-09-10 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-09-10 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 16:58</div>
+            <div class="timeline-body"><p>Thanks for the report! We actually know too much about the type of <code>res</code> here -- we know not only that it is a dict, but also that it is always truthy (that is, not empty). In some cases this is useful; in this case it causes problems with invariant generics.</p>
+<p>We should either eliminate <code>AlwaysFalsy</code> and <code>AlwaysTruthy</code> from unions/intersections when solving generics, or possibly always remove them from unions/intersections, after allowing them to possibly simplify away other types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-09-21 16:12</div>
+            <div class="timeline-body"><p>I'll try to address this. Let me explain my understanding and clarify the problem.</p>
+<p>I don't think it's generally wrong to infer that <code>Data(foo=res)</code> is <code>Data[dict[Unknown, Unknown] &amp; ~AlwaysFalsy]</code>. My understanding is that it's okay for an instance of <code>dict[Unknown, Unknown] &amp; ~AlwaysFalsy</code> to be empty at some point. The type <code>dict[Unknown, Unknown] &amp; ~AlwaysFalsy</code> means &quot;the set of instances of <code>dict</code> <em>or its subclasses</em>, excluding those that <em>always</em> evaluate to <code>False</code>.&quot;
+This is a type that can't be simplified any further, and is fundamentally different from <code>dict[Unknown, Unknown]</code> (Note that a subclass <code>SubDict[K, V]</code> of <code>dict[K, V]</code> created using class syntax satisfies <code>SubDict[K, V] &lt;: dict[K, V]</code> regardless of the variance of <code>K, V</code>). The problem is that this guarantee (<code>&amp; ~AlwaysFalsy</code>) is unnecessarily strong, and can't be discarded once typed.</p>
+<p>One idea here is to use a type context to tell that the expected type here is <code>Data[dict[Unknown, Unknown]]</code>, disabling narrowing on <code>res</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-22 21:56</div>
+            <div class="timeline-body"><p>Yes, I agree with your analysis. And I agree also that using the return type annotation as a type context for the <code>return</code> expression would help in this particular case. Though I think there are other cases where we don't have an immediate type context where we may get more intuitive results by discarding <code>&amp; AlwaysFalsy</code> or <code>&amp; AlwaysTruthy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 18:36</div>
+            <div class="timeline-body"><p>This is now fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-08 18:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

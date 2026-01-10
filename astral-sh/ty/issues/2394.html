@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.0.9 -&gt; 0.0.10 type checking regressions - astral-sh/ty #2394</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.0.9 -&gt; 0.0.10 type checking regressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2394">#2394</a>
+        opened by <a href="https://github.com/danielpopescu">@danielpopescu</a>
+        on 2026-01-08 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielpopescu">@danielpopescu</a> on 2026-01-08 13:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from collections.abc import Callable, Iterable, Iterator
+
+
+def fold_left[T, U](lst: Iterable[T], init: U, f: Callable[[U, T], U]) -&gt; U:
+    def fold_left_it(it: Iterator[T], init: U, f: Callable[[U, T], U]) -&gt; U:
+        elem: T | None = next(it, None)
+        return fold_left_it(it, f(init, elem), f) if elem is not None else init
+
+    if isinstance(lst, Iterator):
+        it: Iterator[T] = lst
+        return fold_left_it(it, init, f)
+
+    return fold_left_it(iter(lst), init, f)
+
+
+
+def reverse[T](lst: list[T]) -&gt; list[T]:
+    empty: list[T] = []
+    return fold_left(lst, empty, lambda rlst, e: [e, *rlst])
+
+
+def list_zipping[T](lst: list[T]) -&gt; list[T]:
+    rst = reverse(lst)
+    empty: list[T] = []
+    zlst = fold_left(range(len(lst) // 2), empty, lambda ret, i: [*ret, lst[i], rst[i]])
+    return zlst if len(zlst) == len(lst) else [*zlst, lst[len(lst) // 2]]
+
+</code></pre>
+<p>showed only 1 &quot;error&quot; (issue already reported previously) in 0.0.9, but in 0..0.10 there are 4 new &quot;errors&quot;.</p>
+<p>The code above checks cleanly using pyright/mypy.</p>
+<p><a href="https://play.ty.dev/7bd0788b-e638-4db0-8a90-e6a6b04ffb4b">Playground</a></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "0.0.9 ->0.0.10 type checking regressions" to "0.0.9 -> 0.0.10 type checking regressions" by @danielpopescu on 2026-01-08 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:00</div>
+            <div class="timeline-body"><p>This is fixed in main (by https://github.com/astral-sh/ruff/pull/22444 ) and will be fixed in the next release. (We still have the originally reported one error, but that's tracked separately.) Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 02:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

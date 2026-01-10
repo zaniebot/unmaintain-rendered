@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad attribute access on a union type should be an error, not a warning - astral-sh/ty #1656</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bad attribute access on a union type should be an error, not a warning</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1656">#1656</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-27 13:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-27 13:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following examples:</p>
+<pre><code class="language-py">def f(x: list[int] | None, y: None):
+    x[0]  # error: [non-subscriptable]
+    y[0]  # error: [non-subscriptable]
+
+    for z in x: ...  # error: [not-iterable]
+    for z in y: ...  # error: [not-iterable]
+
+    x.index  # warning: [possibly-missing-attribute]
+    y.index  # error: [unresolved-attribute]
+</code></pre>
+<p>When it comes to subscripting a union or iterating over a union, we issue a hard error if any element of the union does not support the operation. That's as it should be: these are serious typing errors where we're confident in our analysis. The user should definitely want these errors surfaced even if they didn't want any warnings displayed.</p>
+<p>When it comes to attribute access on a union, however, we only emit a <code>possibly-missing-attribute</code> <em>warning</em> if some union elements do not have the attribute, rather than an <code>unresolved-attribute</code> error. I don't think this is correct; it's just as serious a typing error as attempting to subscript a union where some elements don't support subscription.</p>
+<p>Ideally we would be able to distinguish attribute access on a union from something like this, which I think <em>should</em> remain a warning rather than an error:</p>
+<pre><code class="language-py">def coinflip() -&gt; bool:
+    return False
+
+class F:
+    if coinflip():
+        x = 42
+
+F.x  # error: [possibly-missing-attribute]
+</code></pre>
+<p>Currently our member-lookup machinery conflates these cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-27 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-27 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-11-27 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-29 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2025-12-29 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:14</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/940 is the same thing, but for calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2026-01-09 15:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

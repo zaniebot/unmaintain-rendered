@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diagnostics when a class literal is not assignable to a `Callable` type - astral-sh/ty #866</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diagnostics when a class literal is not assignable to a `Callable` type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/866">#866</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-21 19:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:04</div>
+            <div class="timeline-body"><p>Consider this snippet:</p>
+<pre><code class="language-py">from typing import Callable, Any
+
+def f(x: Callable[[Any], Any]): ...
+
+class Foo:
+    def __init__(self, x, y): ...
+
+f(Foo)
+</code></pre>
+<p>Ty <a href="https://play.ty.dev/0e830866-dca5-4fdf-89eb-c0e5219ccf06">emits this diagnostic</a> on it, which isn't very useful:</p>
+<pre><code class="language-py">error[invalid-argument-type]: Argument to function `f` is incorrect
+ --&gt; foo.py:8:3
+  |
+6 |     def __init__(self, x, y): ...
+7 |
+8 | f(Foo)
+  |   ^^^ Expected `(Any, /) -&gt; Any`, found `&lt;class 'Foo'&gt;`
+  |
+info: Function defined here
+ --&gt; foo.py:3:5
+  |
+1 | from typing import Callable, Any
+2 |
+3 | def f(x: Callable[[Any], Any]): ...
+  |     ^ ----------------------- Parameter declared here
+4 |
+5 | class Foo:
+  |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>It just tells me that <code>&lt;class 'Foo'&gt;</code> isn't acceptable, but it doesn't tell me <em>why</em> <code>&lt;class 'Foo'&gt;</code> isn't acceptable. It would be much more helpful if ty told me what <code>Callable</code> supertype it thinks <code>Foo</code> <em>does</em> inhabit. (Here I assume it's <code>Callable[[Any, Any], Foo]</code>, which isn't assignable to <code>Callable[[Any], Any]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-07-21 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-24 04:40</div>
+            <div class="timeline-body"><p>I think this would a sub-task of https://github.com/astral-sh/ty/issues/163 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

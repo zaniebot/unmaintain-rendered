@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for Pydantic's `populate_by_name`, `validate_by_name`, etc. - astral-sh/ty #1438</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for Pydantic's `populate_by_name`, `validate_by_name`, etc.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1438">#1438</a>
+        opened by <a href="https://github.com/moredatarequired">@moredatarequired</a>
+        on 2025-10-27 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/moredatarequired">@moredatarequired</a> on 2025-10-27 01:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Prior to 0.0.1a24 Pydantic models using aliases and either <code>populate_by_name</code> or <code>validate_by_name</code> were correctly assessed by ty when passed the field name (rather than the alias name).</p>
+<p>Repro:</p>
+<pre><code class="language-python">from pydantic import BaseModel, ConfigDict, Field
+
+class A(BaseModel):
+    model_config = ConfigDict(validate_by_name=True)
+    a: int = Field(alias=&quot;x&quot;)
+
+a = A(a=5)
+</code></pre>
+<p>previously <code>ty</code> understood that <code>a</code> was a valid keyword argument.</p>
+<pre><code>❯ uvx --with 'pydantic==2.12.3' --with 'ty==0.0.1a23' ty check a.py
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                          All checks passed!
+</code></pre>
+<p>now it no longer does:</p>
+<pre><code>❯ uvx --with 'pydantic==2.12.3' --with 'ty==0.0.1a24' ty check a.py
+Checking ------------------------------------------------------------ 1/1 files
+error[missing-argument]: No argument provided for required parameter `x`
+ --&gt; a.py:7:5
+  |
+5 |     a: int = Field(alias=&quot;x&quot;)
+6 |
+7 | a = A(a=5)
+  |     ^^^^^^
+8 | print(a.model_dump())
+  |
+info: rule `missing-argument` is enabled by default
+
+error[unknown-argument]: Argument `a` does not match any known parameter
+ --&gt; a.py:7:7
+  |
+5 |     a: int = Field(alias=&quot;x&quot;)
+6 |
+7 | a = A(a=5)
+  |       ^^^
+8 | print(a.model_dump())
+  |
+info: rule `unknown-argument` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-10-27 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Viicos">@Viicos</a> on 2025-10-27 07:33</div>
+            <div class="timeline-body"><p><code>populate_by_name</code>/<code>validate_by_name</code> was never understood by ty, but instead aliases where <em>not</em> supported until https://github.com/astral-sh/ruff/pull/20961, problaby leading to this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-27 12:42</div>
+            <div class="timeline-body"><blockquote>
+<p><code>populate_by_name</code>/<code>validate_by_name</code> was never understood by ty, but instead aliases where <em>not</em> supported until <a href="https://github.com/astral-sh/ruff/pull/20961">astral-sh/ruff#20961</a>, problaby leading to this behavior.</p>
+</blockquote>
+<p>Exactly, thank you for the explanation.</p>
+<p>It looks like solving this would require ty to add dedicated pydantic support that would include &quot;parsing&quot; the <code>model_config</code> and then adding/removing the alias and/or the field name as keyword parameters to <code>__init__</code>, depending on settings like <code>validate_by_name</code>, <code>validate_by_alias</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @sharkdp on 2025-10-27 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "0.0.1a24 regression with Pydantic models using populate_by_name=True" to "Add support for Pydantic's `populate_by_name`, `validate_by_name`, etc." by @sharkdp on 2025-10-27 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> removed by @AlexWaygood on 2025-10-27 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 03:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

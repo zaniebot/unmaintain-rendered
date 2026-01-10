@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feat: support `collections.abc.&lt;Class&gt;.register` - astral-sh/ty #2391</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feat: support `collections.abc.&lt;Class&gt;.register`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2391">#2391</a>
+        opened by <a href="https://github.com/NickCrews">@NickCrews</a>
+        on 2026-01-08 04:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-08 04:07</div>
+            <div class="timeline-body"><p>This is related to https://github.com/astral-sh/ty/issues/2390.</p>
+<p>I am working in the ibis project, trying to fix up its typing so that <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">it's <code>Schema</code> class</a> typechecks against a <code>collections.abc.Mapping[str, ibis.DataType]</code>. It currently does not.</p>
+<p>The root of the issue is that the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">Schema</a> class inherits from the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L157">MapSet abstract class</a>, which itself inherits from ibis's custom <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L119">Mapping ABC</a>, which is effectively a re-implementation of <code>collections.abc.Mapping</code>. <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L20-L23">The reason</a> that we re-implement collections.abc is to avoid metaclass conflicts, and for faster isinstance checks.</p>
+<p>See how we have the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L118-L119"><code>@collections.abc.Mapping.register</code> decorator on our <code>Mapping</code> class</a>? This makes it so that at runtime, isinstance checks work. BUT, it appears that ty doesn't support this registration mechanism for any <code>collections.abc</code> classes, except for Sized for some reason. See this screenshot of the ibis source code, you can see how ty doesn't seem to recognize the .register() method of any of the other classes:</p>
+<p><img width="513" height="607" alt="Image" src="https://github.com/user-attachments/assets/8aa000ca-4a7d-4841-ba9c-34011cd82b9c" /></p>
+<p>For a simpler reproducer, see this file:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections.abc import ItemsView, Iterable, Iterator, KeysView, Mapping, ValuesView
+
+
+class MyMapping:  # noqa: PLW1641
+    def __len__(self) -&gt; int:
+        return 2
+
+    def __getitem__(self, key: str, /) -&gt; int:
+        if key == &quot;a&quot;:
+            return 1
+        elif key == &quot;b&quot;:
+            return 2
+        else:
+            raise KeyError(key)
+
+    def __iter__(self) -&gt; Iterator[str]:
+        yield &quot;a&quot;
+        yield &quot;b&quot;
+
+    def __contains__(self, key: object, /) -&gt; bool:
+        return key in (&quot;a&quot;, &quot;b&quot;)
+
+    def __eq__(self, other: object, /) -&gt; bool:
+        if not isinstance(other, Mapping):
+            return False
+        return dict(self.items()) == dict(other.items())
+
+    def keys(self) -&gt; KeysView[str]:
+        return {&quot;a&quot;: 1, &quot;b&quot;: 2}.keys()
+
+    def values(self) -&gt; ValuesView[int]:
+        return {&quot;a&quot;: 1, &quot;b&quot;: 2}.values()
+
+    def items(self) -&gt; ItemsView[str, int]:
+        return {&quot;a&quot;: 1, &quot;b&quot;: 2}.items()
+
+    def get(self, key: str, default: int | None = None, /) -&gt; int | None:
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+
+class MappingWithInheritance(MyMapping, Mapping[str, int]):
+    pass
+
+
+@Mapping.register  # ty:ignore[unresolved-attribute]
+class MappingRegistered(MyMapping):
+    pass
+
+
+def takes_iterable(it: Iterable[str]):
+    return it
+
+
+def takes_mapping(m: Mapping[str, int]):
+    return m
+
+
+# MyMapping is not recognized as a Mapping by both ty and isinstance.
+# This is expected, as https://docs.python.org/3/library/collections.abc.html states,
+# &quot;Some simple interfaces are directly recognizable by the presence of the required methods.&quot;
+# &quot;Complex interfaces do not support this last technique because an interface is more than just the presence of method names.&quot;
+m = MyMapping()
+takes_iterable(m)
+takes_mapping(m)  # ty:ignore[invalid-argument-type]
+assert isinstance(m, Mapping) is False
+
+# As expected, MappingWithInheritance is recognized as a Mapping
+# by both ty and isinstance.
+mi = MappingWithInheritance()
+takes_iterable(mi)
+takes_mapping(mi)
+assert isinstance(mi, Mapping) is True
+
+# This is the weird one.
+# The isinstance check works at runtime, but ty does not recognize it as a Mapping.
+mr = MappingRegistered()
+takes_iterable(mr)
+takes_mapping(mr)  # ty:ignore[invalid-argument-type]
+assert isinstance(mr, Mapping) is True
+</code></pre>
+<p>Can you improve ty to work with the <code>.register()</code> mechanism?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 13:25</div>
+            <div class="timeline-body"><p>I think you're combining one feature request with one bug report here 😄</p>
+<p>The bug report is that ty currently emits a false positive <code>unresolved-attribute</code> error when accessing the <code>register</code> attribute on classes such as <code>collections.abc.Iterable</code> and <code>collections.abc.Mapping</code>. This is indeed a bug, but it's already covered by https://github.com/astral-sh/ty/issues/1204.</p>
+<p>The feature request is for us to actually support <code>@collections.abc.Mapping.register</code> properly, such that we would understand classes decorated with that as being subtypes of <code>collections.abc.Mapping</code>. I think we're unlikely to add support for that, as no other type checker does, it's inherently somewhat unsound, and I believe one of the key reasons why other type checkers do not support this is because it would come with quite a large performance penalty (it would slow down all subtyping checks).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-08 17:10</div>
+            <div class="timeline-body"><p>Thank you for the link. I did search but didn't find that.</p>
+<blockquote>
+<p>I think we're unlikely to add support for that</p>
+</blockquote>
+<p>Yeah that makes sense how it would be hard to do correctly for th. It might not even be well defined, eg depends on import order, or the .register() could be inside an if block. So that makes sense why you just want to avoid the whole thing.</p>
+<p>Soooooo I'm thinking practically here, if we can't adjust ibis.Schema to inherit from collections.abc.Mapping (see above), then is there any way to get it to type check as though it does?
+My current understanding is there is not. Maybe have a giant if TYPE_CHECKING block where we define our Iterable, Mapping, Sequence, etc that defines the classes as stubs that actually do inherit from collections.abc?? Gross but possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 01:07</div>
+            <div class="timeline-body"><p>Yeah, I think your &quot;gross but possible&quot; idea might be the best available option, if you want strong type checking. (The alternatives would probably involve a lot of treating things as <code>Any</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feat: support `collections.abc.<Class>.register` for more classes" to "Feat: support `collections.abc.<Class>.register`" by @carljm on 2026-01-09 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-09 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erroneous `invalid-argument-type` for generic contextmanager with ParamSpec - astral-sh/ty #2382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Erroneous `invalid-argument-type` for generic contextmanager with ParamSpec</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2382">#2382</a>
+        opened by <a href="https://github.com/bcmills">@bcmills</a>
+        on 2026-01-07 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bcmills">@bcmills</a> on 2026-01-07 21:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For this program, <code>ty</code> produces this error:</p>
+<pre><code>Argument is incorrect: Expected `(**_P@_inner) -&gt; None`, found `(**_P@outer) -&gt; None` (invalid-argument-type) [Ln 16, Col 13]
+</code></pre>
+<p>Since <code>_P@_inner</code> and <code>_P@outer</code> are the <em>same</em> <code>_P</code> in the same parameter position, they are obviously compatible. It isn't clear to me why <code>ty</code> is treating them as somehow incompatible.</p>
+<hr />
+<p>https://play.ty.dev/f8330b63-ba0f-455e-b11b-f67c3016be21:</p>
+<pre><code class="language-py">import contextlib
+from collections.abc import Callable, Iterator
+from typing import ParamSpec
+
+_P = ParamSpec(&quot;_P&quot;)
+
+class Foo:
+    @contextlib.contextmanager
+    def outer(
+        self,
+        probe: Callable[_P, None],
+        *args: _P.args,
+        **kwargs: _P.kwargs,
+    ) -&gt; Iterator[None]:
+        with self._inner(
+            probe=probe,
+        ):
+            yield
+    
+    @contextlib.contextmanager
+    def _inner(
+        self,
+        probe: Callable[_P, None],
+        *args: _P.args,
+        **kwargs: _P.kwargs,
+    ) -&gt; Iterator[None]:
+        probe(*args, **kwargs)
+        yield
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2026-01-07 21:45</div>
+            <div class="timeline-body"><p>This is happening because you didn't tell ty that <code>Foo</code> is generic over <code>_P</code>, so it assumes that the methods are the things that are generic, hence the two uses being different. By making the class generic over <code>_P</code>, it works properly:</p>
+<p>https://play.ty.dev/688e719b-6c72-4341-9944-dfabdda29c04</p>
+<pre><code class="language-py">import contextlib
+from collections.abc import Callable, Iterator
+from typing import ParamSpec, Generic
+
+_P = ParamSpec(&quot;_P&quot;)
+
+class Foo(Generic[_P]):
+    @contextlib.contextmanager
+    def outer(
+        self,
+        probe: Callable[_P, None],
+        *args: _P.args,
+        **kwargs: _P.kwargs,
+    ) -&gt; Iterator[None]:
+        with self._inner(
+            probe=probe,
+        ):
+            yield
+    
+    @contextlib.contextmanager
+    def _inner(
+        self,
+        probe: Callable[_P, None],
+        *args: _P.args,
+        **kwargs: _P.kwargs,
+    ) -&gt; Iterator[None]:
+        probe(*args, **kwargs)
+        yield
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bcmills">@bcmills</a> on 2026-01-07 21:55</div>
+            <div class="timeline-body"><p><code>Foo</code> is <em>not</em> generic over <code>_P</code>. Only its methods are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2026-01-07 22:17</div>
+            <div class="timeline-body"><p>Thinking about this more you should be right - it looks like the decorator is whats causing the issue, as without it it works fine:
+https://play.ty.dev/6a2a1695-36f8-4252-bc4e-b81e9dda8237</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @carljm on 2026-01-07 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-07 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 18:11</div>
+            <div class="timeline-body"><p>This might have the same root cause as #2336?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-09 10:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

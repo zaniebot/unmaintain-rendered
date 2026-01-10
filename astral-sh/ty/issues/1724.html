@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate suggestions for already imported &quot;unimported&quot; completions - astral-sh/ty #1724</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate suggestions for already imported &quot;unimported&quot; completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1724">#1724</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-12-02 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-12-02 16:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I guess we do no filtering to remove duplicates.</p>
+<p><img width="480" height="238" alt="Image" src="https://github.com/user-attachments/assets/6b685833-4674-41be-ba64-db3331e11188" /></p>
+<p>I would expect not to see <code>TypeVar (import typing)</code> here.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Duplicate completions for already imported "unimported" completions" to "Duplicate suggestions for already imported "unimported" completions" by @MatthewMckee4 on 2025-12-02 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-02 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-12-02 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-02 17:02</div>
+            <div class="timeline-body"><p>I think the problem is here:</p>
+<p>https://github.com/astral-sh/ruff/blob/05d053376b73b911b74dcbad647d2ae6a988b505/crates/ty_ide/src/completion.rs#L64-L65</p>
+<p>Actually, I think there are two problems here.</p>
+<ol>
+<li><code>dedup_by</code> only deals with adjacent duplicates. That may have been fine at one point, but the ranking has grown more sophisticated and probably isn't appropriate any more.</li>
+<li>The deduplication is done on the symbol name <em>and</em> module name. A symbol in scope lacks a module name. An auto-import symbol always has a module name. So fundamentally, a symbol in scope will never deduplicate with an auto-import symbol.</li>
+</ol>
+<p>Since auto-import symbols always come with a module name, then I think one way to deduplicate them with in scope symbols is to find the module in which each symbol in scope is defined. Then compare it with the module name on the auto-import symbol.</p>
+<p>We might be able to add this information here:</p>
+<p>https://github.com/astral-sh/ruff/blob/05d053376b73b911b74dcbad647d2ae6a988b505/crates/ty_ide/src/importer.rs#L358-L362</p>
+<p>Actually, I think we already have it?</p>
+<p>https://github.com/astral-sh/ruff/blob/05d053376b73b911b74dcbad647d2ae6a988b505/crates/ty_python_semantic/src/semantic_model.rs#L335</p>
+<p>Since we're already computing the set of members in scope at the cursor in order to figure out how to write import edits.</p>
+<p>Then I think we can deduplicate here:</p>
+<p>https://github.com/astral-sh/ruff/blob/05d053376b73b911b74dcbad647d2ae6a988b505/crates/ty_ide/src/completion.rs#L539-L566</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-02 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2026-01-09 15:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

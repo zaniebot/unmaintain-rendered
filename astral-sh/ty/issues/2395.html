@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect `index-out-of-bounds` error - astral-sh/ty #2395</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect `index-out-of-bounds` error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2395">#2395</a>
+        opened by <a href="https://github.com/alechouse97">@alechouse97</a>
+        on 2026-01-08 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alechouse97">@alechouse97</a> on 2026-01-08 13:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty is currently raising an <code>index-out-of-bounds</code> error when facing a block of code, for example in this <code>tmp.py</code>:</p>
+<pre><code class="language-python">def func(x: tuple[float, float] | tuple[float, float, float]) -&gt; None:
+    if len(x) == 2:
+        y = x[2]
+    elif len(x) == 3:
+        y = x[3]
+</code></pre>
+<p>It correctly catches that <code>x[2]</code> is out of bounds in the first branch, but also states <code>x[2]</code> is out of bounds in the second branch:</p>
+<pre><code>error[index-out-of-bounds]: Index 2 is out of bounds for tuple `tuple[int | float, int | float]` with length 2
+ --&gt; tmp.py:3:13
+  |
+1 | def func(x: tuple[float, float] | tuple[float, float, float]):
+2 |     if len(x) == 2:
+3 |         y = x[2]
+  |             ^
+4 |     elif len(x) == 3:
+5 |         y = x[2]
+  |
+info: rule `index-out-of-bounds` is enabled by default
+
+error[index-out-of-bounds]: Index 2 is out of bounds for tuple `tuple[int | float, int | float]` with length 2
+ --&gt; tmp.py:5:13
+  |
+3 |         y = x[2]
+4 |     elif len(x) == 3:
+5 |         y = x[2]
+  |             ^
+  |
+info: rule `index-out-of-bounds` is enabled by default
+</code></pre>
+<p>Expected behavior is that ty narrows the type to <code>tuple[float, float, float]</code> based on the current branch that required</p>
+<p>This can reproduced when running <code>ty check tmp.py</code> on the above.</p>
+<p>As an aside, it also looks to be changing the type to <code>tuple[int | float, int | float]</code>, but I've not been using ty long enough to know if that is expected.</p>
+<h3>Version</h3>
+<p>ty 0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect tuple index out of range error" to "Incorrect `index-out-of-bounds` error" by @alechouse97 on 2026-01-08 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 13:37</div>
+            <div class="timeline-body"><p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-08 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 16:09</div>
+            <div class="timeline-body"><blockquote>
+<p>As an aside, it also looks to be changing the type to <code>tuple[int | float, int | float]</code>, but I've not been using ty long enough to know if that is expected.</p>
+</blockquote>
+<p>See https://docs.astral.sh/ty/reference/typing-faq/#why-does-ty-show-int-float-when-i-annotate-something-as-float</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

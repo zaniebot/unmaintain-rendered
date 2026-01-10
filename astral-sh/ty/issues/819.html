@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI: Mono-repository support - astral-sh/ty #819</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CLI: Mono-repository support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/819">#819</a>
+        opened by <a href="https://github.com/futurewasfree">@futurewasfree</a>
+        on 2025-07-12 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-07-12 11:58</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>From cli output it's not obvious what project root would be set to if no <code>--project</code> or <code>--python</code> provided.
+Seems to be the same with <code>cwd</code>?</p>
+<pre><code>   --project &lt;PROJECT&gt;
+          Run the command within the given project directory.
+
+          All `pyproject.toml` files will be discovered by walking up the directory tree from the given project directory, as will the project's virtual environment
+          (`.venv`) unless the `venv-path` option is set.
+
+          Other command-line arguments (such as relative paths) will be resolved relative to the current working directory.
+
+      --python &lt;PATH&gt;
+          Path to the Python environment.
+
+          ty uses the Python environment to resolve type information and third-party dependencies.
+
+          If not specified, ty will attempt to infer it from the `VIRTUAL_ENV` or `CONDA_PREFIX` environment variables, or discover a `.venv` directory in the project root
+          or working directory.
+...
+</code></pre>
+<p>Expectation might be: <code>ty</code> would still walk down the directory, see uv's <code>pyproject.toml</code> and <code>.venv</code> there and activate it?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14 (3ececb07e 2025-07-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @futurewasfree on 2025-07-12 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-07-12 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-12 16:30</div>
+            <div class="timeline-body"><p>I agree, we should clarify the fallback behavior when no project is found when walking upwards in the file tree.</p>
+<blockquote>
+<p>Expectation might be: ty would still walk down the directory, see uv's pyproject.toml and .venv there and activate it?</p>
+</blockquote>
+<p>Can you tell me more about why you'd expect this? We intentionally aligned the behavior with uv. The idea is that you can run the command anywhere in your project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-07-12 17:37</div>
+            <div class="timeline-body"><p>I'm considering having multiple uv projects within the same file tree (a monorepo). The way I'm describing the expected behavior will allow each of these projects to be checked individually, while respecting their virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-15 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm considering having multiple uv projects within the same file tree (a monorepo). The way I'm describing the expected behavior will allow each of these projects to be checked individually, while respecting their virtual environments.</p>
+</blockquote>
+<p>I see. Supporting a single uv workspace with multiple packages that we consider supporting with a single invocation. Checking different projects with different virtual environments (and possibly different python version) isn't something that we plan to support with a single ty invocation as we consider this out of scope. Instead, it's up to the user to call ty for every project.</p>
+<p>However, we consider supporting mono repositories like this in our VS Code extension where ty would detect all projects and automatically use the right project for the open files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-07-20 10:48</div>
+            <div class="timeline-body"><p>Thanks for explanation and considering it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Clarify project root in docs?" to "Mono-repository support" by @MichaReiser on 2025-07-30 06:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrtolkien">@mrtolkien</a> on 2025-07-31 02:03</div>
+            <div class="timeline-body"><p>Explaining my use-case as it's pretty similar.</p>
+<p>I have one mono-repo with the code for many apps, all AWS Lambdas. They share one editable dependency, which is the data layer of the application (and mostly made of Pydantic classes):</p>
+<pre><code class="language-sh">monorepo/
+├── datadx/                    # Shared Python library, used by all apps below (DynamoDB, TimescaleDB, messaging)
+├── resolver/                  # Main GraphQL resolver + AI agent
+├── formulas/                  # Optimization engine (OR-Tools)
+├── listener/                  # Real-time event processor (DynamoDB streams)
+├── periodic_tasks/            # cron jobs
+└── http_api/                  # External webhook handler (FastAPI)
+</code></pre>
+<p>I would like to <strong>be able to run ty from the root folder and type check all apps</strong>.</p>
+<p>If it was doable, it would be much simpler for me to validate that a change in the data layer did not break any of the lambdas.</p>
+<p>This would let me run something like <code>bacon</code> to watch type checking on the whole repo, something that is not doable with pyright for example as it takes ~10s to run per folder.</p>
+<p>My issue is at the intersection of <code>uv</code> and <code>ty</code> here:</p>
+<ul>
+<li>A <code>uv</code> workspace does not make much sense because each app has its own dependencies</li>
+<li>Requiring one <code>ty</code> install per folder is also a bit annoying as an update requires me to update the <code>pyproject.toml</code> of all the folders (as opposed to <code>ruff</code>, which I run from the root!)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgasper">@rgasper</a> on 2025-10-22 18:34</div>
+            <div class="timeline-body"><p>Feel free to delete if this is just noise - similar to the duplicate #1276 , I'm encountering what sounds like this same issue with unresolvable imports from <code>ty</code> when using this in a django webserver that's part of a larger monorepo. even when I launch my IDE from the django-webserver directory, not the top level, and that webserver has it's own <code>pyproject.toml</code></p>
+<p>e.g.</p>
+<pre><code>.
+ |-- pyproject.toml (not associated with webserver, for repository level scripting and operations)
+└── django_webserver
+    ├── pyproject.toml (for webserver)
+    ├── manage.py
+    └── app1
+      ├── __init__.py
+      └── models.py
+    └── app2
+      ├── __init__.py
+      └── models.py
+</code></pre>
+<p>If I launch my editor from the venv associated with the django_webserver, from the django_webserver directory:</p>
+<pre><code class="language-python"># app2/models.py
+import app1.models.whatever # (unresolved-import)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-22 18:50</div>
+            <div class="timeline-body"><p>@rgasper would you mind creating a new issue as this is somewhat different from what's covered in this issue.</p>
+<p>Can you also include what editor you use, what python interpreter you selected in the editor (vs code only). If you can, can you also change the logLevel setting to debug and share the output from the ty output panel?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vfilter">@vfilter</a> on 2025-11-06 00:42</div>
+            <div class="timeline-body"><p>I am in a somewhat similar situation: I am trying to make ty and uv work in a monorepo/workspace setup. Here is my structure.</p>
+<pre><code>service-abc/
+├── pyproject.toml
+├── .venv/
+├── app-a/
+│   ├── pyproject.toml
+│   ├── src/
+│   │   └── package-cba/
+│   └── tests/
+└── app-b/
+    ├── pyproject.toml
+    ├── data/
+    ├── scripts/
+    ├── src/
+    │   └── package-xyz/
+    └── tests/
+</code></pre>
+<p>Facing multiple issues that I think could be easily addressed with docs improvements:</p>
+<ul>
+<li>uv docs aren't clear on where the dependencies go: can each app have its own dependencies, or do their respective pyproject.toml files not contain deps? If the can, then does the workspace root pyproject.toml have to contain all dependencies from all apps? Right now, I'm assuming all deps are shared between all apps and thus go into the root pyproject.toml with one .venv dir at the project root that's shared between all apps in the IDE.</li>
+<li>ty docs don't address this from a package discovery perspective very well and it's unable to find my packages unless I use the extra-paths configuration to add a bunch of dirs (e.g., the package-cba)</li>
+<li>ty doesn't seem to be able to resolve relative imports (like <code>from .abc import def</code>) in a monorepo setup</li>
+</ul>
+<p>I'm happy to contribute to the docs, but I actually don't understand how ty and uv actually work in a monorepo setup. Believe it would be really helpful to have an example repo with a working setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgasper">@rgasper</a> on 2025-11-06 12:51</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/rgasper">@rgasper</a> would you mind creating a new issue as this is somewhat different from what's covered in this issue.</p>
+<p>Can you also include what editor you use, what python interpreter you selected in the editor (vs code only). If you can, can you also change the logLevel setting to debug and share the output from the ty output panel?</p>
+</blockquote>
+<p>Update so it's easier to find for anyone else having these issues - turns out that for me, the issue was my how my editor (Helix) was deciding to launch ty, not ty itself.</p>
+<p>https://github.com/astral-sh/ty/issues/1413</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smuuf">@smuuf</a> on 2025-11-07 08:35</div>
+            <div class="timeline-body"><blockquote>
+<p>ty would detect all projects and automatically use the right project for the open files.</p>
+</blockquote>
+<p>Please excuse my probably very naive thinking, but why can't <code>ty</code> &quot;just&quot; look up the nearest <code>pyproject.toml</code> in the parent dirs, relative to the analyzed file, and - if it's found - use it as the file's project's root dir, when dealing with multiple projects (each one defined by its own <code>pyproject.toml</code>) inside a monorepo?</p>
+<p>I'm also dealing with structures similar to https://github.com/astral-sh/ty/issues/819#issuecomment-3494285493 - while using vscode + <code>ty</code> extension. And I'm not sure why <code>ty</code> is unable to imports like:</p>
+<pre><code class="language-py"># File &quot;&lt;repo root&gt;/backend/project_a/zzz.py&quot;
+from xxx.yyy import ...
+</code></pre>
+<p>... when the structure of the repo is being something like:</p>
+<pre><code>- &lt;repo root&gt;
+  - backend/
+    - project_a
+      - pyproject.toml
+      - xxx/
+        - yyy.py
+        - zzz.py
+    - project_b/
+      - pyproject.toml
+      - aaa/
+        - bbb.py
+        - ccc.py
+</code></pre>
+<p>Because unless I'm making a mistake in my observations, that's exactly what <code>ty</code> (or its vscode extension) is unable to do. 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-07 14:47</div>
+            <div class="timeline-body"><p>We haven't fully designed or implemented all of this yet (which is why this issue is still open!) -- thanks for all the feedback and the clear reports.</p>
+<p>Regarding ty's current behavior on the CLI: in a setup like @smuuf or @vfilter shows, ty CLI can handle that fine, but a given ty run can only check one &quot;project&quot; (defined by a <code>pyproject.toml</code> or <code>ty.toml</code> with a set of configuration options, like Python version, import paths, etc). ty will find the project if either the CWD is in the same directory as the <code>pyproject.toml</code> (or <code>ty.toml</code>) or in a subdirectory of it, or if the <code>--project</code> option points to the directory with the <code>pyproject.toml</code> or <code>ty.toml</code>. I locally created the layout shown by @smuuf and confirmed all of this works -- the imports are found if I run ty from inside <code>project_a</code> or <code>project_b</code>, or if I use the <code>--project</code> option to point to one or the other of them.</p>
+<p>One possible point of confusion is that just providing path(s) to check on the CLI does not impact finding the &quot;project root&quot; -- only the CWD or the <code>--project</code> option can do that. This is something we could possibly revisit, I'm curious what @MichaReiser thinks.</p>
+<p>You can also check multiple such &quot;sub-projects&quot; at once (e.g. check both <code>project_a</code> and <code>project_b</code> as separate Python package trees) if you provide a <code>ty.toml</code> or <code>pyproject.toml</code> at the repo root, which sets the <code>environment.root</code> option to list both <code>project_a</code> and <code>project_b</code> directories. In this case the entire repo is the ty &quot;project&quot;, and <code>project_a</code> and <code>project_b</code> are individual Python import roots within that project. But we can't currently check both <code>project_a</code> and <code>project_b</code> (in a single ty run) if they have different dependencies. Within a single ty run, we can only use one Python environment (Python version, dependencies, import paths, etc.) This may change in the future.</p>
+<p>There are others better qualified than I am to speak to how this all interacts with the VSCode extension and with uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-07 14:54</div>
+            <div class="timeline-body"><p>It's not impossible to support what you're asking for, and it's something we can consider supporting in the CLI (without any performance benefits over running ty multiple times manually) or in ty's core, although I've concerns that either supporting has a significant performance penalty even for single-project use cases. But it's something we should explore in the future.</p>
+<p>The main challenge with allowing project-specific Python versions and search paths (virtual environments) is that resolving a module <code>a</code> can resolve to two different types, depending on if it's imported from project <code>x</code> or <code>y</code>. Even if the module resolves to the same file, ty needs to keep two separate copies of the file because the inferred types can differ if the file itself (or any file it imports transitively) contains code that narrows on the python version (or platform).</p>
+<blockquote>
+<p>One possible point of confusion is that just providing path(s) to check on the CLI does not impact finding the &quot;project root&quot; -- only the CWD or the --project option can do that. This is something we could possibly revisit, I'm curious what @MichaReiser thinks.</p>
+</blockquote>
+<p>I'd find this very confusing, considering the following use case:</p>
+<p>I want to only check a subset of my project, e.g. only <code>web</code> but not <code>backend</code>. I can do so by running <code>ty check web</code> from the root. I'd be surprised if this changes how the configuration is discovered.</p>
+<p>It also becomes ambigoius if you do <code>ty check web backend</code> where both contain a <code>pyproject.toml</code>. Which configuration should ty pick in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-07 15:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I want to only check a subset of my project, e.g. only <code>web</code> but not <code>backend</code>. I can do so by running <code>ty check web</code> from the root. I'd be surprised if this changes how the configuration is discovered.</p>
+</blockquote>
+<p>I'm not so sure about this, in general. I think there's a lot to be said for the mental model that @smuuf implies, which is that any given file, by its location, implicitly &quot;belongs&quot; to the project defined by its nearest ancestor <code>{pyproject,ty}.toml</code>, and checking that file should (by default, unless explicitly overridden) check it in that project. And that this &quot;file belonging&quot; is more relevant and useful information for default project discovery than the CWD. I think this model also make it easier to have CLI behavior similar to editor behavior (since there's no CWD in an editor).</p>
+<p>I agree that the &quot;multiple paths provided, in separate projects&quot; case is hard to deal with, at least until/unless we support checking multiple &quot;projects&quot; in a single ty run. It could just be an error for now? That honestly seems like a better result than mysteriously failing to find imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-07 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree that the &quot;multiple paths provided, in separate projects&quot; case is hard to deal with, at least until/unless we support checking multiple &quot;projects&quot; in a single ty run. It could just be an error for now? That honestly seems like a better result than mysteriously failing to find imports.</p>
+</blockquote>
+<p>I feel like this change only makes sense if we want to support checking multiple projects from the root in the future, because what if you pass two separate files or a glob?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @MichaReiser on 2025-11-14 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/axellpadilla">@axellpadilla</a> on 2025-12-03 16:56</div>
+            <div class="timeline-body"><p>Dude, you guys are great, pylance and pyright just break and are hard to make it work on multi project mono repo environments, with ty and ty vscode extension I just did this config and worked with this tool, please let me know if I missed something.</p>
+<pre><code class="language-toml">[tool.ty.environment]
+# Multiple directories (priority order for type checking)
+root = [
+    &quot;./project-a&quot;,
+    &quot;./project-b&quot;, 
+    &quot;./project-c&quot;,
+    &quot;./project-d&quot;,
+]
+extra-paths = [
+    &quot;./project-a/.venv/lib/python3.X/site-packages&quot;,
+    &quot;./project-b/.venv/lib/python3.X/site-packages&quot;,
+    &quot;./project-c/.venv/lib/python3.X/site-packages&quot;, 
+    &quot;./project-d/.venv/lib/python3.X/site-packages&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 18:49</div>
+            <div class="timeline-body"><p>@axellpadilla Glad you found a config that works well for your case! I would say this is using <code>extra-paths</code> in a way it wasn't quite intended; typically we'd expect to have <code>site-packages</code> directories discovered as part of the Python installation that ty discovers (e.g via the <code>--python</code> CLI flag or the corresponding config, or auto-discovered). But we don't have support for ty to look at multiple different Python environments, so using <code>extra-paths</code> like this is a functional workaround to make the installed packages from multiple different Python environments simultaneously available to ty.</p>
+<p>I think two things might potentially not work as expected with your config:</p>
+<ol>
+<li><code>extra-paths</code> come first on the search path (before even your first-party code in <code>environment.roots</code>); this behavior is mandated by the typing spec. This means if you ever have the same top-level package in both your first-party code and installed in one of those venvs, you might be surprised to find the latter taking priority.</li>
+<li>If any packages are editable-installed into any of those venvs, we won't discover them. We only discover editable installs (<code>.pth</code> files) in directories that we actually understand to be &quot;the site-packages directory of a Python installation&quot;, not in extra-paths.</li>
+</ol>
+<p>But if neither of those issues impacts you in practice, this config should work fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/axellpadilla">@axellpadilla</a> on 2025-12-05 05:05</div>
+            <div class="timeline-body"><p>@carljm Thanks for your insights on limitations, this config works on the extension at least!.</p>
+<p>I would suggest doing a per-root check for other purposes like pre-commit or testing and avoiding this and maybe, make the extension recognize project roots to check individually if a .venv exists there so extra-paths is not needed (only root).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 09:19</div>
+            <div class="timeline-body"><p>I'll close this in favor of https://github.com/astral-sh/ty/issues/2410 as it has more upvotes. But we should consider the discussions in this thread when working on https://github.com/astral-sh/ty/issues/2410</p>
+<p>Actually, let's do it the other way around, considering that this is in the ty repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-09 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2026-01-09 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Pre-stable 1" by @MichaReiser on 2026-01-09 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2026-01-09 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Mono-repository support" to "CLI: Mono-repository support" by @MichaReiser on 2026-01-09 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> removed by @MichaReiser on 2026-01-09 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2026-01-09 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2026-01-09 09:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

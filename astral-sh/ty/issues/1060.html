@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules for not exhaustive `match` case statements - astral-sh/ty #1060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rules for not exhaustive `match` case statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1060">#1060</a>
+        opened by <a href="https://github.com/crispyricepc">@crispyricepc</a>
+        on 2025-08-20 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/crispyricepc">@crispyricepc</a> on 2025-08-20 12:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If a <code>match</code> statement is used with an enum type or some other type with a finite number of possible values, Ruff (or Ty, not sure which works better here) should warn about unused cases.</p>
+<h2>Invalid code</h2>
+<pre><code class="language-py">from enum import Enum
+
+enum Animal(Enum):
+    CAT = 0
+    DOG = 1
+
+animal = get_animal()
+
+match animal: # warning should appear here
+    case CAT:
+        print(&quot;is a cat&quot;)
+</code></pre>
+<h2>Valid code</h2>
+<pre><code class="language-py">from enum import Enum
+
+enum Animal(Enum):
+    CAT = 0
+    DOG = 1
+
+animal = get_animal()
+
+match animal:
+    case CAT:
+        print(&quot;is a cat&quot;)
+    case _:
+        pass
+</code></pre>
+<p>This is inspired by a similar rule in pyright: <code>reportMatchNotExhaustive</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 13:10</div>
+            <div class="timeline-body"><p>This makes sense, but is something that is difficult for Ruff because it will require multifile analysis in most instances (and a good understanding of what values <code>animal</code> can expand to).</p>
+<p>That's why I'll move this issue to ty. It's a sub issue of https://github.com/astral-sh/ty/issues/887</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lint</span> added by @MichaReiser on 2025-08-20 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 13:16</div>
+            <div class="timeline-body"><p>It potentially makes sense to add this as a separate opt-in rule, but in general, there is nothing wrong with a non-exhaustive match statement in Python.</p>
+<p>If you want a fine-granular opt-in to exhaustiveness checking, you can already do this today with ty, by using <a href="https://typing.python.org/en/latest/guides/unreachable.html#assert-never-and-exhaustiveness-checking"><code>assert_never</code></a>:</p>
+<p>https://play.ty.dev/8644b344-867a-487c-ba13-ca595f310549</p>
+<pre><code class="language-py">from enum import Enum
+from typing import assert_never
+
+class Animal(Enum):
+    CAT = 0
+    # uncomment the following line, to see the error appear:
+    # DOG = 1
+
+def _(animal: Animal):
+    match animal:
+        case Animal.CAT:
+            print(&quot;is a cat&quot;)
+        case _:
+            assert_never(animal)
+</code></pre>
+<p>In many cases, the <code>assert_never</code> branch is not even needed for exhaustiveness checking. For example, if you had a function like the following, <a href="https://play.ty.dev/7909996d-bbff-47f1-a271-62737256bf6b">you would already get an error</a> when a new enum variant is added, because we would then infer that the function can implicitly return <code>None</code>:</p>
+<pre><code class="language-py">def get_animal_name(animal: Animal) -&gt; str:
+    match animal:
+        case Animal.CAT:
+            return &quot;cat&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-20 13:20</div>
+            <div class="timeline-body"><p>Mypy implements this as <a href="https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-match-statements-match-exhaustively-exhaustive-match">an opt-in error code</a>. I believe pyright's version (<code>reportMatchNotExhaustive</code>) is opt-out. I agree with @sharkdp that to me it seems too opinionated for it to be opt-out: it's more of a lint rule informed by type information than a typing error <em>per se</em>. Failing to do an exhaustive match will often lead to typing errors, but we'll already catch those and tell you about them, as @sharkdp says.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-09-09 06:54</div>
+            <div class="timeline-body"><p>Hi, I ran into some issues as well.</p>
+<p>Look at the following code. I would expect ty to understand that the pattern matching covers all cases, but.</p>
+<ul>
+<li><code>test_method</code>: ty does not understand the type of self (linked to #159).</li>
+<li><code>test_method_2</code>: ty correctly understand that everything is okay. Interestingly, mypy does not.</li>
+<li><code>test_method_3</code>: ty throws an error (maybe also linked to #159 ?). This time, mypy correctly throws no error.</li>
+</ul>
+<pre><code class="language-py">from __future__ import annotations
+
+from enum import Enum
+from typing import Self, reveal_type
+
+
+class TestEnum(Enum):
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+
+    def test_method(self) -&gt; str:
+        # reveal_type(self)  # ty: Unknown. Mypy: TestEnum
+        match self:
+            case TestEnum.LOW:
+                return &quot;A&quot;
+            case TestEnum.MEDIUM:
+                return &quot;B&quot;
+            case TestEnum.HIGH:
+                return &quot;C&quot;
+
+    def test_method_2(self: TestEnum) -&gt; str:
+        # reveal_type(self)  # ty: TestEnum. Mypy: TestEnum
+        match self:
+            case TestEnum.LOW:
+                return &quot;A&quot;
+            case TestEnum.MEDIUM:
+                return &quot;B&quot;
+            case TestEnum.HIGH:
+                return &quot;C&quot;
+
+    def test_method_3(self: Self) -&gt; str:
+        # reveal_type(self)  # ty: Self@test_method_3. Mypy: Self`0
+        match self:
+            case TestEnum.LOW:
+                return &quot;A&quot;
+            case TestEnum.MEDIUM:
+                return &quot;B&quot;
+            case TestEnum.HIGH:
+                return &quot;C&quot;
+</code></pre>
+<pre><code>&gt; uvx ty check tmp/test_enum.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ 1/1 files                                                                                                                                                  error[invalid-return-type]: Function can implicitly return `None`, which is not assignable to return type `str`
+  --&gt; tmp\test_enum.py:12:30
+   |
+10 |     HIGH = 3
+11 |
+12 |     def test_method(self) -&gt; str:
+   |                              ^^^
+13 |         # reveal_type(self)  # ty: Unknown. Mypy: TestEnum
+14 |         match self:
+   |
+info: rule `invalid-return-type` is enabled by default
+
+error[invalid-return-type]: Function can implicitly return `None`, which is not assignable to return type `str`
+  --&gt; tmp\test_enum.py:32:38
+   |
+30 |                 return &quot;C&quot;
+31 |
+32 |     def test_method_3(self: Self) -&gt; str:
+   |                                      ^^^
+33 |         # reveal_type(self)  # ty: Self@test_method_3. Mypy: Self`0
+34 |         match self:
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<pre><code>t&gt; uvx mypy tmp\test_enum.py
+tmp\test_enum.py:32: error: Missing return statement  [return]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-09 07:02</div>
+            <div class="timeline-body"><p>@LoicRiegel Thank you. None of this is really related to <code>match</code> statements though. <code>test_method</code> is #159. ~~And <code>test_method3</code> is #1124 (will post a comment there that the issue is more general than described in the ticket).~~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-09-09 07:05</div>
+            <div class="timeline-body"><p>@sharkdp I still wanted to mention those issues here, in case other people find themselves in the same problem as me. This might save them some investigation time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-09 07:09</div>
+            <div class="timeline-body"><p>Yeah, no worries. Actually, maybe <code>test_method3</code> is more interesting than I thought?</p>
+<pre><code class="language-py">class TestEnum(Enum):
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+
+    def test_method_3(self: Self) -&gt; str:
+        reveal_type(self)  # ty: Self@test_method_3. Mypy: Self`0
+
+        # […]
+</code></pre>
+<p>Usually, <code>self: Self</code> (or an implicit <code>self</code>) means that <code>self</code> could be of type <code>TestEnum</code> or any subtype of it. But enum classes are implicitly final, so does it make sense to infer <code>self: TestEnum</code> here? (and similarly, infer <code>self: F</code> for all final classes <code>F</code>?)</p>
+<p>Edit: mypy seems to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-09 07:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, no worries. Actually, maybe <code>test_method3</code> is more interesting than I thought?</p>
+<p>class TestEnum(Enum):
+LOW = 1
+MEDIUM = 2
+HIGH = 3</p>
+<pre><code>def test_method_3(self: Self) -&gt; str:
+    reveal_type(self)  # ty: Self@test_method_3. Mypy: Self`0
+
+    # […]</code></pre>
+<p>Usually, <code>self: Self</code> (or an implicit <code>self</code>) means that <code>self</code> could be of type <code>TestEnum</code> or any subtype of it. But enum classes are implicitly final, so does it make sense to infer <code>self: TestEnum</code> here? (and similarly, infer <code>self: F</code> for all final classes <code>F</code>?)</p>
+</blockquote>
+<p>Yes, I think it makes sense to eagerly solve the Self TypeVar if its upper bound is a final class!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

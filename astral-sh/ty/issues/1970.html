@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`no-matching-overload` with list/sorted and `map`/`filter` - astral-sh/ty #1970</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`no-matching-overload` with list/sorted and `map`/`filter`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1970">#1970</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2025-12-17 01:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2025-12-17 01:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Error is new in ty 0.0.2, not present in 0.0.1a35. Seems to occur when <code>map</code> / <code>filter</code> are put into <code>list</code>/<code>sorted</code>. Oddly, the first error goes away when directly returning the function call instead of using the temp variable.</p>
+<p>A</p>
+<p>Playground link: https://play.ty.dev/10c125c1-9480-475a-a076-861ade84c805</p>
+<p>Reproducer:</p>
+<pre><code class="language-python">import re
+from collections.abc import Iterable
+from typing import Any
+
+def func(obj: Any) -&gt; list[str | Any]:
+    if isinstance(obj, (list, tuple, set, frozenset)):
+        lst = sorted(map(func, obj), key=str) # No overload of function `sorted` matches arguments (no-matching-overload) [Ln 7, Col 15]
+        return lst
+    return [obj]
+
+def patfilter(names: Iterable[str], pat: str) -&gt; list[str]:
+    match = re.compile(pat).match
+    return list(filter(match, names))  # No overload of function `__new__` matches arguments (no-matching-overload) [Ln 13, Col 17]
+</code></pre>
+<p>Original output:</p>
+<pre><code>error[no-matching-overload]: No overload of function `sorted` matches arguments
+  --&gt; sphinx\util\_serialise.py:49:16
+   |
+47 |     if isinstance(obj, (list, tuple, set, frozenset)):
+48 |         # Convert to a sorted list
+49 |         return sorted(map(_stable_str_prep, obj), key=str)
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |     if isinstance(obj, (type, types.FunctionType)):
+51 |         # The default repr() of functions includes the ID, which is not ideal.
+   |
+info: First overload defined here
+    --&gt; stdlib\builtins.pyi:4312:5
+     |
+4311 |   @overload
+4312 |   def sorted(
+     |  _____^
+4313 | |     iterable: Iterable[SupportsRichComparisonT], /, *, key: None = None, reverse: bool = False
+4314 | | ) -&gt; list[SupportsRichComparisonT]:
+     | |__________________________________^
+4315 |       &quot;&quot;&quot;Return a new list containing all items from the iterable in ascending order.
+     |
+info: Possible overloads for function `sorted`:
+info:   (iterable: Iterable[SupportsRichComparisonT@sorted], *, /, key: None = None, reverse: bool = False) -&gt; list[SupportsRichComparisonT@sorted]
+info:   (iterable: Iterable[_T@sorted], *, /, key: (_T@sorted, /) -&gt; SupportsDunderLT[Any] | SupportsDunderGT[Any], reverse: bool = False) -&gt; list[_T@sorted]
+info: rule `no-matching-overload` is enabled by default
+
+error[no-matching-overload]: No overload of function `__new__` matches arguments
+   --&gt; sphinx\util\matching.py:112:17
+    |
+110 |         _pat_cache[pat] = re.compile(_translate_pattern(pat))
+111 |     match = _pat_cache[pat].match
+112 |     return list(filter(match, names))
+    |                 ^^^^^^^^^^^^^^^^^^^^
+    |
+info: First overload defined here
+    --&gt; stdlib\builtins.pyi:3623:9
+     |
+3622 |     @overload
+3623 |     def __new__(cls, function: None, iterable: Iterable[_T | None], /) -&gt; Self: ...
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3624 |     @overload
+3625 |     def __new__(cls, function: Callable[[_S], TypeGuard[_T]], iterable: Iterable[_S], /) -&gt; Self: ...
+     |
+info: Possible overloads for function `__new__`:
+info:   (cls, function: None, iterable: Iterable[_T@filter | None], /) -&gt; Self@__new__
+info:   (cls, function: (_S@__new__, /) -&gt; @Todo, iterable: Iterable[_S@__new__], /) -&gt; Self@__new__
+info:   (cls, function: (_S@__new__, /) -&gt; TypeIs[_T@filter], iterable: Iterable[_S@__new__], /) -&gt; Self@__new__
+info:   (cls, function: (_T@filter, /) -&gt; Any, iterable: Iterable[_T@filter], /) -&gt; Self@__new__
+info: rule `no-matching-overload` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-12-17 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mnannan-t">@mnannan-t</a> on 2025-12-17 09:36</div>
+            <div class="timeline-body"><p>I got a similar issue in <code>0.0.2</code> so posting in a comment rather than creating a new issue for the moment .
+I don't know if it's 100% the same thing but it looks related to <code>overload</code> and was not present 0.0.1a35 but is in 0.0.2.</p>
+<p>https://play.ty.dev/774b7ff6-b62c-4aa6-a8fe-4669261aa0de</p>
+<pre><code class="language-python">import re
+
+
+def main():
+    string_list = ['abc12345', 'def67890']
+    sorted_markers_with_key = sorted(string_list, key=len)
+    # Type checker error on this line
+    _ = '|'.join(re.escape(marker) for marker in sorted_markers_with_key)
+
+    sorted_markers_without_key = sorted(string_list, reverse=True)
+    _ = '|'.join(re.escape(marker) for marker in sorted_markers_without_key)
+
+</code></pre>
+<pre><code>Argument to function `escape` is incorrect: Argument type `Unknown | Sized` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr` (invalid-argument-type) [Ln 8, Col 28]
+</code></pre>
+<p>Adding <code>key</code> breaks the typing and typing looks to be inferred from the <code>key</code> rather than the iterable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-23 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty 0.0.2: `no-matching-overload` with list/sorted and `map`/`filter`" to "`no-matching-overload` with list/sorted and `map`/`filter`" by @carljm on 2025-12-23 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 21:21</div>
+            <div class="timeline-body"><p>Yes, the common factor in these cases looks like solving a generic call where the same typevar appears twice, once inside a <code>Callable</code> type and also elsewhere in the signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-09 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

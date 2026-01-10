@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error[unresolved-attribute] Type `Dropdown` has no attribute `id` - astral-sh/ty #1135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error[unresolved-attribute] Type `Dropdown` has no attribute `id`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1135">#1135</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2025-09-05 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2025-09-05 14:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">import dash
+
+dropdown = dash.dcc.Dropdown(
+    id=&quot;dropdown&quot;,
+    options=list(range(5))
+)
+
+dropdown.id  # error[unresolved-attribute] Type `Dropdown` has no attribute `id`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 17:05</div>
+            <div class="timeline-body"><p>Dash seems to auto-generate the Python classes for these components. The <code>__init__</code> method for <code>Dropdown</code> looks like this:</p>
+<pre><code class="language-py">    def __init__(
+        self,
+        options: typing.Optional[
+            typing.Union[
+                typing.Sequence[typing.Union[str, NumberType, bool]],
+                dict,
+                typing.Sequence[&quot;Options&quot;],
+            ]
+        ] = None,
+        value: typing.Optional[
+            typing.Union[
+                str,
+                NumberType,
+                bool,
+                typing.Sequence[typing.Union[str, NumberType, bool]],
+            ]
+        ] = None,
+        multi: typing.Optional[bool] = None,
+        clearable: typing.Optional[bool] = None,
+        searchable: typing.Optional[bool] = None,
+        search_value: typing.Optional[str] = None,
+        placeholder: typing.Optional[str] = None,
+        disabled: typing.Optional[bool] = None,
+        closeOnSelect: typing.Optional[bool] = None,
+        optionHeight: typing.Optional[NumberType] = None,
+        maxHeight: typing.Optional[NumberType] = None,
+        style: typing.Optional[typing.Any] = None,
+        className: typing.Optional[str] = None,
+        id: typing.Optional[typing.Union[str, dict]] = None,
+        persistence: typing.Optional[typing.Union[bool, str, NumberType]] = None,
+        persisted_props: typing.Optional[typing.Sequence[Literal[&quot;value&quot;]]] = None,
+        persistence_type: typing.Optional[Literal[&quot;local&quot;, &quot;session&quot;, &quot;memory&quot;]] = None,
+        **kwargs
+    ):
+        self._prop_names = [
+            &quot;options&quot;,
+            &quot;value&quot;,
+            &quot;multi&quot;,
+            &quot;clearable&quot;,
+            &quot;searchable&quot;,
+            &quot;search_value&quot;,
+            &quot;placeholder&quot;,
+            &quot;disabled&quot;,
+            &quot;closeOnSelect&quot;,
+            &quot;optionHeight&quot;,
+            &quot;maxHeight&quot;,
+            &quot;style&quot;,
+            &quot;className&quot;,
+            &quot;id&quot;,
+            &quot;persistence&quot;,
+            &quot;persisted_props&quot;,
+            &quot;persistence_type&quot;,
+        ]
+        self._valid_wildcard_attributes = []
+        self.available_properties = [
+            &quot;options&quot;,
+            &quot;value&quot;,
+            &quot;multi&quot;,
+            &quot;clearable&quot;,
+            &quot;searchable&quot;,
+            &quot;search_value&quot;,
+            &quot;placeholder&quot;,
+            &quot;disabled&quot;,
+            &quot;closeOnSelect&quot;,
+            &quot;optionHeight&quot;,
+            &quot;maxHeight&quot;,
+            &quot;style&quot;,
+            &quot;className&quot;,
+            &quot;id&quot;,
+            &quot;persistence&quot;,
+            &quot;persisted_props&quot;,
+            &quot;persistence_type&quot;,
+        ]
+        self.available_wildcard_properties = []
+        _explicit_args = kwargs.pop(&quot;_explicit_args&quot;)
+        _locals = locals()
+        _locals.update(kwargs)  # For wildcard attrs and excess named props
+        args = {k: _locals[k] for k in _explicit_args}
+
+        super(Dropdown, self).__init__(**args)
+</code></pre>
+<p>There's no <code>id</code> attribute annotated on the class itself, either.</p>
+<p>This is using highly-dynamic code to set attributes on the instance at runtime; I don't think there is any reasonable way for a type checker to understand this. Neither pyright nor mypy seem to understand it either.</p>
+<p>It seems like since these are generated anyway, it wouldn't be hard for dash to also generate a <code>id: typing.Optional[typing.Union[str, dict]]</code> annotation on the class body (not just in the <code>__init__</code> signature) -- that would resolve the problem.</p>
+<p>It does seem like we might need a better way for users to handle untyped libraries that will generate false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:39</div>
+            <div class="timeline-body"><blockquote>
+<p>It does seem like we might need a better way for users to handle untyped libraries that will generate false positives.</p>
+</blockquote>
+<p>This is the actionable thing here, and I think it is covered by https://github.com/astral-sh/ty/issues/2082</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 02:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

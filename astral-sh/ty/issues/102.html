@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display of overloaded definitions - astral-sh/ty #102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display of overloaded definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/102">#102</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-01 20:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-01 20:36</div>
+            <div class="timeline-body"><p>Currently, an overloaded definition is displayed using the following format:</p>
+<pre><code class="language-py">Overload[&lt;signature of overload 1&gt;, &lt;signature of overload 2&gt;, ...]
+</code></pre>
+<p>For example:</p>
+<pre><code class="language-py">Overload[() -&gt; None, (x: int) -&gt; int]
+</code></pre>
+<p>The main use cases are <code>reveal_type</code>, error messages (?), hover implementation in the language server.</p>
+<p>This issue is to keep track of whether we want to improve the display and if so then how?</p>
+<p>There was some discussion over at https://github.com/astral-sh/ruff/pull/17294#issuecomment-2789998693.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Display of overloaded definitions" to "Display of overloaded definitions" by @MichaReiser on 2025-05-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @AlexWaygood on 2025-05-10 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-11 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @dhruvmanila on 2025-07-11 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-11 23:11</div>
+            <div class="timeline-body"><p>Related to the question about <em>how</em> overloads should be displayed is the question about <em>when</em> they should be displayed.</p>
+<p>In pyright, we try to avoid showing overloads when the user hovers over a call expression. In that context, the language server can typically tell which overload signature matches the supplied arguments, so it's possible to display only the overload that applies in that context. We added this behavior in response to strong user feedback that seeing all of the overloads was often overwhelming. You might want to consider doing something similar in ty.</p>
+<p>There will still be situations (e.g. outside of a call expression or in cases where the overload matching algorithm matches more than one overload signature) where it will still be necessary to display multiple overload signatures, but those cases should be relatively rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-12 01:06</div>
+            <div class="timeline-body"><p>Regarding <a href="https://github.com/astral-sh/ruff/pull/19275">#19275</a>, here's my proposal:</p>
+<ul>
+<li><p>For bound methods: The format for a single overload is the same as that of a single-signature bound method. A note is added to help avoiding user confusion (compare with the existing <code>bound method C[int].f(v: str) -&gt; str</code>). It can be either invalid syntax (<code>(bound method)</code>) or a comment (<code># bound method</code>); I have no strong opinion on this.</p>
+<pre><code class="language-python">(bound method)
+@overload
+def C[int].f(v: str) -&gt; str: ...
+@overload
+def C[int].f(v: int) -&gt; int: ...
+</code></pre>
+</li>
+<li><p>For literal functions/unbound methods: The format for a single overload is the same as that of a single-signature function/unbound method.</p>
+<pre><code class="language-python">@overload
+def f(v: str) -&gt; str: ...
+@overload
+def f(v: int) -&gt; int: ...
+</code></pre>
+</li>
+<li><p>For (anonymous) callables: The format for a single overload is similar to that of a single-signature function/unbound method, but the name is replaced with <code>&lt;anonymous&gt;</code>, which is emphatically not a valid identifier.</p>
+<pre><code class="language-python">@overload
+def &lt;anonymous&gt;(v: str) -&gt; str: ...
+@overload
+def &lt;anonymous&gt;(v: int) -&gt; int: ...
+</code></pre>
+</li>
+</ul>
+<p>Note that, since this &quot;prettified&quot; format is multiline, it is only used in hover popups and not type checker messages. Here's how an union would be displayed if this format were to be used indiscriminately:</p>
+<pre><code class="language-python">int | Literal['foo'] | @overload
+def f(v: str) -&gt; str: ...
+@overload
+def f(v: int) -&gt; int: ... | type[C]
+</code></pre>
+<p>One important thing to note is that the <code>: ...</code> parts, while do not carry useful information on their own, might be necessary for highlighters to work correctly. Take GitHub's highlighter for an example:</p>
+<ul>
+<li><p>With bodies: Everything is highlighted nicely.</p>
+<pre><code class="language-python">@overload
+def f(v: str) -&gt; str: ...
+@overload
+def f(v: int) -&gt; int: ...
+</code></pre>
+</li>
+<li><p>Without bodies: The second <code>@overload</code> and <code>def</code> pair are not highlighted.</p>
+<pre><code class="language-python">@overload
+def f(v: str) -&gt; str
+@overload
+def f(v: int) -&gt; int
+</code></pre>
+</li>
+</ul>
+<p>This format is largely influenced by Pyright's, but with <code>@overload</code>s added to serve as some kind of visual separator and indicator. No strong opinion on that either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-12 16:32</div>
+            <div class="timeline-body"><p>Thanks for writing this up. I'll try to take a look on Monday.</p>
+<p>To clarify my understanding, is this what pyright would show:</p>
+<pre><code class="language-py">def f(v: str) -&gt; str
+def f(v: int) -&gt; int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-12 18:02</div>
+            <div class="timeline-body"><p>@MichaReiser Pyright would show something like this, to be exact:</p>
+<pre><code class="language-python">(function)
+def f(v: str) -&gt; str: ...
+def f(v: int) -&gt; int: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 07:42</div>
+            <div class="timeline-body"><p>I like the more compact representation and, for now, i'd probably defual to whatever pylance does unless we have good reasons not to,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-28 08:07</div>
+            <div class="timeline-body"><p>@MichaReiser In that case, here's a snippet for reference (<a href="https://pyright-play.net/?pyrightVersion=1.1.403&amp;pythonVersion=3.14&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgLABQDDAxmZQM7tQDCA2gCoBdAFwMo4qNWLAoAfVmokMeQAp2xMsAA0UQsKj8dAegCUUALQA%2BKADkwKYvoB0LpvQlQAAkVIUaYiSkZYDUNbV19VBgzK0wUGGdXdwlvEnIqOmTxIKgQ9U0dPSh2GBAY6xKQRKc3Dxy8sMLI%2BKgAH2LS8rj8dsrqtwZU3wyGepUiqK6o-voh9P96MaLKrr6oFxrGRelc8eaejrKLayi2w5m3HLQVE1Esrx95zLqdkIn4qfiZjzm-Z8DXntDqtShd7kt9mcVsdulDQeskgFxCBiDAAK4gFC5Ab0WRQAC8PBUAAYTE5gAwAMRQABCYDRKGoAFlUQALMDUXh8KKCHQAeTSf14oU0%2BgAymFPNwmt1PjAdCLgOLJdKIsCYZVBIIqVSoCoIGyOSZdRDZTDpgjNtTTdDYmsNm48YTuOTdQLhjReAJBIr9HwhDLJub4jpvb6eN6ZbaKqVtfRKbr9YbqMb45JAfklRGAKooADWKDAAHcULy1UHYhaHWmxpm-bxcwXi6Wo50NfDqwwnRGea60%2B6nl6hOH-WX3tFg-KoGG6xGA2ro4c4wm00mYOyUyaM2F6zzAx9JzNrdvRT34mP9Iv7YjcQTsf3BRlheO5Qrlm27bGdavgAzmDAkHsVNj2CIEKxOL5LS3UD3yOT8qigrZu2uYCoAHIUwIPSsQz1WCQRAZdE0ISgQCQSgACMyGIVDTXA7oj3TGDLw-GMEOrIA">playground</a>):</p>
+<details>
+
+<pre><code class="language-python">class C[T]:
+    def __init__(self, v: T, /) -&gt; None: ...
+
+    @overload
+    def f(self, v: int) -&gt; int: ...
+    @overload
+    def f(self, v: str) -&gt; str: ...
+
+    def f(self, v: int | str) -&gt; int | str: ...
+
+
+@overload
+def f(v: int) -&gt; int: ...
+@overload
+def f(v: str) -&gt; str: ...
+
+def f(v: int | str) -&gt; int | str: ...
+
+
+def g():
+    @overload
+    def f(v: int) -&gt; int: ...
+    @overload
+    def f(v: str) -&gt; str: ...
+
+    def f(v: int | str) -&gt; int | str: ...
+
+    return f
+</code></pre>
+<pre><code class="language-python">_ = C(0).f
+# BoundMethod[C[int], Overload[(self: Self@C, v: int) -&gt; int, (self: Self@C, v: str) -&gt; str]]
+#
+# (method)
+# def f(v: int) -&gt; int: ...
+# def f(v: str) -&gt; str: ...
+
+_ = C.f
+# Overload[[T](self: C[T], v: int) -&gt; int, [T](self: C[T], v: str) -&gt; str]
+#
+# (method)
+# def f(self: C[Unknown], v: int) -&gt; int: ...
+# def f(self: C[Unknown], v: str) -&gt; str: ...
+
+_ = C[int].f
+# Overload[[T](self: C[T], v: int) -&gt; int, [T](self: C[T], v: str) -&gt; str]
+#
+# (method)
+# def f(self: C[int], v: int) -&gt; int: ...
+# def f(self: C[int], v: str) -&gt; str: ...
+
+_ = f
+# Overload[(v: int) -&gt; int, (v: str) -&gt; str]
+#
+# (function)
+# def f(v: int) -&gt; int: ...
+# def f(v: str) -&gt; str: ...
+
+_ = g()
+# Overload[(v: int) -&gt; int, (v: str) -&gt; str]
+#
+# (variable)
+# def f(v: int) -&gt; int: ...
+# def f(v: str) -&gt; str: ...
+</code></pre>
+</details>
+
+<p>As you can see, Pyright doesn't use the notation <code>C[...].f</code> to denote a bound method like ty would. It also doesn't have an &quot;anonymous&quot; overloaded callable type (or at least I couldn't find out how to make one). Would you mind expanding on that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 02:35</div>
+            <div class="timeline-body"><p>Here's <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAK4MYAxmADYA0UYAbgKYgVgCGAJgLABQPpFrAM6CoAWThEwJABSSS5CgEoAXDyjqoAAXpMWHNRvYNgUCAxgALMO2mCGFYDQAeyzChiKoAWgB8bmK4AdMEG6tqMzGxc3BpQRiZmlta29o5QLlCCMCCevpnZQSExhsam5lY2dg7Orqj4AD75Od5%2BdVCNWSCFgTy93PFQAPrSCK7icmAqoVAgDIysFIPwCAwjgYkVikA">an example of an anonymous overloaded callable type in pyright</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-08-05 03:20</div>
+            <div class="timeline-body"><p>@carljm That one still has a name: <code>method</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 03:24</div>
+            <div class="timeline-body"><p>@InSyncWithFoo the name <code>method</code> doesn't appear anywhere in pyright's display of the type.</p>
+<p>And in principle, it shouldn't -- the protocol can be satisfied by any object with an attribute called <code>method</code> that is callable -- it doesn't have to be a function defined with the name <code>method</code>. In type system terms, the type can only be known to be some kind of callable with the given overloaded signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-08-05 03:41</div>
+            <div class="timeline-body"><p>@carljm The name is displayed in the hover popup, not the &quot;reveal type&quot; diagnostic (unless I'm terribly mistaken, I think we are discussing the prettified format). Also, we might not want to display <code>method</code> as a callable attribute (i.e., <code>method: Overload[...]</code>); it just doesn't look particularly pretty or readable that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 03:52</div>
+            <div class="timeline-body"><p>Ah, sorry, missed the distinction between the prettified hover output and the inline diagnostic output.</p>
+<p>There may not be any way to get an anonymous overloaded callable type in pyright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asukaminato0721">@asukaminato0721</a> on 2026-01-08 15:48</div>
+            <div class="timeline-body"><p>for hover popup, pyrefly only show the matched overload, zuban current show all of them.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

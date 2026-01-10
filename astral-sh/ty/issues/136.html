@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>prefer more precise declared type over gradual inferred type, or vice versa - astral-sh/ty #136</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>prefer more precise declared type over gradual inferred type, or vice versa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/136">#136</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-06 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-06 18:43</div>
+            <div class="timeline-body"><p>In a case like this:</p>
+<pre><code class="language-py">from typing import Any
+
+def f(x: Any):
+    y: str = x
+    reveal_type(y)
+</code></pre>
+<p>We currently reveal Any because we prefer inferred over declared type. But in this case that's counter productive because our inferred type is just Any.</p>
+<p>One policy we could use here is that if the declared type is assignable to the inferred type, that suggests it is at least as precise, and we should prefer it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 07:27</div>
+            <div class="timeline-body"><blockquote>
+<p>if the declared type is assignable to the inferred type, that suggests it is at least as precise</p>
+</blockquote>
+<p>Thinking about this again, that's obviously not true. If the types are reversed (declared type is <code>Any</code>, inferred type is <code>str</code>), they are also assignable.</p>
+<p>I reopened this ticket because I found the following problem, which is somewhat reversed. Now the declared type is <em>less</em> precise, but that's exactly the intention of the author:</p>
+<pre><code class="language-py">from typing import Any
+
+_default: Any = object()
+
+def f(x: int = _default):  # Red Knot: Default value of type `object` is not assignable to annotated parameter type `int`
+    pass
+</code></pre>
+<p>https://playknot.ruff.rs/4b49ce75-02f7-49b1-a798-f9f6d0744d0a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 11:31</div>
+            <div class="timeline-body"><p>A Policy I think would work well here to avoid clobbering developer intent, but would be more complex to implement.</p>
+<ul>
+<li>If both types result in no type errors, use the more precise one.</li>
+<li>If the declared type results in a type error, emit an error. (even if the inferred one doesn't, there's something wrong, possibly with the type declaration, not the runtime code)</li>
+<li>If the inferred type results in a type error, but the declared one doesn't and the value is assignable to the declared type, use the declared type.</li>
+</ul>
+<p>The third part of this principle here also avoids what was a rather <a href="https://discuss.python.org/t/inference-on-literal-types/72018">contentious issue</a> with other type checkers and inference of Literal types causing type errors with invariant generics</p>
+<p>A simpler rule to implement here would be to prefer the more precise type unless the declared type is a gradual type or the more precise type is only a refinement type of the declared type, otherwise use the declared type. This should cover all the cases <em>currently</em> within python's type system where preferring precision results in false positives that directly conflict with developer intent, but may become a more complex rule overall if the type system gains more than just <code>Literal</code> and <code>LiteralStr</code> for refinement types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 15:03</div>
+            <div class="timeline-body"><p>Unfortunately I think &quot;results in a type error&quot; is simply not feasible as a predicate for making this decision, implementation-wise. In principle the &quot;resulting type error&quot; could be anywhere in the code base, so effectively this heuristic would mean unbounded fixpoint iteration of the entire type-check.</p>
+<p>Also I suspect that such a heuristic is not a good idea for user experience, either, because it would make the behavior very &quot;jumpy&quot; and subject to non-obvious non-local effects. Perhaps there really is a type error that needs to be fixed later in the function, but one interpretation of an earlier assignment &quot;hides&quot; that error with a gradual type -- are we sure that we should really prefer hiding the later error?</p>
+<p>We will need to find a heuristic or principle that is predictable and local to the two types in the assignment.</p>
+<p>If we want to base decisions on which type is &quot;more precise&quot;, that also requires a definition of &quot;more precise&quot; in terms of subtyping and assignability; it's not self-evident what that definition is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 15:11</div>
+            <div class="timeline-body"><p>The simpler version can be restated as the following order of operations, which should not require any new definitions or specification clarity:</p>
+<ul>
+<li>If the declared type is gradual, and the inferred type is not, use the declared type.</li>
+<li>If the inferred type is a value-constrained form (refinement type, currently: Literals) of the declared type, use the declared type</li>
+<li>If the inferred type is a subtype by structural or nominal subtyping, use the inferred type</li>
+<li>otherwise, use the declared type</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Now the declared type is <em>less</em> precise, but that's exactly the intention of the author</p>
+</blockquote>
+<p>I think a fundamental question is whether we <em>want</em> to support that code example, without requiring a <code>type: ignore</code>. It seems obviously unsound, and can result in a function parameter annotated as <code>int</code> taking on a value that is not of type <code>int</code>. The author seems to desire that unsoundness, and is trying to use a declared type of <code>Any</code> as a way to silence the type checker. But red-knot currently doesn't interpret a declared type that way (as a form of cast), instead we interpret it as setting an upper bound on the types that can be assigned to a name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 15:17</div>
+            <div class="timeline-body"><p>That code example may have come from my own code based on a comment elsewhere. If so, It's used as a sentinel value where no default value is appropriate and should not change the public API The function needs to distinguish between no value provided without changing the types allowed to be passed. I'd be inclined to remove it if there was a better option here, but type checkers don't really allow for true divergence between public API and a default value which isn't allowed to be passed by a user in any other way.</p>
+<p>Late bound defaults (pep 671) looked promising to me as a future better way, though that's still in draft.</p>
+<p>If you've got another solution that works for this without arguably abusing the way Any is defined in the type system, I'd be less inclined to ask you to consider supporting this particular use.</p>
+<p>That said, I think the set of steps I provided above is somewhat reasonable even outside of the case of Any, it should work without conflicting with developer intent with things like a fully known tuple vs variadic tuple (gradual length component), as well as avoid the issue of being too or less specific than a developer intended with Literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 16:23</div>
+            <div class="timeline-body"><p>Isn't it possible to <a href="https://pyright-play.net/?strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFC0ACRpFNt1xwUwAFAB4AuTChgBKKAFoAfMJhCAdIvpMS5KnQ5de46bIVL2nbvyGp8AHygA5MCmJQAvNdvEdMswNpRvmLn0wAzs52nj5hUCDEMACuIChQAAxePpExcVB89Nq0vACMojk8NnYFQA">achieve this soundly today with overloads</a>? Effectively you are wanting to &quot;split&quot; the public signature of the function from the private internal signature, and overloads permit this split:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def f(x: int) -&gt; int: ...
+
+@overload
+def f() -&gt; int: ...
+
+def f(x: int | None = None) -&gt; int:
+    if x is None:
+        return 0
+    return x
+
+f()
+f(1)
+f(None)  # type error, there's no overload that accepts `None`
+</code></pre>
+<p>This is admittedly more verbose.</p>
+<p>It's also of course possible to use the <code>Any</code> version with an explicit <code>typing.cast</code> to <code>Any</code> on the RHS instead of relying on type checkers ignoring a clearly-correct inferred type. This seems to me like a reasonable compromise when intentionally doing something unsound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 16:28</div>
+            <div class="timeline-body"><p>overloads have a problem where they have a runtime effect. Same with cast. This ruins other goals (no eager typing imports) that are frankly more important to me than satisfying a type checker for something where the immediate first line of the function is handling the default.</p>
+<p>FWIW, This particular pattern has been noted as common in various peps researching it. See 671 for an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>It's also of course possible to use the Any version with an explicit typing.cast to Any on the RHS instead of relying on type checkers ignoring a clearly-correct inferred type.</p>
+</blockquote>
+<p>Oh, also there's a slight problem with calling it relying on inference behavior:</p>
+<p>Any is the annotated type in a direct assignment, and this is accessible at a module level, there's no guarantee that the order of execution doesn't have another value assigned if this is modified in line with it's annotated type during import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 16:38</div>
+            <div class="timeline-body"><p>Oh, one more problem 🙃 (sorry, I missed it at first, responding too quickly)</p>
+<p>your overload example isn't properly expressible if <code>None</code> is a valid input and there's an actual need for a sentinel object. There's no way to include the sentinel marker that's guaranteed unique (an instance of an object) without ruining the type checking of the body for the library:</p>
+<p>compare this version for a fair comparison:</p>
+<p>Code sample in <a href="https://pyright-play.net/?strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFD0D61xwlArmfgLwEBGAVsQDGMABQBKegAEipCjVrNgUYKIAeALkwp8AHygA5MCmLioAWgB82mFoB0D6bPJU6SlRIvXUtqA7v07qqaNlD6RiZhfIIiUDwRpl42GrRQaZjKapgAzlBMLOycKeklUCDEMGwgKFAADKnp5ZXVUGr0qpKqAIydogmSQA">pyright playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 17:14</div>
+            <div class="timeline-body"><p>I think the desire to not import <code>typing</code> can be managed with <code>TYPE_CHECKING</code>, even using overloads or cast.</p>
+<p>I think the overload approach doesn't really have a problem with finding a sentinel value, assuming there is <em>some</em> type that is not a valid external input to the function. For example, if valid inputs are <code>int | None</code>, then you can't use <code>None</code> as sentinel, but the sentinel can be a string literal, etc. Of course this would be nicer with a dedicated sentinel type in the standard library.</p>
+<p>It's a good point indeed that even local confidence in inferred types in module global scope is technically unsafe, given that any import could trigger external code that mutates this module's globals, and any call could trigger such an import, and almost any Python code can trigger a call (via dunder methods etc.), and we are currently choosing to ignore this possibility. This is a case where the unsoundness may be sufficiently rare in practice that the cure is worse than the disease, but I'm not averse to saying that in global scope we should always union the inferred type with the declared type (and with <code>Unknown</code> if no declared type) to reflect this possibility. But I would want to address the unsoundness via this union, not simply by ignoring the inferred type entirely, because the latter would allow way too many obvious type errors to pass silently. So with that union, we'd still error on the unsound-default pattern, because <code>Any | object</code> is not assignable to <code>int</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 17:20</div>
+            <div class="timeline-body"><p>Actually I think unions and intersections might provide an interesting generalized path forward here. In a scope where we don't consider arbitrary external mutation mid-execution to be possible (this is currently all scopes, but as mentioned above it could exclude module-global scope to be more sound), we could infer the intersection of the declared and inferred type, which is a formal way to say &quot;it has to be both, and we want the most precise knowledge available&quot;. In cases without gradual types, this intersection would just simplify to the more precise inferred type, as we do today.</p>
+<p>If we want to consider the possibility of arbitrarily-timed external mutation in module global scopes, then in that case we would want to take the union rather than the intersection. &quot;We can only trust the declared type as upper bound, but the inferred type is a lower bound.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 17:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the desire to not import typing can be managed with TYPE_CHECKING, even using overloads or cast.</p>
+</blockquote>
+<p>overload cannot without harming runtime introspection, a runtime use of inspect would get the incorrect annotation and no overloads to be found with typing.get_overloads</p>
+<p>cast can, but I'm going to be very blunt, if someone ever writes:</p>
+<pre><code class="language-py">if t.TYPE_CHECKING:
+    x: t.Any = t.cast(t.Any, object())
+else:
+    x = object()
+</code></pre>
+<p>I'm going to tell them to just use a type ignore instead. <code>object()</code> is assignable to Any, and Any is what I have said via annotations is what a type checker should treat it as, I don't see any value in a type checker ignoring a developer use of Any in an inline assignment. That's a pretty significant sign they know they are doing something a type checker doesn't understand or working around some other issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DiscordLiz">@DiscordLiz</a> on 2025-04-09 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>we could infer the intersection of the declared and inferred type, which is a formal way to say &quot;it has to be both, and we want the most precise knowledge available&quot;. In cases without gradual types, this intersection would just simplify to the more precise inferred type, as we do today.</p>
+</blockquote>
+<p>I know intersections haven't been accepted yet, but wouldn't this mean the example should be fine? Any &amp; T doesn't reduce based on all of the working discussion that has happened.</p>
+<p>In fact, while I'm not positive on this (I think it works, but I'd need to work out the Literal interactions), I think in the case of a default value, the 4 step process that doesnt require any sort of recursive checking @mikeshardmind gave you <a href="https://github.com/astral-sh/ty/issues/136">here</a> should be equivalent to what you propose under the current working definition of intersections without relying on a definition of intersections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-09 21:39</div>
+            <div class="timeline-body"><p>Red-knot already has intersections as a core part of our type model. All of our type narrowing is implemented exclusively through intersections and reduction of intersections. Our intersections behave as has been discussed (including that <code>Any &amp; T</code> does not reduce). So &quot;not relying on a definition of intersections&quot; is an anti-goal for red-knot. We will much prefer to define our logic in terms of core primitives of gradual set-theoretic types (including intersections) which we've already implemented, rather than multi-step heuristics with at-first-glance arbitrary-seeming treatment of different kinds of types.</p>
+<p>So yes, it's true that if we infer the intersection of the declared and inferred type, that means that a declared type of <code>Any</code> will allow subsequent uses that require a narrower type than the inferred type. I think this is defensible, as it does give the developer the option of using an explicit declared type of <code>Any</code> to express that there are known constraints on the type of this name that the developer is responsible for ensuring, and that aren't reflected in the type system. Annotating with <code>Any</code> is an unusual thing to do, and it's clearly expressing some kind of developer intent to opt that name out of type checking. (Otherwise, a variable annotation of <code>Any</code> in our model would be indistinguishable, in local-scope use of the name, from a variable annotation of <code>object</code> -- both would simply mean that any type can be assigned to the name in that scope.) If we do this, it will mean that un-annotated names are no longer equivalent to names explicitly annotated as <code>Any</code> (barring our <code>Unknown/Any</code> distinction) -- we will definitely not want to intersect the inferred type of unannotated names with <code>Unknown</code>.</p>
+<p>The question is what we do in the module-global scope, <em>if</em> we decide that we should respect the possibility of external mutation of module globals while the module scope is mid-execution (which we should really probably have a separate issue to discuss.) I had suggested above that we union declared and inferred type in this case, but I think that's not consistent; if a variable annotation of <code>Any</code> in function scopes means &quot;this could be an arbitrarily narrow type&quot;, then it should also mean that in module-global scope. I <em>think</em> that leads to the conclusion that we'd simply respect declared types only in module global scope, but I'm not sure I'm happy with the results of that for un-annotated names (they would simply be <code>Unknown</code> and lose all type checking.) EDIT: on second thought, I think the corollary of not intersecting <code>Unknown</code> with the inferred type in function scopes, would be that in module global scope we would infer the union of <code>Unknown</code> with the inferred type for un-declared names, so we would still get type-checking on that lower bound, and we'd infer solely the declared type for declared names. This seems potentially reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-09 22:58</div>
+            <div class="timeline-body"><blockquote>
+<p>then it should also mean that in module-global scope. I think that leads to the conclusion that we'd simply respect declared types only in module global scope, but I'm not sure I'm happy with the results of that for un-annotated names (they would simply be Unknown and lose all type checking.</p>
+</blockquote>
+<p>I think it's defensible to treat Unknown differently from Any (not just here, but in general). Unknown should really function as the absence of an annotation, and not as <code>typing.Any</code> (loosely speaking, probably something closer to another language's <code>auto</code>, rather than having the special properties of <code>typing.Any</code>, I'm willing to deal with formal definitions and standardization of this concept if that's needed here). Unknown is the absence of an explicit annotation, and while that means there's no request from a developer to enforce any specific type, it doesn't mean any possible value is valid within the program being type-checked.</p>
+<p>I think at the module scope, this is also potentially a place to offer a code action in the future to fill in with the inferred type, because without an annotation, things outside of the module interacting with it can only treat it as lacking type information. This is where the behavior gets especially fuzzy in the current typing specification, because what does a lack of an annotation mean for a module with py.typed? (Currently, this essentially makes it Any for those importing it)</p>
+<blockquote>
+<p>The question is what we do in the module-global scope, if we decide that we should respect the possibility of external mutation of module globals while the module scope is mid-execution (which we should really probably have a separate issue to discuss.)</p>
+</blockquote>
+<p>If you'd like to split the union or intersection based on concern for import behavior into another topic, happy to continue it elsewhere, but I agree with your analysis: Intersection if it's assumed the value can't change from some other code inbetween, Union if it's assumed it can. This holds beyond module-global scope and modification during import to other cases of potential non-linear (concurrency fun) modification of values. I'm unsure if type checkers <em>should</em> have to account for this or not, but it's at least good to know what the path would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DiscordLiz">@DiscordLiz</a> on 2025-04-10 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Red-knot already has intersections as a core part of our type model. All of our type narrowing is implemented exclusively through intersections and reduction of intersections.</p>
+</blockquote>
+<p>Okay, I'm not used to type checkers being willing to do this much without specification, I'll adjust.</p>
+<hr />
+<p>The union bit is likely incorrect, and it's just a matter of always having an upper bound, and if narrowing is safe, also having a safe narrowing.</p>
+<p>The thing to watch here is that if replacement can happen, the Union doesn't provide useful information beyond the original upper bound, and can create false positives in the case of gradual types, which is antithetical to gradual typing, as a Union between a type and a supertype of that type <em>outside of gradual typing</em> has safe operations equivalent to those that are safe on the supertype.</p>
+<p>With narrowing not assumed to be safe, re-assignment can happen to anything assignable to that original upper bound.</p>
+<p>This makes it <code>Annotation &amp; Inferred</code> if replacement cannot happen, and <code>Annotation</code> if replacement can happen.</p>
+<p>This leads to your question about what to do with Unannotated values. I believe the specification says to treat these as Any currently for module globals, but says nothing about other locations. While I agree with @mikeshardmind that this isn't a useful definition, (I think type::Unknown as used by red-knot internally is more useful in this case) unless type checkers are willing to agree on inference behavior, these are visible symbols to other type checkers that use said modules. This case may warrant a warning or code action as he suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-14 10:51</div>
+            <div class="timeline-body"><p>Maybe it makes sense to move the discussion around external mutation to a separate ticket, and to focus on two concrete examples:</p>
+<h3>Example 1: declared type more precise than inferred type</h3>
+<pre><code class="language-py">def returns_any() -&gt; Any: ...
+
+x: str = returns_any()
+
+1 + x
+</code></pre>
+<p>Both mypy and pyright emit an error here (they use <code>str</code> as the type for <code>x</code> in the last line), Red Knot does not (we use <code>Any</code> as the type for <code>x</code>). The question here seems to be if the declaration alone should be sufficient to &quot;collapse&quot; the type from <code>Any</code> to <code>str</code>, or if we want users to declare the intent more clearly using <code>x = cast(str, returns_any())</code> (or using an actual conversion). I can see arguments for both sides, but I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.</p>
+<p>It also seems worth noting that using <code>str &amp; Any</code> (<code>declared &amp; inferred</code>) as the type for <code>x</code> in the last line would <em>not</em> change our current behavior here. <code>1 + x</code> is a valid operation for <code>x: str &amp; Any</code>, because <code>Never</code> is a possible materialization of <code>str &amp; Any</code>.</p>
+<h3>Example 2: declared type less precise than inferred type</h3>
+<pre><code class="language-py">y: Any = &quot;a string&quot;
+
+1 + y
+</code></pre>
+<p>Both mypy and pyright emit <em>no</em> error here (they use <code>Any</code> as the type for <code>y</code> in the last line), but Red Knot does (we use <code>Literal[&quot;a string&quot;]</code> as the type for <code>y</code>). I would argue that our behavior here is favorable. This code <em>will</em> fail at runtime.</p>
+<p>Changing our behavior to use <code>Any &amp; str</code> (<code>declared &amp; inferred</code>) as the type for <code>y</code> would cause us to <em>not</em> emit a diagnostic. This seems undesirable for another reason as well: it would break the gradual guarantee (removing the <code>: Any</code> annotation would result in a new error, because we would then use <code>Literal[&quot;…&quot;]</code> as the type for <code>y</code>), unless we also change the type for an un-annotated <code>y = &quot;a string&quot;</code> to <code>Unknown &amp; Literal[&quot;…&quot;]</code>. But doing so would basically require users to add annotations <em>everywhere</em>.</p>
+<hr />
+<p>So overall, I'm not sure I see strong arguments for the proposed <code>declared &amp; inferred</code> behavior here.</p>
+<p>I think the core question is whether or not <code>x: T_declared = &lt;expr of type T_inferred&gt;</code> is seen as an <em>intentional</em> change of the type to <code>T_declared</code>, or if it is merely a way to ensure that <code>T_inferred</code> is assignable to <code>T_declared</code>. The latter is what we do right now, and I would argue it's also what developers are used to from other strongly-typed languages (arguably, without gradual types), where you would be forced to use a cast if your intent is to <em>change</em> the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-14 23:03</div>
+            <div class="timeline-body"><p>I created https://github.com/astral-sh/ty/issues/126 for follow-up on whether red-knot should honor the external mutation possibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-14 23:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.</p>
+</blockquote>
+<p>I am too, but I'm not sure how this applies to example 1 (it seems more relevant to example 2). Using <code>str &amp; Any</code> as the type of <code>x</code> is no more or less unsafe than using <code>Any</code> for its type. As you point out, it doesn't really change our behavior, because an intersection with <code>Any</code> is just as &quot;forgiving&quot; (in usage) as <code>Any</code> itself. Practically, what it does is &quot;look less weird&quot; to a user of LSP hover or <code>reveal_type</code>, since it doesn't look as if we are totally ignoring their annotation of <code>str</code>. Theoretically, what it does is model our knowledge that after <code>x: str = returns_any()</code>, <code>x</code> has an upper bound on its possible type. (Given, of course, the assumption that the assignment is actually valid at runtime, but this is the general assumption that we make in gradual typing -- truly sound gradual typing systems enforce this by inserting runtime type assertions.)</p>
+<blockquote>
+<p>Both mypy and pyright emit <em>no</em> error here (they use <code>Any</code> as the type for <code>y</code> in the last line), but Red Knot does (we use <code>Literal[&quot;a string&quot;]</code> as the type for <code>y</code>). I would argue that our behavior here is favorable. This code <em>will</em> fail at runtime.</p>
+</blockquote>
+<p>This was my original feeling, and I'm sympathetic to it. The counter-argument is that explicitly annotating with <code>Any</code> is an odd thing to do, and clearly expresses <em>some</em> kind of user intent. Currently we effectively ignore this intent, since we treat variable annotations as upper bounds only, meaning <code>: Any</code> is indistinguishable from <code>: object</code>. I don't think it's unreasonable to suggest that the most likely intent of an explicitly non-static type annotation is to request that this name be &quot;opted out&quot; from static type checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-15 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The question here seems to be if the declaration alone should be sufficient to &quot;collapse&quot; the type from <code>Any</code> to <code>str</code>, or if we want users to declare the intent more clearly using <code>x = cast(str, returns_any())</code> (or using an actual conversion). I can see arguments for both sides, but I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.</p>
+</blockquote>
+<p>It's true that we cannot verify that the variable really <em>does</em> have type <code>str</code>, But I'm not sure I would use the term &quot;potentially-unsafe&quot; to describe &quot;collapsing&quot; the type from <code>Any</code> to <code>str</code>. Collapsing the type here can only ever result in more possible type errors being caught, and more diagnostics being emitted, by red-knot: the prior type is the dynamic type, on which all operations are permitted by the type checker, while the new type is a static type on which many operations are disallowed. The user is asking us to assume a more static type so that more possible type errors will be caught.</p>
+<blockquote>
+<p>It also seems worth noting that using <code>str &amp; Any</code> (<code>declared &amp; inferred</code>) as the type for <code>x</code> in the last line would <em>not</em> change our current behavior here. <code>1 + x</code> is a valid operation for <code>x: str &amp; Any</code>, because <code>Never</code> is a possible materialization of <code>str &amp; Any</code>.</p>
+</blockquote>
+<p>At some future point we'll want to start emitting diagnostics for code that's inferred as being &quot;accidentally unreachable&quot; -- I would assume that at that point we'd emit warnings about all following code being unreachable as soon as we inferred a variable as being of type <code>Never</code>? Though <code>str &amp; Any</code> could also materialize as <code>&lt;some str subclass that permits being added to integers&gt;</code>, so your point still stands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-15 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>But I'm not sure I would use the term &quot;potentially-unsafe&quot; to describe &quot;collapsing&quot; the type from <code>Any</code> to <code>str</code>. Collapsing the type here can only ever result in more possible type errors being caught, and more diagnostics being emitted, by red-knot</p>
+</blockquote>
+<p>I think it's an unsafe operation. There are functions that are annotated with <code>Any</code> because people use this to mean &quot;can return anything&quot;. Typeshed also uses a return type of <code>Any</code> for some functions like this, e.g. <code>json.load</code>. So if you write</p>
+<pre><code class="language-py">number: int = json.load(some_file)
+</code></pre>
+<p>to mean &quot;I know that this is fine because <code>some_file</code> only contains a single integer&quot;, I would consider that an unsafe operation. And I would prefer if that unsafe operation would be more explicit in the code (using a cast), or made safe (using a conversion).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-15 15:10</div>
+            <div class="timeline-body"><p>I don't think that is a sustainable interpretation of what it means for an operation to be &quot;safe&quot; or &quot;unsafe&quot; in gradual typing. Under that interpretation, essentially <em>all</em> usage of <code>Any</code> is unsafe, including canonical usages such as:</p>
+<pre><code class="language-py">def takes_int(x: int):
+    assert isinstance(x, int)
+
+def takes_any(x: Any):
+    return takes_int(x)
+</code></pre>
+<p>You're not wrong that this is unsafe! The static type checker will allow you to call <code>takes_any(&quot;foo&quot;)</code>, which clearly will fail at runtime. But allowing this &quot;unsafety&quot; (that is, allowing parts of the program to opt out of static type checking and rely on dynamic type checking, as Python always did in the past) is the entire purpose of gradual typing, and the raison-d'etre for <code>Any</code> in the first place. If we were to declare the above unsafe and require an explicit cast, we might as well eliminate <code>Any</code> from the type system and have a fully-static type system instead of gradual typing.</p>
+<p>I think that the <em>useful</em> definition of &quot;unsafe&quot; in gradual typing is one where we assume that every assignment of <code>Any</code> to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.</p>
+<p>This assumption maps precisely to the definition of how <code>Any</code> behaves in the type system via &quot;optimistic&quot; materialization.</p>
+<p>So I think that it is correct for us to assume that if we have <code>x: str = returns_any()</code>, the upper bound on the type of <code>x</code> is <code>str</code>. (But of course it remains true that the lower bound is <code>Never</code>, which means that any use of <code>x</code> is permitted.)</p>
+<p>To be honest, I am not clear what behavior you are advocating for in example 1. How do you think we should infer the type of <code>x</code> after <code>x: str = returns_any()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-15 15:56</div>
+            <div class="timeline-body"><p>I clearly haven't thought through all implications and still need to internalize some gradual-typing concepts, so please feel free to cut off the discussion here. It seems reasonable to try the <code>declared &amp; inferred</code> strategy.</p>
+<hr />
+<blockquote>
+<p>But allowing this &quot;unsafety&quot; [..] is the entire purpose of gradual typing</p>
+</blockquote>
+<p>I have to admit that I never thought of it this way, but rather the opposite: I thought the purpose of gradual typing was to give you a tool to opt into <em>more</em> safety, gradually, by adding more and more type annotations.</p>
+<blockquote>
+<p>If we were to declare the above unsafe and require an explicit cast, we might as well eliminate Any from the type system and have a fully-static type system instead of gradual typing.</p>
+</blockquote>
+<p>I'm certainly not suggesting that we emit a diagnostic for <code>x: str = returns_any()</code>! I thought we were only discussing what kind of type we should infer for local uses of <code>x</code> after such a declaration. And the only thing I wanted to express is that the mypy/pyright interpretation (&quot;the type is definitely <code>str</code> now&quot;) is unsafe in the sense that it can not be verified.</p>
+<blockquote>
+<p>I think that the <em>useful</em> definition of &quot;unsafe&quot; in gradual typing is one where we assume that every assignment of <code>Any</code> to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.</p>
+</blockquote>
+<p>That it a reasonable definition. I guess I have to get used to the fact that <code>x: T = &lt;expr&gt;</code> is not necessarily &quot;opting into more safety&quot; (and merely asking the type checker to verify this assignment), but potentially also an explicit request to trust the developer that the type of <code>x</code> is now <code>T</code>. It's just not something I'm used to, but I can see how it makes sense in the context of gradual typing. I guess it's easier for me to follow that reasoning for untyped functions. <code>x: int = some_unannotated_function()</code> seems like a reasonable interface between typed and untyped code. If a function is explicitly annotated as returning <code>Any</code>, I find that a bit harder to justify, but I guess we shouldn't treat <code>Unknown</code> and <code>Any</code> differently.</p>
+<blockquote>
+<p>To be honest, I am not clear what behavior you are advocating for in example 1. How do you think we should infer the type of <code>x</code> after <code>x: str = returns_any()</code>?</p>
+</blockquote>
+<p>I wanted to argue that our current behavior (of inferring <code>Any</code> for <code>x</code> after this definition) seems okay to me — because if you wanted <code>str</code>, you could still do <code>x = cast(str, returns_any())</code>. But as I said above, I have not thought through all implications. And I realize that I'm not being very helpful here, so I suggest we move forward with the <code>declared &amp; inferred</code> strategy here and see if that works out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-15 17:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I have to admit that I never thought of it this way, but rather the opposite: I thought the purpose of gradual typing was to give you a tool to opt into <em>more</em> safety, gradually, by adding more and more type annotations.</p>
+</blockquote>
+<p>I suppose these are two sides of the same coin!</p>
+<p>I'm pretty comfortable with inferring <code>str &amp; Any</code> for <code>x: str = returns_any()</code>; I don't have questions about whether this is sound (under the definition of soundness we use for gradual typing). If I have a question here, it's more how <em>useful</em> it is, since an inferred type of <code>str &amp; Any</code> doesn't really behave differently from <code>Any</code>.</p>
+<p>I'm less comfortable with inferring <code>str &amp; Any</code> for <code>x: Any = returns_str()</code>, because this goes further than &quot;assume <code>Any</code> is some valid type&quot; -- it allows the author to silence the type checker even in cases where we can with 100% certainty in local analysis say the code will fail at runtime (that is, in cases where there is no possible type <code>Any</code> could materialize to that would make the code valid):</p>
+<pre><code class="language-py">x: Any = 1
+
+x + &quot;foo&quot;
+</code></pre>
+<p>And I do kind of feel like this should require a cast or a <code>type: ignore</code>. The only reason I'm tempted to consider this is because I think annotating a variable with <code>Any</code> is unusual, and I don't see another reasonable interpretation of the author's intent other than &quot;please don't type-check uses of this variable.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-15 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>If I have a question here, it's more how <em>useful</em> it is, since an inferred type of <code>str &amp; Any</code> doesn't really behave differently from <code>Any</code></p>
+</blockquote>
+<p>I think it would be fairly useful for the LSP usecase! Inferring <code>x: C &amp; Any</code> allows us to show all attributes of <code>C</code>, when the user does <code>x.</code>-<kbd>tab</kbd>, whereas we couldn't do anything meaningful if we infer <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-15 21:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I think that the useful definition of &quot;unsafe&quot; in gradual typing is one where we assume that every assignment of Any to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.</p>
+</blockquote>
+<p>I mostly agree here</p>
+<blockquote>
+<p>it allows the author to silence the type checker even in cases where we can with 100% certainty in local analysis say the code will fail at runtime (that is, in cases where there is no possible type Any could materialize to that would make the code valid)</p>
+</blockquote>
+<p>I think I agree here too, however.... I think 100% certainty is extremely hard to have here, and because of the nature of gradual typing, should be restricted to things that will fail at runtime. Going back to the example that started this branch of discussion, we might have something like the below:</p>
+<pre><code class="language-py">_marker: Any = object()
+
+...
+    async def foo(self, ..., timeout: int | None = _marker):
+        &quot;&quot;&quot; If no timeout is specified, uses the session's default timeout
+        for requests, pass None for no timeout&quot;&quot;&quot;
+        timeout = self.default_timeout if timeout is _marker else timeout
+</code></pre>
+<p>No type error will occur at runtime here, but the assignment of <code>_marker</code> as a default can be visibly not of the type of timeout. The library author has a few type-safe ways to handle this, but none of them are going to feel ergonomic here, nor are these actually the documented purpose of things like overloads. It feels like a hack to have a overloads that have a narrower type than the function itself does. Putting an overload for the public signature, and changing the marker to an enum member and annotating the function (not the overload) as taking that literal enum member works currently.... but the prior non-obviousness is an issue and it brings in the enum library just for a default that isn't meant to be public, and get around what can be seen as a language level deficiency, the inability to have a true &quot;no value&quot; because None commonly has semantic meaning other than &quot;This is a placeholder for no value, but isn't passable&quot;</p>
+<p>This particular case is clearly better served by either a built-in sentinel type or by late-bound defaults, however the earliest either of those will happen is <a href="https://discuss.python.org/t/pep-661-sentinel-values/9126/241">3.15</a></p>
+<pre><code class="language-py">def returns_any() -&gt; Any: ...
+
+x: str = returns_any()
+
+1 + x
+</code></pre>
+<p>This case, there is a possible materialization that isn't a type error at all, it would be a subclass of str that implements <code>__radd__</code> such that integers are converted to their decimal representation as a string then concatenated. This might seem paradoxical, but I think despite such a materialization being possible, this one is a more useful place to error than the prior one, because the author has stated they only expect a str, not the more specific <code>str &amp; RADD_with_int</code> (hopefully obvious intent on the RHS there from name), so this, especially given existing type checker behaviors, might be reasonably expected to be a barrier between a library that is typed and one that isn't.</p>
+<p>A more obvious case of this kind of boundary and developer intent comes up with sqlite</p>
+<p>If we assume the following kind of signature on fetching one row</p>
+<pre><code>.fetchone() -&gt; tuple[Any, ...] | None
+</code></pre>
+<p>Then given a specific query, one might write:</p>
+<pre><code class="language-py">row = cursor.execute(&quot;SELECT COUNT(1) FROM some_table&quot;).fetchone()
+assert row is not None, &quot;This can't be none, if the table doesnt exist, this will error, otherwise we have a count&quot;
+count: int = row,
+f = &quot;this&quot; + count  # this should error
+</code></pre>
+<p>Assuming the author is aware of how sql works and their driver of choice behaves and is typed this way, they won't want <code>Any &amp; int</code> for the type, but <code>int</code>.</p>
+<p>It may require specification clarification, but I think annotations should be seen as developer intent in a way that is useful to developers, and I think if the annotation is a fully static type, any gradual information allowing more than that static type should be assumed to not be within what the developer intends to be allowed for use of that variable.</p>
+<blockquote>
+<p>And I do kind of feel like this should require a cast or a type: ignore. The only reason I'm tempted to consider this is because I think annotating a variable with Any is unusual, and I don't see another reasonable interpretation of the author's intent other than &quot;please don't type-check uses of this variable.&quot;</p>
+</blockquote>
+<p>I think the more useful interpretation, and the one that at least leaves <em>some</em> room for type checkers to produce useful errors in some cases is not &quot;don't type-check this&quot; but &quot;I know I'm doing something that currently can't be modeled nicely in the type system&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-15 22:47</div>
+            <div class="timeline-body"><p>The idea that <code>x: str = returns_any()</code> might be intended to apply some static typing safety at the boundary with an untyped library is a really good point. In general, I think there's a good argument that we should weight explicit type annotations highly, since they are the developer trying to communicate with us, and it's frustrating to try to communicate and not be listened to. (I'm imagining a hypothetical developer trying to add annotations to say &quot;no really, consider this a string please!&quot; and getting frustrated that we just insist on going with the inferred type from the RHS, or an intersection of the two types, instead.)</p>
+<p>I wonder what the overall impact would look like if we always simply preferred the declared type over the inferred type, when there is an explicit declaration.</p>
+<p>On the other hand, I was recently told by a mypy developer that mypy has a longstanding intention to change its behavior of always preferring the declared type. So that suggests that may not be the route we want to take.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-04-15 23:37</div>
+            <div class="timeline-body"><p>Both mypy and pyright agree that <code>x: str = returns_any(); x + 1</code> should be an error. I think this is the most user friendly behaviour, for the reasons in Carl's last message</p>
+<p>(Off topic, but at some point, I think Carl had mentioned wanting <code>if isinstance(x, str)</code> to not narrow from Any. I'm not convinced about that behaviour for the similar reason that false negatives where it feels the false negative is because the type checker didn't listen to you are frustrating)</p>
+<p>For some previous discussion, see:</p>
+<ul>
+<li>https://mail.python.org/archives/list/typing-sig@python.org/thread/GYVM5KEE6URE6PAH7UTK6324M7GWSFQS/</li>
+<li>https://github.com/python/mypy/issues/2008</li>
+</ul>
+<p>Roughly speaking, I anticipate any mypy changes here to be on the lines of making <code>x: typ; x = value</code> and <code>x: typ = value</code> behave more consistently and only preserving the casting like behaviour in <code>x: typ = value</code> if <code>typ</code> is a gradual form</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-16 00:01</div>
+            <div class="timeline-body"><p>I feel somewhat strongly about <code>isinstance(x, str)</code> from <code>x</code> as <code>Any</code> narrowing to <code>str &amp; Any</code> (which will basically behave like <code>Any</code>), not to <code>str</code>, because the latter is not defensible in terms of gradual typing theory, and violates the gradual guarantee. I think freely violating the gradual guarantee (in general) is a significant cause of Python typing being hard to adopt in existing untyped codebases, and turns people off of typing (and the people it turns off are thus under-represented among current vocal typing users). You run a static type checker on your working codebase, and it gives you a bunch of false positive errors right off the bat, and you have to add a bunch of annotations to make it happy before you can even turn it on. (This is true even with mypy's very coarse-grained form of &quot;gradual typing&quot; where it doesn't check the bodies of un-annotated functions, which I don't want to emulate.)</p>
+<p>From the user perspective I also don't think it's the same; an <code>isinstance</code> check is IMO not in the same category of &quot;no really, I want this to be considered this type&quot; as an explicit type annotation.</p>
+<p>Preferring the declared type over the inferred type in an annotated assignment also doesn't violate the gradual guarantee, just gives you a (potentially) less precise type.</p>
+<p>It is hard to reconcile consistently with type narrowing from assignments, though, which is mypy's issue (and would be a problem for us, too, if we tried to go the direction of privileging explicit annotations more.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-16 00:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Roughly speaking, I anticipate any mypy changes here to be on the lines of making <code>x: typ; x = value</code> and <code>x: typ = value</code> behave more consistently and only preserving the casting like behaviour in <code>x: typ = value</code> if <code>typ</code> is a gradual form</p>
+</blockquote>
+<p>I'm curious how this could be done in a way that preserves having <code>x: str = returns_any(); x + 1</code> be an error. In this case, <code>str</code> is not a gradual form, so if you eliminate the &quot;casting like behaviour&quot; you'd end up making that not an error, wouldn't you?</p>
+<p>EDIT: I guess the most likely answer here is also one I wouldn't like 😆 because it probably involves never allowing <code>Any</code> to narrow a type, which is the corollary to also allowing anything to &quot;replace&quot; <code>Any</code> in narrowing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-04-16 00:52</div>
+            <div class="timeline-body"><p>Yeah, that's right 😅 mypy will only narrow to Any in some specific set of situations (e.g. if the declared type is a Union containing Any). If there is a declared type, assignment to Any will usually just reset to the declared type. I think the set of situations mypy narrows to Any is not the most principled and is history dependent, but I think we've been tightening it a little over time, see https://github.com/python/mypy/blob/34e8c7c5fa09516fbed37cad80b161906e97f53a/mypy/binder.py#L389-L413</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-04-16 02:23</div>
+            <div class="timeline-body"><p>I think &quot;always prefer declared type over inferred type&quot; is still fairly viable. Mypy's had this behaviour for a long time and while it shows up in issues every now and then, I'd venture most users don't really run into it in day to day usage.</p>
+<p>If you took one step more heuristic-y, and chose &quot;always prefer declared type over inferred type + if declared type is a union attempt to narrow to union member&quot; I suspect this would fix most of the real world cases where users expect narrowing. I believe TypeScript does something like this.</p>
+<p>The upcasts do have some legitimate use even when gradual types are not involved, e.g. <code>x: Sequence[int] = list_int</code> if you'd like to avoid a local getting mutated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] prefer more precise declared type over gradual inferred type" to "prefer more precise declared type over gradual inferred type" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-31 21:01</div>
+            <div class="timeline-body"><p>Would we also want to consider allowing something like</p>
+<pre><code class="language-py">a: list[object] = [1, &quot;2&quot;]
+</code></pre>
+<p>And favouring <code>list[object]</code> (when the other value isn't gradual)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-08-18 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-08-22 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @carljm on 2025-09-19 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @carljm on 2025-09-19 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 03:23</div>
+            <div class="timeline-body"><p>We now prefer the declared type for invariant collection literals (https://github.com/astral-sh/ruff/pull/20927). We also narrow the declared type, filtering out unrelated union elements. The next step forward here would be to do the same for invariant generic types in general. Other than that, it's not clear whether we want to change our current behavior, which is to prefer the inferred type unless the type context can be used to infer a more assignable type (e.g. when solving a generic function specialization).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @ibraheemdev on 2025-10-17 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @ibraheemdev on 2025-11-13 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @ibraheemdev on 2025-11-13 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ibraheemdev by @ibraheemdev on 2025-11-14 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-25 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I reopened this ticket because I found the following problem, which is somewhat reversed. Now the declared type is less precise, but that's exactly the intention of the author:</p>
+</blockquote>
+<p>This pattern is also present in discord.py</p>
+<p>https://github.com/Rapptz/discord.py/blob/9be91cb093402f54a44726c7dc4c04ff3b2c5a63/discord/utils.py#L325-L334</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 14:51</div>
+            <div class="timeline-body"><p>I ran into this again today, where a method returned <code>Unknown</code>, so I annotated the variable, hoping the IDE would give me some complications once I do. Unfortunately, that's not the case; the variable is still treated as Unknown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "prefer more precise declared type over gradual inferred type" to "prefer more precise declared type over gradual inferred type, or vice versa" by @carljm on 2025-12-01 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-06 16:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I think &quot;always prefer declared type over inferred type&quot; is still fairly viable. Mypy's had this behaviour for a long time and while it shows up in issues every now and then, I'd venture most users don't really run into it in day to day usage.</p>
+</blockquote>
+<p>It's also what typescript does and I think we should only deviate from this behavior that most users expect if we have very compelling reasons to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-06 16:32</div>
+            <div class="timeline-body"><blockquote>
+<p>we should only deviate from this behavior that most users expect if we have very compelling reasons to.</p>
+</blockquote>
+<p>To be clear, this is the behavior of mypy and pyrefly, but not of pyright. So it's not clear what percentage of users expect it, or how many users will be upset if we change from our current behavior (which is closer to pyright).</p>
+<p>That said, I'm open to just preferring declared type. It has the downside that these two code samples that seem the same become different in their meaning:</p>
+<pre><code class="language-py">x: int = 1
+</code></pre>
+<p>vs</p>
+<pre><code class="language-py">x: int
+x = 1
+</code></pre>
+<p>Where <code>x</code> in the latter case is inferred as <code>Literal[1]</code> and in the former case as <code>str</code>. (Narrowing on subsequent assignment is an absolute requirement or we would fail lots of valid programs, and all other type checkers do it.) But I'm coming around to the view that this &quot;inconsistency&quot; isn't so bad, and is even intuitive given the visual structure of the code. In effect people interpret the annotation as a form of &quot;safe cast&quot; of the RHS in the same assignment statement.</p>
+<p>It does worry me that I think we may still have to introduce some kind of limited ad-hoc narrowing on the initial assignment, so that with <code>x: int | None = 1</code> (where presumably <code>x</code> may be assigned to <code>None</code> later in the code) we understand that <code>x</code> cannot be <code>None</code> immediately after that initial assignment. This is clearly inconsistent with the general policy of &quot;always prefer declared type&quot;, but I do think users will expect it (at least some users -- maybe not those fully accustomed to mypy's behavior). And this makes the behavior more subtle/inconsistent and harder to explain clearly. But I expect we can find an explainable heuristic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-06 16:50</div>
+            <div class="timeline-body"><p>I would expect that the 'int | None' case should be less of an issue with ty</p>
+<ul>
+<li>the code needs to guard against None if x is used in a loop where the value can be None after the first iteration</li>
+<li>if the value can't be None up to a certain point, declate the type as int and later redeclare x with int | None</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-08 10:38</div>
+            <div class="timeline-body"><p>A related typescript feature is <a href="https://sjer.red/blog/2024-12-21/"><code>satifies</code></a> that tries to solve a similar problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 12:38</div>
+            <div class="timeline-body"><p>I wonder if this will also help with performance. For example, <code>discord.py</code> has this massive <code>TRANSFORMERS</code> dictionary, where we try to infer the precise type on every dictionary lookup (which is cool, but expensive).</p>
+<p>https://github.com/Rapptz/discord.py/blob/9be91cb093402f54a44726c7dc4c04ff3b2c5a63/discord/audit_logs.py#L319-L373</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-20 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-20 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattangus">@mattangus</a> on 2025-12-24 12:20</div>
+            <div class="timeline-body"><p>Maybe a short term win could be to add specific cases for <code>@Todo</code> and <code>Unknown</code> type narrowing from user annotations. I think this would have big usability gains. For example if I'm using a library that doesn't annotate the return type (which isn't implemented by <code>ty</code> at the moment), but I know what type it should be (either from the docs or manual code review). I would like to be able to override the inferred type <code>Unknown</code>. (e.g. see <a href="https://play.ty.dev/8969be94-0582-4480-b626-5ce61e6f0e7d">this playground</a>).</p>
+<p>This could be a good stop gap until <code>ty</code> has more features covered.</p>
+<p>Apologies if I'm repeating something that's already said. I tried to read through most comments above but there is quite a lot of discussion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-24 15:26</div>
+            <div class="timeline-body"><p>@mattangus Not sure if you're aware of it but you can use <code>typing.cast</code> in that specific case. It also has the benefit that ty will warn you when the cast becomes redundant:</p>
+<pre><code class="language-py">from typing import cast
+
+def test():
+    return 4
+
+a = cast(int, test())
+</code></pre>
+<p>https://play.ty.dev/fbe2664e-a10f-48ad-aa5c-4b98b6a1eb8f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @carljm on 2026-01-08 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> removed by @carljm on 2026-01-08 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2026-01-09 15:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

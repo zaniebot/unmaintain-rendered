@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type variables defined in typeshed's `builtins.pyi` are usable in all files - astral-sh/ty #1483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type variables defined in typeshed's `builtins.pyi` are usable in all files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1483">#1483</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-05 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-05 15:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We don't emit a diagnostic on this snippet... but we should, because <code>_T_co</code> is not defined 😆</p>
+<pre><code class="language-py">class SupportsNext:
+    def __next__(self) -&gt; _T_co:
+        raise NotImplementedError
+</code></pre>
+<p>We infer <code>_T_co</code> as being available here because of its definition in <code>builtins.pyi</code> <a href="https://github.com/python/typeshed/blob/07b69ab9e92dbe4ca55c48b1c23ebf34b41538f1/stdlib/builtins.pyi#L83">here</a>. But that definition should be treated as private-to-the-stub, I think.</p>
+<p>Possibly we should just filter out typevar definitions when falling back to the builtin scope in name lookup? The same could also be said for type-alias definitions and protocol definitions in <code>builtins.pyi</code>, but they're arguably both more useful and less confusing to have available (you might want to use them quoted in type annotations, e.g. <code>x: &quot;_PositiveInteger&quot;</code> wouldn't be an unreasonable type annotation.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-05 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-06 15:21</div>
+            <div class="timeline-body"><p>Pyrefly, mypy and pyright all filter out all &quot;type-check-only&quot; symbols (private type aliases, private typevars/paramspecs/typevartuples, private protocols) from the builtins fallback:</p>
+<pre><code class="language-py">reveal_type(_PositiveInteger)  # mypy, pyright, pyrefly: &quot;`_PositiveInteger` is undefined&quot;
+reveal_type(_T_co)  # mypy, pyright, pyrefly: &quot;`_T_co` is undefined&quot;
+reveal_type(_SupportsSynchronousAnext)  # mypy, pyright, pyrefly: &quot;`_T_co` is undefined&quot;
+</code></pre>
+<p>Mypy and pyrefly allow you to use these types if you explicitly import them, however, whereas pyright just views them as entirely private to the stub:</p>
+<pre><code class="language-py"># pyright: ❌, mypy/pyrefly: ✅
+from builtins import _PositiveInteger, _T_co, _SupportsSynchronousAnext
+</code></pre>
+<p>I'd prefer to go with mypy/pyrefly's behaviour here:</p>
+<ul>
+<li>I'd rather not treat the <code>builtins</code> module differently to any other <code>.pyi</code> module when it comes to explicitly imported symbols</li>
+<li>I think it's often useful to import typeshed's protocols/aliases in <code>if TYPE_CHECKING</code> blocks, so I wouldn't want to forbid users from ever importing these type-check-only symbols in <code>.py</code> files</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-06 15:36</div>
+            <div class="timeline-body"><p>This seems reasonable. I'm assuming that this would still take <code>__all__</code> into account like if the <code>_T_co</code> variable isn't included in the <code>__all__</code> of <code>module.pyi</code> then it would still raise a diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-06 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm assuming that this would still take <code>__all__</code> into account like if the <code>_T_co</code> variable isn't included in the <code>__all__</code> of <code>module.pyi</code> then it would still raise a diagnostic.</p>
+</blockquote>
+<p>We don't take <code>__all__</code> into account currently -- we only take <code>__all__</code> into account for symbols that are defined via imports in stub files. (These are always assumed to be private-to-the-stub unless they are included in <code>__all__</code> or they use a redundant alias.)</p>
+<p>We could add a rule that says that these type-check-only symbols are treated as completely undefined if <code>__all__</code> exists and they're not included in <code>__all__</code>. But again, I think that would end up being annoying if you have an explicit import of one of these symbols in an <code>if TYPE_CHECKING</code> block. And I'd prefer to keep our rules for <code>.py</code> files and <code>.pyi</code> files as consistent as possible -- we generally allow you to import something from a <code>.py</code> file, even if that symbol is not included in the <code>__all__</code> of that <code>.py</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 03:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack overflow for recursive type - astral-sh/ty #2402</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stack overflow for recursive type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2402">#2402</a>
+        opened by <a href="https://github.com/chebee7i">@chebee7i</a>
+        on 2026-01-08 18:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chebee7i">@chebee7i</a> on 2026-01-08 18:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Might be related to https://github.com/astral-sh/ty/issues/2360?</p>
+<pre><code class="language-python">from collections.abc import Mapping
+from typing import TypeAlias
+
+type JSONScalar = str | int | float | bool | None
+type JSONLike = JSONScalar | tuple['JSONLike', ...] | Mapping[str, 'JSONLike']
+JSONLikeAlt: TypeAlias = JSONScalar | tuple['JSONLikeAlt', ...] | Mapping[str, 'JSONLikeAlt']
+
+# Comment this function out to remove stack overflow.
+def _normalize_broken(x: object) -&gt; JSONLike:
+    # Intentionally crippled for bug report.
+    if isinstance(x, (list, tuple)):
+        return tuple(_normalize_broken(v) for v in x)
+    return str(x)
+
+
+def _normalize_works(x: object) -&gt; JSONLikeAlt:
+    # Intentionally crippled for bug report.
+    if isinstance(x, (list, tuple)):
+        return tuple(_normalize_works(v) for v in x)
+    return str(x)
+</code></pre>
+<pre><code>% pixi run ty --version
+ty 0.0.10
+
+
+% pixi run ty check example.py
+thread '&lt;unknown&gt;' (3032748) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+</code></pre>
+<p>Using <code>TypeAlias</code> somehow avoids the issue.</p>
+<h3>Version</h3>
+<p>ty 0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2026-01-08 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-09 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2026-01-09 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

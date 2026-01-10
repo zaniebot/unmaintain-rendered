@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type narrowing fails to account for reassignment in a conditional based on an intermediate variable (aliased conditional expressions) - astral-sh/ty #719</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type narrowing fails to account for reassignment in a conditional based on an intermediate variable (aliased conditional expressions)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/719">#719</a>
+        opened by <a href="https://github.com/matthewlloyd">@matthewlloyd</a>
+        on 2025-06-27 20:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2025-06-27 20:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty fails to correctly narrow the type of a variable when a <code>is None</code> check is stored in an intermediate boolean variable, and the original variable is then reassigned within a conditional block that uses that boolean.</p>
+<p>In the example below, <code>int_or_none</code> starts as <code>int | None</code>. A boolean <code>is_none</code> is created to store the result of <code>int_or_none is None</code>. Inside an <code>if is_none:</code> block, <code>int_or_none</code> is reassigned to an <code>int</code>. After this conditional block, the type of <code>int_or_none</code> is guaranteed to be <code>int</code>. However, Ty still considers its type to be <code>int | None</code>, leading to a false positive <code>invalid-argument-type</code> error.</p>
+<p>Other type checkers like Pyright correctly narrow the type in this scenario.</p>
+<h4>Minimal Reproducible Example</h4>
+<pre><code class="language-python">import random
+
+
+def return_int_or_none() -&gt; int | None:
+    if random.randint(0, 1):
+        return 1
+    return None
+
+def take_int_only(must_be_int: int):
+    pass
+
+int_or_none: int | None = return_int_or_none()
+is_none = int_or_none is None
+if is_none:
+    int_or_none = 1
+
+# At this point, int_or_none is guaranteed to be an `int`.
+# If it was None, it was reassigned to 1.
+# If it was an int, it remains an int.
+take_int_only(int_or_none)
+</code></pre>
+<h4>Current Behavior (Ty's Output)</h4>
+<p>Ty incorrectly reports an error, failing to narrow the type of <code>int_or_none</code>.</p>
+<pre><code class="language-shell">$ uvx ty check test.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[invalid-argument-type]: Argument to function `take_int_only` is incorrect
+  --&gt; test.py:17:15
+   |
+15 |     int_or_none = 1
+16 | # At this point, int_or_none is guaranteed to be an `int`.
+17 | take_int_only(int_or_none)
+   |               ^^^^^^^^^^^ Expected `int`, found `int | None`
+   |
+info: Function defined here
+  --&gt; test.py:9:5
+   |
+ 7 |     return None
+ 8 |
+ 9 | def take_int_only(must_be_int: int):
+   |     ^^^^^^^^^^^^^ ---------------- Parameter declared here
+10 |     pass
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h4>Expected Behavior</h4>
+<p>Ty should recognize that after the conditional block, the variable <code>int_or_none</code> can only be of type <code>int</code> and should not raise an error.</p>
+<p>For comparison, Pyright correctly handles this control flow and reports no errors:</p>
+<pre><code class="language-shell">$ pyright test.py
+0 errors, 0 warnings, 0 informations
+</code></pre>
+<h4>Command and Settings</h4>
+<p>The command used was <code>uvx ty check &lt;filename&gt;.py</code> with default settings.</p>
+<h4>Playground Link</h4>
+<p>This issue can be reproduced in the Ty playground here:</p>
+<p><a href="https://play.ty.dev/eba9c0b6-0443-492f-be34-b8eea7d795c2">https://play.ty.dev/eba9c0b6-0443-492f-be34-b8eea7d795c2</a></p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-27 20:32</div>
+            <div class="timeline-body"><p>The feature you're asking for here is referred to as <a href="https://microsoft.github.io/pyright/#/type-concepts-advanced?id=aliased-conditional-expression">aliased conditional expressions</a>. Mypy and pyrefly don't have this feature either. When I implemented this feature in pyright, I borrowed the idea from the TypeScript compiler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-06-27 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 20:36</div>
+            <div class="timeline-body"><p>Thanks for the very clearly written report! I don't think this will be a high priority in the short term, but it would be nice to add it.</p>
+<p>It's also important for the implementation to ensure that <code>is_none_or_int</code> can't have been written between the assignment to <code>is_none</code> and its use (pyright seems to do this well.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-28 04:14</div>
+            <div class="timeline-body"><p>A possible approach is to infer <code>TypeIs[None @ variable]</code> for expressions of the form <code>variable is None</code>. ty doesn't support indirect <code>TypeIs</code> yet, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-15 16:25</div>
+            <div class="timeline-body"><p>We will need this feature, along with #1479, in order to eliminate a bunch of false positives checking the pydantic code base; see e.g. https://github.com/pydantic/pydantic/blob/f42171c760d43b9522fde513ae6e209790f7fefb/pydantic/_internal/_schema_gather.py#L94</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Type narrowing fails to account for reassignment in a conditional based on an intermediate variable" to "Type narrowing fails to account for reassignment in a conditional based on an intermediate variable (aliased conditional expressions)" by @carljm on 2025-11-15 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-15 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-15 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-08 19:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

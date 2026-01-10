@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic on Tauon's codebase - astral-sh/ty #2378</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic on Tauon's codebase</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2378">#2378</a>
+        opened by <a href="https://github.com/C0rn3j">@C0rn3j</a>
+        on 2026-01-07 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/C0rn3j">@C0rn3j</a> on 2026-01-07 16:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>Propagating panic for cycle head that panicked in an earlier execution in that revision</code></p>
+<p>~~<code>ty</code> seems to give up inside of a monolithic function that spans... a lot of lines, and a lot of the definitions are <code>Never</code> from a certain point and hovering/clicking over them spams that error.~~</p>
+<p>~~Unsure if the <code>Never</code> business is related to the panic business, I was previously already advised that the codebase is way too complex as is.~~</p>
+<p>Hovering over some variables sometimes spams the error above, or it just happens when scrolling the codebase.</p>
+<p>I can't seem to reproduce this with cli <code>ty</code>, which takes its time but works, just in the combination with the VSC extension.</p>
+<p>It's Tauon's codebase that's triggering this - https://github.com/Taiko2k/Tauon - specifically src/tauon/t_modules/t_main.py</p>
+<h3>Version</h3>
+<p>ty 0.0.9 (f1652f05d 2026-01-05)</p>
+<p>Repro: Open <code>src/tauon/t_modules/t_main.py</code> in VSC, and start VSC anew. It seems that the panic is not a 100% guarantee, but it happens very often.</p>
+<pre><code>2026-01-07 17:17:15.715070957  INFO Version: 0.0.9 (f1652f05d 2026-01-05)
+2026-01-07 17:17:15.809072027  INFO Defaulting to python-platform `linux`
+2026-01-07 17:17:15.819507076  INFO Python version: Python 3.10, platform: linux
+2026-01-07 17:17:15.869556006  INFO Indexed 35 file(s) in 0.004s
+2026-01-07 17:17:25.560761314  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+2026-01-07 17:17:25.685805348  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-07 16:58</div>
+            <div class="timeline-body"><p>I tried to reproduce, but I must be doing something wrong. Unless it's related to Linux or <code>jxlpy</code>, which fails to install on my machine.</p>
+<p>What I tried:</p>
+<ul>
+<li>Create venv with uv: <code>uv venv --python 3.10</code></li>
+<li>Install dependencies (after commenting out <code>jxlpy</code>): <code>uv pip install requirements.txt</code>, <code>uv pip install pygobject-stubs</code></li>
+<li>Select the project's virtual environment in VS Code (select interpreter)</li>
+<li>Open <code>src/tauon/t_modules/t_main.py</code></li>
+<li>Restart vs code</li>
+</ul>
+<p>Is there anything else I need to do to setup the project?</p>
+<p>Do you use any non-default ty VS Code settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C0rn3j">@C0rn3j</a> on 2026-01-07 17:16</div>
+            <div class="timeline-body"><p>I am on Arch Linux using system Python in VSC from testing, which is currently 3.14.2.</p>
+<p>It seems more easy to reproduce when more files are open, i.e. both t_main.py and t_extra.py.</p>
+<p>I have to restart VSC a couple times sometimes before the issue triggers.</p>
+<p>Not sure why ty switches between 3.10 (which is the minimum project version) and 3.14 (which is my system and venv):</p>
+<p>I can reproduce on latest git too - <code>ty-git 0.0.9.r0.f1652f0-1</code></p>
+<pre><code>2026-01-07 18:11:25.841809373  INFO Version: 0.0.9 (f1652f05d 2026-01-05)
+2026-01-07 18:11:25.924012547  INFO Defaulting to python-platform `linux`
+2026-01-07 18:11:25.934961721  INFO Python version: Python 3.10, platform: linux
+2026-01-07 18:11:26.042378195  INFO Indexed 34 file(s) in 0.006s
+2026-01-07 18:11:41.965712540  INFO Could not find class `enum.StrEnum` in typeshed on Python 3.10. Falling back to `Unknown` for the symbol instead.
+2026-01-07 18:11:50.493046875  INFO Initializing the default project
+2026-01-07 18:11:50.493730203  INFO Defaulting to python-platform `linux`
+2026-01-07 18:11:50.497800769  INFO Python version: Python 3.14, platform: linux
+2026-01-07 18:11:50.539957518  INFO Indexed 34 file(s) in 0.004s
+2026-01-07 18:11:55.168419780  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+2026-01-07 18:11:56.930783660  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+</code></pre>
+<p>All my ty settings on VSC side should be default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 13:46</div>
+            <div class="timeline-body"><p>I've been able to reproduce the bug using 0.0.9 but not when using 0.0.10 (with a non-debug build). Can you give the latest version a try?</p>
+<p>What's certainly the case is that completions in <code>t_main.py</code> take forever. But I suspect that's maily due to type checking being very slow for two files</p>
+<pre><code>2026-01-08 14:45:00.496438736 INFO Checking file `/home/micha/astral/ecosystem/Tauon/src/tauon/t_modules/t_spot.py` took more than 100ms (5.740260568s)
+2026-01-08 14:45:04.985793722 INFO Checking file `/home/micha/astral/ecosystem/Tauon/src/tauon/t_modules/t_main.py` took more than 100ms (4.324172749s)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2026-01-09 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @carljm on 2026-01-09 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-09 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C0rn3j">@C0rn3j</a> on 2026-01-09 14:43</div>
+            <div class="timeline-body"><p>Yep, can still repro, also rarely I have another issue with <code>backdate.rs</code>?</p>
+<pre><code>2026-01-09 15:41:43.905228305  INFO Version: 0.0.10 (d18902cdc 2026-01-07)
+2026-01-09 15:41:44.065824792  INFO Defaulting to python-platform `linux`
+2026-01-09 15:41:44.085124321  INFO Python version: Python 3.10, platform: linux
+2026-01-09 15:41:44.102120359  INFO Indexed 34 file(s) in 0.005s
+2026-01-09 15:41:53.520393408  INFO Could not find class `enum.StrEnum` in typeshed on Python 3.10. Falling back to `Unknown` for the symbol instead.
+2026-01-09 15:41:57.373719693 ERROR An error occurred with request ID 22: request handler panicked at /build/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/309c249/src/function/backdate.rs:42:17:
+assertion failed: old_memo.revisions.changed_at &lt;= revisions.changed_atquery stacktrace:
+
+
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+[Error - 15:41:57] Request textDocument/diagnostic failed.
+  Message: request handler panicked at /build/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/309c249/src/function/backdate.rs:42:17:
+assertion failed: old_memo.revisions.changed_at &lt;= revisions.changed_atquery stacktrace:
+
+
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+  Code: -32603 
+[Error - 15:41:57] Document pull failed for text document file:///home/c0rn3j/Projects/Tauon/src/tauon/t_modules/t_main.py
+  Message: request handler panicked at /build/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/309c249/src/function/backdate.rs:42:17:
+assertion failed: old_memo.revisions.changed_at &lt;= revisions.changed_atquery stacktrace:
+
+
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+  Code: -32603 
+2026-01-09 15:42:51.052063281  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+2026-01-09 15:42:51.808872191  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+2026-01-09 15:42:51.818080410  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+2026-01-09 15:42:52.087561468  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 15:03</div>
+            <div class="timeline-body"><p>This would be https://github.com/astral-sh/ty/issues/1565</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

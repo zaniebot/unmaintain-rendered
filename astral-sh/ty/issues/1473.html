@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>better inference for generics not fully constrained at their construction - astral-sh/ty #1473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>better inference for generics not fully constrained at their construction</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1473">#1473</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-03 21:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 21:58</div>
+            <div class="timeline-body"><p>The canonical case of this is an empty list literal, but in everything that follows, we should assume it is generalized to all generic classes, not special-cased for builtin collection types.</p>
+<p>We discussed these two code examples:</p>
+<pre><code class="language-py">def a() -&gt; list[int]:
+    x = []
+    y = x
+    return y
+
+def b() -&gt; list[int | str]:
+    x = []
+    x.append(1)
+    x.append(&quot;foo&quot;)
+    return x
+</code></pre>
+<p><a href="https://play.ty.dev/e0499334-8edf-45bb-8533-59ce00b60549">Today in both of these cases</a> we infer <code>list[Unknown]</code> at the list construction, and don't emit any diagnostics on either of these examples. So we avoid false positives by using gradual types, but this is also quite unsound: if the return type of <code>b</code> were <code>list[bytes]</code>, we still wouldn't emit any diagnostics!</p>
+<p>(Similarly, for non-empty list literals without a declared type, we infer the union of <code>Unknown</code> with the elements present, which is compatible with the gradual guarantee and avoids false positives, but is similarly unsound with respect to later constraints on the type of the list.)</p>
+<p><a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=CYUwZgBAhgFAlBAtAPggGwJYGcAuBtDAOxwF0AuAWACgJaIAPCAXgjxOrogE9mGO6ATiBwBXAYW7VqoSACN4SVJlwFiEAD4RcA8v1qMWbPQwB0UAA7mQhYDACMcY-TOXrtgERgA9l-eOagsJiEvRAA">Pyright in non-strict mode</a> effectively does the same thing we do today. In strict mode it adds some diagnostics warning that there's an <code>Unknown</code> type (for which the solution is &quot;add an annotation.&quot;)</p>
+<p><a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=01e6b81029f45bfde3eb8e95da5d021b">Mypy</a> similarly just asks you to add an annotation in the first case, since it has nothing to go on, but in the second case it uses the (first, and only the first) append to infer a type for the list (promoting literal types), so it infers <code>list[int]</code> and then errors on the second append, and on the return (because <code>list[int]</code> is not assignable to <code>list[int | str]</code>.)</p>
+<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSImMYABKgBQCUNAtAHw1QRwAuA2hHQ8AuogA66GlJr4aAXhp9hE6TVLyZK6QCcYPAK7bJpCRKq1sTVhy68BQmgB8avbaK1TZCpR5mFUxMQwWPQAjIy%2BRAFBIWLguLhxEZI6eoaS%2BCAANCD6PNBwJOSIIADENACq%2BVw86mD66ADG%2BbjocKZY1DRguNoAtqg8APro%2Bn3YMNr0%2BIg0gjzM7C482uIpUroGRt1xAHJjE6s0wPgAvnES2SBkumBQpIQ8uH1QFOUACqS39y4YOAQ0RqtSAAc0MgwgrUIEnKAGUYDAaAALHg8YhwRAAekxN2o90IvRBmOCmMwuEacExQPQoPBLXQmO6vToADdUNBUNhYIDgRAwdoIa0aLhiPTChIyDwka0WCzJnBIZIFHEAMyEUIAJgu6BApxyqGaEDlADFoDAKGgsHgiGRdUA">Pyrefly</a> does not include the &quot;please add an annotation&quot; or &quot;there's an unknown type!&quot; diagnostics that mypy and pyright-strict have on the first example. On the second example, it behaves the same as mypy. Its handling <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSIAxlKnHAAQDCA2gCoC6iAOuvX-Zhhh6qTJgAUcGFDAAaetJgBbRPVYBKbr347itODx6DhlcZp47K9ALxMzF-pUKiJARnUO%2BAJxgA3GKhQAPoALqTEMOKU6iCyIACuIdBwJOSIIADE9ACqSVAQYfRg8eiUSbjoBuhGQkW4XkqoIUHo8UrYMF7i%2BKoQ6CHq9AC0AHz0cCFeWjo%2BIfFevGBcIABybR1T9MD4AL7LPLEgZD5gUKSEIbhKUBRZAAqkJ2fjGDgE9JQVkADm800QFUIPCyAGUYDB6AALEIhYhwRAAegRxyEZ0I9W%2BCJg6ARmFwlDgCM%2B6B%2Bf3KOLqXhEvlQ0FQ2FgHy%2BEF%2BXn%2BFXouGI5JSPDIIUhFSG-i8cABvFsywAzIRXAAmfboEA7OKoMoQfwAMWgMAoaCweCIZGVQA">is not special-cased to builtin collection types or methods, but works for any generic class and its methods.</a> It <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSIAxlKnHAAQDCA2gCoC6iAOuvX-Zhhh6qTJgAUcGFDAAaetJgBbRPVYBKbr347itODx6DhlcZp47K9ALxMzF-phv1KDvpUKiJARnVv6AE4wAG4wqFAA%2BgAupMQw4pTqILIgAK5R0HAk5IggAMT0AKoZUBAx9GCp6JQZuOgG6EZCFbgBSqhREeipStgwAeL4qhDoUer0ALQAfPRwUQFaOkFRqQG8YFwgAHI9fQv0wPgAvps8ySBkQWBQpIRRuEpQFAUACqRXN7MYOAQudZAAc1WHQgdUIPAKAGUYDB6AALKJRYhwRAAelRlyEN0IrQBqJg6FRmFwlDgqMo-wgQICILqqJaAREwVQ0FQ2Fgf3QgOBtV4uGIvKyPDIUThdQmoQCcFBvFsmwAzIRvAAmU7oEBHFKoGoQUIAMWgMAoaCweCIZA1QA">gives up if the list is aliased at all</a>.</p>
+<p>Some characteristics it seemed like we felt were desirable for our future handling of these cases (we didn't list these explicitly, I'm inferring from the direction of the conversation):</p>
+<ol>
+<li>Errors are attributed to a reasonable location.</li>
+<li>Hover shows a comprehensible type for the list that helps identify the problem when there is an error.</li>
+<li>Gradual guarantee: if there is no annotation on the list creation, we shouldn't invent limitations on what you are allowed to put into the list, based on what you happen to put in first.</li>
+<li>Our approach isn't broken by aliasing.</li>
+</ol>
+<p>We focused on two primary potential strategies, which are ultimately two different implementation paths to a similar user experience:</p>
+<h2>Back-propagate type contexts</h2>
+<p>In this approach, we would track in semantic indexing, for each definition, all the later type contexts which may apply to it. So in <code>a()</code> we'd track that <code>x = []</code> has a later type context from <code>y = x</code>, and that that definition of <code>y</code> in turn has a type context from <code>return y</code> (which is the return annotation). In <code>b()</code> we'd track that <code>x = []</code> has multiple later type contexts from <code>x.append(1)</code>, from <code>x.append(&quot;foo&quot;)</code>, and from <code>return x</code>.</p>
+<p>So in <code>a()</code> we would follow the chain and arrive at the single type context <code>list[int]</code>, and thus use that as the type of <code>x</code> right at <code>x = []</code>.</p>
+<p>In <code>b()</code> we would unify all three type contexts and arrive at the solution <code>list[int | str]</code> which works for all three of them.</p>
+<p>If the type contexts for a definition don't unify, we just have to make a best-effort choice (prefer the first context? prefer the &quot;widest&quot; context?), naturally resulting in some diagnostics later on.</p>
+<p>One challenge of this approach is avoiding big increase in memory usage from the additional def -&gt; context mappings we'd have to store in semantic indexing. Another challenge is finding the right level of &quot;context&quot; to store in that mapping for all cases. For example, in <code>x.append(1)</code> we need the entire statement, not just the <code>x</code> expression (we can't traverse up our AST). Similarly in <code>foo(x)</code> we'd need the entire call expression.</p>
+<h2>Synthesize type variables and build up constraint sets, solve them for the scope</h2>
+<p>In this approach we'd synthesize a typevar <code>T</code> at <code>x = []</code> so the type of <code>x</code> is <code>list[T]</code>, and then as we type-check the body of the function, collect constraints on the type of <code>T</code>. So <code>x.append(1)</code> would add a <code>T :&gt; Literal[1]</code> constraint and <code>return x</code> would add a <code>T == int | str</code> constraint (due to invariance of <code>list</code>). At the end of inferring the scope, we'd solve this constraint set. If it doesn't unify, we'd have to then figure out where to place diagnostics (which would mean that we needed to also collect the range-source of each constraint, and there might be a challenge here with preserving that information when simplifying the constraint set). If it does unify we'd have to record our solution so that hover shows the solution rather than the synthesized typevar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-11-03 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2025-11-03 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/npip99">@npip99</a> on 2025-12-30 19:41</div>
+            <div class="timeline-body"><p><img width="698" height="70" alt="Image" src="https://github.com/user-attachments/assets/ad573c98-28ef-46a0-a9bb-a7008300c435" /></p>
+<p>I mean I don't really need to make a big argument for this but the above screenshot is obviously and clearly unusable for basically any project.</p>
+<hr />
+<p>There should really be a parameter that enforces the following:</p>
+<h3><em>Every variable must have a non-Unknown type specified at initialization time</em></h3>
+<ul>
+<li>If it's an empty array, it should be an error. Explicitly annotate list[Any] if that's what you meant.</li>
+<li>If it's an explicit array [1, 2, 3], or a list comprehension, it should infer the common type.</li>
+<li>No &quot;back propagation&quot; ever, you should be able to deduce the type by reading the file top-to-bottom.</li>
+</ul>
+<p>IMO, this should be the default and other options need not even exist, I don't see how the current behavior would ever be useful (No other typechecker to my knowledge does this). But, if <code>list[X | Unknown]</code> and &quot;assume array type via what's .add'ed later on&quot; is desired behavior and/or default, that's could still work as long as an option for the above semantics still <em>exists</em>. I would never not use such an option.</p>
+<p>My suggestion does have the drawback that empty arrays need explicit types. I don't think this is a huge tradeoff as empty arrays are fairly rare. At least, in proper type-safe functional code, everything should be list comprehensions, rarely will you modify an array. Even if you do write a lot of imperative-style array building, it's not worse than the current method, which also requires explicitly annotating <code>list[X]</code> at every declaration in order to get type-safe code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 06:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

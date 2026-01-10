@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic solver infers `Unknown` only when using new-style generics - astral-sh/ty #1353</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generic solver infers `Unknown` only when using new-style generics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1353">#1353</a>
+        opened by <a href="https://github.com/wence-">@wence-</a>
+        on 2025-10-14 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wence-">@wence-</a> on 2025-10-14 15:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I think this is not reported previously.</p>
+<p>Consider (https://play.ty.dev/79ca09f4-57e4-4544-abda-3ef3be0c08bd):</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import Self, reveal_type, Protocol, TypeVar, Generic
+
+
+class PayloadImplicit(Protocol):
+    @classmethod
+    def from_message(cls, message: MessageImplicit[Self]) -&gt; Self:
+        ...
+    
+class MessageImplicit[T: PayloadImplicit]:
+    pass
+
+class Implicit:
+    @classmethod
+    def from_message(cls, message: MessageImplicit[Self]) -&gt; Self:
+        return cls()
+
+
+reveal_type(MessageImplicit[Implicit]())
+reveal_type(Implicit.from_message(MessageImplicit[Implicit]()))
+
+
+class PayloadExplicit(Protocol):
+    @classmethod
+    def from_message(cls, message: MessageExplicit[Self]) -&gt; Self:
+        ...
+
+T = TypeVar(&quot;T&quot;, bound=&quot;PayloadExplicit&quot;)
+
+class MessageExplicit(Generic[T]):
+    pass
+
+class Explicit:
+    @classmethod
+    def from_message(cls, message: MessageExplicit[Self]) -&gt; Self:
+        return cls()
+
+reveal_type(MessageExplicit[Explicit]())
+reveal_type(Explicit.from_message(MessageExplicit[Explicit]()))
+</code></pre>
+<p>To the best of my understanding, the definitions of <code>MessageImplicit</code> and <code>MessageExplicit</code> are structurally identical. However, <code>ty</code> (correctly) reveals that the type of <code>Explicit.from_message(...)</code> is <code>Explicit</code> whereas reveals <code>Implicit.from_message(...)</code> as <code>Unknown</code></p>
+<h3>Version</h3>
+<p>9090aead0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-10-14 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-10-29 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-10-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 16:29</div>
+            <div class="timeline-body"><p>The <a href="https://play.ty.dev/51ed20b7-6546-4d4e-8b5d-e819bb6669b7">same discrepancy appears</a> without the upper bounds on the typevars (and thus without the protocols):</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import Self, reveal_type, TypeVar, Generic
+
+
+class MessageImplicit[T]:
+    pass
+
+class Implicit:
+    @classmethod
+    def from_message(cls, message: MessageImplicit[Self]) -&gt; Self:
+        return cls()
+
+reveal_type(MessageImplicit[Implicit]())
+reveal_type(Implicit.from_message(MessageImplicit[Implicit]()))
+
+T = TypeVar(&quot;T&quot;)
+
+class MessageExplicit(Generic[T]):
+    pass
+
+class Explicit:
+    @classmethod
+    def from_message(cls, message: MessageExplicit[Self]) -&gt; Self:
+        return cls()
+
+reveal_type(MessageExplicit[Explicit]())
+reveal_type(Explicit.from_message(MessageExplicit[Explicit]()))
+</code></pre>
+<p>So it looks like just a problem in typevar solving. We will probably want to look at it again if it still repros after #623</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-10-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> removed by @carljm on 2025-10-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 16:31</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Generic protocols infer `Unknown` when using new-style generics" to "Generic solver infers `Unknown` only when using new-style generics" by @carljm on 2025-10-30 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 18:41</div>
+            <div class="timeline-body"><p>This is fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-08 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

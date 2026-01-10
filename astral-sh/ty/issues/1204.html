@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ABC.register` not recognized on `collections.abc.Mapping` - astral-sh/ty #1204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ABC.register` not recognized on `collections.abc.Mapping`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1204">#1204</a>
+        opened by <a href="https://github.com/gerlero">@gerlero</a>
+        on 2025-09-18 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gerlero">@gerlero</a> on 2025-09-18 16:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>Mapping.register(...)</code> to register a virtual subclass, <code>ty</code> reports an <code>unresolved-attribute</code> error on <code>register</code>.</p>
+<p><strong>Code to reproduce:</strong></p>
+<pre><code class="language-python">from collections.abc import Mapping
+
+class MyClass:
+    pass
+
+Mapping.register(MyClass)
+</code></pre>
+<p><strong>Error output:</strong></p>
+<pre><code>error[unresolved-attribute]: Type `&lt;class 'Mapping'&gt;` has no attribute `register`
+ --&gt; test.py:6:1
+  |
+4 |     pass
+5 |
+6 | Mapping.register(MyClass)
+  | ^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p><strong>Notes:</strong></p>
+<p>This suggests to me that <code>ty</code> isn’t accounting for the fact that <code>collections.abc</code> classes are subclasses of <code>ABC</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-18 17:07</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Pyright and pyrefly both emit the same error as ty here, but mypy does not.</p>
+<p>Looking at <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L764">the typeshed definition</a> of <code>Mapping</code> vs <a href="https://github.com/python/cpython/blob/main/Lib/_collections_abc.py#L775">the runtime definition</a>, if you follow the inheritance tree, the typeshed definition ends up not inheriting from anything defined with a metaclass of <code>ABCMeta</code>, whereas the runtime definition does inherit from <code>Sized</code> and <code>Container</code>, which have the <code>ABCMeta</code> metaclass. (<code>Container</code> has the same issue itself -- at runtime it has <code>ABCMeta</code>, but not in typeshed.)</p>
+<p>For e.g. <code>Sized</code> or any other type that actually is defined in typeshed as having the <code>ABCMeta</code> metaclass, we <a href="https://play.ty.dev/f609edb2-3ffe-4c5f-a30d-0631a7206e3a">do recognize the <code>register</code> method</a>.</p>
+<p>So this seems like a typeshed bug; mypy must be doing some kind of special-casing to work around it. Maybe we should, too? Or maybe it should be fixed in typeshed?</p>
+<p>This seems like an issue @AlexWaygood might have additional context on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-18 17:14</div>
+            <div class="timeline-body"><blockquote>
+<p>So this seems like a typeshed bug; mypy must be doing some kind of special-casing to work around it. Maybe we should, too? Or maybe it should be fixed in typeshed?</p>
+<p>This seems like an issue <a href="https://github.com/AlexWaygood">@AlexWaygood</a> might have additional context on?</p>
+</blockquote>
+<p>I think the special-casing mypy does is that mypy is aware that all protocols implicitly have <code>_ProtocolMeta</code> as their metaclass, and <code>_ProtocolMeta</code> is a subclass of <code>ABCMeta</code>. This means that any class that has <code>Protocol</code> in its MRO has <code>_ProtocolMeta</code> as its metaclass, and therefore has a <code>register</code> method available on the class:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Protocol
+&gt;&gt;&gt; type(Protocol)
+&lt;class 'typing._ProtocolMeta'&gt;
+&gt;&gt;&gt; _.__mro__
+(&lt;class 'typing._ProtocolMeta'&gt;, &lt;class 'abc.ABCMeta'&gt;, &lt;class 'type'&gt;, &lt;class 'object'&gt;)
+&gt;&gt;&gt; Protocol.register
+&lt;bound method ABCMeta.register of &lt;class 'typing.Protocol'&gt;&gt;
+</code></pre>
+<p>We should probably implement similar special casing, since it's certainly true that a protocol class (or a subclass of a protocol class) does not need to explicitly declare <code>metaclass=ABCMeta</code> in order for it to have a <code>register</code> method available on the class. Once we implement this special casing, we will recognise <code>Mapping.register()</code> as existing, since -- according to typeshed -- <code>Mapping</code> has <code>Protocol</code> in its MRO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-18 17:26</div>
+            <div class="timeline-body"><p>Right, so the special-casing comes back to typeshed defining <code>Protocol</code> itself as just <code>Protocol: _SpecialForm</code>, and giving no details about what <code>Protocol</code> actually looks like at runtime. So type-checkers need to replicate via hard-coding all the relevant runtime effects of inheriting <code>Protocol</code>. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-18 17:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Right, so the special-casing comes back to typeshed defining <code>Protocol</code> itself as just <code>Protocol: _SpecialForm</code>, and giving no details about what <code>Protocol</code> actually looks like at runtime. So type-checkers need to replicate via hard-coding all the relevant runtime effects of inheriting <code>Protocol</code>. Thanks!</p>
+</blockquote>
+<p>Indeed! Which is one of those things that I'd theoretically be very open to changing in typeshed, but which in practice I suspect would be pretty hard to change because of the fact that most type checkers (including us) now have hard-coded logic for recognising <code>Protocol</code> with its current typeshed definition :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-09-22 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

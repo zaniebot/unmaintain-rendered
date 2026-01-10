@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types on 3.14 - astral-sh/ty #2324</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types on 3.14</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2324">#2324</a>
+        opened by <a href="https://github.com/eliasbenb">@eliasbenb</a>
+        on 2026-01-05 00:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eliasbenb">@eliasbenb</a> on 2026-01-05 00:29</div>
+            <div class="timeline-body"><p>A panic occurs when a class's <code>__call__</code> method is annotated to return a union containing multiple <code>Callable</code> types and the class's own type, and that method is used as a decorator. The issue appears to be specific to <code>__call__</code>; equivalent annotations on other methods do not reproduce the problem.</p>
+<p>Although this may be related to #256, the interaction here seems pretty unique from my (inexperienced) perspective.</p>
+<p><strong>Context:</strong></p>
+<p>I encountered this issue while using the <a href="https://github.com/alexdelorenzo/limiter"><code>limiter</code></a> package, specifically when instantiating and calling the <a href="https://github.com/alexdelorenzo/limiter/blob/bb46cd45341907b63779b1d33188f96c92b57769/limiter/limiter.py#L94-L101"><code>Limiter</code> class</a> as a decorator.</p>
+<p>After reducing the problem, I was able to reproduce the panic with a minimal example that does not depend on <code>limiter</code> itself.</p>
+<p><strong>Minimal Reproduction:</strong></p>
+<p>Playground link: <a href="https://play.ty.dev/a96aa4cb-45b9-469c-b846-0e113939d774">https://play.ty.dev/a96aa4cb-45b9-469c-b846-0e113939d774</a></p>
+<pre><code class="language-py">from collections.abc import Callable
+
+
+class SomeWrapper:
+    # Must return the union of at least two callables
+    # Must return self type in the union
+    # Must be a class method or instance method, but not a static method (of course)
+    # Must be the __call__ method (I tried `some_func`, `__some_func__`, `__enter__`, etc., no other method triggers the issue)
+    def __call__(self, fn) -&gt; Callable | Callable[[int], int] | SomeWrapper:
+        raise NotImplementedError
+
+
+@SomeWrapper().__call__  # Instantiate and call
+def some_fn():
+    raise NotImplementedError
+</code></pre>
+<p>From testing and reduction, all of the following appear to be required:</p>
+<ol>
+<li>The method must be named <code>__call__</code>: other method names I tested (<code>some_func</code>, <code>__enter__</code>, <code>__some_func__</code>, etc.) do not trigger the issue.</li>
+<li>The method must be an instance or class method: static methods do not reproduce the behavior.</li>
+<li>The return annotation must be a <code>Union</code> that includes: at least two <code>Callable</code> types, and the enclosing class type (self).</li>
+<li>The method must be used as a decorator (<code>@SomeWrapper().__call__</code>)</li>
+</ol>
+<p>Removing any one of these conditions prevented the panic during my testing.</p>
+<p><strong>Observations:</strong></p>
+<p>Even though I'm no expert (or ameteur :p) on the internals of ty, the <code>__call__</code> method being a requirement seems interesting/unexpected here - I'd look into that first (in conjunction with the decorator usage requirement).</p>
+<p><strong>Logs:</strong></p>
+<details>
+  <summary>Panic trace (ran against above snippet)</summary>
+
+<pre><code>$ RUST_BACKTRACE=1 ty check ./test.py 
+error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ce80691/src/function/execute.rs:321:21 when checking `/workspaces/anibridge/test.py`: `BoundMethodType &lt; 'db &gt;::into_callable_type_(Id(a801)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Version: 0.0.8
+info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;./test.py&quot;]
+info: Backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: &lt;unknown&gt;
+  19: &lt;unknown&gt;
+  20: &lt;unknown&gt;
+  21: &lt;unknown&gt;
+  22: &lt;unknown&gt;
+  23: &lt;unknown&gt;
+  24: &lt;unknown&gt;
+  25: &lt;unknown&gt;
+  26: &lt;unknown&gt;
+  27: &lt;unknown&gt;
+  28: &lt;unknown&gt;
+  29: &lt;unknown&gt;
+  30: &lt;unknown&gt;
+  31: &lt;unknown&gt;
+  32: &lt;unknown&gt;
+  33: &lt;unknown&gt;
+  34: &lt;unknown&gt;
+  35: &lt;unknown&gt;
+  36: &lt;unknown&gt;
+  37: &lt;unknown&gt;
+  38: &lt;unknown&gt;
+  39: &lt;unknown&gt;
+  40: &lt;unknown&gt;
+  41: &lt;unknown&gt;
+  42: &lt;unknown&gt;
+  43: &lt;unknown&gt;
+  44: &lt;unknown&gt;
+  45: &lt;unknown&gt;
+  46: &lt;unknown&gt;
+  47: &lt;unknown&gt;
+  48: &lt;unknown&gt;
+  49: &lt;unknown&gt;
+  50: &lt;unknown&gt;
+  51: &lt;unknown&gt;
+  52: clone
+
+info: query stacktrace:
+   0: is_redundant_with_impl(Id(a004))
+             at crates/ty_python_semantic/src/types.rs:2035
+   1: infer_deferred_types(Id(1403))
+             at crates/ty_python_semantic/src/types/infer.rs:145
+   2: FunctionType &lt; 'db &gt;::signature_(Id(4404))
+             at crates/ty_python_semantic/src/types/function.rs:839
+   3: infer_definition_types(Id(1405))
+             at crates/ty_python_semantic/src/types/infer.rs:103
+   4: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:69
+   5: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:548
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great-writeup</span> added by @MichaReiser on 2026-01-05 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2026-01-05 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2026-01-05 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 08:57</div>
+            <div class="timeline-body"><p>Thanks for providing all the details!</p>
+<p>It's weird that I'm not seeing a panic when I run the latest version of ty nor when I use the latest <code>main</code> although opening it in the playground does produce the panic. I tried it on various Python versions as well (3.10 through 3.13), can you tell me which Python version are you running this on? Could it be specific to the platform as I'm on aarch64 (OP is linux x86_64)?</p>
+<p>Edit: I tried it with <code>--python-platform=linux</code> which didn't produce the panic either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 09:00</div>
+            <div class="timeline-body"><p>The playground uses 3.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>The playground uses 3.14</p>
+</blockquote>
+<p>Ah yes, that does reproduce it locally. So, it seems ~specific to the Python version~ to be related to deferred annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types" to "[panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types on 3.14" by @dhruvmanila on 2026-01-05 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 09:08</div>
+            <div class="timeline-body"><p>Evaluation of annotations is deferred by default on 3.14+ (even without <code>from __future__ import annotations</code>); could that be the reason why the Python version is load-bearing...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 11:36</div>
+            <div class="timeline-body"><p>I confirmed that both of these snippets panic with <code>--python-version=3.13</code>: first with a quoted annotation:</p>
+<pre><code class="language-py">from collections.abc import Callable
+
+
+class SomeWrapper:
+    # Must return the union of at least two callables
+    # Must return self type in the union
+    # Must be a class method or instance method, but not a static method (of course)
+    # Must be the __call__ method (I tried `some_func`, `__some_func__`, `__enter__`, etc., no other method triggers the issue)
+    def __call__(self, fn) -&gt; Callable | Callable[[int], int] | &quot;SomeWrapper&quot;:
+        raise NotImplementedError
+
+
+@SomeWrapper().__call__  # Instantiate and call
+def some_fn():
+    raise NotImplementedError
+</code></pre>
+<p>and secondly, with <code>from __future__ import annotations</code> added to the top:</p>
+<pre><code class="language-py">from __future__ import annotations
+from collections.abc import Callable
+
+
+class SomeWrapper:
+    # Must return the union of at least two callables
+    # Must return self type in the union
+    # Must be a class method or instance method, but not a static method (of course)
+    # Must be the __call__ method (I tried `some_func`, `__some_func__`, `__enter__`, etc., no other method triggers the issue)
+    def __call__(self, fn) -&gt; Callable | Callable[[int], int] | SomeWrapper:
+        raise NotImplementedError
+
+
+@SomeWrapper().__call__  # Instantiate and call
+def some_fn():
+    raise NotImplementedError
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eliasbenb">@eliasbenb</a> on 2026-01-06 02:18</div>
+            <div class="timeline-body"><p>Catching up on the conversation over the last 24 hours - first, I appreciate the quick engagement. It's really nice to see how much care is going into this project.</p>
+<p>Thanks @AlexWaygood for clarifying the annotation deferment requirement - I was able to confirm the same behavior on my end.</p>
+<p>I've explored this further and was able to reduce the repro a bit more.</p>
+<p>My earlier assessment that the return annotation must include &quot;at least two callable types&quot; still seems correct, but importantly, it does not need to involve the stdlib <code>collections.abc.Callable</code>. Any two callable-shaped protocols appear sufficient. So, my updated requirement is:</p>
+<ul>
+<li>The union must contain two Protocol types that define a <code>__call__</code> method, and</li>
+<li>Their <code>__call__</code> methods must be defined distinctly. To be clear, not merely two different Protocol classes, but specifically the <code>__call__</code> signatures must be distinct.</li>
+</ul>
+<p>I also tested just defining a real/non-protocol class with a <code>__call__</code> method, but that didn't cause a panic. So, this seems tied to Protocols somehow.</p>
+<p>The following still triggers the panic:</p>
+<pre><code class="language-python">from typing import Protocol
+
+
+class CustomCallable1(Protocol):
+    def __call__(self, x: int) -&gt; None: ...
+
+
+# Notice that the signature here is distinct from the last
+class CustomCallable2(Protocol):
+    def __call__(self, y: int) -&gt; None: ...
+
+
+class SomeWrapper:
+    def __call__(self, fn) -&gt; CustomCallable1 | CustomCallable2 | SomeWrapper:
+        raise NotImplementedError
+
+
+@SomeWrapper().__call__  # instantiate and call
+def some_fn():
+    raise NotImplementedError
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2026-01-09 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

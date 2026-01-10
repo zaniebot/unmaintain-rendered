@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconsider one `Db` per `ProgramSettings` - astral-sh/ty #1657</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reconsider one `Db` per `ProgramSettings`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1657">#1657</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-27 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 18:04</div>
+            <div class="timeline-body"><p>Today, there's exactly one <code>ProgramSettings</code> per <code>Db</code> instance. I think the main motivation for this design were:</p>
+<ul>
+<li>Persistent caching: We can cache at a program settings level. E.g., using different cache files for each Python version</li>
+<li>It's simpler. <code>ProgramSetting</code>'s is a singleton and it can be queried from anywhere</li>
+</ul>
+<p>However, I'm starting to see more downsides to this approach. Most notably, in larger workspaces where it's common for each member to have their own <code>src.root</code>, but all members use the same Python version.</p>
+<ul>
+<li>We parse every imported file once for each workspace member (in which it is imported)</li>
+<li>We rebuild the semantic index for every imported file for each workspace member, even if all of them use the same Python version</li>
+<li>We rebuild auto completions for each workspace member rather than sharing a single index (or one per Python version)</li>
+</ul>
+<p>I'm not entirely sure how such a new design would look like but we'll have to include the <code>PythonVersion</code> or the <code>ProgramSettings</code> as part of the query arguments. I think where this is going is that we'd have a <code>ProgramFile(File, ProgramSettings)</code> salsa ingredient and maybe a <code>FileWithPythonVersion(File, PythonVersion)</code> that we pass along instead of passing <code>File</code> (we can still pass <code>File</code> everywhere where the query result doesn't depend on <code>ProgramSettings</code> or the <code>PythonVersion</code>.</p>
+<p>I think this will become more relevant as we start looking into how to better support mono repositories and uv workspaces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-27 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2025-12-02 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 10:24</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ty/issues/2410 and https://github.com/astral-sh/ty/issues/819</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

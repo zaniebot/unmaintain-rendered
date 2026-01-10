@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessing private members should be an error - astral-sh/ty #847</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Accessing private members should be an error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/847">#847</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-07-18 00:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-18 00:00</div>
+            <div class="timeline-body"><p>Consider this example (<a href="https://play.ty.dev/9ec508e3-29af-43e2-a761-967982cf6a56">playground</a>):</p>
+<pre><code class="language-python">class C[T]:
+	_v: T
+	def __init__(self, v: T) -&gt; None:
+		self._v = v
+
+c = C(0)
+c._v = 1  # Currently allowed
+</code></pre>
+<p>The assignment to <code>c._v</code> should be reported, since otherwise an instance of <code>C</code> would be considered mutable, causing <code>T</code> to be invariant instead of covariant. For consistency, I think read accesses should also be disallowed.</p>
+<p>This issue is related to #488.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-18 18:49</div>
+            <div class="timeline-body"><p>For soundness with inferred-variance type variables, we technically only need to forbid access of private variables typed with a typevar (or some type including the typevar), which we ignored in variance inference.</p>
+<p>There is some tension with the gradual guarantee here; apart from the issue with variance inference, this is a fairly opinionated lint rule, not a &quot;your code will fail&quot; type error. If it weren't for the variance issue, I definitely wouldn't consider this a candidate for an enabled-by-default rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 19:57</div>
+            <div class="timeline-body"><p>https://discuss.python.org/t/should-variance-inference-ignore-underscore-prefixed-attributes/102978</p>
+<p>Our variance inference does consider underscore-prefixed attributes to be immutable, so for soundness we would need to at least make mutation of them an error.</p>
+<p>I think I'm leaning towards making mutation an error but access not an error. (We currently do still consider an underscore-prefixed attribute to constrain its typevar to covariance, so allowing access is not unsound, just mutation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-08-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-10-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 01:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>

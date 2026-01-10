@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return type of sum(tuple[Decimal, ...]) is not Decimal - astral-sh/ty #1142</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Return type of sum(tuple[Decimal, ...]) is not Decimal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1142">#1142</a>
+        opened by <a href="https://github.com/JoanPuig">@JoanPuig</a>
+        on 2025-09-07 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JoanPuig">@JoanPuig</a> on 2025-09-07 16:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code:</p>
+<pre><code>from decimal import Decimal
+
+
+def my_function(values: tuple[Decimal, ...]) -&gt; Decimal:
+    return sum(values)
+
+</code></pre>
+<p>Will generate the following rule violation:</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+ --&gt; src\main.py:4:49
+  |
+4 | def my_function(values: tuple[Decimal, ...]) -&gt; Decimal:
+  |                                                 ------- Expected `Decimal` because of return type
+5 |     return sum(values)
+  |            ^^^^^^^^^^^ expected `Decimal`, found `int`
+  |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.20 (f41f00af1 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-09-08 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 06:37</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This is related to #623. We currently do not handle (generic) protocols in generic functions correctly in the call to <code>sum</code>:</p>
+<p>https://github.com/python/typeshed/blob/bf484ab320778d9ced0a986243282691aa7425cb/stdlib/builtins.pyi#L1922-L1931</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:44</div>
+            <div class="timeline-body"><p>We still report an error on this snippet, but the error we now report is &quot;expected <code>Decimal</code>, found <code>Decimal | Literal[0]</code>&quot;. And that error is correct. If this function is called with an empty tuple argument, the default value of the <code>start</code> parameter of <code>sum</code> (which is the integer <code>0</code>) will be returned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 02:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:48:55 UTC
+    </footer>
+</body>
+</html>
