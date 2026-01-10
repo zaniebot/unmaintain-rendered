@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] avoid fixpoint unioning of types containing current-cycle Divergent - astral-sh/ruff #21910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] avoid fixpoint unioning of types containing current-cycle Divergent</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21910">#21910</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-11 00:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 00:32</div>
+            <div class="timeline-body"><p>Partially addresses https://github.com/astral-sh/ty/issues/1732</p>
+<h2>Summary</h2>
+<p>Don't  union the previous type in fixpoint iteration if the previous type contains a <code>Divergent</code> from the current cycle and the latest type does not. The theory here, as outlined by @mtshiba at https://github.com/astral-sh/ty/issues/1732#issuecomment-3609937420, is that oscillation can't occur by removing and then reintroducing a <code>Divergent</code> type repeatedly, since <code>Divergent</code> types are only introduced at the start of fixpoint iteration.</p>
+<h2>Test Plan</h2>
+<p>Removes a <code>Divergent</code> type from the added mdtest, doesn't otherwise regress any tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-11 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 00:34</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 00:46</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">spack (https://github.com/spack/spack)
+- lib/spack/spack/mirrors/mirror.py:114:16: error[invalid-return-type] Return type does not match returned value: expected `bool`, found `Literal[True] | Unknown | str | Divergent`
++ lib/spack/spack/mirrors/mirror.py:114:16: error[invalid-return-type] Return type does not match returned value: expected `bool`, found `Literal[True] | Unknown | str`
+- lib/spack/spack/mirrors/mirror.py:120:16: error[invalid-return-type] Return type does not match returned value: expected `bool`, found `Unknown | str | Divergent`
++ lib/spack/spack/mirrors/mirror.py:120:16: error[invalid-return-type] Return type does not match returned value: expected `bool`, found `Unknown | str`
+- lib/spack/spack/mirrors/mirror.py:263:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `@Todo | str | Divergent`
++ lib/spack/spack/mirrors/mirror.py:263:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `@Todo | str`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown &amp; ~AlwaysFalsy) | (list[tuple[Unknown, str] | Unknown] &amp; ~AlwaysFalsy) | (list[Divergent] &amp; ~AlwaysFalsy)`
++ setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown &amp; ~AlwaysFalsy) | (list[tuple[Unknown, str] | Unknown] &amp; ~AlwaysFalsy)`
+- setuptools/_distutils/command/sdist.py:372:58: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Literal[0] | None | list[Unknown | int | None] | list[Divergent]`
++ setuptools/_distutils/command/sdist.py:372:58: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Literal[0] | None | list[Unknown | int | None]`
+- setuptools/_distutils/text_file.py:232:44: error[unsupported-operator] Operator `+` is not supported between objects of type `@Todo | int | None | Divergent` and `Literal[1]`
++ setuptools/_distutils/text_file.py:232:44: error[unsupported-operator] Operator `+` is not supported between objects of type `@Todo | int | None` and `Literal[1]`
+- setuptools/_distutils/text_file.py:242:41: error[unsupported-operator] Operator `+` is not supported between objects of type `@Todo | int | None | Divergent` and `Literal[1]`
++ setuptools/_distutils/text_file.py:242:41: error[unsupported-operator] Operator `+` is not supported between objects of type `@Todo | int | None` and `Literal[1]`
+- setuptools/_vendor/autocommand/autoparse.py:306:5: error[invalid-assignment] Object of type `Unknown &amp; ~None` is not assignable to attribute `func` on type `_Wrapped[(...), Unknown, (argv=None), Unknown] | _Wrapped[(...), Unknown, Divergent, Unknown]`
+- setuptools/_vendor/autocommand/autoparse.py:307:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `parser` on type `_Wrapped[(...), Unknown, (argv=None), Unknown] | _Wrapped[(...), Unknown, Divergent, Unknown]`
++ setuptools/_vendor/autocommand/autoparse.py:306:5: error[unresolved-attribute] Unresolved attribute `func` on type `_Wrapped[(...), Unknown, (argv=None), Unknown]`.
++ setuptools/_vendor/autocommand/autoparse.py:307:5: error[unresolved-attribute] Unresolved attribute `parser` on type `_Wrapped[(...), Unknown, (argv=None), Unknown]`.
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-aws/tests/test_s3.py:442:21: error[no-matching-overload] No overload matches arguments
+- src/integrations/prefect-aws/tests/test_s3.py:449:21: error[no-matching-overload] No overload matches arguments
+- src/integrations/prefect-docker/tests/test-project/flow.py:31:9: error[no-matching-overload] No overload matches arguments
+- Found 5533 diagnostics
++ Found 5530 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 42 diagnostics
++ Found 41 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1217:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5118 diagnostics
++ Found 5119 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- scipy/stats/_axis_nan_policy.py:713:9: error[invalid-assignment] Object of type `Signature` is not assignable to attribute `__signature__` on type `_Wrapped[(...), Unknown, (*args, *, _no_deco=Literal[False], **kwds), Unknown] | _Wrapped[(...), Unknown, Divergent, Unknown]`
++ scipy/stats/_axis_nan_policy.py:713:9: error[unresolved-attribute] Unresolved attribute `__signature__` on type `_Wrapped[(...), Unknown, (*args, *, _no_deco=Literal[False], **kwds), Unknown]`.
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+-     struct metadata = ~11MB
++     struct metadata = ~10MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-11 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 00:57</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-assignment</code> | 0 | 3 | 0 |
+| <code>unresolved-attribute</code> | 3 | 0 | 0 |
+| <code>invalid-argument-type</code> | 0 | 0 | 2 |
+| <code>invalid-return-type</code> | 0 | 0 | 2 |
+| <code>unsupported-operator</code> | 0 | 0 | 2 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 1 |
+| <code>unused-ignore-comment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>4</strong> | <strong>3</strong> | <strong>7</strong> |</p>
+<p><strong><a href="https://cjm-nodiv.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://cjm-nodiv.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-11 01:02</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnodiv?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21910 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/nodiv</code> (060a617) with <code>main</code> (3f63ea4)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnodiv?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 20:15</div>
+            <div class="timeline-body"><p>With #21906, this no longer has any impact on our mdtests. Pushing a rebase to see if it has any ecosystem impact worth pursuing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-12-11 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-11 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 21:33</div>
+            <div class="timeline-body"><p>Ok, this doesn't seem to hurt performance and there are cases in the ecosystem where it helps, so I think it's worth going ahead with. I'll add at least one example from the ecosystem as an mdtest and then put it up for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-12-12 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-12 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-12-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-12-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-12-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-12-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-12 00:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:943 on 2025-12-12 00:57</div>
+            <div class="timeline-body"><p>If I remove the <code>!has_divergent_type_in_cycle(self)</code> requirement, we do get an oscillation in <code>mdtest/regression/1377_iteration_count_mismatch.md</code>. So it is possible to oscillate between types containing a <code>Divergent</code> from the current cycle. But it should not be possible to reintroduce a <code>Divergent</code> from the current cycle once it has been eliminated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 00:58</div>
+            <div class="timeline-body"><p>@mtshiba please take a look and let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-12 03:50</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-12-12 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-12 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-12 03:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

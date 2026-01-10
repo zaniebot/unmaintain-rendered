@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add support for workspace/didChangeConfiguration notification - astral-sh/ruff #20545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add support for workspace/didChangeConfiguration notification</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20545">#20545</a>
+        opened by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a>
+        on 2025-09-24 07:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a> on 2025-09-24 07:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Hi, I started working on implementing didChangeConfiguration in response to https://github.com/astral-sh/ty/issues/953 but I need help.</p>
+<p>The current status of my PR (draft):</p>
+<ul>
+<li>I see the capability I added in Client capabilities: ResolvedClientCapabilities(
+WORKSPACE_DIAGNOSTIC_REFRESH | ... | <strong>DID_CHANGE_CONFIGURATION</strong></li>
+<li><code>didChangeConfiguration</code> notifications sent by VSCode to the server are catched. But here is my first question: VSCode only send this notification when I change</li>
+</ul>
+<blockquote>
+<p>Ty › Trace: Server Traces the communication between VSCode and the ty language server.</p>
+</blockquote>
+<pre><code>[Trace - 9:35:32 AM] Sending notification '$/setTrace'.
+[Trace - 9:35:32 AM] Sending notification 'workspace/didChangeConfiguration'.
+[Trace - 9:35:32 AM] Received request 'workspace/configuration - (3)'.
+[Trace - 9:35:32 AM] Sending response 'workspace/configuration - (3)'. Processing request took 1ms
+</code></pre>
+<p>For all the other settings (12 in total for ty), VSCode send a <code>request shutdown</code> instead.</p>
+<pre><code>[Trace - 7:58:21 AM] Sending request 'shutdown - (16)'.
+[Trace - 7:58:21 AM] Received response 'shutdown - (16)' in 2ms.
+[Trace - 7:58:21 AM] Sending notification 'exit'.
+[Trace - 7:58:21 AM] Sending request 'initialize - (0)'.
+[Trace - 7:58:21 AM] Received response 'initialize - (0)' in 20ms.
+[Trace - 7:58:21 AM] Sending notification 'initialized'.
+[Trace - 7:58:21 AM] Sending notification 'textDocument/didOpen'.
+[Trace - 7:58:21 AM] Received request 'workspace/configuration - (0)'.
+[Trace - 7:58:21 AM] Sending response 'workspace/configuration - (0)'. Processing request took 1ms
+[Trace - 7:58:21 AM] Received request 'client/registerCapability - (1)'.
+[Trace - 7:58:21 AM] Sending response 'client/registerCapability - (1)'. Processing request took 1ms
+[Trace - 7:58:21 AM] Sending request 'textDocument/diagnostic - (1)'.
+[Trace - 7:58:21 AM] Received response 'textDocument/diagnostic - (1)' in 379ms.
+[Trace - 7:58:21 AM] Sending request 'textDocument/diagnostic - (2)'.
+[Trace - 7:58:21 AM] Received response 'textDocument/diagnostic - (2)' in 1ms.
+</code></pre>
+<p>If I change a settings outside of ty, I get the <code>didChangeConfiguration</code> notification. For example, for <code>Editor: format on save</code>.
+Is it a normal behavior? In my understanding, we don't control what the client send to us but maybe I missed something...</p>
+<ul>
+<li>when the server receive the notification, the <code>DidChangeConfigurationParams</code> is empty. It is normal according to <a href="https://github.com/astral-sh/ty/issues/82#issuecomment-3045358677">lsp specs</a> and some github issues I found (<a href="https://github.com/microsoft/vscode-languageserver-node/issues/380#issuecomment-414691493">1</a> - <a href="https://github.com/microsoft/language-server-protocol/issues/676">2</a>). So in my understanding, we have to pull the settings from the client and apply them to all managed workspaces in the session.  I began to implement something and I get this for the moment (one python file open):</li>
+</ul>
+<pre><code>2025-09-24 09:36:33.201403900  INFO GLOBAL: GlobalSettings { diagnostic_mode: OpenFilesOnly, experimental: ExperimentalSettings { rename: true, auto_import: true } }
+
+2025-09-24 09:36:33.201471700  INFO INIT: InitializationOptions { log_level: Some(Info), log_file: None, options: ClientOptions { global: GlobalOptions { diagnostic_mode: None, experimental: None }, workspace: WorkspaceOptions { disable_language_services: None, inlay_hints: None, python_extension: None }, unknown: {} } }
+
+2025-09-24 09:36:33.207605400  INFO WORKSPACES: [(Url { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/c%3A/Users/guill/Documents/Python/Advent_Of_Code&quot;, query: None, fragment: None }, ClientOptions { global: GlobalOptions { diagnostic_mode: Some(OpenFilesOnly), experimental: Some(Experimental { rename: Some(true), auto_import: Some(true) }) }, workspace: WorkspaceOptions { disable_language_services: Some(true), inlay_hints: Some(InlayHintOptions { variable_types: Some(false), call_argument_names: Some(false) }), python_extension: Some(PythonExtension { active_environment: Some(ActiveEnvironment { executable: PythonExecutable { uri: Url { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/c%3A/Users/guill/Documents/Python/Advent_Of_Code/.venv/Scripts/python.exe&quot;, query: None, fragment: None }, sys_prefix: &quot;C:\\Users\\guill\\Documents\\Python\\Advent_Of_Code\\.venv&quot; }, environment: Some(PythonEnvironment { folder_uri: Url { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/c%3A/Users/guill/Documents/Python/Advent_Of_Code/.venv/Scripts/python.exe&quot;, query: None, fragment: None }, kind: &quot;VirtualEnvironment&quot;, name: None }), version: Some(EnvironmentVersion { major: 3, minor: 12, patch: 2, sys_version: &quot;3.12.2.final.0&quot; }) }) }) }, unknown: {&quot;importStrategy&quot;: String(&quot;fromEnvironment&quot;), &quot;logFile&quot;: Null, &quot;logLevel&quot;: String(&quot;info&quot;), &quot;interpreter&quot;: Array [], &quot;path&quot;: Array [String(&quot;C:\\Users\\guill\\Documents\\Rust\\others\\ruff\\target\\debug\\ty.exe&quot;)], &quot;trace&quot;: Object {&quot;server&quot;: String(&quot;messages&quot;)}} })]
+</code></pre>
+<p>But I am not sure I used the correct way to retrieve the settings and which one to choose. For example, I see there is a <code>request_workspace_configurations</code> in <code>main_loop.rs</code> but don't know how I can access it. So I duplicated some code to retrieve the settings for INFO WORKSPACES. And after, we will have to apply them to the session. I imagine with <code>session.apply_changes()</code></p>
+<p>TLDR:
+My goals by opening this draft PR:</p>
+<ul>
+<li>Is my implementation of didChangeConfiguration notification is correct?</li>
+<li>help to handle the server response and discuss the best strategy (gather client settings, change session settings).</li>
+</ul>
+<p>I hope I am helping you by opening this draft PR, not complicating your work. You can tell me, no offense taken.</p>
+<h2>Test Plan</h2>
+<p>Not relevant for the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-24 07:58</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-24 07:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-24 08:07</div>
+            <div class="timeline-body"><p>Thank you for working on this.</p>
+<p>Regarding the notification that VS code sends. This is because of</p>
+<p>https://github.com/astral-sh/ty-vscode/blob/3732ee9dc82feeffc4ca459897318418e136ccaa/src/extension.ts#L152-L156</p>
+<p>We'll need something more elaborated that decides whether to restart the server or sending <code>didChangeConfiguration</code> dependent on which settings have changed (<code>ty.path</code> requires a restart, there might be other options requiring a restart)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-09-24 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-09-24 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a> on 2025-09-24 12:40</div>
+            <div class="timeline-body"><p>oh, ok, I understand now. In ty-vscode, by just simply deactivating the server restart like that:</p>
+<pre><code class="language-ts">    onDidChangeConfiguration(async () =&gt; {
+      // TODO(dhruvmanila): Notify the server with `DidChangeConfigurationNotification` and let
+      // the server pull in the updated configuration.
+    }),
+</code></pre>
+<p>I have the <code>didChangeConfiguration</code> triggering for all ty settings in VScode. I also tried this version where I receive a double notification when it's a ty parameter: one automatically triggered for all parameters, the other by calling sendNotification  for ty settings:</p>
+<pre><code class="language-ts">    onDidChangeConfiguration(async (e: vscode.ConfigurationChangeEvent) =&gt; {
+      if (e.affectsConfiguration('ty')) {
+           const client = getClient();
+           if (client) {
+               client.sendNotification(&quot;workspace/didChangeConfiguration&quot;);
+    }),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:41</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this PR because it has become stale. Please don't hesitate to resubmit the PR and reference this PR if you plan to keep working on this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

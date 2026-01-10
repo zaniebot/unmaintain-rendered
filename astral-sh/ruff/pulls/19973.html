@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[relative-imports] Add setting to require relative imports - astral-sh/ruff #19973</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[relative-imports] Add setting to require relative imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19973">#19973</a>
+        opened by <a href="https://github.com/genevieve-me">@genevieve-me</a>
+        on 2025-08-18 16:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-08-18 16:59</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Adds an 'always relative' import style setting to flake8-tidy-imports, closing #4188 .</p>
+<p>The PR changes the flake8-tidy-imports TID252 rule and its ban-relative-imports setting to allow forcing imports to be always absolute, relative, or absolute for parents.</p>
+<p>Since the rule used to just configure the maximum level of relative import (either never allowing relative or allowing at the same level), I renamed the rule from <code>ban-relative-imports</code> to <code>relative-import-style</code>. I also made some internal name changes, e.g., relative import <code>Strictness</code> became relative import <code>ImportStyle</code> (perhaps a slightly redundant name), and diagnostics were updated.</p>
+<p>The implementation relies on the categorize function used for the isort rule to determine if absolute imports are first party and therefore could be relative.</p>
+<p>NOTE: I realize now that this implementation is wrong, which is why this PR is marked as draft.
+First party doesn't mean 'can be relative,'  as users can configure separate packages to be first party with <code>isort.known-first-party</code> but they can't be imported relatively. I'll have to take a closer look at the ImportType options and see which one applies to same-package imports that could become <code>from .bar import baz</code> instead of <code>from foo.bar import baz</code>.</p>
+<h3>Settings</h3>
+<p>I also presume that the way this PR naively renames the setting is a big no-no for breaking configs, especially since TID252 is not in preview. I actually couldn't find any examples of renaming settings in the changelogs: presumably there should be some sort of deprecation period.</p>
+<p><strong>Getting feedback on the settings is the main reason I'm opening the PR</strong> even in its incomplete state. The renaming seems necessary, because:</p>
+<ul>
+<li>The initial feedback on the feature request said &quot;We could probably add support for this as a configurable setting in TID252&quot;</li>
+<li>The existing setting can cleanly cover all three cases, so adding a second one and having two overlapping settings for this rule would seem odd</li>
+<li>However, setting <code>ban-relative-imports</code> to force relative imports would be confusing. Even something like <code>ban-relative-imports = 'none'</code>, while in keeping with the current rules, doesn't make it clear that absolute imports are actually being banned.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Right now, I updated the existing tests, but I still need to add new tests where absolute imports trigger diagnostics if appropriate (they are in the same package namespace and could be relative).</p>
+<p>I also want to look into the performance. It feels redundant to re-categorize all imports when they're already being categorized elsewhere for the isort rule, but we can't assume that the isort rule is enabled and we can get the information from there. Maybe we could categorize them all at a higher level and pass that information to the relevant places, but that could also add unnecessary complexity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-03 14:43</div>
+            <div class="timeline-body"><p>Apologies for the delay here. I just wanted to say thanks for your work on this, and that I do intend to take a closer look at some point!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_tidy_imports/rules/relative_imports.rs</code>:50 on 2025-12-12 21:40</div>
+            <div class="timeline-body"><p>Hmm, I actually kind of like the &quot;strictness&quot; name. What do you think about using this as the setting name? <code>strictness = &quot;require&quot;</code> sounds nice to me, as Charlie mentioned on the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-12 21:54</div>
+            <div class="timeline-body"><p>Thanks again for your work on this and apologies again for the delay. The code changes look reasonable to me, but I had a couple of thoughts about adding the option.</p>
+<p>As you noted, we'd definitely need to make this a preview change and also deprecate the existing option name, if we change it. #16092 is an example where we've renamed an option in the past.[^1]</p>
+<p>I was a bit worried about the isort code because it has been a bit unreliable, with a lot of <a href="https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20state%3Aclosed%20isort%20third-party">issues</a> around the first- vs third-party categorization. But I think we can instead reuse smaller parts of the isort code, like <a href="https://github.com/astral-sh/ruff/blob/a722df6a7309c6de2eaac1ba55abe8e741ea7e17/crates/ruff_linter/src/rules/isort/categorize.rs#L169"><code>match_sources</code></a> instead of the full <code>categorize</code> call. (Assuming there aren't any weird edge cases where checking the existence of local paths isn't correct, I somewhat expect that there are).</p>
+<p>I'd be curious to get @dylwil3 and @amyreese's thoughts on this too, but assuming we can reliably detect viable relative imports and isolate this to a preview change, I'm supportive of adding this feature.</p>
+<p>[^1]: I think we can probably get away with just adding a third <code>Strictness</code> variant that we only respect in preview (and emit a warning if it's used outside preview) to allow landing this in a patch release. Then we could open a separate <code>breaking</code> PR changing the name, to be included in the next minor release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-16 18:22</div>
+            <div class="timeline-body"><p>I would personally love for <em>something</em> to enforce/convert modules using relative imports, because nothing bugs me more than using relative imports everywhere, and then VSCode's auto-import code actions creating absolute imports, even from modules that are already using relative imports, and only noticing once tests fail or a release gets flagged for breaking something. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-12-17 00:54</div>
+            <div class="timeline-body"><p>Hey Brent, thanks for taking a look and for the guidance on the preview approach. I'll be able to take a closer look over the weekend.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

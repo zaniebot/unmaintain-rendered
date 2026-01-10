@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Detect subclasses of builtin exceptions (`PLW0133`) - astral-sh/ruff #21382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Detect subclasses of builtin exceptions (<code>PLW0133</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21382">#21382</a>
+        opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a>
+        on 2025-11-11 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-11-11 15:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Closes #17347</p>
+<p>Goal is to detect the useless exception statement not just for builtin exceptions but also custom (user defined) ones.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I added test cases in the rule fixture and updated the insta snapshot.
+Note that I first moved up a test case case which was at the bottom to the correct &quot;violation category&quot;.
+I wasn't sure if I should create new test cases or just insert inside those tests. I know that ideally each test case should test only one thing, but here, duplicating twice 12 test cases seemed very verbose, and actually less maintainable in the future. The drawback is that the diff in the snapshot is hard to review, sorry. But you can see that the snapshot gives 38 diagnostics, which is what we expect.</p>
+<p>Alternatively, I also created this file for manual testing.</p>
+<pre><code class="language-py"># tmp/test_error.py
+
+class MyException(Exception):
+    ...
+class MyBaseException(BaseException):
+    ...
+class MyValueError(ValueError):
+    ...
+class MyExceptionCustom(Exception):
+    ...
+class MyBaseExceptionCustom(BaseException):
+    ...
+class MyValueErrorCustom(ValueError):
+    ...
+class MyDeprecationWarning(DeprecationWarning):
+    ...
+class MyDeprecationWarningCustom(MyDeprecationWarning):
+    ...
+class MyExceptionGroup(ExceptionGroup):
+    ...
+class MyExceptionGroupCustom(MyExceptionGroup):
+    ...
+class MyBaseExceptionGroup(ExceptionGroup):
+    ...
+class MyBaseExceptionGroupCustom(MyBaseExceptionGroup):
+    ...
+
+
+def foo():
+    Exception(&quot;...&quot;)
+    BaseException(&quot;...&quot;)
+    ValueError(&quot;...&quot;)
+    RuntimeError(&quot;...&quot;)
+    DeprecationWarning(&quot;...&quot;)
+    GeneratorExit(&quot;...&quot;)
+    SystemExit(&quot;...&quot;)
+    ExceptionGroup(&quot;eg&quot;, [ValueError(1), TypeError(2), OSError(3), OSError(4)])
+    BaseExceptionGroup(&quot;eg&quot;, [ValueError(1), TypeError(2), OSError(3), OSError(4)])
+    MyException(&quot;...&quot;)
+    MyBaseException(&quot;...&quot;)
+    MyValueError(&quot;...&quot;)
+    MyExceptionCustom(&quot;...&quot;)
+    MyBaseExceptionCustom(&quot;...&quot;)
+    MyValueErrorCustom(&quot;...&quot;)
+    MyDeprecationWarning(&quot;...&quot;)
+    MyDeprecationWarningCustom(&quot;...&quot;)
+    MyExceptionGroup(&quot;...&quot;)
+    MyExceptionGroupCustom(&quot;...&quot;)
+    MyBaseExceptionGroup(&quot;...&quot;)
+    MyBaseExceptionGroupCustom(&quot;...&quot;)
+
+</code></pre>
+<p>and you can run this to check the PR:</p>
+<pre><code class="language-sh">target/debug/ruff check tmp/test_error.py --select PLW0133 --unsafe-fixes --diff --no-cache --isolated --target-version py310
+target/debug/ruff check tmp/test_error.py --select PLW0133 --unsafe-fixes --diff --no-cache --isolated --target-version py314
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "improvement: detect custom exception in useless_expression_statement" to "improvement: detect custom exceptions in useless_expression_statement" by @LoicRiegel on 2025-11-11 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 15:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:56 on 2025-11-17 19:40</div>
+            <div class="timeline-body"><p>I think we should make this a preview change since the rule itself is stable. The ecosystem report was clear, but I feel like this could still apply to a lot more situations.</p>
+<p>You can see <a href="https://github.com/astral-sh/ruff/blob/c0fb235a703684bca1cc1767015bb7e19ab1c22f/crates/ruff_linter/src/preview.rs#L16-L19"><code>preview.rs</code></a> for some examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:6 on 2025-11-17 19:45</div>
+            <div class="timeline-body"><p>Should we try one test case with another link in the inheritance chain like:</p>
+<pre><code class="language-py">class MySubError(MyError): ...
+</code></pre>
+<p>I think <code>any_base_class</code> is recursive, so we'll handle that too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-17 19:51</div>
+            <div class="timeline-body"><p>Thank you! This looks great overall. I just think we should make it a preview change and maybe add a recursive test case (which I think your implementation will already handle well).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-17 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-17 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "improvement: detect custom exceptions in useless_expression_statement" to "[`pylint`] improve `PLW0133` to detect custom exceptions in useless_expression_statement" by @amyreese on 2025-11-17 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-11-28 17:59</div>
+            <div class="timeline-body"><p>Thank you for the review! No problem to do the changes, I've just been very busy with work, but I'll find the time to finish this PR in the next few days :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-11-30 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:6 on 2025-11-30 18:08</div>
+            <div class="timeline-body"><p>Done, yes this was already handled well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:56 on 2025-11-30 18:13</div>
+            <div class="timeline-body"><ul>
+<li>I added a new function with the link of this PR in preview.rs</li>
+<li>documentation updated</li>
+</ul>
+<p>⚠️ now the cargo insta snapshots don't detect the new test cases I added. They don't run with preview enabled, do they? How should I fix that ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-11-30 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-01 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:56 on 2025-12-01 14:34</div>
+            <div class="timeline-body"><p>I would just add a new <code>preview_rules</code> function that's a copy of <code>rules</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/d7b2d261da5b03d211e1c19b4a49e3451454082b/crates/ruff_linter/src/rules/pylint/mod.rs#L237-L239</p>
+<p>with preview enabled and <code>preview</code> added in the snapshot name. Here's a random example from another rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/d7b2d261da5b03d211e1c19b4a49e3451454082b/crates/ruff_linter/src/rules/flake8_bugbear/mod.rs#L97-L103</p>
+<p>or we could use the relatively new <code>assert_diagnostics_diff</code> macro:</p>
+<p>https://github.com/astral-sh/ruff/blob/6e7a2dce0fbccd749f4dc503a50b61bc50d88b80/crates/ruff_linter/src/rules/flake8_bandit/mod.rs#L116-L127</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-06 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:56 on 2025-12-06 12:07</div>
+            <div class="timeline-body"><p>Thank you very much for the hint! <code>assert_diagnotics_diff</code> is really nice! I used and now both snapshots are good!
+I also indicated in the fixture file which lines are supposed to be caught only in preview</p>
+<p>Hope everything is alright now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-08 19:09</div>
+            <div class="timeline-body"><p>Should we remove these <code>(review)</code> suffixes? Happy to delete them myself, I was just curious if they were needed for some reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:20 on 2025-12-08 19:13</div>
+            <div class="timeline-body"><p>I think we should probably keep the <code>## Known problems</code> heading and the old text, with the new preview behavior following it. There will still be a known problem, even in preview, in that we can't resolve user-defined exceptions defined in other files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-08 19:23</div>
+            <div class="timeline-body"><p>Thanks! Just a couple more small suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-08 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-08 22:11</div>
+            <div class="timeline-body"><p>I thought those comments made it a little easier when reviewing cargo insta snapshots, but I totally understand if you prefer not to have them, it'll be one less thing to worry about when making the preview behavior stable.
+I did it in a specific commit on purpose, so I'll just revert it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-08 22:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:20 on 2025-12-08 22:21</div>
+            <div class="timeline-body"><p>Oh right, it won't work if the exception is define in a different file.
+Yes I'll put back the Known problem section, and maybe include in the Preview section that it only works for exceptions defined in the file being checked.</p>
+<p>Waw this makes me think, custom exceptions are usually imported and raised in lots of files, mist of the time not the file where they are defined... This PR is still an improvement, but with limited impact...
+Maybe we should keep the issue open...</p>
+<p>Is there a way I could continue this work and make it work for custom exceptions in different files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-08 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-08 22:27</div>
+            <div class="timeline-body"><p>Ohhh, are they supposed to say <code>preview</code> instead of <code>review</code>? That does make some sense to me! I thought they were related to the code review, but it may have just been a typo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-08 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:20 on 2025-12-08 22:30</div>
+            <div class="timeline-body"><p>Yeah, this is why the issue is labeled <code>type-inference</code>. That label used to be <code>multi-file-analysis</code>, but we combined them since our type checker has both. Ruff currently can't do any multi-file analysis, so this is the best we can do for now. I think that means it's okay to close the issue too.</p>
+<p>This is still a nice improvement, as you said!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-08 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-08 23:32</div>
+            <div class="timeline-body"><p>Oh my god yes I meant to write &quot;preview*! So sorry for the typo
+Okay, so let me know if you want me to revert, otherwise I'll fix the typo :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-08 23:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-08 23:41</div>
+            <div class="timeline-body"><p>I'd probably still lean toward reverting now that we're using <code>assert_diagnostics_diff</code>, but either works for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/src/rules/pylint/rules/useless_exception_statement.rs</code>:20 on 2025-12-09 09:11</div>
+            <div class="timeline-body"><p>I updated the documentation like we said</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-09 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-12-09 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py</code>:27 on 2025-12-09 09:11</div>
+            <div class="timeline-body"><p>Absolutely, it's reverted :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-09 18:47</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`] improve `PLW0133` to detect custom exceptions in useless_expression_statement" to "[`pylint`] Detect subclasses of builtin exceptions (`PLW0133`)" by @ntBre on 2025-12-09 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-09 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-09 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-10 07:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

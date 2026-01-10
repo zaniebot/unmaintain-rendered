@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix stack overflows when attempting to infer the truthiness of a TypeVar with an invalid recursive bound or constraints - astral-sh/ruff #21833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix stack overflows when attempting to infer the truthiness of a TypeVar with an invalid recursive bound or constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21833">#21833</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-07 17:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-07 17:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the first stack overflow MRE given in https://github.com/astral-sh/ty/issues/1794.</p>
+<h2>Test Plan</h2>
+<p>I added two corpus test cases that cause us to overflow our stack on <code>main</code>: one with a recursive upper bound, and a slightly trickier one with recursive constraints. I also added mdtests and snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-12-07 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-12-07 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-12-07 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-07 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-07 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-07 18:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-07 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5428 on 2025-12-07 18:01</div>
+            <div class="timeline-body"><p>I first naively tried doing this</p>
+<pre><code class="language-suggestion">                    Some(TypeVarBoundOrConstraints::Constraints(constraints)) =&gt; {
+                        visitor.visit(*self, || try_union(constraints.as_type(db)))?
+                    }
+</code></pre>
+<p>but that's no good -- the <code>TypeVarConstraints::as_type()</code> call itself causes a stack overflow if one of the TypeVar constraints is recursive. So I had to refactor <code>try_union</code> so that it could take a <code>UnionType</code> or a <code>TypeVar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-07 18:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 494 diagnostics
++ Found 492 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-08 10:20</div>
+            <div class="timeline-body"><p>#21840 also fixes this issue and looks like it might do so in a better way (though I haven't studied that PR in detail yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-08 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>#21840 also fixes this issue and looks like it might do so in a better way (though I haven't studied that PR in detail yet)</p>
+</blockquote>
+<p>What #21840 does is report the type variable that creates the &quot;false&quot; recursion as an invalid type variable and mark its specialization as <code>Unknown</code>.</p>
+<p>Neither of the panic cases detected by the fuzzer is a valid recursive type variable.</p>
+<pre><code class="language-python"># name_2[0] =&gt; Unknown
+class name_1[name_2: name_2[0]]:
+    def name_4(name_3: name_2, /):
+        if name_3:
+            pass
+
+#  (name_5 if unique_name_0 else name_1)[0] =&gt; Unknown
+def name_4[name_5: (name_5 if unique_name_0 else name_1)[0], **name_1](): ...
+</code></pre>
+<p>Therefore, it cannot handle stack overflows that occur with truly valid recursive type variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-08 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Therefore, it cannot handle stack overflows that occur with truly valid recursive type variables.</p>
+</blockquote>
+<p>Right, but I'm struggling to come up with any examples of stack overflows with truly valid recursive type variables 😆 are you able to find any?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2025-12-08 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-09 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Right, but I'm struggling to come up with any examples of stack overflows with truly valid recursive type variables 😆 are you able to find any?</p>
+</blockquote>
+<p>Nah, I think the stack overflow is probably caused by an incorrect specialization. The specialization <code>T[0]</code> doesn't make any sense, but ty treats it as <code>T</code>.</p>
+<pre><code class="language-python">def f[T: (int, list[T])](x: T):
+    if not isinstance(x, int):
+        reveal_type(x)  # list[typing.TypeVar]
+
+def f[T: (int, list[T[0]])](x: T):
+    if not isinstance(x, int):
+        reveal_type(x)  # list[T]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-09 17:58</div>
+            <div class="timeline-body"><p>I re-read PEP-695, and it appears that creating recursive type variables is not permitted by the type system in the first place (even though it's possible at runtime).</p>
+<p>https://peps.python.org/pep-0695/#type-parameter-scopes</p>
+<blockquote>
+<pre><code class="language-python"># The following generates no compiler error, but a type checker
+# should generate an error because an upper bound type must be concrete,
+# and ``Sequence[S]`` is generic. Future extensions to the type system may
+# eliminate this limitation.
+class ClassA[S, T: Sequence[S]]: ...
+
+# The following generates no compiler error, because the bound for ``S``
+# is lazily evaluated. However, type checkers should generate an error.
+class ClassB[S: Sequence[T], T]: ...
+</code></pre>
+</blockquote>
+<p>The requirement that the bound of a type variable be concrete seems to imply that it is forbidden to use itself within it.</p>
+<p>Therefore, I think it would be compliant to treat recursions found in type variables as errors and replace them with <code>Unknown</code>.
+It seems odd that recursive type aliases and protocols are allowed but type variables are not, but that's the specification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-09 18:03</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems odd that recursive type aliases and protocols are allowed but type variables are not, but that's the specification.</p>
+</blockquote>
+<p>I think the reason for that is that it opens the door to higher-kinded types, which would be a very significant development in the Python type system and would require a lot of design work.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-09 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-09 18:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

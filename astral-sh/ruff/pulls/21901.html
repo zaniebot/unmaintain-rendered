@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Fix parsing named Unicode escape sequences (`UP032`) - astral-sh/ruff #21901</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Fix parsing named Unicode escape sequences (<code>UP032</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21901">#21901</a>
+        opened by <a href="https://github.com/phongddo">@phongddo</a>
+        on 2025-12-10 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-10 18:15</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/19771</p>
+<p>Fixes incorrect parsing of Unicode named escape sequences like <code>Hey \N{snowman}</code> in <code>FormatString</code>, which were being incorrectly split into separate literal and field parts instead of being treated as a single literal unit.</p>
+<h2>Problem</h2>
+<p>The <code>FormatString</code> parser incorrectly handles Unicode named escape sequences:</p>
+<ul>
+<li><strong>Current</strong>: <code>Hey \N{snowman}</code> is parsed into 2 parts <code>Literal(&quot;Hey \N&quot;)</code> &amp; <code>Field(&quot;snowman&quot;)</code></li>
+<li><strong>Expected</strong>: <code>Hey \N{snowman}</code> should be parsed into 1 part  <code>Literal(&quot;Hey \N{snowman}&quot;)</code></li>
+</ul>
+<p>This affects f-string conversion rules when fixing <code>UP032</code> that rely on proper format string parsing.</p>
+<h2>Solution</h2>
+<p>I modified <code>parse_literal</code> to detect and handle Unicode named escape sequences before parsing single characters:</p>
+<ul>
+<li>Introduced a flag to track when a backslash is &quot;available&quot; to escape something.</li>
+<li>When the flag is <code>true</code>, and the text starts with <code>N{</code>, try to parse the complete Unicode escape sequence as one unit, and set the flag to <code>false</code> after parsing successfully.</li>
+<li>Set the flag to <code>false</code> when the backslash is already consumed.</li>
+</ul>
+<h2>Manual Verification</h2>
+<p><code>&quot;\N{angle}AOB = {angle}°&quot;.format(angle=180)</code></p>
+<p><strong>Result</strong></p>
+<pre><code class="language-bash"> def foo():
+-    &quot;\N{angle}AOB = {angle}°&quot;.format(angle=180)
++    f&quot;\N{angle}AOB = {180}°&quot;
+
+Would fix 1 error.
+</code></pre>
+<p><code>&quot;\N{snowman} {snowman}&quot;.format(snowman=1)</code></p>
+<p><strong>Result</strong></p>
+<pre><code class="language-bash"> def foo():
+-    &quot;\N{snowman} {snowman}&quot;.format(snowman=1)
++    f&quot;\N{snowman} {1}&quot;
+
+Would fix 1 error.
+</code></pre>
+<p><code>&quot;\\N{snowman} {snowman}&quot;.format(snowman=1)</code></p>
+<p><strong>Result</strong></p>
+<pre><code class="language-bash"> def foo():
+-    &quot;\\N{snowman} {snowman}&quot;.format(snowman=1)
++    f&quot;\\N{1} {1}&quot;
+
+Would fix 1 error.
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Added test cases (happy case, invalid case, edge case) for <code>FormatString</code> when parsing Unicode escape sequence.</li>
+<li>Updated snapshots.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 18:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @phongddo on 2025-12-10 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-12-10 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_literal/src/format.rs</code>:1050 on 2025-12-10 23:43</div>
+            <div class="timeline-body"><p>These might be nice as snapshot tests so that we don't have to update them manually in the future:</p>
+<pre><code class="language-suggestion">    fn test_format_unicode_escape() {
+        assert_debug_snapshot!(FormatString::from_str(&quot;I am a \\N{snowman}&quot;), @&quot;&lt;insta will update this&gt;&quot;);
+    }
+</code></pre>
+<p>in the off chance that the representation of <code>FormatString</code> changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:1 on 2025-12-10 23:56</div>
+            <div class="timeline-body"><p>Could we add the test case from the issue to <code>UP032_0.py</code> too? I think the unit tests in this file make sense too, but it seems worth throwing in the rule test.</p>
+<pre><code class="language-py">&quot;\N{angle}AOB = {angle}°&quot;.format(angle=180)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-11 00:00</div>
+            <div class="timeline-body"><p>Thanks! This makes sense to me, I just had a couple of small suggestions about the tests.</p>
+<p>I took a closer look at this code today, and I'm feeling much less wary than in https://github.com/astral-sh/ruff/pull/19774#pullrequestreview-3093439171. Our parser will have already flagged weird invalid cases like these that I brought up last time:</p>
+<pre><code class="language-py">&quot;\N{{angle}}&quot;.format(angle=&quot;angle&quot;)
+&quot;\N{LATIN {SMALL} LETTER A}&quot;
+</code></pre>
+<p>So we only need to handle valid cases, which this PR seems to do in a nice way. I also ran the fuzzer for a little while, just in case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-11 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-11 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 00:49</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-11 00:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_python_literal/src/format.rs</code>:1050 on 2025-12-11 00:50</div>
+            <div class="timeline-body"><p>I don't have a strong opinion about using snapshot tests here, but this also makes sense to me 👍 I've updated the snapshots in https://github.com/astral-sh/ruff/pull/21901/commits/99a52eba908762420c0922ff89fcb2e17884a1c9, please let me know what you think (for example, if you'd prefer inline snapshots, sorry! I'm still learning the project and standards) 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-11 00:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:1 on 2025-12-11 00:51</div>
+            <div class="timeline-body"><p>Yeah, makes sense 👍 I added a test case in https://github.com/astral-sh/ruff/pull/21901/commits/99a52eba908762420c0922ff89fcb2e17884a1c9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @phongddo on 2025-12-11 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 00:54</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">sphinx (https://github.com/sphinx-doc/sphinx)
+- WARN expected `heap_size` to be provided by Salsa query `class_based_items`
+- WARN expected `heap_size` to be provided by Salsa query `class_based_items`
+- WARN expected `heap_size` to be provided by Salsa query `class_based_items`
+- WARN expected `heap_size` to be provided by Salsa query `class_based_items`
+
+prefect (https://github.com/PrefectHQ/prefect)
++ WARN expected `heap_size` to be provided by Salsa query `class_based_items`
++ WARN expected `heap_size` to be provided by Salsa query `class_based_items`
++ WARN expected `heap_size` to be provided by Salsa query `class_based_items`
++ WARN expected `heap_size` to be provided by Salsa query `class_based_items`
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix Unicode named escape squence parsing in `FormatString` when fixing `UP032`" to "[`pyupgrade`] Fix Unicode named escape squence parsing in `FormatString` when fixing `UP032`" by @phongddo on 2025-12-12 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-15 18:40</div>
+            <div class="timeline-body"><p>Hey @ntBre 👋 just in case you missed the updates on this PR. I've addressed your comments about the tests. Please take a look when you have a moment and let me know if there's anything else I should adjust 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:916 on 2025-12-16 17:58</div>
+            <div class="timeline-body"><p>Very small thing I missed before, but we should update this comment in the test file since it's not a false negative anymore 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_literal/src/format.rs</code>:1050 on 2025-12-16 17:59</div>
+            <div class="timeline-body"><p>Oh, I don't think it's worth adding a dependency to the crate anyway. Let's just revert to what you had initially, sorry for the trouble!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-16 18:03</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>This looks good to go, just one small test comment update, and I think I preferred your old tests (to avoid adding a dev-dependency to this crate). Sorry for the flip-flop and the delay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-16 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:916 on 2025-12-16 18:18</div>
+            <div class="timeline-body"><p>ah, that's true, I missed it as well. Should we remove this comment entirely? I don't think it's relevant anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-16 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_python_literal/src/format.rs</code>:1050 on 2025-12-16 18:19</div>
+            <div class="timeline-body"><p>no worries, I'm fine with both, I can revert it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:916 on 2025-12-16 18:29</div>
+            <div class="timeline-body"><p>I removed the comment in https://github.com/astral-sh/ruff/pull/21901/commits/bfbee7b0f163dd19470ecd11710a18842436b72e. This also caused many changes in the snapshot file due to the removal of one line. I hope that's fine 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-16 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-16 18:43</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-16 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP032_0.py.snap</code>:916 on 2025-12-16 18:43</div>
+            <div class="timeline-body"><p>Yep, no worries!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] Fix Unicode named escape squence parsing in `FormatString` when fixing `UP032`" to "[`pyupgrade`] Fix parsing named Unicode escape sequences (`UP032`)" by @ntBre on 2025-12-16 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-16 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-16 21:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

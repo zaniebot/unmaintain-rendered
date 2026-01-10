@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Avoid double-analyzing tuple in `Final` subscript - astral-sh/ruff #21828</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Avoid double-analyzing tuple in <code>Final</code> subscript</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21828">#21828</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-12-06 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-06 22:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As-is, a single-element tuple gets destructured via:</p>
+<pre><code class="language-rust">let arguments = if let ast::Expr::Tuple(tuple) = slice {
+    &amp;*tuple.elts
+} else {
+    std::slice::from_ref(slice)
+};
+</code></pre>
+<p>But then, because it's a single element, we call <code>infer_annotation_expression_impl</code>, passing in the tuple, rather than the first element.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/1793.
+Closes https://github.com/astral-sh/ty/issues/1768.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-12-06 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/infer/builder/annotation_expression.rs</code>:331 on 2025-12-06 22:27</div>
+            <div class="timeline-body"><p>We want to analyze the single element, rather than the slice. (They're the same thing if it's not a single-element tuple.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid double-analyzing tuple in `Final` subscript" to "[ty] Avoid double-analyzing tuple in `Final` subscript" by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-12-06 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-06 22:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-06 22:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 494 diagnostics
++ Found 492 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1217:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5519 diagnostics
++ Found 5518 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/classvar.md</code>:115 on 2025-12-07 13:22</div>
+            <div class="timeline-body"><p>Let's also add tests to show:</p>
+<ol>
+<li>That we still infer it as a <code>ClassVar</code> even though the type argument is invalid</li>
+<li>What we infer the type as being, given the invalid annotation</li>
+</ol>
+<pre><code class="language-suggestion">class C:
+    # error: [invalid-type-form] &quot;Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?&quot;
+    x: ClassVar[(),]
+
+# error: [invalid-attribute-access] &quot;Cannot assign to ClassVar `X` from an instance of type `Foo`&quot;
+C().x = 42
+reveal_type(C.x)  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:352 on 2025-12-07 13:27</div>
+            <div class="timeline-body"><p>similar here</p>
+<pre><code class="language-suggestion"># error: [invalid-type-form] &quot;Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?&quot;
+x: Final[(),] = 42
+
+# error: [invalid-assignment] &quot;Reassignment of `Final` symbol `x` is not allowed&quot;
+x = 56
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/classvar.md</code>:107 on 2025-12-07 13:28</div>
+            <div class="timeline-body"><p>this isn't rendered very well by GitHub right now: https://github.com/astral-sh/ruff/blob/charlie/sli/crates/ty_python_semantic/resources/mdtest/type_qualifiers/classvar.md#trailing-comma-creates-a-tuple</p>
+<pre><code class="language-suggestion">gracefully and emit a proper error rather than crashing (see [ty#1793](https://github.com/astral-sh/ty/issues/1793)).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:346 on 2025-12-07 13:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">gracefully and emit a proper error rather than crashing (see [ty#1793](https://github.com/astral-sh/ty/issues/1793)).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/initvar.md</code>:116 on 2025-12-07 13:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">gracefully and emit a proper error rather than crashing (see [ty#1793](https://github.com/astral-sh/ty/issues/1793)).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/initvar.md</code>:125 on 2025-12-07 13:32</div>
+            <div class="timeline-body"><p>we could add a test here too to show that we still understand that <code>x</code> is an <code>InitVar</code> (it contributes to the <code>__init__</code> signature but is not available as an attribute on instances), despite the illegal type parameter:</p>
+<pre><code class="language-suggestion">@dataclass
+class AlsoWrong:
+    # error: [invalid-type-form] &quot;Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?&quot;
+    x: InitVar[(),]
+    
+# revealed: (self: AlsoWrong, x: Unknown) -&gt; None
+reveal_type(AlsoWrong.__init__)
+
+# error: [unresolved-attribute]
+reveal_type(AlsoWrong().x)  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-07 13:35</div>
+            <div class="timeline-body"><p>Great fix!!</p>
+<p>I feel like some of the &quot;Did you mean <code>tuple[()]</code>?&quot; suggestions are misfiring a bit here, but this is a real edge case so it probably doesn't matter that much. The main thing is to make sure we don't panic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-07 13:36</div>
+            <div class="timeline-body"><p>This PR also fixes https://github.com/astral-sh/ty/issues/1768, so you could add a test case that includes the MRE from that issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-07 14:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like some of the &quot;Did you mean tuple[()]?&quot; suggestions are misfiring a bit here.</p>
+</blockquote>
+<p>Yeah I had the same reaction. I did very that (at least) that code doesn't crash at runtime though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-12-07 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-07 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-07 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

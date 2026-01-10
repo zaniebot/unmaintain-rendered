@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Adjust scope completions to use all reachable symbols - astral-sh/ruff #21872</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Adjust scope completions to use all reachable symbols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21872">#21872</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-09 19:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-09 19:47</div>
+            <div class="timeline-body"><p>This PR adds a new <code>UseDefMap::all_reachable_symbols_with_definitions</code>
+API for use by the LSP for offerring scoped completions. In particular,
+this API uses all reachable symbols instead of only those that are
+reachable at the end of the scope. Notably, this fixes a problem where
+completions for local variables in functions with a <code>return</code> statement
+are no longer offered.</p>
+<p>(I opened this as a draft because I'm uncertain of the approach, and
+because this needs more tests.)</p>
+<p>Note that the first commit is just a rename. So reviewers might want to
+look at this PR commit-by-commit.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1294</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-12-09 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-12-09 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-12-09 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-12-09 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-12-09 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @BurntSushi on 2025-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @BurntSushi on 2025-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @BurntSushi on 2025-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-12-09 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-12-09 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 19:50</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 19:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:599 on 2025-12-09 21:20</div>
+            <div class="timeline-body"><p>nit: the second element here is a <code>&amp;ReachableDefinitions</code>, which stores multiple bindings and declarations -- so it seems confusing to name the variable <code>reachable_definition</code> (singular)</p>
+<pre><code class="language-suggestion">            .flat_map(|(symbol_id, reachable_definitions)| {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:608 on 2025-12-09 21:26</div>
+            <div class="timeline-body"><p>A lot of stuff here (privileging the first definition, ignoring conflicting declarations, etc) seem like very use-case-specific policy decisions, which feels a bit out-of-place for the use-def map. Also in terms of layering, using <code>place_from_declarations</code> and <code>place_from_bindings</code> here is a bit off -- those are type-inference-level functions, should be layered above the use-def map, which is just responsible for definitions.</p>
+<p>So while I think adding this API is good, I feel like it's doing too much. I was originally thinking (when we were chatting in Discord) that it could just return an iterator of all bindings and declarations for each symbol, but I see that that is complicated because they are already separated in <code>ReachableDefinitions</code>. It now looks to me like a return type of <code>(symbol_id, bindings_iterator, declarations_iterator)</code> might be best? That feels like it fulfills the responsibility of the use-def map -- the rest is up to the caller to decide what to do with those iterators of definitions. (It does I guess mean that chaining in some form will still be needed on the caller side.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-09 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-10 17:03</div>
+            <div class="timeline-body"><p>OK, I've taken another stab at this, incorporating your feedback. Thank you. :-) Some notes though:</p>
+<p>First is that I've left the existing <code>all_members_of_scope</code> (renamed to <code>all_end_of_scope_members</code>) in place, since it looks like places other than completions use it.</p>
+<p>Second is that I don't think I've accounted for <a href="https://github.com/astral-sh/ty/issues/1294#issuecomment-3628426664">this</a>:</p>
+<blockquote>
+<p>Switching from &quot;end-of-scope&quot; to &quot;all-reachable&quot; for module-global scopes would probably not be desirable</p>
+</blockquote>
+<p>Can you say more about how I should tackle this? And in particular, why is module-global scope special here? I've added a test case matching your example, but I also added a test case in function scope and it is similarly wonky. The end result is that we end up with imprecise types. Which is maybe what you were referring to on Discord and probably something we should just live with for now?</p>
+<p>My last thought is that I'm wondering if there is an inconsistency in the terminology used for the use-def docs and its routines. In particular, reading this:</p>
+<pre><code class="language-rust">//! Let's take this code sample:
+//!
+//! ```python
+//! x = 1
+//! x = 2
+//! y = x
+//! if flag:
+//!     x = 3
+//! else:
+//!     x = 4
+//! z = x
+//! ```
+//!
+//! In this snippet, we have four bindings of `x` (the statements assigning `1`, `2`, `3`, and `4`
+//! to it), and two uses of `x` (the `y = x` and `z = x` assignments). The first binding of `x`
+//! does not reach any use, because it's immediately replaced by the second binding, before any use
+//! happens. (A linter could thus flag the statement `x = 1` as likely superfluous.)
+</code></pre>
+<p>That is, this verbiage is using the word &quot;reach&quot; here to, I believe, imply that the first binding of <code>x</code> is <em>not reachable</em> at its first use in <code>y = x</code>. Similarly, I would say that:</p>
+<pre><code>zqzqzq: int = 1
+zqzqzq: str = 'foo'
+zqzq&lt;CURSOR&gt;
+</code></pre>
+<p>The first binding of <code>zqzqzq</code> is <em>not reachable</em> on the line containing the cursor. However, the use-def map's <code>reachable_definitions_by_symbol</code> map, notably including &quot;reachable,&quot; seems to specifically contain both declarations of <code>zqzqzq</code> in the above example.</p>
+<p>So I guess my question is: is my understanding wrong or is the terminology not quite consistent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 01:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Switching from &quot;end-of-scope&quot; to &quot;all-reachable&quot; for module-global scopes would probably not be desirable</p>
+</blockquote>
+<p>I think this comment was poorly worded. For the current module I think it's reasonable to use all-reachable in module global scope, just like in any other enclosing scope. What I really meant to say was we shouldn't resolve imports like that -- an import should assume that the module it is importing from executed fully. But I think the code you are touching here is only for walking enclosing scopes in the current module, and is unrelated to imports, so I suspect you don't need to do anything regarding my poorly-phrased comment.</p>
+<p>Regarding the wording of &quot;reach&quot;, we do use it in two somewhat different ways. When we talk about &quot;all reachable&quot; definitions, we mean any definition that can be reached from start-of-scope (that is, any definition that does not live in unreachable code). This is a useful concept for references to names in enclosing scopes, because fundamentally a (lazily executed, like a function) nested scope usually doesn't know from precisely what point(s) in the enclosing scope it might be called. So we have to respect the possibility that any <em>reachable</em> definition in the enclosing scope <em>might</em> be live at the (unknown) point we were called from. (Of course with more sophisticated analysis, more precision can be possible -- but Python is so dynamic, and so many things can execute arbitrary code, that it's very hard to do this analysis fully robustly.)</p>
+<p>But we also do talk about a definition &quot;reaching&quot; a specific use, meaning that definition remains possibly live at that use. Perhaps here we should ideally choose a different word (like for example, &quot;live&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 01:41</div>
+            <div class="timeline-body"><p>I'll note that I think using all-reachable definitions in the enclosing scope is actually correct (or &quot;best we can reasonably do&quot;), and matches what we do in type inference, for lazy enclosed scopes (like functions), because in that case we fundamentally don't know which point in the outer scope's control flow we should be considering.</p>
+<p>For eager enclosed scopes (scopes that are executed immediately at the point of definition, like class bodies or comprehensions) we do better in type inference, because in that case we do know precisely where in the enclosing scope the nested scope executed. (If you wanted, I think you could use those same &quot;eager nested scope snapshots&quot; from the semantic index for more precision here as well, but I think that could be a separate follow-up change.)</p>
+<p>And of course in the immediate local scope you are less precise than we'd ideally like here, because you don't have a &quot;use&quot; recorded for the position of the cursor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 01:43</div>
+            <div class="timeline-body"><p>The new <code>all_reachable_symbols</code> API and the renaming of existing API (and leaving <code>all_end_of_scope_members</code>) all look great to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @BurntSushi on 2025-12-11 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-11 02:05</div>
+            <div class="timeline-body"><p>Sweet, okay. I think that all mostly makes sense to me. I've created a <a href="https://github.com/astral-sh/ty/issues/1849">follow-up issue for eager nested scopes</a>. Thank you for explaining all of that. I've pulled this out of draft. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-11 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-12-11 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-11 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-11 13:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

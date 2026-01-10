@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] default-specialize class-literal types in assignment to generic-alias types - astral-sh/ruff #21883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] default-specialize class-literal types in assignment to generic-alias types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21883">#21883</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-10 02:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 02:10</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/1832, fixes https://github.com/astral-sh/ty/issues/1513</p>
+<h2>Summary</h2>
+<p>A class object <code>C</code> (for which we infer an unspecialized <code>ClassLiteral</code> type) should always be assignable to the type <code>type[C]</code> (which is default-specialized, if <code>C</code> is generic). We already implemented this for most cases, but we missed the case of a generic final type, where we simplify <code>type[C]</code> to the <code>GenericAlias</code> type for the default specialization of <code>C</code>. So we also need to implement this assignability of generic <code>ClassLiteral</code> types as-if default-specialized.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests that failed before this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-10 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-10 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 02:12</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 02:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/son.py:43:31: error[invalid-assignment] Object of type `&lt;class 'Pattern[str]'&gt;` is not assignable to `&lt;class 'Pattern[Any]'&gt;`
+- Found 462 diagnostics
++ Found 461 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_vendor/typing_extensions.py:3279:21: error[invalid-argument-type] Argument to bound method `register` is incorrect: Expected `&lt;class 'memoryview[int]'&gt;`, found `&lt;class 'memoryview'&gt;`
+- Found 1289 diagnostics
++ Found 1288 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_channel.py:250:16: error[invalid-argument-type] Argument to bound method `_create` is incorrect: Expected `&lt;class 'MemorySendChannel[SendType@MemorySendChannel]'&gt;`, found `&lt;class 'MemorySendChannel'&gt;`
+- src/trio/_channel.py:402:16: error[invalid-argument-type] Argument to bound method `_create` is incorrect: Expected `&lt;class 'MemoryReceiveChannel[ReceiveType@MemoryReceiveChannel]'&gt;`, found `&lt;class 'MemoryReceiveChannel'&gt;`
+- Found 495 diagnostics
++ Found 493 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/internal/settings/symbol_db.py:25:9: error[invalid-argument-type] Argument to bound method `d` is incorrect: Expected `&lt;class 'Pattern[Unknown]'&gt;`, found `&lt;class 'Pattern'&gt;`
+- Found 8471 diagnostics
++ Found 8470 diagnostics
+
+egglog-python (https://github.com/egraphs-good/egglog-python)
+- python/egglog/exp/any_expr.py:643:11: error[invalid-argument-type] Argument to function `converter` is incorrect: Expected `&lt;class 'slice[Any, Any, Any]'&gt;`, found `&lt;class 'slice'&gt;`
+- python/egglog/exp/array_api.py:989:5: error[invalid-argument-type] Argument to function `converter` is incorrect: Expected `&lt;class 'slice[Any, Any, Any]'&gt;`, found `&lt;class 'slice'&gt;`
+- Found 1492 diagnostics
++ Found 1490 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 02:19</div>
+            <div class="timeline-body"><p>Looks like this fixes a few current false positives on the ecosystem, but the main point of this is to unblock type-of-cls on classmethods, where this starts to come up a lot more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-12-10 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-12-10 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-12-10 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-12-10 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @carljm on 2025-12-10 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-12-10 05:42</div>
+            <div class="timeline-body"><p>Can you also add similar tests for <code>ParamSpec</code>? I think that should just work but if not, you can add a TODO comment and I can look at it later:</p>
+<pre><code class="language-py">from typing import final
+
+
+@final
+class Foo[**P]: ...
+
+
+def expects_type_foo(f: type[Foo]): ...
+def expects_type_foo_of_int(x: type[Foo[int]]): ...
+
+
+expects_type_foo(Foo)  # ok
+expects_type_foo_of_int(Foo[int])  # ok
+expects_type_foo_of_int(Foo[str])  # not ok
+
+
+@final
+class FooDefault[**P = [int, str]]: ...
+
+
+def expects_type_foo_default(f: type[FooDefault]): ...
+def expects_type_foo_default_of_int(f: type[FooDefault[int]]): ...
+def expects_type_foo_default_of_int_str(f: type[FooDefault[int, str]]): ...
+
+
+expects_type_foo_default(FooDefault)  # ok
+expects_type_foo_default(FooDefault[int, str])  # ok
+expects_type_foo_default_of_int_str(FooDefault)  # ok
+
+expects_type_foo_default(FooDefault[int])  # not ok
+expects_type_foo_default_of_int(FooDefault[str])  # not ok
+expects_type_foo_default_of_int_str(FooDefault[str, int])  # not ok
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2713 on 2025-12-10 07:55</div>
+            <div class="timeline-body"><p><code>C[...]</code> is the display we use for &quot;instance of a specialised version of <code>C</code>&quot;, not &quot;the specialised version of <code>C</code> itself&quot;</p>
+<pre><code class="language-suggestion">            // Similarly, `&lt;class 'C'&gt;` is assignable to `&lt;class 'C[...]'&gt;` (a generic-alias type)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2716 on 2025-12-10 07:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // generic-alias type `&lt;class 'C[...]'&gt;`, due to the fact that `C[...]` has no subclasses.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-10 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-10 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:357 on 2025-12-10 10:12</div>
+            <div class="timeline-body"><p>I wanted to add two tests here and noticed that they were not succeeding, but I think they should?</p>
+<pre><code class="language-py">expects_type_p(P[int])
+expects_type_p(P[str])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-10 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-10 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 10:36</div>
+            <div class="timeline-body"><p>@dhruvmanila @AlexWaygood could one of you please review my changes here?</p>
+<p>(@dhruvmanila, I noticed that some of the <code>ParamSpec</code> tests were correctly issuing errors before I added that new <code>match</code> branch, but I guess that was just an artifact? Something seems to be missing there for <code>ParamSpec</code> specifically)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 10:36</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 6 | 0 |
+| <code>invalid-assignment</code> | 0 | 1 | 0 |
+| <code>unsupported-base</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>8</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://cjm-unspecassign.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://cjm-unspecassign.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 10:41</div>
+            <div class="timeline-body"><p>Does this now also fix https://github.com/astral-sh/ty/issues/1513? Or do we also need to make some changes to <code>is_disjoint_from</code> for that?</p>
+<p>Are the new ecosystem hits on <code>pandas</code> expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 10:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this now also fix <a href="https://github.com/astral-sh/ty/issues/1513">astral-sh/ty#1513</a>? Or do we also need to make some changes to <code>is_disjoint_from</code> for that?</p>
+</blockquote>
+<p>It looks like it does!</p>
+<blockquote>
+<p>Are the new ecosystem hits on <code>pandas</code> expected?</p>
+</blockquote>
+<p>Looking into it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2730 on 2025-12-10 10:43</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">                ClassType::Generic(self_alias).has_relation_to_impl(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2732 on 2025-12-10 10:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    ClassType::Generic(target_alias),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-10 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 10:45</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Does this now also fix <a href="https://github.com/astral-sh/ty/issues/1513">astral-sh/ty#1513</a>? Or do we also need to make some changes to <code>is_disjoint_from</code> for that?</p>
+</blockquote>
+<p>It looks like it does!</p>
+</blockquote>
+<p>Amazing! Is it worth adding some tests for that specifically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 10:48</div>
+            <div class="timeline-body"><p>Might want to double-check our alias&lt;-&gt;class disjointness logic anyway, in case it's now inconsistent with our subtyping logic for these types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-10 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I noticed that some of the <code>ParamSpec</code> tests were correctly issuing errors before I added that new <code>match</code> branch, but I guess that was just an artifact? Something seems to be missing there for <code>ParamSpec</code> specifically)</p>
+</blockquote>
+<p>I tried out this PR (without the new branch that you added) and it seems to be the following branch that's handling it:</p>
+<pre><code class="language-rs">            (Type::GenericAlias(alias), _) =&gt; ClassType::from(alias)
+                .metaclass_instance_type(db)
+                .has_relation_to_impl(
+                    db,
+                    target,
+                    inferable,
+                    relation,
+                    relation_visitor,
+                    disjointness_visitor,
+                ),
+</code></pre>
+<p>I might have to spend some time here to understand if there's anything missing or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-10 13:50</div>
+            <div class="timeline-body"><p>Ah, I think it's because the inferred variance of a <code>ParamSpec</code> is always <code>Bivariant</code>. We'll need to change this up to either use <code>Invariant</code> (which is what Pyright uses) or <code>Covariant</code> (which is that mypy uses) based on the following example:</p>
+<pre><code class="language-py">from typing import final
+
+class A: ...
+class B(A): ...
+class C(B): ...
+class D: ...
+
+@final
+class Foo[**P]: ...
+
+def expects_type_foo_of_b(x: type[Foo[B]]): ...
+
+expects_type_foo_of_b(Foo[A])  # only Pyright error
+expects_type_foo_of_b(Foo[B])  # ok
+expects_type_foo_of_b(Foo[C])  # both Pyright and mypy error
+expects_type_foo_of_b(Foo[D])  # both Pyright and mypy error
+</code></pre>
+<p>I can do it as a follow-up unless you want to add it in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-10 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-10 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2720 on 2025-12-10 14:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    ClassType::Generic(target_alias),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-10 14:17</div>
+            <div class="timeline-body"><p>LGTM, though I'd still love to double-check https://github.com/astral-sh/ruff/pull/21883#issuecomment-3636475909 (do the property tests pass on this branch?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-10 14:18</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Funspecassign?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21883 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/unspecassign</code> (1138855) with <code>main</code> (7bf50e7)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Funspecassign?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:453 on 2025-12-10 14:20</div>
+            <div class="timeline-body"><p>This test should probably go in https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/narrow/issubclass.md ? Might also be nice to have a test that uses a TypeVar with a default, since I initially encountered this weirdness with <code>memoryview</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-10 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>LGTM, though I'd still love to double-check <a href="https://github.com/astral-sh/ruff/pull/21883#issuecomment-3636475909">#21883 (comment)</a> (do the property tests pass on this branch?)</p>
+</blockquote>
+<p>Yes, sorry. This was not a &quot;please review this again&quot; push, but rather just a &quot;I want to see if the pandas false positives are gone now&quot; push. I didn't want to move Carl's PR to draft :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd still love to double-check <a href="https://github.com/astral-sh/ruff/pull/21883#issuecomment-3636475909">#21883 (comment)</a> (do the property tests pass on this branch?)</p>
+</blockquote>
+<p>The property tests pass on this branch, which might just be because we don't have the necessary &quot;ingredients&quot; in the type pool. I added some tests for <code>is_assignable_to</code> (all of which pass), and some tests for <code>is_disjoint_from</code> (some of which fail, but they also fail on <code>main</code>). I tried for a while to implement the necessary disjointness relations, but didn't get there. I'd like to postpone this (I'll create a ticket).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to postpone this</p>
+</blockquote>
+<p>Fine by me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:399 on 2025-12-10 15:49</div>
+            <div class="timeline-body"><p>Looking at this now it feels like we should also have this test:</p>
+<pre><code class="language-suggestion">expects_type_p_of_int(P[str])  # error: [invalid-argument-type]
+expects_type_p_of_int(P)  # error: [invalid-argument-type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:394 on 2025-12-10 15:49</div>
+            <div class="timeline-body"><p>I guess we could also test this:</p>
+<pre><code class="language-suggestion">expects_type_p_of_str(P)
+expects_type_p_of_str(P[str])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:426 on 2025-12-10 15:50</div>
+            <div class="timeline-body"><p>Do we know what we are lacking here? Is there an issue to track it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-10 15:52</div>
+            <div class="timeline-body"><p>Looks good, thank you for the additional fixes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-10 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:399 on 2025-12-10 15:54</div>
+            <div class="timeline-body"><p>Done, it passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-10 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:394 on 2025-12-10 15:54</div>
+            <div class="timeline-body"><p>Done, it passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-10 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:426 on 2025-12-10 15:55</div>
+            <div class="timeline-body"><p>@dhruvmanila said he'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 15:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's because the inferred variance of a <code>ParamSpec</code> is always <code>Bivariant</code>. We'll need to change this up to either use <code>Invariant</code> (which is what Pyright uses) or <code>Covariant</code> (which is that mypy uses)</p>
+</blockquote>
+<p>I think inferring an &quot;unused&quot; ParamSpec type parameter (as in your example, and as in the current tests here) as bivariant is correct, according to our current variance inference logic. We do have an issue open to change this and always infer covariant for unused typevars: https://github.com/astral-sh/ty/issues/1728. When we do this, it should naturally impact ParamSpec type parameters also, I think.</p>
+<p>If we want to match pyright and always infer all ParamSpec as invariant, regardless of use, that would be a separate change specific to ParamSpec. But I'm not sure I see the rationale for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-10 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:426 on 2025-12-10 15:58</div>
+            <div class="timeline-body"><p>I think we should just add a use of <code>P</code> in the body of <code>C</code>, and then we will infer <code>P</code> as covariant (or invariant, depending what kind of use we add) and these should be fixed. That's what we do in the non-ParamSpec tests here already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-10 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_of/generics.md</code>:426 on 2025-12-10 16:17</div>
+            <div class="timeline-body"><p>I didn't manage to add <code>P</code> in an invariant or covariant position, and adding it contravariantly does not fix the tests. After talking to Carl, we'll postpone this as well. I'll open an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-12-10 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-10 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-10 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

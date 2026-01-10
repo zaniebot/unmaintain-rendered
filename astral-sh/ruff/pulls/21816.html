@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pydocstyle`] Suppress `D417` for parameters with `Unpack` annotations - astral-sh/ruff #21816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pydocstyle</code>] Suppress <code>D417</code> for parameters with <code>Unpack</code> annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21816">#21816</a>
+        opened by <a href="https://github.com/phongddo">@phongddo</a>
+        on 2025-12-05 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-05 15:56</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/8774</p>
+<p>This PR fixes <code>pydocstyle</code> incorrectly flagging missing argument for arguments with <code>Unpack</code> type annotation by extracting the <code>kwarg</code> <code>D417</code> suppression logic into a helper function for future rules as needed.</p>
+<h2>Problem Statement</h2>
+<p>The below example was incorrectly triggering <code>D417</code> error for missing <code>**kwargs</code> doc.</p>
+<pre><code class="language-python">class User(TypedDict):
+    id: int
+    name: str
+
+def do_something(some_arg: str, **kwargs: Unpack[User]):
+    &quot;&quot;&quot;Some doc
+    
+    Args:
+        some_arg: Some argument
+    &quot;&quot;&quot;
+</code></pre>
+<p><img width="1135" height="276" alt="image" src="https://github.com/user-attachments/assets/42fa4bb9-61a5-4a70-a79c-0c8922a3ee66" /></p>
+<p><code>**kwargs: Unpack[User]</code> indicates the function expects keyword arguments that will be unpacked. Ideally, the individual fields of the User <code>TypedDict</code> should be documented, not in the <code>**kwargs</code> itself. The <code>**kwargs</code> parameter acts as a semantic grouping rather than a parameter requiring documentation.</p>
+<h2>Solution</h2>
+<p>As discussed in the linked issue, it makes sense to suppress the <code>D417</code> for parameters with <code>Unpack</code> annotation. I extract a helper function to solely check <code>D417</code> should be suppressed with <code>**kwarg: Unpack[T]</code> parameter, this function can also be unit tested independently and reduce complexity of current <code>missing_args</code> check function. This also makes it easier to add additional rules in the future.</p>
+<p><em>✏️ Note:</em> This is my first PR in this repo, as I've learned a ton from it, please call out anything that could be improved. Thanks for making this excellent tool 👏</p>
+<h2>Test Plan</h2>
+<p>Add 2 test cases in <code>D417.py</code> and update snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @phongddo on 2025-12-05 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-05 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @ntBre on 2025-12-05 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1848 on 2025-12-05 21:28</div>
+            <div class="timeline-body"><p>Small nit here:</p>
+<pre><code class="language-suggestion">    parameter.annotation.is_some_and(|annotation|
+        checker
+            .semantic()
+            .match_typing_expr(map_subscript(annotation), &quot;Unpack&quot;)
+    ) 
+</code></pre>
+<p>We sometimes make functions like this only take the <code>&amp;SemanticModel</code> from <code>checker.semantic()</code> instead of a whole <code>&amp;Checker</code> too, but I don't feel too strongly about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1841 on 2025-12-05 21:34</div>
+            <div class="timeline-body"><p>Might be worth a short docstring here too, maybe something like:</p>
+<pre><code class="language-suggestion">/// Returns `true` if `parameter` is annotated with `typing.Unpack`
+fn should_ignore_kwarg_check(checker: &amp;Checker, parameter: &amp;Parameter) -&gt; bool {
+</code></pre>
+<p>Along those lines, a slightly better function name might be something like <code>has_unpack_annotation</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-05 21:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-12-05 21:50</div>
+            <div class="timeline-body"><p>Thank you! This looks great to me overall, I just had a few very small nits. I think it may also be worth calling out this exception in the rule documentation, and possibly linking to the Python <a href="https://typing.python.org/en/latest/spec/callables.html#unpack-kwargs">docs</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-05 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1841 on 2025-12-05 21:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Might be worth a short docstring</p>
+</blockquote>
+<p>Agree! I can add docstring 👍</p>
+<blockquote>
+<p>a slightly better function name might be something like <code>has_unpack_annotation</code></p>
+</blockquote>
+<p>I intentionally gave the function a more generic name in case we want to add additional rules for ignoring <code>kwarg</code> checks in the future, not just <code>Unpack[T]</code>. However, I'm fine making the change now, and we can revisit it later if needed. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1841 on 2025-12-05 22:06</div>
+            <div class="timeline-body"><p>Yeah I think I'd lean toward naming it for the way we use it now, unless we had future plans in mind. We can always rename it later, or just add additional, more specific helpers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-05 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-05 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1841 on 2025-12-05 22:10</div>
+            <div class="timeline-body"><p>Sure, that sounds great 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-05 22:28</div>
+            <div class="timeline-body"><p>Hey @ntBre 👋 Thanks for reviewing the PR! I've addressed your comments and updated the rule documentation as you suggested. It's my first time writing a rule doc, so I'm not sure if it follows standard, would love your feedback 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @phongddo on 2025-12-05 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-05 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1841 on 2025-12-05 22:28</div>
+            <div class="timeline-body"><p>Addressed in https://github.com/astral-sh/ruff/pull/21816/commits/1491d7674cd479cc986bfe363d337af3f4336ca0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-05 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1848 on 2025-12-05 22:28</div>
+            <div class="timeline-body"><p>Addressed in https://github.com/astral-sh/ruff/pull/21816/commits/1491d7674cd479cc986bfe363d337af3f4336ca0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/sections.rs</code>:1190 on 2025-12-08 18:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// This follows the Python typing specification for unpacking keyword arguments.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-08 18:52</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pydocstyle`] Suppress `D417` for parameters with `Unpack` annotation" to "[`pydocstyle`] Suppress `D417` for parameters with `Unpack` annotations" by @ntBre on 2025-12-08 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-08 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-08 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

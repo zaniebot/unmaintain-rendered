@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support `__all__ += submodule.__all__` in auto-import - astral-sh/ruff #21918</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support <code>__all__ += submodule.__all__</code> in auto-import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21918">#21918</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-11 15:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-11 15:10</div>
+            <div class="timeline-body"><p>... and also <code>__all__.extend(submodule.__all__)</code>.</p>
+<p>I originally left out support for this since I was unclear on whether
+we'd really need it. But it turns out this is used somewhat frequently.
+For example, in <code>numpy</code>.</p>
+<p>Here, we implement this by cheaply keeping track of imports during
+the auto-import AST scan. Then when we see something like
+<code>__all__ += foo.__all__</code>, we look up <code>foo</code> in our tracked imports,
+attempt to resolve the module and update <code>__all__</code> as appropriate.</p>
+<p>This doesn't handle every case (for example, it doesn't account for
+redefinitions of module names), but it's hopefully enough for most
+cases. The docs on <code>Imports</code> and tests show some known cases where
+this approach falls short.</p>
+<p>I suggest reviewers go commit-by-commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-12-11 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 15:12</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-11 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-11 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-11 15:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:474 on 2025-12-12 12:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    module_names: FxHashMap&lt;&amp;'db str, ImportModuleKind&lt;'db&gt;&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:546 on 2025-12-12 12:48</div>
+            <div class="timeline-body"><p>I think you now encounter a situation where your query potentially becomes cyclic if you have <code>a.py</code> importing <code>b.py</code> and <code>b.py</code> importing <code>a.py</code> and they both extend their <code>__all__</code> with the result from the other module.</p>
+<p>We should add a test for this. I suspect that Salsa will panic because it detects the cycle and your query doesn't have any cycle handling (which we'd have to add).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:2234 on 2025-12-12 12:49</div>
+            <div class="timeline-body"><p>Remove?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-12 12:51</div>
+            <div class="timeline-body"><p>This seems a reasonable heuristic to me.</p>
+<p>The only thing I think is necessary to add (and handle) before landing is an example where the <code>__all__</code> definition of two modules is cyclic. I suspect that your implementation will panic if this is the case but Salsa's fixpoint handling has us covered (but may require sorting the symbols in <code>FlatSymbols</code> to guarantee convergences)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-12 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:474 on 2025-12-12 13:01</div>
+            <div class="timeline-body"><p>Any particular reason for this change? I went with <code>Name</code> because that's what I'm already using everywhere. (<code>&amp;str</code> does work here too...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-12 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:474 on 2025-12-12 13:11</div>
+            <div class="timeline-body"><p>I consider <code>Name</code> a <code>String</code> equivalent that avoids heap allocations. That's why I often pass <code>&amp;str</code> if I don't need an owned instance (which also avoids repeating the variant check whenever the string content is accessed)</p>
+<p>But, obviously, very nit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-12 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:474 on 2025-12-12 13:15</div>
+            <div class="timeline-body"><p>Ah I see. OK, that makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-12 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:546 on 2025-12-12 14:05</div>
+            <div class="timeline-body"><p>OK, this should be fixed now. The fix isn't ideal from a perf perspective, but I'll tackle that later when I look at auto-import perf.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-12-12 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:708 on 2025-12-12 15:08</div>
+            <div class="timeline-body"><p>Hmm, annoying. Seems tricky to work around</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-12 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-12 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:708 on 2025-12-12 15:10</div>
+            <div class="timeline-body"><p>Yeah I've got ideas, but requires more refactoring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-12-12 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-12 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-12 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

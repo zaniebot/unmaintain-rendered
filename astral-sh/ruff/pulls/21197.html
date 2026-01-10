@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use system jemalloc - astral-sh/ruff #21197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use system jemalloc</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21197">#21197</a>
+        opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a>
+        on 2025-11-02 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 01:49</div>
+            <div class="timeline-body"><p>The version compiled by tikv_jemallocator by default assumes 16K pages, and doesn't work on systems which have 64K pages.</p>
+<p>Link the system jemalloc to ensure we ruff always uses a compatible jemalloc which aligns with local system conventions.</p>
+<p>We're currently shipping this patch downstream as otherwise builds simply don't work on systems with 64K pages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-02 02:13</div>
+            <div class="timeline-body"><p>I'm far from an expert on this but the way we solve this in our own built pipeline is by setting <code>JEMALLOC_SYS_WITH_LG_PAGE=16</code>. We haven't had any issues since we increased the page size.</p>
+<p>https://github.com/astral-sh/ruff/blob/bff32a41dc440b30764e9414767794e01d25c265/.github/workflows/build-binaries.yml#L280</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 02:19</div>
+            <div class="timeline-body"><p>That workaround only affects builds made by CI, not builds made downstream with release tarballs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 02:22</div>
+            <div class="timeline-body"><p>Configuring the build system in releases to use <code>JEMALLOC_SYS_WITH_LG_PAGE=16</code> would also work, but most distributions prefer using the system jemalloc regardless, so doing that is likely a better fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-02 02:49</div>
+            <div class="timeline-body"><p>but what if the target system doesn't have jemalloc installed. Wouldn't the build fail in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @WhyNotHugo on 2025-11-02 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 02:56</div>
+            <div class="timeline-body"><p>Hang on though, looks like this final syntax isn't working the same as my previous approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 12:57</div>
+            <div class="timeline-body"><p>The following works:</p>
+<p>Okay, this works:</p>
+<pre><code>[target.x86_64-alpine-linux-musl.jemalloc]</code></pre>
+<p>But this does not:</p>
+<pre><code>[target.'cfg(all(target_env = &quot;musl&quot;, target_os = &quot;linux&quot;))'.jemalloc]</code></pre>
+<p>I'm not entirely sure why. Maybe we'll need another approach to address this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-11-02 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>but what if the target system doesn't have jemalloc installed. Wouldn't the build fail in that case?</p>
+</blockquote>
+<p>Right, jemalloc would need to be installed like all other build dependencies. I don't think there's any musl-based distribution which doesn't ship jemalloc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:36</div>
+            <div class="timeline-body"><p>I'll close this as the PR has been stale for a while. Please feel free to submit a new PR if you'd like to keep working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

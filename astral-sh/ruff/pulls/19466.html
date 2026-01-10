@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit more specific syntax errors for incompatible string prefixes - astral-sh/ruff #19466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit more specific syntax errors for incompatible string prefixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19466">#19466</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-07-21 15:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-21 15:08</div>
+            <div class="timeline-body"><p>Following the CPython changes here:</p>
+<ul>
+<li>https://github.com/python/cpython/issues/133197</li>
+<li>https://github.com/python/cpython/pull/133202</li>
+<li>https://github.com/python/cpython/pull/133242</li>
+</ul>
+<p>we modify the lexing of double character string prefixes to emit a more useful syntax error in the case of invalid double character prefixes. Our implementation differs slightly from that of CPython in that our error message retains the casing of the prefixes and we emit a separate error for repeated prefixes (like <code>uu&quot;hello&quot;</code>).</p>
+<h2>Example</h2>
+<pre><code class="language-python">def foo():
+    x = uf&quot;a more complicated {example}&quot;
+    return x
+</code></pre>
+<p>Before:</p>
+<pre><code class="language-console">❯ ruff check --no-cache --isolated ex.py
+ex.py:2:11: SyntaxError: Simple statements must be separated by newlines or semicolons
+  |
+1 | def foo():
+2 |     x = uf&quot;a more complicated {example}&quot;
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3 |     return x
+  |
+
+Found 1 error.
+</code></pre>
+<p>After:</p>
+<pre><code class="language-console">❯ cargo run -p ruff -- check --no-cache --isolated ex.py
+ex.py:2:9: SyntaxError: &quot;u&quot; and &quot;f&quot; prefixes are incompatible
+  |
+1 | def foo():
+2 |     x = uf&quot;a more complicated {example}&quot;
+  |         ^^
+3 |     return x
+  |
+
+Found 1 error.
+</code></pre>
+<p>Closes #19342</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-07-21 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dylwil3 on 2025-07-21 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dylwil3 on 2025-07-21 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:741 on 2025-07-21 15:48</div>
+            <div class="timeline-body"><p>The comment needs updating</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 15:49</div>
+            <div class="timeline-body"><p>Let's also add a parser test. I'm curious to see how the parser recovers overall.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-21 15:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:630 on 2025-07-21 15:53</div>
+            <div class="timeline-body"><p>It would be helpful to include an explaination why it's okay to drop the unknown token (<code>push_token</code> should probably be marked with <code>#[must_use]</code>).</p>
+<p>Is there a risk that any downstream user of the tokens or AST will drip over the fact that the token/ast prefix doesn't match the source prefix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 15:53</div>
+            <div class="timeline-body"><p>Nice.</p>
+<p>I'm curious to see how this looks in a parsed AST to better understand the impact of this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_string_prefix.py.snap</code>:55 on 2025-07-21 16:45</div>
+            <div class="timeline-body"><p><code>Empty</code> seems suboptimal. I think we should try to preserve the most important prefix (e.g. if <code>f</code> is present, favor it over <code>u</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-21 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 16:48</div>
+            <div class="timeline-body"><p>Added.</p>
+<p>What happens is that the parser will behave as though the string had no prefixes and parse it as an ordinary string literal. What may be potentially misleading is that the range of this string will include the skipped prefix. So, for example, if you added up the lengths for the content of the string, the quote (single or triple), and the prefix (apparently 0), you would come up short.</p>
+<p>I don't think this trips up the parser, and we don't do anything downstream with source that has invalid syntax - i.e. no lint rules are run - so I don't think we have to worry.</p>
+<p>But I could try to arrange for the range to exclude the prefix? Then the AST would behave as if there was nothing there - like it does when we skip trivia.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-21 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_string_prefix.py.snap</code>:55 on 2025-07-21 16:48</div>
+            <div class="timeline-body"><p>What is the most important prefix for <code>ft&quot;hello {there}&quot;</code>? or <code>bf&quot;hey&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think this trips up the parser, and we don't do anything downstream with source that has invalid syntax - i.e. no lint rules are run - so I don't think we have to worry.</p>
+</blockquote>
+<p>I think we do run all token based rules.</p>
+<blockquote>
+<p>But I could try to arrange for the range to exclude the prefix? Then the AST would behave as if there was nothing there - like it does when we skip trivia.</p>
+</blockquote>
+<p>We would need to emit the prefix as an <code>Unknown</code> token because the lexer isn't allowed to skip over <strong>any</strong> content. I suspect that this will undo much of the improvements you made (as the <code>Unknown</code> token will confuse the parser)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_string_prefix.py.snap</code>:55 on 2025-07-21 16:52</div>
+            <div class="timeline-body"><p>Not sure for <code>ft</code> but I would ignore the binary prefix for the second case.</p>
+<p>My concern with the current solution is that ignoring both prefixes is the least correct. Ignoring just one would be closer to what the user intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-21 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 16:56</div>
+            <div class="timeline-body"><p>Hmm... what if instead we parsed the thing as a string, like we're currently doing, but then expanded the possible prefixes to include invalid ones. So instead of the AST showing <code>prefix: Empty</code> it was like <code>prefix: InvalidPair(first,second)</code>? Then all the characters would be accounted for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-21 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_string_prefix.py.snap</code>:55 on 2025-07-21 17:00</div>
+            <div class="timeline-body"><p>fwiw in the current state of affairs we are parsing the full prefix as a <code>Name</code> and then the string literal as an ordinary string. So I feel like even if we parsed this as an ordinary string with an invalid prefix it would be an improvement.</p>
+<p>but I'll try to think of a way to implement what you're suggesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-21 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 17:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we do run all token based rules.</p>
+</blockquote>
+<p>oh interesting! I'll add a test fixture for some of those then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__repeated_string_prefix_error.snap</code>:5 on 2025-07-21 17:02</div>
+            <div class="timeline-body"><p>That's certainly worth exploring. One challenge is that the data needs to fit into <code>TokenFlags</code>, which is a <code>u8</code>. The other, that you still need to pick a <code>TokenKind</code>.</p>
+<p>The last challenge is that it requires designing how the different <code>StringFlags</code> represent this new state (most of those currently assert that the flags are valid).</p>
+<p>I'm not sure I can help you much with this right now as it seems fairly low priority (while a nice improvement).</p>
+<p>For now, I suggest making a local improvement (which might be to go with <code>Unknown</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-18 07:38</div>
+            <div class="timeline-body"><p>@dylwil3 what's the status of this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dylwil3 on 2025-08-18 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-08-18 12:26</div>
+            <div class="timeline-body"><p>I'll revert to draft and re-open when I get a chance to visit it again - apologies for cluttering the open PRs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-12-10 18:02</div>
+            <div class="timeline-body"><p>Gonna close this since I won't be able to get back to it until higher priority items are cleared - which may not be soon. Others are welcome to pick it up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-12-10 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

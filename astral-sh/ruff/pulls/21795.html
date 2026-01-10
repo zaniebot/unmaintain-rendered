@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve spans of references to submodules imported in an `__init__.py` - astral-sh/ruff #21795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve spans of references to submodules imported in an <code>__init__.py</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21795">#21795</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-12-04 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-04 17:05</div>
+            <div class="timeline-body"><p>Good ol' <code>DefinitionKind::ImportFromSubmodule</code></p>
+<ul>
+<li>Improves https://github.com/astral-sh/ty/issues/1759</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix spans of references to submodules imported in an `__init__.py`" to "[ty] Improve spans of references to submodules imported in an `__init__.py`" by @Gankra on 2025-12-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-04 17:07</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-04 17:09</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1209:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5514 diagnostics
++ Found 5513 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:1071 on 2025-12-04 17:15</div>
+            <div class="timeline-body"><p>This is probably Parser Crimes and there's probably a better API for doing this but this is my absolute favourite trick and I'll use it any time I can</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-12-04 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:1071 on 2025-12-04 18:27</div>
+            <div class="timeline-body"><p>Took me a while to understand what's happening here, especially the pointer stuff. This could be rewritten to:</p>
+<pre><code>        let module_ident = self.module(module);
+        let module_str = module_ident.as_str();
+
+        let Some((end_offset, _)) = module_str.match_indices('.').nth(self.module_index) else {
+            // This shouldn't happen but just in case, provide a safe default
+            return module_ident.range();
+        };
+
+        let (component_str, _) = module_str.split_at(end_offset);
+
+        let Ok(end_offset) = TextSize::try_from(end_offset) else {
+            // This shouldn't happen but just in case, provide a safe default
+            return module_ident.range();
+        };
+        let start_offset = end_offset - component_str.text_len();
+        TextRange::new(start_offset, end_offset) + module_ident.start()
+</code></pre>
+<p>Or we should add a short comment explaining what we're doing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:1071 on 2025-12-04 18:28</div>
+            <div class="timeline-body"><p>I don't think the <code>saturating_add</code> gives you much here, as we are as likely to panic somewhere in the text range conversion if the new range ends up being between two char boundaries. In which case I'd prefer if it panicked in the add</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-04 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-12-05 18:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

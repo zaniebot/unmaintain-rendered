@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>apply range suppressions to filter diagnostics - astral-sh/ruff #21623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>apply range suppressions to filter diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21623">#21623</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-11-25 02:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-25 02:02</div>
+            <div class="timeline-body"><p>Builds on range suppressions from https://github.com/astral-sh/ruff/pull/21441</p>
+<p>Filters diagnostics based on parsed valid range suppressions.</p>
+<p>Issue: #3711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-25 02:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:331 on 2025-11-25 10:47</div>
+            <div class="timeline-body"><p>I think we should only apply the filtering if <code>noqa_is_enabled</code>. I'm not a 100% sure but I think this is more a terminology issue. The CLI has a <code>--ignore-noqa</code> comment which you can use to show all diagnostics even if noqa's are disabled (https://github.com/astral-sh/ruff/issues/3070). I think we want this flag to also toggle <code>ruff:disable</code>/<code>ruff:enable</code></p>
+<p>I also suggest reviewing the other call sites where we set <code>noqa::Disabled</code> to see if that should apply to <code>ruff:disable</code> as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:335 on 2025-11-25 10:48</div>
+            <div class="timeline-body"><p>I think we should move the logic into <code>check_noqa</code> and rename the method to <code>check_suppressions</code>. This should also avoid having to iterate over all diagnostics twice, which can be expensive if there are many</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-25 10:48</div>
+            <div class="timeline-body"><p>I think we should add some tests now. <code>check_path</code> is called from our testing framework, meaning we should now be able to write a test similar to</p>
+<p>https://github.com/astral-sh/ruff/blob/850398dada852843e10f6a118127a6b801ed476d/crates/ruff_linter/src/rules/ruff/mod.rs#L294-L305</p>
+<p>This could also be used as a replacement for some of the tests I asked for in your previous PR.</p>
+<p>I also suggest adding some CLI tests verifying that this PR doesn't break in combination with <code>--add-noqa</code>, <code>--remove-noqa</code> <code>--ignore-noqa</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @MichaReiser on 2025-11-25 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:110 on 2025-11-25 17:47</div>
+            <div class="timeline-body"><p>We should probably at a fast path here to exit immediately if <code>self.valid</code> is empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-25 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] apply range suppressions to filter diagnostics" to "apply range suppressions to filter diagnostics" by @MichaReiser on 2025-11-26 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-11-26 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-02 01:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I also suggest adding some CLI tests verifying that this PR doesn't break in combination with <code>--add-noqa</code>, <code>--remove-noqa</code> <code>--ignore-noqa</code> etc.</p>
+</blockquote>
+<p>Is there an existing set of CLI tests for noqa that I can use as an example here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-12-02 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 08:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there an existing set of CLI tests for noqa that I can use as an example here?</p>
+</blockquote>
+<p>There are some here https://github.com/astral-sh/ruff/blob/81f6ec16579151d6ad41b2a071120ccc7ea1261f/crates/ruff/tests/cli/lint.rs#L1444</p>
+<p>I couldn't find any for <code>--ignore-noqa</code>, and <code>--remove-noqa</code> doesn't exist, it's just fix and you can find some tests in the above mentioned test file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/suppressions.py</code>:25 on 2025-12-02 08:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # One should be ignored by the range suppression, and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/suppressions.py</code>:33 on 2025-12-02 08:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # Neither of these are ignored and a warning is
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/suppressions.py</code>:21 on 2025-12-02 08:30</div>
+            <div class="timeline-body"><p>I think it would be good to add/move some of the more advanced test cases involving blocks and make them integration tests instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-02 08:33</div>
+            <div class="timeline-body"><p>This looks good. But we should look into the performance regression before landing this PR (can be fixed as a separate PR but we can't land this until we fixed the regression)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-02 17:00</div>
+            <div class="timeline-body"><p>Note: add <code>--preview</code> gating so we can land this without waiting for diagnostics etc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/cli/lint.rs</code>:1744 on 2025-12-04 07:46</div>
+            <div class="timeline-body"><p>We try to avoid reading fixture files in CLI tests as it makes the tests depend on each other and it can also become harder to reason about what we're testing here. Would it be possible to extract the specific case you want to test from <code>noqa.py</code>?</p>
+<p>The tests here also don't need to be exhaustive. We can add more exhaustive tests to <code>add_noqa</code> (I think we have some integration tests, right?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:432 on 2025-12-04 07:50</div>
+            <div class="timeline-body"><p>We now end up extracting the suppressions twice: Once in <code>check_path</code> and once here. We might need to pass the suppressions as part of <code>check_path</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:42 on 2025-12-04 07:56</div>
+            <div class="timeline-body"><p>We also call this function from our tests. Would it make sense to lift <code>Suppressions</code> out of <code>generate_noqa_edits</code> and instead require the caller to pass the suppressions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/mod.rs</code>:333 on 2025-12-04 07:57</div>
+            <div class="timeline-body"><p>This might be a good case for <code>assert_diagnostics_diff</code> which snapshots the difference between two settings: E.g. between preview on and off</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-12-04 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/tests/cli/lint.rs</code>:1744 on 2025-12-04 16:52</div>
+            <div class="timeline-body"><p>This was a copy-paste of the tests directly above and below it that exercise <code>--add-noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-06 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-12-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-12-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-09 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

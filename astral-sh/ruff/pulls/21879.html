@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix leading comment formatting for lambdas with multiple parameters - astral-sh/ruff #21879</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix leading comment formatting for lambdas with multiple parameters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21879">#21879</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-12-09 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 20:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a follow-up to #21868. As soon as I started merging #21868 into #21385, I realized that I had missed a test case with <code>**kwargs</code> after the <code>*args</code> parameter. Such a case is supposed to be formatted on one line like:</p>
+<pre><code class="language-py"># input
+(
+    lambda
+    # comment
+    *x,
+    **y: x
+)
+
+# output
+(
+    lambda
+    # comment
+    *x, **y: x
+)
+</code></pre>
+<p>which you can still see on the <a href="https://play.ruff.rs/bd88d339-1358-40d2-819f-865bfcb23aef?secondary=Format">playground</a>, but on <code>main</code> after #21868, this was formatted as:</p>
+<pre><code class="language-py">(
+    lambda
+    # comment
+    *x,
+    **y: x
+)
+</code></pre>
+<p>because the leading comment on the first parameter caused the whole group around the parameters to break.</p>
+<p>Instead of making these comments leading comments on the first parameter, this PR makes them leading comments on the parameters list as a whole.</p>
+<h2>Test Plan</h2>
+<p>New tests, and I will also try merging this into #21385 <em>before</em> opening it for review this time.</p>
+<hr>
+
+<p>(labeling <code>internal</code> since #21868 should not be released before some kind of fix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-12-09 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-12-09 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 20:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 20:57</div>
+            <div class="timeline-body"><blockquote>
+<p>, but this caused some trouble in the formatting of function parameters</p>
+</blockquote>
+<p>Can you say more about this? It seems strictly better to me than poking into the parameter comments. Can't we detect the lambda case by looking at the parent node in the comment placement logic or whether <code>parameters</code> has parentheses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 21:13</div>
+            <div class="timeline-body"><p>It inserted a comment before the parentheses in a function definition, but maybe I just needed to check if it had parentheses.</p>
+<p>The other issue is that we also have to make this case leading on the parameters to get consistent formatting:</p>
+<pre><code class="language-py">(
+    lambda
+    * # comment
+    x, **y:
+    x
+)
+</code></pre>
+<p>which means we'd have to modify the parameter comment placement and need the grandparent node again, instead of only modifying the lambda placement like in #21868. Otherwise we're back to a similar situation as before #21868 where this is a leading comment on the first parameter on the first format, causing the parameters to break, and a leading comment on the parameters on the second, allowing them to stay on one line.</p>
+<p>That's the other reason I switched to this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 21:27</div>
+            <div class="timeline-body"><blockquote>
+<p>which means we'd have to modify the parameter comment placement and need the grandparent node again, instead of only modifying the lambda placement like in https://github.com/astral-sh/ruff/pull/21868</p>
+</blockquote>
+<p>Why would we need the grand parent? Isn't the parent <code>parameters</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 21:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Why would we need the grand parent? Isn't the parent parameters?</p>
+</blockquote>
+<p>Yes, but we need to know if the parameters are in a lambda, or we'll break functions. At least that was my thinking and what I believe I ran into earlier. But I could have missed something else, of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 21:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, but we need to know if the parameters are in a lambda, or we'll break functions. At least that was my thinking and what I believe I ran into earlier. But I could have missed something else, of course.</p>
+</blockquote>
+<p>We can tell whether we're inside a lambda by looking if the parameters are parenthesized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 21:31</div>
+            <div class="timeline-body"><p>Ah okay, right, like in your first comment. Sorry, I'll give that a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 21:41</div>
+            <div class="timeline-body"><p>I think the way you can dedect this is by testing if <code>parameters.start()</code> == <code>parameter.start()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 21:45</div>
+            <div class="timeline-body"><p>There's actually already a <code>are_parameters_parenthesized</code> helper in <code>placement.rs</code> that seems to work :+1:</p>
+<p>Apparently the code I stashed earlier was working except for that check. Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-09 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-12-09 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-09 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-09 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-09 23:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

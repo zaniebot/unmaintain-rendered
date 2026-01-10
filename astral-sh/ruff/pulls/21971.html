@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Avoid stack overflow when calculating inferable typevars - astral-sh/ruff #21971</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Avoid stack overflow when calculating inferable typevars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21971">#21971</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-12-14 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-14 03:17</div>
+            <div class="timeline-body"><p>When we calculate which typevars are inferable in a generic context, the result might include more than the typevars bound by the generic context. The canonical example is a generic method of a generic class:</p>
+<pre><code class="language-py">class C[A]:
+    def method[T](self, t: T): ...
+</code></pre>
+<p>Here, the inferable typevar set of <code>method</code> contains <code>Self</code> and <code>T</code>, as you'd expect. (Those are the typevars bound by the method.) But it also contains <code>A@C</code>, since the implicit <code>Self</code> typevar is defined as <code>Self: C[A]</code>. That means when we call <code>method</code>, we need to mark <code>A@C</code> as inferable, so that we can determine the correct mapping for <code>A@C</code> at the call site.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1874</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-14 03:19</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:328 on 2025-12-14 03:20</div>
+            <div class="timeline-body"><p>Before, we were recursing arbitrarily deep into each of the generic context's typevars — and in particular, arbitrarily deep into their bounds and constraints. There was a recursion in the example from https://github.com/astral-sh/ty/issues/1874.</p>
+<p>Really, we don't need to go more than one level deep looking for additional inferable typevars. We just need to look into the bound/constraints of the generic context's typevars. If those bounds/constraints themselves contain typevars, we mark them as inferable, but we don't need to recurse further. So we set <code>should_visit_lazy_type_var_attributes</code> to <code>false</code> to prevent the deeper recursions, and unroll the first level of recursion manually here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-12-14 03:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-14 03:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-12-14 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-12-14 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-14 03:31</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>No diagnostic changes detected ✅
+<strong><a href="https://dcreager-ty1874.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dcreager-ty1874.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-14 03:37</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fty1874?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21971 will <strong>improve performances by 7.94%</strong></h3>
+<p><sub>Comparing <code>dcreager/ty1874</code> (400bc25) with <code>main</code> (d08e414)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvement<br />
+<code>✅ 21</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fty1874?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>DateType</code></a> | 254.5 ms | 235.8 ms | +7.94% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fty1874?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-12-14 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-12-14 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-12-14 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-12-14 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-14 13:07</div>
+            <div class="timeline-body"><p>Nice! Can we add the MRE in https://github.com/astral-sh/ty/issues/1874#issue-3725695499 as a regression test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-14 13:08</div>
+            <div class="timeline-body"><p>And thank you so much for the added docs, really helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-14 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-15 14:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Nice! Can we add the MRE in <a href="https://github.com/astral-sh/ty/issues/1874#issue-3725695499">astral-sh/ty#1874 (comment)</a> as a regression test?</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-12-15 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-12-15 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-12-15 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-15 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

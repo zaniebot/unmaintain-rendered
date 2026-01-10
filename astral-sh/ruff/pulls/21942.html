@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix playground Share button showing &quot;Copied!&quot; before clipboard copy completes - astral-sh/ruff #21942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix playground Share button showing &quot;Copied!&quot; before clipboard copy completes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21942">#21942</a>
+        opened by <a href="https://github.com/mahiro72">@mahiro72</a>
+        on 2025-12-12 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mahiro72">@mahiro72</a> on 2025-12-12 11:07</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fix the playground Share button to only show &quot;Copied!&quot; after the clipboard copy operation actually completes.</p>
+<p>Previously, the Share button would immediately show &quot;Copied!&quot; when clicked, before the async <code>persist</code> and <code>clipboard.writeText</code> operations finished. This caused a confusing UX where users would see &quot;Copied!&quot; but if they tabbed away quickly, the copy would fail with a <code>NotAllowedError: Document is not focused</code> error.</p>
+<p>Now the button waits for <code>onShare()</code> to complete before updating the UI state.</p>
+<p>Fixes #21691</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Tested locally with <code>npm start --workspace ruff-playground</code></p>
+<h2>Demo</h2>
+<p><img src="https://github.com/user-attachments/assets/dcbb505c-724f-4538-af8a-1d96d6f17d32" alt="Kapture 2025-12-12 at 20 47 51" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-12 11:30</div>
+            <div class="timeline-body"><p>Ohh, this is what was happening! I noticed this multiple times but didn't dig into it. Thanks for opening a fix for this issue, it would be useful to add a short video to demo this in the PR description when you make it ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mahiro72 on 2025-12-12 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @AlexWaygood on 2025-12-12 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-12-13 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ruff/src/Editor/Chrome.tsx</code>:27 on 2025-12-15 07:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">			try {
+        await persist(serialized);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(&quot;Failed to share playground&quot;, error);
+      }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/shared/src/ShareButton.tsx</code>:37 on 2025-12-15 07:17</div>
+            <div class="timeline-body"><p>I think we want to distinguish between three states</p>
+<ul>
+<li><code>initial</code>: Button is clickable, label is <code>Share</code></li>
+<li><code>copying</code>: Button is disabled, label is <code>Share</code></li>
+<li><code>copied</code>: Button is disabled, label is <code>Copied</code></li>
+</ul>
+<p>We should ensure that we reset the state to <code>Share</code> if <code>onShare</code> throws (maybe by moving the try catch handling from <code>onShare</code> to here, we could even consider having a 4th state <code>failed</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-15 07:18</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>I think we should move the error handling into <code>ShareButton</code> to avoid async race conditions or stale states if sharing failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mahiro72">@mahiro72</a> on 2025-12-16 18:25</div>
+            <div class="timeline-body"><p>Thank you for the review @MichaReiser !</p>
+<p>I’ve addressed your feedback:</p>
+<ul>
+<li>Moved error handling from <code>handleShare</code> to <code>ShareButton</code></li>
+<li>Added three states: <code>initial</code>, <code>copying</code>, and <code>copied</code></li>
+</ul>
+<p>Please take another look when you have a chance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-17 11:15</div>
+            <div class="timeline-body"><p>This is great. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-17 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-17 11:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

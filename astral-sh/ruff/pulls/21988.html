@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve display of completions to show actual insertion text - astral-sh/ruff #21988</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve display of completions to show actual insertion text</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21988">#21988</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-15 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-15 14:45</div>
+            <div class="timeline-body"><p>This PR makes a few related changes to completions:</p>
+<p>First is that suggestions returned by the LSP will now always use the
+insertion text as the label. Previously, the text would always be the
+name of the symbol only. By always using the insertion text, we will
+now show things like <code>typing.TypedDict</code> if selecting the completion
+would qualify the symbol. Additionally, we'll show <code>foobar=</code> when the
+completion corresponds to a function parameter in which we also include
+the <code>=</code> suffix. It's plausible that we may not <em>always</em> want to show
+the insertion text as-is, but I think it's true today.</p>
+<p>Second is that the <code>import module</code> hint shown for auto-import
+suggestions will now only be shown if we're actually going to insert an
+<code>import</code> into the code. Previously, we would show <code>import typing</code> in
+this case:</p>
+<pre><code class="language-python">import typing
+TypedDi&lt;CURSOR&gt;
+</code></pre>
+<p>even though this would complete to:</p>
+<pre><code class="language-python">import typing
+typing.TypedDict
+</code></pre>
+<p>i.e., no new imports were inserted.</p>
+<p>Thirdly and finally, we tweak our import insertion heuristic to prefer
+<code>from ... import ...</code> statements over <code>import ...</code> statements when
+present. So for example, if we had:</p>
+<pre><code class="language-python">import typing
+from typing import Callable
+TypedDi&lt;CURSOR&gt;
+</code></pre>
+<p>Then previously, we would complete to:</p>
+<pre><code class="language-python">import typing
+from typing import Callable
+typing.TypedDict
+</code></pre>
+<p>But with this change, we now do:</p>
+<pre><code class="language-python">import typing
+from typing import Callable, TypedDict
+TypedDict
+</code></pre>
+<p>The thinking here is that this better respects what the user has
+actually typed. They <em>could</em> have written the fully qualified variant,
+but they didn't <em>and</em> they already have other unqualified imports from
+the same module. So this seems like somewhat strong signal that we
+should also prefer an unqualified import in this case too.</p>
+<p>Much of these changes was inspired by this comment:
+https://github.com/astral-sh/ty/issues/1274#issuecomment-3352233790</p>
+<p>We also include a fix for suggestion keyword argument completions in
+some cases where we shouldn't:
+https://github.com/astral-sh/ruff/pull/21970</p>
+<p>I suggest going commit-by-commit for more easily digestible changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-12-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-12-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-12-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-12-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-12-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-12-15 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-15 14:47</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-15 14:49</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 42 diagnostics
++ Found 41 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1218:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5122 diagnostics
++ Found 5121 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 14:52</div>
+            <div class="timeline-body"><p>Is the change to <code>signature_help()</code> definitely correct for other users of the API apart from completions? The reason why I put the fix in <code>completions.rs</code> is I assumed it was deliberate for <code>signature_help()</code> to return <code>Some()</code> in this situation:</p>
+<pre><code class="language-py">(&lt;CURSOR&gt;)()
+</code></pre>
+<p>E.g. for on-hover tooltips, it might be desirable to have information displayed about the signature associated with the thing being called, if my cursor was there?</p>
+<p>I haven't done a proper audit of the other callsites of <code>signature_help()</code>, however</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @BurntSushi on 2025-12-15 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-15 15:02</div>
+            <div class="timeline-body"><p>The on-hover tooltips still seem to work?</p>
+<p>https://github.com/user-attachments/assets/86f1e265-8926-42b9-8fdb-740b53bf47c6</p>
+<p>I'll take a look at the call sites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/importer.rs</code>:758 on 2025-12-15 15:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            ImportResponseKind::Partial(_) =&gt; 1,
+            ImportResponseKind::Qualified { .. } =&gt; 2,
+</code></pre>
+<p>For clarity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-12-15 15:07</div>
+            <div class="timeline-body"><p>The signature_help changes make sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 15:09</div>
+            <div class="timeline-body"><p>(If @Gankra's okay with the <code>signature_help</code> changes then I definitely am!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-15 15:10</div>
+            <div class="timeline-body"><p>nb signature_help is specifically for the info that appears when you're typing a function argument. Everything else that does signature_help-like things instead uses the APIs that signature_help is built <em>on top of</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-15 15:16</div>
+            <div class="timeline-body"><p>So I took a closer look, and I flipped the check back into completions and outside of signature help. Namely, consider this snippet:</p>
+<pre><code class="language-python">import re
+re.ma&lt;CURSOR&gt;tch('', '')
+</code></pre>
+<p>In VS Code at least, you can forcefully ask for signature help at the position of cursor with <code>Ctrl + Shift + Space</code>.  And the signature info bails out if <code>signature_help</code> fails:</p>
+<p>https://github.com/astral-sh/ruff/blob/b96c570540c2c2aad56d932dce3c351f01e80a46/crates/ty_server/src/server/api/requests/signature_help.rs#L57-L59</p>
+<p>Since the cursor isn't in the arguments portion of the call expression, this would cause the signature help to not show up. It kind of seems like it probably should?</p>
+<p>So anyway, I moved the check back into completions specifically where @AlexWaygood originally had it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Since the cursor isn't in the arguments portion of the call expression, this would cause the signature help to not show up. It kind of seems like it probably should?</p>
+</blockquote>
+<p>Would it be possible to add a regression test for this case, or would that be a pain?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-15 16:47</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Since the cursor isn't in the arguments portion of the call expression, this would cause the signature help to not show up. It kind of seems like it probably should?</p>
+</blockquote>
+<p>Would it be possible to add a regression test for this case, or would that be a pain?</p>
+</blockquote>
+<p>Done! Our e2e test framework makes this pretty easy. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-15 22:32</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-12-16 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-16 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-16 13:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

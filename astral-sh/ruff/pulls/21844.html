@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Python version and Python platform in the fuzzer output when fuzzing fails - astral-sh/ruff #21844</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Print Python version and Python platform in the fuzzer output when fuzzing fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21844">#21844</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-08 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-08 13:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>There was some confusion in https://github.com/astral-sh/ruff/pull/21839, because ty as executed by the fuzzer was picking up the <code>requires-python = &quot;&gt;=3.7&quot;</code> setting in Ruff's pyproject.toml file. But that's different from ty's default behaviour (if executed in a directory that has no pyproject.toml file, and no pyproject.toml file in any of its ancestor directories), which is to assume Python 3.14.</p>
+<p>I think running the fuzzer with <code>--python-version={OLDEST_SUPPORTED_PYTHON}</code> is actually a pretty good idea -- it caught a bug in #21839! But we should do that explicitly rather than having ty implicitly pick up the Python version from Ruff's pyproject.toml file. And we should print out the Python version and Python platform to the terminal when the fuzzer finds a bug.</p>
+<details>
+<summary>Screenshot showing the new output when a bug is found</summary>
+
+<p><img width="2642" height="1692" alt="image" src="https://github.com/user-attachments/assets/c748c7df-a7cc-49df-abd6-0a9ec939e626" /></p>
+</details> 
+
+<h2>Test Plan</h2>
+<ul>
+<li>See above screenshot</li>
+<li>CI on this PR</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2025-12-08 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-12-08 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-08 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/pyproject.toml</code>:22 on 2025-12-08 13:46</div>
+            <div class="timeline-body"><p>listing ty as an explicit dependency makes it easier to run <code>uv run ty check</code> locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 13:48</div>
+            <div class="timeline-body"><p>I couldn't get the ty server to select the correct virtual environment without this in VSCode, even if I opened the <code>./python/py-fuzzer</code> folder as its own workspace in VSCode. Not sure why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 13:55</div>
+            <div class="timeline-body"><p>This should not be necessary, given that the ruff <code>pyproject.toml</code> doesn't contain a <code>ty</code> section.</p>
+<p>What's more likely the case is that you selected (or VS Code did it for you) a Python interpreter in VS Code, which we use as preferred fallback. You can select a Python Interpreter using <code>Cmd+P, Select Interpreter</code>. Make sure it points to your venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 13:55</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ty/issues/1185</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-08 13:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-12-08 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>python/py-fuzzer/fuzz.py</code>:70 on 2025-12-08 13:57</div>
+            <div class="timeline-body"><p>Does this mean that the fuzzer will now always run the code assuming the oldest Python version and <code>linux</code>?</p>
+<p>When I was debugging 21839, I ran the fuzzer with some print statements to get the panic message and it printed the message multiple times. This suggests that it must be running the same code multiple times (?) but I also noticed that it didn't print the message for every run which suggests that the Python version picked up could've been different.</p>
+<p>Let me know if my assumptions are incorrect because I don't know how py-fuzzer works, you might know better! What I'm trying to ask is that would this make us loose coverage on testing the same seed with different Python version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/fuzz.py</code>:51 on 2025-12-08 13:57</div>
+            <div class="timeline-body"><p>The <code>parent.parent.parent</code> is rather funny here. I would probably write this as <code>Path(__file__) / &quot;../../../pyproject.toml&quot;</code></p>
+<p>Is this loading Ruff's <code>pyproject.toml</code>? Do we want that, given that it's a very old Python version? Should we instead fuzz for multiple Python versions (using sharding) or hard-code a reasonable and more recent Python version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 14:00</div>
+            <div class="timeline-body"><p>I think I found a problematic setting in my VSCode User settings that might be the cause...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:51 on 2025-12-08 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this loading Ruff's <code>pyproject.toml</code>? Do we want that, given that it's a very old Python version?</p>
+</blockquote>
+<p>I explained why I think that it's useful to test with an old version in my PR description. It's better at catching bugs that way! It's more likely to throw up situations that we didn't think about when writing PRs, such as: &quot;What happens if we want to infer a type as a <code>ParamSpec</code> instance but the <code>ParamSpec</code> class doesn't exist yet in the <code>typing</code> module?&quot;</p>
+<blockquote>
+<p>Should we instead fuzz for multiple Python versions (using sharding) or hard-code a reasonable and more recent Python version?</p>
+</blockquote>
+<p>we can consider making those changes, for sure. For now, this PR just makes explicit what the PR was always implicitly doing before. I'd prefer to consider those changes separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:70 on 2025-12-08 14:04</div>
+            <div class="timeline-body"><p>This makes explicit what it was always doing: it was always using the Python version that it picked up from Ruff's pyproject.toml file before.</p>
+<p>The reason why you saw multiple messages from your <code>print()</code> statements isn't because it was running ty with a matrix of Python versions or Python platforms. Instead, it's that the fuzzer found a bug on a huge generated Python file and then systematically tried to minimize the AST in that file to produce the smallest possible snippet on which the bug would reproduce. That involves executing ty repeatedly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/fuzz.py</code>:51 on 2025-12-08 14:05</div>
+            <div class="timeline-body"><p>Fair enough, although it is somewhat confusing because ty doesn't officially support Python 3.7. I think we only support 3.8 or newer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-08 14:06</div>
+            <div class="timeline-body"><p>Let's revert the <code>[tool.ty.environment]</code> changes. I'd be inclined to hard code the Python version to 3.8 or shard the benchmark to check multiple versions (both seem equally likely to catch bugs IMO because we default to an old Python version in mdtests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:51 on 2025-12-08 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Fair enough, although it is somewhat confusing because ty doesn't officially support Python 3.7. I think we only support 3.8 or newer</p>
+</blockquote>
+<p>Hrm, it's listed as a supported version in our <code>--help</code> message?</p>
+<p><img width="3802" height="448" alt="image" src="https://github.com/user-attachments/assets/6bb3cf30-e38b-4c94-8eb8-2825a855f20f" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/fuzz.py</code>:51 on 2025-12-08 14:12</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/878</p>
+<p>ty's <code>pyproject.toml</code> specifies <code>requires-python = &quot;&gt;=3.8&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-08 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 14:29</div>
+            <div class="timeline-body"><p>Okay, I managed to get VSCode to select the correct Python interpreter.</p>
+<p>When I use Pylance, a popup appears when I open a project for the first time, that invites me to select the Python interpreter from a drop-down. That never happened when opening the project with Pylance disabled and the ty-vscode extension running. Is that expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-12-08 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-08 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-08 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>python/py-fuzzer/pyproject.toml</code>:37 on 2025-12-08 14:42</div>
+            <div class="timeline-body"><p>My experience has been that VS Code sometimes automatically selects an interpreter the first time I open a project and then sticks to it. I'm not sure why or when it does that. I've found this confusing in the past, and this is why I considered changing how we should treat the Python environment from VS Code (but that also sort of feels bad)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

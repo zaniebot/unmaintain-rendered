@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] replace `FxHash{Map, Set}` with footgun-mitigated APIs - astral-sh/ruff #21686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] replace <code>FxHash{Map, Set}</code> with footgun-mitigated APIs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21686">#21686</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-11-29 06:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-29 06:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>from https://github.com/astral-sh/ty/issues/1670</p>
+<p>~~If a data structure that depends on salsa IDs is used as the key for an <code>FxHashMap</code> or the value of an <code>FxHashSet</code>, the output order of the iterator will be unstable. If a query depends on this order, the results of fixed-point iteration will be unstable.
+In this case, <code>Fx{Index, Order}{Map, Set}</code> should be used, but it seems that this is not being done thoroughly.~~</p>
+<p>~~Simply replacing all <code>FxHash{Map, Set}</code> with <code>Fx{Index, Order}{Map, Set}</code> would solve the problem, but it is generally believed that the former has slightly better performance if we are only using insertion and retrieval without using a set/map as an iterator.~~</p>
+<p>~~Therefore, this PR proposes a compromise.~~
+That is, replace all <code>FxHash{Map, Set}</code> used within ty with wrapper structs that does not implement <code>(Into)Iterator</code>, and instead define methods like <code>unstable_iter</code> to make users of these structs aware of whether iteration operations are safe.</p>
+<p>After performing this refactoring, I discovered some suspicious parts. I hope this fix will help to resolve the issue.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-29 06:37</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-29 06:39</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1209:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5511 diagnostics
++ Found 5512 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-29 06:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:106 on 2025-11-29 08:28</div>
+            <div class="timeline-body"><p>It's probably better to use <code>FxIndexSet</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/overrides.rs</code>:34 on 2025-11-29 08:29</div>
+            <div class="timeline-body"><p>We should probably use <code>FxIndexSet</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1040 on 2025-11-29 08:50</div>
+            <div class="timeline-body"><p>We should probably use <code>FxIndexSet</code> here.
+The rest of this module seems okay to use unstable iterators, unless I'm overlooking something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-29 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-11-29 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mtshiba on 2025-11-29 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_project/src/files.rs</code>:155 on 2025-11-29 10:41</div>
+            <div class="timeline-body"><p>We should probably use <code>FxIndexSet</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-29 10:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:123 on 2025-11-29 10:52</div>
+            <div class="timeline-body"><p>We should probably use <code>FxIndexSet</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-29 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-11-29 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mtshiba on 2025-11-29 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-29 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-29 11:38</div>
+            <div class="timeline-body"><p>Unfortunately, it appears that non-determinism remains due to factors entirely different from those considered in this PR.
+However, that doesn't mean I think these changes are useless (they appear to improve performance slightly in benchmarks of large projects).</p>
+<p>Anyway, I'm marking this PR as ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-11-29 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-29 18:11</div>
+            <div class="timeline-body"><p>I like the approach, but I don't think using an IndexMap is the solution.</p>
+<p>Iterating over two <code>HashMap</code>s, each created by inserting the same elements in the same order, will yield the same iteration order when run on the same platform.</p>
+<p>The issue we see with fix point is that it's no longer guaranteed that the elements are inserted in the same order. However, we'll have the exact same issue when using <code>IndexMap</code> because <code>IndexMap</code>'s iteration order is defined by insertion order, which isn't guaranteed to be deterministic within a cyclic query.</p>
+<p>I'm not sure what the solution here is, other than applying some sort of sorting (somewhere?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-30 16:29</div>
+            <div class="timeline-body"><p>There's also one flaky diagnostic. What I suspect is that our convergence functions are now sensitive to which query is the outer-most cycle or some query that bails early as soon as it sees the first <code>Divergent</code> type (any type), and the any type is only visible depending on the cycle nesting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/ty.rs</code>:91 on 2025-12-01 09:29</div>
+            <div class="timeline-body"><p>I don't think we should make this change. The check result should never depend on iteration order because reading a directory doesn't guarantee that the files are listed in a deterministic ordering.</p>
+<p>If we rely on any ordering, then we'd have to sort the files manually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:321 on 2025-12-01 09:30</div>
+            <div class="timeline-body"><p>Same here, file watching behavior should not depend on iteration order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/files.rs</code>:155 on 2025-12-01 09:30</div>
+            <div class="timeline-body"><p>I don't think we should because there's nothing guaranteeing that we insert files in a deterministic order. See my other comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/lib.rs</code>:58 on 2025-12-01 09:31</div>
+            <div class="timeline-body"><p>Same here, I don't think preserving insertion order gives us anything here because we don't control insertion order. Therefore, it's important that our check result doesn't depend on in which iteration individual files are checked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/typeshed.rs</code>:225 on 2025-12-01 09:34</div>
+            <div class="timeline-body"><p>Given that we sort, using <code>stable_iter</code> here doesn't seem important</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/place.rs</code>:142 on 2025-12-01 09:41</div>
+            <div class="timeline-body"><p>Implementing the type on the key seems problematic to me, because it isn't the key that ensures iteration order is stable. In fact, the key doesn't matter at all.</p>
+<ul>
+<li>Iterating over a regular <code>HashMap</code> should always be considered non-consistent (it's stable but not platform agnostic). Ideally, ty doesn't depend on any platform specific ordering</li>
+<li>For the iteration order to be stable, it is required that all items are inserted in the exact same ordering. This isn't something the key controls. Instead, it's something that depends on how the map is built and why all maps in <code>SemanticIndex</code> are stable (because we build them in a non-cyclic query)</li>
+</ul>
+<p>I like &quot;removing&quot; <code>into_iter</code> and <code>iter</code> from <code>HashSet</code> and <code>HashMap</code> and only exposing a <code>iter_unstable</code> and <code>into_iter_unstable</code> methods to &quot;warn&quot; about the possiblity that the iteration order isn't guaranteed. But I don't think we should add a <code>StableKey</code> trait as this gives a false sense of &quot;safety&quot;.</p>
+<p>But I do get your idea. What you want to express is: We know that this map is built in a deterministic way, it's safe to iterate it and assume stable ordering. Unfortunately, we can't do this without using a stable hash function, which <code>FxHash</code> isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/lib.rs</code>:67 on 2025-12-01 09:43</div>
+            <div class="timeline-body"><p>Let's move this to its own module (<code>hash.rs</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/lib.rs</code>:174 on 2025-12-01 09:44</div>
+            <div class="timeline-body"><p>If this is commonly required, then using a <code>BTreeSet</code> is probably better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/lib.rs</code>:326 on 2025-12-01 09:45</div>
+            <div class="timeline-body"><p>What's the motivation for offering these methods if they always panic at runtime. It seems preferred to not have those methods in the first place (or name then <code>keys_unstable</code> etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-01 09:47</div>
+            <div class="timeline-body"><p>I haven't reviewed all the changes but I don't think the <code>StableKey</code> assumption is safe.</p>
+<p>I do think it makes sense to have a hash map wrapper and this is also what rustc does https://github.com/rust-lang/rust/blob/ae90dcf0207c57c3034f00b07048d63f8b2363c8/compiler/rustc_data_structures/src/stable_map.rs#L45</p>
+<p>Another solution (maybe less invasive?) could be to initialize the hashser function with a random state (instead of 0) in debug builds, so that iteration order is guaranteed to be different across runs (or have a feature flag that we can turn on)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 14:39</div>
+            <div class="timeline-body"><p>re: randomizing layouts: if you want to go down that route I suggest cribbing from <a href="https://doc.rust-lang.org/beta/unstable-book/compiler-flags/randomize-layout.html">rustc's <code>-Zrandomize-layout</code></a> which lets you pass the seed in as a CLI argument (and print the seed any time one is selected so people can try to reproduce an issue).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-01 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/semantic_index/place.rs</code>:142 on 2025-12-01 16:44</div>
+            <div class="timeline-body"><p>You're right. I considered <code>FxHashMap</code> for the same keys as &quot;stable&quot; in a narrow sense, but it certainly doesn't guarantee that it will give a consistent order in all environments and versions. I'll remove <code>StableKey</code> APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/lib.rs</code>:326 on 2025-12-01 17:07</div>
+            <div class="timeline-body"><p><code>crate::FxHashMap</code> implements <code>Deref&lt;Target=rustc_hash::FxHashMap&gt;</code>. I wanted to avoid the hassle of wrapping all the APIs.
+But then <code>iter</code>s would also be available via <code>Deref</code>, so I decided to override them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-01 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-01 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/lib.rs</code>:326 on 2025-12-01 18:06</div>
+            <div class="timeline-body"><p>I'd be fine copying over the signatures from <code>FxHashMap</code> that we need, similar to what rustc does. I suspect that it won't be that many (mainly <code>get</code>, <code>entry</code> etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/ty.rs</code>:5 on 2025-12-02 07:56</div>
+            <div class="timeline-body"><p>Let's not use <code>BTreeSet</code> for indexed files. It won't give us any guarantees because the deterministic ordering goes out of the window in <code>project.check</code>, where we process the files concurrently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:55 on 2025-12-02 07:57</div>
+            <div class="timeline-body"><p>Same here. I don't see why a stable ordering would be necessary here. We sort the returned diagnostics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/files.rs</code>:130 on 2025-12-02 07:58</div>
+            <div class="timeline-body"><p>Let's revert this change for the same reason as stated above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/hash.rs</code>:44 on 2025-12-02 07:59</div>
+            <div class="timeline-body"><p>Why is it okay to <code>Deref</code> <code>FxHashSet</code> but not <code>FxHashMap</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/lint.rs</code>:349 on 2025-12-02 08:00</div>
+            <div class="timeline-body"><p>What's the reason for this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1040 on 2025-12-02 08:03</div>
+            <div class="timeline-body"><p>Can you say more what <code>query-dependent</code> means?</p>
+<p>Looking at the loop below, it doesn't seem to depend on ordering as it returns <code>true</code> only if all typevars satisfy the constraints and there's no state between the type var checking, as far as I can tell</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:518 on 2025-12-02 08:05</div>
+            <div class="timeline-body"><p>Are we using this anywhere outside the LSP?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-12-02 08:06</div>
+            <div class="timeline-body"><p>I think I'm leaning towards changing the hash maps in separate PRs and more explicitly talk about why the changes are necessary. I'm not convinced that it's necessary to use <code>FxIndexMap</code> in many cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-12-02 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-12-03 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-03 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/hash.rs</code>:44 on 2025-12-03 16:55</div>
+            <div class="timeline-body"><p>I simply forgot to revert. There is no longer any need to implement <code>Deref</code> for both <code>FxHash{Set, Map}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:518 on 2025-12-03 17:18</div>
+            <div class="timeline-body"><p>It seems to be used in ty_python_semantic as well (https://github.com/mtshiba/ruff/blob/stable-iteration/crates/ty_python_semantic/src/types/function.rs#L1464-L1467). In that case, however, an unstable iterator is not a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-03 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-03 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/lint.rs</code>:349 on 2025-12-03 17:23</div>
+            <div class="timeline-body"><p>Using <code>Deref</code> prevented <a href="https://rustc-dev-guide.rust-lang.org/borrow_check/two_phase_borrows.html">two-phase borrows</a> from working properly. Now that we're no longer using <code>Deref</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-03 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1040 on 2025-12-03 17:32</div>
+            <div class="timeline-body"><p><code>{valid, required}_specialization</code> uses <code>lazy_{bound, constraints}</code> internally. I meant that the order in which these queries are called is non-deterministic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-03 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:518 on 2025-12-03 17:37</div>
+            <div class="timeline-body"><p>that is just for internal use so that we can test the function itself in our mdtests; it's not a public-facing part of ty_python_semantic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] disallow using unstable iterators of `FxHash{Map, Set}` as query input" to "[ty] replace `FxHash{Map, Set}` with footgun-mitigated APIs" by @mtshiba on 2025-12-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-03 18:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I'm leaning towards changing the hash maps in separate PRs and more explicitly talk about why the changes are necessary. I'm not convinced that it's necessary to use <code>FxIndexMap</code> in many cases.</p>
+</blockquote>
+<p>I changed this PR to just replace <code>FxHash{Map, Set}</code> with new APIs. Therefore, this PR does not change any of the behavior of ty. Changes that affect behavior will be made after this PR (with reconsideration).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-12-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 08:04</div>
+            <div class="timeline-body"><p>Thanks for updating.</p>
+<p>I'd be curious to get some more opinions on this. To me, this PR goes from one extreme to the other. I don't think we need to enforce this new API in all crates. E.g. I think it's completely fine to use the normal <code>FxHashMap</code> and <code>IntoIterator</code> in the project file discovery.</p>
+<p>I'm leaning towards:</p>
+<ul>
+<li>Giving those types a different name instead of overriding <code>FxHashSet</code>. I'm not entirely sure what to name them</li>
+<li>Update our Contribution guidelines to state that these types should be used in <code>ty_python_semantic</code> with an explanation why it's important</li>
+<li>Add the types to <code>ruff_db</code></li>
+</ul>
+<p>But maybe it's just me who dislikes the extra verbosity and others actually prefer to override <code>FxHashSet</code> and <code>FxHashMap</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-04 09:46</div>
+            <div class="timeline-body"><p>The purpose of this PR is to make developers aware that using <code>FxHash{Map, Set}</code> as an iterator is inherently unstable, and in a sense, it intentionally introduces noisy APIs.
+However, if you feel it's troublesome to continue using <code>unstable_iter()</code> in places where it is clearly OK to use it as an iterator, one option is to give <code>FxHash{Map, Set}</code> a tag type and change its behavior depending on the tag. In this case, there is no need to prepare two types of structs.</p>
+<pre><code class="language-rust">use std::collections::HashMap;
+use std::collections::hash_map::IntoIter;
+
+/// You are sure you can always use this hash map/set as an iterator.
+#[derive(Default)]
+pub struct ImplIntoIterator;
+#[derive(Default)]
+pub struct NoIntoIterator;
+
+#[derive(Default)]
+pub struct FxHashMap&lt;K, V, Tag=NoIntoIterator&gt;(HashMap&lt;K, V&gt;, std::marker::PhantomData&lt;Tag&gt;);
+
+impl&lt;K, V&gt; IntoIterator for FxHashMap&lt;K, V, ImplIntoIterator&gt; {
+    type Item = (K, V);
+    type IntoIter = IntoIter&lt;K, V&gt;;
+
+    fn into_iter(self) -&gt; IntoIter&lt;K, V&gt; {
+        self.0.into_iter()
+    }
+}
+
+fn main() {
+    let map1: FxHashMap&lt;u32, u32&gt; = FxHashMap::default();
+    let map2: FxHashMap&lt;u32, u32, ImplIntoIterator&gt; = FxHashMap::default();
+    
+    for _i in map1 {} // ERR
+    for _i in map2 {} // OK
+}
+</code></pre>
+<p>Using <code>FxHashMap&lt;K, V, ImplIntoIterator&gt;</code> means that you are declaring that it can always be used as an iterator and there is no problem with that, and using <code>FxHashMap&lt;K, V, NoIntoIterator&gt;</code> means that you need to make sure it is OK to use before each iteration (if it is safe you can use <code>unstable_iter()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 16:27</div>
+            <div class="timeline-body"><p>I'm weakly in favour of this PR.</p>
+<p>Points I see in favour:</p>
+<ul>
+<li>We've run into multiple bugs now due to iterating over <code>HashSet</code>s when we should be using <code>IndexSet</code>s.</li>
+<li>It's been nontrivial to track down those bugs when we've hit them. This PR should make it much less likely for us to introduce them in the first place, since it forces us to think explicitly about whether iterating over a <code>HashSet</code> is safe in that specific location. It also makes it easier to grep for places where we're iterating over sets, which makes it easier to figure out where the bug might be when we <em>do</em> come across one of these bugs.</li>
+<li>IIUC, the new abstraction should be zero-cost when it comes to performance</li>
+<li>The new code is all pretty well isolated in its own submodule</li>
+</ul>
+<p>Points I see against:</p>
+<ul>
+<li>It does seem like a somewhat elaborate solution to the problem. It's a fair amount of new code.</li>
+<li>Adding APIs to the wrapper structs as and when we need them feels like it could be tedious, and it might confuse third-party contributors when they find <code>HashSet</code> APIs aren't exposed on these wrappers</li>
+<li>I think iterating over <code>HashSet</code>s is probably fine outside of <code>ty_python_semantic</code>? It's when the hash depends on the hash of a <code>Type</code> that things get problematic, because that changes unpredictably depending on how many <code>Type</code>s Salsa interns in which places and in which order.</li>
+<li>I don't think our biggest source of nondeterminism right now is the fact that we sometimes iterate over <code>HashSet</code>s, it's issues resulting from our cycle normalization</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 18:57</div>
+            <div class="timeline-body"><p>I don't have strong feelings about this change in any direction. It seems like a lot of added code/machinery to provide compile-time protection from a problem that hasn't really ever caused us that much difficulty. Unstable iterators have only caused non-determinism a couple times that I can recall, and it hasn't been that hard to track down. The real difficult non-determinism comes from reliance on Salsa IDs, which this won't help with.</p>
+<p>I am also concerned with the ongoing overhead of contributors being confused that methods on upstream hash-sets don't exist on our hashsets, and have to be added if we haven't used them before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-10 16:48</div>
+            <div class="timeline-body"><p>The original purpose of this PR was to comprehensively identify and fix uses of unstable iterators that negatively impact deterministic results.
+The refactoring itself is a side effect, and if you all don't feel a strong need to accept it, applying the YAGNI principle is probably a better choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-12-10 16:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

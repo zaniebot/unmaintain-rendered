@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Ruff] Fix RUF054 - astral-sh/ruff #16452</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Ruff] Fix RUF054</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16452">#16452</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-03-01 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-01 16:54</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-02 16:37</div>
+            <div class="timeline-body"><p>Thanks for opening this! It looks like calls to <code>check_logical_lines</code> are gated behind this check:
+https://github.com/astral-sh/ruff/blob/0d615b8765d7676e4842cd0e3dc91c6a27d6bc17/crates/ruff_linter/src/linter.rs#L125-L129</p>
+<p>so you also have to update the <code>Rule::lint_source</code> method here:
+https://github.com/astral-sh/ruff/blob/d796961ff78fd64a4399df161218a58ce00ec933/crates/ruff_linter/src/registry.rs#L249</p>
+<p><code>IndentedFormFeed</code> is currently in the <code>PhysicalLines</code> block here:
+https://github.com/astral-sh/ruff/blob/d796961ff78fd64a4399df161218a58ce00ec933/crates/ruff_linter/src/registry.rs#L253-L261</p>
+<p>but you'll need to move it into the <code>LogicalLines</code> pattern.</p>
+<p>After doing that, I was able to trigger your panic in the RUF054 test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-02 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-02 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-05 19:25</div>
+            <div class="timeline-body"><p>Hey @ntBre thanks for the feedback. Now it is working.</p>
+<p>However I have another problem with logical lines.</p>
+<p>Suppose I want to consider the following example</p>
+<pre><code class="language-python">  print(&quot;!&quot;)
+</code></pre>
+<p>where the  are form feeds.</p>
+<p>Then I have that the tokens of the logical line associated to the code are</p>
+<pre><code>[LogicalLineToken { kind: Name, range: 378..383 }, LogicalLineToken { kind: Lpar, range: 383..384 }, LogicalLineToken { kind: String, range: 384..387 }, LogicalLineToken { kind: Rpar, range: 387..388 }, LogicalLineToken { kind: Newline, range: 388..389 }]
+</code></pre>
+<p>while If I convert the line into text and print it I have</p>
+<pre><code>&quot;print(\&quot;!\&quot;)\n&quot;
+</code></pre>
+<p>So it seems that the logical line are completely ignoring the feed forms. Is this normal?</p>
+<p>Perhaps is because of this issue that the rule was considering physical lines instead of logical ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-03-05 19:26</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #16452 will <strong>degrade performances by 13.55%</strong></h3>
+<p><sub>Comparing <code>VascoSch92:RUF054</code> (8edfcb2) with <code>main</code> (ebd172e)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 4</code> regressions<br />
+<code>✅ 28</code> untouched</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Blarge%2Fdataset.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[large/dataset.py]</code></a> | 21.3 ms | 22.3 ms | -4.66% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fctypeslib.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code></a> | 5.1 ms | 5.4 ms | -5.49% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[numpy/globals.py]</code></a> | 849.5 µs | 895.3 µs | -5.11% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/VascoSch92%3ARUF054?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bunicode%2Fpypinyin.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[unicode/pypinyin.py]</code></a> | 2.6 ms | 3 ms | -13.55% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-05 19:56</div>
+            <div class="timeline-body"><p>Yeah, if we're looking at the tokens themselves, I wouldn't expect to see form feeds. They're probably discarded with other whitespace.</p>
+<p>It looks like you're using <code>line.text().as_bytes()</code> though, does that get you what you need? I think I might be missing something in the question because GitHub ate the form feeds :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-06 07:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, if we're looking at the tokens themselves, I wouldn't expect to see form feeds. They're probably discarded with other whitespace.</p>
+<p>It looks like you're using <code>line.text().as_bytes()</code> though, does that get you what you need? I think I might be missing something in the question because GitHub ate the form feeds 😆</p>
+</blockquote>
+<p>Let me explain better. Suppose I have some spaces or tabs at the beginning of a line, followed by a form feed. When I receive the logical line line and convert it to text to inspect its bytes, the spaces and tabs are discarded. This makes sense, as it aligns with the purpose of the rule—form feeds placed between indentation spaces or tabs can cause issues. But that prevent my from running tests to see if the rule implementation is working properly. :-)</p>
+<p>For example, consider the following case: <code>&quot;if True:\n \u{c}\u{c} print(\&quot;!\&quot;)\n&quot;</code>, where \u{c} represents a form feed.</p>
+<p>In this scenario, I receive the two logical lines that converted to text are: <code>if True:\n</code> and <code>print(\&quot;!\&quot;)\n</code> (with spaces and form feeds removed, i.e., I cannot check if there is a violation).</p>
+<p>I suspect the issue occurs when converting the logical line to text. note that the actual rule code converts a Line directly into bytes without first converting it to text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 18:07</div>
+            <div class="timeline-body"><p>Thanks for the extra context and sorry for the delay here. I think I'll need to get the code locally and play with it a bit to make sure I'm following.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 20:47</div>
+            <div class="timeline-body"><p>I haven't followed the entire discussion but what I understand is that you want to find the form feeds that are between any two tokens of a logical line. I suspect that you have to do something similar to what we do here</p>
+<p>https://github.com/astral-sh/ruff/blob/9f3a38d408f473df7a6b3574c5d1389bef303dd5/crates/ruff_python_index/src/indexer.rs#L45-L60</p>
+<p>because the lexer doesn't generate any tokens for trivia whitespace (we considered doing that a couple of times and I still think it might be worth it but it isn't something ruff does today)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-07 21:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the extra context and sorry for the delay here. I think I'll need to get the code locally and play with it a bit to make sure I'm following.</p>
+</blockquote>
+<p>Ah sorry if my expleination was not clear. If you run the test for this fork and compare the printed output with the python code in the test script, you will se what i mean. I hope i'm not hallucinating or doing stupid errors :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-07 21:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't followed the entire discussion but what I understand is that you want to find the form feeds that are between any two tokens of a logical line. I suspect that you have to do something similar to what we do here</p>
+<p>https://github.com/astral-sh/ruff/blob/9f3a38d408f473df7a6b3574c5d1389bef303dd5/crates/ruff_python_index/src/indexer.rs#L45-L60</p>
+<p>because the lexer doesn't generate any tokens for trivia whitespace (we considered doing that a couple of times and I still think it might be worth it but it isn't something ruff does today)</p>
+</blockquote>
+<p>Thanks for the hint.</p>
+<p>Just a question: is there a method that given a logical line, it returns an iterator of the physical lines composing it? This will solve my issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Just a question: is there a method that given a logical line, it returns an iterator of the physical lines composing it? This will solve my issue</p>
+</blockquote>
+<p>No, but I'm also not sure why you'd need that? You can iterate over the tokens and each physical line is separated by a <code>NonLogicalNewline</code> token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-08 10:47</div>
+            <div class="timeline-body"><p>Consider the snippet</p>
+<pre><code class="language-python">  # here there is a form feed
+</code></pre>
+<p>the   represent a form feed. This line should trigger and error as there is a white space before the form feed.</p>
+<p>Now the tokes of the logical line are:</p>
+<pre><code class="language-text">[LogicalLineToken { kind: Comment, range: 120..147 }, LogicalLineToken { kind: NonLogicalNewline, range: 147..148 }]
+</code></pre>
+<p>and if I convert the line to text we have</p>
+<pre><code class="language-text">&quot;# here there is a form feed\n&quot;
+</code></pre>
+<p>This makes sense as the logical line mechanism discard whitespaces (and also form feeds). On the other side, it is not possible to detect if there is a violation.</p>
+<p>This doesn't happens for physical lines.</p>
+<p>Therefore, to detect a violation one needs both the data from physical lines and the one from logical lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-08 17:33</div>
+            <div class="timeline-body"><p>GitHub makes your example difficult to understand because it doesn't show where the form feed is. You may have to use some ASCII art.</p>
+<p>I'm probably overlooking something, but it's not clear to me why this would have to be a logical line rule. Could we make it a token-based rule instead? Then, between every <code>NewLine</code> or <code>NonLogicalNewline</code> and the next token, grab the source text and test if there's a whitespace followed by a form feed character.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-08 19:20</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser! I think the logical line suggestion came from the issue (as an alternative to a physical line rule, where it started out), and I didn't know enough about this part of the code base to recommend a token-based rule instead. I think that's probably a better way to go.</p>
+<p>@VascoSch92 Thanks for the explanations. I think they are clear, it just helps me to see the code and output locally too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:39</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this PR because it has become stale. Please don't hesitate to resubmit the PR and reference this PR if you plan to keep working on this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

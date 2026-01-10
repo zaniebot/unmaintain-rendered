@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] use &quot;referable&quot; definitions in implicit attribute inference - astral-sh/ruff #21822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] use &quot;referable&quot; definitions in implicit attribute inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21822">#21822</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-12-06 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-06 09:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves implicit attribute inference.</p>
+<p>Specifically, reachability checks for definitions within method bodies, which are used to infer implicit attributes, are now more accurate.</p>
+<pre><code class="language-python">class C:
+    def __init__(self) -&gt; None:
+        # &quot;significantly complex&quot; condition evaluates to `False`
+        if (2 + 3) &lt; 4:
+            self.x = &quot;a&quot;
+
+# error: [unresolved-attribute]
+reveal_type(C().x)  # revealed: Unknown
+</code></pre>
+<p>Currently, all definitions within a method body are treated as reachable, i.e., reachability constraints are simply ignored (#18955), because after the control flow is transferred, all definitions within the method body are marked as unreachable.</p>
+<pre><code class="language-python">class C:
+    def __init__(self):
+        self.x = 1
+        return
+        self.y = 2
+
+reveal_type(C().x)  # revealed: Unknown | Literal[1]
+# error: [unresolved-attribute]
+reveal_type(C().y)  # revealed: Unknown
+</code></pre>
+<p>However, definitions before transfer can be included in the candidates for implicit attribute type inference if they are reachable. Let's call such definitions &quot;referable&quot; and consider them in the implicit attribute inference.</p>
+<h2>Test Plan</h2>
+<p>Some TODOs in <code>mdtest/attributes.md</code> have been resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-06 09:32</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-06 09:52</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Areferable-implicit-attr?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21822 will <strong>degrade performances by 4.46%</strong></h3>
+<p><sub>Comparing <code>mtshiba:referable-implicit-attr</code> (1b9434b) with <code>main</code> (ef45c97)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 2</code> regressions<br />
+<code>✅ 20</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Areferable-implicit-attr?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Areferable-implicit-attr?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_complex_constrained_attributes_2%3A%3Aty_micro%5Bcomplex_constrained_attributes_2%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[complex_constrained_attributes_2]</code></a> | 67.7 ms | 70.9 ms | -4.46% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Areferable-implicit-attr?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_complex_constrained_attributes_3%3A%3Aty_micro%5Bcomplex_constrained_attributes_3%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[complex_constrained_attributes_3]</code></a> | 71.7 ms | 74.8 ms | -4.2% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Areferable-implicit-attr?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-06 10:01</div>
+            <div class="timeline-body"><p>Oh, severe performance degradation and iteration count mismatch panics...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-06 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-06 14:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
++ src/anyio/_core/_synchronization.py:641:17: error[unresolved-attribute] Object of type `Self@_limiter` has no attribute `_total_tokens`
++ src/anyio/_core/_synchronization.py:660:20: error[unresolved-attribute] Object of type `Self@total_tokens` has no attribute `_total_tokens`
++ src/anyio/_core/_synchronization.py:672:13: error[unresolved-attribute] Unresolved attribute `_total_tokens` on type `Self@total_tokens`.
++ src/anyio/_core/_synchronization.py:687:20: error[unresolved-attribute] Object of type `Self@available_tokens` has no attribute `_total_tokens`
+- Found 90 diagnostics
++ Found 94 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ parso/parser.py:126:9: error[unresolved-attribute] Unresolved attribute `stack` on type `Self@parse`.
++ parso/parser.py:132:19: error[unresolved-attribute] Object of type `Self@parse` has no attribute `stack`
++ parso/parser.py:141:20: error[unresolved-attribute] Object of type `Self@parse` has no attribute `stack`
++ parso/parser.py:174:17: error[unresolved-attribute] Object of type `Self@_add_token` has no attribute `stack`
++ parso/parser.py:200:15: error[unresolved-attribute] Object of type `Self@_pop` has no attribute `stack`
++ parso/parser.py:210:9: error[unresolved-attribute] Object of type `Self@_pop` has no attribute `stack`
++ parso/python/diff.py:466:17: warning[possibly-missing-attribute] Attribute `stack` may be missing on object of type `Unknown | Parser`
++ parso/python/parser.py:112:21: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:126:16: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:128:28: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:135:25: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:157:37: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:169:13: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:171:15: error[unresolved-attribute] Object of type `Self@error_recovery` has no attribute `stack`
++ parso/python/parser.py:182:45: error[unresolved-attribute] Object of type `Self@_stack_removal` has no attribute `stack`
++ parso/python/parser.py:186:13: error[unresolved-attribute] Object of type `Self@_stack_removal` has no attribute `stack`
++ parso/python/parser.py:188:9: error[unresolved-attribute] Object of type `Self@_stack_removal` has no attribute `stack`
+- parso/python/pep8.py:258:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:258:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:259:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:259:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:263:17: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:263:17: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:270:20: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:270:20: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:271:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:271:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:276:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:276:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:277:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:277:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:290:22: warning[possibly-missing-attribute] Attribute `get_latest_suite_node` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:290:22: warning[possibly-missing-attribute] Attribute `get_latest_suite_node` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:362:17: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:362:17: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:363:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:363:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:385:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:385:37: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:414:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:414:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:415:20: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:415:20: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:418:35: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:418:35: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:419:54: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:419:54: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:431:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:431:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:433:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:433:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:436:41: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:436:41: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:460:49: warning[possibly-missing-attribute] Attribute `bracket_indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:460:49: warning[possibly-missing-attribute] Attribute `bracket_indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:462:49: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:462:49: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:464:29: warning[possibly-missing-attribute] Attribute `get_latest_suite_node` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:464:29: warning[possibly-missing-attribute] Attribute `get_latest_suite_node` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:471:36: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:471:36: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:486:40: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:486:40: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:492:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:492:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:498:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:498:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:507:40: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:507:40: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:513:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:513:42: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:537:24: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:537:24: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:538:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:538:41: warning[possibly-missing-attribute] Attribute `parent` may be missing on object of type `Unknown | IndentationNode | None`
+- parso/python/pep8.py:541:27: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
++ parso/python/pep8.py:541:27: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
+- Found 197 diagnostics
++ Found 214 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/network/session.py:220:32: error[invalid-argument-type] Argument to function `url_to_path` is incorrect: Expected `str`, found `Unknown | None | str`
++ src/pip/_internal/network/session.py:220:32: error[invalid-argument-type] Argument to function `url_to_path` is incorrect: Expected `str`, found `Unknown | None`
+- src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
++ src/pip/_vendor/distlib/util.py:1484:36: error[invalid-argument-type] Argument to function `match_hostname` is incorrect: Expected `dict[str, str | tuple[tuple[tuple[str, str], ...], ...] | tuple[tuple[str, str], ...]]`, found `dict[str, str | tuple[tuple[tuple[str, str], ...], ...] | tuple[tuple[str, str], ...]] | None | Any`
++ src/pip/_vendor/pkg_resources/__init__.py:2113:20: error[unresolved-attribute] Object of type `Self@_index` has no attribute `_dirindex`
++ src/pip/_vendor/pkg_resources/__init__.py:2125:13: error[unresolved-attribute] Unresolved attribute `_dirindex` on type `Self@_index`.
++ src/pip/_vendor/pkg_resources/__init__.py:2970:13: error[unresolved-attribute] Unresolved attribute `_key` on type `Self@key`.
++ src/pip/_vendor/pkg_resources/__init__.py:3361:13: error[unresolved-attribute] Unresolved attribute `_pkg_info` on type `Self@_parsed_pkg_info`.
+- Found 601 diagnostics
++ Found 605 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/util/windows_registry.py:249:25: error[unresolved-attribute] Object of type `Self@_load_key` has no attribute `root`
++ lib/spack/spack/util/windows_registry.py:249:46: error[unresolved-attribute] Object of type `Self@_load_key` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:259:87: error[unresolved-attribute] Object of type `Self@_valid_reg_check` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:276:72: error[unresolved-attribute] Object of type `Self@get_value` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:282:73: error[unresolved-attribute] Object of type `Self@get_subkey` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:288:74: error[unresolved-attribute] Object of type `Self@get_subkeys` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:301:73: error[unresolved-attribute] Object of type `Self@get_values` has no attribute `key`
++ lib/spack/spack/util/windows_registry.py:321:35: error[unresolved-attribute] Object of type `Self@_traverse_subkeys` has no attribute `key`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:181:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/ruamel/yaml/main.py:183:13: error[unresolved-attribute] Unresolved attribute `_reader` on type `Self@reader`.
+- lib/spack/spack/vendor/ruamel/yaml/main.py:190:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/ruamel/yaml/main.py:184:20: error[unresolved-attribute] Object of type `Self@reader` has no attribute `_reader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:192:13: error[unresolved-attribute] Unresolved attribute `_scanner` on type `Self@scanner`.
++ lib/spack/spack/vendor/ruamel/yaml/main.py:193:20: error[unresolved-attribute] Object of type `Self@scanner` has no attribute `_scanner`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:329:17: error[unresolved-attribute] Object of type `Self@scan` has no attribute `_reader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:333:17: error[unresolved-attribute] Object of type `Self@scan` has no attribute `_scanner`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:353:17: error[unresolved-attribute] Object of type `Self@parse` has no attribute `_reader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:357:17: error[unresolved-attribute] Object of type `Self@parse` has no attribute `_scanner`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:398:17: error[unresolved-attribute] Object of type `Self@compose_all` has no attribute `_reader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:402:17: error[unresolved-attribute] Object of type `Self@compose_all` has no attribute `_scanner`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:465:17: error[unresolved-attribute] Object of type `Self@load_all` has no attribute `_reader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:469:17: error[unresolved-attribute] Object of type `Self@load_all` has no attribute `_scanner`
+- lib/spack/spack/vendor/ruamel/yaml/scanner.py:154:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/ruamel/yaml/scanner.py:157:17: error[unresolved-attribute] Unresolved attribute `_scanner_reader` on type `Self@reader`.
++ lib/spack/spack/vendor/ruamel/yaml/scanner.py:159:17: error[unresolved-attribute] Unresolved attribute `_scanner_reader` on type `Self@reader`.
++ lib/spack/spack/vendor/ruamel/yaml/scanner.py:160:20: error[unresolved-attribute] Object of type `Self@reader` has no attribute `_scanner_reader`
+- Found 7953 diagnostics
++ Found 7973 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/asyncio/client.py:544:21: error[unresolved-attribute] Unresolved attribute `connection` on type `Self@__await_impl__`.
++ src/websockets/asyncio/client.py:546:31: error[unresolved-attribute] Object of type `Self@__await_impl__` has no attribute `connection`
++ src/websockets/asyncio/client.py:551:25: error[unresolved-attribute] Object of type `Self@__await_impl__` has no attribute `connection`
++ src/websockets/asyncio/client.py:560:25: error[unresolved-attribute] Object of type `Self@__await_impl__` has no attribute `connection`
++ src/websockets/asyncio/client.py:574:25: error[unresolved-attribute] Object of type `Self@__await_impl__` has no attribute `connection`
++ src/websockets/asyncio/client.py:575:32: error[unresolved-attribute] Object of type `Self@__await_impl__` has no attribute `connection`
++ src/websockets/asyncio/client.py:598:15: error[unresolved-attribute] Object of type `Self@__aexit__` has no attribute `connection`
++ src/websockets/legacy/client.py:639:15: error[unresolved-attribute] Object of type `Self@__aexit__` has no attribute `protocol`
++ src/websockets/legacy/client.py:669:21: error[unresolved-attribute] Unresolved attribute `protocol` on type `Self@__await_impl__`.
+- Found 41 diagnostics
++ Found 50 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:808:25: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `Future[Any] | Future[Any]`, found `Unknown | Future[_T@__init__] | None`
+- tornado/gen.py:815:41: error[invalid-argument-type] Argument to function `future_set_exc_info` is incorrect: Expected `Future[Unknown] | Future[Unknown]`, found `Unknown | Future[_T@__init__] | None`
+- Found 323 diagnostics
++ Found 321 diagnostics
+
+operator (https://github.com/canonical/operator)
+- ops/_private/harness.py:3127:16: error[missing-argument] No argument provided for required parameter `pebble_client` of function `_can_connect`
+- ops/_private/harness.py:3127:43: error[invalid-argument-type] Argument to function `_can_connect` is incorrect: Expected `_TestingModelBackend`, found `Self@_check_connection`
+- Found 132 diagnostics
++ Found 130 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- apprise/persistent_store.py:1865:16: error[invalid-return-type] Return type does not match returned value: expected `PersistentStoreMode`, found `Unknown | None | PersistentStoreMode`
+- apprise/plugins/vapid/__init__.py:357:20: warning[possibly-missing-attribute] Attribute `load` may be missing on object of type `Unknown | dict[Unknown, Unknown] | WebPushSubscriptionManager`
+- Found 2642 diagnostics
++ Found 2640 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/dependencies/cmake.py:405:17: error[unresolved-attribute] Unresolved attribute `reason` on type `Self@_detect_dep`.
++ mesonbuild/dependencies/dev.py:74:52: error[unresolved-attribute] Object of type `Self@detect` has no attribute `src_include_dirs`
++ mesonbuild/dependencies/dev.py:77:33: error[unresolved-attribute] Object of type `Self@detect` has no attribute `all_src`
++ mesonbuild/dependencies/dev.py:77:47: error[unresolved-attribute] Object of type `Self@detect` has no attribute `main_src`
++ mesonbuild/dependencies/dev.py:79:33: error[unresolved-attribute] Object of type `Self@detect` has no attribute `all_src`
++ mesonbuild/dependencies/dev.py:87:17: error[unresolved-attribute] Unresolved attribute `src_dir` on type `Self@detect_srcdir`.
++ mesonbuild/dependencies/dev.py:88:17: error[unresolved-attribute] Unresolved attribute `all_src` on type `Self@detect_srcdir`.
++ mesonbuild/dependencies/dev.py:89:34: error[unresolved-attribute] Object of type `Self@detect_srcdir` has no attribute `src_dir`
++ mesonbuild/dependencies/dev.py:90:17: error[unresolved-attribute] Unresolved attribute `main_src` on type `Self@detect_srcdir`.
++ mesonbuild/dependencies/dev.py:91:34: error[unresolved-attribute] Object of type `Self@detect_srcdir` has no attribute `src_dir`
++ mesonbuild/dependencies/dev.py:92:17: error[unresolved-attribute] Unresolved attribute `src_include_dirs` on type `Self@detect_srcdir`.
++ mesonbuild/dependencies/dev.py:92:72: error[unresolved-attribute] Object of type `Self@detect_srcdir` has no attribute `src_dir`
++ mesonbuild/dependencies/dev.py:93:72: error[unresolved-attribute] Object of type `Self@detect_srcdir` has no attribute `src_dir`
++ mesonbuild/dependencies/dev.py:145:13: error[unresolved-attribute] Unresolved attribute `prebuilt` on type `Self@__init__`.
++ mesonbuild/dependencies/dev.py:161:17: error[unresolved-attribute] Unresolved attribute `prebuilt` on type `Self@__init__`.
++ mesonbuild/dependencies/dev.py:167:12: error[unresolved-attribute] Object of type `Self@log_info` has no attribute `prebuilt`
+- mesonbuild/scripts/depfixer.py:188:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:188:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:210:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:210:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:211:45: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:211:45: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:212:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:212:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:213:51: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:213:51: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:214:51: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:214:51: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:215:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:215:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:216:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:216:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:217:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:217:48: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:218:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:218:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:219:50: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:219:50: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:220:53: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:220:53: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:221:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:221:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:222:53: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:222:53: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:223:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:223:49: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:224:52: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:224:52: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:227:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:227:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:229:48: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:229:48: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:233:13: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:233:13: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:236:17: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:236:17: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:244:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:244:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:254:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:254:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:256:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:256:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:265:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:265:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:267:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:267:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:275:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:275:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:282:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:282:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:295:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:295:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:311:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:311:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:318:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:318:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:327:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:327:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:338:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:338:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:345:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:345:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:346:17: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:346:17: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:360:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:360:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:395:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:395:13: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:396:13: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:396:13: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:397:13: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:397:13: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:402:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:402:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:431:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:431:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:432:9: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:432:9: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:450:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:450:9: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `Unknown | BufferedRandom | None`
+- mesonbuild/scripts/depfixer.py:452:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `BinaryIO`, found `Unknown | None | BufferedRandom`
++ mesonbuild/scripts/depfixer.py:452:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `BinaryIO`, found `Unknown | BufferedRandom | None`
++ mesonbuild/utils/universal.py:2258:13: error[unresolved-attribute] Unresolved attribute `iterable` on type `Self@__init__`.
++ mesonbuild/utils/universal.py:2273:16: error[unresolved-attribute] Object of type `Self@__iter__` has no attribute `iterable`
++ mesonbuild/utils/universal.py:2276:21: error[unresolved-attribute] Object of type `Self@__next__` has no attribute `iterable`
+- Found 1918 diagnostics
++ Found 1937 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ pkg_resources/__init__.py:2143:20: error[unresolved-attribute] Object of type `Self@_index` has no attribute `_dirindex`
++ pkg_resources/__init__.py:2155:13: error[unresolved-attribute] Unresolved attribute `_dirindex` on type `Self@_index`.
++ pkg_resources/__init__.py:3004:13: error[unresolved-attribute] Unresolved attribute `_key` on type `Self@key`.
++ pkg_resources/__init__.py:3389:13: error[unresolved-attribute] Unresolved attribute `_pkg_info` on type `Self@_parsed_pkg_info`.
+- setuptools/_distutils/command/sdist.py:372:58: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Literal[0] | None | list[Unknown | int | None] | list[Divergent]`
++ setuptools/_distutils/command/sdist.py:372:58: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Literal[0] | None`
+- setuptools/_distutils/text_file.py:232:44: error[unsupported-operator] Operator `+` is unsupported between objects of type `@Todo | int | None | Divergent` and `Literal[1]`
+- setuptools/_distutils/text_file.py:242:41: error[unsupported-operator] Operator `+` is unsupported between objects of type `@Todo | int | None | Divergent` and `Literal[1]`
++ setuptools/_vendor/zipp/__init__.py:234:20: error[unresolved-attribute] Object of type `Self@namelist` has no attribute `__names`
++ setuptools/_vendor/zipp/__init__.py:240:20: error[unresolved-attribute] Object of type `Self@_name_set` has no attribute `__lookup`
+- Found 1271 diagnostics
++ Found 1275 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/sources/test_scaleway.py:224:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Unknown | str` and `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:224:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Unknown | str` and `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:231:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Unknown | str` and `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:231:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Unknown | str` and `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:443:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:443:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:448:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:448:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:453:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:453:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:567:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:567:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:572:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:572:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+- tests/unittests/sources/test_scaleway.py:592:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None | str`
++ tests/unittests/sources/test_scaleway.py:592:30: error[invalid-argument-type] Argument to function `_fix_mocking_url` is incorrect: Expected `str`, found `Unknown | None`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ pwndbg/aglib/kernel/kallsyms.py:479:20: error[unresolved-attribute] Object of type `Self@find_markers_uncompressed` has no attribute `end_of_kallsyms_names_uncompressed`
++ pwndbg/aglib/kernel/kallsyms.py:532:20: error[unresolved-attribute] Object of type `Self@find_markers_uncompressed` has no attribute `end_of_kallsyms_names_uncompressed`
+- pwndbg/aglib/kernel/nftables.py:227:18: warning[possibly-missing-attribute] Attribute `table` may be missing on object of type `Unknown | None | Chain`
+- pwndbg/aglib/kernel/nftables.py:232:21: warning[possibly-missing-attribute] Attribute `basechain` may be missing on object of type `Unknown | None | Chain`
+- pwndbg/aglib/kernel/paging.py:568:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[str, int], ...]`, found `tuple[tuple[Unknown | Literal[&quot;userland&quot;], Literal[0]], tuple[None, Unknown], tuple[Unknown | Literal[&quot;physmap&quot;], Unknown], tuple[None, int], tuple[Unknown | Literal[&quot;vmalloc&quot;], int], tuple[None, None | (Unknown &amp; ~AlwaysFalsy)], tuple[Unknown | Literal[&quot;vmemmap&quot;], Unknown], tuple[None, Unknown], tuple[Literal[&quot;pci&quot;], Unknown], tuple[None, Unknown | int], tuple[Literal[&quot;fixmap&quot;], Unknown], tuple[None, int]]`
++ pwndbg/aglib/kernel/paging.py:568:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[str, int], ...]`, found `tuple[tuple[Unknown | Literal[&quot;userland&quot;], Literal[0]], tuple[None, Unknown], tuple[Unknown | Literal[&quot;physmap&quot;], Unknown], tuple[None, int], tuple[Unknown | Literal[&quot;vmalloc&quot;], int], tuple[None, None | (Unknown &amp; ~AlwaysFalsy)], tuple[Unknown | Literal[&quot;vmemmap&quot;], Unknown], tuple[None, Unknown], tuple[Literal[&quot;pci&quot;], Unknown], tuple[None, Unknown], tuple[Literal[&quot;fixmap&quot;], Unknown], tuple[None, int]]`
+- pwndbg/commands/rop.py:49:29: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None | bytes`
+- pwndbg/commands/rop.py:51:34: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | Buffer`, found `Unknown | None | bytes`
++ pwndbg/commands/slab.py:341:46: error[unresolved-attribute] Object of type `Slab` has no attribute `node_cache`
+- Found 2819 diagnostics
++ Found 2818 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/contrib/internal/subprocess/patch.py:314:44: error[not-iterable] Object of type `Unknown | list[Unknown] | None | list[str] | list[str | Unknown]` may not be iterable
++ ddtrace/contrib/internal/subprocess/patch.py:314:44: error[not-iterable] Object of type `Unknown | list[Unknown] | None | list[str]` may not be iterable
+- ddtrace/contrib/internal/subprocess/patch.py:320:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | list[Unknown] | None | list[str] | list[str | Unknown]`
++ ddtrace/contrib/internal/subprocess/patch.py:320:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | list[Unknown] | None | list[str]`
++ ddtrace/testing/internal/test_data.py:143:15: warning[unsupported-base] Unsupported class base with type `&lt;class 'TestItem[Test, Never]'&gt; | &lt;class 'TestItem[Unknown, Unknown]'&gt;`
++ ddtrace/vendor/ply/yacc.py:300:13: error[unresolved-attribute] Object of type `Self@restart` has no attribute `statestack`
++ ddtrace/vendor/ply/yacc.py:301:13: error[unresolved-attribute] Object of type `Self@restart` has no attribute `symstack`
++ ddtrace/vendor/ply/yacc.py:304:9: error[unresolved-attribute] Object of type `Self@restart` has no attribute `symstack`
++ ddtrace/vendor/ply/yacc.py:305:9: error[unresolved-attribute] Object of type `Self@restart` has no attribute `statestack`
++ ddtrace/vendor/ply/yacc.py:385:9: error[unresolved-attribute] Unresolved attribute `token` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:390:9: error[unresolved-attribute] Unresolved attribute `statestack` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:392:9: error[unresolved-attribute] Unresolved attribute `symstack` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:502:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:545:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:602:25: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parsedebug`.
++ ddtrace/vendor/ply/yacc.py:729:9: error[unresolved-attribute] Unresolved attribute `token` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:734:9: error[unresolved-attribute] Unresolved attribute `statestack` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:736:9: error[unresolved-attribute] Unresolved attribute `symstack` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:822:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:862:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:908:25: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt`.
++ ddtrace/vendor/ply/yacc.py:1035:9: error[unresolved-attribute] Unresolved attribute `token` on type `Self@parseopt_notrack`.
++ ddtrace/vendor/ply/yacc.py:1040:9: error[unresolved-attribute] Unresolved attribute `statestack` on type `Self@parseopt_notrack`.
++ ddtrace/vendor/ply/yacc.py:1042:9: error[unresolved-attribute] Unresolved attribute `symstack` on type `Self@parseopt_notrack`.
++ ddtrace/vendor/ply/yacc.py:1119:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt_notrack`.
++ ddtrace/vendor/ply/yacc.py:1154:29: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt_notrack`.
++ ddtrace/vendor/ply/yacc.py:1200:25: error[unresolved-attribute] Unresolved attribute `state` on type `Self@parseopt_notrack`.
+- tests/testing/internal/test_telemetry.py:392:9: error[invalid-assignment] Implicit shadowing of function `is_benchmark`
+- Found 8379 diagnostics
++ Found 8401 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 39 diagnostics
++ Found 38 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- lib/Crypto/Hash/KangarooTwelve.py:140:13: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | TurboSHAKE`
++ lib/Crypto/Hash/KangarooTwelve.py:140:13: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None`
+- lib/Crypto/Hash/KangarooTwelve.py:145:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | TurboSHAKE`
++ lib/Crypto/Hash/KangarooTwelve.py:145:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None`
+- lib/Crypto/Hash/KangarooTwelve.py:148:17: warning[possibly-missing-attribute] Attribute `_reset` may be missing on object of type `Unknown | None | TurboSHAKE`
++ lib/Crypto/Hash/KangarooTwelve.py:148:17: warning[possibly-missing-attribute] Attribute `_reset` may be missing on object of type `Unknown | None`
+- lib/Crypto/Hash/KangarooTwelve.py:187:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | TurboSHAKE`
++ lib/Crypto/Hash/KangarooTwelve.py:187:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None`
+- lib/Crypto/Hash/KangarooTwelve.py:190:17: warning[possibly-missing-attribute] Attribute `_reset` may be missing on object of type `Unknown | None | TurboSHAKE`
++ lib/Crypto/Hash/KangarooTwelve.py:190:17: warning[possibly-missing-attribute] Attribute `_reset` may be missing on object of type `Unknown | None`
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:330:19: warning[possibly-missing-attribute] Attribute `named_transformers_` may be missing on object of type `Unknown | None | ColumnTransformer`
+- sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:331:37: warning[possibly-missing-attribute] Attribute `n_features_in_` may be missing on object of type `Unknown | None | ColumnTransformer`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:331:37: warning[possibly-missing-attribute] Attribute `n_features_in_` may be missing on object of type `Unknown | ColumnTransformer`
+- sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:332:48: warning[possibly-missing-attribute] Attribute `n_features_in_` may be mis
+
+... (truncated 240 lines) ...
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+- TOTAL MEMORY USAGE: ~66MB
++ TOTAL MEMORY USAGE: ~69MB
+-     memo fields = ~49MB
++     memo fields = ~54MB
+
+trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~167MB
++ TOTAL MEMORY USAGE: ~176MB
+-     memo fields = ~108MB
++     memo fields = ~113MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~316MB
+-     memo fields = ~176MB
++     memo fields = ~194MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+- TOTAL MEMORY USAGE: ~690MB
++ TOTAL MEMORY USAGE: ~725MB
+-     memo fields = ~424MB
++     memo fields = ~445MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

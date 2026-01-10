@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `memchr` for computing line indexes - astral-sh/ruff #21838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>memchr</code> for computing line indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21838">#21838</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-12-08 02:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-08 02:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Some benchmarks with Claude's help:</p>
+<p>| File                | Size  | Baseline             | Optimized            | Speedup |
+|---------------------|-------|----------------------|----------------------|---------|
+| numpy/globals.py    | 3 KB  | 1.48 µs (1.95 GiB/s) | 740 ns (3.89 GiB/s)  | 2.0x    |
+| unicode/pypinyin.py | 4 KB  | 2.04 µs (2.01 GiB/s) | 1.18 µs (3.49 GiB/s) | 1.7x    |
+| pydantic/types.py   | 26 KB | 13.1 µs (1.90 GiB/s) | 5.88 µs (4.23 GiB/s) | 2.2x    |
+| numpy/ctypeslib.py  | 17 KB | 8.45 µs (1.92 GiB/s) | 3.94 µs (4.13 GiB/s) | 2.1x    |
+| large/dataset.py    | 41 KB | 21.6 µs (1.84 GiB/s) | 11.2 µs (3.55 GiB/s) | 1.9x    |</p>
+<p>I think that I originally thought we <em>had</em> to iterate character-by-character here because we needed to do the ASCII check, but the ASCII check can be vectorized by LLVM (and the &quot;search for newlines&quot; can be done with <code>memchr</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-12-08 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-08 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-08 02:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-08 04:34</div>
+            <div class="timeline-body"><p>I doubt it's worth the effort (maybe some day, when std::simd is stable...) but I imagine in principle you could merge the two operations pretty easily:</p>
+<ul>
+<li>load chunk</li>
+<li>is_ascii |= chunk &amp; splat(0x80)</li>
+<li>chunk == splat('\n') | chunk == splat('\r')<ul>
+<li>find the idx if it is</li>
+</ul>
+</li>
+</ul>
+<p>the win would memory locality, saving iterating 2x</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-12-08 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-08 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-08 13:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

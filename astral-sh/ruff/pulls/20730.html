@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Truncate type display for long unions in some situations - astral-sh/ruff #20730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Truncate type display for long unions in some situations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20730">#20730</a>
+        opened by <a href="https://github.com/InvalidPathException">@InvalidPathException</a>
+        on 2025-10-07 00:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InvalidPathException">@InvalidPathException</a> on 2025-10-07 00:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/1307">astral-sh/ty#1307</a></p>
+<p>Unions with length &lt;= 5 are unaffected to minimize test churn
+Unions with length &gt; 5 will only display the first 3 elements + &quot;... omitted x union elements&quot;
+Here &quot;length&quot; is defined as the number of elements after condensation to literals</p>
+<p>Edit: we no longer truncate in revel case.
+Before:</p>
+<blockquote>
+<p>info: Attempted to call union type <code>(def f1() -&gt; int) | (def f2(name: str) -&gt; int) | (def f3(a: int, b: int) -&gt; int) | (def f4[T](x: T@f4) -&gt; int) | Literal[5] | (Overload[() -&gt; None, (x: str) -&gt; str]) | (Overload[() -&gt; None, (x: str, y: str) -&gt; str]) | PossiblyNotCallable</code></p>
+</blockquote>
+<p>After:</p>
+<blockquote>
+<p>info: Attempted to call union type <code>(def f1() -&gt; int) | (def f2(name: str) -&gt; int) | (def f3(a: int, b: int) -&gt; int) | ... omitted 5 union elements</code></p>
+</blockquote>
+<p>The below comparisons are outdated, but left here as a reference.</p>
+<p>Before:
+<code>reveal_type(x)  # revealed: Literal[1, 2] | A | B | C | D | E | F | G</code>
+<code>reveal_type(x)  # revealed: Result1A | Result1B | Result2A | Result2B | Result3 | Result4</code>
+After:
+<code>reveal_type(x)  # revealed: Literal[1, 2] | A | B | ... omitted 5 union elements</code>
+<code>reveal_type(x)  # revealed: Result1A | Result1B | Result2A | ... omitted 3 union elements</code></p>
+<p>This formatting is consistent with <code>crates/ty_python_semantic/src/types/call/bind.rs</code> line 2992</p>
+<h2>Test Plan</h2>
+<p>Cosmetic only, covered and verified by changes in mdtest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InvalidPathException on 2025-10-07 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InvalidPathException on 2025-10-07 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InvalidPathException on 2025-10-07 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @InvalidPathException on 2025-10-07 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-07 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-07 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-07 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 07:18</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 07:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `str | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `str | None`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `int | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `int | None`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyright` is incorrect: Expected `str | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyright` is incorrect: Expected `str | None`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `RustBuildMode`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `RustBuildMode`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `str | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `str | None`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `RustBuildMode`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `RustBuildMode`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `str | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `str | None`, found `Unknown | str | None | ... omitted 3 union elements`
+- mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `Path | None`, found `Unknown | str | None | int | RustBuildMode | Path`
++ mypy_primer/main.py:71:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `Path | None`, found `Unknown | str | None | ... omitted 3 union elements`
+
+kornia (https://github.com/kornia/kornia)
+- kornia/feature/loftr/loftr.py:105:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | int | list[Unknown | int] | list[Unknown | str] | str | float`
++ kornia/feature/loftr/loftr.py:105:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | int | list[Unknown | int] | ... omitted 3 union elements`
+- kornia/feature/loftr/loftr.py:105:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int | list[Unknown | int] | list[Unknown | str] | str | float`
++ kornia/feature/loftr/loftr.py:105:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int | list[Unknown | int] | ... omitted 3 union elements`
+- kornia/feature/loftr/loftr.py:107:53: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | int | dict[Unknown | str, Unknown | int | list[Unknown | int]] | dict[Unknown | str, Unknown | int | list[Unknown | str] | str] | dict[Unknown | str, Unknown | float | int | str]`
+- kornia/feature/loftr/loftr.py:108:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | int | dict[Unknown | str, Unknown | int | list[Unknown | int]] | dict[Unknown | str, Unknown | int | list[Unknown | str] | str] | dict[Unknown | str, Unknown | float | int | str]`
+- kornia/feature/loftr/loftr.py:110:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | int | dict[Unknown | str, Unknown | int | list[Unknown | int]] | dict[Unknown | str, Unknown | int | list[Unknown | str] | str] | dict[Unknown | str, Unknown | float | int | str]`
++ kornia/feature/loftr/loftr.py:107:53: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | ... omitted 4 union elements`
++ kornia/feature/loftr/loftr.py:108:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | ... omitted 4 union elements`
++ kornia/feature/loftr/loftr.py:110:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | str | tuple[int, int] | ... omitted 4 union elements`
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | list[Unknown | PendingResult] | bool | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | list[Unknown | str | int] | list[Unknown | GraphQLError] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/frameworks/native_service_config.py:176:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str] | dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | list[@Todo]] | list[@Todo]] | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str | bool]]] | list[Unknown | dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown]]]]` is not assignable to `TaskInfo`
++ paasta_tools/frameworks/native_service_config.py:176:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str] | ... omitted 3 union elements]` is not assignable to `TaskInfo`
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/distributed/utils/__init__.py:194:12: warning[possibly-missing-attribute] Attribute `shape` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/distributed/utils/__init__.py:194:12: warning[possibly-missing-attribute] Attribute `shape` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/distributed/utils/__init__.py:195:12: warning[possibly-missing-attribute] Attribute `dtype` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/distributed/utils/__init__.py:195:12: warning[possibly-missing-attribute] Attribute `dtype` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/distributed/utils/test_native.py:416:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/distributed/utils/test_native.py:416:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_calinski_harabasz_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_davies_bouldin_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_davies_bouldin_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_davies_bouldin_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_davies_bouldin_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_davies_bouldin_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_davies_bouldin_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_davies_bouldin_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_davies_bouldin_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_silhouette_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_silhouette_score.py:141:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_silhouette_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_silhouette_score.py:142:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_silhouette_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_silhouette_score.py:192:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/clustering/test_silhouette_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/clustering/test_silhouette_score.py:193:27: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_canberra_metric.py:112:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_canberra_metric.py:112:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_canberra_metric.py:113:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_canberra_metric.py:113:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_canberra_metric.py:159:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_canberra_metric.py:159:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_canberra_metric.py:160:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_canberra_metric.py:160:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_absolute_error.py:106:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_absolute_error.py:106:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_absolute_error.py:107:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_absolute_error.py:107:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_absolute_error.py:156:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_absolute_error.py:156:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_absolute_error.py:157:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_absolute_error.py:157:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_bias.py:127:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_bias.py:127:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_bias.py:128:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_bias.py:128:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_bias.py:133:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_fractional_bias.py:133:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_fractional_bias.py:179:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_bias.py:179:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_bias.py:180:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_fractional_bias.py:180:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_fractional_bias.py:183:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_fractional_bias.py:183:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:109:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:109:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:110:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:110:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:115:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:115:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:158:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:158:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:159:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:159:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:162:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_geometric_mean_absolute_error.py:162:22: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:96:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:96:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:97:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:97:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:143:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:143:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:144:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_geometric_mean_relative_absolute_error.py:144:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_kendall_correlation.py:148:20: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_kendall_correlation.py:148:20: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_kendall_correlation.py:149:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_kendall_correlation.py:149:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_kendall_correlation.py:194:20: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_kendall_correlation.py:194:20: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_kendall_correlation.py:195:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_kendall_correlation.py:195:25: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_manhattan_distance.py:104:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_manhattan_distance.py:104:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_manhattan_distance.py:105:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_manhattan_distance.py:105:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_manhattan_distance.py:152:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_manhattan_distance.py:152:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_manhattan_distance.py:153:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_manhattan_distance.py:153:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_maximum_absolute_error.py:96:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_maximum_absolute_error.py:96:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_maximum_absolute_error.py:97:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_maximum_absolute_error.py:97:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_maximum_absolute_error.py:144:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_maximum_absolute_error.py:144:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_maximum_absolute_error.py:145:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_maximum_absolute_error.py:145:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:131:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:131:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:132:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:132:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:137:27: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:137:27: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:181:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:181:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:182:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:182:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:185:27: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | list[int | float] | list[str] | list[Any]`
++ tests/ignite/metrics/regression/test_mean_absolute_relative_error.py:185:27: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/regression/test_mean_error.py:87:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_error.py:87:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_error.py:88:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_error.py:88:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_error.py:135:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_error.py:135:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_error.py:136:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_error.py:136:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_normalized_bias.py:107:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_normalized_bias.py:107:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_normalized_bias.py:108:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_normalized_bias.py:108:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_normalized_bias.py:157:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_normalized_bias.py:157:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_mean_normalized_bias.py:158:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_mean_normalized_bias.py:158:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_error.py:117:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_error.py:117:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_error.py:118:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_error.py:118:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_error.py:164:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_error.py:164:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_error.py:165:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_error.py:165:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:137:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:137:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:138:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:138:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:184:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:184:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:185:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_absolute_percentage_error.py:185:22: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_relative_absolute_error.py:127:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_relative_absolute_error.py:127:21: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ignite/metrics/regression/test_median_relative_absolute_error.py:128:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` may be missing
++ tests/ignite/metrics/regression/test_median_relative_absolute_error.py:128:16: warning[possibly-missing-attribute] Attribute `cpu` on type `Unknown | int | float | ... omitted 3 union elements` may be missing
+- tests/ig...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 07:54</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 112 | 0 | 181 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 164 |
+| <code>invalid-assignment</code> | 0 | 0 | 22 |
+| <code>unsupported-operator</code> | 0 | 0 | 20 |
+| <code>possibly-missing-implicit-call</code> | 0 | 0 | 6 |
+| <code>invalid-return-type</code> | 0 | 0 | 4 |
+| <code>invalid-type-form</code> | 0 | 0 | 3 |
+| <code>invalid-parameter-default</code> | 0 | 0 | 1 |
+| <code>no-matching-overload</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>112</strong> | <strong>1</strong> | <strong>401</strong> |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/exception/control_flow.md</code>:525 on 2025-10-07 12:11</div>
+            <div class="timeline-body"><p>So, I actually think we should probably never truncate unions for <code>reveal_type</code> calls. A <code>reveal_type</code> call is the user explicitly asking us to tell them what the type of something is; it would be annoying if we only then displayed part of the type.</p>
+<p>I think it's probably good for the default to be to truncate unions (as you already have it), but I think we need to still have an option where we can force unions to be displayed in full, without truncation. And we need to invoke that option for specific diagnostics such as <code>reveal_type</code>. We should be able to do this by extending our existing <code>DisplaySettings</code> struct, I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:89 on 2025-10-07 12:23</div>
+            <div class="timeline-body"><p>the problem here is that only two elements of this union are not callable (<code>Literal[5]</code> and <code>PossiblyNotCallable</code>), and they are both truncated away, so it's no longer clear what the problem is. I suppose the ideal display here would be something like</p>
+<pre><code class="language-suggestion">info: Attempted to call union type `(def f1() -&gt; int) | &lt;...3 union elements omitted...&gt; | Literal[5] | &lt;...3 union elements omitted...&gt;`
+</code></pre>
+<p>Which indicates that we possibly need to have some way of filtering out union elements that do not satisfy a certain predicate...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:1223 on 2025-10-07 12:24</div>
+            <div class="timeline-body"><p>I'm not sure this is possible? If a union has 0 elements, we should eagerly normalize the union into <code>Type::Never</code> when constructing the type</p>
+<pre><code class="language-suggestion">        assert_ne!(total_entries, 0);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-10-07 12:24</div>
+            <div class="timeline-body"><p>Thanks very much! I think there's some subtleties here that we need to think through a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:89 on 2025-10-07 15:50</div>
+            <div class="timeline-body"><p>The previous line does specifically mention <code>Literal[5]</code>, so I'm not sure it's critical that the union display be that smart. In general I think when there's an error that applies to only some elements of the union, the diagnostic itself should call out the specific problematic union element(s), we shouldn't rely on union display for that. Showing the union is just additional context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-10-07 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:89 on 2025-10-07 15:52</div>
+            <div class="timeline-body"><p>That's fair</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-07 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InvalidPathException">@InvalidPathException</a> reviewed on 2025-10-07 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InvalidPathException">@InvalidPathException</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:1223 on 2025-10-07 18:51</div>
+            <div class="timeline-body"><p>resolved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-07 18:55</div>
+            <div class="timeline-body"><p>Looks excellent, thank you!! Will wait until tomorrow before merging in case anybody else has thoughts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-08 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-08 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 13:07</div>
+            <div class="timeline-body"><p>And this had exactly the effect on https://github.com/astral-sh/ruff/pull/20368 that I was hoping for. Some of the new diagnostics on that PR branch are so much better now -- thank you!</p>
+<p><img width="3766" height="656" alt="image" src="https://github.com/user-attachments/assets/7d118782-d176-4b0a-88df-2a754a3f06a3" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-12-18 11:06</div>
+            <div class="timeline-body"><p>How do I disable this via config or CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 11:12</div>
+            <div class="timeline-body"><blockquote>
+<p>How do I disable this via config or CLI?</p>
+</blockquote>
+<p>There's no way currently, but note that we always display unions without truncation if you call <code>reveal_type</code> on an object. Note also that <code>reveal_type</code> returns the object passed in, so you can use it in nested expressions: <code>reveal_type(x)[reveal_type(y)]</code> etc.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

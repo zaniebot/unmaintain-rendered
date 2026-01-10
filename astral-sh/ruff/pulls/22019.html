@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve disambiguation of types in many cases - astral-sh/ruff #22019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve disambiguation of types in many cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22019">#22019</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-17 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 10:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<h3>The &quot;display disambiguator&quot;</h3>
+<p>For many diagnostics, we run the &quot;display disambiguator&quot; on all types that will appear in that diagnostic. This is to avoid confusing diagnostic messages in situations where two files have types that are distinct but share the same name -- e.g. without the &quot;display disambiguator&quot;, we'd end up with messages like this:</p>
+<pre><code>error [invalid-return-type] Expected type `Foo`, got type `Foo`
+</code></pre>
+<p>whereas with it, we get</p>
+<pre><code>error [invalid-return-type] Expected type `module.Foo`, got type `main.Foo`
+</code></pre>
+<p>(The &quot;display disambiguator&quot; means that we only use the fully qualified name for <em>actually ambiguous</em> cases. Types that are not ambiguous still use the unqualified names in diagnostic messages.)</p>
+<h3>This PR</h3>
+<p>This PR extends our usage of the display disambiguator in two ways:</p>
+<ul>
+<li>We now run it by default in all calls to <code>Type::display()</code>. Even if there is only one type that needs to be rendered in a diagnostic message, that type might <em>contain</em> lots of other types and therefore require disambiguation. A common example that we've seen in the ecosystem is <code>numpy.bool[builtins.bool]</code> being rendered confusingly as <code>bool[bool]</code>.</li>
+<li>I added calls to the display disambiguator to our <code>invalid-argument-type</code> diagnostic -- this is a specific diagnostic that involves a pair of types, where we weren't running it previously.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Mdtests/snapshots added and updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-17 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-17 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-17 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-17 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-17 10:29</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-17 10:31</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:883:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `CancelScope | None`, found `CancelScope`
++ src/anyio/_backends/_asyncio.py:883:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `anyio._backends._asyncio.CancelScope | None`, found `anyio._core._tasks.CancelScope`
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/database.py:949:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Lock`, found `ForbiddenLock | Lock`
++ lib/spack/spack/database.py:949:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `lib.spack.spack.llnl.util.lock.Lock`, found `ForbiddenLock | lib.spack.spack.util.lock.Lock`
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distlib/util.py:1283:9: error[invalid-assignment] Object of type `def extraction_filter(member, path) -&gt; Unknown` is not assignable to attribute `extraction_filter` on type `ZipFile | ZipFile | TarFile`
++ src/pip/_vendor/distlib/util.py:1283:9: error[invalid-assignment] Object of type `def extraction_filter(member, path) -&gt; Unknown` is not assignable to attribute `extraction_filter` on type `zipfile.ZipFile | pip._vendor.distlib.compat.ZipFile | TarFile`
+- src/pip/_vendor/distlib/util.py:1675:20: warning[unsupported-base] Unsupported class base with type `&lt;class 'BaseConfigurator'&gt; | &lt;class 'BaseConfigurator'&gt;`
++ src/pip/_vendor/distlib/util.py:1675:20: warning[unsupported-base] Unsupported class base with type `&lt;class 'logging.config.BaseConfigurator'&gt; | &lt;class 'pip._vendor.distlib.compat.BaseConfigurator'&gt;`
+- src/pip/_vendor/msgpack/fallback.py:929:20: warning[possibly-missing-attribute] Attribute `getbuffer` may be missing on object of type `Unknown | BytesIO | BytesIO`
++ src/pip/_vendor/msgpack/fallback.py:929:20: warning[possibly-missing-attribute] Attribute `getbuffer` may be missing on object of type `Unknown | pip._vendor.msgpack.fallback.BytesIO | _io.BytesIO`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:135:5: error[invalid-assignment] Object of type `&lt;class 'PyOpenSSLContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'SSLContext'&gt; | &lt;class 'SSLContext'&gt;`
++ src/pip/_vendor/urllib3/contrib/pyopenssl.py:135:5: error[invalid-assignment] Object of type `&lt;class 'PyOpenSSLContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'ssl.SSLContext'&gt; | &lt;class 'pip._vendor.urllib3.util.ssl_.SSLContext'&gt;`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:136:5: error[invalid-assignment] Object of type `&lt;class 'PyOpenSSLContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'SSLContext'&gt; | &lt;class 'SSLContext'&gt;`
++ src/pip/_vendor/urllib3/contrib/pyopenssl.py:136:5: error[invalid-assignment] Object of type `&lt;class 'PyOpenSSLContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'ssl.SSLContext'&gt; | &lt;class 'pip._vendor.urllib3.util.ssl_.SSLContext'&gt;`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:192:5: error[invalid-assignment] Object of type `&lt;class 'SecureTransportContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'SSLContext'&gt; | &lt;class 'SSLContext'&gt;`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:192:5: error[invalid-assignment] Object of type `&lt;class 'SecureTransportContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'ssl.SSLContext'&gt; | &lt;class 'pip._vendor.urllib3.util.ssl_.SSLContext'&gt;`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:193:5: error[invalid-assignment] Object of type `&lt;class 'SecureTransportContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'SSLContext'&gt; | &lt;class 'SSLContext'&gt;`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:193:5: error[invalid-assignment] Object of type `&lt;class 'SecureTransportContext'&gt;` is not assignable to attribute `SSLContext` of type `&lt;class 'ssl.SSLContext'&gt; | &lt;class 'pip._vendor.urllib3.util.ssl_.SSLContext'&gt;`
+- src/pip/_vendor/urllib3/util/ssl_.py:332:9: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `post_handshake_auth` on type `Unknown | SSLContext | SSLContext`
++ src/pip/_vendor/urllib3/util/ssl_.py:332:9: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `post_handshake_auth` on type `Unknown | ssl.SSLContext | pip._vendor.urllib3.util.ssl_.SSLContext`
+- src/pip/_vendor/urllib3/util/ssl_.py:359:13: error[invalid-assignment] Object of type `str &amp; ~AlwaysFalsy` is not assignable to attribute `keylog_filename` on type `(Unknown &amp; &lt;Protocol with members 'keylog_filename'&gt;) | SSLContext | (SSLContext &amp; &lt;Protocol with members 'keylog_filename'&gt;)`
++ src/pip/_vendor/urllib3/util/ssl_.py:359:13: error[invalid-assignment] Object of type `str &amp; ~AlwaysFalsy` is not assignable to attribute `keylog_filename` on type `(Unknown &amp; &lt;Protocol with members 'keylog_filename'&gt;) | ssl.SSLContext | (pip._vendor.urllib3.util.ssl_.SSLContext &amp; &lt;Protocol with members 'keylog_filename'&gt;)`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/serving.py:879:25: warning[unsupported-base] Unsupported class base with type `&lt;class 'ForkingMixIn'&gt; | &lt;class 'ForkingMixIn'&gt;`
++ src/werkzeug/serving.py:879:25: warning[unsupported-base] Unsupported class base with type `&lt;class 'socketserver.ForkingMixIn'&gt; | &lt;class 'werkzeug.serving.ForkingMixIn'&gt;`
+
+pybind11 (https://github.com/pybind/pybind11)
+- pybind11/setup_helpers.py:89:25: warning[unsupported-base] Unsupported class base with type `&lt;class 'Extension'&gt; | &lt;class 'Extension'&gt;`
++ pybind11/setup_helpers.py:89:25: warning[unsupported-base] Unsupported class base with type `&lt;class 'setuptools.extension.Extension'&gt; | &lt;class 'distutils.extension.Extension'&gt;`
+- pybind11/setup_helpers.py:271:17: warning[unsupported-base] Unsupported class base with type `&lt;class 'build_ext'&gt; | &lt;class 'build_ext'&gt;`
++ pybind11/setup_helpers.py:271:17: warning[unsupported-base] Unsupported class base with type `&lt;class 'setuptools.command.build_ext.build_ext'&gt; | &lt;class 'distutils.command.build_ext.build_ext'&gt;`
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/web.py:733:51: error[invalid-argument-type] Argument is incorrect: Expected `StartResponse`, found `StartResponse | StartResponse`
++ dulwich/web.py:733:51: error[invalid-argument-type] Argument is incorrect: Expected `_typeshed.wsgi.StartResponse`, found `_typeshed.wsgi.StartResponse | dulwich.web.StartResponse`
+- dulwich/web.py:762:34: error[invalid-argument-type] Argument is incorrect: Expected `StartResponse`, found `StartResponse | StartResponse`
++ dulwich/web.py:762:34: error[invalid-argument-type] Argument is incorrect: Expected `_typeshed.wsgi.StartResponse`, found `_typeshed.wsgi.StartResponse | dulwich.web.StartResponse`
+- dulwich/web.py:787:34: error[invalid-argument-type] Argument is incorrect: Expected `StartResponse`, found `StartResponse | StartResponse`
++ dulwich/web.py:787:34: error[invalid-argument-type] Argument is incorrect: Expected `_typeshed.wsgi.StartResponse`, found `_typeshed.wsgi.StartResponse | dulwich.web.StartResponse`
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:808:25: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `Future[Any] | Future[Any]`, found `Unknown | Future[_T@__init__] | None`
++ tornado/gen.py:808:25: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `concurrent.futures._base.Future[Any] | _asyncio.Future[Any]`, found `Unknown | _asyncio.Future[_T@__init__] | None`
+- tornado/gen.py:815:41: error[invalid-argument-type] Argument to function `future_set_exc_info` is incorrect: Expected `Future[Unknown] | Future[Unknown]`, found `Unknown | Future[_T@__init__] | None`
++ tornado/gen.py:815:41: error[invalid-argument-type] Argument to function `future_set_exc_info` is incorrect: Expected `concurrent.futures._base.Future[Unknown] | _asyncio.Future[Unknown]`, found `Unknown | _asyncio.Future[_T@__init__] | None`
+- tornado/iostream.py:1295:48: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `Future[Self@_handle_connect] | Future[Self@_handle_connect]`, found `(Unknown &amp; ~None) | Future[IOStream]`
++ tornado/iostream.py:1295:48: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `concurrent.futures._base.Future[Self@_handle_connect] | _asyncio.Future[Self@_handle_connect]`, found `(Unknown &amp; ~None) | _asyncio.Future[IOStream]`
+- tornado/web.py:2465:48: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `Future[None] | Future[None]`, found `Unknown | None`
++ tornado/web.py:2465:48: error[invalid-argument-type] Argument to function `future_set_result_unless_cancelled` is incorrect: Expected `concurrent.futures._base.Future[None] | _asyncio.Future[None]`, found `Unknown | None`
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/api/pandas/array.py:76:13: error[invalid-argument-type] Argument to function `series_strategy` is incorrect: Expected `DataType | DataType`, found `DataType`
++ pandera/api/pandas/array.py:76:13: error[invalid-argument-type] Argument to function `series_strategy` is incorrect: Expected `pandera.engines.numpy_engine.DataType | pandera.engines.pandas_engine.DataType`, found `pandera.dtypes.DataType`
+- pandera/api/pandas/components.py:190:13: error[invalid-argument-type] Argument to function `column_strategy` is incorrect: Expected `DataType | DataType`, found `DataType`
++ pandera/api/pandas/components.py:190:13: error[invalid-argument-type] Argument to function `column_strategy` is incorrect: Expected `pandera.engines.numpy_engine.DataType | pandera.engines.pandas_engine.DataType`, found `pandera.dtypes.DataType`
+- pandera/api/pandas/components.py:263:13: error[invalid-argument-type] Argument to function `column_strategy` is incorrect: Expected `DataType | DataType`, found `DataType`
++ pandera/api/pandas/components.py:263:13: error[invalid-argument-type] Argument to function `column_strategy` is incorrect: Expected `pandera.engines.numpy_engine.DataType | pandera.engines.pandas_engine.DataType`, found `pandera.dtypes.DataType`
+- pandera/engines/numpy_engine.py:271:15: warning[unsupported-base] Unsupported class base with type `&lt;class 'Float64'&gt; | &lt;class 'Float64'&gt;`
++ pandera/engines/numpy_engine.py:271:15: warning[unsupported-base] Unsupported class base with type `&lt;class 'pandera.engines.numpy_engine.Float64 @ pandera/engines/numpy_engine.py:256'&gt; | &lt;class 'pandera.engines.numpy_engine.Float64 @ pandera/engines/numpy_engine.py:264'&gt;`
+- pandera/engines/numpy_engine.py:320:17: warning[unsupported-base] Unsupported class base with type `&lt;class 'Complex128'&gt; | &lt;class 'Complex128'&gt;`
++ pandera/engines/numpy_engine.py:320:17: warning[unsupported-base] Unsupported class base with type `&lt;class 'pandera.engines.numpy_engine.Complex128 @ pandera/engines/numpy_engine.py:305'&gt; | &lt;class 'pandera.engines.numpy_engine.Complex128 @ pandera/engines/numpy_engine.py:313'&gt;`
+- pandera/engines/pandas_engine.py:1390:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: int | signedinteger[_64Bit] | integer[Any] | signedinteger[_8Bit]) -&gt; Unknown, (idx: Index[Any] | Series[Any] | slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]]) -&gt; Series[Unknown], (idx: str | bytes | date | ... omitted 10 union elements) -&gt; Unknown, (idx: Series[bool] | ndarray[tuple[Any, ...], dtype[bool[bool]]] | list[bool] | ... omitted 7 union elements) -&gt; Series[Unknown]]` cannot be called with key of type `Series[bool] | DataFrame` on object of type `Series[Unknown]`
++ pandera/engines/pandas_engine.py:1390:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: int | signedinteger[_64Bit] | integer[Any] | signedinteger[_8Bit]) -&gt; Unknown, (idx: Index[Any] | Series[Any] | slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]]) -&gt; Series[Unknown], (idx: str | bytes | date | ... omitted 10 union elements) -&gt; Unknown, (idx: Series[builtins.bool] | ndarray[tuple[Any, ...], dtype[numpy.bool[builtins.bool]]] | list[builtins.bool] | ... omitted 7 union elements) -&gt; Series[Unknown]]` cannot be called with key of type `Series[bool] | DataFrame` on object of type `Series[Unknown]`
+- tests/mypy/pandas_modules/pandas_dataframe.py:54:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `DataFrame[Schema]`, found `DataFrame`
++ tests/mypy/pandas_modules/pandas_dataframe.py:54:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `pandera.typing.pandas.DataFrame[Schema]`, found `pandas.core.frame.DataFrame`
+- tests/mypy/pandas_modules/pandera_types.py:14:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[int]`, found `Series[Any]`
++ tests/mypy/pandas_modules/pandera_types.py:14:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `pandera.typing.pandas.Series[int]`, found `pandas.core.series.Series[Any]`
+- tests/mypy/pandas_modules/pandera_types.py:15:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[int]`, found `Series[Any]`
++ tests/mypy/pandas_modules/pandera_types.py:15:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `pandera.typing.pandas.Series[int]`, found `pandas.core.series.Series[Any]`
+- tests/pandas/test_decorators.py:863:32: error[invalid-argument-type] Argument to function `transform_with_literal` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:863:32: error[invalid-argument-type] Argument to function `transform_with_literal` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:865:36: error[invalid-argument-type] Argument to function `transform_with_literal` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:865:36: error[invalid-argument-type] Argument to function `transform_with_literal` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1058:41: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1058:41: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1058:47: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1058:47: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1059:41: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1059:41: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1059:47: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1059:47: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1059:53: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1059:53: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1064:38: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1064:38: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1064:44: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1064:44: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1064:50: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1064:50: error[invalid-argument-type] Argument to function `get_len_star_args__dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1093:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema] | None`, found `DataFrame`
++ tests/pandas/test_decorators.py:1093:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema] | None`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1094:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1094:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1097:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema] | None`, found `DataFrame`
++ tests/pandas/test_decorators.py:1097:9: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema] | None`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1097:22: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1097:22: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1097:35: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1097:35: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1108:13: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema] | None`, found `DataFrame`
++ tests/pandas/test_decorators.py:1108:13: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema] | None`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1108:26: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1108:26: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1108:39: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1108:39: error[invalid-argument-type] Argument to function `get_star_kwargs_keys_dataframe` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:9: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:9: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:15: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:15: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:21: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:21: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:27: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:27: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:40: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:40: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_decorators.py:1134:53: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_decorators.py:1134:53: error[invalid-argument-type] Argument to function `star_args_kwargs` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_from_to_format_conversions.py:289:16: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_from_to_format_conversions.py:289:16: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_from_to_format_conversions.py:293:18: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_from_to_format_conversions.py:293:18: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_from_to_format_conversions.py:306:20: error[invalid-argument-type] Argument to function `invalid_fn` is incorrect: Expected `DataFrame[InSchema]`, found `DataFrame`
++ tests/pandas/test_from_to_format_conversions.py:306:20: error[invalid-argument-type] Argument to function `invalid_fn` is incorrect: Expected `pandera.typing.pandas.DataFrame[InSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_logical_dtypes.py:269:9: error[invalid-argument-type] Argument to bound method `check` is incorrect: Expected `DataType`, found `DataType`
++ tests/pandas/test_logical_dtypes.py:269:9: error[invalid-argument-type] Argument to bound method `check` is incorrect: Expected `pandera.engines.pandas_engine.DataType`, found `pandera.dtypes.DataType`
+- tests/pandas/test_pydantic.py:74:39: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame[SimpleSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic.py:74:39: error[invalid-argument-type] Argument is incorrect: Expected `pandera.typing.pandas.DataFrame[SimpleSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_pydantic.py:78:25: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame[SimpleSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic.py:78:25: error[invalid-argument-type] Argument is incorrect: Expected `pandera.typing.pandas.DataFrame[SimpleSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_pydantic.py:250:42: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame[SimpleSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic.py:250:42: error[invalid-argument-type] Argument is incorrect: Expected `pandera.typing.pandas.DataFrame[SimpleSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_pydantic.py:254:46: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame[SimpleSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic.py:254:46: error[invalid-argument-type] Argument is incorrect: Expected `pandera.typing.pandas.DataFrame[SimpleSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_pydantic_dtype.py:60:22: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `DataFrame[PydanticSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic_dtype.py:60:22: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `pandera.typing.pandas.DataFrame[PydanticSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_pydantic_dtype.py:68:14: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `DataFrame[PydanticSchema]`, found `DataFrame`
++ tests/pandas/test_pydantic_dtype.py:68:14: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `pandera.typing.pandas.DataFrame[PydanticSchema]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_schema_forwardref.py:25:10: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `DataFrame[Model]`, found `DataFrame`
++ tests/pandas/test_schema_forwardref.py:25:10: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `pandera.typing.pandas.DataFrame[Model]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_schema_forwardref.py:27:14: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `DataFrame[Model]`, found `DataFrame`
++ tests/pandas/test_schema_forwardref.py:27:14: error[invalid-argument-type] Argument to function `func` is incorrect: Expected `pandera.typing.pandas.DataFrame[Model]`, found `pandas.core.frame.DataFrame`
+- tests/pandas/test_schema_forwardref.py:46:20: error[invalid-argument-type] Argument to function `local_func` is incorrect: Expected `DataFrame[LocalModel]`, found `DataFrame`
++ tests/pandas/test_schema_forwardref.py:46:20: error[invalid-argument-type] Argument to function `local_func` is incorrect: Expected `pandera.typing.pandas.DataFrame[LocalModel]`, found `pandas.core.frame.DataFrame`
+- tests/polars/test_polars_pydantic.py:189:46: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame[SimplePolarsSchema]`, found `DataFrame`
++ tests/polars/test_polars_pydantic.py:189:46: error[invalid-argument-type] Argument is incorrect: Expected `pandera.typing.polars.DataFrame[SimplePolarsSchema]`, found `pandas.core.frame.DataFrame`
+- tests/strategies/test_strategies.py:389:13: error[invalid-argument-type] Argument to function `str_length_strategy` is incorrect: Expected `DataType | DataType`, found `&lt;class 'String'&gt;`
++ tests/strategies/test_strategies.py:389:13: error[invalid-argument-type] Argument to function `str_length_strategy` is incorrect: Expected `pandera.engines.numpy_engine.DataType | pandera.engines.pandas_engine.DataType`, found `&lt;class 'String'&gt;`
+- tests/strategies/test_strategies.py:394:9: error[invalid-argument-type] Argument to function `str_length_strategy` is incorrect: Expected `DataType | DataType`, found `&lt;class 'String'&gt;`
++ tests/strategies/test_strategies.py:394:9: error[invalid-argument-type] Argument to function `str_length_strategy` is incorrect: Expected `pandera.engines.numpy_engine.DataType | pandera.engines.pandas_engine.DataType`, found `&lt;class 'String'&gt;`
+
+optuna (https://github.com/optuna/optuna)
+- tests/storages_tests/test_with_server.py:86:30: error[not-iterable] Object of type `bool[bool]` is not iterable
++ tests/storages_tests/test_with_server.py:86:30: error[not-iterable] Object of type `numpy.bool[builtins.bool]` is not iterable
+- tests/storages_tests/test_with_server.py:103:30: error[not-iterable] Object of type `bool[bool]` is not iterable
++ tests/storages_tests/test_with_server.py:103:30: error[not-iterable] Object of type `numpy.bool[builtins.bool]` is not iterable
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- tests/utils.py:74:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:74:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:75:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:75:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:76:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:76:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:77:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:77:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:78:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:78:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:80:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:80:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:81:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:81:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:82:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:82:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:83:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:83:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+- tests/utils.py:84:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `_LoggingWatcher`, found `_LoggingWatcher`
++ tests/utils.py:84:47: error[invalid-argument-type] Argument to function `filter_logs_by_level` is incorrect: Expected `tests.utils._LoggingWatcher`, found `unittest._log._LoggingWatcher`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/freqai/data_drawer.py:363:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:363:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:368:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:368:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:369:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:369:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:373:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:373:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:376:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:376:13: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `@Todo` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `@Todo` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:387:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:387:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:390:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:390:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:393:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:393:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/freqai/data_drawer.py:396:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:396:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `str | bytes | date | ... omitted 10 union elements` on object of type `_iLocIndexerFrame[DataFrame]`
+- freqtrade/optimize/analysis/lookahead.py:84:30: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: int | signedinteger[_64Bit] | integer[Any] | signedinteger[_8Bit]) -&gt; Any, (key: Index[Any] | Series[Any] | slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]]) -&gt; Series[Any]]` cannot be called with key of type `int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]` on object of type `_iLocIndexerSeries[Any]`
++ freqtrade/optimize/analysis/lookahead.py:84:30: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: int | signedinteger[_64Bit] | integer[Any] | signedinteger[_8Bit]) -&gt; Any, (key: Index[Any] | Series[Any] | slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]]) -&gt; Series[Any]]` cannot be called with key of type `int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]` on object of type `_iLocIndexerSeries[Any]`
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/fcm/__init__.py:338:16: warning[possibly-missing-attribute] Attribute `load` may be missing on object of type `Unknown | GoogleOAuth | GoogleOAuth`
++ apprise/plugins/fcm/__init__.py:338:16: warning[possibly-missing-attribute] Attribute `load` may be missing on object of type `Unknown | apprise.plugins.fcm.oauth.GoogleOAuth | apprise.plugins.fcm.GoogleOAuth`
+- apprise/plugins/fcm/__init__.py:345:28: warning[possibly-missing-attribute] Attribute `project_id` may be missing on object of type `Unknown | GoogleOAuth | GoogleOAuth`
++ apprise/plugins/fcm/__init__.py:345:28: warning[possibly-missing-attribute] Attribute `project_id` may be missing on object of type `Unknown | apprise.plugins.fcm.oauth.GoogleOAuth | apprise.plugins.fcm.GoogleOAuth`
+- apprise/plugins/fcm/__init__.py:354:16: warning[possibly-missing-attribute] Attribute `access_token` may be missing on object of type `Unknown | GoogleOAuth | GoogleOAuth`
++ apprise/plugins/fcm/__init__.py:354:16: warning[possibly-missing-attribute] Attribute `access_token` may be missing on object of type `Unknown | apprise.plugins.fcm.oauth.GoogleOAuth | apprise.plugins.fcm.GoogleOAuth`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/encryption.py:196:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `SSLContext | None`, found `Unknown | SSLContext | SSLContext`
++ pymongo/asynchronous/encryption.py:196:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `pymongo.pyopenssl_context.SSLContext | None`, found `Unknown | pymongo.pyopenssl_context.SSLContext | ssl.SSLContext`
+- pymongo/ssl_support.py:105:13: error[invalid-assignment] Object of type `bool` is not assignable to attribute `check_ocsp_endpoint` on type `SSLContext | (SSLContext &amp; &lt;Protocol with members 'check_ocsp_endpoint'&gt;)`
++ pymongo/ssl_support.py:105:13: error[invalid-assignment] Object of type `bool` is not assignable to attribute `check_ocsp_endpoint` on type `pymongo.pyopenssl_context.SSLContext | (ssl.SSLContext &amp; &lt;Protocol with members 'check_ocsp_endpoint'&gt;)`
+- pymongo/ssl_support.py:124:13: error[invalid-assignment] Object of type `Any | Literal[0]` is not assignable to attribute `verify_flags` on type `SSLContext | SSLContext`
++ pymongo/ssl_support.py:124:13: error[invalid-assignment] Object of type `Any | Literal[0]` is not assignable to attribute `verify_flags` on type `pymongo.pyopenssl_context.SSLContext | ssl.SSLContext`
+- pymongo/synchronous/encryption.py:195:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `SSLContext | None`, found `Unknown | SSLContext | SSLContext`
++ pymongo/synchronous/encryption.py:195:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `pymongo.pyopenssl_context.SSLContext | None`, found `Unknown | pymongo.pyopenssl_context.SSLContext | ssl.SSLContext`
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/tests/test_interface.py:286:41: warning[unsupported-base] Unsupported class base with type `&lt;class 'CleanUp'&gt; | &lt;class 'CleanUp'&gt;`
++ src/zope/interface/tests/test_interface.py:286:41: warning[unsupported-base] Unsupported class base with type `&lt;class 'zope.interface.tests.CleanUp'&gt; | &lt;class 'zope.testing.cleanup.CleanUp'&gt;`
+
+vision (https://github.com/pytorch/vision)
+- test/test_transforms_v2.py:4224:20: warning[possibly-missing-attribute] Attribute `float` may be missing on object of type `Unknown | Image | Image | Video`
++ test/test_transforms_v2.py:4224:20: warning[possibly-missing-attribute] Attribute `float` may be missing on object of type `Unknown | PIL.Image.Image | torchvision.tv_tensors._image.Image | Video`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/dist.py:974:44: error[invalid-argument-type] Argument to bound method `get_command_obj` is incorrect: Expected `str`, found `(str &amp; ~Command) | (Command &amp; ~Command)`
++ setuptools/_distutils/dist.py:974:44: error[invalid-argument-type] Argument to bound method `get_command_obj` is incorrect: Expected `str`, found `(str &amp; ~distutils.cmd.Command) | (setuptools._distutils.cmd.Command &amp; ~distutils.cmd.Command)`
+- setuptools/_distutils/dist.py:978:16: warning[possibly-missing-attribute] Attribute `finalized` may be missing on object of type `(str &amp; Command) | (Command &amp; Command) | Unknown`
++ setuptools/_distutils/dist.py:978:16: warning[possibly-missing-attribute] Attribute `finalized` may be missing on object of type `(str &amp; distutils.cmd.Command) | (setuptools._distutils.cmd.Command &amp; distutils.cmd.Command) | Unknown`
+- setuptools/_distutils/dist.py:981:9: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `finalized` on type `(str &amp; Command) | (Command &amp; Command) | Unknown`
++ setuptools/_distutils/dist.py:981:9: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `finalized` on type `(str &amp; distutils.cmd.Command) | (setuptools._distutils.cmd.Command &amp; distutils.cmd.Command) | Unknown`
+- setuptools/_distutils/dist.py:982:9: error[invalid-assignment] Invalid subscript assignment with key of type `str | (Command &amp; ~Command)` and value of type `Literal[False]` on object of type `dict[str, bool]`
++ setuptools/_distutils/dist.py:982:9: error[invalid-assignment] Invalid subscript assignment with key of type `str | (setuptools._distutils.cmd.Command &amp; ~distutils.cmd.Command)` and value of type `Literal[False]` on object of type `dict[str, bool]`
+- setuptools/command/editable_wheel.py:353:26: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `WheelFile`, found `WheelFile`
++ setuptools/command/editable_wheel.py:353:26: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `setuptools._vendor.wheel.wheelfile.WheelFile`, found `wheel.wheelfile.WheelFile`
+- setuptools/tests/test_bdist_wheel.py:224:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Distribution`, found `Distribution`
++ setuptools/tests/test_bdist_wheel.py:224:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `setuptools.dist.Distribution`, found `distutils.dist.Distribution`
+- setuptools/tests/test_editable_install.py:255:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Distribution`, found `Distribution`
++ setuptools/tests/test_editable_install.py:255:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `setuptools.dist.Distribution`, found `distutils.dist.Distribution`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dask/tests/test_task_runners.py:193:17: error[invalid-argument-type] Argument is incorrect: Expected `StateType`, found `Literal[StateType.COMPLETED]`
++ src/integrations/prefect-dask/tests/test_task_runners.py:193:17: error[invalid-argument-type] Argument is incorrect: Expected `prefect.client.schemas.objects.StateType`, found `Literal[prefect.server.schemas.states.StateType.COMPLETED]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_block_document_references | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_block_document_references` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_variables | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-redis/tests/test_messaging.py:180:41: error[invalid-argument-type] Argument to function `drain_one` is incorrect: Expected `Consumer`, found `Consumer`
++ src/integrations/prefect-redis/tests/test_messaging.py:180:41: error[invalid-argument-type] Argument to function `drain_one` is incorrect: Expected `prefect_redis.messaging.Consumer`, found `prefect.server.utilities.messaging.Consumer`
+- src/integrations/prefect-redis/tests/test_messaging.py:326:45: error[invalid-argument-type] Argument to function `drain_one` is incorrect
+
+... (truncated 801 lines) ...
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-12-17 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-17 11:00</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 0 | 250 |
+| <code>type-assertion-failure</code> | 0 | 0 | 96 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 64 |
+| <code>invalid-assignment</code> | 0 | 0 | 37 |
+| <code>unsupported-base</code> | 0 | 0 | 11 |
+| <code>invalid-type-form</code> | 0 | 0 | 8 |
+| <code>invalid-return-type</code> | 0 | 1 | 5 |
+| <code>unresolved-attribute</code> | 0 | 0 | 5 |
+| <code>invalid-super-argument</code> | 0 | 0 | 4 |
+| <code>non-subscriptable</code> | 0 | 0 | 4 |
+| <code>not-iterable</code> | 0 | 0 | 2 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>1</strong> | <strong>486</strong> |</p>
+<p><strong><a href="https://alex-qualified-display.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://alex-qualified-display.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-12-17 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-12-17 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-12-17 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-12-17 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-17 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-12-17 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-12-17 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 11:36</div>
+            <div class="timeline-body"><p>As followups, we need to improve our rendering of <code>invalid-super-argument</code> diagnostics and <code>unsupported-base</code> diagnostics. They get very verbose if it's a union of class-literal types, which doesn't seem uncommon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 11:36</div>
+            <div class="timeline-body"><p>E.g.</p>
+<pre><code>error [unsupported-base] Unsupported class base with type `&lt;class 'ibis.expr.types.rich.FixedTextJupyterMixin @ ibis/expr/types/rich.py:24'&gt; | &lt;class 'ibis.expr.types.rich.FixedTextJupyterMixin @ ibis/expr/types/rich.py:28'&gt;`
+</code></pre>
+<p>and</p>
+<pre><code>error [invalid-super-argument] `&lt;class 'ddtrace.contrib.internal.tornado.stack_context.TracerStackContext @ ddtrace/contrib/internal/tornado/stack_context.py:17'&gt; | &lt;class 'ddtrace.contrib.internal.tornado.stack_context.TracerStackContext @ ddtrace/contrib/internal/tornado/stack_context.py:129'&gt;` is not a valid class
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-12-17 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-17 11:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

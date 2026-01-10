@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `regex` dependency from `ruff_python_formatter` - astral-sh/ruff #21827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>regex</code> dependency from <code>ruff_python_formatter</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21827">#21827</a>
+        opened by <a href="https://github.com/magic-akari">@magic-akari</a>
+        on 2025-12-06 21:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/magic-akari">@magic-akari</a> on 2025-12-06 21:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR removes the <code>regex</code> crate dependency from <code>ruff_python_formatter</code> by replacing two regex patterns with hand-written state machine parsers.</p>
+<h2>Background</h2>
+<p>While working on compiling <code>ruff_python_formatter</code> to WebAssembly, I noticed that the <code>regex</code> crate was being pulled in solely for two pattern matches in docstring code example detection:</p>
+<ol>
+<li><strong>reStructuredText directive</strong>: <code>^\s*\.\. \s*(?i:code-block|sourcecode)::\s*(?i:python|py|python3|py3)$</code></li>
+<li><strong>Markdown fenced code block</strong>: <code>(?&lt;ticks&gt;`{3,})(?:\s*(?i:python|py|python3|py3)[^`]*)?</code> (and similar for tildes)</li>
+</ol>
+<p>These patterns match structured, predictable syntax with a small, fixed set of keywords (<code>code-block</code>, <code>sourcecode</code>) and language identifiers (<code>py</code>, <code>py3</code>, <code>python</code>, <code>python3</code>). This is a task well-suited for hand-written parsers and doesn't require the full power of a regex engine.</p>
+<h2>Changes</h2>
+<ul>
+<li>Removed <code>regex</code> from <code>[dependencies]</code> in <code>Cargo.toml</code></li>
+<li>Replaced <code>LazyLock&lt;Regex&gt;</code> patterns with hand-written parsing functions:<ul>
+<li><code>is_rst_directive_start()</code> - parses reStructuredText code-block directives</li>
+<li><code>parse_markdown_fence_start()</code> - parses Markdown fenced code blocks</li>
+<li><code>strip_python_lang_prefix()</code> - a compact state machine that matches Python language identifiers</li>
+</ul>
+</li>
+<li>Added unit tests for the new state machine</li>
+</ul>
+<h2>Benefits</h2>
+<h3>1. Reduced Binary Size</h3>
+<p>The <code>regex</code> crate and its dependencies (<code>regex-automata</code>, <code>regex-syntax</code>) add significant weight to the compiled binary. This is especially impactful for WebAssembly builds where binary size directly affects load times.</p>
+<h3>2. No Lazy Initialization Cost</h3>
+<p>With <code>LazyLock&lt;Regex&gt;</code>, the regex is compiled on first use. The hand-written parsers require no initialization.</p>
+<h3>3. Improved Maintainability</h3>
+<p>The parsing logic is now explicit and self-documenting. The state machine structure is clearly visible in the code and documentation:</p>
+<pre><code class="language-text">Start -&gt; 'p' -&gt; 'y' -&gt; (accept &quot;py&quot;)
+                    -&gt; '3' -&gt; (accept &quot;py3&quot;)
+                    -&gt; 't' -&gt; 'h' -&gt; 'o' -&gt; 'n' -&gt; (accept &quot;python&quot;)
+                                                -&gt; '3' -&gt; (accept &quot;python3&quot;)
+</code></pre>
+<h3>4. Fewer Dependencies</h3>
+<p>Reducing the dependency footprint simplifies auditing, reduces potential supply chain attack surface, and speeds up builds.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] All existing tests pass</li>
+<li>[x] Fixture tests for docstring code examples pass unchanged</li>
+<li>[x] Added unit tests for <code>strip_python_lang_prefix()</code> covering:<ul>
+<li>Valid matches: <code>py</code>, <code>py3</code>, <code>python</code>, <code>python3</code></li>
+<li>Case insensitivity: <code>PY</code>, <code>Python</code>, <code>PYTHON3</code></li>
+<li>Trailing content: <code>python3 extra</code></li>
+<li>Invalid prefixes: <code>p</code>, <code>pyt</code>, <code>pyth</code>, <code>pytho</code></li>
+<li>No word boundary: <code>pyx</code>, <code>pythonx</code>, <code>python3x</code></li>
+<li>Completely different inputs: <code>rust</code>, <code>javascript</code>, empty string</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-06 21:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @magic-akari on 2025-12-06 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @magic-akari on 2025-12-06 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Copilot by @magic-akari on 2025-12-06 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-pull-request-reviewer[bot]">@copilot-pull-request-reviewer[bot]</a> reviewed on 2025-12-06 22:15</div>
+            <div class="timeline-body"><h2>Pull request overview</h2>
+<p>This PR successfully removes the <code>regex</code> crate dependency from <code>ruff_python_formatter</code> by replacing two regex patterns with hand-written state machine parsers for docstring code example detection. The implementation provides explicit, self-documenting parsing logic while reducing binary size and eliminating lazy initialization costs.</p>
+<p><strong>Key Changes:</strong></p>
+<ul>
+<li>Removed <code>regex</code> dependency from Cargo.toml</li>
+<li>Replaced reStructuredText directive regex with <code>is_rst_directive_start()</code> function</li>
+<li>Replaced Markdown fence regex with <code>parse_markdown_fence_start()</code> function and <code>strip_python_lang_prefix()</code> state machine</li>
+<li>Added comprehensive unit tests for the Python language identifier state machine</li>
+</ul>
+<h3>Reviewed changes</h3>
+<p>Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.</p>
+<p>| File | Description |
+| ---- | ----------- |
+| crates/ruff_python_formatter/Cargo.toml | Removed <code>regex</code> crate from dependencies |
+| crates/ruff_python_formatter/src/string/docstring.rs | Replaced regex patterns with hand-written parsers (<code>is_rst_directive_start</code>, <code>parse_markdown_fence_start</code>, <code>strip_python_lang_prefix</code>, <code>strip_prefix_ignore_ascii_case</code>) and added unit tests for the state machine |</p>
+<hr />
+<p>💡 <a href="/astral-sh/ruff/new/main/.github/instructions?filename=*.instructions.md" class="Link--inTextBlock" target="_blank" rel="noopener noreferrer">Add Copilot custom instructions</a> for smarter, more guided reviews. <a href="https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot" class="Link--inTextBlock" target="_blank" rel="noopener noreferrer">Learn how to get started</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1102 on 2025-12-06 22:15</div>
+            <div class="timeline-body"><p>The original regex required the line to end immediately after the Python language identifier with no trailing whitespace: <code>(?i:python|py|python3|py3)$</code>. However, this implementation allows trailing whitespace after the language identifier by calling <code>.trim()</code>.</p>
+<p>This makes the parser more permissive than the original regex. For example, <code>.. code-block:: python   </code> would now match but wouldn't have matched with the original regex.</p>
+<p>To match the original behavior, change to:</p>
+<pre><code class="language-rust">// Line must end immediately after the language identifier (no trailing whitespace)
+rest.is_empty()
+</code></pre>
+<pre><code class="language-suggestion">            // Line must end immediately after the language identifier (no trailing whitespace)
+            rest.is_empty()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1523 on 2025-12-06 22:15</div>
+            <div class="timeline-body"><p>This implementation is more strict than the original regex regarding word boundaries for language identifiers. The original regex <code>(?i:python|py|python3|py3)[^</code>]*<code>would match language identifiers as prefixes (e.g.,</code> ```python3x ` would match as &quot;python&quot; followed by &quot;3x&quot;). The new implementation requires an exact match followed by whitespace or end of string.</p>
+<p>This is likely an improvement (more conservative matching), but it is a behavioral change from the original regex. Consider documenting this or adding a test case to explicitly cover this behavior change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-07 10:32</div>
+            <div class="timeline-body"><p>Do you have any numbers by how much does it reduce the wasm size?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magic-akari">@magic-akari</a> on 2025-12-07 11:41</div>
+            <div class="timeline-body"><p>With this PR changes:</p>
+<pre><code class="language-diff">diff --git a/Cargo.toml b/Cargo.toml
+index 985a2c3..438ecd1 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -17,9 +17,9 @@ resolver = &quot;2&quot;
+ 
+ 	[workspace.dependencies]
+ 	ruff_fmt_config       = { path = &quot;crates/ruff_fmt_config&quot; }
+-	ruff_formatter        = { git = &quot;https://github.com/astral-sh/ruff.git&quot;, tag = &quot;0.14.8&quot; }
+-	ruff_python_ast       = { git = &quot;https://github.com/astral-sh/ruff.git&quot;, tag = &quot;0.14.8&quot; }
+-	ruff_python_formatter = { git = &quot;https://github.com/astral-sh/ruff.git&quot;, tag = &quot;0.14.8&quot; }
++	ruff_formatter        = { path = &quot;../ruff/crates/ruff_formatter&quot; }
++	ruff_python_ast       = { path = &quot;../ruff/crates/ruff_python_ast&quot; }
++	ruff_python_formatter = { path = &quot;../ruff/crates/ruff_python_formatter&quot; }
+ 
+ 
+ 	anyhow             = &quot;1.0&quot;
+</code></pre>
+<p>Binary size reduced from 1.8 MB to 989 KB.</p>
+<pre><code class="language-bash">❯ ls -lh ./ruff_fmt_bg.wasm
+-rw-r--r--@ 1 akari  staff   1.8M Dec  7 19:39 ./ruff_fmt_bg.wasm
+</code></pre>
+<pre><code class="language-bash">❯ ls -lh ./ruff_fmt_bg.wasm                                                    
+-rw-r--r--@ 1 akari  staff   989K Dec  7 19:34 ./ruff_fmt_bg.wasm
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-07 17:15</div>
+            <div class="timeline-body"><p>Wow, that's a pretty significant reduction. But I assume it requires removing the ahoacorsik dependency fromthe ast?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magic-akari">@magic-akari</a> on 2025-12-07 17:37</div>
+            <div class="timeline-body"><p>No, <strong>aho-corasick</strong> removal is not needed - it's already eliminated automatically.</p>
+<h2>Why</h2>
+<ol>
+<li>Dependency path: <code>aho-corasick</code> ← <code>globset</code> ← <code>ruff_cache</code></li>
+<li>ruff_cache is only used for <code>CacheKey</code> trait and derive macros in the formatter</li>
+<li>The Formatter doesn't use <code>impl CacheKey for Regex/Pattern/Glob</code> - these implementations are only needed by linter/CLI</li>
+<li>LTO + DCE at link time automatically removes all unreferenced code from <code>aho-corasick</code>, <code>regex-automata</code>, <code>globset</code>, etc.</li>
+</ol>
+<hr />
+<p>Note: Only verified for the <code>format_module_source</code> use case. Ref: https://github.com/wasm-fmt/ruff_fmt/blob/9ecf34b5efacc0f2e696d626a8a221460a83bfae/crates/ruff_fmt/src/lib.rs#L5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1506 on 2025-12-08 09:36</div>
+            <div class="timeline-body"><p>Let's move this after <code>info_string = rest.trim()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1951 on 2025-12-08 09:37</div>
+            <div class="timeline-body"><p>I think this will panic for non ASCII strings because you might end up slicing between char boundaries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1980 on 2025-12-08 09:37</div>
+            <div class="timeline-body"><p>Same here: I think this panics for non ASCII strings if the first character is multi-byte character (e.g. an emoji)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-08 09:38</div>
+            <div class="timeline-body"><p>Curious to hear @BurntSushi take. The size win is impressive but the rewrite also shows that doing all this manually makes it very easy to introduce new bugs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/magic-akari">@magic-akari</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1980 on 2025-12-08 11:50</div>
+            <div class="timeline-body"><p>Thanks for the review! You're right to be cautious here.</p>
+<p>For <code>strip_python_lang_prefix</code>, the <code>bytes.get(..2)?</code> approach is actually safe because:</p>
+<ol>
+<li>We use <code>bytes.get()</code> which returns <code>Option</code> instead of panicking</li>
+<li>The <code>eq_ignore_ascii_case(b&quot;py&quot;)</code> check only succeeds when the first two bytes are ASCII <code>'p'</code> and <code>'y'</code></li>
+<li>Once we've confirmed an ASCII match at the byte level, the subsequent string slice is guaranteed to be at a valid UTF-8 boundary (since each ASCII character is exactly one byte)</li>
+</ol>
+<p>That said, I've updated the code to use <code>s.get(n..)</code> instead of <code>&amp;s[n..]</code> for added defensiveness and clarity, and added a SAFETY comment explaining this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/magic-akari">@magic-akari</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1951 on 2025-12-08 11:53</div>
+            <div class="timeline-body"><p>Good catch! The original <code>s[..prefix.len()]</code> could indeed panic on non-ASCII input (e.g., if <code>s</code> starts with a multi-byte character like <code>&quot;你abc&quot;</code> and we try to slice at index 2).</p>
+<p>I've fixed this by switching to <code>s.as_bytes().get(..prefix_len)?</code> which safely returns <code>None</code> instead of panicking when the string is too short or would slice at an invalid boundary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/magic-akari">@magic-akari</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1506 on 2025-12-08 11:53</div>
+            <div class="timeline-body"><p>Done! Moved it after <code>info_string = rest.trim()</code> — makes more sense to check the trimmed info string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/magic-akari">@magic-akari</a> reviewed on 2025-12-08 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-08 13:00</div>
+            <div class="timeline-body"><p>The <code>regex</code> crate has a number of options for decreasing binary size. I'd rather see those options explored before switching to something hand-written here. I actually think the regexes simplify things quite a bit.</p>
+<p>In particular, I don't think these regexes need to be &quot;fast&quot;? So the first thing I'd try here is switching to <a href="https://docs.rs/regex-lite"><code>regex-lite</code></a>. It should considerably reduce binary size.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

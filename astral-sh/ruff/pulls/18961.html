@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[magic-value-comparison] Custom allowlist for Magic Numbers (PLR2004) - astral-sh/ruff #18961</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[magic-value-comparison] Custom allowlist for Magic Numbers (PLR2004)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18961">#18961</a>
+        opened by <a href="https://github.com/DaniBodor">@DaniBodor</a>
+        on 2025-06-26 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-06-26 14:54</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR allows users to specify a custom set of whitelisted values for magic value comparisons in PLR2004. The setting is named <code>pylint.allow_magic_values</code>, which is consistent with a similar setting <code>pylint.allow_magic_value_types</code>
+The previous hard-coded allow-list was moved to the default for <code>pylint.allow_magic_values</code>, giving users full control over what is and what is not a whitelisted value. This setting does is added in addition to the <code>pylint.allow_magic_value_types</code> and does not replace it. Any value that is whitelisted due to either of these settings is not considered a linting violation.</p>
+<p>Note that as far as I could tell, no other setting allows floats or complex numbers as inputs, so I created a few helper methods to deal with these properly (mainly relating to floating point variation).</p>
+<h2>Test Plan</h2>
+<p>I have tested the settings with a number of cases manually in a repository I work on regularly. I have not added any extensive (combinatorial) tests to the test suite.</p>
+<h2>Note</h2>
+<p>I don't know whether you have any policy on using or disclosing the use of code generators during development, but I definitely relied heavily on this to solve some of the issues I ran into during development.</p>
+<p>fix: #10009</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-26 16:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-06-27 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:94 on 2025-06-27 07:10</div>
+            <div class="timeline-body"><p>You can simplify these implementations by creating an <code>AllowedFloatValue</code> struct and implement <code>Eq</code> and <code>CacheKey</code> for that struct only. You can then derive <code>CacheKey</code> and <code>PartialEq</code> on the enum</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:23 on 2025-06-27 07:13</div>
+            <div class="timeline-body"><p>What's the syntax for specifying a bytes literal value in the settings?</p>
+<p>Or does this variant only exist to match a bytes literal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:25 on 2025-06-27 07:14</div>
+            <div class="timeline-body"><p>I'd be inclined to change this method to <code>matches_literal(literal_expr) -&gt; bool</code></p>
+<p>It avoids allocating temporary strings (in the <code>String</code>) case and may even remove the <code>BytesLiteral</code> variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:23 on 2025-06-27 14:08</div>
+            <div class="timeline-body"><p>I think something that cannot be input in a toml file 🤣 .</p>
+<p>My conceptual idea was that for all the types that can be suppressed by <code>pylint.allow-magic-value-types</code> I wanted to have the option to list specific values to suppress. I forgot to consider what is possible to actually list as an input setting.</p>
+<p>Similarly, I don't think it's possible to input a complex number in a toml file. I will remove both of these options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DaniBodor">@DaniBodor</a> reviewed on 2025-06-27 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-27 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:23 on 2025-06-27 15:57</div>
+            <div class="timeline-body"><p>This might be a really bad idea, but I keep thinking about just parsing these into <code>Expr</code>s from an array of strings in the config file. That would be annoying for actual string values since you'd need two layers of quotes, but it could allow bytes and complex numbers, if we really want to support them.</p>
+<p>In the opposite direction, I feel like most uses of this, at least in the issue, are from numbers/floats. So a <code>Vec&lt;f64&gt;</code> might be the simplest option we could add to cover a majority of cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:23 on 2025-06-27 17:36</div>
+            <div class="timeline-body"><p>I think that goes a bit over board. I'm also not sure if we need the byte case at all because we can just compare if the byte string matches the bytes of a string provided in the settings (or we decide to never allow them). In the end the main benefit of a byte string is that it has different escaping rules (which are different in TOML anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DaniBodor">@DaniBodor</a> reviewed on 2025-07-10 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:23 on 2025-07-10 13:21</div>
+            <div class="timeline-body"><p>addressed in https://github.com/astral-sh/ruff/pull/18961/commits/1ba5710b40c3acaa2070b7c38cc8f4afb1905b5b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DaniBodor">@DaniBodor</a> reviewed on 2025-07-10 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:94 on 2025-07-10 13:59</div>
+            <div class="timeline-body"><p>addressed in https://github.com/astral-sh/ruff/pull/18961/commits/ffe56f3c6aaed41c23b449f554e3e6d82896a267</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-18 07:37</div>
+            <div class="timeline-body"><p>@DaniBodor any chance you could look at the failing tests so that we could move this PR across the line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-08-20 13:02</div>
+            <div class="timeline-body"><p>Yes.. I'm sorry, I haven't had much time recently. Will pick it up within the next couple of weeks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marciska">@marciska</a> on 2025-12-05 02:42</div>
+            <div class="timeline-body"><p>Is there any update on this? 🙂</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

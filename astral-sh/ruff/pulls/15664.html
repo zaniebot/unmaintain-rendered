@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use a dev drive for testing on Windows - astral-sh/ruff #15664</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use a dev drive for testing on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15664">#15664</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-21 23:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 23:42</div>
+            <div class="timeline-body"><p>Investigating the benefits of this here.</p>
+<p>Requires Windows 2025, switching over in https://github.com/astral-sh/ruff/pull/15661</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-01-21 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-21 23:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 00:10</div>
+            <div class="timeline-body"><p>Hm okay this gives a big speed-up but a test is failing</p>
+<pre><code>──── STDERR:             red_knot::file_watching directory_deleted
+thread 'directory_deleted' panicked at /rustc/9fc6b43126469e3858e2fe86cafb4f0fd5068869\library\core\src\ops\function.rs:250:5:
+Didn't observe expected change:
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmppcH4p4\\project\\sub\\a.py&quot;, kind: Any }
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmppcH4p4\\project\\sub\\__init__.py&quot;, kind: Any }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 03:20</div>
+            <div class="timeline-body"><p>I think the small runner on the <code>D:\</code> drive is too slow at ~12 minutes.</p>
+<p>@MichaReiser would you be interested in investigating if this is a real bug with Dev Drives? I'm not sure if there are known issues with the file watcher?</p>
+<p>I'm happy to procure more logs if you tell me how. Or I can test a minimal snippet, if you can extract the core folder-watching behavior or point me to it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @zanieb on 2025-01-22 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @zanieb on 2025-01-22 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-22 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:1 on 2025-01-22 16:03</div>
+            <div class="timeline-body"><p>Scary, but just copied over from uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 16:59</div>
+            <div class="timeline-body"><p>Glorious, here are the logs</p>
+<pre><code>──── STDERR:             red_knot::file_watching directory_deleted
+2025-01-22T16:57:43.337130Z DEBUG red_knot_project::metadata: Searching for a project in 'E:\ruff-tmp\.tmpLgedMu\project'
+2025-01-22T16:57:43.337503Z DEBUG red_knot_project::metadata: The ancestor directories contain no `pyproject.toml`. Falling back to a virtual project.
+2025-01-22T16:57:43.338307Z  INFO red_knot_python_semantic::program: Python version: Python 3.9, platform: all
+2025-01-22T16:57:43.338388Z DEBUG red_knot_python_semantic::module_resolver::resolver: Adding first-party search path 'E:\ruff-tmp\.tmpLgedMu\project'
+2025-01-22T16:57:43.338468Z DEBUG red_knot_python_semantic::module_resolver::resolver: Using vendored stdlib
+2025-01-22T16:57:43.345608Z TRACE red_knot_project::db: Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: dynamic_resolution_paths(Id(800)) } }
+2025-01-22T16:57:43.345729Z DEBUG red_knot_python_semantic::module_resolver::resolver: Resolving dynamic module resolution paths
+2025-01-22T16:57:43.345984Z DEBUG red_knot_project::watch::watcher: Watching path: `E:\ruff-tmp\.tmpLgedMu\project`
+2025-01-22T16:57:43.346325Z  INFO red_knot_project::watch::project_watcher: Set up file watchers for [&quot;E:\ruff-tmp\.tmpLgedMu\project&quot;]
+2025-01-22T16:57:43.448406Z TRACE ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\bar.py'
+2025-01-22T16:57:43.449023Z TRACE red_knot_project::db: Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: resolve_module_query(Id(1000)) } }
+2025-01-22T16:57:43.449297Z TRACE resolve_module: ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\sub\__init__.py' name=sub.a
+2025-01-22T16:57:43.449472Z TRACE resolve_module: ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\sub\a\__init__.pyi' name=sub.a
+2025-01-22T16:57:43.449590Z TRACE resolve_module: ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\sub\a\__init__.py' name=sub.a
+2025-01-22T16:57:43.449696Z TRACE resolve_module: ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\sub\a.pyi' name=sub.a
+2025-01-22T16:57:43.449789Z TRACE resolve_module: ruff_db::files: Adding file 'E:\ruff-tmp\.tmpLgedMu\project\sub\a.py' name=sub.a
+2025-01-22T16:57:43.449905Z TRACE resolve_module: red_knot_python_semantic::module_resolver::resolver: Resolved module `sub.a` to `E:\ruff-tmp\.tmpLgedMu\project\sub\a.py` name=sub.a
+2025-01-22T16:57:43.455836Z  INFO Project::index_files: red_knot_project: Found 3 files in project `project` package=project
+thread 'directory_deleted' panicked at /rustc/9fc6b43126469e3858e2fe86cafb4f0fd5068869\library\core\src\ops\function.rs:250:5:
+Didn't observe expected change:
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\a.py&quot;, kind: Any }
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\__init__.py&quot;, kind: Any }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 17:28</div>
+            <div class="timeline-body"><p>(they don't seem helpful — not sure how to get more...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>(they don't seem helpful — not sure how to get more...)</p>
+</blockquote>
+<p>How dare you! I improved them a lot and I think there's some useful content in them.</p>
+<p>The specific test tests if the file watcher correctly handles the case where an entire directory gets deleted, specifically the <code>sub</code> directory. That's why the test expects a change event for the <code>sub</code> directory. What's interesting is that no such event gets emitted on the devdrive. It only emits the events for the files in that directory</p>
+<pre><code>Didn't observe expected change:
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\a.py&quot;, kind: Any }
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\__init__.py&quot;, kind: Any }
+</code></pre>
+<p>Now, we could fix the test to expect the events for one of the files instead of the directories, and I suspect it would then pass just fine on all platforms.</p>
+<p>However, this reveals a more fundamental problem with changing to dev drives: Windows's file-watching API returns different events depending on whether the path is a dev drive or not. Migrating to a dev drive would, therefore, remove the coverage for regular Windows drives, which I consider fairly important.</p>
+<p>That means I'm not sure if we should change our runner to use dev drivers. Is there a way to only use a dev drive for some directories, e.g., not the directory created by tempdir?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:353 on 2025-01-24 17:38</div>
+            <div class="timeline-body"><p>This should not be needed when you use <code>testing::setup_tracing()</code> It always writes the logs and they should be visible if the test fails</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:46 on 2025-01-24 17:39</div>
+            <div class="timeline-body"><p>We can probably get away with a smaller drive for Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:41 on 2025-01-24 17:40</div>
+            <div class="timeline-body"><p>A beautiful mix of space and tab indentation. hehe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 17:48</div>
+            <div class="timeline-body"><p>Funny, I read</p>
+<pre><code>Didn't observe expected change:
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\a.py&quot;, kind: Any }
+  - Deleted { path: &quot;E:\\ruff-tmp\\.tmpLgedMu\\project\\sub\\__init__.py&quot;, kind: Any }
+</code></pre>
+<p>as: we expected these changes but did not observe them.</p>
+<p>Now I see — the message is much more helpful read that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>However, this reveals a more fundamental problem with changing to dev drives: Windows's file-watching API returns different events depending on whether the path is a dev drive or not. Migrating to a dev drive would, therefore, remove the coverage for regular Windows drives, which I consider fairly important.</p>
+</blockquote>
+<p>Yeah I agree coverage for a regular drive seems important. It sounds like it'd actually be important to get both coverage for a Dev Drive <em>and</em> the regular file system. I can own that.</p>
+<blockquote>
+<p>That means I'm not sure if we should change our runner to use dev drivers. Is there a way to only use a dev drive for some directories, e.g., not the directory created by tempdir?</p>
+</blockquote>
+<p>Yeah, but then we'll probably miss out on the benefits. I can explore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 17:50</div>
+            <div class="timeline-body"><p>That's fair. There's definetely still room for improvement. Ideally, the message would also say which event we expected. But it's much better than in the past where it just told you: Too bad, didn't work 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 17:50</div>
+            <div class="timeline-body"><p>Thanks for taking a look Micha. I see this as relatively low priority, but I can explore it in my spare time,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 17:51</div>
+            <div class="timeline-body"><p>Thank you. Excluding the temp directory might be fine for Ruff. We don't write as many files as you do in uv. It's only a handful tests that make use of temp (although I don't know if cargo or other tools make heavy use of temp)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 12:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~41MB
++     memo fields = ~45MB
+
+aioredis (https://github.com/aio-libs/aioredis)
+-     memo fields = ~54MB
++     memo fields = ~60MB
+
+attrs (https://github.com/python-attrs/attrs)
+- TOTAL MEMORY USAGE: ~72MB
++ TOTAL MEMORY USAGE: ~80MB
+
+Expression (https://github.com/cognitedata/Expression)
+-     memo fields = ~49MB
++     memo fields = ~54MB
+
+operator (https://github.com/canonical/operator)
+- TOTAL MEMORY USAGE: ~97MB
++ TOTAL MEMORY USAGE: ~106MB
+-     memo fields = ~80MB
++     memo fields = ~88MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~80MB
++ TOTAL MEMORY USAGE: ~88MB
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-18 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:46 on 2025-06-18 16:14</div>
+            <div class="timeline-body"><p>I actually tried 5 GB then 10 GB and both ran out of space during compilation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-20 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-06-20 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-03 12:11</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/zb%2Fdev-drive?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #15664 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>zb/dev-drive</code> (40b4aa2) with <code>main</code> (d0f0577)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:38</div>
+            <div class="timeline-body"><p>I'll close this as it looks pretty stale but please re-open it if you think we should keep this around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

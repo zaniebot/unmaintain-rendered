@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] avoid unions of generic aliases of the same class in fixpoint - astral-sh/ruff #21909</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] avoid unions of generic aliases of the same class in fixpoint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21909">#21909</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-10 23:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 23:43</div>
+            <div class="timeline-body"><p>Partially addresses https://github.com/astral-sh/ty/issues/1732
+Fixes https://github.com/astral-sh/ty/issues/1800</p>
+<h2>Summary</h2>
+<p>At each fixpoint iteration, we union the &quot;previous&quot; and &quot;current&quot; iteration types, to ensure that the type can only widen at each iteration. This prevents oscillation and ensures convergence.</p>
+<p>But some unions triggered by this behavior (in particular, unions of differently-specialized generic-aliases of the same class) never simplify, and cause spurious errors. Since we haven't seen examples of oscillating types involving class-literal or generic-alias types, just don't union those.</p>
+<p>There may be more thorough/principled ways to avoid undesirable unions in fixpoint iteration, but this narrow change seems like it results in strict improvement.</p>
+<h2>Test Plan</h2>
+<p>Removes two false positive <code>unsupported-class-base</code> in mdtests, and several in the ecosystem, without causing other regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-10 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 23:45</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 23:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 42 diagnostics
++ Found 41 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/channels/handlers/ws_handler.py:69:5: warning[unsupported-base] Unsupported class base with type `&lt;class 'AsyncBaseHTTPView[GraphQLWSConsumer, GraphQLWSConsumer, GraphQLWSConsumer, GraphQLWSConsumer, GraphQLWSConsumer, Context@GraphQLWSConsumer, RootValue@GraphQLWSConsumer]'&gt; | &lt;class 'AsyncBaseHTTPView[GraphQLWSConsumer[None, None], GraphQLWSConsumer[None, None], GraphQLWSConsumer[None, None], GraphQLWSConsumer[None, None], GraphQLWSConsumer[None, None], Context@GraphQLWSConsumer, RootValue@GraphQLWSConsumer]'&gt;`
+- Found 402 diagnostics
++ Found 401 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1217:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5122 diagnostics
++ Found 5123 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-12-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-12-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-12-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-12-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 00:12</div>
+            <div class="timeline-body"><p>@mtshiba I can't request your review, but would be happy for you to take a look at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-11 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types.rs</code>:920 on 2025-12-11 02:19</div>
+            <div class="timeline-body"><p>We should probably make sure the class/generic alias identities match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 12:18</div>
+            <div class="timeline-body"><p>Have we actually seen any issues reported due to unions of <em>class-literal</em> types from our fixpoint machinery? Or has it just been generic-alias types?</p>
+<p>I'm not sure how we ever would get a spurious union of <em>class-literal</em> types from our fixpoint machinery. Though if we did, I agree it could cause similar issues to the ones we've seen in the ecosystem (and in issue reports) regarding generic-alias types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-11 12:30</div>
+            <div class="timeline-body"><p>Seems worth a try and, at the very least, would help us learn where our assumption is off</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-11 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:920 on 2025-12-11 12:32</div>
+            <div class="timeline-body"><p>I think if they are both generic aliases, we should check that the class-literal origin of the alias is the same. If they're both class-literal types and they're the same, then the union will simplify anyway, so there's no issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-12-11 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types.rs</code>:920 on 2025-12-11 15:23</div>
+            <div class="timeline-body"><p>The result's class literal type may <a href="https://github.com/astral-sh/ruff/blob/c9155d5e7233ee3ccc42c9846d5c7e525c06f40f/crates/ty_python_semantic/resources/mdtest/attributes.md?plain=1#L2387-L2403">flip between cycles</a>: two different types must be unioned, the current type alone does not keep the query monotonic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-11 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:920 on 2025-12-11 16:10</div>
+            <div class="timeline-body"><p>In that example I don't think any class-literal type itself ever oscillates (or even changes). Class-literal types are quite simple; they don't include attribute types, which are looked up separately. Even bases are looked up separately from the identity of the class-literal itself. I think Alex is right that we've never seen any occasion for a class-literal type to oscillate (or even change) in a cycle, only generic alias types in class bases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-11 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] avoid unions of class literals / generic aliases in fixpoint" to "[ty] avoid unions of generic aliases of the same class in fixpoint" by @carljm on 2025-12-11 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-12-11 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-11 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-11 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

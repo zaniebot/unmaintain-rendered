@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix comment placement in lambda parameters - astral-sh/ruff #21868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix comment placement in lambda parameters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21868">#21868</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-12-09 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 17:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes two changes to comment placement in lambda parameters. First, we
+now insert a line break if the first parameter has a leading comment:</p>
+<pre><code class="language-py"># input
+(
+    lambda
+    * # comment 2
+    x:
+    x
+)
+
+# main
+(
+    lambda # comment 2
+    *x: x
+)
+
+# this PR
+(
+    lambda
+	# comment 2
+    *x: x
+)
+</code></pre>
+<p>Note the missing space in the output from main. This case is currently unstable
+on main. Also note that the new formatting is more consistent with our stable
+formatting in cases where the lambda has its own dangling comment:</p>
+<pre><code class="language-py"># input
+(
+    lambda # comment 1
+    * # comment 2
+    x:
+    x
+)
+
+# output
+(
+    lambda  # comment 1
+    # comment 2
+    *x: x
+)
+</code></pre>
+<p>and when a parameter without a comment precedes the split <code>*x</code>:</p>
+<pre><code class="language-py"># input
+(
+    lambda y,
+    * # comment 2
+    x:
+    x
+)
+
+# output
+(
+    lambda y,
+    # comment 2
+    *x: x
+)
+</code></pre>
+<p>This does change the stable formatting, but I think such cases are rare (expecting zero hits in the ecosystem report), this fixes an existing instability, and it should not change any code we've previously formatted.</p>
+<p>Second, this PR modifies the comment placement such that <code># comment 2</code> in these
+outputs is still a leading comment on the parameter. This is also not the case
+on main, where it becomes a <a href="https://play.ruff.rs/3b29bb7e-70e4-4365-88e0-e60fe1857a35?secondary=Comments">dangling lambda comment</a>. This doesn't cause any
+instability that I'm aware of on main, but it does cause problems when trying to
+adjust the placement of dangling lambda comments in #21385. Changing the
+placement in this way should not affect any formatting here.</p>
+<h2>Test Plan</h2>
+<p>New lambda tests, plus existing tests covering the cases above with multiple
+comments around the parameters (see lambda.py 122-143, and 122-205 or so more
+broadly)</p>
+<p>I also checked manually that the comments are now leading on the parameter:</p>
+<pre><code class="language-shell">❯ cargo run --bin ruff_python_formatter -- --emit stdout --target-version 3.10 --print-comments &lt;&lt;EOF
+(
+    lambda
+        # comment 2
+    *x: x
+)
+EOF
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/ruff_python_formatter --emit stdout --target-version 3.10 --print-comments`
+# Comment decoration: Range, Preceding, Following, Enclosing, Comment
+21..32, None, Some((Parameters, 37..39)), (ExprLambda, 6..42), &quot;# comment 2&quot;
+{
+    Node {
+        kind: Parameter,
+        range: 37..39,
+        source: `*x`,
+    }: {
+        &quot;leading&quot;: [
+            SourceComment {
+                text: &quot;# comment 2&quot;,
+                position: OwnLine,
+                formatted: true,
+            },
+        ],
+        &quot;dangling&quot;: [],
+        &quot;trailing&quot;: [],
+    },
+}
+(
+    lambda
+    # comment 2
+    *x: x
+)
+</code></pre>
+<p>But I didn't see a great place to put a test like this. Is there somewhere I can assert this comment placement since it doesn't affect any formatting yet? Or is it okay to wait until we use this in #21385?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-12-09 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-09 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 17:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-12-09 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-12-09 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-09 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-09 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-09 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-09 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

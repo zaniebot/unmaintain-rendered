@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve check enforcing that an overloaded function must have an implementation - astral-sh/ruff #21978</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve check enforcing that an overloaded function must have an implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21978">#21978</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-14 17:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-14 17:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Treat <code>if TYPE_CHECKING</code> blocks the same as stub files (the feature requested in https://github.com/astral-sh/ty/issues/1216)</li>
+<li>We currently only allow <code>@abstractmethod</code>-decorated methods to omit the implementation if they're methods in classes that have <em>exactly</em> <code>ABCMeta</code> as their metaclass. That seems wrong -- <code>@abstractmethod</code> has the same semantics if a class has a subclass of <code>ABCMeta</code> as its metaclass. This PR fixes that too. (I'm actually not <em>totally</em> sure we should care what the class's metaclass is at all -- see discussion in https://github.com/astral-sh/ty/issues/1877#issue-3725937441... but the change this PR is making seems less wrong than what we have currently, anyway.)</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ty/issues/1216</p>
+<h2>Test Plan</h2>
+<p>Mdtests and snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-14 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-14 18:00</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-14 18:01</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/mark/structures.py:495:13: error[invalid-overload] Overloads for function `__call__` must be followed by a non-`@overload`-decorated implementation function
+- src/_pytest/mark/structures.py:510:13: error[invalid-overload] Overloads for function `__call__` must be followed by a non-`@overload`-decorated implementation function
+- src/_pytest/mark/structures.py:542:13: error[invalid-overload] Overloads for function `__call__` must be followed by a non-`@overload`-decorated implementation function
+- Found 443 diagnostics
++ Found 440 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-14 18:04</div>
+            <div class="timeline-body"><p>The primer report LGTM. Those pytest hits are all in an <code>if TYPE_CHECKING</code> block: <a href="https://github.com/pytest-dev/pytest/blob/af95858c9293e1fddf05116b1f2a38b62ebd36b5/src/_pytest/mark/structures.py#L488">https://github.com/pytest-dev/pytest/blob/af95858c9293e1fddf05116b1f2a38b62ebd36b5/src/_pytest/mark/structures.py#L488</a>. That's exactly the feature this PR is trying to enable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-12-14 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-12-14 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-12-14 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-12-14 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-12-15 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-12-15 08:05</div>
+            <div class="timeline-body"><p>Looks good to me — thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-12-15 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-12-15 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-15 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-15 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:36 UTC
+    </footer>
+</body>
+</html>

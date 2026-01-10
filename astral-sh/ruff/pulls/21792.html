@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support renaming import aliases - astral-sh/ruff #21792</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support renaming import aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21792">#21792</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-04 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-04 14:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes renaming import aliases or symbols that include an import alias in their chain.</p>
+<p>For renames (and highlight references), we mustn't resolve to the final declaration. Instead, we should only resolve to the first declaration that defined this specific name (e.g. the import alias). We already made this distinction internally but we didn't correctly propagate the <code>alias_resolution</code>, which resulted in some definitions resolving to the final declarations and others only resolved to the first import alias.</p>
+<p>It's fairly likely that we still fail to propagate <code>ImportAliasResolution</code> in some places but we can fix those as they come up.</p>
+<p>This PR fixes this.</p>
+<p>I also decided to split <code>GotoTarget::ImportSymbolAlias</code> into two variants, one for when the target is the alias's <code>asname</code> and one where it's the alias's name. Mainly because I found the distinction only based on <code>range</code> hard to follow and this also revealed some further bugs.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1661</p>
+<h2>Test plan</h2>
+<p>https://github.com/user-attachments/assets/0b825f2e-8ab5-48f5-adc8-c1d4e0e59f22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-04 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-04 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-04 14:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-04 14:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 494 diagnostics
++ Found 492 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- src/scikit_build_core/build/_pathutil.py:25:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
+- src/scikit_build_core/build/_pathutil.py:27:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 42 diagnostics
++ Found 38 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1217:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5518 diagnostics
++ Found 5517 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:512 on 2025-12-04 15:21</div>
+            <div class="timeline-body"><p>I need to add a test for this. I think this might break <code>a.call</code> if <code>ImportAliasResolution::PreserveAlias</code>, but <code>definitions_for_callable</code> always resolves import aliases (it doesn't perform the lookup by name).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:82 on 2025-12-04 16:16</div>
+            <div class="timeline-body"><p>Incorrect span</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:394 on 2025-12-04 16:17</div>
+            <div class="timeline-body"><p>Yikes great point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:514 on 2025-12-04 16:21</div>
+            <div class="timeline-body"><p>I need to remember the dbg! macro more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:624 on 2025-12-04 16:24</div>
+            <div class="timeline-body"><p>Flagging this if-let as suspicious (we discussed this, assuming you know the conclusion better than I do).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:920 on 2025-12-04 16:25</div>
+            <div class="timeline-body"><p>This should have the asname directly now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-12-04 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:1081 on 2025-12-04 18:05</div>
+            <div class="timeline-body"><p>This looks wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-04 18:22</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Frename-import-alias?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21792 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>micha/rename-import-alias</code> (adf468b) with <code>main</code> (b2fb421)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Frename-import-alias?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-12-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-05 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:40 on 2025-12-05 13:54</div>
+            <div class="timeline-body"><p>We might want to unify <code>ReferencesMode</code> and <code>ImportAliasResolution</code> because I think there might be more differences in <code>resolve_*</code> moving forward where it might even be beneficial to know: Hey, what request are we handling, it's rename, cool, let's do this instead of x.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:516 on 2025-12-05 15:16</div>
+            <div class="timeline-body"><p>Concretely: the reason GotoTarget::Call exists if for when you click on <code>Class()</code>. <code>definitions_for_expression</code> will find <code>class Class</code> while <code>definitions_for_callable</code> will find <code>def __init__()</code>. So indeed we want to exclude<code>definitions_for_callable</code> when we don't want to ResolveAliases!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/rename.rs</code>:28 on 2025-12-05 15:23</div>
+            <div class="timeline-body"><p>Should we be using <code>ReferencesMode::to_import_resolution</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/rename.rs</code>:1249 on 2025-12-05 15:26</div>
+            <div class="timeline-body"><p>the absolute confidence of a ruff dev to be like &quot;yeah of course that cursor is on deprecated&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-12-05 15:29</div>
+            <div class="timeline-body"><p>Hmm is this rebased on main? I think some from..import tests I added should also have had snapshot updates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-05 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:1249 on 2025-12-05 16:22</div>
+            <div class="timeline-body"><p>I debugged way too many <code>TextRange</code> problems :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-05 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:516 on 2025-12-05 16:22</div>
+            <div class="timeline-body"><p>Ohh, thank you! That makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-05 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm is this rebased on main? I think some from..import tests I added should also have had snapshot updates.</p>
+</blockquote>
+<p>I rebased a couple of times today. Any specific examples? I don't see any other <code>rename</code> tests that use an alias.</p>
+<p>I did see some changes to your submodule import tests when trying to fix overload resolution that looked related to redeclarations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-05 18:06</div>
+            <div class="timeline-body"><p>I'll go ahead and merge this. Happy to address any tests that should have been updated but didn't in a follow up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-05 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-05 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-05 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-05 18:23</div>
+            <div class="timeline-body"><p>Ah good point, the cases I got in are specifically failing on non-aliases, so no worries.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

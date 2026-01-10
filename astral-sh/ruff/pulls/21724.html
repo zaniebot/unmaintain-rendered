@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drop WSL1 special case in flake8-executable - astral-sh/ruff #21724</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Drop WSL1 special case in flake8-executable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21724">#21724</a>
+        opened by <a href="https://github.com/K900">@K900</a>
+        on 2025-12-01 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/K900">@K900</a> on 2025-12-01 11:31</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>WSL1 is very very dead, and WSL2 handles permissions properly. Fixes <code>cargo test</code> on Ruff itself failing on WSL2, and removes what's generally a high potential footgun.</p>
+<p>Fixes #10084 in a simpler way than #17584.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> on a WSL2 system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-12-01 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-12-01 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-01 19:04</div>
+            <div class="timeline-body"><p>This feels like it could be a breaking change to me (so we could try it in preview first), but I'm curious what others think. We may also need to update the rule docs, which both mention WSL.</p>
+<p>Otherwise the change looks reasonable to me, and it's nice to drop a dependency!</p>
+<p>cc @MichaReiser who reviewed #17584.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-01 20:18</div>
+            <div class="timeline-body"><p>Oops, missed the doc change. Fixed it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 09:22</div>
+            <div class="timeline-body"><p>@K900 would you mind testing the example in https://github.com/astral-sh/ruff/issues/5445</p>
+<p>I don't use WSL myself, so I'm not very familiar with how it works but what I understand is that all files on a windows disk <code>/mnt/...</code> always have the executable bit set, in which case we'd flag every single file on that disk if they miss a shebang.</p>
+<p>I agree, that we should preview gate this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 09:27</div>
+            <div class="timeline-body"><p>It's a little more complicated than that on WSL2. Linux permissions are persisted on Windows partitions, as NTFS xattrs, but files without any xattrs, e.g. ones created on the Windows side, are defaulted to 0777. So if you, say, run <code>git clone</code> on Windows to clone a repo and then try to access it on WSL, it will have 0777 permissions on everything, but if you <code>git clone</code> the same repo to the same path from the WSL side, it will have correct permissions on both sides. This is not entirely obvious behavior, but it will also throw off git (if used from WSL) and basically any other tool, and I don't think Ruff has to try and work around this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 09:29</div>
+            <div class="timeline-body"><p>To clarify:</p>
+<pre><code>~
+❯ cd /mnt/d/test/
+
+/mnt/d/test
+❯ ls
+╭────────────╮
+│ empty list │
+╰────────────╯
+
+/mnt/d/test
+❯ touch beep
+
+/mnt/d/test
+❯ /mnt/c/Windows/System32/cmd.exe /c &quot;echo &gt; boop&quot;  # this escapes back to Windows and creates a file &quot;from Windows&quot;
+
+/mnt/d/test
+❯ ls -la
+╭────┬──────┬──────┬────────┬──────────┬───────────┬───────────┬────────────────────┬──────┬───────┬──────┬─────────┬─────╮
+│  # │ name │ type │ target │ readonly │   mode    │ num_links │       inode        │ user │ group │ size │ created │ ... │
+├────┼──────┼──────┼────────┼──────────┼───────────┼───────────┼────────────────────┼──────┼───────┼──────┼─────────┼─────┤
+│  0 │ beep │ file │        │ false    │ rw-r--r-- │         1 │ 143552238122452878 │ k900 │ users │  0 B │         │ ... │
+│  1 │ boop │ file │        │ false    │ rwxrwxrwx │         1 │ 133137663984158607 │ k900 │ users │ 13 B │         │ ... │
+╰────┴──────┴──────┴────────┴──────────┴───────────┴───────────┴────────────────────┴──────┴───────┴──────┴─────────┴─────╯
+
+/mnt/d/test
+❯ chmod 0666 boop
+
+/mnt/d/test
+❯ ls -la
+╭────┬──────┬──────┬────────┬──────────┬───────────┬───────────┬────────────────────┬──────┬───────┬──────┬─────────┬─────╮
+│  # │ name │ type │ target │ readonly │   mode    │ num_links │       inode        │ user │ group │ size │ created │ ... │
+├────┼──────┼──────┼────────┼──────────┼───────────┼───────────┼────────────────────┼──────┼───────┼──────┼─────────┼─────┤
+│  0 │ beep │ file │        │ false    │ rw-r--r-- │         1 │ 143552238122452878 │ k900 │ users │  0 B │         │ ... │
+│  1 │ boop │ file │        │ false    │ rw-rw-rw- │         1 │ 133137663984158607 │ k900 │ users │ 13 B │         │ ... │
+╰────┴──────┴──────┴────────┴──────────┴───────────┴───────────┴────────────────────┴──────┴───────┴──────┴─────────┴─────╯
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 09:31</div>
+            <div class="timeline-body"><p>I'm not yet convinced that we should make this change but we should explain this caveat in the documentation and explain to users how they can &quot;fix their setup&quot; if they run into this situation (clone from within WSL)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 09:34</div>
+            <div class="timeline-body"><p>I don't know if I agree, to be honest. This is kind of similar levels of user error as, say, putting stuff on a noexec filesystem, or on a FAT32 or something. There's really no good way to <em>actually know</em> if the filesystem has sane semantics. Maybe some sort of global detection that skips the check if all files come back executable? But even that feels iffy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 09:47</div>
+            <div class="timeline-body"><p>I'm not sure if you're misunderstanding me. What I'm suggesting is that we make this change in preview, but we also extend the rule documentation with a <code>WSL</code> section, explaining in which situations they might see violations for every single file and what they can do to fix it. I don't see what the issue is with helping users in case they see confusing behavior and I would also find this documentation useful for myself, if a user asks for help in the future.</p>
+<p>The use case I'm worried about is users who switch between WSL and non-WSL, creating some files in Windows and others in WSL, but flake8-executable is enforced in their organisation. They would have to change their behavior. We could consider recommending that they turn off the rule at a user-level configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 09:58</div>
+            <div class="timeline-body"><p>The thing here is that WSL preserves permissions correctly, if set on the WSL side, so just running autofix should repair any sort of WSL setup, <em>even if the files are then updated from the Windows side</em>, because xattrs stay. (wait, does this rule even have an autofix? maybe it should if it doesn't yet) However, there are also other kinds of weird setups that are already not caught by this check, and I'm not sure there's a good way to identify those in a general enough way to try and be smart about this particular check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 10:15</div>
+            <div class="timeline-body"><p>We don't necessarily have to agree here, but I see some documentation giving users a hint on how to solve this problem that users have run into with Ruff in the past, which is a prerequisite to merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 10:23</div>
+            <div class="timeline-body"><p>Sorry, to be clear, I'm not saying this exact change shouldn't have documentation, I'm kind of thinking out loud about whether there is a way to implement this that doesn't <em>need</em> documentation. What do you think about adding an autofix for this, and then maybe explicitly documenting something like &quot;if the autofix didn't work, your filesystem is probably being weird&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 13:04</div>
+            <div class="timeline-body"><p>I see.</p>
+<p>I don't see an obvious way for Ruff to detect this, given that it depends on where a file was created. I'm leaning towards making the change you suggestg with better documentation and we can always introduce a <code>skip_on_wsl</code> option</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-02 13:07</div>
+            <div class="timeline-body"><p>Do you mean just this change, or also adding an auto fix? I can look into doing that in a couple hours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 13:11</div>
+            <div class="timeline-body"><p>Just this change. Adding an auto fix seems unrelated to this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-04 09:41</div>
+            <div class="timeline-body"><p>The autofix is a good way to fix a messed up repo, possibly, if you cloned from Windows and ran ruff from WSL. Also, I wonder how hard it'll be to have git support the WSL xattrs... That would solve most issues before they even happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-09 15:44</div>
+            <div class="timeline-body"><p>Added some documentation that is hopefully generic enough to catch most causes of false positives. Sorry for the delay, caught a cold :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2025-12-09 15:45</div>
+            <div class="timeline-body"><p>(and yes, NTFS filesystems mounted to WSL technically <em>do</em> support Unix permissions, but this is a can of worms that is probably out of scope for Ruff rule documentation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-11 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2025-12-11 09:25</div>
+            <div class="timeline-body"><p>I understood that it's less about where the file is stored but more about how the file was created (WSL side or from within windows).</p>
+<p>Should we also document how users can fix their file system state, e.g. by running chmod from within WSL and setting the file to its default permissions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 09:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Added some documentation that is hopefully generic enough to catch most causes of false positives. Sorry for the delay, caught a cold :(</p>
+</blockquote>
+<p>No need to feel sorry. Thanks for looking into this. I find it very helpful to have someone with deep WSL understanding to talk this change through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/K900">@K900</a> reviewed on 2025-12-11 09:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/K900">@K900</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2025-12-11 09:30</div>
+            <div class="timeline-body"><p>It's kind of both, because WSL is not the only failure mode here, it's also native Linux drivers for filesystems that don't have the concept of POSIX permission bits (vfat etc). WSL in particular is extra weird because it stores POSIX permissions bits in NTFS xattrs and just assumes 0755 if the xattr isn't set, so it's extra confusing and Windows applications touching those files can also make xattrs be weird and I don't know if trying to explain all of this in a note for this lint is a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/K900">@K900</a> reviewed on 2025-12-11 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/K900">@K900</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2025-12-11 09:32</div>
+            <div class="timeline-body"><p>Or at least I really have no idea how to communicate this in a way that's both easy to understand and <em>actually technically correct</em>, which is what made me go for the &quot;Just Don't&quot; hint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-12 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2025-12-12 10:09</div>
+            <div class="timeline-body"><p>I see. I think my conclusion is we can't make this change and instead need a setting or we risk breaking users that use WSL in combination with such a file system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/K900">@K900</a> reviewed on 2025-12-12 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/K900">@K900</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2025-12-12 10:11</div>
+            <div class="timeline-body"><p>It's not just WSL, you can mount a vfat partition on normal Linux, put a repo on it and it'll all be 0755 no matter what, because vfat just makes up the permission bits. I don't know if WSL will even <em>let you</em> access non-NTFS partitions over drvfs?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

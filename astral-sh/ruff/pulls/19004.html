@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix semantic model symbol resolution in classes - astral-sh/ruff #19004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix semantic model symbol resolution in classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19004">#19004</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-27 22:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-27 22:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>The semantic model was not correctly resolving symbols inside class scopes. It didn't implement this part of the <a href="https://docs.python.org/3/reference/executionmodel.html#naming">docs</a>.</p>
+<blockquote>
+<p>A class definition is an executable statement that may use and define names. These references follow the normal rules for name resolution with an exception that unbound local variables are looked up in the global namespace. The namespace of the class definition becomes the attribute dictionary of the class. The scope of names defined in a class block is limited to the class block; it does not extend to the code blocks of methods. This includes comprehensions and generator expressions, but it does not include <a href="https://docs.python.org/3/reference/executionmodel.html#annotation-scopes">annotation scopes</a>, which have access to their enclosing class scopes.</p>
+</blockquote>
+<p>This was causing some false positives/negatives in some rules. The rules affectted were:</p>
+<ul>
+<li><code>PYI019</code> -- false negative in this code:</li>
+</ul>
+<pre><code class="language-python">def shadowed_type():
+    type = 1
+    class A:
+        @classmethod
+        def m[S](cls: type[S]) -&gt; S: ... 
+</code></pre>
+<ul>
+<li><code>F401</code> -- false positive in this code:</li>
+</ul>
+<pre><code class="language-python">from sys import version
+def f():
+    version = 0
+    class Nested:
+        print(version)
+        version = 1
+        print(version)
+    print(version)
+</code></pre>
+<ul>
+<li><code>B905</code> -- false negative in this code:</li>
+</ul>
+<pre><code class="language-python">def f():
+    zip = &quot;outer&quot;
+    class Nested:
+        zip(&quot;A&quot;, &quot;B&quot;)
+        zip = &quot;inner&quot;
+</code></pre>
+<p>Fixes https://github.com/astral-sh/ruff/issues/18429</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Add regression tests.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @LaBatata101 on 2025-06-27 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-06-28 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @LaBatata101 on 2025-06-30 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:43</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this PR because it has become stale. Please don't hesitate to resubmit the PR and reference this PR if you plan to keep working on this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:34 UTC
+    </footer>
+</body>
+</html>

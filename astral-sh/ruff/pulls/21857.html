@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix stack overflow with recursive generic protocols - astral-sh/ruff #21857</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix stack overflow with recursive generic protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21857">#21857</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-09 02:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 02:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes https://github.com/astral-sh/ty/issues/1736 where recursive generic protocols with growing specializations caused a stack overflow.</p>
+<p>The issue occurred with protocols like:</p>
+<pre><code class="language-python">class C[T](Protocol):
+    a: 'C[set[T]]'
+</code></pre>
+<p>When checking <code>C[set[int]]</code> against <code>C[Unknown]</code>, member <code>a</code> requires checking <code>C[set[set[int]]]</code>, which requires <code>C[set[set[set[int]]]]</code>, etc. Each level has different type specializations, so the existing cycle detection (using full types as cache keys) didn't catch the infinite recursion.</p>
+<p>The fix introduces <code>TypeRelationKey</code>, an enum that can be either a full <code>Type</code> or a <code>ClassLiteral</code> (protocol class without specialization). For protocol-to-protocol comparisons, we use <code>ClassLiteral</code> keys, which detects when we're comparing the same protocol class regardless of specialization. When a cycle is detected, we return the fallback value (assume compatible) to safely terminate the recursion.</p>
+<p>In theory this could mean some false positives in cycle detection, but I haven't been able to come up with a practical example where this would be a problem. We'll see how the ecosystem tests feel about it.</p>
+<h2>Test Plan</h2>
+<p>Added mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-09 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:43</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">python-chess (https://github.com/niklasf/python-chess)
++ chess/engine.py:908:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 12 diagnostics
++ Found 13 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
++ beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 492 diagnostics
++ Found 494 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/datastructures.py:399:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 209 diagnostics
++ Found 210 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/pack.py:2735:42: error[invalid-argument-type] Argument to function `sort_objects_for_delta` is incorrect: Expected `Iterator[ShaFile] | Iterator[tuple[ShaFile, tuple[int, bytes | None] | None]]`, found `Iterator[tuple[ShaFile, tuple[int, bytes | None]]]`
+- Found 227 diagnostics
++ Found 228 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- nox/_parametrize.py:153:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Param | Iterable[Any | Param | Iterable[Any]]]`, found `(Iterable[Param | Iterable[Any]] &amp; tuple[object, ...]) | (Param &amp; tuple[object, ...]) | (Iterable[Any] &amp; tuple[object, ...]) | ... omitted 3 union elements`
+- Found 23 diagnostics
++ Found 22 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
++ pandera/engines/pandas_engine.py:1380:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pandera/typing/pandas.py:381:45: error[invalid-argument-type] Argument to bound method `from_records` is incorrect: Expected `Iterable[SequenceNotStr[Any]] | Iterable[Mapping[Unknown, Any]] | Mapping[Unknown, Any] | Mapping[Unknown, SequenceNotStr[Any]]`, found `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/utils/arg_check.py:143:29: error[no-matching-overload] No overload of bound method `join` matches arguments
+- Found 2139 diagnostics
++ Found 2138 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
++ tests/test_option_builder.py:231:5: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `() -&gt; Generator[int | None, int, int | None] | Generator[int | None, None, int | None]`, found `def fn() -&gt; Generator[int, None, None]`
++ tests/test_result_builder.py:238:5: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `() -&gt; Generator[int | None, int, int | None] | Generator[int | None, None, int | None]`, found `def fn() -&gt; Generator[int, None, None]`
+- Found 214 diagnostics
++ Found 216 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- pylox/containers/array.py:69:16: error[no-matching-overload] No overload of bound method `join` matches arguments
+- Found 49 diagnostics
++ Found 48 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/freqai/data_kitchen.py:179:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Sequence[Unknown] | Iterable[Sequence[Unknown] | ndarray[tuple[int], dtype[Any]] | Series[Any] | ... omitted 3 union elements] | Series[Any] | ... omitted 4 union elements`, found `Unknown | _Buffer | _SupportsArray[dtype[Any]] | ... omitted 7 union elements`
++ freqtrade/freqai/data_kitchen.py:179:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Sequence[Unknown] | ndarray[tuple[int], dtype[Any]] | Series[Any] | ... omitted 5 union elements`, found `Unknown | _Buffer | _SupportsArray[dtype[Any]] | ... omitted 7 union elements`
+- freqtrade/optimize/optimize_reports/optimize_reports.py:288:90: error[invalid-argument-type] Argument to bound method `from_records` is incorrect: Expected `Iterable[SequenceNotStr[Any]] | Iterable[Mapping[Unknown, Any]] | Mapping[Unknown, Any] | Mapping[Unknown, SequenceNotStr[Any]]`, found `list[Unknown] | (DataFrame &amp; Top[list[Unknown]])`
+- Found 688 diagnostics
++ Found 687 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/programs.py:90:35: error[no-matching-overload] No overload of bound method `join` matches arguments
+- mesonbuild/programs.py:105:16: error[no-matching-overload] No overload of bound method `join` matches arguments
+- Found 1933 diagnostics
++ Found 1931 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/core/datatree.py:1341:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[tuple[str | Unknown, _CoordWrapper]]`, found `Iterable[tuple[str, Unknown]] | ItemsView[str, DataArray | Variable | Any | ... omitted 9 union elements] | dict_items[Unknown, Unknown]`
+- xarray/core/variable.py:952:30: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@_copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]]`
++ xarray/core/variable.py:952:30: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@_copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | _NestedSequence[int | float | complex | bytes | str]`
+- xarray/core/variable.py:954:35: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@_copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]]`
++ xarray/core/variable.py:954:35: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@_copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | _NestedSequence[int | float | complex | bytes | str]`
+- xarray/core/variable.py:2907:30: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]]`
++ xarray/core/variable.py:2907:30: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | _NestedSequence[int | float | complex | bytes | str]`
+- xarray/core/variable.py:2909:35: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]]`
++ xarray/core/variable.py:2909:35: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `(T_DuckArray@copy &amp; ~None) | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | _NestedSequence[int | float | complex | bytes | str]`
+- Found 1757 diagnostics
++ Found 1756 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/_src/pallas/core.py:1159:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2732 diagnostics
++ Found 2733 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/indexes/multi.py:587:54: error[invalid-argument-type] Argument to function `tuples_to_object_array` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[object_]]`, found `(ndarray[tuple[object, ...], dtype[object]] &amp; ~Index) | ndarray[tuple[Any, ...], dtype[Any]]`
++ pandas/core/indexes/multi.py:587:54: error[invalid-argument-type] Argument to function `tuples_to_object_array` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[object_]]`, found `(Collection[tuple[Hashable, ...]] &amp; ndarray[tuple[object, ...], dtype[object]] &amp; ~Index) | ndarray[tuple[Any, ...], dtype[Any]]`
+
+static-frame (https://github.com/static-frame/static-frame)
++ static_frame/core/frame.py:3494:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/test/unit/test_frame.py:293:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Iterable[Any]] | TypeBlocks | Frame | Series[Any, Any]`, found `None`
++ static_frame/test/unit/test_frame.py:293:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Iterable[Any]] | ndarray[Any, Any] | Frame | Series[Any, Any]`, found `None`
+- static_frame/test/unit/test_type_blocks.py:31:42: error[invalid-argument-type] Argument to bound method `from_blocks` is incorrect: Expected `Iterable[ndarray[Any, Any]]`, found `tuple[Literal[3], Literal[4]]`
++ static_frame/test/unit/test_type_blocks.py:31:42: error[invalid-argument-type] Argument to bound method `from_blocks` is incorrect: Expected `ndarray[Any, Any] | Iterable[ndarray[Any, Any]]`, found `tuple[Literal[3], Literal[4]]`
+- Found 1845 diagnostics
++ Found 1846 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- subprojects/highs/src/highspy/highs.py:1185:56: error[invalid-assignment] Object of type `ndarray[tuple[object, ...], dtype[object]]` is not assignable to `ndarray[Any, dtype[object_]]`
++ subprojects/highs/src/highspy/highs.py:1185:56: error[invalid-assignment] Object of type `(Iterable[highs_var | highs_linear_expression] &amp; ndarray[tuple[object, ...], dtype[object]]) | (ndarray[Any, dtype[object_]] &amp; ndarray[tuple[object, ...], dtype[object]])` is not assignable to `ndarray[Any, dtype[object_]]`
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+- pydantic/v1/env_settings.py:223:29: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | PathLike[Unknown] | Unknown | (list[str | PathLike[Unknown]] &amp; PathLike[object]) | (tuple[str | PathLike[Unknown], ...] &amp; PathLike[object])`
+- Found 6713 diagnostics
++ Found 6712 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-09 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:58</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 3 | 5 | 4 |
+| <code>unused-ignore-comment</code> | 5 | 0 | 0 |
+| <code>no-matching-overload</code> | 0 | 4 | 0 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 4 |
+| <code>unsupported-base</code> | 2 | 0 | 0 |
+| <code>invalid-assignment</code> | 0 | 0 | 1 |
+| <strong>Total</strong> | <strong>10</strong> | <strong>9</strong> | <strong>9</strong> |</p>
+<p><strong><a href="https://cjm-protoso1.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://cjm-protoso1.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 03:05</div>
+            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/ruff/pull/21858 -- this has too much ecosystem impact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-09 03:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>

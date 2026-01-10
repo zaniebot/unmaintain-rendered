@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New diagnostics for unused range suppressions - astral-sh/ruff #21783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New diagnostics for unused range suppressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21783">#21783</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-12-04 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-04 02:21</div>
+            <div class="timeline-body"><p>Adds new diagnostics for reporting unused range suppressions.</p>
+<ul>
+<li>Updates RUF100 to accept an enum to determine whether the diagnostic mentions <code>noqa</code> or &quot;suppression&quot; in the description and fix title.</li>
+<li>Updates existing noqa logic to pass the appropriate enum when reporting RUF100 diagnostics.</li>
+<li>Adds new logic to the new ranged <code>Suppressions</code> system to track whether individual suppressions/codes have been &quot;used&quot;, and then report appropriat RUF100 diagnostics for unused suppressions/codes.</li>
+<li>Adds new integration tests exercising a variety of unused suppression cases.</li>
+</ul>
+<p>Issue #3711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-04 02:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unused_suppression.rs</code>:37 on 2025-12-04 07:15</div>
+            <div class="timeline-body"><p>Did you create a new rule because that was easier or do you forsee use cases where users want to disable unused block level suppression warnings but not warnings about unused <code>noqa</code> comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:349 on 2025-12-04 07:18</div>
+            <div class="timeline-body"><p>Should we just pass <code>suppressions</code> here (the owned value), given that they aren't used afterwards?</p>
+<p>Another alternative would be to store them on <code>LintContext</code> (I don't remember if that would be hard. It's okay to only look at this at the very end. Just floating this as an idea). Ultimately, I think, where we store it probably depends on where we want to use it, e.g. e might need to pass them to a new lint rule that checks for unclosed suppressions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:191 on 2025-12-04 07:20</div>
+            <div class="timeline-body"><p>Nit: I would probably use some early returns here to reduce the nesting</p>
+<pre><code class="language-suggestion">        if !context.is_rule_enabled(Rule::UnusedSuppression) {
+            return;
+        }
+
+        let unused_suppressions = self.valid.iter().filter(|suppression| !suppression.used);
+
+        for suppression in unused_suppressions {
+            for comment in &amp;suppression.comments {
+                let edit = if comment.codes.len() == 1 {
+                    delete_comment(comment.range, locator)
+                } else {
+                    let code_index = comment
+                        .codes
+                        .iter()
+                        .position(|range| locator.slice(range) == suppression.code)
+                        .unwrap();
+                    let code_range = if code_index &lt; (comment.codes.len() - 1) {
+                        TextRange::new(
+                            comment.codes[code_index].start(),
+                            comment.codes[code_index + 1].start(),
+                        )
+                    } else {
+                        comment.codes[code_index]
+                    };
+                    Edit::range_deletion(code_range)
+                };
+
+                let mut diagnostic = context
+                    .report_diagnostic(UnusedSuppression, suppression.comments[0].range);
+                diagnostic.set_fix(Fix::safe_edit(edit));
+            }
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:182 on 2025-12-04 07:22</div>
+            <div class="timeline-body"><p>I think the logic here only works now because there are always at most 2 comments. This loop would, otherwise, delete the <code>+1</code> comment twice.</p>
+<p>I'd be leaning towards splitting <code>comments</code> into two fields: <code>disable_comment</code> (could also be an <code>ignore</code> in the future), <code>enable_comment: Option&lt;...&gt;</code>. This way, making the assumption here that we always have at most two comments is safe (and it also removes the need to find the comment again.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-04 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-12-04 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unused_suppression.rs</code>:37 on 2025-12-04 16:36</div>
+            <div class="timeline-body"><p>Both 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-12-04 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/suppression.rs</code>:182 on 2025-12-04 16:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the logic here only works now because there are always at most 2 comments. This loop would, otherwise, delete the <code>+1</code> comment twice.</p>
+</blockquote>
+<p>I'm not sure I understand what you mean by this.  This logic is deciding whether to remove the entire comment (because it is only suppressing one lint code), vs removing just the unused lint code if the comment has multiple codes. That logic shouldn't be affected by whether there's only a 'disable' comment or whether there's a matching 'enable' comment. In the latter case it would just generate two separate diagnostics, though I was originally hoping to build a single diagnostic with two fixes, but as far as I can tell that's not yet supported?</p>
+<p>That said, the logic here is not finished, I just wanted to checkpoint what I had before I had to leave for an event.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-12-04 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/linter.rs</code>:349 on 2025-12-04 16:49</div>
+            <div class="timeline-body"><p>I went back and forth a couple times on what pieces should own the creation of the <code>Suppressions</code> object. The biggest problem is that the existing APIs are very inconsistent on what's available where, like how far context/locator/tokens get passed through. I like the idea of adding them to <code>LintContext</code> but that context isn't passed to <code>generate_noqa_edits</code> for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @amyreese on 2025-12-05 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-05 16:22</div>
+            <div class="timeline-body"><p>Not particularly happy with <code>&amp;mut</code> everywhere, but not sure what other options I have, especially now that we're passing in suppressions objects from further up the stack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-05 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Not particularly happy with &amp;mut everywhere, but not sure what other options I have, especially now that we're passing in suppressions objects from further up the stack.</p>
+</blockquote>
+<p>One option you have is to use <a href="https://doc.rust-lang.org/book/ch15-05-interior-mutability.html">interior mutability</a> by making <code>Suppression::used</code> a <code>Cell&lt;bool&gt;</code> or <code>AtomicBool</code>.</p>
+<p>I don't mind the <code>&amp;mut</code> overly much, but this is also a case where using iterior mutability seems a great fit because the fact that marking suppressions as used requires mutating isn't something that API users should really be aware of and using <code>Cell&lt;bool&gt;</code> allows you to hide that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:166 on 2025-12-05 16:28</div>
+            <div class="timeline-body"><p>Nit: I would probably call this <code>check_suppressions</code> because it doesn't return a set of diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:179 on 2025-12-05 16:29</div>
+            <div class="timeline-body"><p>I think this is a divergence from unused <code>noqa</code> suppressions, and I think it's very desirable to flag unused suppressions after you disabled a rule. That's why I think we shouldn't skip here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:184 on 2025-12-05 16:30</div>
+            <div class="timeline-body"><p>I think we want to store the suppression range on <code>Suppression</code> to correctly handle:</p>
+<pre><code># ruff:disable[RUF100, RUF100]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unused_suppression.rs</code>:37 on 2025-12-05 16:34</div>
+            <div class="timeline-body"><p>Having two rules might be confusing to users. I can see how the old rule name isn't great, but the name of this rule is generic enough that a user could think that it also handles <code>noqa</code> comments.</p>
+<p>Given that our long-term plan is to merge all suppression comments, I'd lean towards reusing the old rule and renaming it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-12-05 16:36</div>
+            <div class="timeline-body"><p>The implementation looks great.</p>
+<p>We should add some tests for the new rule that show that the fixes are working as expected. This is the reason why I'm requesting changes.</p>
+<p>We should also add some tests demonstrating how you can use <code>ruff:disable</code> to suppress <code>unused-suppression</code> errors within a block.</p>
+<p>I'm also leaning towards reusing the existing rules but I'm curious to learn about your motivation for having different rules (and how that expands to the other checks we want to add)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-06 01:11</div>
+            <div class="timeline-body"><p>Updated to use <code>Cell&lt;bool&gt;</code> rather than <code>&amp;mut</code>, to reuse the existing UnusedNOQA rule, as well as to report disabled codes and comments with no codes listed. Duplicate codes are not yet handled.</p>
+<p>Currently reports a separate diagnostic for each code due to the way the <code>Suppression</code> struct was designed. I did not realize the current NOQA rules combine everything into a single diagnostic, and I did not like my initial attempt to try and create a single diagnostic from the current data model. That said, <code>ruff check --fix</code> does converge on deleting everything unused, including the entire comment if all of the codes are unused, though presumably requires more iterations which is undesirable.</p>
+<p>Not sure if it's worth reworking the data model before going further on this, or if I should worry about that later, or if you have a better idea of which direction to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-06 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Not sure if it's worth reworking the data model before going further on this, or if I should worry about that later, or if you have a better idea of which direction to go.</p>
+</blockquote>
+<p>That shouldn't be necessary (other than storing the range of the codes?). We use a similar data structure in ty, and we group consecutive unused codes together, which is perfectly fine (it can result in multiple diagnostics if most codes are unused but only creates one diagnostic if all codes are unused)</p>
+<p>See https://github.com/astral-sh/ruff/blob/adf468beb53bfc0a06698d4e4f265a02545f37a1/crates/ty_python_semantic/src/suppression.rs#L260-L289</p>
+<p>We can address this in a follow-up PR (which is also what I did in ty, the initial version didn't support grouping)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-12-06 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-12-06 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:78 on 2025-12-06 12:21</div>
+            <div class="timeline-body"><p>We should double check if the unused are still necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:223 on 2025-12-06 12:24</div>
+            <div class="timeline-body"><p>Should this use <code>codes</code>?</p>
+<pre><code class="language-suggestion">                        codes: Some(codes),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap</code>:279 on 2025-12-06 12:26</div>
+            <div class="timeline-body"><p>Let's add some more tests demonstrating some edge cases:</p>
+<ul>
+<li>Duplicate rule codes (it's okay to add a todo)</li>
+<li>Disabling <code>RUF100</code></li>
+<li>Overlapping ranges (<code>ruff: disable[E501</code> followed by another <code>ruff: disable[E501]</code>)</li>
+<li>Multiple codes where only one code is unused</li>
+<li>Multiple codes where only some codes are unused</li>
+<li>Multiple codes were all codes are unused</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-06 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-12-09 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/suppression.rs</code>:223 on 2025-12-09 00:22</div>
+            <div class="timeline-body"><p>yes 🙈</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-09 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/suppressions.py</code>:60 on 2025-12-09 15:40</div>
+            <div class="timeline-body"><p>It's fine if one of them counts as unused, for as long as we remove the right one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-09 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-12-09 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-12-09 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-09 16:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:42:35 UTC
+    </footer>
+</body>
+</html>
