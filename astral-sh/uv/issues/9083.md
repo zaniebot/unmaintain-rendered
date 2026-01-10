@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T13:17:10Z
 updated_at: 2024-11-13T14:01:19Z
 url: https://github.com/astral-sh/uv/issues/9083
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Why the need for a .python-version file?
@@ -41,9 +41,5 @@ _Closed by @charliermarsh on 2024-11-13 14:01_
 ---
 
 _Label `question` added by @charliermarsh on 2024-11-13 14:01_
-
----
-
-_Referenced in [llamastack/llama-stack#1513](../../llamastack/llama-stack/pulls/1513.md) on 2025-03-10 14:29_
 
 ---

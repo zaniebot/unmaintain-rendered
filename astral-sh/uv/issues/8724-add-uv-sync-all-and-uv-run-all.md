@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T13:44:23Z
 updated_at: 2024-11-02T01:55:10Z
 url: https://github.com/astral-sh/uv/issues/8724
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add `uv sync --all` and `uv run --all`
@@ -49,17 +49,9 @@ How about an explicit `--workspace` to imply all?
 
 ---
 
-_Referenced in [astral-sh/uv#8739](../../astral-sh/uv/pulls/8739.md) on 2024-11-01 00:19_
-
----
-
 _Comment by @charliermarsh on 2024-11-01 00:28_
 
 I don't mind a `--workspace` alias, I think I advocated for that with `uv build` though and was overruled :)
-
----
-
-_Referenced in [astral-sh/uv#8741](../../astral-sh/uv/pulls/8741.md) on 2024-11-01 01:43_
 
 ---
 

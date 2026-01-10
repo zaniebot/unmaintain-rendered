@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T12:47:46Z
 updated_at: 2024-11-29T17:26:26Z
 url: https://github.com/astral-sh/uv/issues/9521
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # pip install --python-platform regression in 0.5.5
@@ -68,14 +68,6 @@ Ah I see, ok. This probably only applies to `--python-platform` and not to invoc
 
 ---
 
-_Referenced in [astral-sh/uv#9526](../../astral-sh/uv/pulls/9526.md) on 2024-11-29 17:17_
-
----
-
 _Closed by @charliermarsh on 2024-11-29 17:26_
-
----
-
-_Referenced in [astral-sh/uv#9575](../../astral-sh/uv/issues/9575.md) on 2024-12-02 13:35_
 
 ---

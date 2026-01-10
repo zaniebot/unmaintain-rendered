@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-06T21:23:04Z
 updated_at: 2024-11-07T20:29:57Z
 url: https://github.com/astral-sh/uv/issues/7137
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Treat base conda environment as though it was a system Python
@@ -28,10 +28,6 @@ Perhaps worth requiring users to use `--system` to install into this base conda 
 
 ---
 
-_Referenced in [astral-sh/uv#7124](../../astral-sh/uv/issues/7124.md) on 2024-09-06 21:23_
-
----
-
 _Label `needs-decision` added by @zanieb on 2024-09-07 15:17_
 
 ---
@@ -40,14 +36,6 @@ _Label `breaking` added by @zanieb on 2024-09-07 15:17_
 
 ---
 
-_Referenced in [astral-sh/uv#7691](../../astral-sh/uv/pulls/7691.md) on 2024-09-25 19:38_
-
----
-
 _Closed by @zanieb on 2024-11-07 20:29_
-
----
-
-_Referenced in [astral-sh/uv#15604](../../astral-sh/uv/issues/15604.md) on 2025-09-02 22:07_
 
 ---

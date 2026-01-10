@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T08:21:53Z
 updated_at: 2024-11-14T15:51:02Z
 url: https://github.com/astral-sh/uv/issues/7860
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # FR: Ability to publish to Azure Artifacts
@@ -89,10 +89,6 @@ _Assigned to @konstin by @zanieb on 2024-10-02 14:40_
 _Comment by @konstin on 2024-10-02 15:48_
 
 Hi! the `/simple/` url is the index url, the upload url ends with `/upload/` instead. Could you try again with that other url?
-
----
-
-_Referenced in [astral-sh/uv#7872](../../astral-sh/uv/pulls/7872.md) on 2024-10-02 16:30_
 
 ---
 

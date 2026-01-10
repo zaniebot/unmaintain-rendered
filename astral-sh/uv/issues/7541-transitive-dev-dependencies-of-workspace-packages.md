@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-19T10:56:10Z
 updated_at: 2024-11-20T00:38:03Z
 url: https://github.com/astral-sh/uv/issues/7541
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Transitive dev dependencies of workspace packages are not installed
@@ -113,10 +113,6 @@ I like the globbing in `tool.uv.workspace`, possibly some config could "group" d
 
 ---
 
-_Referenced in [astral-sh/uv#8353](../../astral-sh/uv/issues/8353.md) on 2024-10-19 05:49_
-
----
-
 _Comment by @bugzpodder on 2024-10-21 22:37_
 
 it would be nice to have a flag that installs everything (all devDependencies in all projects and root workspace).  this is how things work by default in javascript land (npm/yarn/pnpm/bun/etc)
@@ -147,17 +143,5 @@ _Closed by @charliermarsh on 2024-11-20 00:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 00:38_
-
----
-
-_Referenced in [astral-sh/uv#7487](../../astral-sh/uv/issues/7487.md) on 2025-08-12 18:29_
-
----
-
-_Referenced in [astral-sh/uv#15656](../../astral-sh/uv/issues/15656.md) on 2025-09-03 12:05_
-
----
-
-_Referenced in [vortex-data/vortex#4696](../../vortex-data/vortex/pulls/4696.md) on 2025-09-18 16:03_
 
 ---

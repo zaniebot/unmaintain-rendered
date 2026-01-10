@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T18:59:38Z
 updated_at: 2024-12-10T15:57:23Z
 url: https://github.com/astral-sh/uv/issues/9289
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Multiple conflicting extras installed when using explicit index assignments
@@ -170,10 +170,6 @@ _Assigned to @BurntSushi by @charliermarsh on 2024-11-20 20:20_
 
 ---
 
-_Referenced in [astral-sh/uv#9296](../../astral-sh/uv/issues/9296.md) on 2024-11-21 00:50_
-
----
-
 _Comment by @BurntSushi on 2024-11-21 12:17_
 
 I think i see a path to fixing this. I think it has two components:
@@ -219,58 +215,6 @@ idna==3.10: ("bar" not in extras and "baz" in extras) or ("bar" not in extras an
 
 ---
 
-_Referenced in [astral-sh/uv#9306](../../astral-sh/uv/issues/9306.md) on 2024-11-21 13:56_
-
----
-
-_Referenced in [astral-sh/uv#9307](../../astral-sh/uv/issues/9307.md) on 2024-11-21 13:57_
-
----
-
-_Referenced in [astral-sh/uv#9334](../../astral-sh/uv/pulls/9334.md) on 2024-11-21 19:27_
-
----
-
-_Referenced in [astral-sh/uv#9353](../../astral-sh/uv/issues/9353.md) on 2024-11-22 14:00_
-
----
-
-_Referenced in [astral-sh/uv#9365](../../astral-sh/uv/pulls/9365.md) on 2024-11-22 19:43_
-
----
-
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-11-22 20:38_
-
----
-
-_Referenced in [astral-sh/uv#9386](../../astral-sh/uv/pulls/9386.md) on 2024-11-23 15:58_
-
----
-
-_Referenced in [astral-sh/uv#9469](../../astral-sh/uv/pulls/9469.md) on 2024-11-27 13:35_
-
----
-
-_Referenced in [astral-sh/uv#9498](../../astral-sh/uv/issues/9498.md) on 2024-11-28 14:48_
-
----
-
-_Referenced in [astral-sh/uv#9546](../../astral-sh/uv/issues/9546.md) on 2024-12-03 00:40_
-
----
-
-_Referenced in [astral-sh/uv#9640](../../astral-sh/uv/issues/9640.md) on 2024-12-04 14:12_
-
----
-
-_Referenced in [astral-sh/uv#9734](../../astral-sh/uv/issues/9734.md) on 2024-12-09 09:56_
-
----
-
 _Closed by @BurntSushi on 2024-12-10 15:57_
-
----
-
-_Referenced in [stfc/janus-core#358](../../stfc/janus-core/pulls/358.md) on 2024-12-10 18:41_
 
 ---

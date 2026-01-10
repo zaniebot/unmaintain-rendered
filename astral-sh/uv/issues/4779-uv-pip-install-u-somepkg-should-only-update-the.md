@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-03T15:52:13Z
 updated_at: 2024-12-28T22:30:46Z
 url: https://github.com/astral-sh/uv/issues/4779
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip install -U somepkg` should only update the specified package, unless additional upgrades are necessary
@@ -56,18 +56,6 @@ _Label `needs-design` added by @zanieb on 2024-07-03 16:16_
 
 ---
 
-_Referenced in [astral-sh/uv#6100](../../astral-sh/uv/issues/6100.md) on 2024-08-15 01:22_
-
----
-
-_Referenced in [mosaicml/ci-testing#30](../../mosaicml/ci-testing/pulls/30.md) on 2024-09-03 13:55_
-
----
-
-_Referenced in [astral-sh/uv#8260](../../astral-sh/uv/issues/8260.md) on 2024-10-16 16:34_
-
----
-
 _Label `question` removed by @zanieb on 2024-10-21 21:23_
 
 ---
@@ -85,9 +73,5 @@ Related https://github.com/astral-sh/uv/issues/7176
 _Comment by @jph00 on 2024-12-28 22:30_
 
 Also related: #10097 
-
----
-
-_Referenced in [astral-sh/uv#14162](../../astral-sh/uv/issues/14162.md) on 2025-06-20 16:30_
 
 ---

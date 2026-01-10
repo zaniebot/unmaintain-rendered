@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T13:43:09Z
 updated_at: 2024-10-25T20:46:50Z
 url: https://github.com/astral-sh/uv/issues/8090
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support for PEP 735: Dependency Groups in `pyproject.toml`
@@ -35,26 +35,6 @@ _Label `compatibility` added by @zanieb on 2024-10-10 13:43_
 ---
 
 _Renamed from "Support for PEP 735" to "Support for PEP 735: Dependency Groups in `pyproject.toml`" by @zanieb on 2024-10-10 13:43_
-
----
-
-_Referenced in [astral-sh/uv#8104](../../astral-sh/uv/pulls/8104.md) on 2024-10-10 18:41_
-
----
-
-_Referenced in [astral-sh/uv#8108](../../astral-sh/uv/pulls/8108.md) on 2024-10-10 21:10_
-
----
-
-_Referenced in [astral-sh/uv#8110](../../astral-sh/uv/pulls/8110.md) on 2024-10-10 21:12_
-
----
-
-_Referenced in [prefix-dev/pixi#2256](../../prefix-dev/pixi/issues/2256.md) on 2024-10-11 09:20_
-
----
-
-_Referenced in [InSyncWithFoo/ryecharm#18](../../InSyncWithFoo/ryecharm/issues/18.md) on 2024-10-12 00:44_
 
 ---
 
@@ -184,25 +164,9 @@ On Sat, Oct 12, 2024, 14:02 Charlie Marsh ***@***.***> wrote:
 
 ---
 
-_Referenced in [astral-sh/uv#8170](../../astral-sh/uv/issues/8170.md) on 2024-10-14 13:47_
-
----
-
-_Referenced in [tox-dev/tox#3408](../../tox-dev/tox/issues/3408.md) on 2024-10-14 19:45_
-
----
-
-_Referenced in [astral-sh/uv#5632](../../astral-sh/uv/issues/5632.md) on 2024-10-15 21:54_
-
----
-
 _Comment by @jankatins on 2024-10-15 21:54_
 
 Duplicates https://github.com/astral-sh/uv/issues/5632 -> either this or the other one could probably be closed.
-
----
-
-_Referenced in [astral-sh/uv#8266](../../astral-sh/uv/pulls/8266.md) on 2024-10-16 18:28_
 
 ---
 
@@ -215,14 +179,6 @@ Would love to get it in  ... PR is coming I see :)
 _Comment by @kaxil on 2024-10-16 21:14_
 
 Same, looking forward to using it in the Airflow repo
-
----
-
-_Referenced in [astral-sh/uv#8272](../../astral-sh/uv/pulls/8272.md) on 2024-10-16 21:35_
-
----
-
-_Referenced in [astral-sh/uv#8274](../../astral-sh/uv/pulls/8274.md) on 2024-10-16 23:00_
 
 ---
 
@@ -240,30 +196,6 @@ With the speed you are all working, occasional duplicate is not embarassing, it'
 
 ---
 
-_Referenced in [astral-sh/uv#8309](../../astral-sh/uv/pulls/8309.md) on 2024-10-17 21:43_
-
----
-
-_Referenced in [astral-sh/uv#8332](../../astral-sh/uv/pulls/8332.md) on 2024-10-18 14:51_
-
----
-
-_Referenced in [astral-sh/uv#8338](../../astral-sh/uv/pulls/8338.md) on 2024-10-18 16:41_
-
----
-
-_Referenced in [DetachHead/basedpyright#797](../../DetachHead/basedpyright/pulls/797.md) on 2024-10-20 06:39_
-
----
-
-_Referenced in [PyVRP/PyVRP#659](../../PyVRP/PyVRP/issues/659.md) on 2024-10-22 13:12_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-10-23 12:46_
-
----
-
 _Closed by @zanieb on 2024-10-25 18:27_
 
 ---
@@ -271,13 +203,5 @@ _Closed by @zanieb on 2024-10-25 18:27_
 _Comment by @zanieb on 2024-10-25 20:46_
 
 As of [0.4.27](https://github.com/astral-sh/uv/releases/tag/0.4.27) we support this. Details in #8272.
-
----
-
-_Referenced in [astral-sh/rye#421](../../astral-sh/rye/issues/421.md) on 2024-10-25 21:45_
-
----
-
-_Referenced in [embeddings-benchmark/mteb#2602](../../embeddings-benchmark/mteb/issues/2602.md) on 2025-04-30 07:27_
 
 ---

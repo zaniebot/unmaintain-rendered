@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T06:26:22Z
 updated_at: 2024-11-14T11:05:34Z
 url: https://github.com/astral-sh/uv/issues/9078
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip install` fails to install package while `pip install` succeeds
@@ -93,10 +93,6 @@ I think it's understood (by those who know!) that uv takes a different view of p
 _Comment by @charliermarsh on 2024-11-13 17:56_
 
 Yeah -- I generally agree. The thing I noticed in this specific case though is that we don't actually seem to ever consider `jsmin`, we just "pre-fetch" it when looking at certain `azure-cli` versions. So we should be able to delay the error here such that the resolution still succeeds (but would fail, as today, if the resolution proceeded differently and we _did_ end up looking at `jsmin` as a candidate).
-
----
-
-_Referenced in [astral-sh/uv#9098](../../astral-sh/uv/pulls/9098.md) on 2024-11-13 20:30_
 
 ---
 

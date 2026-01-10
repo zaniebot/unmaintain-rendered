@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T09:02:25Z
 updated_at: 2024-11-08T14:52:34Z
 url: https://github.com/astral-sh/uv/issues/8927
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv pip list --outdated does not use UV_INDEX_URL setting
@@ -59,10 +59,6 @@ _Label `bug` added by @charliermarsh on 2024-11-08 14:02_
 _Comment by @charliermarsh on 2024-11-08 14:02_
 
 Thanks, that's a bug.
-
----
-
-_Referenced in [astral-sh/uv#8942](../../astral-sh/uv/pulls/8942.md) on 2024-11-08 14:17_
 
 ---
 

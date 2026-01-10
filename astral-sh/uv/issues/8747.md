@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-01T08:40:51Z
 updated_at: 2024-11-01T13:55:47Z
 url: https://github.com/astral-sh/uv/issues/8747
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `if-modified-since` header should use `GMT` instead of `-0000`
@@ -57,10 +57,6 @@ https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.7
 
 ---
 
-_Referenced in [BurntSushi/jiff#151](../../BurntSushi/jiff/issues/151.md) on 2024-11-01 09:22_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-11-01 11:56_
 
 ---
@@ -80,10 +76,6 @@ I responded [here](https://github.com/BurntSushi/jiff/issues/151) with a bit mor
 One clarification here is that the existing format is not in local time. It is semantically equivalent to GMT. It's using `-0000` to express that instead of `GMT`. But they are the same thing. Interestingly, RFC 2822/5322 considers `GMT` to be obsolete. But RFC 9110 requires it specifically.
 
 (The other difference is that RFC 9110 requires a two digit day. This makes the value fixed length.)
-
----
-
-_Referenced in [astral-sh/uv#8752](../../astral-sh/uv/pulls/8752.md) on 2024-11-01 12:34_
 
 ---
 

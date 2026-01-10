@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-06T23:50:36Z
 updated_at: 2024-11-07T09:55:27Z
 url: https://github.com/astral-sh/uv/issues/8871
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Strange resolution that downgrades dependencies to conflicing ones
@@ -154,10 +154,6 @@ If you're filing a bug report, please consider including the following informati
 _Comment by @potiuk on 2024-11-06 23:50_
 
 cc: @notatallshaw -> maybe you also can make a guess here ?
-
----
-
-_Referenced in [apache/airflow#43768](../../apache/airflow/pulls/43768.md) on 2024-11-06 23:57_
 
 ---
 
@@ -352,10 +348,6 @@ _Comment by @potiuk on 2024-11-07 01:57_
 Not really - because we are doing it in Docker container, and we do not want to have cache of UV when we are doing it on the server. For airflow, UV cache for all our dependencies increases the size of our image by 2GB (~ 100%) - so we really do not want to keep cache there. While `uv` resolution is way faster than `pip`, without the cache and starting from 0, such resolution will take minutes (mostly because downloading and building some packages takes time not the resolution itself). But when when we base it on installed airflow, it takes seconds, because we usually only download and install those packages that have been upgraded. Maybe we can revisit that at some point in time and do benchmarking - but just compiling and installing gssapi (which almost never change) takes more than 2 minutes, similarly krb5- by having those dependencies installed - serving effectively as both - installed packages and cache - we save precious minutes of build time in our CI.
 
 
-
----
-
-_Referenced in [apache/airflow#43770](../../apache/airflow/pulls/43770.md) on 2024-11-07 02:02_
 
 ---
 

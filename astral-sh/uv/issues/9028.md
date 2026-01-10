@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T19:58:21Z
 updated_at: 2024-11-12T03:38:06Z
 url: https://github.com/astral-sh/uv/issues/9028
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Error when adding a non-existent version for the current OS
@@ -80,10 +80,6 @@ _Label `bug` added by @charliermarsh on 2024-11-11 20:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-11 20:21_
-
----
-
-_Referenced in [astral-sh/uv#9030](../../astral-sh/uv/pulls/9030.md) on 2024-11-11 20:58_
 
 ---
 

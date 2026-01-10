@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-27T01:41:35Z
 updated_at: 2024-10-28T13:48:28Z
 url: https://github.com/astral-sh/uv/issues/8601
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv sync` reports no solution found when `python_version>=` is used
@@ -163,10 +163,6 @@ _Label `bug` added by @zanieb on 2024-10-27 01:55_
 ---
 
 _Label `resolver` added by @zanieb on 2024-10-27 01:55_
-
----
-
-_Referenced in [deepmodeling/deepmd-kit#4263](../../deepmodeling/deepmd-kit/pulls/4263.md) on 2024-10-27 05:41_
 
 ---
 

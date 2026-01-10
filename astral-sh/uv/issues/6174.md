@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-17T19:48:36Z
 updated_at: 2025-01-02T01:21:38Z
 url: https://github.com/astral-sh/uv/issues/6174
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Limit iteration range by version bounds in candidate selector
@@ -31,10 +31,6 @@ _Label `performance` added by @charliermarsh on 2024-08-17 19:48_
 _Comment by @charliermarsh on 2024-08-19 01:16_
 
 This actually might be impossible right now because the range is represented as a set of holes, rather than having a clear upper bound...
-
----
-
-_Referenced in [astral-sh/uv#10266](../../astral-sh/uv/pulls/10266.md) on 2025-01-02 01:09_
 
 ---
 

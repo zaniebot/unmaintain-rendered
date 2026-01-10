@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T15:42:44Z
 updated_at: 2024-11-23T01:00:35Z
 url: https://github.com/astral-sh/uv/issues/9358
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Wrong github link on the doc
@@ -30,10 +30,6 @@ The uv documentation Github link points to the Ruff Github repo instead of the U
 _Comment by @zanieb on 2024-11-22 15:51_
 
 Thanks I'll fix that.
-
----
-
-_Referenced in [astral-sh/astral-sh#87](../../astral-sh/astral-sh/pulls/87.md) on 2024-11-22 15:52_
 
 ---
 

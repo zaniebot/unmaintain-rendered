@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-26T16:57:22Z
 updated_at: 2024-10-28T00:52:57Z
 url: https://github.com/astral-sh/uv/issues/8597
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Resolver: tighter requires-python bound in consumer fails to satisfy
@@ -72,10 +72,6 @@ Fair enough, and I'll make the changes on my end -- the nice part about controll
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-10-27 19:11_
-
----
-
-_Referenced in [astral-sh/uv#8619](../../astral-sh/uv/pulls/8619.md) on 2024-10-28 00:48_
 
 ---
 

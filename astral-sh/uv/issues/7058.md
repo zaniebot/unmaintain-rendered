@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-05T01:18:14Z
 updated_at: 2024-12-12T14:26:44Z
 url: https://github.com/astral-sh/uv/issues/7058
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add a `--output` and `-o` flag to `uv export`
@@ -71,10 +71,6 @@ _Label `good first issue` added by @zanieb on 2024-09-05 14:17_
 
 ---
 
-_Referenced in [astral-sh/uv-pre-commit#16](../../astral-sh/uv-pre-commit/issues/16.md) on 2024-09-05 20:32_
-
----
-
 _Comment by @zanieb on 2024-09-05 21:50_
 
 Also needed for https://github.com/astral-sh/uv-pre-commit/issues/16
@@ -121,10 +117,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 00:16_
 
 ---
 
-_Referenced in [astral-sh/uv#7109](../../astral-sh/uv/pulls/7109.md) on 2024-09-06 00:25_
-
----
-
 _Closed by @charliermarsh on 2024-09-06 00:53_
 
 ---
@@ -154,9 +146,5 @@ _Comment by @gandalfsaxe on 2024-12-12 14:26_
 @charliermarsh Just out of curiosity, why does `uv export` by default only print the result to the terminal, and I need to explicitly add `uv export -o requirements.txt`?
 
 I'm sure there's a good reason for this, it's just that every time I do need to use the `uv export` command, it's because I need the `requirements.txt` file for some legacy systems / pipelines - so I was wondering why the file generation is not just the default behavior?
-
----
-
-_Referenced in [y-scope/spider#187](../../y-scope/spider/pulls/187.md) on 2025-08-09 03:54_
 
 ---

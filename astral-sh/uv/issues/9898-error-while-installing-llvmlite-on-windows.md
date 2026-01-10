@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-14T20:24:28Z
 updated_at: 2025-01-06T20:55:04Z
 url: https://github.com/astral-sh/uv/issues/9898
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Error while installing llvmlite on Windows
@@ -927,9 +927,5 @@ I actually think putting a section on how to install these common libs would be 
 ---
 
 _Closed by @zanieb on 2025-01-06 20:55_
-
----
-
-_Referenced in [astral-sh/uv#11636](../../astral-sh/uv/issues/11636.md) on 2025-02-19 20:01_
 
 ---

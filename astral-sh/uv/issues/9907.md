@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-15T07:58:51Z
 updated_at: 2024-12-15T14:48:06Z
 url: https://github.com/astral-sh/uv/issues/9907
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # resolver: requiring `PyQt5` produces non-portable locks
@@ -76,10 +76,6 @@ which I can hide away from users into a dependency group (where a user-visible r
 
 ---
 
-_Referenced in [1313e/CMasher#188](../../1313e/CMasher/pulls/188.md) on 2024-12-15 08:24_
-
----
-
 _Comment by @charliermarsh on 2024-12-15 13:45_
 
 Thanks! This is another case of #9711: for packages that lack source distributions, we can end up with "incomplete" resolutions.
@@ -104,9 +100,5 @@ I'll merge into that issue. I'm thinking about that problem now.
 ---
 
 _Closed by @charliermarsh on 2024-12-15 14:48_
-
----
-
-_Referenced in [neuroinformatics-unit/movement#683](../../neuroinformatics-unit/movement/pulls/683.md) on 2025-10-29 20:15_
 
 ---

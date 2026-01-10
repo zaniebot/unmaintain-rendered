@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T22:41:55Z
 updated_at: 2024-12-26T16:59:50Z
 url: https://github.com/astral-sh/uv/issues/8431
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Recommended way to install tool for all users on system
@@ -57,10 +57,6 @@ uvx black -q  0.09s user 0.03s system 92% cpu 0.127 total
 ---
 
 _Label `question` added by @zanieb on 2024-10-21 22:50_
-
----
-
-_Referenced in [astral-sh/uv#8435](../../astral-sh/uv/issues/8435.md) on 2024-10-22 04:02_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-12T05:35:52Z
 updated_at: 2024-11-13T16:58:12Z
 url: https://github.com/astral-sh/uv/issues/9046
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Python discovery prefers python3 over python3.12 when UV_PYTHON=python3.12
@@ -59,10 +59,6 @@ I can fix this specific case by preferring a versioned executable over an unvers
 _Comment by @charliermarsh on 2024-11-12 17:02_
 
 @hynek -- Do you have any sort of minimal repro we can use to look at how the Python setup works?
-
----
-
-_Referenced in [astral-sh/uv#9066](../../astral-sh/uv/pulls/9066.md) on 2024-11-12 17:44_
 
 ---
 
@@ -155,9 +151,5 @@ Yeah I don't know that the base executable path is "wrong". It just depends on w
 _Comment by @zanieb on 2024-11-13 16:58_
 
 It still seems weird that a different base executable would be reported depending on if `python` or `python3` is queried.
-
----
-
-_Referenced in [astral-sh/uv#11048](../../astral-sh/uv/issues/11048.md) on 2025-01-29 01:22_
 
 ---

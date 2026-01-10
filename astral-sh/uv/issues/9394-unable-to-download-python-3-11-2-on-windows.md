@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-24T12:03:16Z
 updated_at: 2024-11-25T01:16:29Z
 url: https://github.com/astral-sh/uv/issues/9394
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Unable to download Python 3.11.2 on Windows
@@ -96,9 +96,5 @@ I think we're unlikely to re-add these, since patch releases are generally meant
 ---
 
 _Closed by @charliermarsh on 2024-11-25 01:16_
-
----
-
-_Referenced in [astral-sh/uv#16869](../../astral-sh/uv/issues/16869.md) on 2025-11-27 09:54_
 
 ---

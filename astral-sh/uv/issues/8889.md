@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-07T15:23:19Z
 updated_at: 2024-11-08T15:57:53Z
 url: https://github.com/astral-sh/uv/issues/8889
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # manylinux support is missing for riscv64
@@ -76,10 +76,6 @@ _Comment by @konstin on 2024-11-07 15:35_
 A PR to add risc64 manylinux support would be great!
 
 It's totally not a requirement for the PR, but if you happen to have instructions how to test riscv things on an x86_64 or aarch64 machine, this helps the team to reproduce and debug riscv-specific problems (i've for example used qemu docker for other architectures before).
-
----
-
-_Referenced in [astral-sh/uv#8934](../../astral-sh/uv/pulls/8934.md) on 2024-11-08 12:12_
 
 ---
 

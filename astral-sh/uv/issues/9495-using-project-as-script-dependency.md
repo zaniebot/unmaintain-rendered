@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T10:47:04Z
 updated_at: 2025-01-07T19:29:55Z
 url: https://github.com/astral-sh/uv/issues/9495
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Using project as script dependency
@@ -148,9 +148,5 @@ You can always add `--reinstall-package hello-project`.
 ---
 
 _Closed by @zanieb on 2025-01-07 19:29_
-
----
-
-_Referenced in [astral-sh/uv#12876](../../astral-sh/uv/issues/12876.md) on 2025-04-14 10:01_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T08:38:25Z
 updated_at: 2024-11-08T14:12:27Z
 url: https://github.com/astral-sh/uv/issues/8926
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv pip list --outdated breaks when having git package
@@ -96,19 +96,11 @@ pydantic_core 2.23.4  2.26.0 wheel
 
 ---
 
-_Referenced in [astral-sh/uv#8927](../../astral-sh/uv/issues/8927.md) on 2024-11-08 09:02_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-08 13:37_
 
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-08 13:50_
-
----
-
-_Referenced in [astral-sh/uv#8939](../../astral-sh/uv/pulls/8939.md) on 2024-11-08 13:59_
 
 ---
 

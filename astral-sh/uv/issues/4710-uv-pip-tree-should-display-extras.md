@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T21:23:22Z
 updated_at: 2024-12-03T14:34:36Z
 url: https://github.com/astral-sh/uv/issues/4710
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip tree` should display extras
@@ -25,10 +25,6 @@ _Issue opened by @ibraheemdev on 2024-07-01 21:23_
 ---
 
 _Label `cli` added by @ibraheemdev on 2024-07-01 21:23_
-
----
-
-_Referenced in [astral-sh/uv#4439](../../astral-sh/uv/issues/4439.md) on 2024-07-01 21:24_
 
 ---
 
@@ -80,9 +76,5 @@ Related to this, I discovered that `uv tree` does show all extras regardless of 
 _Comment by @zanieb on 2024-12-03 14:34_
 
 `uv tree` can use the lockfile metadata to identify which extra a package was installed from, whereas the `uv pip` interface (and virtual environments more generally) do not have this metadata (as discussed above).
-
----
-
-_Referenced in [pybamm-team/PyBaMM#4719](../../pybamm-team/PyBaMM/pulls/4719.md) on 2024-12-26 16:49_
 
 ---

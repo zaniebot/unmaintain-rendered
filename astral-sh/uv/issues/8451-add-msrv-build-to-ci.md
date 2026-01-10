@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-22T13:11:06Z
 updated_at: 2024-11-06T16:22:15Z
 url: https://github.com/astral-sh/uv/issues/8451
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add MSRV build to CI
@@ -35,10 +35,6 @@ _Label `testing` added by @charliermarsh on 2024-10-22 13:11_
 _Comment by @zanieb on 2024-10-22 13:22_
 
 Yes please!
-
----
-
-_Referenced in [astral-sh/uv#8855](../../astral-sh/uv/pulls/8855.md) on 2024-11-06 05:24_
 
 ---
 

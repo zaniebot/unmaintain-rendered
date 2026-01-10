@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T18:57:31Z
 updated_at: 2024-11-23T02:17:45Z
 url: https://github.com/astral-sh/uv/issues/9362
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Indicate in workspaces' doc that workspace dependencies are editable by default 
@@ -67,10 +67,6 @@ I'm not suggesting that this behavior should be changed, but maybe a small addit
 
 I have added a very note to the doc in case it can lighten the workload for the maintainers, but don't hesitate to close the PR / this issue or just signal that to me and I'll do it myself.
 
-
----
-
-_Referenced in [astral-sh/uv#9363](../../astral-sh/uv/pulls/9363.md) on 2024-11-22 18:57_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-22T00:35:13Z
 updated_at: 2025-01-06T22:41:44Z
 url: https://github.com/astral-sh/uv/issues/10089
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv pip install -U` will downgrade already-installed packages
@@ -42,10 +42,6 @@ _Label `bug` added by @charliermarsh on 2024-12-22 00:35_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-22 13:40_
-
----
-
-_Referenced in [astral-sh/uv#10097](../../astral-sh/uv/pulls/10097.md) on 2024-12-22 16:08_
 
 ---
 

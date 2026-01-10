@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-27T03:24:49Z
 updated_at: 2024-12-10T03:54:11Z
 url: https://github.com/astral-sh/uv/issues/9461
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv example file in full
@@ -75,10 +75,6 @@ For open source projects, it can be unsafe to use these settings in `pyproject.t
 
 ---
 
-_Referenced in [astral-sh/uv#9472](../../astral-sh/uv/issues/9472.md) on 2024-12-03 02:33_
-
----
-
 _Comment by @zanieb on 2024-12-03 15:31_
 
 Let's keep the proxy discussion in the dedicated issue.
@@ -96,17 +92,5 @@ _Comment by @Mai0313 on 2024-12-10 03:54_
 https://github.com/lucianosrp/rye-uv
 
 it can migrate rye config to uv config; I hope this package can be highlighted maintained by uv officially; it can be helpful for those people who use rye.
-
----
-
-_Referenced in [astral-sh/uv#16743](../../astral-sh/uv/pulls/16743.md) on 2025-11-15 01:13_
-
----
-
-_Referenced in [astral-sh/uv#16918](../../astral-sh/uv/pulls/16918.md) on 2025-12-02 02:22_
-
----
-
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-03 03:43_
 
 ---

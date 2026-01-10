@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-28T15:12:18Z
 updated_at: 2024-11-28T17:51:31Z
 url: https://github.com/astral-sh/uv/issues/9503
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # The command to changing the install path in the document does not work on Windows
@@ -44,10 +44,6 @@ in Windows PowerShell:
     + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
     + FullyQualifiedErrorId : UnexpectedToken
 ```
-
----
-
-_Referenced in [astral-sh/uv#9507](../../astral-sh/uv/pulls/9507.md) on 2024-11-28 17:10_
 
 ---
 

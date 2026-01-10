@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-08T10:24:20Z
 updated_at: 2024-11-08T20:12:16Z
 url: https://github.com/astral-sh/uv/issues/8929
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # CI cache pruning corrupts cache for other Python versions
@@ -79,10 +79,6 @@ I think the proximate problem is that `uv add` generates hashes by default but `
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-08 15:50_
-
----
-
-_Referenced in [astral-sh/uv#8955](../../astral-sh/uv/pulls/8955.md) on 2024-11-08 19:59_
 
 ---
 

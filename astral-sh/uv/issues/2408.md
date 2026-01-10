@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-13T11:49:09Z
 updated_at: 2024-11-21T13:20:57Z
 url: https://github.com/astral-sh/uv/issues/2408
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Termux on Android
@@ -198,10 +198,6 @@ That's all for tonight :cat2:
 
 ---
 
-_Referenced in [astral-sh/uv#2705](../../astral-sh/uv/issues/2705.md) on 2024-03-28 09:59_
-
----
-
 _Comment by @indrastorms on 2024-07-30 07:58_
 
 Any progress?
@@ -233,10 +229,6 @@ The issue is in the uv-python crate.
 
 ---
 
-_Referenced in [astral-sh/uv#7753](../../astral-sh/uv/issues/7753.md) on 2024-09-29 15:05_
-
----
-
 _Comment by @zanieb on 2024-09-29 15:06_
 
 I'm not sure there is an upstream Python distribution available yet anyway https://github.com/indygreg/python-build-standalone/issues/176
@@ -252,10 +244,6 @@ _Comment by @mgedmin on 2024-10-04 12:13_
 > I'm not sure there is an upstream Python distribution available yet anyway
 
 I'd be happy if uv would support working with the termux Python installed using `pkg install python`.  (`uv` itself is also already available in the Termux repositories, the only issue is that it doesn't actually work due to this libc version thing.)
-
----
-
-_Referenced in [astral-sh/uv#7373](../../astral-sh/uv/issues/7373.md) on 2024-10-04 12:13_
 
 ---
 
@@ -314,14 +302,6 @@ Let's use #7373 to track this interpreter query problem and this issue for broad
 
 ---
 
-_Referenced in [astral-sh/uv#7957](../../astral-sh/uv/issues/7957.md) on 2024-10-07 03:56_
-
----
-
-_Referenced in [astral-sh/uv#9171](../../astral-sh/uv/issues/9171.md) on 2024-11-18 01:21_
-
----
-
 _Comment by @samypr100 on 2024-11-21 12:50_
 
 I think this can be closed now that https://github.com/astral-sh/uv/issues/7373 is closed.
@@ -329,9 +309,5 @@ I think this can be closed now that https://github.com/astral-sh/uv/issues/7373 
 ---
 
 _Closed by @charliermarsh on 2024-11-21 13:20_
-
----
-
-_Referenced in [astral-sh/uv#13845](../../astral-sh/uv/issues/13845.md) on 2025-06-04 18:29_
 
 ---

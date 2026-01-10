@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-12T01:26:54Z
 updated_at: 2024-11-12T22:13:42Z
 url: https://github.com/astral-sh/uv/issues/9036
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # macos pytorch install broken since 0.5.0
@@ -116,9 +116,5 @@ error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/wh
 MacOS 14.7.1 ARM (M2 Pro)
 Python 3.12
 uv 0.5.1 (Homebrew 2024-11-08)
-
----
-
-_Referenced in [astral-sh/uv#8930](../../astral-sh/uv/issues/8930.md) on 2024-11-13 15:49_
 
 ---

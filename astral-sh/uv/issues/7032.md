@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T16:07:24Z
 updated_at: 2024-12-30T05:57:59Z
 url: https://github.com/astral-sh/uv/issues/7032
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Using script entry point with inline dependencies 
@@ -93,17 +93,5 @@ It seems safest to do the explicit option. We can always add sniffing later. Eek
 _Comment by @sigridjineth on 2024-12-30 05:57_
 
 any update here, for introducing script-runner here?
-
----
-
-_Referenced in [astral-sh/uv#10381](../../astral-sh/uv/issues/10381.md) on 2025-01-08 04:49_
-
----
-
-_Referenced in [astral-sh/uv#12763](../../astral-sh/uv/pulls/12763.md) on 2025-04-09 00:55_
-
----
-
-_Referenced in [astral-sh/uv#15296](../../astral-sh/uv/issues/15296.md) on 2025-11-16 09:48_
 
 ---

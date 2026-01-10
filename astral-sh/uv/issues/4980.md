@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T22:05:45Z
 updated_at: 2024-11-08T02:57:40Z
 url: https://github.com/astral-sh/uv/issues/4980
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Windows Server 2019 uv access is denied when executing
@@ -94,10 +94,6 @@ Ahh that's not really clear from the instructions. I assumed it's like `pip` whe
 _Comment by @charliermarsh on 2024-07-10 22:10_
 
 Yeah uv will install into a currently-activated virtualenv even if it's not installed "in" the environment itself.
-
----
-
-_Referenced in [astral-sh/uv#8914](../../astral-sh/uv/pulls/8914.md) on 2024-11-08 02:45_
 
 ---
 

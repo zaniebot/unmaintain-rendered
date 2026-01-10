@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T15:58:52Z
 updated_at: 2024-11-26T20:11:35Z
 url: https://github.com/astral-sh/uv/issues/9445
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `exclude-newer` does not influence selection of Python interpreter, should it?
@@ -96,13 +96,5 @@ One thing that concerns me here is when I am using `exclude-newer` with CPython 
 ---
 
 _Label `great writeup` added by @zanieb on 2024-11-26 17:51_
-
----
-
-_Referenced in [manzt/juv#74](../../manzt/juv/issues/74.md) on 2025-01-27 20:25_
-
----
-
-_Referenced in [marimo-team/marimo#5520](../../marimo-team/marimo/pulls/5520.md) on 2025-07-03 00:36_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T14:03:39Z
 updated_at: 2024-11-08T14:19:06Z
 url: https://github.com/astral-sh/uv/issues/8940
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Reconsider priority of CONDA_PREFIX when discovering virtual environments
@@ -123,9 +123,5 @@ Turns out this issue was a dupe of:
 _Comment by @charliermarsh on 2024-11-08 14:19_
 
 Great timing :D
-
----
-
-_Referenced in [astral-sh/uv#15604](../../astral-sh/uv/issues/15604.md) on 2025-09-02 22:07_
 
 ---

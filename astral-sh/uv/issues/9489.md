@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T00:49:01Z
 updated_at: 2024-11-28T03:32:26Z
 url: https://github.com/astral-sh/uv/issues/9489
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Preserve compiled `file:/` requirement names.
@@ -111,10 +111,6 @@ Yeah 😅. Vendoring this has just been an adventure all around. Excluding`file:
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-28 03:16_
-
----
-
-_Referenced in [astral-sh/uv#9493](../../astral-sh/uv/pulls/9493.md) on 2024-11-28 03:17_
 
 ---
 

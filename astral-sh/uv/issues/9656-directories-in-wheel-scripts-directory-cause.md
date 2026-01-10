@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-05T07:35:42Z
 updated_at: 2024-12-08T05:06:15Z
 url: https://github.com/astral-sh/uv/issues/9656
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Directories in wheel scripts directory cause install error
@@ -130,10 +130,6 @@ _Comment by @liaoya on 2024-12-06 05:51_
 
 ---
 
-_Referenced in [pypa/packaging.python.org#1673](../../pypa/packaging.python.org/pulls/1673.md) on 2024-12-06 09:32_
-
----
-
 _Comment by @charliermarsh on 2024-12-08 05:06_
 
 Ok, it looks like this is now “officially” an issue with the package, and I think we should keep our current behavior: https://github.com/pypa/packaging.python.org/pull/1673#issuecomment-2525415109. Thanks for reporting!
@@ -141,9 +137,5 @@ Ok, it looks like this is now “officially” an issue with the package, and I 
 ---
 
 _Closed by @charliermarsh on 2024-12-08 05:06_
-
----
-
-_Referenced in [RobertoRoos/protobuf-protoc-bin#16](../../RobertoRoos/protobuf-protoc-bin/issues/16.md) on 2024-12-09 02:40_
 
 ---

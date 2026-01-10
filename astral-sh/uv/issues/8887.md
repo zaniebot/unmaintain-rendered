@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-07T14:04:12Z
 updated_at: 2024-12-03T05:07:22Z
 url: https://github.com/astral-sh/uv/issues/8887
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv add workspace fails misteriously from git but not locally
@@ -235,10 +235,6 @@ I'd be happy to review a PR (or at least, it'd probably be easier for me to comm
 
 ---
 
-_Referenced in [astral-sh/uv#9388](../../astral-sh/uv/pulls/9388.md) on 2024-11-23 16:52_
-
----
-
 _Comment by @ericmarkmartin on 2024-11-23 16:53_
 
 Threw something up at #9388. If you think the PR makes sense I can get into writing some tests
@@ -248,10 +244,6 @@ Threw something up at #9388. If you think the PR makes sense I can get into writ
 _Comment by @konstin on 2024-11-26 21:08_
 
 The PR code makes sense to me
-
----
-
-_Referenced in [astral-sh/uv#9516](../../astral-sh/uv/issues/9516.md) on 2024-11-29 16:55_
 
 ---
 

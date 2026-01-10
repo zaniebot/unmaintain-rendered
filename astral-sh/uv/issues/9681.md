@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-06T13:26:15Z
 updated_at: 2024-12-08T17:22:19Z
 url: https://github.com/astral-sh/uv/issues/9681
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `--find-links` error is misleading when a local directory does not exist
@@ -41,10 +41,6 @@ _Label `error messages` added by @charliermarsh on 2024-12-06 13:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-08 15:42_
-
----
-
-_Referenced in [astral-sh/uv#9720](../../astral-sh/uv/pulls/9720.md) on 2024-12-08 15:42_
 
 ---
 

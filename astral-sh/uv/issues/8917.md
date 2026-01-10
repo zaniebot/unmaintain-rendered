@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T05:19:38Z
 updated_at: 2024-11-08T05:54:20Z
 url: https://github.com/astral-sh/uv/issues/8917
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv install 0.5.0 sh: line 1027: _force_install_dir: unbound variable
@@ -47,10 +47,6 @@ sh: line 1027: _force_install_dir: unbound variable
 Edit:
 seems to be a widespread issue with a later release of the 0.5.0 install.sh - because the release itself was about 6 hours ago, but only started seeing this an hour ago and I had a working version of 0.5.0 at some point 🤔
 
-
----
-
-_Referenced in [astral-sh/uv#8919](../../astral-sh/uv/issues/8919.md) on 2024-11-08 05:28_
 
 ---
 
@@ -139,9 +135,5 @@ I believe that is intentional https://github.com/astral-sh/uv/releases/tag/0.5.0
 _Comment by @zanieb on 2024-11-08 05:54_
 
 `uv self update` will preserve a previous install location, but new installs will use the new one 👍 
-
----
-
-_Referenced in [astral-sh/uv#8928](../../astral-sh/uv/issues/8928.md) on 2024-11-08 11:37_
 
 ---

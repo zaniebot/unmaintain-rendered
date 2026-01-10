@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-03T09:37:39Z
 updated_at: 2024-11-05T13:43:05Z
 url: https://github.com/astral-sh/uv/issues/8771
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv run with only a dependency-group
@@ -143,10 +143,6 @@ DEBUG Adding transitive dependency for weblate==1: borgbackup>=1.2.5, <1.5
 ```
 
 The `pyproject.toml` is here: https://github.com/WeblateOrg/weblate/blob/2430e2a888312f024e4c90e3c336d0ee76166014/pyproject.toml (I only edited it to get rid of the dynamic version).
-
----
-
-_Referenced in [WeblateOrg/weblate#12925](../../WeblateOrg/weblate/pulls/12925.md) on 2024-11-04 07:13_
 
 ---
 

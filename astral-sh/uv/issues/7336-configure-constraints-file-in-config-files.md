@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T16:43:31Z
 updated_at: 2024-11-20T00:39:25Z
 url: https://github.com/astral-sh/uv/issues/7336
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Configure constraints file in config files
@@ -83,9 +83,5 @@ Let's combine with #6518.
 ---
 
 _Closed by @charliermarsh on 2024-11-20 00:39_
-
----
-
-_Referenced in [astral-sh/uv#6518](../../astral-sh/uv/issues/6518.md) on 2025-04-10 10:20_
 
 ---

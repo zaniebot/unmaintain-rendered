@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-26T14:22:01Z
 updated_at: 2024-11-20T16:07:37Z
 url: https://github.com/astral-sh/uv/issues/8594
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add `--all-group` option to `uv sync`
@@ -112,22 +112,6 @@ My workaround for achieving both behaviors (sync with default groups and sync on
 _Comment by @zanieb on 2024-10-29 01:47_
 
 @amoralesc it seems like we might want a `--no-default-groups` flag, which I was sort of hoping we could avoid (just because we have so many flags)
-
----
-
-_Referenced in [backend-developers-ltd/ComputeHorde#301](../../backend-developers-ltd/ComputeHorde/pulls/301.md) on 2024-11-06 11:54_
-
----
-
-_Referenced in [astral-sh/uv#8892](../../astral-sh/uv/pulls/8892.md) on 2024-11-07 16:59_
-
----
-
-_Referenced in [astral-sh/uv#9261](../../astral-sh/uv/issues/9261.md) on 2024-11-20 03:27_
-
----
-
-_Referenced in [astral-sh/uv#9279](../../astral-sh/uv/issues/9279.md) on 2024-11-20 16:05_
 
 ---
 

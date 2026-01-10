@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T14:22:58Z
 updated_at: 2024-11-22T22:06:44Z
 url: https://github.com/astral-sh/uv/issues/9356
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip install --target` flags says to add `--system` 
@@ -93,10 +93,6 @@ This has come up enough times that I'll look into changing it:
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-22 20:33_
-
----
-
-_Referenced in [astral-sh/uv#9371](../../astral-sh/uv/pulls/9371.md) on 2024-11-22 20:55_
 
 ---
 

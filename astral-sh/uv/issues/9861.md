@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-13T05:28:02Z
 updated_at: 2024-12-13T21:06:40Z
 url: https://github.com/astral-sh/uv/issues/9861
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Resolver error trees with collapsed unavailable conclusion is out of order
@@ -94,10 +94,6 @@ term root==0a0.dev0
 We make the conclusion "we can conclude that open3d<0.9.0.0 cannot be used" before we make the second proof about the incompatible range "because open3d>=0.16.0 has no wheels"
 
 There's some more context in https://github.com/pubgrub-rs/pubgrub/issues/297 as I've explored a couple issues here — the root cause might be the same.
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#297](../../pubgrub-rs/pubgrub/issues/297.md) on 2024-12-13 05:28_
 
 ---
 
@@ -245,10 +241,6 @@ And so is the complement
 but this doesn't work for most conclusions? (i.e., many regressions if I run the test suite with these changes)
 
 Here, at least, it's very clear the ordering is wrong?
-
----
-
-_Referenced in [astral-sh/uv#9877](../../astral-sh/uv/pulls/9877.md) on 2024-12-13 19:33_
 
 ---
 

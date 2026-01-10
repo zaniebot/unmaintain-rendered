@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T07:15:54Z
 updated_at: 2024-11-11T03:17:27Z
 url: https://github.com/astral-sh/uv/issues/8922
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip compile`: markupsafe==3.0.2 has no wheels with a matching Python implementation tag
@@ -415,10 +415,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-08 16:56_
 
 ---
 
-_Referenced in [astral-sh/uv#8961](../../astral-sh/uv/pulls/8961.md) on 2024-11-09 00:27_
-
----
-
 _Closed by @charliermarsh on 2024-11-09 00:48_
 
 ---
@@ -432,13 +428,5 @@ Fixed in the next release.
 _Comment by @yxtay on 2024-11-11 03:17_
 
 Wow, thanks for the extremely quick response! 👍 
-
----
-
-_Referenced in [Comfy-Org/desktop#300](../../Comfy-Org/desktop/pulls/300.md) on 2024-11-20 04:00_
-
----
-
-_Referenced in [astral-sh/uv#9647](../../astral-sh/uv/issues/9647.md) on 2024-12-04 20:13_
 
 ---

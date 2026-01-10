@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-04T22:12:44Z
 updated_at: 2024-11-05T21:34:01Z
 url: https://github.com/astral-sh/uv/issues/8819
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # lowest-direct resolution error with constraints
@@ -274,10 +274,6 @@ _Comment by @charliermarsh on 2024-11-05 13:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-05 14:18_
-
----
-
-_Referenced in [astral-sh/uv#8839](../../astral-sh/uv/pulls/8839.md) on 2024-11-05 19:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T14:12:56Z
 updated_at: 2024-11-06T18:00:07Z
 url: https://github.com/astral-sh/uv/issues/8863
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv resolves to older numba version incompatible with python version
@@ -162,13 +162,5 @@ Thank you, that's very helpful! Now that I think about it, that sort of explicit
 I suppose I'll just set my own numba version dependency in my package, although it feels like there's a more elegant solution. 
 
 
-
----
-
-_Referenced in [astral-sh/uv#12126](../../astral-sh/uv/issues/12126.md) on 2025-03-12 01:46_
-
----
-
-_Referenced in [MaartenGr/BERTopic#2311](../../MaartenGr/BERTopic/issues/2311.md) on 2025-03-23 21:17_
 
 ---

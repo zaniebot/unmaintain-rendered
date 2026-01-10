@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T09:54:58Z
 updated_at: 2024-12-02T22:24:31Z
 url: https://github.com/astral-sh/uv/issues/9518
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv sync` removes editable install if `[build-system]` is not specified
@@ -80,9 +80,5 @@ _Closed by @charliermarsh on 2024-12-02 13:32_
 _Comment by @zanieb on 2024-12-02 22:23_
 
 Notably, `uv pip install -e .` doesn't really mean anything if you don't want to install the project itself — you'd use `uv pip install -r ./pyproject.toml` instead.
-
----
-
-_Referenced in [astral-sh/uv#9586](../../astral-sh/uv/pulls/9586.md) on 2024-12-02 22:25_
 
 ---

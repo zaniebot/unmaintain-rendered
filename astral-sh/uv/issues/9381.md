@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T10:24:16Z
 updated_at: 2025-01-07T19:49:50Z
 url: https://github.com/astral-sh/uv/issues/9381
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [Feature Request] Make it default to read from .env-files
@@ -45,13 +45,5 @@ _Label `question` added by @charliermarsh on 2024-12-16 22:07_
 ---
 
 _Closed by @zanieb on 2025-01-07 19:49_
-
----
-
-_Referenced in [astral-sh/uv#11673](../../astral-sh/uv/issues/11673.md) on 2025-02-20 17:47_
-
----
-
-_Referenced in [astral-sh/uv#7357](../../astral-sh/uv/pulls/7357.md) on 2025-03-26 13:08_
 
 ---

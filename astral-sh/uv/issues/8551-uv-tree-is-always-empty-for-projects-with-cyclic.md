@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-25T01:38:33Z
 updated_at: 2024-10-26T17:30:44Z
 url: https://github.com/astral-sh/uv/issues/8551
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv tree` is always empty for projects with cyclic dependencies
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2024-10-25 01:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-25 01:38_
-
----
-
-_Referenced in [astral-sh/uv#8564](../../astral-sh/uv/pulls/8564.md) on 2024-10-25 13:27_
 
 ---
 

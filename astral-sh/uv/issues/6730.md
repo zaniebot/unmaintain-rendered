@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T23:16:18Z
 updated_at: 2024-10-28T13:49:49Z
 url: https://github.com/astral-sh/uv/issues/6730
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv pip compile --universal fails when dependency's python-requires is incompatible with -p, even with markers
@@ -168,10 +168,6 @@ warning: The requested Python version 3.7 is not available; 3.12.5 will be used 
 
 ---
 
-_Referenced in [pyca/cryptography#11548](../../pyca/cryptography/issues/11548.md) on 2024-09-05 18:40_
-
----
-
 _Comment by @alex on 2024-09-06 11:50_
 
 The bug described ^ appears to be fixed now.
@@ -271,10 +267,6 @@ _Comment by @konstin on 2024-09-06 15:37_
 > I believe Konsti dropped those in his unreachable PRs, maybe?
 
 The pruning currently only happens in the transformation from graph to `uv.lock`, we should also prune `requirements.txt` entries with a false marker.
-
----
-
-_Referenced in [astral-sh/uv#7196](../../astral-sh/uv/issues/7196.md) on 2024-09-08 18:31_
 
 ---
 

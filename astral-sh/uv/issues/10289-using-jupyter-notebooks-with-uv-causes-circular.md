@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-03T15:28:18Z
 updated_at: 2025-01-03T17:42:00Z
 url: https://github.com/astral-sh/uv/issues/10289
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Using jupyter notebooks with uv causes circular imports
@@ -357,10 +357,6 @@ Thankyou so so much. 🙏🙏
 This solved my problem instantly.
 
 But what was really causing problem??
-
----
-
-_Referenced in [Cyfrin/moccasin#179](../../Cyfrin/moccasin/issues/179.md) on 2025-01-03 16:22_
 
 ---
 

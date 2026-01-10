@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-11T18:19:48Z
 updated_at: 2024-12-11T18:49:28Z
 url: https://github.com/astral-sh/uv/issues/9819
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # error text provides bad command for additional information
@@ -55,10 +55,6 @@ _Assigned to @zanieb by @zanieb on 2024-12-11 18:22_
 
 ---
 
-_Referenced in [astral-sh/uv#9820](../../astral-sh/uv/pulls/9820.md) on 2024-12-11 18:25_
-
----
-
 _Comment by @hwine on 2024-12-11 18:29_
 
 Thanks for the quick (instant?) response with the correct command!
@@ -81,9 +77,5 @@ You're welcome :)
 
 Interesting, that's surprising. Can you open a new issue for that?
 
-
----
-
-_Referenced in [astral-sh/uv#9830](../../astral-sh/uv/issues/9830.md) on 2024-12-12 01:47_
 
 ---

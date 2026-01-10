@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-24T06:02:09Z
 updated_at: 2024-12-24T12:59:07Z
 url: https://github.com/astral-sh/uv/issues/10138
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # no version of paddlepaddle{platform_system == 'Linux'}==3.0.0b1
@@ -698,14 +698,6 @@ However, there is no proper lock file got generated, I guess currently there is 
 I tried `uv lock --prerelease=allow` and it does not work.
 
 Thanks!
-
----
-
-_Referenced in [opendatalab/MinerU#1354](../../opendatalab/MinerU/issues/1354.md) on 2024-12-24 08:27_
-
----
-
-_Referenced in [opendatalab/MinerU#1351](../../opendatalab/MinerU/issues/1351.md) on 2024-12-24 08:31_
 
 ---
 

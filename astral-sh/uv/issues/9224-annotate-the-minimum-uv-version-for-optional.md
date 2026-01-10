@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-19T13:05:04Z
 updated_at: 2024-11-19T21:21:44Z
 url: https://github.com/astral-sh/uv/issues/9224
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Annotate the minimum UV version for optional dependencies in PyTorch documentation.
@@ -41,10 +41,6 @@ uv 0.5.2
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-19 19:46_
-
----
-
-_Referenced in [astral-sh/uv#9247](../../astral-sh/uv/pulls/9247.md) on 2024-11-19 21:11_
 
 ---
 

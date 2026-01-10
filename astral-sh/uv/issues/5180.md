@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T09:50:16Z
 updated_at: 2025-01-02T13:18:40Z
 url: https://github.com/astral-sh/uv/issues/5180
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Instability with preferences and forks: Lockfile changes on the second run
@@ -108,18 +108,6 @@ My plan to solve this is to:
 
 ---
 
-_Referenced in [astral-sh/uv#5479](../../astral-sh/uv/pulls/5479.md) on 2024-07-26 13:05_
-
----
-
-_Referenced in [astral-sh/uv#5480](../../astral-sh/uv/pulls/5480.md) on 2024-07-26 13:15_
-
----
-
-_Referenced in [astral-sh/uv#5481](../../astral-sh/uv/pulls/5481.md) on 2024-07-26 13:18_
-
----
-
 _Comment by @konstin on 2024-07-26 13:48_
 
 Background reading: https://github.com/astral-sh/packse/pull/203
@@ -135,14 +123,6 @@ We need to both start the resolution with the locked forks, because we may not s
 ---
 
 _Renamed from "Lockfile changes on the second run" to "Instability with preferences and forks: Lockfile changes on the second run" by @konstin on 2024-07-26 15:31_
-
----
-
-_Referenced in [astral-sh/uv#5441](../../astral-sh/uv/pulls/5441.md) on 2024-07-26 15:38_
-
----
-
-_Referenced in [astral-sh/uv#5485](../../astral-sh/uv/pulls/5485.md) on 2024-07-26 15:54_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T05:23:11Z
 updated_at: 2024-11-08T05:50:00Z
 url: https://github.com/astral-sh/uv/issues/8919
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # CI/CD pipelines on Github Actions are breaking
@@ -52,9 +52,5 @@ It should be fixed now. Please let me know if not.
 ---
 
 _Closed by @zanieb on 2024-11-08 05:50_
-
----
-
-_Referenced in [astral-sh/uv#8928](../../astral-sh/uv/issues/8928.md) on 2024-11-08 11:35_
 
 ---

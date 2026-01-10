@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-31T16:09:46Z
 updated_at: 2024-12-31T18:21:20Z
 url: https://github.com/astral-sh/uv/issues/10254
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # How to include non-python files
@@ -43,9 +43,5 @@ Thank you, @FishAlchemist .  That is helpful.
 ---
 
 _Closed by @huyndao on 2024-12-31 18:21_
-
----
-
-_Referenced in [astral-sh/uv#10261](../../astral-sh/uv/pulls/10261.md) on 2025-01-02 05:44_
 
 ---

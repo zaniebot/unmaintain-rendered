@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T12:54:57Z
 updated_at: 2024-11-25T21:24:55Z
 url: https://github.com/astral-sh/uv/issues/9415
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Workspace documentation doesn't include an example of a nested package `pyproject.toml`
@@ -76,10 +76,6 @@ _Comment by @samuelcolvin on 2024-11-25 13:30_
 Duplicating `description`, `authors`, `license` etc. is fine, but it would be really useful if I could set `version` as "dynamic" and have it shared across all packages.
 
 I guess that might already be possible?
-
----
-
-_Referenced in [pydantic/pydantic-ai#92](../../pydantic/pydantic-ai/pulls/92.md) on 2024-11-25 13:34_
 
 ---
 

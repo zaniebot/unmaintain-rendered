@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T18:10:55Z
 updated_at: 2024-11-01T20:11:41Z
 url: https://github.com/astral-sh/uv/issues/8676
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip compile --universal` outputs requirements with `python_version < '0'` marker
@@ -102,10 +102,6 @@ _Label `bug` added by @charliermarsh on 2024-10-29 18:20_
 
 ---
 
-_Referenced in [astral-sh/uv#8759](../../astral-sh/uv/pulls/8759.md) on 2024-11-01 18:28_
-
----
-
 _Label `resolver` removed by @BurntSushi on 2024-11-01 18:31_
 
 ---
@@ -125,9 +121,5 @@ _Closed by @BurntSushi on 2024-11-01 20:11_
 ---
 
 _Closed by @BurntSushi on 2024-11-01 20:11_
-
----
-
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-11 13:36_
 
 ---

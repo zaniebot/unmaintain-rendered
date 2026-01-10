@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T14:42:53Z
 updated_at: 2024-11-26T02:56:16Z
 url: https://github.com/astral-sh/uv/issues/9383
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Workspace packages are skipped in `uv sync --only-group [group]`
@@ -34,10 +34,6 @@ _Label `needs-mre` added by @charliermarsh on 2024-11-23 14:42_
 _Comment by @charliermarsh on 2024-11-23 14:43_
 
 (I haven't tested this, but it was reported on Discord.)
-
----
-
-_Referenced in [astral-sh/uv#9385](../../astral-sh/uv/pulls/9385.md) on 2024-11-23 15:33_
 
 ---
 

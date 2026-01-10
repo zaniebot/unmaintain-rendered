@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-25T10:08:56Z
 updated_at: 2024-12-22T16:35:26Z
 url: https://github.com/astral-sh/uv/issues/9413
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Installation fails for statsforecast due to llvmlite Python version constraint
@@ -165,9 +165,5 @@ Just to clarify for anyone else landing on this, in case the workaround is uncle
 
 - Cheat: run `pip install `llvmlite` in your venv, then `pip list | grep llvmlite` which shows the version 0.43.0 gets installed
 - Solution: run `uv add llvmlite>=0.43.0` to your project, then either `uv add jupyter` or `uv run --with jupyter jupyter lab` work
-
----
-
-_Referenced in [astral-sh/uv#11636](../../astral-sh/uv/issues/11636.md) on 2025-02-19 20:01_
 
 ---

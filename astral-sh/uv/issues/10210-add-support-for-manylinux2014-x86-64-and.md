@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-28T01:58:30Z
 updated_at: 2024-12-29T02:17:15Z
 url: https://github.com/astral-sh/uv/issues/10210
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Add support for manylinux2014_x86_64 and manylinux2014_aarch64
@@ -84,10 +84,6 @@ That is great, thank you for letting me know, and yes maybe a alias would help t
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-29 01:12_
-
----
-
-_Referenced in [astral-sh/uv#10217](../../astral-sh/uv/pulls/10217.md) on 2024-12-29 01:23_
 
 ---
 

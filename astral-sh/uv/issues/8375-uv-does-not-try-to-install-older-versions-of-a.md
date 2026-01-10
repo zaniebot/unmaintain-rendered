@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-19T21:50:36Z
 updated_at: 2024-12-26T16:51:48Z
 url: https://github.com/astral-sh/uv/issues/8375
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv` does not try to install older versions of a package if an error occurs
@@ -188,10 +188,6 @@ _Comment by @notatallshaw on 2024-10-20 20:54_
 > `pip-compile` fails to build this package too. Even if you add `<=03.3`, it doesn't continue to resolve and try older versions.
 
 `pip-compile` inherits this behavior from `pip` and it is intentional: https://github.com/pypa/pip/pull/10722
-
----
-
-_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 10:05_
 
 ---
 

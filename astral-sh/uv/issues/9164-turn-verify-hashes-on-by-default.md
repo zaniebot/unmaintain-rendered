@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T09:40:40Z
 updated_at: 2024-11-18T01:57:55Z
 url: https://github.com/astral-sh/uv/issues/9164
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Turn `--verify-hashes` on by default
@@ -91,14 +91,6 @@ _Comment by @charliermarsh on 2024-11-16 17:09_
 
 ---
 
-_Referenced in [astral-sh/uv#9170](../../astral-sh/uv/pulls/9170.md) on 2024-11-17 01:08_
-
----
-
 _Closed by @charliermarsh on 2024-11-18 01:57_
-
----
-
-_Referenced in [opendatahub-io/notebooks#1998](../../opendatahub-io/notebooks/pulls/1998.md) on 2025-08-19 11:35_
 
 ---

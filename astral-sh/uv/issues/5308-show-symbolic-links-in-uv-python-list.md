@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T20:26:03Z
 updated_at: 2024-10-24T09:56:31Z
 url: https://github.com/astral-sh/uv/issues/5308
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Show symbolic links in `uv python list`
@@ -24,10 +24,6 @@ Per comment at https://github.com/astral-sh/uv/issues/5210#issuecomment-22437509
 ---
 
 _Label `cli` added by @zanieb on 2024-07-22 20:26_
-
----
-
-_Referenced in [astral-sh/uv#5210](../../astral-sh/uv/issues/5210.md) on 2024-07-22 20:26_
 
 ---
 
@@ -133,28 +129,16 @@ cpython-3.9.6-macos-aarch64-none     /Applications/Xcode.app/Contents/Developer/
 
 ---
 
-_Referenced in [astral-sh/uv#5343](../../astral-sh/uv/pulls/5343.md) on 2024-07-23 16:13_
-
----
-
 _Closed by @zanieb on 2024-07-23 16:41_
 
 ---
 
 _Closed by @zanieb on 2024-07-23 16:41_
-
----
-
-_Referenced in [astral-sh/uv#6690](../../astral-sh/uv/issues/6690.md) on 2024-08-27 14:37_
 
 ---
 
 _Comment by @cbrnr on 2024-10-24 09:56_
 
 Would it be possible to add an option to hide symlinks? Usually, I just want to find out which Python versions are installed, and adding symlinks to the list makes it more difficult to see the unique versions.
-
----
-
-_Referenced in [astral-sh/uv#12302](../../astral-sh/uv/issues/12302.md) on 2025-03-18 23:07_
 
 ---

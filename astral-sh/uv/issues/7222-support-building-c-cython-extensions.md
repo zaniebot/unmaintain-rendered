@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-09T15:28:06Z
 updated_at: 2024-10-26T15:19:31Z
 url: https://github.com/astral-sh/uv/issues/7222
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support building C/cython extensions
@@ -126,10 +126,6 @@ You can do `uv init --lib --build-backend scikit` (or `setuptools`, but there yo
 _Comment by @henryiii on 2024-10-25 16:08_
 
 Side comment: `uv init --build-backend scikit` doesn't actually do anything different than `uv init`, there's no build backend without `--lib` or similar. Maybe that should be an error?
-
----
-
-_Referenced in [astral-sh/uv#8568](../../astral-sh/uv/issues/8568.md) on 2024-10-25 16:19_
 
 ---
 

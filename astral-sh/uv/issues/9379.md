@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T09:54:59Z
 updated_at: 2024-11-23T17:06:01Z
 url: https://github.com/astral-sh/uv/issues/9379
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Frozen vs Locked unexpected behavior
@@ -156,9 +156,5 @@ Because `--locked` has to validate that the lockfile is up-to-date, which requir
 ---
 
 _Closed by @charliermarsh on 2024-11-23 17:06_
-
----
-
-_Referenced in [astral-sh/uv#9396](../../astral-sh/uv/issues/9396.md) on 2024-11-24 15:31_
 
 ---

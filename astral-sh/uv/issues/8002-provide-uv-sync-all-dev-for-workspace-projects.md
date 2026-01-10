@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T11:13:34Z
 updated_at: 2024-11-02T02:38:14Z
 url: https://github.com/astral-sh/uv/issues/8002
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Provide `uv sync --all-dev` for workspace projects
@@ -65,10 +65,6 @@ uv sync --all-dev
 
 ---
 
-_Referenced in [astral-sh/uv#8022](../../astral-sh/uv/issues/8022.md) on 2024-10-08 21:45_
-
----
-
 _Comment by @charliermarsh on 2024-10-08 22:41_
 
 I think this may be best handled via an `--all-packages` flag to sync an entire workspace, as in: https://github.com/astral-sh/uv/issues/6935.
@@ -80,10 +76,6 @@ _Label `needs-decision` added by @charliermarsh on 2024-10-08 22:41_
 ---
 
 _Renamed from "Provide uv sync --all-dev for workspace projects" to "Provide `uv sync --all-dev` for workspace projects" by @charliermarsh on 2024-10-08 22:41_
-
----
-
-_Referenced in [astral-sh/uv#7541](../../astral-sh/uv/issues/7541.md) on 2024-10-21 22:43_
 
 ---
 

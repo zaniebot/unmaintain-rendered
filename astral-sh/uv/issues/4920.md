@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T10:22:33Z
 updated_at: 2024-10-30T19:12:25Z
 url: https://github.com/astral-sh/uv/issues/4920
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support dependencies into git workspaces
@@ -47,19 +47,11 @@ _Label `preview` added by @konstin on 2024-07-09 10:22_
 
 ---
 
-_Referenced in [astral-sh/uv#3943](../../astral-sh/uv/issues/3943.md) on 2024-07-09 10:23_
-
----
-
 _Label `help wanted` added by @konstin on 2024-07-09 12:36_
 
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:22_
-
----
-
-_Referenced in [astral-sh/uv#8665](../../astral-sh/uv/pulls/8665.md) on 2024-10-29 16:07_
 
 ---
 

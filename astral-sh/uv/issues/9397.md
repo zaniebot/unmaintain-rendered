@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-24T16:11:14Z
 updated_at: 2024-11-25T01:18:28Z
 url: https://github.com/astral-sh/uv/issues/9397
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Allow UV_NO_SYNC=1 UV_FROZEN=1 on uv run
@@ -92,10 +92,6 @@ I see, so we're agreed that `--frozen` is redundant for `uv run` here, but you'r
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-25 00:57_
-
----
-
-_Referenced in [astral-sh/uv#9400](../../astral-sh/uv/pulls/9400.md) on 2024-11-25 01:09_
 
 ---
 

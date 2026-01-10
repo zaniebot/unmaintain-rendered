@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T11:37:43Z
 updated_at: 2024-11-08T15:18:38Z
 url: https://github.com/astral-sh/uv/issues/8932
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Pruned versions make specific uv versions unable to compile
@@ -82,18 +82,10 @@ _Comment by @charliermarsh on 2024-11-08 14:56_
 
 ---
 
-_Referenced in [TrueLayer/reqwest-middleware#198](../../TrueLayer/reqwest-middleware/pulls/198.md) on 2024-11-08 15:17_
-
----
-
 _Comment by @konstin on 2024-11-08 15:18_
 
 Upstreamed this to ask for crates.io releases: https://github.com/TrueLayer/reqwest-middleware/pull/198
 
 I've also tagged the version we're using in uv 0.5.0 in the meantime.
-
----
-
-_Referenced in [easybuilders/easybuild-framework#4680](../../easybuilders/easybuild-framework/pulls/4680.md) on 2025-04-10 07:24_
 
 ---

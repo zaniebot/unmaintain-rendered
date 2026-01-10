@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-21T16:19:23Z
 updated_at: 2024-11-22T01:03:25Z
 url: https://github.com/astral-sh/uv/issues/9327
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Path resolution for packages from filepath are inconsistent
@@ -58,10 +58,6 @@ I am currently working on a MacOS m2 machine with Python 3.12.
 After more testing, I notice that the issue happens with the `main` folder. Whenever I replace the `main` folder name in the route, it resolves correctly.
 
 I have also tested setting relative paths with `uv.tools.source`, and reached the same conclusion. The folder named `main` causes the issue.
-
----
-
-_Referenced in [astral-sh/uv#9326](../../astral-sh/uv/issues/9326.md) on 2024-11-21 16:31_
 
 ---
 

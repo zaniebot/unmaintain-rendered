@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-25T06:18:22Z
 updated_at: 2024-11-01T13:28:09Z
 url: https://github.com/astral-sh/uv/issues/8555
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv tool update --all` fails if a provided `extra-index-url` is not joinable 
@@ -109,13 +109,5 @@ _Comment by @zanieb on 2024-11-01 13:28_
 So.. we should at least say what we could not connect to / display the full error from the failure.
 
 It seems makes sense to allow indexes to be offline entirely, but probably not by default? I'm not sure how to specify that.
-
----
-
-_Referenced in [astral-sh/uv#8753](../../astral-sh/uv/pulls/8753.md) on 2024-11-01 13:36_
-
----
-
-_Referenced in [astral-sh/uv#11176](../../astral-sh/uv/issues/11176.md) on 2025-02-03 06:46_
 
 ---

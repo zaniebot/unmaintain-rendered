@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-19T02:51:16Z
 updated_at: 2024-11-19T03:18:02Z
 url: https://github.com/astral-sh/uv/issues/9214
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Using `--frozen` causes `--package` selection to be ignored
@@ -50,10 +50,6 @@ _Label `bug` added by @charliermarsh on 2024-11-19 03:00_
 _Comment by @charliermarsh on 2024-11-19 03:00_
 
 Thanks! (We confirmed that this only applies to workspaces without a `[project]` table.)
-
----
-
-_Referenced in [astral-sh/uv#9215](../../astral-sh/uv/pulls/9215.md) on 2024-11-19 03:07_
 
 ---
 

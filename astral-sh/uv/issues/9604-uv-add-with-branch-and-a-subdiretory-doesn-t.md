@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-03T11:11:46Z
 updated_at: 2024-12-04T13:42:08Z
 url: https://github.com/astral-sh/uv/issues/9604
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv add` with `--branch` and a subdiretory doesn't check out the branch before checking the subdirectory
@@ -139,9 +139,5 @@ I was on `0.4.7` -> running `uv self update` and retrying solves it!
 ---
 
 _Closed by @m-o-leary on 2024-12-04 13:42_
-
----
-
-_Referenced in [tmux-python/tmuxp#955](../../tmux-python/tmuxp/pulls/955.md) on 2024-12-24 16:46_
 
 ---

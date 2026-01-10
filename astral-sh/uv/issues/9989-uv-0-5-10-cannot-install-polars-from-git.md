@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-18T08:52:04Z
 updated_at: 2024-12-18T09:28:08Z
 url: https://github.com/astral-sh/uv/issues/9989
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv 0.5.10 cannot install Polars from git
@@ -39,10 +39,6 @@ We don't have a version set,  as that is handled by maturin during build.
 
 ---
 
-_Referenced in [pola-rs/polars#20345](../../pola-rs/polars/pulls/20345.md) on 2024-12-18 09:00_
-
----
-
 _Comment by @ritchie46 on 2024-12-18 09:28_
 
 Ah, I see https://github.com/pola-rs/polars/pull/20345, nvm!
@@ -50,13 +46,5 @@ Ah, I see https://github.com/pola-rs/polars/pull/20345, nvm!
 ---
 
 _Closed by @ritchie46 on 2024-12-18 09:28_
-
----
-
-_Referenced in [PyO3/maturin#2390](../../PyO3/maturin/issues/2390.md) on 2024-12-18 10:07_
-
----
-
-_Referenced in [PyO3/maturin#2416](../../PyO3/maturin/issues/2416.md) on 2024-12-30 05:29_
 
 ---

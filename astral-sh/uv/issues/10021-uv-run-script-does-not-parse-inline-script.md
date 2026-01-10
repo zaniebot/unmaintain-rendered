@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-19T09:07:46Z
 updated_at: 2024-12-19T18:09:10Z
 url: https://github.com/astral-sh/uv/issues/10021
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv run --script -` does not parse inline script metadata
@@ -116,14 +116,6 @@ _Label `bug` added by @charliermarsh on 2024-12-19 13:55_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-19 14:06_
-
----
-
-_Referenced in [astral-sh/uv#10033](../../astral-sh/uv/issues/10033.md) on 2024-12-19 17:02_
-
----
-
-_Referenced in [astral-sh/uv#10035](../../astral-sh/uv/pulls/10035.md) on 2024-12-19 17:14_
 
 ---
 

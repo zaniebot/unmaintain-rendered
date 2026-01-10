@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T17:09:03Z
 updated_at: 2024-11-20T17:29:58Z
 url: https://github.com/astral-sh/uv/issues/9282
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add a progress bar for `uv tree --outdated`
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 17:09_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-11-20 17:09_
-
----
-
-_Referenced in [astral-sh/uv#9284](../../astral-sh/uv/pulls/9284.md) on 2024-11-20 17:18_
 
 ---
 

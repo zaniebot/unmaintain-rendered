@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-25T13:18:30Z
 updated_at: 2024-11-28T16:45:19Z
 url: https://github.com/astral-sh/uv/issues/9416
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Global config file ignored on Windows
@@ -103,10 +103,6 @@ https://doc.rust-lang.org/src/std/path.rs.html#1288-1289
 
 ---
 
-_Referenced in [astral-sh/uv#9432](../../astral-sh/uv/pulls/9432.md) on 2024-11-25 23:19_
-
----
-
 _Comment by @markuspi on 2024-11-26 08:32_
 
 Yeah Windows Paths are quite a mess 😅
@@ -115,10 +111,6 @@ At least Rust's behavior of `.join` is in line with Python and Java implementati
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-28 00:01_
-
----
-
-_Referenced in [astral-sh/uv#9488](../../astral-sh/uv/pulls/9488.md) on 2024-11-28 00:18_
 
 ---
 

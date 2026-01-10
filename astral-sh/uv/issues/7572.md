@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-20T07:47:56Z
 updated_at: 2024-10-28T18:35:48Z
 url: https://github.com/astral-sh/uv/issues/7572
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv sync --no-source` breaking from 0.4
@@ -138,10 +138,6 @@ _Label `bug` added by @charliermarsh on 2024-09-20 18:21_
 
 ---
 
-_Referenced in [astral-sh/uv#7599](../../astral-sh/uv/pulls/7599.md) on 2024-09-20 18:51_
-
----
-
 _Closed by @charliermarsh on 2024-09-20 19:03_
 
 ---
@@ -183,9 +179,5 @@ You'd have to pass `--no-sources` to each command (`uv run --no-sources`). We do
 _Comment by @gita-unlearn on 2024-09-23 23:57_
 
 ah okay, thank you for the quick reply <3 
-
----
-
-_Referenced in [astral-sh/uv#7945](../../astral-sh/uv/issues/7945.md) on 2025-06-26 01:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-22T14:54:08Z
 updated_at: 2024-12-22T15:23:28Z
 url: https://github.com/astral-sh/uv/issues/10094
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv add doesn't support URL fragments (e.g. subdirectory)
@@ -30,19 +30,11 @@ Continuing from #10088
 
 ---
 
-_Referenced in [astral-sh/uv#10088](../../astral-sh/uv/issues/10088.md) on 2024-12-22 14:54_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-12-22 14:57_
 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-22 15:11_
-
----
-
-_Referenced in [astral-sh/uv#10095](../../astral-sh/uv/pulls/10095.md) on 2024-12-22 15:12_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T16:23:41Z
 updated_at: 2024-12-27T14:43:51Z
 url: https://github.com/astral-sh/uv/issues/7033
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support certain extras of the current project as dev dependencies
@@ -39,10 +39,6 @@ types = [
 dev-dependencies = [
     ".[test,lint,types]"
 ]
-
----
-
-_Referenced in [canonical/starbase#240](../../canonical/starbase/pulls/240.md) on 2024-09-04 16:24_
 
 ---
 

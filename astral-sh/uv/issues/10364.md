@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-07T14:42:36Z
 updated_at: 2025-01-07T15:16:08Z
 url: https://github.com/astral-sh/uv/issues/10364
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv sync ignores pytest upper bound in GitHub actions
@@ -23,10 +23,6 @@ I'm trying to move [langroid](https://github.com/langroid/langroid) from poetry 
 I'm curious if this is a known issue or I should be using a different mechanism to ensure version bounds are respected?
 
 Thanks
-
----
-
-_Referenced in [langroid/langroid#662](../../langroid/langroid/pulls/662.md) on 2025-01-07 14:44_
 
 ---
 

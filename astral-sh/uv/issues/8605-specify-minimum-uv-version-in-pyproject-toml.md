@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-27T10:26:04Z
 updated_at: 2024-12-31T15:37:47Z
 url: https://github.com/astral-sh/uv/issues/8605
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # specify minimum uv version in pyproject.toml
@@ -41,18 +41,6 @@ _Label `configuration` added by @zanieb on 2024-10-27 13:52_
 ---
 
 _Label `needs-design` added by @zanieb on 2024-10-27 13:52_
-
----
-
-_Referenced in [astral-sh/uv#8636](../../astral-sh/uv/issues/8636.md) on 2024-10-28 19:02_
-
----
-
-_Referenced in [astral-sh/uv#8718](../../astral-sh/uv/issues/8718.md) on 2024-10-31 15:49_
-
----
-
-_Referenced in [astral-sh/uv#8823](../../astral-sh/uv/issues/8823.md) on 2024-11-05 11:49_
 
 ---
 
@@ -146,14 +134,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-31 03:12_
 
 ---
 
-_Referenced in [astral-sh/uv#10248](../../astral-sh/uv/pulls/10248.md) on 2024-12-31 03:13_
-
----
-
 _Closed by @charliermarsh on 2024-12-31 15:37_
-
----
-
-_Referenced in [astral-sh/setup-uv#215](../../astral-sh/setup-uv/issues/215.md) on 2025-01-03 11:40_
 
 ---

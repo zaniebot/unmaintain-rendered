@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T09:24:34Z
 updated_at: 2025-01-07T20:31:54Z
 url: https://github.com/astral-sh/uv/issues/10344
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Optimize apache-airflow (warm cache)
@@ -193,38 +193,6 @@ Profile after:
 ---
 
 _Label `performance` added by @konstin on 2025-01-07 09:24_
-
----
-
-_Referenced in [astral-sh/uv#10345](../../astral-sh/uv/pulls/10345.md) on 2025-01-07 09:30_
-
----
-
-_Referenced in [astral-sh/uv#10346](../../astral-sh/uv/pulls/10346.md) on 2025-01-07 09:31_
-
----
-
-_Referenced in [astral-sh/uv#10347](../../astral-sh/uv/pulls/10347.md) on 2025-01-07 09:34_
-
----
-
-_Referenced in [astral-sh/uv#10348](../../astral-sh/uv/pulls/10348.md) on 2025-01-07 09:37_
-
----
-
-_Referenced in [astral-sh/uv#10349](../../astral-sh/uv/pulls/10349.md) on 2025-01-07 09:40_
-
----
-
-_Referenced in [astral-sh/uv#10350](../../astral-sh/uv/pulls/10350.md) on 2025-01-07 09:42_
-
----
-
-_Referenced in [astral-sh/uv#10351](../../astral-sh/uv/pulls/10351.md) on 2025-01-07 09:44_
-
----
-
-_Referenced in [astral-sh/uv#10352](../../astral-sh/uv/pulls/10352.md) on 2025-01-07 09:45_
 
 ---
 

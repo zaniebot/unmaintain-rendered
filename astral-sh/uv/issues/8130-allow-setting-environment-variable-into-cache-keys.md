@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-11T19:23:51Z
 updated_at: 2024-12-26T15:31:50Z
 url: https://github.com/astral-sh/uv/issues/8130
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Allow setting environment variable into cache-keys
@@ -87,10 +87,6 @@ I totally understand, and I am not saying this as hey why are you not doing x, y
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-26 15:10_
-
----
-
-_Referenced in [astral-sh/uv#10170](../../astral-sh/uv/pulls/10170.md) on 2024-12-26 15:12_
 
 ---
 

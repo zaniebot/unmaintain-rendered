@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-23T17:48:55Z
 updated_at: 2024-10-24T02:28:36Z
 url: https://github.com/astral-sh/uv/issues/8505
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `ci.yml` uses `gabrielfalcao/pyenv-action@v18` which uses `a deprecated Node.js version`
@@ -36,10 +36,6 @@ If you're filing a bug report, please consider including the following informati
 _Comment by @hamirmahal on 2024-10-23 17:49_
 
 ![image](https://github.com/user-attachments/assets/b619c1cd-795a-406c-a8db-6238db6c165b)
-
----
-
-_Referenced in [astral-sh/uv#8506](../../astral-sh/uv/pulls/8506.md) on 2024-10-23 17:49_
 
 ---
 

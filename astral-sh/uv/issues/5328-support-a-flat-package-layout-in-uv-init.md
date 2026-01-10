@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T03:38:27Z
 updated_at: 2024-12-26T18:51:57Z
 url: https://github.com/astral-sh/uv/issues/5328
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support a "flat" package layout in `uv init`
@@ -71,10 +71,6 @@ The lack of flat layout support makes migrating large monorepos (https://github.
 I agree with your point about the potential confusion with automatic package discovery when using the flat layourt, but there are already thousands of Python projects using it. 
 
 I think `uv` should prefer the `src` layout and use it by default, but at the same time adding support for flat layout seems reasonable to me. The opposite decision will slow down `uv` adoption. 
-
----
-
-_Referenced in [dagster-io/dagster#23816](../../dagster-io/dagster/pulls/23816.md) on 2024-08-22 08:47_
 
 ---
 
@@ -140,9 +136,5 @@ So do I understand correctly that i can place my package in project's root dir? 
 
 ---
 Update: also an example for [Packaged applications](https://docs.astral.sh/uv/concepts/projects/init/#packaged-applications) won't work as described in docs, because `src/example_packaged_app` differs from project name "example-pkg" so _hatchling_ won't find that package.
-
----
-
-_Referenced in [DavidVujic/python-polylith#343](../../DavidVujic/python-polylith/issues/343.md) on 2025-06-15 13:59_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T22:37:43Z
 updated_at: 2024-12-20T15:35:58Z
 url: https://github.com/astral-sh/uv/issues/1839
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Allow configuring FIND_LINKS with an environment variable
@@ -90,10 +90,6 @@ Thanks for noting.
 ---
 
 _Label `configuration` added by @zanieb on 2024-09-06 00:51_
-
----
-
-_Referenced in [astral-sh/uv#7912](../../astral-sh/uv/pulls/7912.md) on 2024-10-04 03:27_
 
 ---
 

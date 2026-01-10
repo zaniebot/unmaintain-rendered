@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-23T10:58:27Z
 updated_at: 2024-10-23T16:14:59Z
 url: https://github.com/astral-sh/uv/issues/8496
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # regression in uv 0.4.25's TOML comment handling during uv add
@@ -153,10 +153,6 @@ _Label `bug` added by @charliermarsh on 2024-10-23 11:44_
 _Comment by @charliermarsh on 2024-10-23 13:39_
 
 I'll try to fix it for today's release.
-
----
-
-_Referenced in [astral-sh/uv#8504](../../astral-sh/uv/pulls/8504.md) on 2024-10-23 15:41_
 
 ---
 

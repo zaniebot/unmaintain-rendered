@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T08:56:34Z
 updated_at: 2024-10-29T14:05:08Z
 url: https://github.com/astral-sh/uv/issues/8076
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Explicitly setting `index-url` to its default is not equivalent to having it undefined when syncing lockfiles with unreachable URLs
@@ -162,10 +162,6 @@ Installed 1 package in 5ms
 Platform: macOS 14.6.1
 uv version: uv 0.4.19 (Homebrew 2024-10-07)
  
-
----
-
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2024-10-10 09:02_
 
 ---
 

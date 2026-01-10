@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-17T17:53:21Z
 updated_at: 2024-10-24T14:51:26Z
 url: https://github.com/astral-sh/uv/issues/8299
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [Request] Allow defining named indexes in the user-level configuration file
@@ -110,9 +110,5 @@ See: https://docs.astral.sh/uv/configuration/indexes/#providing-credentials
 _Comment by @lucas-labs on 2024-10-24 14:51_
 
 @charliermarsh YES! that worked. I don't know how I missed that one! Thanks!
-
----
-
-_Referenced in [astral-sh/uv#9554](../../astral-sh/uv/issues/9554.md) on 2024-12-01 14:49_
 
 ---

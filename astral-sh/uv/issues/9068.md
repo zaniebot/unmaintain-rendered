@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-12T18:15:55Z
 updated_at: 2024-12-02T02:17:32Z
 url: https://github.com/astral-sh/uv/issues/9068
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV 0.5.1 fails to build xgboost 
@@ -106,10 +106,6 @@ That's pretty particular. It seems naughty of them to escape their build directo
 _Comment by @charliermarsh on 2024-11-12 19:13_
 
 I might be misunderstanding, it could be a problem on our end. Need to look at the source.
-
----
-
-_Referenced in [astral-sh/uv#9069](../../astral-sh/uv/pulls/9069.md) on 2024-11-12 19:18_
 
 ---
 

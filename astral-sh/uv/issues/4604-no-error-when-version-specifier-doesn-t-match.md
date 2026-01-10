@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-27T22:08:53Z
 updated_at: 2024-11-23T03:46:40Z
 url: https://github.com/astral-sh/uv/issues/4604
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # No error when version specifier doesn't match requirement source
@@ -41,18 +41,6 @@ _Renamed from "Error when version specifier doesn't match requirement source" to
 _Comment by @ibraheemdev on 2024-06-27 22:11_
 
 Alternatively we shouldn't allow version specifiers there at all.
-
----
-
-_Referenced in [astral-sh/uv#5341](../../astral-sh/uv/issues/5341.md) on 2024-07-23 15:57_
-
----
-
-_Referenced in [astral-sh/uv#5383](../../astral-sh/uv/issues/5383.md) on 2024-07-24 09:02_
-
----
-
-_Referenced in [astral-sh/uv#5505](../../astral-sh/uv/issues/5505.md) on 2024-07-27 21:09_
 
 ---
 

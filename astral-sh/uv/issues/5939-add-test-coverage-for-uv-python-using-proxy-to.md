@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T21:42:03Z
 updated_at: 2024-11-04T12:31:39Z
 url: https://github.com/astral-sh/uv/issues/5939
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add test coverage for `uv python` using proxy to serve dummy distributions
@@ -29,10 +29,6 @@ _Label `help wanted` added by @zanieb on 2024-08-08 21:42_
 ---
 
 _Label `testing` added by @zanieb on 2024-08-08 21:42_
-
----
-
-_Referenced in [astral-sh/uv#8662](../../astral-sh/uv/issues/8662.md) on 2024-11-04 12:31_
 
 ---
 

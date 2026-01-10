@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T06:45:37Z
 updated_at: 2024-10-24T16:39:02Z
 url: https://github.com/astral-sh/uv/issues/8516
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv tree: extra packages are listed as roots
@@ -79,10 +79,6 @@ That does look wrong, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-24 13:53_
-
----
-
-_Referenced in [astral-sh/uv#8532](../../astral-sh/uv/pulls/8532.md) on 2024-10-24 16:22_
 
 ---
 

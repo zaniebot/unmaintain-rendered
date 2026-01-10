@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T11:57:56Z
 updated_at: 2024-10-29T14:11:41Z
 url: https://github.com/astral-sh/uv/issues/8657
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Python cannot be found on unsupported architectures
@@ -80,10 +80,6 @@ _Label `uv python` added by @zanieb on 2024-10-29 13:30_
 _Comment by @zanieb on 2024-10-29 13:35_
 
 Thanks for the report! It seems fine to just add this to the list.
-
----
-
-_Referenced in [astral-sh/uv#8660](../../astral-sh/uv/pulls/8660.md) on 2024-10-29 13:40_
 
 ---
 

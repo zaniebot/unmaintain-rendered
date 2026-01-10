@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-26T04:42:03Z
 updated_at: 2024-12-27T11:06:11Z
 url: https://github.com/astral-sh/uv/issues/10165
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Project entry point and generated executable not working using Python version 3.7
@@ -121,9 +121,5 @@ Thanks all for your help, closing this issue.
 ---
 
 _Closed by @kevintuwsp on 2024-12-27 11:06_
-
----
-
-_Referenced in [loonghao/auroraview#111](../../loonghao/auroraview/pulls/111.md) on 2025-12-11 02:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T15:05:47Z
 updated_at: 2025-01-07T19:26:27Z
 url: https://github.com/astral-sh/uv/issues/9739
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Don't break on upgrades of externally-managed Pythons
@@ -128,9 +128,5 @@ _Renamed from "Support externally-managed Python upgrades" to "Don't break on up
 ---
 
 _Label `needs-mre` added by @zanieb on 2025-01-07 19:26_
-
----
-
-_Referenced in [astral-sh/uv#11048](../../astral-sh/uv/issues/11048.md) on 2025-01-29 01:22_
 
 ---

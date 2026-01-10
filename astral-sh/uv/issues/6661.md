@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-26T22:52:10Z
 updated_at: 2024-10-23T16:58:26Z
 url: https://github.com/astral-sh/uv/issues/6661
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uvx gimme-aws-creds` fails on Windows
@@ -90,16 +90,8 @@ Ah interesting. Thanks for the context. Does this work with `pipx`?
 
 ---
 
-_Referenced in [astral-sh/uv#6682](../../astral-sh/uv/issues/6682.md) on 2024-08-27 11:52_
-
----
-
 _Comment by @knowsuchagency on 2024-08-28 20:56_
 
 It works on Mac, but not Windows. That's actually true for both `pipx` and `uvx`
-
----
-
-_Referenced in [astral-sh/uv#8888](../../astral-sh/uv/issues/8888.md) on 2024-11-09 17:31_
 
 ---

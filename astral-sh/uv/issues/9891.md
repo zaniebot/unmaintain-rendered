@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T22:30:24Z
 updated_at: 2024-12-17T17:05:17Z
 url: https://github.com/astral-sh/uv/issues/9891
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Ranges include gaps for pre-release versions
@@ -26,10 +26,6 @@ we show several ranges for `anyio` because there are disallowed pre-release vers
 ---
 
 _Label `error messages` added by @zanieb on 2024-12-13 22:31_
-
----
-
-_Referenced in [astral-sh/uv#9944](../../astral-sh/uv/pulls/9944.md) on 2024-12-16 21:37_
 
 ---
 

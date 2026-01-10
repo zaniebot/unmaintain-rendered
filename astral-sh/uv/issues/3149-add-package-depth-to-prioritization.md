@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-19T23:17:29Z
 updated_at: 2024-11-07T14:49:30Z
 url: https://github.com/astral-sh/uv/issues/3149
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Add "package depth" to prioritization
@@ -27,14 +27,6 @@ _Label `performance` added by @charliermarsh on 2024-04-19 23:17_
 
 ---
 
-_Referenced in [astral-sh/uv#3148](../../astral-sh/uv/pulls/3148.md) on 2024-04-19 23:17_
-
----
-
-_Referenced in [astral-sh/uv#4372](../../astral-sh/uv/issues/4372.md) on 2024-06-18 07:27_
-
----
-
 _Comment by @wakamex on 2024-06-18 13:19_
 
 I'd love to see a slower "bleeding edge" resolution mode whose goal is to install latest versions as much as possible.  To do this reliably, you'd need to visit all direct dependencies and pull up the release date of their one-back version, in order to backtrack to the most recent.
@@ -44,10 +36,6 @@ It would be helpful for personal projects where my aim is to try out the latest 
 It might be useful more generally too, to avoid race-to-the-bottom backtracks. Basically switching from depth-first to breadth-might resolve faster and with a happier outcome of versions that work well together since they were released around the same time. 
 
 See #4372 for an example of dependency hell that is happily resolved with a reliable "most recent" trackback.
-
----
-
-_Referenced in [astral-sh/uv#6209](../../astral-sh/uv/issues/6209.md) on 2024-08-27 00:12_
 
 ---
 

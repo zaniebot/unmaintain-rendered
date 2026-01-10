@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-21T18:04:01Z
 updated_at: 2024-11-27T21:29:20Z
 url: https://github.com/astral-sh/uv/issues/9333
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Propose `--no-extra` Flag
@@ -71,10 +71,6 @@ _Label `enhancement` added by @charliermarsh on 2024-11-22 13:59_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-11-22 13:59_
-
----
-
-_Referenced in [astral-sh/uv#9387](../../astral-sh/uv/pulls/9387.md) on 2024-11-23 16:24_
 
 ---
 

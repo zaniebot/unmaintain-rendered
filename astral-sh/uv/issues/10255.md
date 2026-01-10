@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-31T16:47:45Z
 updated_at: 2025-01-01T14:21:44Z
 url: https://github.com/astral-sh/uv/issues/10255
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Bug: Circular dependencies at build-time cause hang without error
@@ -114,10 +114,6 @@ I think this is a regression as the build of `foo` using `bar` as a build requir
 
 ---
 
-_Referenced in [astral-sh/uv#10252](../../astral-sh/uv/issues/10252.md) on 2024-12-31 16:48_
-
----
-
 _Comment by @charliermarsh on 2024-12-31 17:11_
 
 Hmm. Why would this work, though? Even if we install `bar` from a wheel, we still have to install its requirements, which include `foo`. I think this should probably error due to a cycle (but not hang).
@@ -192,10 +188,6 @@ Okay yeah, once I re-publish to create the circular dependency, it deadlocks as 
 _Comment by @charliermarsh on 2025-01-01 01:13_
 
 Notably, `pypa/build` also fails here: `PIP_NO_BINARY=circular-one PIP_EXTRA_INDEX_URL=https://test.pypi.org/simple python3.13 -m build`.
-
----
-
-_Referenced in [astral-sh/uv#10258](../../astral-sh/uv/pulls/10258.md) on 2025-01-01 02:55_
 
 ---
 

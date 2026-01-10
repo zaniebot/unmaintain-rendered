@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T14:07:24Z
 updated_at: 2024-11-09T02:21:08Z
 url: https://github.com/astral-sh/uv/issues/8941
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Should `uv` graduate from 'beta' on PyPI?
@@ -24,14 +24,6 @@ The release announcement for 0.5.0 alludes to `uv`'s increasing maturity; maybe 
 Cf. `ruff` already having been classified as `5 - Production/Stable` for quite some time now.
 
 IME it's not a big issue, but it does on occasion raise some eyebrows: _'is it appropriate to cast our lot with a package that is marked as beta?'_
-
----
-
-_Referenced in [astral-sh/uv#8943](../../astral-sh/uv/pulls/8943.md) on 2024-11-08 14:43_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-11-08 21:08_
 
 ---
 

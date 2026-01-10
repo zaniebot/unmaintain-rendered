@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-18T23:50:18Z
 updated_at: 2024-12-22T13:57:37Z
 url: https://github.com/astral-sh/uv/issues/10012
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv.lock local cache path which causes sync fail when cache is empty
@@ -142,10 +142,6 @@ Thank you! Is there an alternative installation method to work around this issue
 _Comment by @charliermarsh on 2024-12-19 03:44_
 
 Unfortunately I think we just need to fix it. A long-shot option is that you could use URL sources for your pre-built wheels instead of path sources... That would probably work, but it's pretty inconvenient.
-
----
-
-_Referenced in [astral-sh/uv#10072](../../astral-sh/uv/pulls/10072.md) on 2024-12-21 04:10_
 
 ---
 

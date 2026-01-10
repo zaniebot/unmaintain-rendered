@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T11:30:57Z
 updated_at: 2024-12-19T16:54:46Z
 url: https://github.com/astral-sh/uv/issues/9968
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # new build backend - scripts data: script not executable in wheel
@@ -100,10 +100,6 @@ _Assigned to @konstin by @konstin on 2024-12-17 11:31_
 ---
 
 _Label `bug` added by @konstin on 2024-12-17 11:31_
-
----
-
-_Referenced in [astral-sh/uv#10027](../../astral-sh/uv/pulls/10027.md) on 2024-12-19 12:05_
 
 ---
 

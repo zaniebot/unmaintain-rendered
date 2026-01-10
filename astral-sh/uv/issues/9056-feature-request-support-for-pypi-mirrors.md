@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-12T13:08:49Z
 updated_at: 2024-11-13T05:16:14Z
 url: https://github.com/astral-sh/uv/issues/9056
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [Feature Request] Support for PyPI Mirrors
@@ -64,10 +64,6 @@ Supporting configurable PyPI mirrors in `uv.toml` would enhance the user experie
 
 ---
 
-_Referenced in [astral-sh/uv#9053](../../astral-sh/uv/issues/9053.md) on 2024-11-12 13:09_
-
----
-
 _Comment by @charliermarsh on 2024-11-12 14:55_
 
 I think this could be thought of as similar to #6349.
@@ -101,13 +97,5 @@ Closing in favor of [#6349](https://github.com/astral-sh/uv/issues/6349).
 ---
 
 _Closed by @liblaf on 2024-11-13 05:16_
-
----
-
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2025-07-04 16:21_
-
----
-
-_Referenced in [astral-sh/uv#15741](../../astral-sh/uv/issues/15741.md) on 2025-09-09 17:55_
 
 ---

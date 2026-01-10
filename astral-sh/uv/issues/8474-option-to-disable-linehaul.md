@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-22T19:14:20Z
 updated_at: 2024-11-04T19:37:14Z
 url: https://github.com/astral-sh/uv/issues/8474
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Option to disable linehaul
@@ -70,9 +70,5 @@ My network admins loosened their rules, so its not a requirement for my org anym
 ---
 
 _Closed by @eaubin on 2024-11-04 19:37_
-
----
-
-_Referenced in [astral-sh/uv#15464](../../astral-sh/uv/issues/15464.md) on 2025-08-22 22:21_
 
 ---

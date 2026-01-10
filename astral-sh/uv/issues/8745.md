@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-01T06:44:22Z
 updated_at: 2024-11-02T15:48:24Z
 url: https://github.com/astral-sh/uv/issues/8745
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv offers wrong Python when inside Docker with Rosetta in AMD linux on Mac ARM
@@ -93,10 +93,6 @@ error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/pytho
 ```
 
 I am not sure if I am installing uv wrong somehow or if I can do something to direct it to the right arch. Any help will be super appreciated, thank you!
-
----
-
-_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 07:01_
 
 ---
 

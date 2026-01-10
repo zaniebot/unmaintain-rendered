@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T13:10:48Z
 updated_at: 2024-11-05T15:00:13Z
 url: https://github.com/astral-sh/uv/issues/8828
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Default index in `uv.toml`
@@ -264,10 +264,6 @@ I can add a debug warning for that failure case. But what _are_ the permissions 
 
 ---
 
-_Referenced in [astral-sh/uv#8829](../../astral-sh/uv/pulls/8829.md) on 2024-11-05 14:39_
-
----
-
 _Comment by @fchareyr on 2024-11-05 14:44_
 
 Indeed, a warning in case of permission would be useful. I've modified the permission to align with other files in `/etc` and I now have the following error:
@@ -318,9 +314,5 @@ _Closed by @fchareyr on 2024-11-05 14:58_
 _Comment by @charliermarsh on 2024-11-05 15:00_
 
 No problem! (That's a TOML thing, it's short-hand for like... `index = [{ name = "internal", ... }, { name = "bloomberg", ... }]`.)
-
----
-
-_Referenced in [astral-sh/uv#9053](../../astral-sh/uv/issues/9053.md) on 2024-11-12 12:31_
 
 ---

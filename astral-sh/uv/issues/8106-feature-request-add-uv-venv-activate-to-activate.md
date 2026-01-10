@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-10T19:47:38Z
 updated_at: 2024-10-24T12:23:37Z
 url: https://github.com/astral-sh/uv/issues/8106
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [Feature Request] Add `uv venv --activate` to activate virtual environment after creation
@@ -92,10 +92,6 @@ This is also what [PDM went with](https://pdm-project.org/en/latest/usage/venv/#
 
 ---
 
-_Referenced in [astral-sh/uv#8118](../../astral-sh/uv/issues/8118.md) on 2024-10-11 14:51_
-
----
-
 _Comment by @Kilo59 on 2024-10-23 22:27_
 
 @zanieb 
@@ -113,21 +109,5 @@ Poetry is removing their `shell` command in the next major update. https://githu
 _Comment by @zanieb on 2024-10-24 12:23_
 
 See https://github.com/astral-sh/uv/issues/1910
-
----
-
-_Referenced in [astral-sh/uv#8715](../../astral-sh/uv/issues/8715.md) on 2024-10-31 04:04_
-
----
-
-_Referenced in [astral-sh/uv#9166](../../astral-sh/uv/issues/9166.md) on 2024-11-16 16:03_
-
----
-
-_Referenced in [astral-sh/uv#9603](../../astral-sh/uv/issues/9603.md) on 2024-12-03 11:22_
-
----
-
-_Referenced in [Coacher/vim-virtualenv#7](../../Coacher/vim-virtualenv/issues/7.md) on 2025-10-02 14:37_
 
 ---

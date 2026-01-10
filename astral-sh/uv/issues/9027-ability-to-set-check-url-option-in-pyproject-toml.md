@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-11T18:53:19Z
 updated_at: 2024-12-02T23:30:14Z
 url: https://github.com/astral-sh/uv/issues/9027
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Ability to set `--check-url` option in `pyproject.toml` or `uv.toml`
@@ -79,10 +79,6 @@ _Comment by @bruckner on 2024-11-11 19:51_
 @zanieb thanks for the super quick uptake. I like the suggestion to consolidate under the Index config, partly for reasons tangential to this issue. I use Google Artifact Registry and have to configure auth two distinct ways for read and write (username in the URL for reads, username via `--username` for writes). This was confusing to get working initially—would be really nice to consolidate all URLs and auth config under one localized umbrella for the Index.
 
 That said, a quick fix for this issue would be valuable pending any discussion planning required for something like the above.
-
----
-
-_Referenced in [astral-sh/uv#9032](../../astral-sh/uv/pulls/9032.md) on 2024-11-11 21:15_
 
 ---
 

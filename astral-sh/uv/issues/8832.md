@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T17:08:13Z
 updated_at: 2024-11-05T17:23:54Z
 url: https://github.com/astral-sh/uv/issues/8832
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv unable to download python due to corp proxy certificate
@@ -83,9 +83,5 @@ _Closed by @bouianpe on 2024-11-05 17:23_
 _Comment by @zanieb on 2024-11-05 17:23_
 
 No problem! I'd recommend putting that in a global configuration file if you're using corporate proxies.
-
----
-
-_Referenced in [astral-sh/uv#8161](../../astral-sh/uv/issues/8161.md) on 2024-11-07 10:27_
 
 ---

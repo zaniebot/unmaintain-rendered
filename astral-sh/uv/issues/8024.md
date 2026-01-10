@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T22:41:06Z
 updated_at: 2024-11-13T14:52:30Z
 url: https://github.com/astral-sh/uv/issues/8024
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support for multiple versions of the same package in different optional dependencies
@@ -75,14 +75,6 @@ _Label `duplicate` added by @zanieb on 2024-10-08 23:34_
 
 ---
 
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-09 18:11_
-
----
-
 _Closed by @BurntSushi on 2024-11-13 14:52_
-
----
-
-_Referenced in [astral-sh/uv#9120](../../astral-sh/uv/pulls/9120.md) on 2024-11-14 16:11_
 
 ---

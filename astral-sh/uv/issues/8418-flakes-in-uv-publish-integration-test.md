@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T16:38:37Z
 updated_at: 2024-11-03T20:56:21Z
 url: https://github.com/astral-sh/uv/issues/8418
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Flakes in `uv publish` integration test
@@ -221,10 +221,6 @@ _Label `testing` added by @zanieb on 2024-10-21 16:38_
 
 ---
 
-_Referenced in [astral-sh/uv#8538](../../astral-sh/uv/pulls/8538.md) on 2024-10-24 18:26_
-
----
-
 _Comment by @zanieb on 2024-10-30 15:19_
 
 ```
@@ -329,14 +325,6 @@ Error: Process completed with exit code 1.
 _Comment by @konstin on 2024-10-31 10:55_
 
 This should be fixed by https://github.com/astral-sh/uv/pull/8531
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 19:11_
-
----
-
-_Referenced in [astral-sh/uv#8784](../../astral-sh/uv/pulls/8784.md) on 2024-11-03 20:46_
 
 ---
 

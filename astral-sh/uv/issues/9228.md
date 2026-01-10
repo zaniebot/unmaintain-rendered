@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-19T14:56:57Z
 updated_at: 2024-12-05T22:30:26Z
 url: https://github.com/astral-sh/uv/issues/9228
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv add onnxruntime` currently fails on MacOS
@@ -47,10 +47,6 @@ Happy to help debugging this, I'm a massive uv fan!
 
 ---
 
-_Referenced in [google/magika#798](../../google/magika/issues/798.md) on 2024-11-19 14:57_
-
----
-
 _Comment by @charliermarsh on 2024-11-19 15:10_
 
 Ah yeah. This is working as intended right now. `uv add` will resolve for all platforms. But if a package is published without a source distribution, and the set of wheels doesn't cover all platforms, we won't know that when resolving. (In general, the set of wheels will _never_ cover all platforms, since the set of platforms isn't fixed, so we basically assume that the wheels cover all platforms as long as they include the Python versions we care about.) I suggest adding a constraint for now, though the most relevant issue to track would be #5182.
@@ -77,17 +73,9 @@ Thanks for the very fast reply, I now understand the challenge. I will track the
 
 ---
 
-_Referenced in [google/magika#801](../../google/magika/issues/801.md) on 2024-11-19 17:29_
-
----
-
 _Comment by @charliermarsh on 2024-11-19 18:47_
 
 Thanks @reyammer. I promise it's a hard problem :joy: But I'd like to make the situation better here.
-
----
-
-_Referenced in [crewAIInc/crewAI#1599](../../crewAIInc/crewAI/issues/1599.md) on 2024-11-20 09:59_
 
 ---
 
@@ -105,21 +93,5 @@ error: Distribution `onnxruntime==1.20.1 @ registry+https://pypi.org/simple` can
 ```
 
 @reyammer I've kept the version at `onnxruntime==1.19.2` to fix my problem. FWIW, I'm using python `3.12` in my app.
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
-
----
-
-_Referenced in [crewAIInc/crewAI-tools#136](../../crewAIInc/crewAI-tools/issues/136.md) on 2025-01-01 03:48_
-
----
-
-_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
-
----
-
-_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
 
 ---

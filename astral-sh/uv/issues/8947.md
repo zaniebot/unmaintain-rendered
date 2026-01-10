@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T15:40:58Z
 updated_at: 2024-11-15T09:52:11Z
 url: https://github.com/astral-sh/uv/issues/8947
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Uv fails to activate environment in folder with apostrophe
@@ -87,18 +87,10 @@ That works in at least bash and dash
 
 ---
 
-_Referenced in [astral-sh/uv#8984](../../astral-sh/uv/pulls/8984.md) on 2024-11-10 10:43_
-
----
-
 _Closed by @konstin on 2024-11-15 09:52_
 
 ---
 
 _Closed by @konstin on 2024-11-15 09:52_
-
----
-
-_Referenced in [astral-sh/uv#9424](../../astral-sh/uv/issues/9424.md) on 2024-11-27 12:42_
 
 ---

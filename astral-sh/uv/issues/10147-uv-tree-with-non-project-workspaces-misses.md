@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-24T19:25:55Z
 updated_at: 2024-12-24T23:35:00Z
 url: https://github.com/astral-sh/uv/issues/10147
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv tree` with non-`[project]` workspaces misses dependency groups
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2024-12-24 19:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-24 19:25_
-
----
-
-_Referenced in [astral-sh/uv#10149](../../astral-sh/uv/pulls/10149.md) on 2024-12-24 23:22_
 
 ---
 

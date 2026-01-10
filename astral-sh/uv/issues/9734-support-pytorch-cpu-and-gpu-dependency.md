@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-09T09:40:34Z
 updated_at: 2024-12-27T16:43:31Z
 url: https://github.com/astral-sh/uv/issues/9734
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Support PyTorch CPU and GPU dependency
@@ -150,14 +150,6 @@ Thank you @harteros for the pointer :)
 ---
 
 _Closed by @jbcdnr on 2024-12-09 11:46_
-
----
-
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-09 14:13_
-
----
-
-_Referenced in [astral-sh/uv#9735](../../astral-sh/uv/issues/9735.md) on 2024-12-12 09:12_
 
 ---
 

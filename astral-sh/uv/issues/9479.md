@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-27T17:28:46Z
 updated_at: 2024-11-27T20:10:40Z
 url: https://github.com/astral-sh/uv/issues/9479
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Improve error message for workspace members with non-workspace sources
@@ -58,10 +58,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-27 17:28_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-11-27 17:28_
-
----
-
-_Referenced in [astral-sh/uv#9482](../../astral-sh/uv/pulls/9482.md) on 2024-11-27 19:35_
 
 ---
 

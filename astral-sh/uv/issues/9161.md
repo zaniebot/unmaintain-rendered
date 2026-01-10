@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T03:30:45Z
 updated_at: 2024-11-17T05:21:17Z
 url: https://github.com/astral-sh/uv/issues/9161
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # support dependency groups with different python versions
@@ -50,10 +50,6 @@ it would be nice if uv supported something similar. ideally two separate lockfil
 dev = ">=3.9"
 old = ">=3.8"
 ```
-
----
-
-_Referenced in [DetachHead/basedpyright#813](../../DetachHead/basedpyright/pulls/813.md) on 2024-11-16 03:32_
 
 ---
 

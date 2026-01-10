@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T20:22:01Z
 updated_at: 2024-11-20T00:08:01Z
 url: https://github.com/astral-sh/uv/issues/4402
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # `UV_INDEX_URL` with AWS CodeArtifact index consistently fails on large packages
@@ -123,10 +123,6 @@ _Label `bug` added by @zanieb on 2024-06-18 20:56_
 ---
 
 _Label `network` added by @zanieb on 2024-06-18 20:56_
-
----
-
-_Referenced in [materialsproject/pymatgen#3826](../../materialsproject/pymatgen/pulls/3826.md) on 2024-07-13 13:19_
 
 ---
 

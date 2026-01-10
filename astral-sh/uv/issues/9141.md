@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-15T04:42:27Z
 updated_at: 2024-11-16T04:03:40Z
 url: https://github.com/astral-sh/uv/issues/9141
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Feature request: add --no-deps support for TOML head dependencies section
@@ -73,10 +73,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-16 03:46_
 ---
 
 _Label `help wanted` removed by @charliermarsh on 2024-11-16 03:46_
-
----
-
-_Referenced in [astral-sh/uv#9162](../../astral-sh/uv/pulls/9162.md) on 2024-11-16 03:50_
 
 ---
 

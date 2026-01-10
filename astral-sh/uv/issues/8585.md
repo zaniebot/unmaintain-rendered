@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-26T04:14:54Z
 updated_at: 2024-10-28T20:46:27Z
 url: https://github.com/astral-sh/uv/issues/8585
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Bumping minimum version of a dependency
@@ -67,9 +67,5 @@ Or a slightly more out there idea, consider a request like https://github.com/as
 3. A==lowest
 
 Just some brainstorming and a couple of scattered thoughts.
-
----
-
-_Referenced in [astral-sh/uv#7515](../../astral-sh/uv/issues/7515.md) on 2025-10-17 00:48_
 
 ---

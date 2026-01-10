@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T12:33:28Z
 updated_at: 2024-11-28T17:40:01Z
 url: https://github.com/astral-sh/uv/issues/9499
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Platform markers are ignored when syncing optional self-dependencies
@@ -87,14 +87,6 @@ _Comment by @charliermarsh on 2024-11-28 16:46_
 
 ---
 
-_Referenced in [astral-sh/uv#9509](../../astral-sh/uv/pulls/9509.md) on 2024-11-28 17:28_
-
----
-
 _Closed by @charliermarsh on 2024-11-28 17:40_
-
----
-
-_Referenced in [astral-sh/uv#9530](../../astral-sh/uv/issues/9530.md) on 2024-11-29 19:26_
 
 ---

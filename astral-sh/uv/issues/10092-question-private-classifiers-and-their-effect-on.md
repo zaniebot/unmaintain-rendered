@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-22T13:27:07Z
 updated_at: 2024-12-23T09:10:32Z
 url: https://github.com/astral-sh/uv/issues/10092
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # question: Private classifiers and their effect on alternate registries
@@ -28,10 +28,6 @@ That's interesting! I am now curious to know if you actually checked common alte
 I have found https://github.com/astral-sh/uv/issues/8214, in which I also posted my use-case, though didn't want to derail the conversation for this specific question.
 
 You have great documentation, thank you for it!
-
----
-
-_Referenced in [astral-sh/uv#8214](../../astral-sh/uv/issues/8214.md) on 2024-12-22 13:33_
 
 ---
 

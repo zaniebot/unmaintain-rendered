@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-10T00:16:41Z
 updated_at: 2024-12-10T02:52:03Z
 url: https://github.com/astral-sh/uv/issues/9757
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv run` fail to run `pyw` scripts on Mac (and probably Linux) with a confusing message
@@ -39,10 +39,6 @@ After renaming the file to `.py`, everything worked (it's an impressive demo!).
 _Comment by @zanieb on 2024-12-10 00:51_
 
 Ah `pyw` is "Windows only", we can improve the error message here. Or.. just invoke the `python` interpreter (which I think could be correct?)
-
----
-
-_Referenced in [astral-sh/uv#9759](../../astral-sh/uv/pulls/9759.md) on 2024-12-10 00:57_
 
 ---
 

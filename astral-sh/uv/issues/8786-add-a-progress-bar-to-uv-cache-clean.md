@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-04T00:28:39Z
 updated_at: 2024-11-06T16:43:44Z
 url: https://github.com/astral-sh/uv/issues/8786
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add a progress bar to `uv cache clean`
@@ -29,10 +29,6 @@ _Label `help wanted` added by @charliermarsh on 2024-11-04 00:28_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-11-04 00:28_
-
----
-
-_Referenced in [astral-sh/uv#8857](../../astral-sh/uv/pulls/8857.md) on 2024-11-06 08:53_
 
 ---
 

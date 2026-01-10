@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T11:27:52Z
 updated_at: 2024-11-07T20:29:56Z
 url: https://github.com/astral-sh/uv/issues/8173
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # FORCE_COLOR wins over `--color never`
@@ -44,14 +44,6 @@ I ran into this when converting a legacy CI pipeline to use `UV`. Piping the `uv
 ---
 
 _Label `bug` added by @zanieb on 2024-10-14 13:19_
-
----
-
-_Referenced in [astral-sh/uv#8183](../../astral-sh/uv/pulls/8183.md) on 2024-10-14 18:28_
-
----
-
-_Referenced in [astral-sh/uv#8215](../../astral-sh/uv/pulls/8215.md) on 2024-10-15 13:11_
 
 ---
 

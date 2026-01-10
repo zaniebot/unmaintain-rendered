@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T14:44:34Z
 updated_at: 2024-12-17T11:08:50Z
 url: https://github.com/astral-sh/uv/issues/5600
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV fails to install packages from some private index hosted on artifactory since version 0.1.36
@@ -78,10 +78,6 @@ Thanks for the explanation zanieb. Didn't get quite understand that part before.
 > I'm curious what particular artifactory configuration causes this 500 error 😅
 
 You and me both 😄 . Currently trying to get some info about that from jfrog.
-
----
-
-_Referenced in [astral-sh/uv#6610](../../astral-sh/uv/issues/6610.md) on 2024-08-25 15:09_
 
 ---
 

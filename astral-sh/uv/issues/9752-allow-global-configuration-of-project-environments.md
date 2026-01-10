@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T21:58:47Z
 updated_at: 2025-01-07T19:24:41Z
 url: https://github.com/astral-sh/uv/issues/9752
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # allow global configuration of project environments
@@ -61,9 +61,5 @@ We could have a global default for `uv init`.
 ---
 
 _Label `configuration` added by @zanieb on 2025-01-07 19:24_
-
----
-
-_Referenced in [ansible/ansible-lint#4348](../../ansible/ansible-lint/issues/4348.md) on 2025-01-12 07:10_
 
 ---

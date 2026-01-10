@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T23:00:54Z
 updated_at: 2024-11-25T23:00:59Z
 url: https://github.com/astral-sh/uv/issues/9431
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Consider renaming `UV_SYSTEM_PYTHON` to `UV_PIP_SYSTEM_PYTHON`
@@ -24,9 +24,5 @@ It's confusing to people that this doesn't apply to the top-level interface, it'
 ---
 
 _Label `breaking` added by @zanieb on 2024-11-25 23:00_
-
----
-
-_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-04-20 11:51_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-03T14:26:31Z
 updated_at: 2024-12-08T04:20:26Z
 url: https://github.com/astral-sh/uv/issues/9606
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Translations of the documentation
@@ -22,10 +22,6 @@ _Issue opened by @zanieb on 2024-12-03 14:26_
 It'd be nice to have internationalized documentation with support for multiple languages as requested in https://github.com/astral-sh/uv/issues/5605#issuecomment-2495792315
 
 It's unclear if this is feasible for us given our rapid pace of development.
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-12-03 14:26_
 
 ---
 

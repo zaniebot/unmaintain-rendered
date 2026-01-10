@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-05T05:46:05Z
 updated_at: 2025-01-04T02:42:19Z
 url: https://github.com/astral-sh/uv/issues/9655
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Rye (with uv) succeeds but uv (standalone) fails to install pytorch aarch64
@@ -1390,10 +1390,6 @@ Thanks again!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-26 19:47_
-
----
-
-_Referenced in [astral-sh/uv#10179](../../astral-sh/uv/pulls/10179.md) on 2024-12-26 19:48_
 
 ---
 

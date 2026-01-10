@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T23:22:35Z
 updated_at: 2024-11-21T03:26:44Z
 url: https://github.com/astral-sh/uv/issues/9295
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Configuring accelerators with optional dependencies and PyPI
@@ -146,18 +146,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-21 01:08_
 
 ---
 
-_Referenced in [astral-sh/uv#9302](../../astral-sh/uv/pulls/9302.md) on 2024-11-21 01:49_
-
----
-
 _Closed by @charliermarsh on 2024-11-21 03:26_
 
 ---
 
 _Closed by @charliermarsh on 2024-11-21 03:26_
-
----
-
-_Referenced in [astral-sh/uv#9310](../../astral-sh/uv/issues/9310.md) on 2024-11-21 11:35_
 
 ---

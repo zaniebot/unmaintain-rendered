@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T23:36:14Z
 updated_at: 2024-12-10T19:58:40Z
 url: https://github.com/astral-sh/uv/issues/9296
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Repeated markers in `resolution-markers`
@@ -151,17 +151,9 @@ _Comment by @charliermarsh on 2024-12-07 00:51_
 
 ---
 
-_Referenced in [astral-sh/uv#9700](../../astral-sh/uv/issues/9700.md) on 2024-12-07 00:51_
-
----
-
 _Comment by @BurntSushi on 2024-12-09 13:28_
 
 I don't think there are any specific changes. It would, I believe, be pretty straight-forward to include conflict markers in the lock file's `resolution-markers` now, but I don't know what the full implications of that are. I don't think we have any cases where conflict markers are required in that context.
-
----
-
-_Referenced in [astral-sh/uv#9738](../../astral-sh/uv/pulls/9738.md) on 2024-12-09 13:29_
 
 ---
 
@@ -172,10 +164,6 @@ _Assigned to @BurntSushi by @BurntSushi on 2024-12-09 16:27_
 _Comment by @BurntSushi on 2024-12-10 15:10_
 
 I've thought about this, and while I'm not 100% certain about it, I can't think of a case where we need to record the conflict markers in `resolution-markers`. So I'm going to submit a PR that just de-duplicates them. At the very least, this can't be _more_ wrong than the status quo.
-
----
-
-_Referenced in [astral-sh/uv#9780](../../astral-sh/uv/pulls/9780.md) on 2024-12-10 18:13_
 
 ---
 

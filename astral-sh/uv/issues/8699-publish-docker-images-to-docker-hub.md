@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-30T13:45:29Z
 updated_at: 2024-10-30T14:47:17Z
 url: https://github.com/astral-sh/uv/issues/8699
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Publish Docker images to Docker Hub
@@ -42,13 +42,5 @@ Seems reasonable, thanks!
 ---
 
 _Closed by @gaby on 2024-10-30 14:47_
-
----
-
-_Referenced in [astral-sh/uv#12679](../../astral-sh/uv/issues/12679.md) on 2025-04-05 04:01_
-
----
-
-_Referenced in [astral-sh/uv#14088](../../astral-sh/uv/pulls/14088.md) on 2025-06-17 01:25_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T17:35:16Z
 updated_at: 2024-10-31T19:19:01Z
 url: https://github.com/astral-sh/uv/issues/8731
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # File paths of ZIP contents are not sanitized
@@ -55,10 +55,6 @@ _Label `security` added by @charliermarsh on 2024-10-31 17:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-31 17:40_
-
----
-
-_Referenced in [astral-sh/uv#8732](../../astral-sh/uv/pulls/8732.md) on 2024-10-31 17:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T15:51:31Z
 updated_at: 2024-11-18T01:15:50Z
 url: https://github.com/astral-sh/uv/issues/9166
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # simplify venv activation
@@ -39,9 +39,5 @@ _Label `duplicate` added by @zanieb on 2024-11-16 16:04_
 ---
 
 _Closed by @charliermarsh on 2024-11-18 01:15_
-
----
-
-_Referenced in [astral-sh/uv#9603](../../astral-sh/uv/issues/9603.md) on 2024-12-03 11:22_
 
 ---

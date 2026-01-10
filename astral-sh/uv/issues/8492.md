@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-23T09:03:41Z
 updated_at: 2024-12-13T20:33:47Z
 url: https://github.com/astral-sh/uv/issues/8492
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Fork when wheels only support a specific range
@@ -174,10 +174,6 @@ I would like to second this ☝️
 
 ---
 
-_Referenced in [MIT-LCP/wfdb-python#511](../../MIT-LCP/wfdb-python/pulls/511.md) on 2024-10-24 19:51_
-
----
-
 _Label `question` removed by @konstin on 2024-10-25 08:19_
 
 ---
@@ -198,10 +194,6 @@ Pick a numpy version, analyse the range of https://pypi.org/project/numpy/#files
 
 ---
 
-_Referenced in [astral-sh/uv#7190](../../astral-sh/uv/issues/7190.md) on 2024-10-29 17:02_
-
----
-
 _Comment by @konstin on 2024-10-29 17:04_
 
 Another possible solution would be https://github.com/astral-sh/uv/issues/7190
@@ -219,22 +211,6 @@ https://discuss.python.org/t/requires-python-upper-limits/12663 was a discussion
 _Comment by @cbrnr on 2024-10-29 18:09_
 
 Yes, I think #7190 would be a great default. In my example at the top, I'm not setting an upper bound at all.
-
----
-
-_Referenced in [astral-sh/uv#8686](../../astral-sh/uv/pulls/8686.md) on 2024-10-29 21:48_
-
----
-
-_Referenced in [google/magika#591](../../google/magika/pulls/591.md) on 2024-10-30 02:55_
-
----
-
-_Referenced in [astral-sh/uv#8978](../../astral-sh/uv/issues/8978.md) on 2024-11-10 10:42_
-
----
-
-_Referenced in [astral-sh/uv#9211](../../astral-sh/uv/issues/9211.md) on 2024-11-18 22:23_
 
 ---
 
@@ -519,14 +495,6 @@ I'd like to curtail further discussion about the motivation for this feature. I 
 
 ---
 
-_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 10:05_
-
----
-
-_Referenced in [astral-sh/uv#9827](../../astral-sh/uv/pulls/9827.md) on 2024-12-11 23:15_
-
----
-
 _Comment by @charliermarsh on 2024-12-11 23:19_
 
 Ok, I believe I have this working at https://github.com/astral-sh/uv/pull/9827.
@@ -542,9 +510,5 @@ _Closed by @charliermarsh on 2024-12-13 20:33_
 ---
 
 _Closed by @charliermarsh on 2024-12-13 20:33_
-
----
-
-_Referenced in [astral-sh/uv#12060](../../astral-sh/uv/issues/12060.md) on 2025-09-18 10:09_
 
 ---

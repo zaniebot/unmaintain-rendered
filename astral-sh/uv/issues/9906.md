@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-15T07:23:18Z
 updated_at: 2024-12-16T22:33:24Z
 url: https://github.com/astral-sh/uv/issues/9906
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # How to handle named environments with different python versions?
@@ -103,13 +103,5 @@ _Comment by @axiomofjoy on 2024-12-16 22:33_
 > Yeah but the same could be said for, e.g., the combination of all dependency groups / extras, which is 2^N environments. I think we need more generalized solutions to these things rather than just creating and storing a bunch of them indefinitely. For example, a uv integration with your IDE could just create the desired environment on request.
 
 I buy that. If it's fast and doesn't require a lot of manual commands to switch between configurations, I am all for a declarative approach.
-
----
-
-_Referenced in [astral-sh/uv#10211](../../astral-sh/uv/issues/10211.md) on 2024-12-28 05:52_
-
----
-
-_Referenced in [astral-sh/uv#11124](../../astral-sh/uv/issues/11124.md) on 2025-01-31 02:51_
 
 ---

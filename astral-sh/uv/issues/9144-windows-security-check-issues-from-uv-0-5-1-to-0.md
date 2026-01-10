@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-15T09:01:34Z
 updated_at: 2024-12-10T16:47:03Z
 url: https://github.com/astral-sh/uv/issues/9144
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Windows security check issues from UV 0.5.1 to 0.5.2.
@@ -70,10 +70,6 @@ Yeah, it's a little surprising. I think it's even worse that it fails (probably 
 
 ---
 
-_Referenced in [astral-sh/uv#8963](../../astral-sh/uv/pulls/8963.md) on 2024-11-15 18:21_
-
----
-
 _Comment by @charliermarsh on 2024-11-15 19:16_
 
 @mitsuhiko -- Any opinion here?
@@ -81,14 +77,6 @@ _Comment by @charliermarsh on 2024-11-15 19:16_
 ---
 
 _Label `windows` added by @charliermarsh on 2024-11-16 03:05_
-
----
-
-_Referenced in [microsoft/winget-pkgs#191664](../../microsoft/winget-pkgs/pulls/191664.md) on 2024-11-16 16:05_
-
----
-
-_Referenced in [microsoft/winget-pkgs#191661](../../microsoft/winget-pkgs/issues/191661.md) on 2024-11-18 06:15_
 
 ---
 
@@ -126,9 +114,5 @@ I think we can close this issue for now. Since the x64 versions of winget 0.5.1 
 ---
 
 _Closed by @zanieb on 2024-12-10 16:47_
-
----
-
-_Referenced in [astral-sh/uv#10079](../../astral-sh/uv/issues/10079.md) on 2024-12-21 16:32_
 
 ---

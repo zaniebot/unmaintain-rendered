@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T16:30:56Z
 updated_at: 2024-11-06T16:40:25Z
 url: https://github.com/astral-sh/uv/issues/8866
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv lock` does not respect dynamic versions
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-06 16:30_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-06 16:30_
-
----
-
-_Referenced in [astral-sh/uv#8867](../../astral-sh/uv/pulls/8867.md) on 2024-11-06 16:31_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T15:07:53Z
 updated_at: 2024-10-28T09:16:36Z
 url: https://github.com/astral-sh/uv/issues/6691
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Deadlock in `uv pip install` with git links
@@ -143,10 +143,6 @@ I found the bug using your reproduction! Thanks. We'll investigate a fix...
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-08-28 22:21_
-
----
-
-_Referenced in [astral-sh/uv#6790](../../astral-sh/uv/pulls/6790.md) on 2024-08-29 04:20_
 
 ---
 

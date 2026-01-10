@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-09T09:33:07Z
 updated_at: 2024-11-10T13:56:36Z
 url: https://github.com/astral-sh/uv/issues/8965
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV Environment Management Tool Confuses Package Paths Across Environments
@@ -121,9 +121,5 @@ _Comment by @FishAlchemist on 2024-11-10 13:56_
 > It’s an intentional difference. If you’re modifying a package, you should likely update the version. If you’re developing, you’re probably looking for an editable install which updates alongside the source without a need to re-install.
 
 @charliermarsh Have you considered adding this to https://docs.astral.sh/uv/pip/compatibility/?
-
----
-
-_Referenced in [astral-sh/uv#9019](../../astral-sh/uv/pulls/9019.md) on 2024-11-11 16:07_
 
 ---

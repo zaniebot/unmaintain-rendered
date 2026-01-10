@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-08T10:42:33Z
 updated_at: 2024-11-04T18:09:42Z
 url: https://github.com/astral-sh/uv/issues/7999
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Request: Add system-site-packages using uv add --script
@@ -69,13 +69,5 @@ related: https://github.com/astral-sh/uv/issues/1483
 _Comment by @jbcpollak on 2024-11-04 18:09_
 
 More generally, uv will dynamically make a venv if one is needed for certain commands - is it possible to set an environment variable or something so that whenever `uv` needs a venv, it will use `--system-site-packages`?
-
----
-
-_Referenced in [astral-sh/uv#9996](../../astral-sh/uv/issues/9996.md) on 2024-12-18 14:56_
-
----
-
-_Referenced in [LosFuzzys/LosTemplates#114](../../LosFuzzys/LosTemplates/issues/114.md) on 2025-05-14 17:06_
 
 ---

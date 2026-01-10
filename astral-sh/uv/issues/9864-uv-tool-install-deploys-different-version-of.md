@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T09:02:31Z
 updated_at: 2024-12-16T20:58:36Z
 url: https://github.com/astral-sh/uv/issues/9864
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv tool install` deploys different version of package when installing an extra
@@ -294,10 +294,6 @@ Installed 1 executable: mne
 ```
 
 I assume it's more of a packaging problem, then, instead of a `uv` issue per se?
-
----
-
-_Referenced in [mne-tools/mne-python#13026](../../mne-tools/mne-python/issues/13026.md) on 2024-12-13 10:19_
 
 ---
 

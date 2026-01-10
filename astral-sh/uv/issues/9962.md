@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T08:42:57Z
 updated_at: 2024-12-17T13:47:35Z
 url: https://github.com/astral-sh/uv/issues/9962
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # "Permission denied" when running uv in docker + Debian bookworm
@@ -114,9 +114,5 @@ _Closed by @torarvid on 2024-12-17 13:46_
 ---
 
 _Label `question` added by @konstin on 2024-12-17 13:47_
-
----
-
-_Referenced in [sul-dlss/rialto-airflow#558](../../sul-dlss/rialto-airflow/pulls/558.md) on 2025-09-12 00:42_
 
 ---

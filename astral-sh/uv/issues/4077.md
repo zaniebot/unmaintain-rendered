@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-05T21:05:12Z
 updated_at: 2024-12-12T23:40:17Z
 url: https://github.com/astral-sh/uv/issues/4077
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Native TLS option fails on corporate laptop.
@@ -363,9 +363,5 @@ Bumping since the devs of ```rustls-native-certs``` don't plan to fix this in fa
 _Comment by @zanieb on 2024-12-12 23:40_
 
 @gdebrun2 Can you open a new specific issue with a request instead of bumping?
-
----
-
-_Referenced in [astral-sh/uv#16474](../../astral-sh/uv/issues/16474.md) on 2025-10-27 21:34_
 
 ---

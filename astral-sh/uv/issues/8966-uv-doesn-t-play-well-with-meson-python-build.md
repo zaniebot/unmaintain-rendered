@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-09T11:39:11Z
 updated_at: 2024-11-10T00:13:02Z
 url: https://github.com/astral-sh/uv/issues/8966
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv doesn't play well with meson-python build backend and pytest
@@ -579,21 +579,5 @@ uv tool install 'git+https://github.com/bluss/sysconfigpatcher'
 sysconfigpatcher $HOME/.local/share/uv/python/cpython-3.9.20-linux-x86_64-gnu
 uv pip install dbus-python
 ```
-
----
-
-_Referenced in [astral-sh/uv#9347](../../astral-sh/uv/issues/9347.md) on 2024-11-23 02:06_
-
----
-
-_Referenced in [astral-sh/uv#9548](../../astral-sh/uv/issues/9548.md) on 2024-12-01 08:16_
-
----
-
-_Referenced in [astral-sh/uv#9580](../../astral-sh/uv/issues/9580.md) on 2024-12-02 18:43_
-
----
-
-_Referenced in [astropy/astropy#17760](../../astropy/astropy/issues/17760.md) on 2025-02-13 07:29_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-26T07:33:20Z
 updated_at: 2024-12-26T18:19:37Z
 url: https://github.com/astral-sh/uv/issues/10167
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally.
@@ -116,10 +116,6 @@ It makes sense that it wouldn't fail when you had a static version, because ther
 
 I just don't know that there's anything we can do here if DNS is failing on the machine? It sounds like pre-commit.ci doesn't allow network access on the free tier: https://github.com/pre-commit-ci/issues/issues/80 / https://github.com/pre-commit-ci/issues/issues/47#issuecomment-804481763.
 
-
----
-
-_Referenced in [astral-sh/uv#10176](../../astral-sh/uv/issues/10176.md) on 2024-12-26 17:58_
 
 ---
 

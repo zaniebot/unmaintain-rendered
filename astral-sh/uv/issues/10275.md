@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-02T16:30:37Z
 updated_at: 2025-01-02T17:01:43Z
 url: https://github.com/astral-sh/uv/issues/10275
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # thread 'uv-resolver' panicked - The channel closed unexpectedly
@@ -28,10 +28,6 @@ _Issue opened by @gaborbernat on 2025-01-02 16:30_
 ```
 
 Is happening in Docker (Linux) only,  somehow on macOS does not happen. Started with `0.5.12`.
-
----
-
-_Referenced in [astral-sh/uv#10274](../../astral-sh/uv/pulls/10274.md) on 2025-01-02 16:30_
 
 ---
 

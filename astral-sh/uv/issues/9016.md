@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T13:24:28Z
 updated_at: 2024-11-11T19:02:38Z
 url: https://github.com/astral-sh/uv/issues/9016
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv sync --locked --no-build --no-install-project` fails.
@@ -54,10 +54,6 @@ Does `uv sync --frozen --no-build --no-install-project` work?
 _Comment by @heckad on 2024-11-11 18:23_
 
 Yes, it does
-
----
-
-_Referenced in [astral-sh/uv#9024](../../astral-sh/uv/pulls/9024.md) on 2024-11-11 18:38_
 
 ---
 

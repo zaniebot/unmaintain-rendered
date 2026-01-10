@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T09:07:02Z
 updated_at: 2024-12-06T16:13:04Z
 url: https://github.com/astral-sh/uv/issues/7538
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # "uv run" runs resolve too much
@@ -250,10 +250,6 @@ I think the user experience goes both ways, I found it confusing that once I've 
 
 But I'm sure some users may feel the opposite. 
 
-
----
-
-_Referenced in [astral-sh/uv#9688](../../astral-sh/uv/issues/9688.md) on 2024-12-06 16:12_
 
 ---
 

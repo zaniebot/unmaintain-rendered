@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-21T05:03:00Z
 updated_at: 2024-12-11T22:12:14Z
 url: https://github.com/astral-sh/uv/issues/1795
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Should preserve symlink to specified python interpreter
@@ -81,10 +81,6 @@ We need to resolve symlinks for the caching, but i think we can use the resolved
 
 ---
 
-_Referenced in [astral-sh/uv#1791](../../astral-sh/uv/issues/1791.md) on 2024-02-21 11:36_
-
----
-
 _Label `bug` added by @zanieb on 2024-02-21 17:28_
 
 ---
@@ -102,10 +98,6 @@ This is related to a few other issues, but note that virtualenv (on `main`) also
 _Comment by @charliermarsh on 2024-03-07 21:45_
 
 For the future: similar to https://github.com/astral-sh/uv/issues/1640. Need to decide if we want to preserve symlinks in these various cases.
-
----
-
-_Referenced in [astral-sh/uv#2327](../../astral-sh/uv/issues/2327.md) on 2024-03-10 06:46_
 
 ---
 
@@ -171,10 +163,6 @@ However, `virtualenv` does not seem to do this.
 
 ---
 
-_Referenced in [astral-sh/uv#3060](../../astral-sh/uv/issues/3060.md) on 2024-04-16 13:13_
-
----
-
 _Comment by @CharString on 2024-05-13 11:03_
 
 I this is how it's supposed to work, then what's the proposed workflow to upgrade, say, 3.9.18 to 3.9.19 and repair all my venvs that I created to use 3.9? freeze, rm, venv, sync?
@@ -196,18 +184,6 @@ _Comment by @charliermarsh on 2024-05-13 14:15_
 _Comment by @CharString on 2024-05-13 17:55_
 
 Hmmm, right. Then maybe the correct thing would be the addition of some `venv rebuild` command, the way `pipx` has the `reinstall` and `reinstall-all`.
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-05-14 14:17_
-
----
-
-_Referenced in [astral-sh/uv#4450](../../astral-sh/uv/issues/4450.md) on 2024-06-23 17:20_
-
----
-
-_Referenced in [astral-sh/uv#2831](../../astral-sh/uv/issues/2831.md) on 2024-06-25 11:58_
 
 ---
 
@@ -242,25 +218,13 @@ The first one fairly clearly does _not_ care about patch releases, and arguably 
 
 ---
 
-_Referenced in [astral-sh/uv#8217](../../astral-sh/uv/issues/8217.md) on 2024-10-15 13:44_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-21 20:16_
-
----
-
-_Referenced in [astral-sh/uv#8433](../../astral-sh/uv/pulls/8433.md) on 2024-10-22 00:16_
 
 ---
 
 _Comment by @charliermarsh on 2024-10-22 00:20_
 
 PR here: https://github.com/astral-sh/uv/pull/8433
-
----
-
-_Referenced in [astral-sh/uv#8481](../../astral-sh/uv/pulls/8481.md) on 2024-10-22 23:16_
 
 ---
 

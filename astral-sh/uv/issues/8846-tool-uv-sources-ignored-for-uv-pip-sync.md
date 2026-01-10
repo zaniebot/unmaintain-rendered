@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-05T21:53:46Z
 updated_at: 2024-11-05T22:00:50Z
 url: https://github.com/astral-sh/uv/issues/8846
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `tool.uv.sources` ignored for `uv pip sync`
@@ -120,9 +120,5 @@ Ah - does that mean that the `uv pip sync` interface completely ignores `tool.uv
 If so, I found this hard to find in the docs and the `--no-sources` flag being available threw me off.
 
 My thinking is that it would still be possible for `uv pip sync` to use the sources information to supplement the requirements file being synced, although I haven't thought about it in detail.
-
----
-
-_Referenced in [tox-dev/tox-uv#126](../../tox-dev/tox-uv/issues/126.md) on 2024-11-14 13:04_
 
 ---

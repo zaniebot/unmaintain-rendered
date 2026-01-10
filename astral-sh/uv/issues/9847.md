@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-12T17:57:50Z
 updated_at: 2024-12-13T01:25:24Z
 url: https://github.com/astral-sh/uv/issues/9847
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UX: hard to tell which python uv will use
@@ -35,10 +35,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 I would like some way to see in advance which python `uv` will run for a given `python-preference`.
-
----
-
-_Referenced in [astral-sh/uv#9841](../../astral-sh/uv/pulls/9841.md) on 2024-12-12 18:00_
 
 ---
 

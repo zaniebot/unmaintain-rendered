@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T08:26:15Z
 updated_at: 2024-11-08T14:36:00Z
 url: https://github.com/astral-sh/uv/issues/8925
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Docker configuration broken after latest 0.5.0 release
@@ -86,9 +86,5 @@ _Label `question` added by @konstin on 2024-11-08 11:14_
 ---
 
 _Closed by @zanieb on 2024-11-08 14:36_
-
----
-
-_Referenced in [astral-sh/uv#8948](../../astral-sh/uv/issues/8948.md) on 2024-11-08 16:03_
 
 ---

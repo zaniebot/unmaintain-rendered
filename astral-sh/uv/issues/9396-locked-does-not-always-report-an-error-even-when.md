@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-24T14:37:43Z
 updated_at: 2025-01-03T14:54:26Z
 url: https://github.com/astral-sh/uv/issues/9396
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `--locked` does not always report an error even when the lockfile needs to be regenerated
@@ -181,9 +181,5 @@ i'm still extremely confused as to what happened here because as far as i can te
 _Comment by @charliermarsh on 2025-01-03 14:54_
 
 Sorry yes, if the input dependencies change, then locked should error. I would need a reproduction to help though :(
-
----
-
-_Referenced in [astral-sh/uv#10977](../../astral-sh/uv/issues/10977.md) on 2025-01-27 04:14_
 
 ---

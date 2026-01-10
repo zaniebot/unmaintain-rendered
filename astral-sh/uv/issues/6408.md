@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T04:57:04Z
 updated_at: 2024-10-24T03:22:19Z
 url: https://github.com/astral-sh/uv/issues/6408
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [Feature request] Explicit dry-run cli option
@@ -53,10 +53,6 @@ Makes sense. There's also `uv lock -U && git diff && git reset --hard`, but we c
 ---
 
 _Label `projects` added by @zanieb on 2024-08-22 15:42_
-
----
-
-_Referenced in [astral-sh/uv#7783](../../astral-sh/uv/pulls/7783.md) on 2024-09-29 18:59_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-09T12:22:47Z
 updated_at: 2024-11-09T13:54:50Z
 url: https://github.com/astral-sh/uv/issues/8967
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Confusing warning - `resolution-strategy`
@@ -94,10 +94,6 @@ _Label `error messages` added by @charliermarsh on 2024-11-09 13:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-09 13:43_
-
----
-
-_Referenced in [astral-sh/uv#8971](../../astral-sh/uv/pulls/8971.md) on 2024-11-09 13:45_
 
 ---
 

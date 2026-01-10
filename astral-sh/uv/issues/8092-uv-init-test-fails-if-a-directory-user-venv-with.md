@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T13:56:42Z
 updated_at: 2024-11-13T03:53:58Z
 url: https://github.com/astral-sh/uv/issues/8092
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv init test fails if a directory ~<user>/.venv with no pyvenv.cfg is found
@@ -79,14 +79,6 @@ error: Broken virtualenv `/home/user/myroot/.venv`: `pyvenv.cfg` is missing
 ```
 
 This could be a bug because: there shouldn't be a problem with `.venv` and testproject coexisting, and I don't think there is a problem if they are created in opposite order?
-
----
-
-_Referenced in [astral-sh/uv#9072](../../astral-sh/uv/issues/9072.md) on 2024-11-12 23:46_
-
----
-
-_Referenced in [astral-sh/uv#9075](../../astral-sh/uv/pulls/9075.md) on 2024-11-13 01:27_
 
 ---
 

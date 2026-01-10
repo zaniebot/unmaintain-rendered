@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-30T13:20:06Z
 updated_at: 2024-12-30T20:13:40Z
 url: https://github.com/astral-sh/uv/issues/10239
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Override dependencies does not work for editable installs?
@@ -213,10 +213,6 @@ _Label `needs-mre` removed by @charliermarsh on 2024-12-30 16:23_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-12-30 16:23_
-
----
-
-_Referenced in [astral-sh/uv#10242](../../astral-sh/uv/pulls/10242.md) on 2024-12-30 17:30_
 
 ---
 

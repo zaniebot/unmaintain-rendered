@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T22:18:19Z
 updated_at: 2024-11-14T15:12:19Z
 url: https://github.com/astral-sh/uv/issues/8957
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # CodeArtifact install - 500 Internal server error
@@ -52,10 +52,6 @@ error: Failed to download `spacy==3.8.0`
 Usually rerunning the command helps and install passes. Sometimes it fails again, but rarely on the same package. 
 
 If I can provide more details, I am happy to. 
-
----
-
-_Referenced in [astral-sh/python-build-standalone#390](../../astral-sh/python-build-standalone/issues/390.md) on 2024-11-08 22:18_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T18:26:51Z
 updated_at: 2024-12-10T03:42:50Z
 url: https://github.com/astral-sh/uv/issues/9743
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv pip install` not working with `#subdirectory` in monorepo
@@ -141,10 +141,6 @@ _Label `needs-mre` added by @charliermarsh on 2024-12-09 21:54_
 
 ---
 
-_Referenced in [astral-sh/workspace-with-root-dependency-test#1](../../astral-sh/workspace-with-root-dependency-test/pulls/1.md) on 2024-12-09 23:48_
-
----
-
 _Comment by @jamesbraza on 2024-12-09 23:51_
 
 Thank you for getting the repro started @charliermarsh , I appreciate it. I completed it here: https://github.com/astral-sh/workspace-with-root-dependency-test/pull/1
@@ -182,10 +178,6 @@ The proximate cause is that building `workspacemember` creates `workspace_member
 _Comment by @jamesbraza on 2024-12-10 01:01_
 
 Wow thanks for looking into this pretty responsively and hunting it down, yeah I had a feeling it was a niche edge case.
-
----
-
-_Referenced in [astral-sh/uv#9760](../../astral-sh/uv/pulls/9760.md) on 2024-12-10 01:15_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T02:39:52Z
 updated_at: 2024-11-22T17:10:32Z
 url: https://github.com/astral-sh/uv/issues/8031
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Problem installing fontawesomepro package from the extra fontawesome package index
@@ -1186,10 +1186,6 @@ Thank you for digging into the details again! It's really helpful for pushing th
 
 ---
 
-_Referenced in [Majored/rs-async-zip#151](../../Majored/rs-async-zip/issues/151.md) on 2024-11-02 17:20_
-
----
-
 _Comment by @jacklinke on 2024-11-13 14:00_
 
 @charliermarsh did you have any thoughts on this one?
@@ -1209,10 +1205,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-13 16:49_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-13 16:49_
-
----
-
-_Referenced in [astral-sh/uv#9110](../../astral-sh/uv/pulls/9110.md) on 2024-11-14 02:22_
 
 ---
 

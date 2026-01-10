@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T00:49:00Z
 updated_at: 2024-11-08T01:09:03Z
 url: https://github.com/astral-sh/uv/issues/8911
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Broken 0.5.0 installation script
@@ -74,9 +74,5 @@ Alrighty then, thank you for responding quickly.
 ---
 
 _Closed by @apellex on 2024-11-08 01:09_
-
----
-
-_Referenced in [geopandas/pyogrio#496](../../geopandas/pyogrio/pulls/496.md) on 2024-11-14 13:28_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T13:38:24Z
 updated_at: 2024-12-09T17:16:09Z
 url: https://github.com/astral-sh/uv/issues/9682
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # "Can't combine URLs from both `project.dependencies` and `tool.uv.sources`" when combining GitHub link and local path
@@ -86,10 +86,6 @@ humanize = { path = "../humanize", editable = true }
 In an ideal world, I would _want_ `uv pip install -e .` to install "Test" and "humanize" in editable mode, from `.` and `../humanize`, respectively.
 
 I am unsure what `uv pip install .` should do for "humanize". I think both options would be fine for me (GitHub or `../humanize`), with a slight preference for the local editable install. I would like if the local install folder was optional: meaning, if it was missing, it should not impact installation of the package, at least in non-editable mode - maybe also generally.
-
----
-
-_Referenced in [astral-sh/uv#9718](../../astral-sh/uv/pulls/9718.md) on 2024-12-08 13:45_
 
 ---
 

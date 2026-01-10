@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-03T05:10:14Z
 updated_at: 2024-12-26T15:57:16Z
 url: https://github.com/astral-sh/uv/issues/9596
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Wrong platform tag? Or is test.pypi.org confused? Or is my system weird?
@@ -169,9 +169,5 @@ For C extensions, I recommend running `auditwheel` over your linux wheels before
 ---
 
 _Closed by @charliermarsh on 2024-12-26 15:57_
-
----
-
-_Referenced in [biocircuits/bioscrape#180](../../biocircuits/bioscrape/pulls/180.md) on 2025-02-16 02:48_
 
 ---

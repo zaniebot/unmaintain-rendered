@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-07T14:41:00Z
 updated_at: 2024-11-11T14:51:35Z
 url: https://github.com/astral-sh/uv/issues/8888
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Can't run some scripts on Windows with `uv tool run`
@@ -51,10 +51,6 @@ This is probably caused by the fact that they provide the entry scripts as a pat
 Using the provided `.bat` file does work, but it requires providing a different executable name based on the current OS and it looks like python detaches from the terminal when run from a batch script.
 
 I'm not sure whether this is a problem with awslocal or uv. I thought I'd report it here first since this usage of setuptools seems legit.
-
----
-
-_Referenced in [localstack/awscli-local#88](../../localstack/awscli-local/pulls/88.md) on 2024-11-07 16:01_
 
 ---
 

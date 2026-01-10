@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-15T07:49:47Z
 updated_at: 2024-12-10T18:11:18Z
 url: https://github.com/astral-sh/uv/issues/9143
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Windows Defender flagging uv 0.5.2 installation via pip
@@ -97,14 +97,6 @@ Log:
 ---
 
 _Label `upstream` added by @konstin on 2024-11-15 08:59_
-
----
-
-_Referenced in [astral-sh/uv#9144](../../astral-sh/uv/issues/9144.md) on 2024-11-15 09:01_
-
----
-
-_Referenced in [astral-sh/uv#8963](../../astral-sh/uv/pulls/8963.md) on 2024-11-15 18:21_
 
 ---
 

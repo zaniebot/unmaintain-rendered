@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T12:31:11Z
 updated_at: 2024-10-31T20:11:24Z
 url: https://github.com/astral-sh/uv/issues/8722
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv sync groups from workspace member packages in a virtual workspace
@@ -97,10 +97,6 @@ _Label `bug` added by @charliermarsh on 2024-10-31 19:48_
 _Comment by @charliermarsh on 2024-10-31 19:49_
 
 Sorry yeah -- this is a bug. I actually just noticed it in a separate context. Will fix it now.
-
----
-
-_Referenced in [astral-sh/uv#8734](../../astral-sh/uv/pulls/8734.md) on 2024-10-31 20:05_
 
 ---
 

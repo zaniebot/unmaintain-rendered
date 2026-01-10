@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T01:47:50Z
 updated_at: 2024-11-23T01:57:06Z
 url: https://github.com/astral-sh/uv/issues/9377
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Re-running with `--compile` doesn't compile bytecode
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2024-11-23 01:47_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-23 01:47_
-
----
-
-_Referenced in [astral-sh/uv#9378](../../astral-sh/uv/pulls/9378.md) on 2024-11-23 01:48_
 
 ---
 

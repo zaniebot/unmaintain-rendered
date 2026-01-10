@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T16:15:12Z
 updated_at: 2024-10-28T20:13:44Z
 url: https://github.com/astral-sh/uv/issues/8223
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Provide hints when trusted publishing fails
@@ -24,14 +24,6 @@ When trusted publishing on github actions was requested but fails, it's usually 
 ---
 
 _Label `enhancement` added by @konstin on 2024-10-15 16:15_
-
----
-
-_Referenced in [astral-sh/uv#8632](../../astral-sh/uv/pulls/8632.md) on 2024-10-28 11:04_
-
----
-
-_Referenced in [astral-sh/uv#8633](../../astral-sh/uv/pulls/8633.md) on 2024-10-28 12:49_
 
 ---
 

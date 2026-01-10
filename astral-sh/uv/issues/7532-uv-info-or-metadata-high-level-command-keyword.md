@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T03:06:42Z
 updated_at: 2024-12-27T14:40:01Z
 url: https://github.com/astral-sh/uv/issues/7532
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv info or metadata high level command (keyword: outdated)
@@ -97,9 +97,5 @@ _Label `enhancement` added by @charliermarsh on 2024-12-27 14:40_
 ---
 
 _Label `wish` added by @charliermarsh on 2024-12-27 14:40_
-
----
-
-_Referenced in [astral-sh/uv#10962](../../astral-sh/uv/issues/10962.md) on 2025-01-25 17:53_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-21T03:01:39Z
 updated_at: 2024-12-28T16:59:08Z
 url: https://github.com/astral-sh/uv/issues/10070
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Add an option to not create the activate* scripts in venvs
@@ -59,10 +59,6 @@ _Comment by @gdamjan on 2024-12-21 12:58_
 yeah I know, I'd still want to enforce that to **my** users :D
 
 but I'd be satisfied with just per-user setting.
-
----
-
-_Referenced in [astral-sh/uv#10083](../../astral-sh/uv/pulls/10083.md) on 2024-12-21 18:08_
 
 ---
 

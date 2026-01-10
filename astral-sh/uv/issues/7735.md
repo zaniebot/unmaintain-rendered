@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-27T10:32:58Z
 updated_at: 2025-01-02T17:43:16Z
 url: https://github.com/astral-sh/uv/issues/7735
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Issue with Installing Torch-TensorRT via `uv add` Command with External Repository Links
@@ -115,10 +115,6 @@ Not sure how to fix this.
 
 ---
 
-_Referenced in [moreati/ansible-uv#11](../../moreati/ansible-uv/issues/11.md) on 2024-12-22 23:21_
-
----
-
 _Comment by @moreati on 2025-01-02 15:36_
 
 In the source of https://whl.smartgic.io/, it appears the anchor that uv is complaining about _does_ have an href, but the value is empty string.
@@ -157,10 +153,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-02 16:32_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-02 16:32_
-
----
-
-_Referenced in [astral-sh/uv#10276](../../astral-sh/uv/pulls/10276.md) on 2025-01-02 16:40_
 
 ---
 

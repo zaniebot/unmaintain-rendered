@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T18:09:28Z
 updated_at: 2024-12-07T20:16:15Z
 url: https://github.com/astral-sh/uv/issues/9692
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `--project` and `lock` produces incorrect relative path in lock file
@@ -73,10 +73,6 @@ _Label `bug` added by @charliermarsh on 2024-12-06 21:11_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-07 18:29_
-
----
-
-_Referenced in [astral-sh/uv#9709](../../astral-sh/uv/pulls/9709.md) on 2024-12-07 19:31_
 
 ---
 

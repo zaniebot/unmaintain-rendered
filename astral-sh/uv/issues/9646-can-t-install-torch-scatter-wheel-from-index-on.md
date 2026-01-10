@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-04T19:49:38Z
 updated_at: 2024-12-20T19:15:06Z
 url: https://github.com/astral-sh/uv/issues/9646
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Can't install torch_scatter wheel from index on OSX
@@ -111,10 +111,6 @@ _Comment by @charliermarsh on 2024-12-17 20:35_
 
 ---
 
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-17 21:11_
-
----
-
 _Comment by @charliermarsh on 2024-12-17 21:12_
 
 After #9928, this would just be:
@@ -143,10 +139,6 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 ```
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-18 13:38_
 
 ---
 

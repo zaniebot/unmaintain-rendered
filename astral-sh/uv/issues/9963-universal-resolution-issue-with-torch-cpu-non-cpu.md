@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-17T10:50:34Z
 updated_at: 2024-12-20T19:15:28Z
 url: https://github.com/astral-sh/uv/issues/9963
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Universal resolution issue with torch cpu / non-cpu
@@ -149,10 +149,6 @@ That’s not really what’s happening. It’s looking for a torch version, and 
 _Comment by @charliermarsh on 2024-12-17 21:42_
 
 The logging you mentioned is also a red herring. We just pick an arbitrary wheel to determine the package metadata. It has nothing to do with whether the wheel is considered valid on macOS.
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-18 17:27_
 
 ---
 

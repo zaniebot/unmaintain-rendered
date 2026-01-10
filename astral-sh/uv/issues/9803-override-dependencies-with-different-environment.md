@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T10:05:36Z
 updated_at: 2024-12-14T02:12:45Z
 url: https://github.com/astral-sh/uv/issues/9803
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # override-dependencies with different environment markers leads to error
@@ -73,10 +73,6 @@ Thanks. I think what you have above should probably still work so I'll leave thi
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-14 01:55_
-
----
-
-_Referenced in [astral-sh/uv#9893](../../astral-sh/uv/pulls/9893.md) on 2024-12-14 02:00_
 
 ---
 

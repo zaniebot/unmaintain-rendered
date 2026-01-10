@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T21:14:15Z
 updated_at: 2024-10-28T18:54:29Z
 url: https://github.com/astral-sh/uv/issues/8271
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # package version identifier is limited to 18446744073709551615
@@ -123,9 +123,5 @@ On Mon, Oct 28, 2024, 06:22 Andrew Gallant ***@***.***> wrote:
 > ***@***.***>
 >
 
-
----
-
-_Referenced in [astral-sh/uv#9572](../../astral-sh/uv/issues/9572.md) on 2024-12-02 09:26_
 
 ---

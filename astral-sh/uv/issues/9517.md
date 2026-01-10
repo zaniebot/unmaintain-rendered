@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T09:17:50Z
 updated_at: 2024-12-03T01:14:42Z
 url: https://github.com/astral-sh/uv/issues/9517
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Enable package overrides for 'tool install'
@@ -129,10 +129,6 @@ requires-python = ">=3.10,<3.13"
 
 To see if 'uv tool install' would solve correctly with the modified python version constraint, but it didn't work.
 
-
----
-
-_Referenced in [astral-sh/uv#9547](../../astral-sh/uv/pulls/9547.md) on 2024-12-01 03:39_
 
 ---
 

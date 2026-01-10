@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T15:27:29Z
 updated_at: 2024-11-13T02:46:45Z
 url: https://github.com/astral-sh/uv/issues/6758
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Document support for platform-specific dependencies in pyproject.toml
@@ -143,10 +143,6 @@ Mind if I keep this open? We should add some documentation around this, I've see
 
 ---
 
-_Referenced in [astral-sh/uv#7411](../../astral-sh/uv/pulls/7411.md) on 2024-09-15 17:45_
-
----
-
 _Closed by @charliermarsh on 2024-09-15 21:55_
 
 ---
@@ -160,13 +156,5 @@ _Comment by @NellyWhads on 2024-11-13 02:39_
 How can I replicate this for pytorch? When installing on `darwin`, I need to use the regular pypi index, however, when installing on another linux machine, I'd like to explicitly use the `https://download.pytorch.org/whl/cu118/` as per the [pytorch docs](https://pytorch.org/get-started/locally/)
 
 Edit: never mind - found it: https://docs.astral.sh/uv/concepts/dependencies/#platform-specific-sources
-
----
-
-_Referenced in [PMEAL/porespy#1046](../../PMEAL/porespy/issues/1046.md) on 2025-03-10 00:18_
-
----
-
-_Referenced in [astral-sh/uv#12829](../../astral-sh/uv/issues/12829.md) on 2025-04-11 08:55_
 
 ---

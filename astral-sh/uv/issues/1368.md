@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T22:05:36Z
 updated_at: 2024-12-17T13:12:07Z
 url: https://github.com/astral-sh/uv/issues/1368
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Access denied for `uv pip sync` on Windows
@@ -58,10 +58,6 @@ I think solution here is to rename self to temp dir.
 
 ---
 
-_Referenced in [astral-sh/uv#3239](../../astral-sh/uv/issues/3239.md) on 2024-04-24 15:03_
-
----
-
 _Comment by @inoa-jboliveira on 2024-04-24 16:59_
 
 Just completing, the issue  also happens with `uv pip install uv --upgrade` meaning uv can't replace its own executable. See closed issue #3239 above.
@@ -81,14 +77,6 @@ _Comment by @inoa-jboliveira on 2024-04-24 17:30_
 Also if there is a uv installed inside the env, it will take priority over the one outside since the command will be replaced on env activation.
 
 You cannot run `uv self update` if uv was installed in the env as package. BTW, it makes way more sense to version control uv this way -- also version lock it
-
----
-
-_Referenced in [astral-sh/uv#3339](../../astral-sh/uv/issues/3339.md) on 2024-05-02 18:25_
-
----
-
-_Referenced in [astral-sh/uv#4980](../../astral-sh/uv/issues/4980.md) on 2024-07-10 22:06_
 
 ---
 
@@ -136,18 +124,6 @@ _Comment by @T-256 on 2024-08-05 23:11_
 > That is not easy without the right permissions unless I download the binary and run it locally
 
 Does https://github.com/astral-sh/uv/pull/5455 solve your need? you can set `CARGO_HOME` env variable to where you have permissions before executing `uv-installer`; so uv will install there.
-
----
-
-_Referenced in [astral-sh/uv#6400](../../astral-sh/uv/issues/6400.md) on 2024-08-22 02:27_
-
----
-
-_Referenced in [Comfy-Org/comfy-cli#169](../../Comfy-Org/comfy-cli/pulls/169.md) on 2024-08-29 20:20_
-
----
-
-_Referenced in [astral-sh/uv#8914](../../astral-sh/uv/pulls/8914.md) on 2024-11-08 02:42_
 
 ---
 

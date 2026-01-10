@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-02-18T11:49:01Z
 updated_at: 2024-12-10T20:42:11Z
 url: https://github.com/astral-sh/uv/issues/1640
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Virtual environments break on Homebrew upgrades due to using a `Cellar` link
@@ -199,10 +199,6 @@ On `main`, `virtualenv` uses `home = /opt/homebrew/Cellar/python@3.8/3.8.18_2/bi
 
 ---
 
-_Referenced in [astral-sh/uv#1868](../../astral-sh/uv/issues/1868.md) on 2024-03-02 04:10_
-
----
-
 _Comment by @charliermarsh on 2024-03-02 11:34_
 
 \cc @gaborbernat -- it seems like `virtualenv` on `main` will resolve symlinks for system Pythons, which seems desirable in some cases (hence the issue in `virtualenv`) but not in others (hence this issue). I can't tell which is "correct" though.
@@ -222,14 +218,6 @@ _Comment by @konstin on 2024-03-03 17:58_
 Agreed, i think this is better, i'm also thinking about the use case where somebody might have intentional redirects for their python setup.
 
 For the Cellar issue, note that technically different patch versions aren't compatible from a packaging perspective, technically a project could require `python_full_version != "3.12.2"`. In practice projects i've only seen lower bounds for patch version (e.g. `>3.8.1`), upper or exact bounds would be against how python patch versions are maintained and we're building a more reliable tool by intentionally ignoring this detail. 
-
----
-
-_Referenced in [python/cpython#106045](../../python/cpython/issues/106045.md) on 2024-03-03 18:29_
-
----
-
-_Referenced in [astral-sh/uv#1795](../../astral-sh/uv/issues/1795.md) on 2024-03-07 21:45_
 
 ---
 
@@ -270,17 +258,9 @@ In case it helps anyone here is also the difference between the `pyvenv.conf`'s:
 
 ---
 
-_Referenced in [astral-sh/uv#7634](../../astral-sh/uv/issues/7634.md) on 2024-09-23 04:00_
-
----
-
 _Comment by @charliermarsh on 2024-09-23 13:58_
 
 I'm open to changing this since it's been reported multiple times. It might be considered breaking though.
-
----
-
-_Referenced in [astral-sh/uv#7651](../../astral-sh/uv/issues/7651.md) on 2024-09-24 00:15_
 
 ---
 
@@ -303,10 +283,6 @@ I'm fine to change this but it probably requires 0.5.
 ---
 
 _Added to milestone `v0.5.0` by @charliermarsh on 2024-09-24 15:24_
-
----
-
-_Referenced in [astral-sh/uv#8028](../../astral-sh/uv/issues/8028.md) on 2024-10-09 00:48_
 
 ---
 
@@ -417,10 +393,6 @@ uv's current behavior is closest to the new `virtualenv` behavior (which also su
 
 ---
 
-_Referenced in [astral-sh/uv#8433](../../astral-sh/uv/pulls/8433.md) on 2024-10-22 00:16_
-
----
-
 _Comment by @charliermarsh on 2024-10-22 00:20_
 
 PR here: https://github.com/astral-sh/uv/pull/8433
@@ -439,14 +411,6 @@ TBH while waiting for this feature to land I was even content just recreating an
 
 ---
 
-_Referenced in [astral-sh/uv#8481](../../astral-sh/uv/pulls/8481.md) on 2024-10-22 23:16_
-
----
-
-_Referenced in [astral-sh/uv#8514](../../astral-sh/uv/issues/8514.md) on 2024-10-24 12:31_
-
----
-
 _Closed by @zanieb on 2024-11-07 20:29_
 
 ---
@@ -454,9 +418,5 @@ _Closed by @zanieb on 2024-11-07 20:29_
 _Comment by @charliermarsh on 2024-12-10 20:42_
 
 We refined the behavior a bit in https://github.com/astral-sh/uv/pull/9723.
-
----
-
-_Referenced in [python/cpython#128670](../../python/cpython/issues/128670.md) on 2025-01-09 10:57_
 
 ---

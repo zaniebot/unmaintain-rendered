@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T18:01:01Z
 updated_at: 2024-10-24T19:53:00Z
 url: https://github.com/astral-sh/uv/issues/8536
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv fails to install correct odrive version on old macOS
@@ -101,25 +101,5 @@ _Closed by @charliermarsh on 2024-10-24 19:52_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-24 19:52_
-
----
-
-_Referenced in [astral-sh/uv#8603](../../astral-sh/uv/issues/8603.md) on 2024-10-27 18:56_
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 20:52_
-
----
-
-_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 13:23_
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
-
----
-
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
 
 ---

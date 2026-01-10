@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T14:16:24Z
 updated_at: 2024-12-07T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/9275
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Ignore irrelevant platform-specific packages during resolution
@@ -77,14 +77,6 @@ Oh that's interesting and, though annoying, quite logical. Using platform_system
 If you think it's worthwhile, I'd be willing to add a small note to your documentation about this, as it currently uses `sys_platform` exclusively. This would then not work if any of your dependencies, like `ipykernel` uses `platform_system` instead of `sys_platform`.
 
 ![image](https://github.com/user-attachments/assets/3de9881a-5928-40fe-b5ea-2ff038003498)
-
----
-
-_Referenced in [astral-sh/uv#9344](../../astral-sh/uv/pulls/9344.md) on 2024-11-22 02:27_
-
----
-
-_Referenced in [astral-sh/uv#9444](../../astral-sh/uv/pulls/9444.md) on 2024-11-26 15:54_
 
 ---
 

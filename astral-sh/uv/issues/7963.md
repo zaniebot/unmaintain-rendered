@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T09:12:41Z
 updated_at: 2024-11-27T20:21:19Z
 url: https://github.com/astral-sh/uv/issues/7963
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Configuring multiple indexes with `uv publish`
@@ -57,10 +57,6 @@ Can you use:
 ```
 
 or could you use keyring authentication, where credentials are tagged by URL?
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---
 
@@ -209,10 +205,6 @@ We should also warn when using the keyring but not getting credentials from it.
 
 ---
 
-_Referenced in [astral-sh/uv#8781](../../astral-sh/uv/issues/8781.md) on 2024-11-03 20:09_
-
----
-
 _Comment by @cthoyt on 2024-11-04 07:47_
 
 Ahh, I see what's going on. It's also possible to use a URL that doesn't have the parameter set for the package if you just have a token used for everything. The updated you made in your comment before where you added the `?PACKAGE` made this more clear - so for a potential tutorial, it makes sense to note that there's a generic solution (which may be insecure/less desirable) and a package-by-package solution too.
@@ -243,13 +235,5 @@ See https://test.pypi.org/project/class_resolver/
 ---
 
 _Label `documentation` added by @konstin on 2024-11-04 08:57_
-
----
-
-_Referenced in [astral-sh/uv#8806](../../astral-sh/uv/pulls/8806.md) on 2024-11-04 10:16_
-
----
-
-_Referenced in [cthoyt/cookiecutter-snekpack#35](../../cthoyt/cookiecutter-snekpack/pulls/35.md) on 2024-11-05 07:46_
 
 ---

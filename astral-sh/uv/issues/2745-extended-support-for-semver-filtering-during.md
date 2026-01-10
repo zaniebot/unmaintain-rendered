@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-01T01:12:55Z
 updated_at: 2024-11-14T16:32:35Z
 url: https://github.com/astral-sh/uv/issues/2745
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Extended support for semver filtering during version resolution
@@ -203,9 +203,5 @@ _Comment by @matterhorn103 on 2024-11-14 16:32_
 Now that we have the `--upgrade` and `--upgrade-package` options for `uv sync`, the ability to control how far things are upgraded would be really great!
 
 (/I almost thought that the default might be cargo-like behaviour, where a limited upgrade ceiling is the default. Though maybe that makes less in Python where SemVer is not as ubiquitous.)
-
----
-
-_Referenced in [astral-sh/uv#6794](../../astral-sh/uv/issues/6794.md) on 2025-03-02 04:18_
 
 ---

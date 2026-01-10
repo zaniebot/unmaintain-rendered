@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T12:59:11Z
 updated_at: 2024-12-22T13:45:40Z
 url: https://github.com/astral-sh/uv/issues/8214
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Private Projects
@@ -49,10 +49,6 @@ publish = false
 For some additional motivation, see a similar feature request for Poetry
 
 - https://github.com/python-poetry/poetry/issues/1537
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-10-15 13:01_
 
 ---
 
@@ -200,14 +196,6 @@ Yeah I agree, I don't think we need to _require_ it. We could always add a flag 
 
 ---
 
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#8783](../../astral-sh/uv/pulls/8783.md) on 2024-11-03 20:37_
-
----
-
 _Label `needs-decision` removed by @konstin on 2024-11-03 20:37_
 
 ---
@@ -281,17 +269,5 @@ So, in my case, I think a `project.private = true` value in `pyproject.toml` wou
 I realize `project.private` would need a PEP update, so it might take time, or never happen. It would also mean existing tools like Twine would have to start taking that into consideration, maybe (depending on how it is specified), something they could be against. In the meantime `tool.uv.private = true` would work too, given I use `uv publish` exclusively (I'm not, but I could).
 
 Obviously, none of this would actually prevent someone from publishing the built artifacts to a *public registry other than PyPI*, or sharing the private code via other means, but this is another story 🙂 
-
----
-
-_Referenced in [astral-sh/uv#10092](../../astral-sh/uv/issues/10092.md) on 2024-12-22 13:27_
-
----
-
-_Referenced in [astral-sh/uv#10204](../../astral-sh/uv/issues/10204.md) on 2024-12-27 18:01_
-
----
-
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
 
 ---

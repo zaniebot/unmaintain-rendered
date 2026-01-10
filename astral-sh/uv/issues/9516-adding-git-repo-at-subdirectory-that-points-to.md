@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T09:01:02Z
 updated_at: 2024-12-03T09:23:09Z
 url: https://github.com/astral-sh/uv/issues/9516
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Adding Git repo at subdirectory that points to source in same repo does not work
@@ -189,14 +189,6 @@ Yes looks like it. I can test and verify it once #9388 is merged and in a releas
 _Comment by @charliermarsh on 2024-12-03 03:26_
 
 It turns out this is a separate bug, but I'll fix it. Thanks for the clear repro.
-
----
-
-_Referenced in [astral-sh/uv#9594](../../astral-sh/uv/pulls/9594.md) on 2024-12-03 03:40_
-
----
-
-_Referenced in [astral-sh/uv#9595](../../astral-sh/uv/pulls/9595.md) on 2024-12-03 04:59_
 
 ---
 

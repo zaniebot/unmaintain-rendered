@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T14:10:35Z
 updated_at: 2024-12-27T14:29:07Z
 url: https://github.com/astral-sh/uv/issues/8128
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv dendency resolution upper-bound problem leading to a suboptimal resolution
@@ -136,10 +136,6 @@ Pip only guarantees that _if_ it produces a resolution, it will be a valid resol
 _That said_, I have been a long advocate that Python package resolution algorithms should prefer requirements with upper bounds. I plan to open a PR this weekend to solve https://github.com/pypa/pip/issues/12993 on the pip side, it is a less extreme version of my [previous suggestion](https://github.com/astral-sh/uv/issues/1398#issuecomment-2013504447) but it seems to have significant real world improvement, in my testing, of both solving faster and giving a resolution more intuitive to a user.
 
 I think uv should probably do the same, but they would need to do their own testing. But, like, if uv could hold off for a bit, I might be able to brag I made a PR that made pip resolve faster than uv in a handful of extreme edge cases 😉 .
-
----
-
-_Referenced in [astral-sh/uv#8375](../../astral-sh/uv/issues/8375.md) on 2024-10-20 14:27_
 
 ---
 

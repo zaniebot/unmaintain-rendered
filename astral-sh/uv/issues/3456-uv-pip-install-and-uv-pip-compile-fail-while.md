@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-08T12:27:51Z
 updated_at: 2024-11-26T11:43:52Z
 url: https://github.com/astral-sh/uv/issues/3456
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # uv pip install and uv pip compile fail while installing packages in container build process
@@ -376,10 +376,6 @@ error: Failed to download and build `llama-cpp-python==0.2.71`
 
 (edit: forgot to include trace logs - [uv_trace_logs.txt](https://github.com/astral-sh/uv/files/15269104/uv_trace_logs.txt))
 
-
----
-
-_Referenced in [astral-sh/uv#3514](../../astral-sh/uv/issues/3514.md) on 2024-05-10 22:39_
 
 ---
 

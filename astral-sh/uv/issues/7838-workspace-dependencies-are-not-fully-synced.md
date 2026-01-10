@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-01T13:10:03Z
 updated_at: 2024-12-27T16:43:32Z
 url: https://github.com/astral-sh/uv/issues/7838
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Workspace dependencies are not fully synced before run
@@ -120,10 +120,6 @@ This would be really useful. I'm running a workspace with various subpackages, a
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-27 16:08_
-
----
-
-_Referenced in [astral-sh/uv#10198](../../astral-sh/uv/pulls/10198.md) on 2024-12-27 16:31_
 
 ---
 

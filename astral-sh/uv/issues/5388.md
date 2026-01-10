@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-24T00:43:51Z
 updated_at: 2024-11-04T20:10:47Z
 url: https://github.com/astral-sh/uv/issues/5388
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Consider adding workspace members as sources in `uv init`
@@ -121,13 +121,5 @@ I would like to do it, but I need some hint or consultation here.
 _Comment by @mahmudsudo on 2024-11-04 20:10_
 
 can i take up this issue?
-
----
-
-_Referenced in [astral-sh/uv#11404](../../astral-sh/uv/pulls/11404.md) on 2025-02-10 20:48_
-
----
-
-_Referenced in [astral-sh/uv#14464](../../astral-sh/uv/issues/14464.md) on 2025-07-05 03:38_
 
 ---

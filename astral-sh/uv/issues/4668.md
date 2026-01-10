@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-30T21:12:22Z
 updated_at: 2024-10-28T17:42:40Z
 url: https://github.com/astral-sh/uv/issues/4668
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Python version limited requirement in universal locking
@@ -71,10 +71,6 @@ _Label `preview` added by @charliermarsh on 2024-06-30 21:36_
 
 ---
 
-_Referenced in [astral-sh/uv#4669](../../astral-sh/uv/issues/4669.md) on 2024-06-30 21:36_
-
----
-
 _Reopened by @charliermarsh on 2024-07-01 20:00_
 
 ---
@@ -86,26 +82,6 @@ Re-opening because this case is a little different than the NumPy one and they'l
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-01 20:00_
-
----
-
-_Referenced in [astral-sh/uv#4712](../../astral-sh/uv/pulls/4712.md) on 2024-07-01 21:27_
-
----
-
-_Referenced in [astral-sh/uv#5134](../../astral-sh/uv/issues/5134.md) on 2024-07-17 01:19_
-
----
-
-_Referenced in [astral-sh/uv#5583](../../astral-sh/uv/pulls/5583.md) on 2024-07-30 01:30_
-
----
-
-_Referenced in [astral-sh/uv#5647](../../astral-sh/uv/issues/5647.md) on 2024-07-31 11:46_
-
----
-
-_Referenced in [astral-sh/uv#5733](../../astral-sh/uv/pulls/5733.md) on 2024-08-02 18:30_
 
 ---
 
@@ -140,21 +116,9 @@ pdm has a dependency on truststore `Requires-Dist: truststore; python_version >=
 
 ---
 
-_Referenced in [pyprojectx/pyprojectx#112](../../pyprojectx/pyprojectx/issues/112.md) on 2024-08-05 12:06_
-
----
-
 _Comment by @charliermarsh on 2024-08-05 13:00_
 
 @houbie -- Think that's the same as https://github.com/astral-sh/uv/issues/4668.
-
----
-
-_Referenced in [astral-sh/uv#5887](../../astral-sh/uv/pulls/5887.md) on 2024-08-07 18:51_
-
----
-
-_Referenced in [astral-sh/uv#6143](../../astral-sh/uv/pulls/6143.md) on 2024-08-16 12:14_
 
 ---
 
@@ -182,10 +146,6 @@ environments = ["python_version < '3.8'", "python_version >= '3.8'"]
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:22_
-
----
-
-_Referenced in [astral-sh/uv#6730](../../astral-sh/uv/issues/6730.md) on 2024-08-27 23:20_
 
 ---
 
@@ -270,10 +230,6 @@ Apologies @mkniewallner, really dumb bug: https://github.com/astral-sh/uv/pull/6
 
 ---
 
-_Referenced in [astral-sh/uv#7821](../../astral-sh/uv/issues/7821.md) on 2024-09-30 22:30_
-
----
-
 _Comment by @DanCardin on 2024-10-09 13:53_
 
 Fwiw, if anyone else runs into https://github.com/astral-sh/uv/issues/4668#issuecomment-2315850477 (because it was blocking by ability to adopt uv), a newer release of uv (0.4.20), given the referenced pyproject.toml, produces
@@ -299,14 +255,6 @@ I took that to imply that I need to match the upper bound with the upper bound o
 
 ---
 
-_Referenced in [astral-sh/uv#8601](../../astral-sh/uv/issues/8601.md) on 2024-10-27 18:53_
-
----
-
-_Referenced in [astral-sh/uv#8628](../../astral-sh/uv/pulls/8628.md) on 2024-10-28 01:38_
-
----
-
 _Closed by @charliermarsh on 2024-10-28 13:48_
 
 ---
@@ -326,9 +274,5 @@ _Comment by @potiuk on 2024-10-28 17:42_
 > This should "just work" without any workarounds in the next version (see: #8628).
 
 Cool . We are getting way closer now with `uv` being the default tool for Airflow development.
-
----
-
-_Referenced in [apache/airflow#43451](../../apache/airflow/pulls/43451.md) on 2024-10-28 22:38_
 
 ---

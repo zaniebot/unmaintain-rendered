@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T08:16:17Z
 updated_at: 2025-01-06T23:49:24Z
 url: https://github.com/astral-sh/uv/issues/9008
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [BUG] can not use private pypi repo to install package(same as offical pypi package)
@@ -624,9 +624,5 @@ I think the fix might be to attach a username to your artifactory URL to force a
 _Comment by @zanieb on 2025-01-06 23:49_
 
 Related https://github.com/astral-sh/uv/pull/9583#discussion_r1867845379 / https://github.com/astral-sh/uv/issues/9331#issuecomment-2499221075
-
----
-
-_Referenced in [astral-sh/uv#12444](../../astral-sh/uv/issues/12444.md) on 2025-03-24 17:56_
 
 ---

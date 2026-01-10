@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T14:49:12Z
 updated_at: 2024-12-11T22:24:20Z
 url: https://github.com/astral-sh/uv/issues/9812
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Build backend rejects underscores in entrypoint names
@@ -56,10 +56,6 @@ _Assigned to @konstin by @konstin on 2024-12-11 21:41_
 ---
 
 _Label `bug` added by @konstin on 2024-12-11 21:41_
-
----
-
-_Referenced in [astral-sh/uv#9825](../../astral-sh/uv/pulls/9825.md) on 2024-12-11 22:04_
 
 ---
 

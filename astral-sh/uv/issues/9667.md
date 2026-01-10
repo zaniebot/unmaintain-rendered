@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T01:51:34Z
 updated_at: 2024-12-12T11:07:59Z
 url: https://github.com/astral-sh/uv/issues/9667
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv python list report error
@@ -97,10 +97,6 @@ _Label `windows` added by @charliermarsh on 2024-12-06 11:48_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-06 12:33_
-
----
-
-_Referenced in [astral-sh/uv#9679](../../astral-sh/uv/pulls/9679.md) on 2024-12-06 12:40_
 
 ---
 

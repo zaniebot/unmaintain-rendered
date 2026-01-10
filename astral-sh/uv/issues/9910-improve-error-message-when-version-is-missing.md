@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-15T12:31:00Z
 updated_at: 2024-12-15T15:27:44Z
 url: https://github.com/astral-sh/uv/issues/9910
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Improve error message when `version` is missing from `pyproject.toml`
@@ -150,18 +150,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-15 14:16_
 
 ---
 
-_Referenced in [astral-sh/uv#9912](../../astral-sh/uv/pulls/9912.md) on 2024-12-15 14:17_
-
----
-
 _Closed by @charliermarsh on 2024-12-15 15:27_
 
 ---
 
 _Closed by @charliermarsh on 2024-12-15 15:27_
-
----
-
-_Referenced in [HumanSignal/label-studio-sdk#387](../../HumanSignal/label-studio-sdk/pulls/387.md) on 2025-01-16 13:14_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-09T16:55:35Z
 updated_at: 2024-12-10T15:40:55Z
 url: https://github.com/astral-sh/uv/issues/9742
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uvx not working on windows
@@ -44,10 +44,6 @@ _Label `question` added by @charliermarsh on 2024-12-09 18:16_
 ---
 
 _Label `windows` added by @charliermarsh on 2024-12-09 18:16_
-
----
-
-_Referenced in [astral-sh/uv#9745](../../astral-sh/uv/pulls/9745.md) on 2024-12-09 19:19_
 
 ---
 

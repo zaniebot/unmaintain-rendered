@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-27T15:25:10Z
 updated_at: 2024-11-27T15:53:40Z
 url: https://github.com/astral-sh/uv/issues/9473
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Is there a way to specify that you don't care about pypy when creating a lockfile?
@@ -125,10 +125,6 @@ _Comment by @wlach on 2024-11-27 15:35_
 > ]
 
 Yes! That was exactly what I was looking for. Might make sense to mention pypy there as well?
-
----
-
-_Referenced in [astral-sh/uv#9475](../../astral-sh/uv/pulls/9475.md) on 2024-11-27 15:43_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-19T15:14:10Z
 updated_at: 2024-11-20T00:38:48Z
 url: https://github.com/astral-sh/uv/issues/2541
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Support nightly PyTorch installs
@@ -31,14 +31,6 @@ _Label `enhancement` added by @charliermarsh on 2024-03-19 15:14_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-03-19 15:14_
-
----
-
-_Referenced in [astral-sh/uv#2538](../../astral-sh/uv/issues/2538.md) on 2024-03-19 17:01_
-
----
-
-_Referenced in [OpenMined/PySyft#8605](../../OpenMined/PySyft/pulls/8605.md) on 2024-03-20 16:05_
 
 ---
 
@@ -120,17 +112,9 @@ Anyway, I think we can support this specific thing with the URLs.
 
 ---
 
-_Referenced in [astral-sh/uv#2623](../../astral-sh/uv/issues/2623.md) on 2024-03-22 20:24_
-
----
-
 _Comment by @charliermarsh on 2024-03-22 20:24_
 
 I created a new issue to track that here: https://github.com/astral-sh/uv/issues/2623
-
----
-
-_Referenced in [open-webui/open-webui#1475](../../open-webui/open-webui/pulls/1475.md) on 2024-04-13 23:13_
 
 ---
 
@@ -161,9 +145,5 @@ _Closed by @charliermarsh on 2024-11-20 00:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 00:38_
-
----
-
-_Referenced in [astral-sh/uv#10693](../../astral-sh/uv/issues/10693.md) on 2025-01-16 20:06_
 
 ---

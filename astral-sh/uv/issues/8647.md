@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-28T20:57:46Z
 updated_at: 2024-10-28T21:30:49Z
 url: https://github.com/astral-sh/uv/issues/8647
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # offline package sync fails even when explicitly installing build dependency `hatchling`
@@ -695,10 +695,6 @@ We fail because we need to resolve the build requirements, which are _not_ part 
 _Comment by @charliermarsh on 2024-10-28 21:11_
 
 It's possible that we could make it such that uv can use the cache as the source of truth for available versions when in `--offline` mode, but honestly the right fix is https://github.com/astral-sh/uv/issues/7052: track the build dependencies in the lockfile itself.
-
----
-
-_Referenced in [astral-sh/uv#8414](../../astral-sh/uv/issues/8414.md) on 2024-10-28 21:15_
 
 ---
 

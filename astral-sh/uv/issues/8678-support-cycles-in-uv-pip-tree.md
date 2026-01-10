@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-29T18:49:04Z
 updated_at: 2024-10-29T22:18:47Z
 url: https://github.com/astral-sh/uv/issues/8678
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support cycles in `uv pip tree`
@@ -31,10 +31,6 @@ _Label `bug` added by @charliermarsh on 2024-10-29 18:49_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-29 18:49_
-
----
-
-_Referenced in [astral-sh/uv#8689](../../astral-sh/uv/pulls/8689.md) on 2024-10-29 21:59_
 
 ---
 

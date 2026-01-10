@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T03:00:38Z
 updated_at: 2024-11-17T07:38:37Z
 url: https://github.com/astral-sh/uv/issues/6402
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv add flash-attn --no-build-isolation` fails
@@ -95,10 +95,6 @@ _Closed by @vwxyzjn on 2024-08-22 03:04_
 _Comment by @charliermarsh on 2024-08-22 03:05_
 
 Thanks for following up, was just taking a look!
-
----
-
-_Referenced in [astral-sh/uv#6437](../../astral-sh/uv/issues/6437.md) on 2024-08-22 14:04_
 
 ---
 

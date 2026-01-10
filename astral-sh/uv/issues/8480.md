@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T21:31:55Z
 updated_at: 2024-10-24T14:08:52Z
 url: https://github.com/astral-sh/uv/issues/8480
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv cannot find its own free-threaded Python when installing tools
@@ -58,13 +58,5 @@ _Closed by @zanieb on 2024-10-24 12:32_
 _Comment by @layday on 2024-10-24 14:08_
 
 Thanks for the explanation.
-
----
-
-_Referenced in [pyca/cryptography#12555](../../pyca/cryptography/pulls/12555.md) on 2025-09-09 00:43_
-
----
-
-_Referenced in [astral-sh/uv#15756](../../astral-sh/uv/issues/15756.md) on 2025-09-09 15:37_
 
 ---

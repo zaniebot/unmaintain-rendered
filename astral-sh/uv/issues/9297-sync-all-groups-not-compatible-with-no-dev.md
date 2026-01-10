@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T23:52:09Z
 updated_at: 2024-11-21T01:06:07Z
 url: https://github.com/astral-sh/uv/issues/9297
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # sync --all-groups not compatible with --no-dev
@@ -59,10 +59,6 @@ _Label `bug` added by @charliermarsh on 2024-11-21 00:06_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-21 00:10_
-
----
-
-_Referenced in [astral-sh/uv#9300](../../astral-sh/uv/pulls/9300.md) on 2024-11-21 00:40_
 
 ---
 

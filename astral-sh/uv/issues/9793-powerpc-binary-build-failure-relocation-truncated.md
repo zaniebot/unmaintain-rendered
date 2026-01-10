@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-11T00:13:06Z
 updated_at: 2024-12-11T14:33:07Z
 url: https://github.com/astral-sh/uv/issues/9793
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # PowerPC binary build failure "relocation truncated to fit: R_PPC64_REL24"
@@ -80,10 +80,6 @@ I got the compiler flags to go through, but they don't solve the issue
 
 ---
 
-_Referenced in [astral-sh/uv#9796](../../astral-sh/uv/pulls/9796.md) on 2024-12-11 02:28_
-
----
-
 _Comment by @zanieb on 2024-12-11 02:45_
 
 The trace suggests some sort of interaction between `uv-installer`, `rayon`, and `tracing-subscriber`
@@ -112,20 +108,8 @@ As a drastic step, I think we could turn of tracing for this target? But that se
 
 ---
 
-_Referenced in [astral-sh/uv#9810](../../astral-sh/uv/pulls/9810.md) on 2024-12-11 13:58_
-
----
-
 _Comment by @zanieb on 2024-12-11 14:33_
 
 We are going to drop support for now, see https://github.com/astral-sh/uv/pull/9810
-
----
-
-_Referenced in [astral-sh/uv#9815](../../astral-sh/uv/pulls/9815.md) on 2024-12-11 15:21_
-
----
-
-_Referenced in [Homebrew/homebrew-core#200827](../../Homebrew/homebrew-core/pulls/200827.md) on 2024-12-11 17:26_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-15T21:31:31Z
 updated_at: 2024-12-16T19:15:04Z
 url: https://github.com/astral-sh/uv/issues/9921
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Ruff version in documentation incorrectly bumped during releases
@@ -21,10 +21,6 @@ _Issue opened by @zanieb on 2024-12-15 21:31_
 > Appears that this example ruff version has been getting bumped in this file inadvertently since uv `0.5.5`:  https://github.com/astral-sh/uv/commit/95cd8b8b3fa299e652520e50322ad3f578544755  
 
  _Originally posted by @nathanscain in [0652800](https://github.com/astral-sh/uv/commit/0652800cb018eb086fbbf220a1f73af7e320be54#r150376428)_
-
----
-
-_Referenced in [astral-sh/uv#9943](../../astral-sh/uv/pulls/9943.md) on 2024-12-16 18:49_
 
 ---
 

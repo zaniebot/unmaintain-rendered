@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-29T11:47:23Z
 updated_at: 2024-12-31T17:19:44Z
 url: https://github.com/astral-sh/uv/issues/6805
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add an option to `uv run` to run a `.py` script with `pythonw.exe` instead of `python.exe`
@@ -68,10 +68,6 @@ _Label `good first issue` added by @zanieb on 2024-10-04 21:49_
 ---
 
 _Unassigned @zanieb by @zanieb on 2024-10-04 21:49_
-
----
-
-_Referenced in [astral-sh/uv#9152](../../astral-sh/uv/pulls/9152.md) on 2024-11-15 14:58_
 
 ---
 

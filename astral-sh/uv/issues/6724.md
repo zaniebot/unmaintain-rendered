@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T22:05:56Z
 updated_at: 2024-11-13T13:36:08Z
 url: https://github.com/astral-sh/uv/issues/6724
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv run doesn't pass signals to children
@@ -71,26 +71,6 @@ Although I have to add that both adding `STOPSIGNAL SIGINT` to the Dockerfile an
 
 ---
 
-_Referenced in [astral-sh/uv#6738](../../astral-sh/uv/pulls/6738.md) on 2024-08-28 02:48_
-
----
-
-_Referenced in [astral-sh/uv#7449](../../astral-sh/uv/issues/7449.md) on 2024-09-17 13:29_
-
----
-
-_Referenced in [astral-sh/uv#8654](../../astral-sh/uv/issues/8654.md) on 2024-10-29 14:15_
-
----
-
-_Referenced in [astral-sh/uv#8761](../../astral-sh/uv/issues/8761.md) on 2024-11-01 23:49_
-
----
-
-_Referenced in [astral-sh/uv#8933](../../astral-sh/uv/pulls/8933.md) on 2024-11-08 11:45_
-
----
-
 _Closed by @zanieb on 2024-11-12 02:48_
 
 ---
@@ -102,13 +82,5 @@ _Closed by @zanieb on 2024-11-12 02:48_
 _Comment by @shaneikennedy on 2024-11-13 13:36_
 
 Would it be possible to get a new patch release with this issue now close, please? Not properly handling  SIGTERM is negatively impacting anyone running uv in production with containers. For those who know it's a problem in their workloads they could mitigate this by running uv with something like [tini](https://github.com/krallin/tini) but would prefer to get a new version here if possible 🙏 
-
----
-
-_Referenced in [astral-sh/uv#12108](../../astral-sh/uv/issues/12108.md) on 2025-03-11 01:27_
-
----
-
-_Referenced in [astral-sh/uv#13756](../../astral-sh/uv/issues/13756.md) on 2025-06-01 05:25_
 
 ---

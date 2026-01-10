@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T10:03:51Z
 updated_at: 2024-12-27T14:03:35Z
 url: https://github.com/astral-sh/uv/issues/10191
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # "error decoding response body" when "uv self update" (uv version: 0.5.12)
@@ -84,9 +84,5 @@ success: Upgraded uv from v0.5.12 to v0.5.13! https://github.com/astral-sh/uv/re
 success: You're on the latest version of uv (v0.5.13)
 
 Thanks.
-
----
-
-_Referenced in [astral-sh/uv#10196](../../astral-sh/uv/issues/10196.md) on 2024-12-27 16:35_
 
 ---

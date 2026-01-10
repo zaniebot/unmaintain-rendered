@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T12:17:35Z
 updated_at: 2024-12-17T13:48:35Z
 url: https://github.com/astral-sh/uv/issues/9866
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv pip installs aarch64 package on 32-bit raspberry pi os, uv python3 -m pip installs correct version (gnueabihf / armv7)
@@ -88,10 +88,6 @@ __pycache__  _pydantic_core.pyi                                 py.typed
 _Comment by @FishAlchemist on 2024-12-13 12:48_
 
 Can you provide output with ``--verbose``? I have a Raspberry Pi on hand to reproduce the problem
-
----
-
-_Referenced in [BrewBlox/brewblox-ctl#231](../../BrewBlox/brewblox-ctl/pulls/231.md) on 2024-12-13 13:37_
 
 ---
 

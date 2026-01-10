@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-28T18:07:23Z
 updated_at: 2024-12-07T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/7760
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Incorporate knowledge of disjoint markers into simplification
@@ -64,14 +64,6 @@ _Comment by @mitsuhiko on 2024-11-21 09:11_
 > I have this working, but it does mean all expressions like `sys_platform == 'linux'` get expanded to `sys_platform == 'linux' and platform_system == 'Linux'"` in the lockfile.
 
 Could you not keep the knowledge around what the original marker expression was and serialize that into the lockfile instead.  At read it should be rather trivial to expand it out when the lockfile is read?  Performance wise this will be slightly worse but you presumably there won't be that many cases where that is necessary.
-
----
-
-_Referenced in [astral-sh/uv#9344](../../astral-sh/uv/pulls/9344.md) on 2024-11-22 02:27_
-
----
-
-_Referenced in [astral-sh/uv#9444](../../astral-sh/uv/pulls/9444.md) on 2024-11-26 15:54_
 
 ---
 

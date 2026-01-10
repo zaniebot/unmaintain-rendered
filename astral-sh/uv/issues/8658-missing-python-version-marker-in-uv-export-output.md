@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-29T12:47:55Z
 updated_at: 2024-10-29T13:41:28Z
 url: https://github.com/astral-sh/uv/issues/8658
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Missing Python version marker in `uv export` output for dependency in a group
@@ -118,18 +118,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-29 12:50_
 
 ---
 
-_Referenced in [astral-sh/uv#8659](../../astral-sh/uv/pulls/8659.md) on 2024-10-29 13:34_
-
----
-
 _Closed by @charliermarsh on 2024-10-29 13:41_
 
 ---
 
 _Closed by @charliermarsh on 2024-10-29 13:41_
-
----
-
-_Referenced in [galaxyproject/galaxy#19075](../../galaxyproject/galaxy/pulls/19075.md) on 2024-10-31 10:14_
 
 ---

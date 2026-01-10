@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T01:47:29Z
 updated_at: 2024-12-12T18:01:53Z
 url: https://github.com/astral-sh/uv/issues/9830
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UX: hard to spot python provider in output
@@ -66,10 +66,6 @@ Ah I thought you were saying `uv python list --only-downloads` was showing syste
 ---
 
 _Label `cli` added by @charliermarsh on 2024-12-12 14:21_
-
----
-
-_Referenced in [astral-sh/uv#9841](../../astral-sh/uv/pulls/9841.md) on 2024-12-12 15:26_
 
 ---
 

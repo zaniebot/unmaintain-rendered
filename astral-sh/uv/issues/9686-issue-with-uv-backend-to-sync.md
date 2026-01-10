@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T15:22:56Z
 updated_at: 2024-12-06T17:04:38Z
 url: https://github.com/astral-sh/uv/issues/9686
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Issue with uv backend to "sync"
@@ -76,9 +76,5 @@ Won't it be in preview for a while? I have a pretty strong preference for having
 _Comment by @konstin on 2024-12-06 17:04_
 
 I don't mind adding a specific error message here.
-
----
-
-_Referenced in [astral-sh/uv#9691](../../astral-sh/uv/pulls/9691.md) on 2024-12-06 17:23_
 
 ---

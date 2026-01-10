@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T15:11:02Z
 updated_at: 2024-10-25T19:06:47Z
 url: https://github.com/astral-sh/uv/issues/8530
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # "uv build --all" command not working?
@@ -154,10 +154,6 @@ Nope they didn't have a `[build-system]` 😅, they are working now after adding
 Yes, that would be great, in order to avoid confusion.
 
 Thanks for your help again, Charlie!
-
----
-
-_Referenced in [astral-sh/uv#8537](../../astral-sh/uv/pulls/8537.md) on 2024-10-24 18:01_
 
 ---
 

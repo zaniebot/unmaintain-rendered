@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T09:22:58Z
 updated_at: 2024-11-12T18:04:10Z
 url: https://github.com/astral-sh/uv/issues/9049
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # TOML parse error: `default-index` setting in uv.toml
@@ -105,10 +105,6 @@ native-tls = true
 ```
 
 But those fields are considered legacy, and the `[[index]]` syntax is preferred.
-
----
-
-_Referenced in [astral-sh/uv#9065](../../astral-sh/uv/pulls/9065.md) on 2024-11-12 17:31_
 
 ---
 

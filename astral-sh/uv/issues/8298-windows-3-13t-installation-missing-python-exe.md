@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-17T17:47:21Z
 updated_at: 2024-12-06T04:24:45Z
 url: https://github.com/astral-sh/uv/issues/8298
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Windows 3.13t installation missing python.exe
@@ -104,14 +104,6 @@ Great thanks for the input! I'll rename it upstream — makes life a bit easier 
 I'm not sure what the best approach will be to address your `uv run` examples, but generally agree with the philosophy that the commands should be portable across platforms.
 
 Thanks again @colesbury for following up on our handling of these distributions, there are definitely some quirks to be ironed out.
-
----
-
-_Referenced in [astral-sh/uv#8310](../../astral-sh/uv/pulls/8310.md) on 2024-10-17 22:21_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#373](../../astral-sh/python-build-standalone/pulls/373.md) on 2024-10-18 03:55_
 
 ---
 

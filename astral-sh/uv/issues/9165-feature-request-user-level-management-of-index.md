@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T10:55:56Z
 updated_at: 2024-12-12T06:57:52Z
 url: https://github.com/astral-sh/uv/issues/9165
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [FEATURE REQUEST] User-level management of index credentials via uv
@@ -84,9 +84,5 @@ This would really enable to use uv in company teams with on prem indexes and rep
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#9920](../../astral-sh/uv/pulls/9920.md) on 2024-12-15 20:10_
 
 ---

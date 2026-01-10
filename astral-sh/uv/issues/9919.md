@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-15T18:59:08Z
 updated_at: 2024-12-17T08:56:17Z
 url: https://github.com/astral-sh/uv/issues/9919
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv publish` cannot find index when configured as `explicit=true`
@@ -56,10 +56,6 @@ _Label `bug` added by @zanieb on 2024-12-15 21:03_
 ---
 
 _Assigned to @konstin by @zanieb on 2024-12-15 21:03_
-
----
-
-_Referenced in [astral-sh/uv#9932](../../astral-sh/uv/pulls/9932.md) on 2024-12-16 10:40_
 
 ---
 

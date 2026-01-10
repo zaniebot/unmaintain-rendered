@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-29T00:24:21Z
 updated_at: 2025-01-07T20:10:48Z
 url: https://github.com/astral-sh/uv/issues/2062
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # uv pip and python -m pip resolve different versions of tensorflow in pyhf developer environment
@@ -580,10 +580,6 @@ ImportError: This version of TensorFlow Probability requires TensorFlow version 
 
 ---
 
-_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-29 00:25_
-
----
-
 _Comment by @charliermarsh on 2024-02-29 17:41_
 
 Will take a look... My _guess_ is that these are both "valid" resolutions (since uv did pin some packages to more recent versions), and the difference is due to semi-arbitrary choices in how resolution played out in the two systems. But there could be a bug somewhere.
@@ -768,10 +764,6 @@ tensorflow-probability       0.21.0
 
 [uv-pip-install-verbose.txt](https://github.com/astral-sh/uv/files/14453506/uv-pip-install-verbose.txt)
 
-
----
-
-_Referenced in [zfit/zfit-physics#69](../../zfit/zfit-physics/pulls/69.md) on 2024-03-28 02:30_
 
 ---
 

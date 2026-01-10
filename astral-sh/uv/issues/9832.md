@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T07:08:33Z
 updated_at: 2024-12-13T03:19:30Z
 url: https://github.com/astral-sh/uv/issues/9832
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Python version constraint is not observed when building non-workspace package that depends on workspace packages
@@ -136,10 +136,6 @@ _Label `bug` added by @charliermarsh on 2024-12-12 14:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-12 14:37_
-
----
-
-_Referenced in [astral-sh/uv#9848](../../astral-sh/uv/pulls/9848.md) on 2024-12-12 18:35_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-09T19:24:38Z
 updated_at: 2024-12-09T22:30:26Z
 url: https://github.com/astral-sh/uv/issues/9746
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Avoid 403 warning hint for PyTorch
@@ -38,10 +38,6 @@ _Label `error messages` added by @charliermarsh on 2024-12-09 19:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-09 21:21_
-
----
-
-_Referenced in [astral-sh/uv#9750](../../astral-sh/uv/pulls/9750.md) on 2024-12-09 21:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-18T15:45:20Z
 updated_at: 2024-11-18T18:19:32Z
 url: https://github.com/astral-sh/uv/issues/9201
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Can't use a private index in script dependency
@@ -71,10 +71,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-18 15:46_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-18 17:15_
-
----
-
-_Referenced in [astral-sh/uv#9208](../../astral-sh/uv/pulls/9208.md) on 2024-11-18 18:13_
 
 ---
 

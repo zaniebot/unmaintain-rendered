@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T12:28:42Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9498
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Unexpected (?) behavior when torch is a sub dependency
@@ -172,10 +172,6 @@ _Closed by @charliermarsh on 2024-11-29 16:34_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-29 16:34_
-
----
-
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
 
 ---
 

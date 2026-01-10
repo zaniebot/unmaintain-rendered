@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T14:15:00Z
 updated_at: 2024-12-13T15:50:02Z
 url: https://github.com/astral-sh/uv/issues/9869
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UX: spurious output for `uv tool upgrade -p 3... --all`
@@ -49,10 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-13 14:18_
 _Comment by @neutrinoceros on 2024-12-13 14:19_
 
 wow, this must be the single swiftest response I ever got for a bug report. I almost regret not timing it but I'd be surprised if it took you more than 10s. Thanks, if anything, just for that ! (but obviously thanks for much more too)
-
----
-
-_Referenced in [astral-sh/uv#9870](../../astral-sh/uv/pulls/9870.md) on 2024-12-13 14:24_
 
 ---
 

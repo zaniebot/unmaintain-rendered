@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-19T11:00:50Z
 updated_at: 2024-12-27T14:52:47Z
 url: https://github.com/astral-sh/uv/issues/5213
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support for "Updated" indicator on install/uninstall output
@@ -53,10 +53,6 @@ I think something like this would be a good change. I'm unsure on the right symb
 ---
 
 _Label `cli` added by @charliermarsh on 2024-07-19 12:43_
-
----
-
-_Referenced in [astral-sh/uv#5197](../../astral-sh/uv/pulls/5197.md) on 2024-07-19 13:05_
 
 ---
 

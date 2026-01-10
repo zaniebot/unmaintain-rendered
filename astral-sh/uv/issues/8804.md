@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-04T09:47:02Z
 updated_at: 2024-11-04T13:45:25Z
 url: https://github.com/astral-sh/uv/issues/8804
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Python preference option system disables python downloads
@@ -58,10 +58,6 @@ DEBUG Skipping incompatible managed installation `cpython-3.12.6-linux-x86_64-gn
 ```
 
 I don't see this behavior being described anywhere. Is this intentional or a bug?
-
----
-
-_Referenced in [astral-sh/uv#8808](../../astral-sh/uv/pulls/8808.md) on 2024-11-04 13:07_
 
 ---
 

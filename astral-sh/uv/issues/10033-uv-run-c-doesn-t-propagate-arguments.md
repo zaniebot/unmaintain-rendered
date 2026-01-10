@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-19T17:02:03Z
 updated_at: 2024-12-19T17:39:58Z
 url: https://github.com/astral-sh/uv/issues/10033
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv run -c` doesn't propagate arguments
@@ -45,10 +45,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-19 17:02_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-12-19 17:02_
-
----
-
-_Referenced in [astral-sh/uv#10034](../../astral-sh/uv/pulls/10034.md) on 2024-12-19 17:02_
 
 ---
 

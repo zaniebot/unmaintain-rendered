@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T12:28:26Z
 updated_at: 2024-12-12T18:21:37Z
 url: https://github.com/astral-sh/uv/issues/9836
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UV uses wrong wheel platform for package when rosetta is involved on MacOS
@@ -142,10 +142,6 @@ Maybe there's something we can include in the cache here...? I'll look.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-12 14:24_
-
----
-
-_Referenced in [astral-sh/uv#9846](../../astral-sh/uv/pulls/9846.md) on 2024-12-12 17:43_
 
 ---
 

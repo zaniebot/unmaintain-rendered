@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T03:20:35Z
 updated_at: 2024-11-26T15:01:05Z
 url: https://github.com/astral-sh/uv/issues/8404
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `init_app_build_backend_maturin` test timed out on macOS
@@ -86,10 +86,6 @@ We can speed them up by switching to cffi (no rust deps), pyo3 is quite slow to 
 _Comment by @zanieb on 2024-10-21 22:50_
 
 I'm not sure how to do that, but that makes sense to me.
-
----
-
-_Referenced in [astral-sh/uv#8447](../../astral-sh/uv/pulls/8447.md) on 2024-10-22 12:10_
 
 ---
 

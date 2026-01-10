@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-19T16:34:31Z
 updated_at: 2024-10-23T20:35:49Z
 url: https://github.com/astral-sh/uv/issues/8367
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Regression in 0.4.23: data did not match any variant of untagged enum CacheInfoWire
@@ -47,10 +47,6 @@ All these tools in pre-commit hook are running via `uv run`. In this workflow no
 * I tried to remove all stored caches from the repo jsut in case with no result.
 * Also I tried using different `cache-local-path`, also with no result.
 
-
----
-
-_Referenced in [KapJI/homeassistant-stubs#494](../../KapJI/homeassistant-stubs/pulls/494.md) on 2024-10-19 16:51_
 
 ---
 
@@ -158,19 +154,11 @@ We should probably just change our cache versioning policy to make this less lik
 
 ---
 
-_Referenced in [astral-sh/uv#8386](../../astral-sh/uv/pulls/8386.md) on 2024-10-20 16:36_
-
----
-
 _Closed by @charliermarsh on 2024-10-20 16:48_
 
 ---
 
 _Closed by @charliermarsh on 2024-10-20 16:48_
-
----
-
-_Referenced in [astral-sh/uv#8488](../../astral-sh/uv/issues/8488.md) on 2024-10-23 06:32_
 
 ---
 
@@ -208,13 +196,5 @@ _Comment by @mishamsk on 2024-10-23 20:35_
 ah, ok, that makes sense. you are just moving so fast, this PR is 4 days old, I haven't realized that it did include the change you mentioned in a comment ;-)
 
 I'll go ahead and update uv version on one of my projects then, was just debating if there is value to do that. Now I know there is. Thanks!
-
----
-
-_Referenced in [python/typeshed#12903](../../python/typeshed/pulls/12903.md) on 2024-10-25 09:40_
-
----
-
-_Referenced in [scylladb/python-driver#505](../../scylladb/python-driver/issues/505.md) on 2025-07-17 15:04_
 
 ---

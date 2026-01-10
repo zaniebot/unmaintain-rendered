@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-25T18:30:00Z
 updated_at: 2024-12-30T16:49:59Z
 url: https://github.com/astral-sh/uv/issues/10157
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Add platform support for ARMv5TE
@@ -259,10 +259,6 @@ specifically
 https://github.com/astral-sh/uv/blob/91c3ebc6f7bf07c4a5b9c9bd22f9d65e31c38c75/crates/uv-platform-tags/src/platform.rs#L75-L93
 
 it seems fine to add a new variant there (as in https://github.com/astral-sh/uv/pull/8660), if that works for you?
-
----
-
-_Referenced in [astral-sh/uv#10234](../../astral-sh/uv/pulls/10234.md) on 2024-12-30 07:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T12:58:57Z
 updated_at: 2024-12-12T16:00:02Z
 url: https://github.com/astral-sh/uv/issues/9838
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Handle verbose output for `uv pip list --verbose`
@@ -53,14 +53,6 @@ debugpy       1.8.8
 
 ---
 
-_Referenced in [pulumi/pulumi#18023](../../pulumi/pulumi/issues/18023.md) on 2024-12-12 13:00_
-
----
-
-_Referenced in [astral-sh/uv#9839](../../astral-sh/uv/pulls/9839.md) on 2024-12-12 13:11_
-
----
-
 _Label `compatibility` added by @charliermarsh on 2024-12-12 14:25_
 
 ---
@@ -80,13 +72,5 @@ I agree that it is a little weird, I wish `pip` had a flag specific to `pip list
 My actual use case is getting a list of installed packages and their installation path, so that I can go look for a special file inside the packages. This is to handle some special behaviour in http://github.com/pulumi/pulumi.
 
 Does uv provide another way to retrieve this? There's `uv tree`, but that does not provide machine readable output (nor the location information).
-
----
-
-_Referenced in [pulumi/pulumi#18107](../../pulumi/pulumi/pulls/18107.md) on 2024-12-23 13:50_
-
----
-
-_Referenced in [bernhard-42/vscode-ocp-cad-viewer#127](../../bernhard-42/vscode-ocp-cad-viewer/issues/127.md) on 2025-02-02 18:23_
 
 ---

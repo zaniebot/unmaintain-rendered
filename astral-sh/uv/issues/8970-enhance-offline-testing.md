@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-09T13:28:51Z
 updated_at: 2024-12-04T04:44:27Z
 url: https://github.com/astral-sh/uv/issues/8970
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Enhance offline testing
@@ -86,9 +86,5 @@ However, what I’m seeing suggests that disabling these features is not necessa
 _Comment by @zanieb on 2024-12-04 04:44_
 
 @musicinmybrain I'm supportive of adding Linux-only test jobs here that confirm the features are working as intended. We aren't likely to prioritize it, but if someone wants to help it would be appreciated.
-
----
-
-_Referenced in [astral-sh/uv#13699](../../astral-sh/uv/pulls/13699.md) on 2025-05-28 11:42_
 
 ---

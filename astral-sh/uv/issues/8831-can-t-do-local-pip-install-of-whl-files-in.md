@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T16:28:07Z
 updated_at: 2024-11-05T21:07:08Z
 url: https://github.com/astral-sh/uv/issues/8831
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # can't do local pip install of whl files in requirements.txt when sys_platform is used 
@@ -165,10 +165,6 @@ Candidly, I don't want to have incompatible parsing between the two URL formats.
 _Comment by @charliermarsh on 2024-11-05 18:24_
 
 Okay, I think we can make this work. I agree it's not super intuitive right now.
-
----
-
-_Referenced in [astral-sh/uv#8836](../../astral-sh/uv/pulls/8836.md) on 2024-11-05 18:36_
 
 ---
 

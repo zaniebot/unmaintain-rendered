@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-10T06:32:18Z
 updated_at: 2025-01-07T13:47:06Z
 url: https://github.com/astral-sh/uv/issues/9764
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv remove` could avoid erroring when extras are included
@@ -59,10 +59,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-06 22:57_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2025-01-06 22:57_
-
----
-
-_Referenced in [astral-sh/uv#10338](../../astral-sh/uv/pulls/10338.md) on 2025-01-06 23:33_
 
 ---
 

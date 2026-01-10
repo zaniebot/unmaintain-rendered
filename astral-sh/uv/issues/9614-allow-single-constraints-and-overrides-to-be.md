@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-03T18:08:29Z
 updated_at: 2024-12-07T22:21:44Z
 url: https://github.com/astral-sh/uv/issues/9614
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Allow single constraints and overrides to be passed via the CLI
@@ -130,9 +130,5 @@ Alas. I'm not sure what to do about that.
 As a minor note, it's `UV_CONSTRAINT`.
 
 One alternative option: we could align on the name in the `pyproject.toml`, which would be `--dependency-constraint` and `--dependency-override`. I don't love the setting name though (I find it non-obvious).
-
----
-
-_Referenced in [astral-sh/uv#9502](../../astral-sh/uv/issues/9502.md) on 2024-12-27 13:58_
 
 ---

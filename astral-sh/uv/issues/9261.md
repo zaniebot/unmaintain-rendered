@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-20T03:07:47Z
 updated_at: 2024-11-20T03:27:13Z
 url: https://github.com/astral-sh/uv/issues/9261
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # "uv sync --all-packages" is not adding groups other than dev
@@ -111,9 +111,5 @@ I will close this issue since it is a duplicate of #8594 then
 ---
 
 _Closed by @inoa-jboliveira on 2024-11-20 03:27_
-
----
-
-_Referenced in [astral-sh/uv#9755](../../astral-sh/uv/issues/9755.md) on 2024-12-10 00:10_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-31T12:10:52Z
 updated_at: 2024-10-30T19:12:25Z
 url: https://github.com/astral-sh/uv/issues/3936
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Stop workspace discovery for git and other cache entries at cache entry root
@@ -33,10 +33,6 @@ What are Cargo's rules here?
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:23_
-
----
-
-_Referenced in [astral-sh/uv#8665](../../astral-sh/uv/pulls/8665.md) on 2024-10-29 16:07_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T02:25:46Z
 updated_at: 2024-12-16T04:44:55Z
 url: https://github.com/astral-sh/uv/issues/6400
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # FR: Support installing and managing `uv` with `uv tool`
@@ -74,18 +74,6 @@ Hm like `uv upgrade`?
 - Upgrade all Python versions
 
 Could be cool.
-
----
-
-_Referenced in [astral-sh/uv#6679](../../astral-sh/uv/issues/6679.md) on 2024-08-27 11:36_
-
----
-
-_Referenced in [astral-sh/uv#8914](../../astral-sh/uv/pulls/8914.md) on 2024-11-08 02:48_
-
----
-
-_Referenced in [astral-sh/uv#8963](../../astral-sh/uv/pulls/8963.md) on 2024-11-09 01:31_
 
 ---
 

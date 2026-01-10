@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-18T15:14:47Z
 updated_at: 2024-11-18T17:41:23Z
 url: https://github.com/astral-sh/uv/issues/9200
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Git operation failed cannot find binary path for git dependencies while doing `uv sync` in dockerfile
@@ -249,10 +249,6 @@ _Label `error messages` added by @charliermarsh on 2024-11-18 15:34_
 _Comment by @charliermarsh on 2024-11-18 15:34_
 
 The action item here is: give a better error message when `git` isn't installed.
-
----
-
-_Referenced in [astral-sh/uv#9206](../../astral-sh/uv/pulls/9206.md) on 2024-11-18 16:47_
 
 ---
 

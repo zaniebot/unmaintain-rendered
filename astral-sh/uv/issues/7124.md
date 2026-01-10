@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-06T11:51:06Z
 updated_at: 2024-11-07T20:29:57Z
 url: https://github.com/astral-sh/uv/issues/7124
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Enhancement: Change order of discovery of python environments for `uv pip install` 
@@ -418,10 +418,6 @@ foo
 
 ---
 
-_Referenced in [astral-sh/uv#7691](../../astral-sh/uv/pulls/7691.md) on 2024-09-25 19:00_
-
----
-
 _Comment by @zanieb on 2024-09-25 19:02_
 
 I think I have the right idea in https://github.com/astral-sh/uv/pull/7691
@@ -494,17 +490,5 @@ I wish the conda environment variable documentation were a little more verbose s
 ---
 
 _Closed by @zanieb on 2024-11-07 20:29_
-
----
-
-_Referenced in [astral-sh/uv#8940](../../astral-sh/uv/issues/8940.md) on 2024-11-08 14:18_
-
----
-
-_Referenced in [astral-sh/ty#611](../../astral-sh/ty/issues/611.md) on 2025-06-09 13:51_
-
----
-
-_Referenced in [astral-sh/uv#15604](../../astral-sh/uv/issues/15604.md) on 2025-09-01 09:12_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-05T21:31:24Z
 updated_at: 2024-11-05T21:39:13Z
 url: https://github.com/astral-sh/uv/issues/8842
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # ✨[Feature Request]: Filter uv install by Python Package Authority's Security Advisory Database.✨
@@ -54,16 +54,8 @@ Thanks for considering my request! 🙏
 
 ---
 
-_Referenced in [pypa/pip#13066](../../pypa/pip/issues/13066.md) on 2024-11-05 21:35_
-
----
-
 _Comment by @galenseilis on 2024-11-05 21:39_
 
 Looks like [PDM supports uv](https://pdm-project.org/en/latest/usage/uv/) experimentally so, this type of change could become an integral part of PDM if that support continues and matures.
-
----
-
-_Referenced in [astral-sh/uv#9189](../../astral-sh/uv/issues/9189.md) on 2024-11-18 08:57_
 
 ---

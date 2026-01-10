@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T10:54:45Z
 updated_at: 2024-12-06T13:24:27Z
 url: https://github.com/astral-sh/uv/issues/9673
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Wheel selection does not order by build tag correctly
@@ -103,10 +103,6 @@ _Label `bug` added by @charliermarsh on 2024-12-06 12:09_
 _Comment by @charliermarsh on 2024-12-06 12:23_
 
 Confirmed bug, I'll fix it now, thanks.
-
----
-
-_Referenced in [astral-sh/uv#9677](../../astral-sh/uv/pulls/9677.md) on 2024-12-06 12:29_
 
 ---
 

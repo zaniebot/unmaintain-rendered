@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T01:31:17Z
 updated_at: 2024-11-08T18:15:33Z
 url: https://github.com/astral-sh/uv/issues/8913
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # latest release fails on widonws CICD
@@ -57,10 +57,6 @@ Can you open a new issue? This one is for CI / CD. Briefly, a `uv self update` s
 
 ---
 
-_Referenced in [bentoml/BentoML#5069](../../bentoml/BentoML/issues/5069.md) on 2024-11-08 07:44_
-
----
-
 _Comment by @TimChild on 2024-11-08 17:21_
 
 @zanieb Yea, I had the Cargo path set in a Docker file that my CI depended on. So CI was just where I happened to notice it. Easy to fix, and now I know that I can version the install too. Thanks for the good work!
@@ -74,9 +70,5 @@ Thanks for following up!
 ---
 
 _Closed by @zanieb on 2024-11-08 18:15_
-
----
-
-_Referenced in [gdsfactory/gdsfactory#3347](../../gdsfactory/gdsfactory/issues/3347.md) on 2024-11-09 18:29_
 
 ---

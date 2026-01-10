@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-26T04:14:10Z
 updated_at: 2024-10-28T09:57:46Z
 url: https://github.com/astral-sh/uv/issues/8584
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Trusted publishing support for GitHub Actions + TestPyPI via `uv publish`
@@ -82,13 +82,5 @@ Thanks, great to know the endpoint and the suggestion to `--trusted-publishing` 
 This was a tad cryptic without knowing the ins-and-outs of trusted publishing, but the issue was that I had not set `id-token` write permission, [as described here](https://docs.pypi.org/trusted-publishers/using-a-publisher/). Once this was set, everything worked.
 
 Thank you so much for your help.
-
----
-
-_Referenced in [astral-sh/uv#8632](../../astral-sh/uv/pulls/8632.md) on 2024-10-28 11:04_
-
----
-
-_Referenced in [gerrymanoim/exchange_calendars#501](../../gerrymanoim/exchange_calendars/issues/501.md) on 2025-10-13 14:53_
 
 ---

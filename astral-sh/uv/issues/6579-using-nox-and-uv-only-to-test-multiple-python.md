@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T12:10:24Z
 updated_at: 2025-01-07T20:11:39Z
 url: https://github.com/astral-sh/uv/issues/6579
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # using nox and uv only to test multiple python versions
@@ -144,10 +144,6 @@ _Label `question` added by @charliermarsh on 2024-08-25 11:46_
 _Comment by @samypr100 on 2024-08-25 20:51_
 
 @henryiii might have ideas on the ideal way to do this using Nox with uv as he was the author of the integration of nox with uv
-
----
-
-_Referenced in [wntrblm/nox#842](../../wntrblm/nox/pulls/842.md) on 2024-08-27 22:06_
 
 ---
 
@@ -293,21 +289,5 @@ But now it works like a charm!!
 ---
 
 _Closed by @zanieb on 2025-01-07 20:11_
-
----
-
-_Referenced in [glass-dev/glass#471](../../glass-dev/glass/pulls/471.md) on 2025-01-13 17:04_
-
----
-
-_Referenced in [wntrblm/nox#841](../../wntrblm/nox/issues/841.md) on 2025-03-21 14:02_
-
----
-
-_Referenced in [Qiskit/rustworkx#1416](../../Qiskit/rustworkx/issues/1416.md) on 2025-05-01 14:26_
-
----
-
-_Referenced in [planetlabs/planet-mcp#7](../../planetlabs/planet-mcp/pulls/7.md) on 2025-09-23 15:19_
 
 ---

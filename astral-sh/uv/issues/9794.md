@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T00:36:01Z
 updated_at: 2024-12-16T19:46:41Z
 url: https://github.com/astral-sh/uv/issues/9794
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # consider adding UV_OFFLINE environment variable
@@ -28,10 +28,6 @@ I started using `uv` a few days ago. Amazing tool! I want to run a few commands 
 _Comment by @zanieb on 2024-12-11 00:47_
 
 Seems reasonable to me, see https://github.com/astral-sh/uv/pull/9795
-
----
-
-_Referenced in [astral-sh/uv#9795](../../astral-sh/uv/pulls/9795.md) on 2024-12-11 00:47_
 
 ---
 

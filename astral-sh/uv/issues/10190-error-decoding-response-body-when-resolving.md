@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T09:34:39Z
 updated_at: 2024-12-29T22:52:07Z
 url: https://github.com/astral-sh/uv/issues/10190
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `error decoding response body` when resolving dependencies from aws codeartifact repo since 0.5.12
@@ -87,10 +87,6 @@ error: Failed to fetch: `https://gitlab.com/api/v4/groups/***/-/packages/pypi/si
 _Comment by @charliermarsh on 2024-12-27 13:36_
 
 Sorry -- this is a bug in `reqwests` that I fixed last night (#10187), but didn't realize that the subsequent release failed. I'll get it out now.
-
----
-
-_Referenced in [astral-sh/uv#10191](../../astral-sh/uv/issues/10191.md) on 2024-12-27 13:40_
 
 ---
 

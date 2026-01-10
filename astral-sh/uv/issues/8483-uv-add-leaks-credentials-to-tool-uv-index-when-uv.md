@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-23T01:19:03Z
 updated_at: 2025-01-06T15:19:36Z
 url: https://github.com/astral-sh/uv/issues/8483
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv add` leaks credentials to `tool.uv.index` when `UV_DEFAULT_INDEX` is set
@@ -86,10 +86,6 @@ I'll fix it for today's release.
 
 ---
 
-_Referenced in [astral-sh/uv#8502](../../astral-sh/uv/pulls/8502.md) on 2024-10-23 14:31_
-
----
-
 _Closed by @charliermarsh on 2024-10-23 14:57_
 
 ---
@@ -126,9 +122,5 @@ I have read the docs on configuration and private indexes, but I don't get the p
 _Comment by @charliermarsh on 2025-01-06 15:16_
 
 That's ok. I thought I fixed it but I may be misremembering -- I'll look again today.
-
----
-
-_Referenced in [astral-sh/uv#10328](../../astral-sh/uv/issues/10328.md) on 2025-01-06 15:40_
 
 ---

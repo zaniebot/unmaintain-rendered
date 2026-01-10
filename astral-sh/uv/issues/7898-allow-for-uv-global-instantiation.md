@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-03T14:46:41Z
 updated_at: 2024-12-09T14:55:49Z
 url: https://github.com/astral-sh/uv/issues/7898
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Allow for `uv` global instantiation
@@ -79,10 +79,6 @@ With this setup, I can activate my environment/s from anywhere by simply calling
 Then any `uv pip install ...` will install the new packages in the activated environment that works globally. I hope this helps.
 
 Would be nice to have the `activate` command under `uv activate <env_name>`
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2024-10-26 03:59_
 
 ---
 

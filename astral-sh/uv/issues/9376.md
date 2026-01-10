@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T01:30:05Z
 updated_at: 2024-11-26T23:30:17Z
 url: https://github.com/astral-sh/uv/issues/9376
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # loop over python versions in github actions
@@ -74,9 +74,5 @@ Yeah `uv run` would respect the `.python-version` file and ignore the installed 
 _Comment by @zkurtz on 2024-11-26 21:53_
 
 https://github.com/astral-sh/uv/pull/9454
-
----
-
-_Referenced in [astral-sh/uv#9454](../../astral-sh/uv/pulls/9454.md) on 2024-11-26 23:29_
 
 ---

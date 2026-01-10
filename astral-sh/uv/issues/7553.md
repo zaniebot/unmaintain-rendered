@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-19T16:19:06Z
 updated_at: 2024-11-26T14:51:33Z
 url: https://github.com/astral-sh/uv/issues/7553
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # open3d==0.18.0 has no wheels with a matching Python implementation tag
@@ -121,10 +121,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-19 16:58_
 
 ---
 
-_Referenced in [astral-sh/uv#7556](../../astral-sh/uv/pulls/7556.md) on 2024-09-19 17:02_
-
----
-
 _Comment by @zhou13 on 2024-09-19 17:15_
 
 Thank you for the quick response.
@@ -150,18 +146,6 @@ _Reopened by @zanieb on 2024-09-21 13:42_
 _Comment by @zanieb on 2024-09-21 13:43_
 
 We reverted #7556 in #7608 because it caused a regression in #7606 — we'll revisit this.
-
----
-
-_Referenced in [astral-sh/uv#8922](../../astral-sh/uv/issues/8922.md) on 2024-11-08 07:15_
-
----
-
-_Referenced in [astral-sh/uv#9283](../../astral-sh/uv/issues/9283.md) on 2024-11-21 22:40_
-
----
-
-_Referenced in [astral-sh/uv#9339](../../astral-sh/uv/pulls/9339.md) on 2024-11-21 22:47_
 
 ---
 

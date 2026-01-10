@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T16:23:36Z
 updated_at: 2024-11-19T19:37:51Z
 url: https://github.com/astral-sh/uv/issues/4966
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support `manylinux_x_y` in `--python-platform`
@@ -57,10 +57,6 @@ I understand it is not the general support for `manylinux_x_y` that this issue i
 _Comment by @charliermarsh on 2024-11-19 14:16_
 
 Yeah that's fine, PR welcome.
-
----
-
-_Referenced in [astral-sh/uv#9234](../../astral-sh/uv/pulls/9234.md) on 2024-11-19 16:49_
 
 ---
 

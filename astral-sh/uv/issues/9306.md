@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-21T09:47:19Z
 updated_at: 2024-11-21T13:58:11Z
 url: https://github.com/astral-sh/uv/issues/9306
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Packages depending on torch do not respect torch version
@@ -101,14 +101,6 @@ However, packages installed with the pip interface are not tracked in the pyproj
 Do you have any idea about how to solve this problem? Am I doing something wrong?
 
 Thanks a lot!
-
----
-
-_Referenced in [astral-sh/uv#9307](../../astral-sh/uv/issues/9307.md) on 2024-11-21 10:18_
-
----
-
-_Referenced in [astral-sh/uv#9310](../../astral-sh/uv/issues/9310.md) on 2024-11-21 11:15_
 
 ---
 

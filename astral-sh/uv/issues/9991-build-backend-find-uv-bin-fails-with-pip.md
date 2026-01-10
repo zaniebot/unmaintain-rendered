@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-18T09:46:29Z
 updated_at: 2024-12-20T09:15:25Z
 url: https://github.com/astral-sh/uv/issues/9991
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # build backend: `find_uv_bin` fails with pip
@@ -137,10 +137,6 @@ _Label `preview` added by @charliermarsh on 2024-12-18 17:23_
 ---
 
 _Renamed from "build backend: issue locating uv executable when installing with pip" to "build backend: `find_uv_bin` fails with pip" by @konstin on 2024-12-18 19:14_
-
----
-
-_Referenced in [astral-sh/uv#10028](../../astral-sh/uv/pulls/10028.md) on 2024-12-19 14:08_
 
 ---
 

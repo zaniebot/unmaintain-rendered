@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T08:54:37Z
 updated_at: 2024-12-10T18:56:53Z
 url: https://github.com/astral-sh/uv/issues/8075
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Inconsistent `uv python find` error message
@@ -79,10 +79,6 @@ Expression: snapshot
 To update snapshots run `cargo insta review`
 Stopped on the first failure. Run `cargo insta test` to run all snapshots.
 ```
-
----
-
-_Referenced in [astral-sh/uv#8086](../../astral-sh/uv/pulls/8086.md) on 2024-10-10 12:17_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-03T20:08:59Z
 updated_at: 2024-11-27T19:54:50Z
 url: https://github.com/astral-sh/uv/issues/8781
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Warn when using the keyring in `uv publish` but it doesn't have credentials
@@ -37,14 +37,6 @@ _Comment by @cthoyt on 2024-11-04 07:50_
 Thanks @konstin for following up on this. Such a test could also make a specific test when you use `--publish-url https://test.pypi.org/legacy/` and there's no credentials but there is something like `https://test.pypi.org/legacy/?PACKAGE` available - it could say "hey, you might want to use a package-specific publish URL that has the following form where ?PACKAGE is your package`. 
 
 Should uv go even further to guess the right publish URL in keyring based on the current package name? Can uv publish even introspect on that metadata?
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-04 10:25_
-
----
-
-_Referenced in [astral-sh/uv#8827](../../astral-sh/uv/pulls/8827.md) on 2024-11-05 08:44_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-30T10:33:27Z
 updated_at: 2024-12-03T22:05:09Z
 url: https://github.com/astral-sh/uv/issues/9537
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Editable dependency in dev environment only, and source the git version in packaging environment
@@ -70,13 +70,5 @@ _Comment by @choucavalier on 2024-12-03 22:05_
 ---
 
 _Closed by @choucavalier on 2024-12-03 22:05_
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
 
 ---

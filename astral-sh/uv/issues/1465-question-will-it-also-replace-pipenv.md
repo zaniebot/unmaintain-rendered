@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T09:49:48Z
 updated_at: 2025-01-01T10:58:50Z
 url: https://github.com/astral-sh/uv/issues/1465
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Question: Will it also replace `pipenv`?
@@ -198,9 +198,5 @@ _Comment by @datalifenyc on 2024-09-26 00:14_
 _Comment by @cclauss on 2025-01-01 10:58_
 
 # https://pypi.org/project/pipenv-uv-migrate
-
----
-
-_Referenced in [nycdepartmentoffinance/onboarding#33](../../nycdepartmentoffinance/onboarding/issues/33.md) on 2025-08-20 20:19_
 
 ---

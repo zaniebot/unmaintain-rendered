@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-23T00:50:46Z
 updated_at: 2024-10-24T02:34:46Z
 url: https://github.com/astral-sh/uv/issues/8482
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Improving netrc documentation
@@ -39,10 +39,6 @@ _Label `documentation` added by @charliermarsh on 2024-10-24 02:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-24 02:28_
-
----
-
-_Referenced in [astral-sh/uv#8511](../../astral-sh/uv/pulls/8511.md) on 2024-10-24 02:28_
 
 ---
 

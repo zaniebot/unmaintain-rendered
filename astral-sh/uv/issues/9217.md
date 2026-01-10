@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-19T07:46:16Z
 updated_at: 2024-12-26T16:56:23Z
 url: https://github.com/astral-sh/uv/issues/9217
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv` appears to be locking incorrect transitive dependencies when used by Renovate on `pyscss` with python 3.11
@@ -1321,10 +1321,6 @@ pyscss doesn't use environment markers, it looks at `sys.version_info` when `set
 https://github.com/Kronuz/pyScss/blob/73559d047706ccd4593cf6aa092de71f35164723/setup.py#L17-L20
 
 I assume the difference locally is because you installed the package which populated the cache with a wheel that has the correct metadata.
-
----
-
-_Referenced in [communitiesuk/funding-service-design-workflows#197](../../communitiesuk/funding-service-design-workflows/pulls/197.md) on 2024-11-22 08:54_
 
 ---
 

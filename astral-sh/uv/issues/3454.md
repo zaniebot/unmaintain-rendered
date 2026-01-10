@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T09:25:19Z
 updated_at: 2024-11-20T14:54:14Z
 url: https://github.com/astral-sh/uv/issues/3454
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Incorrect locking with uv `--python-platform x86_64-apple-darwin`
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-08 14:32_
 
 ---
 
-_Referenced in [astral-sh/uv#3469](../../astral-sh/uv/pulls/3469.md) on 2024-05-08 19:30_
-
----
-
 _Comment by @charliermarsh on 2024-05-08 19:51_
 
 Bumping the default to 12.0 (last non-EOL version), and adding support for `MACOSX_DEPLOYMENT_TARGET` so that you can override it as needed.
@@ -87,9 +83,5 @@ Is it a deliberate decision to keep `MACOSX_DEPLOYMENT_TARGET` as only a externa
 _Comment by @charliermarsh on 2024-11-20 14:54_
 
 Yeah, mostly because it's a standard environment variable read by other tools, so it's a little unusual for us to expose it as uv-specific configuration.
-
----
-
-_Referenced in [astral-sh/uv#9837](../../astral-sh/uv/issues/9837.md) on 2024-12-12 12:47_
 
 ---

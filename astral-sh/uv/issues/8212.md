@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T12:19:25Z
 updated_at: 2024-12-26T16:33:50Z
 url: https://github.com/astral-sh/uv/issues/8212
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Improve errors / diagnostics when package is missing `__init__.py`
@@ -107,10 +107,6 @@ _Comment by @drmason13 on 2024-10-16 16:13_
 Ah I see, thanks for the clarification. I can go ask the same question at the hatchling repo.
 
 Absolutely fine to close this, I agree it's not your issue. Thank you for your excellent work with uv, it's been a joy to use!
-
----
-
-_Referenced in [pypa/hatch#1763](../../pypa/hatch/issues/1763.md) on 2024-10-21 15:44_
 
 ---
 

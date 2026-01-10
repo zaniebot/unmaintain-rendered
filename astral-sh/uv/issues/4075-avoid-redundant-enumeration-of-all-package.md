@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T21:00:22Z
 updated_at: 2024-12-16T21:31:36Z
 url: https://github.com/astral-sh/uv/issues/4075
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Avoid redundant enumeration of all package versions during solve failure
@@ -61,18 +61,6 @@ https://github.com/astral-sh/uv/blob/57ea55d2185213236e68fef82135f1cfc1686043/cr
 
 and collapse that to "all versions" when we see we're enumerating all of the available versions
 
-
----
-
-_Referenced in [astral-sh/uv#5046](../../astral-sh/uv/issues/5046.md) on 2024-07-14 16:10_
-
----
-
-_Referenced in [astral-sh/uv#9884](../../astral-sh/uv/pulls/9884.md) on 2024-12-13 20:59_
-
----
-
-_Referenced in [astral-sh/uv#9885](../../astral-sh/uv/pulls/9885.md) on 2024-12-13 21:00_
 
 ---
 

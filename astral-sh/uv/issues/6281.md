@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T23:11:40Z
 updated_at: 2024-12-22T15:32:09Z
 url: https://github.com/astral-sh/uv/issues/6281
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Unable to install/build the `llvmlite` package
@@ -1898,60 +1898,12 @@ Hmm, I don't know if it would really be better to allow for that added complexit
 
 ---
 
-_Referenced in [astral-sh/uv#7881](../../astral-sh/uv/issues/7881.md) on 2024-10-02 22:51_
-
----
-
-_Referenced in [astral-sh/uv#7965](../../astral-sh/uv/issues/7965.md) on 2024-10-08 22:46_
-
----
-
-_Referenced in [astral-sh/uv#8157](../../astral-sh/uv/issues/8157.md) on 2024-10-13 13:03_
-
----
-
-_Referenced in [idiap/coqui-ai-TTS#109](../../idiap/coqui-ai-TTS/pulls/109.md) on 2024-10-20 13:28_
-
----
-
 _Closed by @zanieb on 2024-10-21 21:19_
-
----
-
-_Referenced in [astral-sh/uv#8863](../../astral-sh/uv/issues/8863.md) on 2024-11-06 16:26_
-
----
-
-_Referenced in [astral-sh/uv#9322](../../astral-sh/uv/issues/9322.md) on 2024-11-21 14:56_
-
----
-
-_Referenced in [astral-sh/uv#9898](../../astral-sh/uv/issues/9898.md) on 2024-12-14 20:24_
 
 ---
 
 _Comment by @kym6464 on 2024-12-22 15:32_
 
 I ran into this issue when trying to install `llvmlite` on Python 3.13 and the solution was to downgrade to Python 3.12. Potentially related issue https://github.com/numba/llvmlite/issues/1084
-
----
-
-_Referenced in [nguyenvulong/QA#96](../../nguyenvulong/QA/issues/96.md) on 2025-02-04 07:20_
-
----
-
-_Referenced in [astral-sh/uv#11636](../../astral-sh/uv/issues/11636.md) on 2025-02-19 20:01_
-
----
-
-_Referenced in [MaartenGr/BERTopic#2311](../../MaartenGr/BERTopic/issues/2311.md) on 2025-03-23 21:17_
-
----
-
-_Referenced in [astral-sh/uv#14484](../../astral-sh/uv/issues/14484.md) on 2025-07-07 13:29_
-
----
-
-_Referenced in [prefix-dev/pixi#4714](../../prefix-dev/pixi/issues/4714.md) on 2025-10-08 18:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T14:20:30Z
 updated_at: 2024-11-20T00:32:30Z
 url: https://github.com/astral-sh/uv/issues/3410
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Remove `VerbatimUrl` where we have a parsed url type
@@ -34,14 +34,6 @@ _Label `enhancement` added by @konstin on 2024-05-06 14:20_
 ---
 
 _Assigned to @konstin by @konstin on 2024-05-06 14:20_
-
----
-
-_Referenced in [astral-sh/uv#3407](../../astral-sh/uv/issues/3407.md) on 2024-05-06 14:21_
-
----
-
-_Referenced in [astral-sh/uv#3758](../../astral-sh/uv/pulls/3758.md) on 2024-05-23 21:01_
 
 ---
 

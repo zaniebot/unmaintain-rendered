@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-18T09:32:07Z
 updated_at: 2024-12-18T17:22:28Z
 url: https://github.com/astral-sh/uv/issues/9990
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv pip compile -P <specific-package>` changes unrelated packages
@@ -263,9 +263,5 @@ Same general problem as #6158.
 ---
 
 _Closed by @charliermarsh on 2024-12-18 17:22_
-
----
-
-_Referenced in [mlrun/mlrun#7558](../../mlrun/mlrun/pulls/7558.md) on 2025-04-01 10:58_
 
 ---

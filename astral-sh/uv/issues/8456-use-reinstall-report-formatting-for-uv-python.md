@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-22T14:21:15Z
 updated_at: 2024-10-23T18:53:35Z
 url: https://github.com/astral-sh/uv/issues/8456
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Use reinstall report formatting for `uv python install --reinstall`
@@ -40,10 +40,6 @@ _Label `cli` added by @zanieb on 2024-10-22 14:21_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-10-22 14:52_
-
----
-
-_Referenced in [astral-sh/uv#8487](../../astral-sh/uv/pulls/8487.md) on 2024-10-23 05:23_
 
 ---
 

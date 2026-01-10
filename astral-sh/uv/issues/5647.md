@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-31T11:29:22Z
 updated_at: 2024-10-28T21:10:52Z
 url: https://github.com/astral-sh/uv/issues/5647
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # universal locking: allow forking when respecting Python version?
@@ -123,10 +123,6 @@ In general, every dependency in https://github.com/pyca/cryptography/blob/main/c
 Our overall use case is: We want to pin dependencies in CI for reproducibility. We also want to test against the newest versions (using dependabot). And we want to test on multiple python versions/environments.
 
 Our ideal behavior, therefore, would be a single lockfile that gets us the newest versions for each platform.
-
----
-
-_Referenced in [pyprojectx/pyprojectx#112](../../pyprojectx/pyprojectx/issues/112.md) on 2024-08-05 12:06_
 
 ---
 

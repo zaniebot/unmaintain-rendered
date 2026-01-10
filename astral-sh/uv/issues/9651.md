@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T23:51:17Z
 updated_at: 2025-01-06T00:59:50Z
 url: https://github.com/astral-sh/uv/issues/9651
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # PyTorch nightly index makes uv download all torch versions in a loop
@@ -279,20 +279,8 @@ _Closed by @ViRb3 on 2024-12-07 20:30_
 
 ---
 
-_Referenced in [KellerJordan/modded-nanogpt#56](../../KellerJordan/modded-nanogpt/pulls/56.md) on 2024-12-19 19:47_
-
----
-
-_Referenced in [astral-sh/uv#10307](../../astral-sh/uv/pulls/10307.md) on 2025-01-06 00:32_
-
----
-
 _Comment by @charliermarsh on 2025-01-06 00:59_
 
 This should be _way_ better in the next release.
-
----
-
-_Referenced in [astral-sh/uv#10693](../../astral-sh/uv/issues/10693.md) on 2025-01-16 20:06_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-27T08:49:48Z
 updated_at: 2024-11-29T13:22:44Z
 url: https://github.com/astral-sh/uv/issues/9462
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv` is not installing the latest version of dependency packages
@@ -40,10 +40,6 @@ Because from the docs it should be installing the latest version.
 _Comment by @Laughing-q on 2024-11-27 08:50_
 
 Also I tried to pin a higher version for `tensorflowjs` but it raised another issue and did not install the packages at all. see https://github.com/ultralytics/ultralytics/pull/17749#issuecomment-2503231199
-
----
-
-_Referenced in [ultralytics/ultralytics#17749](../../ultralytics/ultralytics/pulls/17749.md) on 2024-11-27 08:51_
 
 ---
 

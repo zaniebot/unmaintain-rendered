@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-17T14:20:09Z
 updated_at: 2024-11-03T18:05:41Z
 url: https://github.com/astral-sh/uv/issues/8288
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Read timeout in publish integration test
@@ -116,10 +116,6 @@ _Label `internal` added by @zanieb on 2024-10-17 14:20_
 ---
 
 _Label `testing` added by @zanieb on 2024-10-17 14:20_
-
----
-
-_Referenced in [astral-sh/uv#8289](../../astral-sh/uv/pulls/8289.md) on 2024-10-17 14:25_
 
 ---
 

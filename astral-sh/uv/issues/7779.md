@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-29T13:25:50Z
 updated_at: 2024-11-08T17:02:32Z
 url: https://github.com/astral-sh/uv/issues/7779
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Ability to choose the lowest supported Python version
@@ -59,10 +59,6 @@ _Comment by @lengau on 2024-09-30 14:45_
 
 ---
 
-_Referenced in [astral-sh/uv#8247](../../astral-sh/uv/issues/8247.md) on 2024-11-08 17:00_
-
----
-
 _Comment by @zanieb on 2024-11-08 17:02_
 
 Turns out this was previously requested in https://github.com/astral-sh/uv/issues/5609 let's track there
@@ -74,9 +70,5 @@ _Closed by @zanieb on 2024-11-08 17:02_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-11-08 17:02_
-
----
-
-_Referenced in [astral-sh/uv#5609](../../astral-sh/uv/issues/5609.md) on 2024-11-08 17:03_
 
 ---

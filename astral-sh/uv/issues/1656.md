@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-18T16:49:54Z
 updated_at: 2024-12-08T02:31:51Z
 url: https://github.com/astral-sh/uv/issues/1656
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Virtualenv creation is failing on Python embedded versions
@@ -65,10 +65,6 @@ Best,
 ---
 
 _Label `virtualenv` added by @zanieb on 2024-02-18 20:37_
-
----
-
-_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-23 17:16_
 
 ---
 
@@ -167,10 +163,6 @@ _Comment by @Pixel-Minions on 2024-04-20 05:21_
 The comment you mentioned makes sense, there are ways around to create portable versions of python that might work with uv. I will try the nuget or winpython. 
 
 The reason for the embedded version is that, after some minor changes to the .pht file and using virtualenv, you can create portable virtual environment, it doesn't get linked to the interpreter source like if you would use a standard Python installation.
-
----
-
-_Referenced in [astral-sh/uv#3161](../../astral-sh/uv/pulls/3161.md) on 2024-04-20 15:52_
 
 ---
 

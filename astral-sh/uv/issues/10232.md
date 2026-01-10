@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-30T07:05:46Z
 updated_at: 2025-01-01T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/10232
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Issues with uv init when working with production/staging environments
@@ -103,10 +103,6 @@ It sounds like perhaps `uv init` should normalize the working directory name whe
 > I wish there is an option to just use uv as a package manager like pip or npm or PHP composer, and not a project manager that considers itself responsible for the entire folder as a project.
 
 There is — `uv pip`. The top-level uv commands are generally for project management. `uv add` requires a `pyproject.toml`. The overview at https://docs.astral.sh/uv/getting-started/features/ may be helpful.
-
----
-
-_Referenced in [astral-sh/uv#10245](../../astral-sh/uv/issues/10245.md) on 2024-12-30 21:56_
 
 ---
 

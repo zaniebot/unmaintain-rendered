@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-27T12:40:10Z
 updated_at: 2024-11-27T18:39:40Z
 url: https://github.com/astral-sh/uv/issues/9467
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `lock::lock_requires_python_exact` times out
@@ -34,10 +34,6 @@ Is it building from source?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-27 17:44_
-
----
-
-_Referenced in [astral-sh/uv#9481](../../astral-sh/uv/pulls/9481.md) on 2024-11-27 18:28_
 
 ---
 

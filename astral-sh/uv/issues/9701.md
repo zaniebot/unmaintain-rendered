@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-07T02:40:27Z
 updated_at: 2024-12-10T15:57:26Z
 url: https://github.com/astral-sh/uv/issues/9701
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Explaining odd behavior with dependency locking and installation.
@@ -195,14 +195,6 @@ Required-by:
 </details> 
 
 _Teach me your ways. The world is moving too slowly for me._
-
----
-
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-07 03:04_
-
----
-
-_Referenced in [astral-sh/uv#9700](../../astral-sh/uv/issues/9700.md) on 2024-12-07 03:06_
 
 ---
 

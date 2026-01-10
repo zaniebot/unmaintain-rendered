@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-02T09:46:19Z
 updated_at: 2024-12-29T01:32:46Z
 url: https://github.com/astral-sh/uv/issues/7863
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Direct dependency is incorrectly treated as indirect dependency
@@ -103,10 +103,6 @@ _Comment by @konstin on 2024-10-16 15:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-27 16:09_
-
----
-
-_Referenced in [astral-sh/uv#10197](../../astral-sh/uv/pulls/10197.md) on 2024-12-27 16:09_
 
 ---
 

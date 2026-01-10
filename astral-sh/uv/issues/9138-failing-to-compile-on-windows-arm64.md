@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-15T02:12:32Z
 updated_at: 2024-11-18T01:47:26Z
 url: https://github.com/astral-sh/uv/issues/9138
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Failing to compile on Windows ARM64
@@ -83,10 +83,6 @@ _Label `windows` added by @charliermarsh on 2024-11-17 16:39_
 _Comment by @charliermarsh on 2024-11-17 16:39_
 
 Looked into it and I think you're right that there's a real, separate problem with the sdist. Thanks.
-
----
-
-_Referenced in [astral-sh/uv#9172](../../astral-sh/uv/pulls/9172.md) on 2024-11-17 16:39_
 
 ---
 

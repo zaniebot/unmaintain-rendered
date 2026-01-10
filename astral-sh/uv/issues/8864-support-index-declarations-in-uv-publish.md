@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T16:06:19Z
 updated_at: 2024-12-10T21:17:49Z
 url: https://github.com/astral-sh/uv/issues/8864
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support index declarations in uv publish
@@ -43,18 +43,6 @@ Todo list:
 ---
 
 _Label `enhancement` added by @konstin on 2024-11-06 16:06_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-06 16:06_
-
----
-
-_Referenced in [astral-sh/uv#8817](../../astral-sh/uv/issues/8817.md) on 2024-11-08 10:08_
-
----
-
-_Referenced in [astral-sh/uv#9694](../../astral-sh/uv/pulls/9694.md) on 2024-12-06 19:20_
 
 ---
 

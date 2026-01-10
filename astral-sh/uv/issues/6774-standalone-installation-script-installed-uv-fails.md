@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T20:54:40Z
 updated_at: 2024-12-04T01:26:34Z
 url: https://github.com/astral-sh/uv/issues/6774
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Standalone installation script installed `uv` fails to `uv self update`
@@ -180,18 +180,6 @@ thanks!!
 
 ---
 
-_Referenced in [axodotdev/axoupdater#221](../../axodotdev/axoupdater/pulls/221.md) on 2024-11-28 00:01_
-
----
-
-_Referenced in [astral-sh/uv#9487](../../astral-sh/uv/pulls/9487.md) on 2024-11-28 00:03_
-
----
-
 _Closed by @zanieb on 2024-12-04 01:26_
-
----
-
-_Referenced in [astral-sh/uv#13672](../../astral-sh/uv/issues/13672.md) on 2025-05-28 11:20_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T15:56:56Z
 updated_at: 2024-10-24T16:23:57Z
 url: https://github.com/astral-sh/uv/issues/8465
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Error or warn when `uv.lock` version is unsupported
@@ -27,15 +27,7 @@ _Label `error messages` added by @charliermarsh on 2024-10-22 15:56_
 
 ---
 
-_Referenced in [astral-sh/uv#8501](../../astral-sh/uv/pulls/8501.md) on 2024-10-23 13:27_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-23 18:49_
-
----
-
-_Referenced in [astral-sh/uv#8509](../../astral-sh/uv/pulls/8509.md) on 2024-10-23 20:06_
 
 ---
 

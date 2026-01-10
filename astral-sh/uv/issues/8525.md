@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-24T12:12:51Z
 updated_at: 2024-11-20T14:42:44Z
 url: https://github.com/astral-sh/uv/issues/8525
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Python download retrying
@@ -111,18 +111,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 05:02_
 
 ---
 
-_Referenced in [astral-sh/uv#9274](../../astral-sh/uv/pulls/9274.md) on 2024-11-20 14:05_
-
----
-
 _Closed by @charliermarsh on 2024-11-20 14:42_
 
 ---
 
 _Closed by @charliermarsh on 2024-11-20 14:42_
-
----
-
-_Referenced in [astral-sh/uv#12149](../../astral-sh/uv/issues/12149.md) on 2025-03-13 11:00_
 
 ---

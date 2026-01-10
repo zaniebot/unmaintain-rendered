@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-29T01:54:17Z
 updated_at: 2024-10-29T13:51:01Z
 url: https://github.com/astral-sh/uv/issues/8652
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Create venv from script metadata
@@ -72,9 +72,5 @@ _Closed by @zanieb on 2024-10-29 13:50_
 _Comment by @zanieb on 2024-10-29 13:51_
 
 Let's track in the other issue.
-
----
-
-_Referenced in [astral-sh/uv#9061](../../astral-sh/uv/issues/9061.md) on 2024-11-12 18:59_
 
 ---

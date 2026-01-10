@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-20T15:16:19Z
 updated_at: 2024-12-20T15:17:58Z
 url: https://github.com/astral-sh/uv/issues/10057
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv python install --default with .python-versions misbehaves
@@ -63,9 +63,5 @@ _Assigned to @zanieb by @zanieb on 2024-12-20 15:17_
 _Comment by @zanieb on 2024-12-20 15:17_
 
 I initially implemented this to take the first version in the list then later we decided we wouldn't allow it. I must have missed the `.python-versions` case — will look into it.
-
----
-
-_Referenced in [astral-sh/uv#10060](../../astral-sh/uv/issues/10060.md) on 2024-12-20 15:38_
 
 ---

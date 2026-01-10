@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-17T15:45:32Z
 updated_at: 2024-10-30T20:33:59Z
 url: https://github.com/astral-sh/uv/issues/8292
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Feature request: Install only packages from an optional group
@@ -27,10 +27,6 @@ Poetry does heave this feature via the `--only` flag e.g: `poetry install --only
 
 As far as I can tell, `uv sync` doesn't allow this via any combination of flags.
 
-
----
-
-_Referenced in [DemocracyClub/EveryElection#2282](../../DemocracyClub/EveryElection/pulls/2282.md) on 2024-10-24 14:20_
 
 ---
 

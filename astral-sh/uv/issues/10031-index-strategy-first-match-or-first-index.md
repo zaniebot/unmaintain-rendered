@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-19T14:39:54Z
 updated_at: 2024-12-19T17:40:16Z
 url: https://github.com/astral-sh/uv/issues/10031
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `index-strategy`: `first-match` or `first-index`?
@@ -83,10 +83,6 @@ _Label `documentation` added by @charliermarsh on 2024-12-19 17:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-19 17:18_
-
----
-
-_Referenced in [astral-sh/uv#10036](../../astral-sh/uv/pulls/10036.md) on 2024-12-19 17:20_
 
 ---
 

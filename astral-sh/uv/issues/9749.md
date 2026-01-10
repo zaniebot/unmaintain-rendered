@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T20:50:40Z
 updated_at: 2024-12-10T19:20:41Z
 url: https://github.com/astral-sh/uv/issues/9749
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UV_CACHE_DIR not used for Python installation
@@ -77,10 +77,6 @@ It's not a cache though, we are just downloading the file there and moving it in
 _Comment by @charliermarsh on 2024-12-10 00:08_
 
 Yeah it's more like a scratch directory.
-
----
-
-_Referenced in [astral-sh/uv#9756](../../astral-sh/uv/pulls/9756.md) on 2024-12-10 00:15_
 
 ---
 

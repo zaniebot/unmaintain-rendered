@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T10:55:25Z
 updated_at: 2024-10-31T20:09:37Z
 url: https://github.com/astral-sh/uv/issues/8719
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv tree in workspaces including packages in dependency groups
@@ -148,10 +148,6 @@ _Label `question` removed by @charliermarsh on 2024-10-31 16:12_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-10-31 16:12_
-
----
-
-_Referenced in [astral-sh/uv#8730](../../astral-sh/uv/pulls/8730.md) on 2024-10-31 17:35_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T15:10:19Z
 updated_at: 2024-11-27T13:26:05Z
 url: https://github.com/astral-sh/uv/issues/9443
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # JSON schema requires `version` in `tool.uv.dependency-metadata`
@@ -93,10 +93,6 @@ DEFINITION:
         }
     }
 ```
-
----
-
-_Referenced in [astral-sh/uv#9468](../../astral-sh/uv/pulls/9468.md) on 2024-11-27 13:09_
 
 ---
 

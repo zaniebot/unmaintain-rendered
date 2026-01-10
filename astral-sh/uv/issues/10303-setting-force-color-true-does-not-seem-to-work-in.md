@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-01-05T16:54:40Z
 updated_at: 2025-01-06T02:18:18Z
 url: https://github.com/astral-sh/uv/issues/10303
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Setting FORCE_COLOR=true does not seem to work (in GH actions at least)
@@ -96,10 +96,6 @@ _Label `help wanted` added by @charliermarsh on 2025-01-05 20:46_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-06 00:56_
-
----
-
-_Referenced in [astral-sh/uv#10315](../../astral-sh/uv/pulls/10315.md) on 2025-01-06 01:00_
 
 ---
 

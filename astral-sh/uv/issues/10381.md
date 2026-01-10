@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-08T01:30:43Z
 updated_at: 2025-01-08T11:26:56Z
 url: https://github.com/astral-sh/uv/issues/10381
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Add uvx --with-inline-requirements-from
@@ -90,9 +90,5 @@ So perhaps going to close this even and I'll keep an eye on whichever design the
 ---
 
 _Closed by @Julian on 2025-01-08 11:26_
-
----
-
-_Referenced in [astral-sh/uv#15296](../../astral-sh/uv/issues/15296.md) on 2025-11-16 09:48_
 
 ---

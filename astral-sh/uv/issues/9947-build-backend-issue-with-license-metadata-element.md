@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-16T22:24:19Z
 updated_at: 2024-12-17T14:20:01Z
 url: https://github.com/astral-sh/uv/issues/9947
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # build backend - issue with license metadata element
@@ -74,10 +74,6 @@ _Assigned to @konstin by @zanieb on 2024-12-16 22:26_
 ---
 
 _Label `bug` added by @konstin on 2024-12-17 10:58_
-
----
-
-_Referenced in [astral-sh/uv#9965](../../astral-sh/uv/pulls/9965.md) on 2024-12-17 11:04_
 
 ---
 

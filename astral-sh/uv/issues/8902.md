@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-07T23:04:07Z
 updated_at: 2024-11-09T02:17:30Z
 url: https://github.com/astral-sh/uv/issues/8902
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv tree & uv pip tree don't show the correct package names.
@@ -136,9 +136,5 @@ _Closed by @charliermarsh on 2024-11-09 02:17_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-09 02:17_
-
----
-
-_Referenced in [astral-sh/uv#10061](../../astral-sh/uv/issues/10061.md) on 2024-12-20 17:06_
 
 ---

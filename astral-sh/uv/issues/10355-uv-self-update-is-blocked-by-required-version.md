@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T11:47:56Z
 updated_at: 2025-01-07T18:17:44Z
 url: https://github.com/astral-sh/uv/issues/10355
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv self update` is blocked by `required-version`
@@ -53,10 +53,6 @@ I think this makes sense to fix, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-07 13:44_
-
----
-
-_Referenced in [astral-sh/uv#10374](../../astral-sh/uv/pulls/10374.md) on 2025-01-07 18:08_
 
 ---
 

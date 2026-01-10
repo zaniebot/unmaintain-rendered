@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-28T01:14:46Z
 updated_at: 2024-10-28T03:23:14Z
 url: https://github.com/astral-sh/uv/issues/8626
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Docs say cache is $HOME/Library/Caches/uv but that may not be correct
@@ -98,10 +98,6 @@ On my machine outputs:
 
     /Users/simon/.cache/uv
 
-
----
-
-_Referenced in [astral-sh/uv#8627](../../astral-sh/uv/pulls/8627.md) on 2024-10-28 01:26_
 
 ---
 

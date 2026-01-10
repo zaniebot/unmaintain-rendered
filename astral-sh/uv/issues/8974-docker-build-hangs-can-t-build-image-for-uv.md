@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-09T15:40:30Z
 updated_at: 2024-11-09T20:21:37Z
 url: https://github.com/astral-sh/uv/issues/8974
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # docker build hangs, can't build image for uv locally
@@ -84,10 +84,6 @@ _Label `question` added by @zanieb on 2024-11-09 16:10_
 _Comment by @samypr100 on 2024-11-09 17:10_
 
 Is this on linux?
-
----
-
-_Referenced in [astral-sh/uv#8933](../../astral-sh/uv/pulls/8933.md) on 2024-11-09 17:36_
 
 ---
 

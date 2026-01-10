@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-18T19:50:49Z
 updated_at: 2024-11-20T20:21:34Z
 url: https://github.com/astral-sh/uv/issues/9211
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Dependency resolution: unclear behaviour of `--only-group`
@@ -316,9 +316,5 @@ This is basically the solution I ended up with (in my dev dependencies) 😉
 ---
 
 _Closed by @charliermarsh on 2024-11-20 20:21_
-
----
-
-_Referenced in [astral-sh/uv#9514](../../astral-sh/uv/issues/9514.md) on 2024-11-29 19:13_
 
 ---

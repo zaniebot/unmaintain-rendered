@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-21T10:15:51Z
 updated_at: 2024-11-21T13:58:02Z
 url: https://github.com/astral-sh/uv/issues/9307
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv with pytorch & huggingface toolchain
@@ -632,10 +632,6 @@ If torch is added via [environment markers](https://github.com/astral-sh/uv/blob
 _Comment by @maxstrobel on 2024-11-21 10:18_
 
 Seems that @mbignotti was a little bit faster than me filling the issue - looks like this one is a duplicate of https://github.com/astral-sh/uv/issues/9306, or the other way round.
-
----
-
-_Referenced in [astral-sh/uv#9310](../../astral-sh/uv/issues/9310.md) on 2024-11-21 11:15_
 
 ---
 

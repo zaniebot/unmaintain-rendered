@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-09T01:09:40Z
 updated_at: 2024-11-15T00:09:25Z
 url: https://github.com/astral-sh/uv/issues/8962
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Show full dependency chain when `uv pip compile` encounters an error running setup.py
@@ -79,10 +79,6 @@ Here, neither `wsgiref` nor `atomicwrites` is depended on directly, so I'm not s
 
 ---
 
-_Referenced in [pyca/cryptography#11924](../../pyca/cryptography/pulls/11924.md) on 2024-11-09 01:46_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-11-09 02:09_
 
 ---
@@ -124,26 +120,6 @@ _Label `enhancement` removed by @charliermarsh on 2024-11-11 00:47_
 _Comment by @charliermarsh on 2024-11-11 01:25_
 
 I'm working on this, I think it will be a great feature, but it's non-trivial.
-
----
-
-_Referenced in [astral-sh/uv#9043](../../astral-sh/uv/pulls/9043.md) on 2024-11-12 03:23_
-
----
-
-_Referenced in [astral-sh/uv#9098](../../astral-sh/uv/pulls/9098.md) on 2024-11-13 20:30_
-
----
-
-_Referenced in [astral-sh/uv#9102](../../astral-sh/uv/pulls/9102.md) on 2024-11-13 23:17_
-
----
-
-_Referenced in [astral-sh/uv#9106](../../astral-sh/uv/pulls/9106.md) on 2024-11-14 00:16_
-
----
-
-_Referenced in [astral-sh/uv#9108](../../astral-sh/uv/pulls/9108.md) on 2024-11-14 00:36_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-30T10:02:52Z
 updated_at: 2024-12-30T15:38:02Z
 url: https://github.com/astral-sh/uv/issues/10235
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # The program cannot write to the clipboard in a PySide6 project.
@@ -34,9 +34,5 @@ My guess is that this is a python-build-standalone quirk and can be merged into 
 ---
 
 _Closed by @charliermarsh on 2024-12-30 15:38_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#274](../../astral-sh/python-build-standalone/issues/274.md) on 2025-07-28 15:39_
 
 ---

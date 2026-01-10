@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T16:27:31Z
 updated_at: 2024-10-28T09:01:36Z
 url: https://github.com/astral-sh/uv/issues/6699
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Stubs on Windows exit abnormally, includes succinct repro with busybox, related to some wider issue
@@ -106,10 +106,6 @@ When the referenced issue talks of 'mingw python' it seems to mean the Python th
 
 ---
 
-_Referenced in [astral-sh/uv#6792](../../astral-sh/uv/pulls/6792.md) on 2024-08-29 04:38_
-
----
-
 _Comment by @samypr100 on 2024-08-29 04:46_
 
 @rmyorston Thanks for the explanation. I've made an adjustment in #6792 that would fix this issue, or at least not fault. I haven't digged into the busybox impl, but `lpReserved2` reports multiple file descriptors which are invalid handles which led to the issue manifesting. For now, I've switched the implementation to ignore any handle that seems to be invalid.
@@ -141,14 +137,6 @@ Failed to close child file descriptors at 1
 ```
 
 when invoking the stub from within sh onto stderr? otherwise things appear to be behaving normally
-
----
-
-_Referenced in [astral-sh/uv#6866](../../astral-sh/uv/issues/6866.md) on 2024-08-31 05:53_
-
----
-
-_Referenced in [astral-sh/uv#6955](../../astral-sh/uv/pulls/6955.md) on 2024-09-03 02:31_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-20T17:29:50Z
 updated_at: 2024-11-21T23:56:50Z
 url: https://github.com/astral-sh/uv/issues/9285
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # extra-index-url does not take precedence over keyring-provider
@@ -63,10 +63,6 @@ I wonder if it is similar to #8248
 ```
 uv 0.5.3 (56d362208 2024-11-19)
 ```
-
----
-
-_Referenced in [astral-sh/uv#9286](../../astral-sh/uv/issues/9286.md) on 2024-11-20 17:40_
 
 ---
 

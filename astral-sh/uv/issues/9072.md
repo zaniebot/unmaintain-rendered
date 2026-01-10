@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T23:27:57Z
 updated_at: 2024-11-13T03:53:58Z
 url: https://github.com/astral-sh/uv/issues/9072
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv init needlessly tries to discover a venv
@@ -43,10 +43,6 @@ I think this sounds like a bug, as-in, we should not read from virtual environme
 ---
 
 _Label `bug` added by @zanieb on 2024-11-13 01:08_
-
----
-
-_Referenced in [astral-sh/uv#9075](../../astral-sh/uv/pulls/9075.md) on 2024-11-13 01:23_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-13T19:38:40Z
 updated_at: 2024-11-08T00:50:08Z
 url: https://github.com/astral-sh/uv/issues/7376
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # "uv add pybullet" throws cpp compilation error when compiling the wheel
@@ -289,10 +289,6 @@ Since there is a user specific part in the path (username), the error may or may
 ---
 
 _Closed by @zanieb on 2024-10-21 21:53_
-
----
-
-_Referenced in [astral-sh/uv#8907](../../astral-sh/uv/pulls/8907.md) on 2024-11-08 00:25_
 
 ---
 

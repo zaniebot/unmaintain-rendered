@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-31T12:33:38Z
 updated_at: 2024-12-31T17:59:27Z
 url: https://github.com/astral-sh/uv/issues/10251
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Failed to download and build package from S3
@@ -50,10 +50,6 @@ _Label `bug` added by @charliermarsh on 2024-12-31 14:29_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-31 14:29_
-
----
-
-_Referenced in [astral-sh/uv#10253](../../astral-sh/uv/pulls/10253.md) on 2024-12-31 14:32_
 
 ---
 
@@ -158,9 +154,5 @@ _Closed by @charliermarsh on 2024-12-31 17:59_
 ---
 
 _Closed by @charliermarsh on 2024-12-31 17:59_
-
----
-
-_Referenced in [astral-sh/uv#10609](../../astral-sh/uv/issues/10609.md) on 2025-01-14 18:39_
 
 ---

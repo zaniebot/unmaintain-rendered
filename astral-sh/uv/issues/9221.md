@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-19T11:43:52Z
 updated_at: 2024-11-20T10:34:29Z
 url: https://github.com/astral-sh/uv/issues/9221
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Bug Report for Optional PyTorch Dependencies in `pyproject.toml`
@@ -116,10 +116,6 @@ _Comment by @FishAlchemist on 2024-11-19 12:53_
 This feature hasn't been released yet, so you won't be able to test it with the released version of UV.
 The PR that has this feature is https://github.com/astral-sh/uv/pull/9160, and it's not included in the 0.5.2 release.
 
-
----
-
-_Referenced in [astral-sh/uv#9224](../../astral-sh/uv/issues/9224.md) on 2024-11-19 13:05_
 
 ---
 

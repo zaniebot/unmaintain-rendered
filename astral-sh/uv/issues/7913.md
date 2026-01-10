@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-04T07:01:21Z
 updated_at: 2024-12-28T00:06:53Z
 url: https://github.com/astral-sh/uv/issues/7913
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add `--description` to `uv init`
@@ -34,10 +34,6 @@ _Label `help wanted` added by @charliermarsh on 2024-12-27 14:45_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-12-27 14:45_
-
----
-
-_Referenced in [astral-sh/uv#10209](../../astral-sh/uv/pulls/10209.md) on 2024-12-27 22:41_
 
 ---
 

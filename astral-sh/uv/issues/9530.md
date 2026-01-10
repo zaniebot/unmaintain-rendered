@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-29T19:26:52Z
 updated_at: 2024-11-30T03:40:24Z
 url: https://github.com/astral-sh/uv/issues/9530
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv pip compile` doesn't propagate markers on recursive self-extras
@@ -68,10 +68,6 @@ _Label `help wanted` added by @charliermarsh on 2024-11-29 19:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-30 03:05_
-
----
-
-_Referenced in [astral-sh/uv#9535](../../astral-sh/uv/pulls/9535.md) on 2024-11-30 03:28_
 
 ---
 

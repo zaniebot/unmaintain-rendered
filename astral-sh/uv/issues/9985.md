@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T23:18:57Z
 updated_at: 2024-12-18T18:54:53Z
 url: https://github.com/astral-sh/uv/issues/9985
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Conforming to the XDG specification
@@ -158,9 +158,5 @@ The other preview feature is a build backend. We'll probably talk more about pre
 ---
 
 _Closed by @NellyWhads on 2024-12-18 18:54_
-
----
-
-_Referenced in [astral-sh/uv#13307](../../astral-sh/uv/issues/13307.md) on 2025-05-06 00:14_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T09:24:23Z
 updated_at: 2025-01-07T14:21:04Z
 url: https://github.com/astral-sh/uv/issues/10343
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Change in `--upgrade` behavior breaks install from private registry
@@ -62,10 +62,6 @@ I think for your workflow it is proper to use `--reinstall` instead of `--upgrad
 
 ---
 
-_Referenced in [pydantic/pydantic-ai#624](../../pydantic/pydantic-ai/pulls/624.md) on 2025-01-07 10:43_
-
----
-
 _Comment by @T-256 on 2025-01-07 11:15_
 
 > See 
@@ -81,10 +77,6 @@ _Comment by @T-256 on 2025-01-07 11:15_
 
 With https://github.com/pydantic/pydantic-ai/issues/625#issuecomment-2574982831 I think you can either add `--reinstall-package <PKG>` per package or use `--reinstall --no-deps`.
 
-
----
-
-_Referenced in [pydantic/pydantic-ai#627](../../pydantic/pydantic-ai/pulls/627.md) on 2025-01-07 11:24_
 
 ---
 

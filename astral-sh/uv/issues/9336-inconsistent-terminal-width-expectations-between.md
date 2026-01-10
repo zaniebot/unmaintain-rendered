@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-21T20:34:17Z
 updated_at: 2024-11-26T10:07:54Z
 url: https://github.com/astral-sh/uv/issues/9336
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Inconsistent terminal width expectations between `built_by_uv_editable-2` and help tests
@@ -156,10 +156,6 @@ We're capturing pytest's behavior here, not uv's. We can set `COLUMNS` for the p
 
 ---
 
-_Referenced in [astral-sh/uv#9436](../../astral-sh/uv/pulls/9436.md) on 2024-11-26 09:14_
-
----
-
 _Closed by @konstin on 2024-11-26 09:59_
 
 ---
@@ -167,9 +163,5 @@ _Closed by @konstin on 2024-11-26 09:59_
 _Comment by @mgorny on 2024-11-26 10:07_
 
 Thank you!
-
----
-
-_Referenced in [astral-sh/uv#11588](../../astral-sh/uv/issues/11588.md) on 2025-02-18 07:14_
 
 ---

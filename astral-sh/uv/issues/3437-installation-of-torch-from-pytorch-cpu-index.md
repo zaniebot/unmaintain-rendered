@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-07T20:24:42Z
 updated_at: 2024-11-22T20:35:26Z
 url: https://github.com/astral-sh/uv/issues/3437
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Installation of torch from pytorch CPU index fails with 'no wheels are available with a matching Python ABI'
@@ -169,10 +169,6 @@ Not that I know of, but I can later tonight replicate with an older `uv` release
 
 ---
 
-_Referenced in [scikit-hep/coffea#1090](../../scikit-hep/coffea/pulls/1090.md) on 2024-05-07 20:54_
-
----
-
 _Comment by @charliermarsh on 2024-05-08 02:59_
 
 Can you try instead using `uv pip install --verbose --index-url https://download.pytorch.org/whl/cpu torch==2.3.0+cpu torchvision==0.18.0+cpu torchaudio==2.3.0+cpu`? I can't reproduce this on ARM, but I think it differs on ARM vs. x86.
@@ -242,10 +238,6 @@ Huh. That is interesting. I take it that this isn't fully expected, even though 
 _Comment by @charliermarsh on 2024-05-08 04:24_
 
 I haven't really dug into it. My guess is it relates to some unclear decisions around how PyTorch chooses to publish their wheels (e.g., some variants include `+cpu` while others do not).
-
----
-
-_Referenced in [OpenMined/PySyft#8605](../../OpenMined/PySyft/pulls/8605.md) on 2024-05-08 08:18_
 
 ---
 
@@ -597,10 +589,6 @@ torch==2.3.0+cpu
 torchvision
 torchaudio
 ```
-
----
-
-_Referenced in [DecodingRaphael/unraphael#53](../../DecodingRaphael/unraphael/pulls/53.md) on 2024-06-06 15:49_
 
 ---
 

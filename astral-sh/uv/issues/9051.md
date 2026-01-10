@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T09:38:31Z
 updated_at: 2024-12-26T16:57:58Z
 url: https://github.com/astral-sh/uv/issues/9051
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Uv recognise my ubuntu as windows
@@ -45,10 +45,6 @@ On uv's side, we shouldn't try resolving `(python_full_version == '3.11.*' and p
 ---
 
 _Label `question` added by @charliermarsh on 2024-11-12 14:58_
-
----
-
-_Referenced in [astral-sh/uv#9275](../../astral-sh/uv/issues/9275.md) on 2024-11-20 14:16_
 
 ---
 

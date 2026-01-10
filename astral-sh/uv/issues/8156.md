@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-13T08:41:18Z
 updated_at: 2024-12-13T16:53:48Z
 url: https://github.com/astral-sh/uv/issues/8156
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add `uv license` or similar to audit dependency licenses
@@ -51,17 +51,5 @@ _Comment by @ryanleary on 2024-12-13 16:48_
 It seems that ideally given a set of dependencies pulled in from a Lockfile that we would then introspect the license and report back.  I spent an ~hour exploring the `Package` and `PackageMetadata` data models. It seems like most of what is discovered by the resolver is ultimately serialized into uv.lock and I'm not sure that would be appropriate here.
 
 I'm exploring the codepath of `uv tree` as that seems most conceptually similar. Given a list of Packages, what would the most sensible way be to access either (a) classifiers, and/or (b) pyproject toml license data?
-
----
-
-_Referenced in [astral-sh/uv#10292](../../astral-sh/uv/pulls/10292.md) on 2025-01-03 16:34_
-
----
-
-_Referenced in [astral-sh/uv-pre-commit#41](../../astral-sh/uv-pre-commit/issues/41.md) on 2025-01-29 15:53_
-
----
-
-_Referenced in [pyproject-nix/pyproject.nix#365](../../pyproject-nix/pyproject.nix/issues/365.md) on 2025-09-19 07:07_
 
 ---

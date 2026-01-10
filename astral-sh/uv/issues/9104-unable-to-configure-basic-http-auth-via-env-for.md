@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T23:27:10Z
 updated_at: 2024-11-15T19:08:07Z
 url: https://github.com/astral-sh/uv/issues/9104
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Unable to configure basic HTTP auth via env for `UV_DEFAULT_INDEX`
@@ -79,10 +79,6 @@ I guess not? I thought it was but can't find it. I'll add something.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-15 00:45_
-
----
-
-_Referenced in [astral-sh/uv#9139](../../astral-sh/uv/pulls/9139.md) on 2024-11-15 02:40_
 
 ---
 

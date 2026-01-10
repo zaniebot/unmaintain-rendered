@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-18T16:08:39Z
 updated_at: 2024-12-06T19:06:24Z
 url: https://github.com/astral-sh/uv/issues/9204
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Publish: Support PEP 639
@@ -38,10 +38,6 @@ _Label `preview` added by @konstin on 2024-11-18 16:08_
 ---
 
 _Assigned to @konstin by @konstin on 2024-11-18 16:08_
-
----
-
-_Referenced in [mesonbuild/meson-python#681](../../mesonbuild/meson-python/pulls/681.md) on 2024-11-21 10:42_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-16T02:05:32Z
 updated_at: 2024-11-29T00:02:07Z
 url: https://github.com/astral-sh/uv/issues/7418
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Regression on tolerance for older Pythons
@@ -148,10 +148,6 @@ Everything has a cost associated with it, adding 3.6 to the test matrix costs re
 At some point you have to decide when something is no longer worth supporting, most of the Python ecosystem has dropped support for Python 3.6 and 3.7, and numpy stack has dropped support for Python 3.8 and 3.9.
 
 Astral may be happy to support 3.6 because the calculus makes sense to them, but it is a calculus, not a free ride, so as someone who supports and maintains OSS it's a bit frustrating to hear users who provide no support throw phrases around like "tarnishing your brand". 
-
----
-
-_Referenced in [astral-sh/uv#8649](../../astral-sh/uv/pulls/8649.md) on 2024-10-29 12:11_
 
 ---
 

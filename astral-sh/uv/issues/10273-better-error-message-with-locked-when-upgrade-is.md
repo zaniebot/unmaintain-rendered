@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-02T16:29:08Z
 updated_at: 2025-01-03T17:17:34Z
 url: https://github.com/astral-sh/uv/issues/10273
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Better error message with `--locked` when `upgrade` is requested
@@ -118,13 +118,5 @@ _Comment by @sayandipdutta on 2025-01-03 16:38_
 I thought about it, but I didn't find a way to express conflicts between Lock options and Global options. I will look again.
 
 Edit: `upgrade=true` could be set in config file as well. So not sure what will be the best place to raise.
-
----
-
-_Referenced in [astral-sh/uv#10836](../../astral-sh/uv/pulls/10836.md) on 2025-01-22 01:28_
-
----
-
-_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2025-01-29 14:23_
 
 ---

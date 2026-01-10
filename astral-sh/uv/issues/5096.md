@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-16T06:01:17Z
 updated_at: 2024-11-25T18:42:12Z
 url: https://github.com/astral-sh/uv/issues/5096
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV ignore pypi index-url when extra-index-url set.
@@ -93,10 +93,6 @@ Sorry, I didn’t thoroughly review the documentation. It would be better if it 
 ---
 
 _Closed by @kimdwkimdw on 2024-07-16 08:00_
-
----
-
-_Referenced in [astral-sh/uv#5095](../../astral-sh/uv/issues/5095.md) on 2024-07-16 13:23_
 
 ---
 

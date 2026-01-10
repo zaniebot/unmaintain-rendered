@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T04:22:32Z
 updated_at: 2024-11-12T06:08:26Z
 url: https://github.com/astral-sh/uv/issues/9007
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # [BUG] uv add does not consider the python version when resolving dependency versions
@@ -93,9 +93,5 @@ By the way, my `pyproject.toml` file (and `requires-python = ">=3.8"` in it) was
 ---
 
 _Closed by @TonyYanOnFire on 2024-11-12 06:08_
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-11-12 06:12_
 
 ---

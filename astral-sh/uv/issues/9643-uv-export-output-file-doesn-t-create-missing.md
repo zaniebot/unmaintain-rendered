@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-04T17:36:43Z
 updated_at: 2024-12-04T21:20:32Z
 url: https://github.com/astral-sh/uv/issues/9643
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv export --output-file` doesn't create missing directories
@@ -238,10 +238,6 @@ uv export --no-dev --no-hashes --frozen --output-file=./requirements/requirement
 ---
 
 _Renamed from "`uv export --output-file` doesn't support file paths with a local directory to the project" to "`uv export --output-file` doesn't create missing directories" by @zanieb on 2024-12-04 19:32_
-
----
-
-_Referenced in [astral-sh/uv#9648](../../astral-sh/uv/pulls/9648.md) on 2024-12-04 20:40_
 
 ---
 

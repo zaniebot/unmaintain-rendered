@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-06T15:40:33Z
 updated_at: 2025-01-06T17:24:06Z
 url: https://github.com/astral-sh/uv/issues/10328
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv add` puts plaintext credentials in `pyproject.toml`
@@ -37,10 +37,6 @@ _Label `bug` added by @charliermarsh on 2025-01-06 15:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-06 15:40_
-
----
-
-_Referenced in [astral-sh/uv#10329](../../astral-sh/uv/pulls/10329.md) on 2025-01-06 17:14_
 
 ---
 

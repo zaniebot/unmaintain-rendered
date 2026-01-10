@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-29T13:48:08Z
 updated_at: 2024-12-05T18:49:31Z
 url: https://github.com/astral-sh/uv/issues/3308
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Build backend failed to build wheel through `build_wheel()` - wrong architecture
@@ -113,10 +113,6 @@ Log (of `rye sync -v`) [here](https://gist.github.com/CatamountJack/0d1cdc316b42
 
 ---
 
-_Referenced in [koaning/scikit-lego#655](../../koaning/scikit-lego/pulls/655.md) on 2024-05-06 21:02_
-
----
-
 _Comment by @vfilter on 2024-09-01 18:16_
 
 Having the same issue with pandas 2.1.0. 2.2.2 works just fine. However, my architecture is not x86 but AARCH64
@@ -196,10 +192,6 @@ Hi, @charliermarsh. I just got the same error for specifically for library [`fac
 _Comment by @zanieb on 2024-11-26 00:10_
 
 @brunolnetto that's a different issue than being discussed here and doesn't look related to uv (it's a build failure when invoking the setup script for that package)
-
----
-
-_Referenced in [astral-sh/uv#9548](../../astral-sh/uv/issues/9548.md) on 2024-12-01 08:16_
 
 ---
 
@@ -296,9 +288,5 @@ I'm going to close this issue because we keep getting unrelated reports.
 ---
 
 _Closed by @zanieb on 2024-12-05 18:49_
-
----
-
-_Referenced in [astral-sh/uv#10040](../../astral-sh/uv/issues/10040.md) on 2024-12-19 20:08_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T18:56:05Z
 updated_at: 2024-12-08T04:17:25Z
 url: https://github.com/astral-sh/uv/issues/9693
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv` incorrectly (?) installs `dbt-clickhouse`
@@ -112,10 +112,6 @@ _Label `help wanted` added by @charliermarsh on 2024-12-06 19:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-07 14:07_
-
----
-
-_Referenced in [astral-sh/uv#9705](../../astral-sh/uv/pulls/9705.md) on 2024-12-07 14:10_
 
 ---
 

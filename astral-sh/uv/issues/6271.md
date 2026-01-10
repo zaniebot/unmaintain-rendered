@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T19:55:44Z
 updated_at: 2024-10-30T11:30:37Z
 url: https://github.com/astral-sh/uv/issues/6271
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Clarify the benefits of `uv.lock` over `requirements.txt`
@@ -127,13 +127,5 @@ _Comment by @bjornasm on 2024-10-30 11:30_
 Thank you @zanieb and @charliermarsh , sorry for taking over this issue as it is clearly a separate (and individual?) issue with documentation. Since the lockfile was proposed to be added to source control, I inferred that it is the lockfile that should be used when setting up an existing (remote) project locally. But I guess that both the lockfile and pyproject.toml has to be added to source?
 
 It would be great to have some workflow/use case based examples, for us who have not worked with .toml and lockfiles before, I would be glad to open up a separate issue for it, with some suggestions.
-
----
-
-_Referenced in [tattle-made/feluda#430](../../tattle-made/feluda/issues/430.md) on 2024-11-05 11:26_
-
----
-
-_Referenced in [fandango-fuzzer/fandango#731](../../fandango-fuzzer/fandango/issues/731.md) on 2025-12-01 10:08_
 
 ---

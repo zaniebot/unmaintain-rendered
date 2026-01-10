@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T05:51:48Z
 updated_at: 2024-12-03T21:11:23Z
 url: https://github.com/astral-sh/uv/issues/9348
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv run` fails to run binaries from `~/Library/Application Support` on macOS
@@ -318,10 +318,6 @@ _Label `needs-mre` removed by @charliermarsh on 2024-11-24 03:27_
 ---
 
 _Label `upstream` added by @charliermarsh on 2024-11-24 03:27_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#395](../../astral-sh/python-build-standalone/pulls/395.md) on 2024-11-24 03:30_
 
 ---
 

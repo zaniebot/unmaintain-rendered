@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T19:36:49Z
 updated_at: 2024-11-22T20:58:28Z
 url: https://github.com/astral-sh/uv/issues/9364
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv export` doesn't raise on conflicting groups
@@ -24,10 +24,6 @@ At present, you can attempt to `uv export` two conflicting groups, which leads t
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-22 19:37_
-
----
-
-_Referenced in [astral-sh/uv#9365](../../astral-sh/uv/pulls/9365.md) on 2024-11-22 19:37_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T22:30:36Z
 updated_at: 2024-11-20T15:50:27Z
 url: https://github.com/astral-sh/uv/issues/1022
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Re-enable `zlib-ng` on PowerPC and S390x
@@ -32,10 +32,6 @@ _Label `internal` added by @charliermarsh on 2024-01-19 22:30_
 ---
 
 _Label `internal` removed by @charliermarsh on 2024-01-19 22:30_
-
----
-
-_Referenced in [astral-sh/uv#1017](../../astral-sh/uv/pulls/1017.md) on 2024-01-20 00:21_
 
 ---
 

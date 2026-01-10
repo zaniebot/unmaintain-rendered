@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-08T15:13:29Z
 updated_at: 2024-12-13T21:05:08Z
 url: https://github.com/astral-sh/uv/issues/7190
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add a `--universal-strategy`-like setting to the resolver
@@ -29,10 +29,6 @@ One implementation of this would be to ignore preferences from other forks.
 ---
 
 _Label `resolver` added by @charliermarsh on 2024-09-08 15:13_
-
----
-
-_Referenced in [astral-sh/uv#7551](../../astral-sh/uv/issues/7551.md) on 2024-09-20 02:52_
 
 ---
 
@@ -73,34 +69,10 @@ See https://github.com/astral-sh/uv/issues/8492 also.
 
 ---
 
-_Referenced in [astral-sh/uv#8492](../../astral-sh/uv/issues/8492.md) on 2024-10-29 17:04_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-29 17:18_
 
 ---
 
-_Referenced in [astral-sh/uv#8686](../../astral-sh/uv/pulls/8686.md) on 2024-10-29 20:56_
-
----
-
-_Referenced in [astral-sh/uv#8978](../../astral-sh/uv/issues/8978.md) on 2024-11-10 10:42_
-
----
-
-_Referenced in [astral-sh/uv#9515](../../astral-sh/uv/issues/9515.md) on 2024-11-29 19:22_
-
----
-
-_Referenced in [astral-sh/uv#9868](../../astral-sh/uv/pulls/9868.md) on 2024-12-13 14:16_
-
----
-
 _Closed by @charliermarsh on 2024-12-13 21:05_
-
----
-
-_Referenced in [astral-sh/uv#9988](../../astral-sh/uv/issues/9988.md) on 2024-12-18 03:35_
 
 ---

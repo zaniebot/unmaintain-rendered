@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T18:25:05Z
 updated_at: 2024-11-20T19:10:33Z
 url: https://github.com/astral-sh/uv/issues/9287
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv pip compile emits index to output file
@@ -49,10 +49,6 @@ _Label `bug` added by @charliermarsh on 2024-11-20 18:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 18:27_
-
----
-
-_Referenced in [astral-sh/uv#9288](../../astral-sh/uv/pulls/9288.md) on 2024-11-20 18:39_
 
 ---
 

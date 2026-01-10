@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T12:29:06Z
 updated_at: 2025-01-08T11:21:23Z
 url: https://github.com/astral-sh/uv/issues/10358
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Failure to create a bash shim for CLI script with pyenv
@@ -52,10 +52,6 @@ MacOS 15.1.1, M3
 
 
 
-
----
-
-_Referenced in [pyenv/pyenv#3031](../../pyenv/pyenv/issues/3031.md) on 2025-01-07 12:30_
 
 ---
 

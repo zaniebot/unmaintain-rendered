@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-01T01:41:43Z
 updated_at: 2024-12-10T20:28:58Z
 url: https://github.com/astral-sh/uv/issues/9546
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Conflicting dependencies for a test matrix
@@ -221,10 +221,6 @@ _Label `bug` added by @charliermarsh on 2024-12-06 00:34_
 
 ---
 
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
-
----
-
 _Closed by @BurntSushi on 2024-12-10 15:57_
 
 ---
@@ -236,9 +232,5 @@ _Closed by @BurntSushi on 2024-12-10 15:57_
 _Comment by @delfick on 2024-12-10 20:28_
 
 🥳 
-
----
-
-_Referenced in [delfick/extended-mypy-django-plugin#65](../../delfick/extended-mypy-django-plugin/pulls/65.md) on 2024-12-11 23:30_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T09:47:40Z
 updated_at: 2024-10-28T23:01:08Z
 url: https://github.com/astral-sh/uv/issues/8414
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV editable install in offline mode not working with Hatchling installed (system-wide)
@@ -366,10 +366,6 @@ _Comment by @ion-elgreco on 2024-10-21 18:51_
 @zanieb important to note the install happens in a system with no network access.
 
 So I had prefecthed the wheel beforehand
-
----
-
-_Referenced in [astral-sh/uv#8647](../../astral-sh/uv/issues/8647.md) on 2024-10-28 21:02_
 
 ---
 

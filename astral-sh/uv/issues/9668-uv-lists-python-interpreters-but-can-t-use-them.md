@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T04:18:30Z
 updated_at: 2024-12-09T23:38:45Z
 url: https://github.com/astral-sh/uv/issues/9668
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # UV lists python interpreters but can't use them!
@@ -237,10 +237,6 @@ Currently puzzled by how the 3.9.13 is shown in the list but then can't be used,
 
 ---
 
-_Referenced in [astral-sh/uv#9695](../../astral-sh/uv/issues/9695.md) on 2024-12-06 22:28_
-
----
-
 _Comment by @meitham on 2024-12-07 16:31_
 
 Please see below my registry.  I think I see what the issue is, I have python 3.9.12 (miniconda) and python 3.9.13 (psf) but in the windows registry their patch version is omitted so they both appear as 3.9.  Though one was installed by admin so it went into current machine, and the other is in current user.
@@ -435,14 +431,6 @@ Modules                        (default) :
 PythonPath                     (default) : C:\ProgramData\Miniconda3\Lib;C:\ProgramData\Miniconda3\DLLs
 
 ```
-
----
-
-_Referenced in [astral-sh/uv#9733](../../astral-sh/uv/pulls/9733.md) on 2024-12-09 09:39_
-
----
-
-_Referenced in [astral-sh/uv#9736](../../astral-sh/uv/pulls/9736.md) on 2024-12-09 10:18_
 
 ---
 

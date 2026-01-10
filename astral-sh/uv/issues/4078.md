@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T22:33:48Z
 updated_at: 2024-12-13T14:59:03Z
 url: https://github.com/astral-sh/uv/issues/4078
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Support directories passed via --index-url
@@ -65,10 +65,6 @@ Why is it important, though, that you can pass in a parent directory with HTML f
 
 FWIW it seems reasonable to support, but it kinda depends on how much complexity it adds.
 
-
----
-
-_Referenced in [astral-sh/uv#4226](../../astral-sh/uv/pulls/4226.md) on 2024-06-11 00:17_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-06T16:08:19Z
 updated_at: 2024-11-07T20:23:28Z
 url: https://github.com/astral-sh/uv/issues/8865
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv pip install regex` reports installation success but library cannot be imported (pip works)
@@ -121,13 +121,5 @@ _Closed by @ssbarnea on 2024-11-07 12:45_
 _Comment by @zanieb on 2024-11-07 20:23_
 
 Thank you for following up!
-
----
-
-_Referenced in [squidfunk/mkdocs-material#7676](../../squidfunk/mkdocs-material/issues/7676.md) on 2024-11-08 15:03_
-
----
-
-_Referenced in [astral-sh/uv#3883](../../astral-sh/uv/issues/3883.md) on 2025-01-29 13:56_
 
 ---

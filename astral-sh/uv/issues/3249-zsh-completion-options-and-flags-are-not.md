@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-24T16:07:08Z
 updated_at: 2024-11-12T20:20:39Z
 url: https://github.com/astral-sh/uv/issues/3249
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Zsh completion: Options and flags are not completed when they come after ordered arguments
@@ -38,10 +38,6 @@ Linux
 _Comment by @zanieb on 2024-04-24 16:25_
 
 `--` is typically used to indicate you are passing options through to another tool. Is there a reason you're using it like this?
-
----
-
-_Referenced in [AndydeCleyre/zpy#32](../../AndydeCleyre/zpy/issues/32.md) on 2024-04-24 16:36_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-04T18:43:33Z
 updated_at: 2024-11-04T19:56:58Z
 url: https://github.com/astral-sh/uv/issues/8814
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Allow conflicting dependency groups
@@ -54,10 +54,6 @@ Creating virtual environment at: .venv
 I'm not opening this issue to say that `uv` should or should not. That's something that [PEP 735](https://peps.python.org/pep-0735/) left for the tools to implement their own strategy (see [lockfile generation](https://peps.python.org/pep-0735/#lockfile-generation)).
 I'm opening it to provide a link to fix a typo, in my opinion, in the documentation here: https://docs.astral.sh/uv/concepts/dependencies/#dependency-groups
 The issue referred to in the note concerns optional dependencies and not dependency groups.
-
----
-
-_Referenced in [astral-sh/uv#8815](../../astral-sh/uv/pulls/8815.md) on 2024-11-04 18:48_
 
 ---
 

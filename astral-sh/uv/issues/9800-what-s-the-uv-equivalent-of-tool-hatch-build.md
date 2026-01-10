@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-11T04:47:38Z
 updated_at: 2024-12-11T20:59:50Z
 url: https://github.com/astral-sh/uv/issues/9800
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # What's the uv equivalent of tool.hatch.build.include = [...]?
@@ -111,9 +111,5 @@ data = "config/"
 ```
 
 I can't seem to be able to access it as `importlib.resources.files("config")` in my code. 
-
----
-
-_Referenced in [astral-sh/uv#11502](../../astral-sh/uv/issues/11502.md) on 2025-02-14 06:34_
 
 ---

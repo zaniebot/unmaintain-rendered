@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-18T16:18:01Z
 updated_at: 2024-12-20T03:16:42Z
 url: https://github.com/astral-sh/uv/issues/10006
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # dependency module not found when added as local file path
@@ -176,9 +176,5 @@ Check out: https://docs.astral.sh/uv/concepts/projects/config/#build-systems.
 ---
 
 _Closed by @charliermarsh on 2024-12-20 03:16_
-
----
-
-_Referenced in [astral-sh/uv#13128](../../astral-sh/uv/issues/13128.md) on 2025-04-27 11:54_
 
 ---

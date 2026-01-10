@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-21T10:25:57Z
 updated_at: 2024-11-23T03:38:36Z
 url: https://github.com/astral-sh/uv/issues/2586
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # `unexpected end of file` during wheel download
@@ -206,10 +206,6 @@ error: Failed to download distributions
 
 ---
 
-_Referenced in [materialsproject/pymatgen#3826](../../materialsproject/pymatgen/pulls/3826.md) on 2024-05-13 12:08_
-
----
-
 _Comment by @DanielYang59 on 2024-05-13 12:12_
 
 We are getting this same error for `uv pip install torch` in CI https://github.com/materialsproject/pymatgen/pull/3826:
@@ -235,14 +231,6 @@ I got this error randomly when fetching large wheels:
 https://github.com/njzjz/deepmd-kit/actions/runs/9182537910/job/25251596562#step:5:35
 
 You can see in 12 jobs, it only happens once.
-
----
-
-_Referenced in [astral-sh/uv#4402](../../astral-sh/uv/issues/4402.md) on 2024-06-18 20:22_
-
----
-
-_Referenced in [deepmodeling/deepmd-kit#3889](../../deepmodeling/deepmd-kit/pulls/3889.md) on 2024-06-19 23:41_
 
 ---
 

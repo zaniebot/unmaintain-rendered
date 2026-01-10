@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T09:39:52Z
 updated_at: 2024-12-12T01:33:16Z
 url: https://github.com/astral-sh/uv/issues/8247
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Docs: Mention that `.python-version` is obsolete if `project.requires-python` is present in `pyproject.toml`?
@@ -49,10 +49,6 @@ Thanks for this information, that makes sense 👍
 
 ---
 
-_Referenced in [astral-sh/uv#8920](../../astral-sh/uv/issues/8920.md) on 2024-11-08 15:13_
-
----
-
 _Comment by @apoorvkh on 2024-11-08 15:55_
 
 Hey, I wonder if we can just add a `tool.uv.python-resolution` (which could be `highest`, `lowest`, `lowest-major`, `3.10.15`, etc.) but would be overriden if `.python-version` does exist.
@@ -68,14 +64,6 @@ _Comment by @zanieb on 2024-11-08 17:00_
 See #5609 and https://github.com/astral-sh/uv/issues/7779
 
 Yeah; I'd like to have a `python-strategy` or something, it just hasn't been implemented. If you're interested, you're welcome to give it a go.
-
----
-
-_Referenced in [astral-sh/uv#5609](../../astral-sh/uv/issues/5609.md) on 2024-11-08 17:03_
-
----
-
-_Referenced in [astral-sh/uv#9083](../../astral-sh/uv/issues/9083.md) on 2024-11-13 14:01_
 
 ---
 
@@ -121,10 +109,6 @@ I see, once those PRs are merged, I'd still argue that the default behaviour sho
 
 ---
 
-_Referenced in [astral-sh/uv#9494](../../astral-sh/uv/issues/9494.md) on 2024-11-28 09:07_
-
----
-
 _Comment by @edmorley on 2024-12-11 23:46_
 
 IMO this issue should be wontfixed, since the `.python-version` file is not equivalent to the `pyproject.toml` `requires-python` field. The latter can be a range, which is not suitable/safe for bootstrapping/deployment purposes.
@@ -142,29 +126,5 @@ I agree, we won't be saying it's obsolete. Perhaps there's room to improve the d
 ---
 
 _Closed by @zanieb on 2024-12-12 01:33_
-
----
-
-_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-12-14 17:31_
-
----
-
-_Referenced in [astral-sh/uv#11697](../../astral-sh/uv/issues/11697.md) on 2025-02-21 17:02_
-
----
-
-_Referenced in [astral-sh/uv#12169](../../astral-sh/uv/issues/12169.md) on 2025-03-14 20:48_
-
----
-
-_Referenced in [acorg/dark-matter#818](../../acorg/dark-matter/pulls/818.md) on 2025-05-07 09:01_
-
----
-
-_Referenced in [heroku/heroku-buildpack-python#1802](../../heroku/heroku-buildpack-python/issues/1802.md) on 2025-06-04 12:24_
-
----
-
-_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-08 21:20_
 
 ---

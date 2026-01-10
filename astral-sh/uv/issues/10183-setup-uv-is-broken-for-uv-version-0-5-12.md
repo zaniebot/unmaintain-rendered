@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-26T22:56:16Z
 updated_at: 2024-12-27T16:39:48Z
 url: https://github.com/astral-sh/uv/issues/10183
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # setup-uv is broken for uv version 0.5.12
@@ -23,10 +23,6 @@ See the failing CI build: https://github.com/microsoft/autogen/actions/runs/1250
 It works locally with uv version 0.5.12. 
 
 Previous version 0.5.11 also works on setup-uv@v5 in CI. 
-
----
-
-_Referenced in [microsoft/autogen#4820](../../microsoft/autogen/pulls/4820.md) on 2024-12-26 22:56_
 
 ---
 
@@ -109,10 +105,6 @@ Oh, no worries! Happy to help.
 ---
 
 _Closed by @charliermarsh on 2024-12-27 13:41_
-
----
-
-_Referenced in [microsoft/autogen#4830](../../microsoft/autogen/pulls/4830.md) on 2024-12-27 15:22_
 
 ---
 

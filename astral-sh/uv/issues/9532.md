@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-29T20:29:54Z
 updated_at: 2024-12-04T04:22:48Z
 url: https://github.com/astral-sh/uv/issues/9532
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uvx on old mac
@@ -241,9 +241,5 @@ Thank you!
 ---
 
 _Closed by @Stegallo on 2024-12-04 04:22_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#397](../../astral-sh/python-build-standalone/issues/397.md) on 2024-12-06 17:37_
 
 ---

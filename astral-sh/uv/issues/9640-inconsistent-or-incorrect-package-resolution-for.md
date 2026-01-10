@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T14:08:51Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9640
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Inconsistent or incorrect package resolution for PyTorch when using environment markers
@@ -169,10 +169,6 @@ But if I use `torchmetrics` instead (which I think is the same idea, since it de
 ---
 
 _Label `bug` added by @charliermarsh on 2024-12-06 00:16_
-
----
-
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
 
 ---
 

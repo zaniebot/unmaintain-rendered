@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T23:52:52Z
 updated_at: 2024-11-14T17:18:08Z
 url: https://github.com/astral-sh/uv/issues/9073
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Inconsistent behavior with override-dependencies across package sources
@@ -43,10 +43,6 @@ My goal is that when I publish to PyPI, running `uv pip install freemocap` doesn
 uv version: uv 0.5.1 (95e7d8702 2024-11-12)
 uv platform: mac 12.6.2 
 
-
----
-
-_Referenced in [freemocap/freemocap#652](../../freemocap/freemocap/pulls/652.md) on 2024-11-12 23:54_
 
 ---
 
@@ -116,17 +112,5 @@ We've also tried the executable methods, and while the binary installers have fa
 Thanks again for the help. I think this is a real trouble in the python packaging ecosystem, and it would be amazing if the astral folks could find a way to handle it gracefully.
 
 
-
----
-
-_Referenced in [Kiln-AI/Kiln#499](../../Kiln-AI/Kiln/pulls/499.md) on 2025-08-13 16:50_
-
----
-
-_Referenced in [ai-dynamo/dynamo#3367](../../ai-dynamo/dynamo/pulls/3367.md) on 2025-10-03 15:09_
-
----
-
-_Referenced in [astral-sh/uv#16933](../../astral-sh/uv/issues/16933.md) on 2025-12-02 17:12_
 
 ---

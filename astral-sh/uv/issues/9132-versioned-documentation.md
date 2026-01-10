@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-14T21:13:39Z
 updated_at: 2024-11-14T21:20:51Z
 url: https://github.com/astral-sh/uv/issues/9132
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Versioned documentation
@@ -53,9 +53,5 @@ _Label `help wanted` added by @zanieb on 2024-11-14 21:20_
 _Comment by @zanieb on 2024-11-14 21:20_
 
 Some context on our documentation setup in https://github.com/astral-sh/uv/pull/5081
-
----
-
-_Referenced in [astral-sh/uv#13686](../../astral-sh/uv/issues/13686.md) on 2025-05-27 18:39_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-02T12:25:04Z
 updated_at: 2024-12-03T07:52:27Z
 url: https://github.com/astral-sh/uv/issues/9574
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Difference in `uv run` behavior between GNU/Linux and Windows
@@ -168,10 +168,6 @@ Regardless, the "install directory" seems correct to me. How are you going to re
 _Comment by @charliermarsh on 2024-12-02 21:29_
 
 I was considering: if the executable isn't in Scripts, add the executable's parent directory?
-
----
-
-_Referenced in [astral-sh/uv#9585](../../astral-sh/uv/pulls/9585.md) on 2024-12-02 22:01_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T14:08:26Z
 updated_at: 2024-11-23T01:27:59Z
 url: https://github.com/astral-sh/uv/issues/9355
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Conflicting installs aren't detected between `default-groups`
@@ -29,10 +29,6 @@ _Renamed from "Conflicting installs aren't detected between `default-groups`3" t
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-22 14:08_
-
----
-
-_Referenced in [astral-sh/uv#9349](../../astral-sh/uv/issues/9349.md) on 2024-11-22 14:08_
 
 ---
 

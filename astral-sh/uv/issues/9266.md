@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T08:52:12Z
 updated_at: 2024-11-20T16:45:16Z
 url: https://github.com/astral-sh/uv/issues/9266
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv tree --outdated` network requests are sequential
@@ -66,10 +66,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-20 16:03_
 _Comment by @charliermarsh on 2024-11-20 16:03_
 
 Weird, thanks.
-
----
-
-_Referenced in [astral-sh/uv#9280](../../astral-sh/uv/pulls/9280.md) on 2024-11-20 16:24_
 
 ---
 

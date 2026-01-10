@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T12:06:53Z
 updated_at: 2024-12-19T16:41:10Z
 url: https://github.com/astral-sh/uv/issues/6860
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # dynamic version in editable install
@@ -191,9 +191,5 @@ Most of the discussion is happening in https://github.com/astral-sh/uv/issues/75
 ---
 
 _Closed by @zanieb on 2024-11-18 15:36_
-
----
-
-_Referenced in [astral-sh/uv#7533](../../astral-sh/uv/issues/7533.md) on 2024-12-16 03:44_
 
 ---

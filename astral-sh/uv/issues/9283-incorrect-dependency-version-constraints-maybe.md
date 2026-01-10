@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T17:15:48Z
 updated_at: 2024-11-26T14:51:34Z
 url: https://github.com/astral-sh/uv/issues/9283
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Incorrect dependency version constraints, maybe due to wrong python verison
@@ -106,10 +106,6 @@ _Label `bug` added by @charliermarsh on 2024-11-21 22:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-21 22:45_
-
----
-
-_Referenced in [astral-sh/uv#9339](../../astral-sh/uv/pulls/9339.md) on 2024-11-21 22:47_
 
 ---
 

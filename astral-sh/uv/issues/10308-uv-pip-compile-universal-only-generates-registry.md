@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-06T00:48:25Z
 updated_at: 2025-01-06T00:48:28Z
 url: https://github.com/astral-sh/uv/issues/10308
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv pip compile --universal` only generates registry hashes for a single distribution
@@ -24,9 +24,5 @@ When a registry distribution lacks hashes, we attempt to generate them. However,
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-06 00:48_
-
----
-
-_Referenced in [winpython/winpython#1481](../../winpython/winpython/issues/1481.md) on 2025-02-13 17:54_
 
 ---

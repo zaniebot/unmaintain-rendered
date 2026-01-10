@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T19:53:52Z
 updated_at: 2024-12-22T13:58:29Z
 url: https://github.com/astral-sh/uv/issues/9449
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Improve documentation on how to do `uv lock --upgrade-package <package>` for optional dependency package
@@ -50,9 +50,5 @@ No worries! I re-read the docs, and personally I think the line on upgrades is o
 ---
 
 _Closed by @charliermarsh on 2024-12-22 13:58_
-
----
-
-_Referenced in [MountainGod2/chaturbate_poller#614](../../MountainGod2/chaturbate_poller/pulls/614.md) on 2025-08-18 23:38_
 
 ---

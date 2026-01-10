@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-20T12:45:51Z
 updated_at: 2024-10-23T18:43:28Z
 url: https://github.com/astral-sh/uv/issues/8382
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv tree often has no output
@@ -130,10 +130,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-23 03:04_
 _Comment by @charliermarsh on 2024-10-23 17:17_
 
 I'm rewriting this to fix these problems and make things simpler.
-
----
-
-_Referenced in [astral-sh/uv#8507](../../astral-sh/uv/pulls/8507.md) on 2024-10-23 18:32_
 
 ---
 

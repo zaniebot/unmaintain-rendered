@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T19:47:23Z
 updated_at: 2024-11-27T14:27:40Z
 url: https://github.com/astral-sh/uv/issues/9424
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Please comment on CVE-2024-53899 and virtualenv activation scripts
@@ -66,10 +66,6 @@ Thanks for filing! We'll take a look.
 ---
 
 _Label `security` added by @charliermarsh on 2024-11-25 20:10_
-
----
-
-_Referenced in [astral-sh/uv#9466](../../astral-sh/uv/pulls/9466.md) on 2024-11-27 12:35_
 
 ---
 

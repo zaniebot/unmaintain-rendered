@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-31T02:01:52Z
 updated_at: 2024-10-31T04:41:19Z
 url: https://github.com/astral-sh/uv/issues/8715
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv sync --activate
@@ -112,9 +112,5 @@ _Closed by @zanieb on 2024-10-31 04:40_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-10-31 04:40_
-
----
-
-_Referenced in [astral-sh/uv#9166](../../astral-sh/uv/issues/9166.md) on 2024-11-16 16:03_
 
 ---

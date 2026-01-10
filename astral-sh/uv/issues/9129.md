@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-14T19:24:05Z
 updated_at: 2024-11-15T19:49:00Z
 url: https://github.com/astral-sh/uv/issues/9129
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Question: Possible to get interactive output from stdout/stderr?
@@ -82,9 +82,5 @@ Thanks for letting me know! I will try streaming it with node-pty as a workaroun
 ---
 
 _Closed by @robinjhuang on 2024-11-15 19:49_
-
----
-
-_Referenced in [astral-sh/uv#11121](../../astral-sh/uv/issues/11121.md) on 2025-01-30 23:13_
 
 ---

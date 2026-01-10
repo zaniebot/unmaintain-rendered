@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T20:19:58Z
 updated_at: 2024-10-25T20:16:00Z
 url: https://github.com/astral-sh/uv/issues/5632
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Development dependency group support
@@ -34,10 +34,6 @@ Related:
 
 - https://github.com/astral-sh/uv/issues/5278#issuecomment-2242053901
 - https://github.com/astral-sh/uv/issues/3560#issuecomment-2258919283
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-07-30 20:21_
 
 ---
 
@@ -208,10 +204,6 @@ jobs:
 
 ---
 
-_Referenced in [astral-sh/uv#5903](../../astral-sh/uv/issues/5903.md) on 2024-08-08 21:07_
-
----
-
 _Comment by @lewoudar on 2024-08-21 06:50_
 
 Hi everyone, I have a workflow almost similar to @chrisrodrigue, so I really hope this feature will be added. It will help poetry (or pdm) users like me to switch to uv.
@@ -245,18 +237,6 @@ PDM support this and have some use cases examples (I have similar use cases) htt
 
 ---
 
-_Referenced in [tox-dev/tox-uv#81](../../tox-dev/tox-uv/issues/81.md) on 2024-08-25 10:26_
-
----
-
-_Referenced in [sphinx-doc/sphinx#12817](../../sphinx-doc/sphinx/pulls/12817.md) on 2024-08-26 10:06_
-
----
-
-_Referenced in [astral-sh/uv#6729](../../astral-sh/uv/issues/6729.md) on 2024-08-27 23:29_
-
----
-
 _Comment by @sebastian-correa on 2024-09-07 17:43_
 
 Our usecase for dependency groups is "distribution".
@@ -268,10 +248,6 @@ These components are executed by running some Docker images we generate (one per
 In that same vein, some GitHub Actions only need some dependency groups to run, which makes the venv cache recovery faster (because resulting venvs are smaller).
 
 I recognize that this compartmentalization is a bit horrible as it needs human knowledge of which sub-packages use which dependency groups, and only works because the packages imported when executing `component_a/entrypoint.py` are some of them (and not all), but it's been working for us to reduce Docker image sizes.
-
----
-
-_Referenced in [pydantic/pydantic#10392](../../pydantic/pydantic/pulls/10392.md) on 2024-09-16 21:35_
 
 ---
 
@@ -293,43 +269,15 @@ I totally agree with this distribution problem description and add one vote in f
 
 ---
 
-_Referenced in [ComPWA/policy#404](../../ComPWA/policy/issues/404.md) on 2024-10-04 17:17_
-
----
-
-_Referenced in [prefix-dev/pixi#2211](../../prefix-dev/pixi/issues/2211.md) on 2024-10-07 08:44_
-
----
-
 _Comment by @michelkok on 2024-10-10 07:24_
 
 Another usecase is for part of the Machine Learning community where GPU dependencies should only be installed at training time, but during inference can be handled by the much smaller CPU dependencies.  
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-10-12 18:25_
-
----
-
 _Comment by @jankatins on 2024-10-15 21:54_
 
 Seems this is now tracked in https://github.com/astral-sh/uv/issues/8090 so either this or the new issue could be closed as duplicate.
-
----
-
-_Referenced in [astral-sh/uv#8090](../../astral-sh/uv/issues/8090.md) on 2024-10-15 21:54_
-
----
-
-_Referenced in [astral-sh/uv#8170](../../astral-sh/uv/issues/8170.md) on 2024-10-16 06:38_
-
----
-
-_Referenced in [astral-sh/uv#8272](../../astral-sh/uv/pulls/8272.md) on 2024-10-17 01:35_
-
----
-
-_Referenced in [PyVRP/PyVRP#659](../../PyVRP/PyVRP/issues/659.md) on 2024-10-22 12:43_
 
 ---
 

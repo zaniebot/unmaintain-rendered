@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T00:04:28Z
 updated_at: 2024-12-12T01:24:36Z
 url: https://github.com/astral-sh/uv/issues/9828
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv self update` should support `--dry-run`
@@ -67,13 +67,5 @@ Makes sense, I honestly thought this existed.
 _Comment by @zanieb on 2024-12-12 01:24_
 
 I started looking into this. Unfortunately `fetch_release` is not public (https://github.com/axodotdev/axoupdater/blob/1ce5efa7b73e16437bc757c6ca21963ddf18fc45/axoupdater/src/release/mod.rs#L91) and `is_update_needed` only returns a `bool` (https://github.com/axodotdev/axoupdater/blob/1ce5efa7b73e16437bc757c6ca21963ddf18fc45/axoupdater/src/lib.rs#L302) so we can't say what version we'll update to. But... better than nothing.
-
----
-
-_Referenced in [astral-sh/uv#9829](../../astral-sh/uv/pulls/9829.md) on 2024-12-12 01:28_
-
----
-
-_Referenced in [astral-sh/uv#14194](../../astral-sh/uv/issues/14194.md) on 2025-06-21 22:47_
 
 ---

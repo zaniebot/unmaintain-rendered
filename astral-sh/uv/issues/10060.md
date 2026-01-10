@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-20T15:38:22Z
 updated_at: 2024-12-20T18:52:44Z
 url: https://github.com/astral-sh/uv/issues/10060
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv python install consumes a lot of memory
@@ -75,10 +75,6 @@ Thanks for the report!
 _Comment by @charliermarsh on 2024-12-20 16:08_
 
 Noooooooo
-
----
-
-_Referenced in [astral-sh/uv#10063](../../astral-sh/uv/pulls/10063.md) on 2024-12-20 18:15_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T05:48:24Z
 updated_at: 2024-11-08T23:14:37Z
 url: https://github.com/astral-sh/uv/issues/8920
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Purpose of .python-version?
@@ -63,21 +63,5 @@ It matches my intuition and #8247 indeed provides useful context!
 ---
 
 _Closed by @denkasyanov on 2024-11-08 23:14_
-
----
-
-_Referenced in [astral-sh/uv#9083](../../astral-sh/uv/issues/9083.md) on 2024-11-13 14:01_
-
----
-
-_Referenced in [astral-sh/uv#8247](../../astral-sh/uv/issues/8247.md) on 2024-11-13 14:08_
-
----
-
-_Referenced in [astral-sh/uv#9494](../../astral-sh/uv/issues/9494.md) on 2024-11-28 09:07_
-
----
-
-_Referenced in [pytower/ecommerce#18](../../pytower/ecommerce/pulls/18.md) on 2025-04-13 13:25_
 
 ---

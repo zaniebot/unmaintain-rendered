@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-06T11:50:25Z
 updated_at: 2024-12-06T11:58:29Z
 url: https://github.com/astral-sh/uv/issues/9675
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # [Question]Is there any conditional package dependency setting when dev vs build
@@ -48,9 +48,5 @@ I think this is roughly the same as https://github.com/astral-sh/uv/issues/7945.
 ---
 
 _Closed by @charliermarsh on 2024-12-06 11:58_
-
----
-
-_Referenced in [astral-sh/uv#7945](../../astral-sh/uv/issues/7945.md) on 2024-12-06 11:59_
 
 ---

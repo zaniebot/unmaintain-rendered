@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-21T15:58:13Z
 updated_at: 2024-11-21T17:32:17Z
 url: https://github.com/astral-sh/uv/issues/9326
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `~` Tildes in environment variables not expanded before use
@@ -97,9 +97,5 @@ Okay I will open an issue in `astral-sh` for this. Thank you
 ---
 
 _Closed by @fynnsu on 2024-11-21 17:32_
-
----
-
-_Referenced in [astral-sh/setup-uv#159](../../astral-sh/setup-uv/issues/159.md) on 2024-11-21 17:43_
 
 ---

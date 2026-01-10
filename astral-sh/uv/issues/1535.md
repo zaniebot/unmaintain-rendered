@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T19:49:56Z
 updated_at: 2024-11-06T22:07:19Z
 url: https://github.com/astral-sh/uv/issues/1535
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Support `PIP_INDEX_URL` for setting `pip` index urls
@@ -61,19 +61,11 @@ I'll drop a comment on #1339 about `PIP_TRUSTED_HOST` to maybe have it supported
 
 ---
 
-_Referenced in [astral-sh/uv#1339](../../astral-sh/uv/issues/1339.md) on 2024-02-16 21:03_
-
----
-
 _Comment by @baggiponte on 2024-02-16 21:59_
 
 +1! This is kinda smart. UV_* env cars should take precedence, but being able to understand PIP_* vars could drive adoption.
 
 For example: a client I work with has to inject PIP_INDEX_URL as a Docker build arg. If I wanted to use UV in my images, I'd have to open a PR with the devops team just for that. Tough luck.
-
----
-
-_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 14:28_
 
 ---
 
@@ -96,15 +88,7 @@ _Label `duplicate` removed by @zanieb on 2024-02-23 04:32_
 
 ---
 
-_Referenced in [astral-sh/uv#2183](../../astral-sh/uv/issues/2183.md) on 2024-03-04 22:28_
-
----
-
 _Renamed from "Support `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` for setting `pip` index urls" to "Support `PIP_INDEX_URL` for setting `pip` index urls" by @zanieb on 2024-03-04 22:29_
-
----
-
-_Referenced in [astral-sh/uv#1789](../../astral-sh/uv/issues/1789.md) on 2024-03-04 22:29_
 
 ---
 

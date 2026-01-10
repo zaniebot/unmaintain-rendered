@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-27T05:41:32Z
 updated_at: 2024-10-27T19:03:29Z
 url: https://github.com/astral-sh/uv/issues/8603
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv lock/add selects package versions not available for current platform
@@ -106,17 +106,5 @@ _Comment by @bluss on 2024-10-27 19:01_
 
 I was probably going out on a confusing tangent: but my comment does not have a solution. Instead with `environments` the experience for the user is the same. It ends up in a scenario where uv could throw a warning or error - the package has no installable artifacts in the lockfile, so uv knows that resolution is 'bad'.  (Do you see what I mean - no sdist and no wheels at all in the lockfile for that package?)
 
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
-
----
-
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
-
----
-
-_Referenced in [neuroinformatics-unit/movement#683](../../neuroinformatics-unit/movement/pulls/683.md) on 2025-10-29 20:15_
 
 ---

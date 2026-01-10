@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T10:51:09Z
 updated_at: 2024-11-10T18:05:41Z
 url: https://github.com/astral-sh/uv/issues/8985
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Prevent setting an index as both explicit and default
@@ -53,10 +53,6 @@ I think this probably should be allowed.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-11-10 16:00_
-
----
-
-_Referenced in [astral-sh/uv#8990](../../astral-sh/uv/pulls/8990.md) on 2024-11-10 16:23_
 
 ---
 

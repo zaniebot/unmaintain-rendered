@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-04T02:36:50Z
 updated_at: 2024-11-09T00:09:01Z
 url: https://github.com/astral-sh/uv/issues/4009
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Check whether the interpreter currently set in `PATH` is associated with a virtual environment
@@ -43,10 +43,6 @@ DEBUG Searching for Python interpreter in virtual environments
 error: No Python interpreters found in virtual environments
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#3951](../../astral-sh/uv/issues/3951.md) on 2024-06-04 02:40_
 
 ---
 
@@ -93,10 +89,6 @@ eval "$(pyenv virtualenv-init -)"
 That configures `pyenv-virtualenv` to "automatically activate/deactivate virtualenvs on entering/leaving directories which contain a `.python-version` file that contains the name of a valid virtual environment", as described [here](https://github.com/pyenv/pyenv-virtualenv?tab=readme-ov-file#activate-virtualenv). Aside: This is the main feature for which I'm still using `pyenv-virtualenv` rather than `uv venv`; perhaps automatic activation would make for a worthwhile feature request in a third Issue.
 
 Thanks for your help!
-
----
-
-_Referenced in [astral-sh/uv#4018](../../astral-sh/uv/pulls/4018.md) on 2024-06-04 17:51_
 
 ---
 
@@ -198,14 +190,6 @@ _Renamed from "Check whether the *current* interpreter on the `PATH` is a virtua
 
 ---
 
-_Referenced in [astral-sh/uv#4032](../../astral-sh/uv/pulls/4032.md) on 2024-06-05 00:12_
-
----
-
-_Referenced in [astral-sh/uv#4034](../../astral-sh/uv/pulls/4034.md) on 2024-06-05 01:16_
-
----
-
 _Renamed from "Check whether the current interpreter on the `PATH` is a virtual environment" to "Check whether the interpreter currently set in `PATH` is associated with a virtual environment" by @dpoznik on 2024-06-11 00:38_
 
 ---
@@ -270,13 +254,5 @@ But I don't see anything in the [release notes](https://github.com/astral-sh/uv/
 ---
 
 _Closed by @dpoznik on 2024-11-09 00:09_
-
----
-
-_Referenced in [astral-sh/uv#2109](../../astral-sh/uv/issues/2109.md) on 2025-02-04 15:47_
-
----
-
-_Referenced in [astral-sh/uv#11218](../../astral-sh/uv/pulls/11218.md) on 2025-02-04 19:57_
 
 ---

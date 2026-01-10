@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-29T17:45:11Z
 updated_at: 2024-10-29T20:18:45Z
 url: https://github.com/astral-sh/uv/issues/8675
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Fix `RequiresPython` documentation
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-29 17:45_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-10-29 17:45_
-
----
-
-_Referenced in [astral-sh/uv#8679](../../astral-sh/uv/pulls/8679.md) on 2024-10-29 18:59_
 
 ---
 

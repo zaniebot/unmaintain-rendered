@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-20T01:18:08Z
 updated_at: 2024-11-20T14:05:51Z
 url: https://github.com/astral-sh/uv/issues/9259
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Configuring accelerators with optional dependencies does not work with build system
@@ -116,18 +116,6 @@ Thanks, it was an oversight on my part.
 
 ---
 
-_Referenced in [astral-sh/uv#9273](../../astral-sh/uv/pulls/9273.md) on 2024-11-20 13:47_
-
----
-
 _Closed by @charliermarsh on 2024-11-20 14:05_
-
----
-
-_Referenced in [nbovee/tracr#3](../../nbovee/tracr/pulls/3.md) on 2024-11-20 19:58_
-
----
-
-_Referenced in [astral-sh/uv#9295](../../astral-sh/uv/issues/9295.md) on 2024-11-20 23:22_
 
 ---

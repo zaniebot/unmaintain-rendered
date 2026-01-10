@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-08T20:28:49Z
 updated_at: 2024-11-27T17:36:14Z
 url: https://github.com/astral-sh/uv/issues/4907
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add support for "manual" package indexes
@@ -263,17 +263,5 @@ $ pip install -i file://$(pwd)/simple/ --dry-run -vv stevedore --log pip.out
 2024-11-27T17:31:13,469 Removed build tracker: '/tmp/pip-build-tracker-tu3xvtyh'
 
 ```
-
----
-
-_Referenced in [astral-sh/uv#10567](../../astral-sh/uv/issues/10567.md) on 2025-01-31 17:33_
-
----
-
-_Referenced in [astral-sh/uv#11135](../../astral-sh/uv/issues/11135.md) on 2025-01-31 17:34_
-
----
-
-_Referenced in [astral-sh/uv#11136](../../astral-sh/uv/issues/11136.md) on 2025-01-31 17:37_
 
 ---

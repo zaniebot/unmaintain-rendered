@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-29T03:05:49Z
 updated_at: 2024-11-07T01:38:09Z
 url: https://github.com/astral-sh/uv/issues/8653
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Conda-pack like feature for venv?
@@ -27,9 +27,5 @@ Is it possible to have something like this: https://conda.github.io/conda-pack/ 
 _Comment by @hutch3232 on 2024-11-07 01:38_
 
 Sounds similar to: https://github.com/astral-sh/uv/issues/6970
-
----
-
-_Referenced in [astral-sh/uv#13304](../../astral-sh/uv/issues/13304.md) on 2025-05-05 16:20_
 
 ---

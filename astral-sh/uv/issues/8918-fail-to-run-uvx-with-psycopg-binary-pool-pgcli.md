@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T05:22:35Z
 updated_at: 2024-11-08T20:13:32Z
 url: https://github.com/astral-sh/uv/issues/8918
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # fail to run  `uvx --with="psycopg[binary,pool]" pgcli --help` after upgrade to 0.5.0
@@ -55,10 +55,6 @@ Regressed in #7909 where we started to support `--with "flask, anyio"`.
 _Comment by @zanieb on 2024-11-08 15:16_
 
 Oh that's a disappointing side-effect.
-
----
-
-_Referenced in [astral-sh/uv#8946](../../astral-sh/uv/pulls/8946.md) on 2024-11-08 15:23_
 
 ---
 

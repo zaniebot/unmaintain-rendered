@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T12:17:50Z
 updated_at: 2024-10-30T19:12:24Z
 url: https://github.com/astral-sh/uv/issues/8087
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv sync` fails with conflicting URLs with Git workspace
@@ -84,10 +84,6 @@ _Assigned to @konstin by @charliermarsh on 2024-10-10 13:03_
 _Comment by @charliermarsh on 2024-10-10 13:03_
 
 Assigning to @konstin.
-
----
-
-_Referenced in [astral-sh/uv#8665](../../astral-sh/uv/pulls/8665.md) on 2024-10-29 16:07_
 
 ---
 

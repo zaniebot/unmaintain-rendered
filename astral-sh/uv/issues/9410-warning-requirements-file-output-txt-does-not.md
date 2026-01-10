@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T07:36:02Z
 updated_at: 2024-11-25T22:09:20Z
 url: https://github.com/astral-sh/uv/issues/9410
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `warning: Requirements file output.txt does not contain any dependencies` when output file exists but is empty for `uv pip compile --output-file`
@@ -73,10 +73,6 @@ This looks like a bug, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-25 13:57_
-
----
-
-_Referenced in [astral-sh/uv#9417](../../astral-sh/uv/pulls/9417.md) on 2024-11-25 14:00_
 
 ---
 

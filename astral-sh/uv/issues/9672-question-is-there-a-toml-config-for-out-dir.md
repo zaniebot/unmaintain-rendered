@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T10:05:56Z
 updated_at: 2024-12-26T15:59:06Z
 url: https://github.com/astral-sh/uv/issues/9672
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Question: Is there a toml config for out-dir option of build command
@@ -45,9 +45,5 @@ _Label `configuration` added by @charliermarsh on 2024-12-26 15:59_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-12-26 15:59_
-
----
-
-_Referenced in [y-scope/spider#187](../../y-scope/spider/pulls/187.md) on 2025-08-09 03:54_
 
 ---

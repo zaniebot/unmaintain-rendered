@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T02:14:38Z
 updated_at: 2024-11-10T15:54:57Z
 url: https://github.com/astral-sh/uv/issues/8981
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Why `dependency-groups` and not `project.optional-dependencies`? (PEP 621)
@@ -50,13 +50,5 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-10 15:54_
 ---
 
 _Closed by @charliermarsh on 2024-11-10 15:54_
-
----
-
-_Referenced in [astral-sh/uv#9011](../../astral-sh/uv/issues/9011.md) on 2024-11-11 13:48_
-
----
-
-_Referenced in [kubernetes-sigs/inference-perf#122](../../kubernetes-sigs/inference-perf/pulls/122.md) on 2025-06-19 02:08_
 
 ---

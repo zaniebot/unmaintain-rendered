@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T18:18:00Z
 updated_at: 2024-11-22T22:18:58Z
 url: https://github.com/astral-sh/uv/issues/9361
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # UV on gitlab CICD has some issue
@@ -153,9 +153,5 @@ I always tinker at the wrong position... Thanks for pointing out. Kube now works
 ---
 
 _Closed by @MaKaNu on 2024-11-22 22:18_
-
----
-
-_Referenced in [astral-sh/uv-docker-example#31](../../astral-sh/uv-docker-example/issues/31.md) on 2024-11-27 08:24_
 
 ---

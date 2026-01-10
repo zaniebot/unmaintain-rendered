@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-22T10:00:18Z
 updated_at: 2024-12-23T13:56:54Z
 url: https://github.com/astral-sh/uv/issues/10091
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # build backend: optional dependencies don't make it to PKG-INFO
@@ -159,10 +159,6 @@ Requires-Dist: defusedxml>=0.7.1; extra == 'xml'
 
 ---
 
-_Referenced in [biopragmatics/curies#148](../../biopragmatics/curies/pulls/148.md) on 2024-12-22 22:50_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-12-22 23:08_
 
 ---
@@ -178,10 +174,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-22 23:10_
 _Comment by @charliermarsh on 2024-12-22 23:39_
 
 (I'll fix this, I've already implemented it before.)
-
----
-
-_Referenced in [astral-sh/uv#10110](../../astral-sh/uv/pulls/10110.md) on 2024-12-23 00:33_
 
 ---
 

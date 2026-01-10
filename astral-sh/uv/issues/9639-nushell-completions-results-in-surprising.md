@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T13:42:17Z
 updated_at: 2024-12-06T00:29:49Z
 url: https://github.com/astral-sh/uv/issues/9639
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Nushell: Completions results in surprising expansions of arguments passed to subcommands via `uv run`
@@ -153,9 +153,5 @@ I think any level of granularity can be achieved with [context-aware custom comp
 ---
 
 _Label `upstream` added by @charliermarsh on 2024-12-06 00:29_
-
----
-
-_Referenced in [nushell/nushell#14574](../../nushell/nushell/issues/14574.md) on 2024-12-13 09:56_
 
 ---

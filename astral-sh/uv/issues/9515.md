@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T00:24:06Z
 updated_at: 2024-11-29T20:48:05Z
 url: https://github.com/astral-sh/uv/issues/9515
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Specifying different dependency versions for different platforms
@@ -123,9 +123,5 @@ dependencies = [
 ]
 ```
 it successfully installs the latest version of PyTorch on linux. Could we have other uv commands, such as `uv sync` and `uv lock`, behave similarly?
-
----
-
-_Referenced in [astral-sh/uv#9988](../../astral-sh/uv/issues/9988.md) on 2024-12-18 03:35_
 
 ---

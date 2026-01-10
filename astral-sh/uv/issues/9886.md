@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T21:11:16Z
 updated_at: 2024-12-13T22:32:10Z
 url: https://github.com/astral-sh/uv/issues/9886
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Confusing Python requirement statement in resolver error
@@ -64,9 +64,5 @@ _Label `error messages` added by @zanieb on 2024-12-13 21:11_
 _Comment by @zanieb on 2024-12-13 22:32_
 
 The formatting is implemented at https://github.com/astral-sh/uv/blob/b751648bfef7712a53c9dc3bfdaaff084c01e76d/crates/uv-resolver/src/pubgrub/report.rs#L51-L70
-
----
-
-_Referenced in [astral-sh/uv#9957](../../astral-sh/uv/pulls/9957.md) on 2024-12-17 04:37_
 
 ---

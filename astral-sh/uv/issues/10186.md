@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-26T23:20:40Z
 updated_at: 2024-12-26T23:40:26Z
 url: https://github.com/astral-sh/uv/issues/10186
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv publish` raise error `Caused by: error decoding response body`
@@ -69,10 +69,6 @@ Got it, thanks. I'll go ahead and revert!
 
 ---
 
-_Referenced in [astral-sh/uv#10187](../../astral-sh/uv/pulls/10187.md) on 2024-12-26 23:31_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-26 23:31_
 
 ---
@@ -86,9 +82,5 @@ _Closed by @charliermarsh on 2024-12-26 23:40_
 ---
 
 _Closed by @charliermarsh on 2024-12-26 23:40_
-
----
-
-_Referenced in [astral-sh/uv#10191](../../astral-sh/uv/issues/10191.md) on 2024-12-27 13:04_
 
 ---

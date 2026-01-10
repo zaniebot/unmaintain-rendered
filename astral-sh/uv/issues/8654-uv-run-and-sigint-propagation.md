@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-29T08:06:57Z
 updated_at: 2024-10-30T06:55:25Z
 url: https://github.com/astral-sh/uv/issues/8654
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv run and SIGINT propagation
@@ -138,9 +138,5 @@ _Comment by @hynek on 2024-10-30 06:55_
 > Thanks for cc'ing me, I'll watch the other issue, happy to make changes in watchfiles if it helps.
 
 I think you might be able to help with https://github.com/astral-sh/uv/pull/6738#issuecomment-2315466033? I really don't know enough about Rust to be of great help here. _eyes his Stevens books_
-
----
-
-_Referenced in [modelcontextprotocol/python-sdk#932](../../modelcontextprotocol/python-sdk/issues/932.md) on 2025-07-10 02:38_
 
 ---

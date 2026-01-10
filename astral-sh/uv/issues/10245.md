@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-30T21:56:47Z
 updated_at: 2024-12-31T02:05:01Z
 url: https://github.com/astral-sh/uv/issues/10245
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Normalize invalid characters when inferring project name from the working directory in `uv init`
@@ -35,10 +35,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-31 00:31_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-12-31 00:31_
-
----
-
-_Referenced in [astral-sh/uv#10246](../../astral-sh/uv/pulls/10246.md) on 2024-12-31 01:46_
 
 ---
 

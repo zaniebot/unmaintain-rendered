@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T17:37:43Z
 updated_at: 2024-10-31T14:52:19Z
 url: https://github.com/astral-sh/uv/issues/6360
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Recursive execution when using `uv run` in shebang line of script without `.py` extension
@@ -238,29 +238,13 @@ error: Failed to spawn: `__pycache__/list-peps.cpython-312.pyc`
 
 ---
 
-_Referenced in [astral-sh/uv#6313](../../astral-sh/uv/pulls/6313.md) on 2024-08-22 14:14_
-
----
-
 _Comment by @charliermarsh on 2024-08-25 20:56_
 
 I'll try to fix this for tomorrow's release.
 
 ---
 
-_Referenced in [astral-sh/uv#6635](../../astral-sh/uv/issues/6635.md) on 2024-08-26 00:18_
-
----
-
-_Referenced in [astral-sh/uv#6634](../../astral-sh/uv/issues/6634.md) on 2024-08-26 00:18_
-
----
-
 _Assigned to @konstin by @zanieb on 2024-08-26 17:07_
-
----
-
-_Referenced in [astral-sh/uv#6711](../../astral-sh/uv/pulls/6711.md) on 2024-08-27 18:10_
 
 ---
 
@@ -381,13 +365,5 @@ Yes. The `--script` flag was added after I opened this and solves this issue. I 
 ---
 
 _Closed by @ngnpope on 2024-10-31 14:52_
-
----
-
-_Referenced in [astral-sh/uv#10003](../../astral-sh/uv/issues/10003.md) on 2024-12-18 15:30_
-
----
-
-_Referenced in [astral-sh/uv#11220](../../astral-sh/uv/issues/11220.md) on 2025-02-04 17:05_
 
 ---

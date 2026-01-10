@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-01T08:16:58Z
 updated_at: 2024-12-04T11:40:32Z
 url: https://github.com/astral-sh/uv/issues/9548
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Resolving `toga-gtk` attempts to build `pygobject` on MacOS
@@ -40,14 +40,6 @@ _Renamed from "`uv` attempts to build `pygobject` on MacOS when resolving `toga-
 ---
 
 _Renamed from "`uv` attempts to build `pygobject` on MacOS when resolving `toga-gtk`" to "Resolving `toga-gtk` attempts to build `pygobject` on MacOS" by @ncoghlan on 2024-12-01 08:17_
-
----
-
-_Referenced in [beeware/toga#2995](../../beeware/toga/issues/2995.md) on 2024-12-01 08:21_
-
----
-
-_Referenced in [astral-sh/uv#9549](../../astral-sh/uv/pulls/9549.md) on 2024-12-01 09:05_
 
 ---
 

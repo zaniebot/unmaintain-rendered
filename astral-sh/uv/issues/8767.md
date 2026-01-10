@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-02T21:13:19Z
 updated_at: 2024-11-03T19:03:57Z
 url: https://github.com/astral-sh/uv/issues/8767
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # In resolver, allow source distributions with static metadata, but no `requires-python` compatibility
@@ -39,18 +39,6 @@ _Label `bug` added by @charliermarsh on 2024-11-02 21:13_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-02 21:13_
-
----
-
-_Referenced in [astral-sh/uv#8768](../../astral-sh/uv/pulls/8768.md) on 2024-11-02 21:31_
-
----
-
-_Referenced in [ericsnowcurrently/interpreters#16](../../ericsnowcurrently/interpreters/issues/16.md) on 2024-11-02 23:40_
-
----
-
-_Referenced in [TkTech/chancy#9](../../TkTech/chancy/pulls/9.md) on 2024-11-03 01:27_
 
 ---
 

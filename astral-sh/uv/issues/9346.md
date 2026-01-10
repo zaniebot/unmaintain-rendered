@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-22T02:43:14Z
 updated_at: 2024-12-17T20:01:28Z
 url: https://github.com/astral-sh/uv/issues/9346
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Feature request - pre-build / pre-read hook for security scanning
@@ -60,9 +60,5 @@ From uv's perspective it might be better to rely on https://github.com/astral-sh
 _Comment by @f3flight on 2024-12-17 20:01_
 
 Hi @samypr100! #3163 won't be good enough, because some packages publish only sdist; we have to use --no-build to ensure security during resolution workflow, and for such packages this flag would cause failure to resolve. Therefore at least for sdists, we need some callback to pass the artifact through security validation before it is used for build.
-
----
-
-_Referenced in [astral-sh/uv#11826](../../astral-sh/uv/issues/11826.md) on 2025-02-27 09:34_
 
 ---

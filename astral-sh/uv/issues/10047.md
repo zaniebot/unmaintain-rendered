@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-20T03:26:03Z
 updated_at: 2025-01-02T21:36:34Z
 url: https://github.com/astral-sh/uv/issues/10047
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Add instructions to make a docker file that doesn't use root at runtime
@@ -236,13 +236,5 @@ COPY . .
 ```
 
 Small warning: Obviously we haven't put that to production (see outdated python version),  but for our local development environments while updating the project it seems to work great so far.
-
----
-
-_Referenced in [returnDanilo/uv#1](../../returnDanilo/uv/pulls/1.md) on 2025-02-19 11:21_
-
----
-
-_Referenced in [astral-sh/uv#11617](../../astral-sh/uv/pulls/11617.md) on 2025-02-19 11:27_
 
 ---

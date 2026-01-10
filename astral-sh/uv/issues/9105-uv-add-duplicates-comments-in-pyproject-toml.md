@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T23:39:30Z
 updated_at: 2024-11-14T02:14:00Z
 url: https://github.com/astral-sh/uv/issues/9105
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # (🐞) `uv add` duplicates comments in pyproject.toml
@@ -58,10 +58,6 @@ _Label `bug` added by @charliermarsh on 2024-11-14 00:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-14 01:26_
-
----
-
-_Referenced in [astral-sh/uv#9109](../../astral-sh/uv/pulls/9109.md) on 2024-11-14 01:52_
 
 ---
 

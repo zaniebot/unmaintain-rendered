@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T19:49:23Z
 updated_at: 2024-11-22T21:13:17Z
 url: https://github.com/astral-sh/uv/issues/9366
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add a dedicated error message for conflicts derived from the default groups
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-22 19:49_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-11-22 19:49_
-
----
-
-_Referenced in [astral-sh/uv#9368](../../astral-sh/uv/pulls/9368.md) on 2024-11-22 20:19_
 
 ---
 

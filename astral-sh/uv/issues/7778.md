@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-29T10:40:50Z
 updated_at: 2025-01-06T15:42:30Z
 url: https://github.com/astral-sh/uv/issues/7778
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # In case VIRTUAL_ENV is different from .venv UV_PROJECT_ENVIRONMENT should be created automatically
@@ -45,20 +45,12 @@ More context in #6834 which links to much more discussion.
 
 ---
 
-_Referenced in [pelican-plugins/webassets#16](../../pelican-plugins/webassets/pulls/16.md) on 2024-11-02 23:54_
-
----
-
 _Comment by @sglbl on 2024-11-29 09:22_
 
 @zanieb So how can I use my cpu-based-venv without removing the other one?
 
 ![Image](https://github.com/user-attachments/assets/ea631eca-2d86-42f7-8df9-64cdd598f6ac)
 
-
----
-
-_Referenced in [mozilla-services/crashstats-tools#169](../../mozilla-services/crashstats-tools/pulls/169.md) on 2024-12-27 16:58_
 
 ---
 
@@ -97,13 +89,5 @@ Right now, I'm not interested in fiddling with this issue. I'm going with how uv
 ---
 
 _Closed by @zanieb on 2025-01-06 15:31_
-
----
-
-_Referenced in [NanoVNA-Saver/nanovna-saver#759](../../NanoVNA-Saver/nanovna-saver/issues/759.md) on 2025-01-20 02:32_
-
----
-
-_Referenced in [jolpica/jolpica-f1#273](../../jolpica/jolpica-f1/pulls/273.md) on 2025-10-18 09:47_
 
 ---

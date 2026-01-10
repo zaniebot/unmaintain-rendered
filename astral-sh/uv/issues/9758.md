@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-10T00:43:46Z
 updated_at: 2024-12-10T19:59:15Z
 url: https://github.com/astral-sh/uv/issues/9758
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # uv add deletes 'root' comments from within the dependency-group section of pyproject.toml
@@ -101,10 +101,6 @@ _Label `upstream` added by @charliermarsh on 2024-12-10 01:39_
 _Comment by @charliermarsh on 2024-12-10 01:39_
 
 It looks like this is coming from `toml-edit`: https://github.com/toml-rs/toml/issues/818.
-
----
-
-_Referenced in [astral-sh/uv#9784](../../astral-sh/uv/pulls/9784.md) on 2024-12-10 19:37_
 
 ---
 

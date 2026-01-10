@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-28T12:51:28Z
 updated_at: 2024-10-28T19:00:09Z
 url: https://github.com/astral-sh/uv/issues/8634
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv export should not need to have python installed
@@ -31,10 +31,6 @@ error: No interpreter found for Python >=3.12 in managed installations or system
 Python should not be necessary here, all that is needed is that uv produces a requirements.txt file for another tool to then process.
 
 The same applies to the `tree` command; uv has all the information needed already, a Python interpreter should not be necessary.
-
----
-
-_Referenced in [astral-sh/uv#8635](../../astral-sh/uv/issues/8635.md) on 2024-10-28 13:31_
 
 ---
 
@@ -63,10 +59,6 @@ _Comment by @charliermarsh on 2024-10-28 16:12_
 _Comment by @zanieb on 2024-10-28 16:20_
 
 ~Are you talking about `uv pip tree`?~ Nevermind, I see we show the tree for the current platform by default.
-
----
-
-_Referenced in [astral-sh/uv#8638](../../astral-sh/uv/pulls/8638.md) on 2024-10-28 16:34_
 
 ---
 

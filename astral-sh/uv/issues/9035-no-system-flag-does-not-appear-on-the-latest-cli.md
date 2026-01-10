@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-12T00:01:55Z
 updated_at: 2024-11-12T03:04:38Z
 url: https://github.com/astral-sh/uv/issues/9035
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `--no-system` flag does not appear on the latest CLI help
@@ -53,10 +53,6 @@ Totally agree it would be to verbose to add the description for each boolean. I 
 _Comment by @charliermarsh on 2024-11-12 00:49_
 
 Ohh that might be a mistake on `uv pip tree`! Thanks!
-
----
-
-_Referenced in [astral-sh/uv#9040](../../astral-sh/uv/pulls/9040.md) on 2024-11-12 02:22_
 
 ---
 

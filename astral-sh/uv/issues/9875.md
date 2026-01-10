@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T19:10:36Z
 updated_at: 2024-12-13T21:39:47Z
 url: https://github.com/astral-sh/uv/issues/9875
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Panicking when directories do not exist
@@ -29,10 +29,6 @@ rm -r ./tmp
 # back to the first shell
 uv version # panic!
 ```
-
----
-
-_Referenced in [astral-sh/uv#9876](../../astral-sh/uv/pulls/9876.md) on 2024-12-13 19:13_
 
 ---
 

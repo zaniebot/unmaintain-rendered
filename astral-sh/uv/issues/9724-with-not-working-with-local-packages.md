@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-08T20:18:08Z
 updated_at: 2024-12-11T09:44:42Z
 url: https://github.com/astral-sh/uv/issues/9724
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `--with` not working with local packages
@@ -82,10 +82,6 @@ Installed 2 packages in 1ms
 + uv run --directory app app
 <function hello at 0x104e64d60>
 ```
-
----
-
-_Referenced in [astral-sh/uv#9719](../../astral-sh/uv/issues/9719.md) on 2024-12-08 20:18_
 
 ---
 

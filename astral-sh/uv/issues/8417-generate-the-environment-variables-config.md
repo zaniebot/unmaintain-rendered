@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T16:07:24Z
 updated_at: 2024-11-03T14:31:39Z
 url: https://github.com/astral-sh/uv/issues/8417
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Generate the "Environment variables" config document from code
@@ -29,10 +29,6 @@ _Label `documentation` added by @zanieb on 2024-10-21 16:07_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-10-21 16:07_
-
----
-
-_Referenced in [astral-sh/uv#8493](../../astral-sh/uv/pulls/8493.md) on 2024-10-23 09:09_
 
 ---
 

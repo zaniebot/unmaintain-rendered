@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T17:40:18Z
 updated_at: 2024-12-03T14:45:43Z
 url: https://github.com/astral-sh/uv/issues/9510
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Fails to install `azure-cli` (which is installed just fine with `pip`)
@@ -136,9 +136,5 @@ _Closed by @facundobatista on 2024-12-03 12:03_
 _Comment by @zanieb on 2024-12-03 14:45_
 
 Details on our pre-release behavior in https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility
-
----
-
-_Referenced in [astral-sh/uv#14415](../../astral-sh/uv/issues/14415.md) on 2025-07-02 10:20_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-19T13:16:03Z
 updated_at: 2024-11-19T20:14:22Z
 url: https://github.com/astral-sh/uv/issues/9225
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv export` order of hashes
@@ -92,10 +92,6 @@ _Label `bug` added by @charliermarsh on 2024-11-19 18:42_
 _Comment by @charliermarsh on 2024-11-19 18:42_
 
 (Gonna mark it as a bug.)
-
----
-
-_Referenced in [astral-sh/uv#9237](../../astral-sh/uv/pulls/9237.md) on 2024-11-19 19:35_
 
 ---
 

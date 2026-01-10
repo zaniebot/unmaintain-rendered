@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-18T13:28:48Z
 updated_at: 2024-12-18T21:54:57Z
 url: https://github.com/astral-sh/uv/issues/9998
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # fork-strategy requires-python produces unexpected results with repeated dependencies
@@ -76,10 +76,6 @@ wrote:
 > ***@***.***>
 >
 
-
----
-
-_Referenced in [astral-sh/uv#10007](../../astral-sh/uv/pulls/10007.md) on 2024-12-18 16:31_
 
 ---
 

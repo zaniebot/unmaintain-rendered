@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-28T07:41:32Z
 updated_at: 2024-11-28T13:56:11Z
 url: https://github.com/astral-sh/uv/issues/9494
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # why is `.python-version` a mandatory file?
@@ -55,9 +55,5 @@ _Label `duplicate` added by @zanieb on 2024-11-28 13:56_
 ---
 
 _Label `question` added by @zanieb on 2024-11-28 13:56_
-
----
-
-_Referenced in [astral-sh/uv#11697](../../astral-sh/uv/issues/11697.md) on 2025-02-21 13:55_
 
 ---

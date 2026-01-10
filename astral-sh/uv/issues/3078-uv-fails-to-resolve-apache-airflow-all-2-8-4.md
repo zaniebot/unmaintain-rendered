@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T23:44:56Z
 updated_at: 2024-11-07T15:21:16Z
 url: https://github.com/astral-sh/uv/issues/3078
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # uv fails to resolve `apache-airflow[all]==2.8.4` where pip succeeds
@@ -87,15 +87,7 @@ Whereas my understanding is uv does not apply a preference like this.
 
 ---
 
-_Referenced in [astral-sh/uv#1560](../../astral-sh/uv/issues/1560.md) on 2024-04-16 23:51_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-17 02:47_
-
----
-
-_Referenced in [astral-sh/uv#3087](../../astral-sh/uv/pulls/3087.md) on 2024-04-17 04:03_
 
 ---
 
@@ -152,18 +144,6 @@ apache-beam<=2.49.0
 
 ---
 
-_Referenced in [apache/airflow#39100](../../apache/airflow/issues/39100.md) on 2024-04-18 03:24_
-
----
-
-_Referenced in [astral-sh/uv#8157](../../astral-sh/uv/issues/8157.md) on 2024-10-13 17:07_
-
----
-
-_Referenced in [apache/airflow#43768](../../apache/airflow/pulls/43768.md) on 2024-11-07 00:46_
-
----
-
 _Comment by @notatallshaw on 2024-11-07 15:00_
 
 Okay, I think I've found *why* pip succeeds here and uv fails, and it's not going to be intuitive.
@@ -181,9 +161,5 @@ As such, I think I'm going to close this issue, as I think uv is doing the right
 ---
 
 _Closed by @notatallshaw on 2024-11-07 15:00_
-
----
-
-_Referenced in [opentargets/orchestration#126](../../opentargets/orchestration/pulls/126.md) on 2025-04-15 10:47_
 
 ---

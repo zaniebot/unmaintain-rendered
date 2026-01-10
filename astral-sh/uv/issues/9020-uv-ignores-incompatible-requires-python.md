@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-11T16:10:18Z
 updated_at: 2024-11-12T00:49:30Z
 url: https://github.com/astral-sh/uv/issues/9020
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv ignores incompatible requires-python
@@ -78,9 +78,5 @@ No problem, their search seriously is bad. I struggle to find issues I know exis
 ---
 
 _Closed by @zanieb on 2024-11-12 00:49_
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2025-09-18 09:11_
 
 ---

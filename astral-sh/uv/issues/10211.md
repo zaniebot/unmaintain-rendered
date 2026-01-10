@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-28T05:52:21Z
 updated_at: 2025-01-02T18:04:55Z
 url: https://github.com/astral-sh/uv/issues/10211
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Task runner plugin system
@@ -83,15 +83,7 @@ One downside of this proposal vs #5903 is that new contributors to a project tha
 
 ---
 
-_Referenced in [astral-sh/uv#10264](../../astral-sh/uv/issues/10264.md) on 2025-01-01 17:25_
-
----
-
 _Renamed from "Consider option to define a "default script"" to "Task runner plugin system" by @rmorshea on 2025-01-02 00:10_
-
----
-
-_Referenced in [astral-sh/uv#5903](../../astral-sh/uv/issues/5903.md) on 2025-01-02 00:48_
 
 ---
 

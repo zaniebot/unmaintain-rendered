@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T12:59:10Z
 updated_at: 2024-12-31T16:18:57Z
 url: https://github.com/astral-sh/uv/issues/6510
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv init` should prompt for directory
@@ -62,9 +62,5 @@ _Comment by @edmorley on 2024-12-31 15:59_
 
 (The prompt could always have "yes" as the default option, that way users could `uv init` and immediately hit enter to init for less friction. Or such users could use `uv init .` to skip the prompt entirely.)
 
-
----
-
-_Referenced in [astral-sh/uv#13718](../../astral-sh/uv/issues/13718.md) on 2025-05-29 14:23_
 
 ---

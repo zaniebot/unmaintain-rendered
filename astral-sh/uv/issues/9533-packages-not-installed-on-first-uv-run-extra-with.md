@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T22:46:33Z
 updated_at: 2024-11-30T14:22:19Z
 url: https://github.com/astral-sh/uv/issues/9533
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Packages not installed on first `uv run --extra` with conflicting extras
@@ -217,18 +217,10 @@ I was able to reproduce!
 
 ---
 
-_Referenced in [astral-sh/uv#9539](../../astral-sh/uv/pulls/9539.md) on 2024-11-30 14:13_
-
----
-
 _Closed by @charliermarsh on 2024-11-30 14:22_
 
 ---
 
 _Closed by @charliermarsh on 2024-11-30 14:22_
-
----
-
-_Referenced in [astral-sh/uv#9622](../../astral-sh/uv/issues/9622.md) on 2024-12-03 22:00_
 
 ---

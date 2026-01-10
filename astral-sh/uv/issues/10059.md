@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-20T15:36:40Z
 updated_at: 2024-12-20T19:14:58Z
 url: https://github.com/astral-sh/uv/issues/10059
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # `uv lock` finds incorrect wheels for sys_platform == 'darwin' (pytorch)
@@ -119,10 +119,6 @@ _Label `duplicate` added by @charliermarsh on 2024-12-20 16:48_
 _Comment by @charliermarsh on 2024-12-20 16:48_
 
 This is tracked in https://github.com/astral-sh/uv/issues/9711. There are a variety of linked issues that are describing the same problem.
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-20 16:51_
 
 ---
 

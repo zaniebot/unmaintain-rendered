@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-03T22:00:51Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9622
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Package dependencies not installed on first `uv run --extra` with conflicting extras
@@ -85,10 +85,6 @@ Installed 9 packages in 16ms
 
 ---
 
-_Referenced in [astral-sh/uv#9640](../../astral-sh/uv/issues/9640.md) on 2024-12-04 14:15_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-12-06 00:16_
 
 ---
@@ -99,18 +95,10 @@ Should be fixed soon, sorry about that.
 
 ---
 
-_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
-
----
-
 _Closed by @BurntSushi on 2024-12-10 15:57_
 
 ---
 
 _Closed by @BurntSushi on 2024-12-10 15:57_
-
----
-
-_Referenced in [stfc/janus-core#358](../../stfc/janus-core/pulls/358.md) on 2024-12-10 18:41_
 
 ---

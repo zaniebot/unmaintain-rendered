@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-12T11:19:21Z
 updated_at: 2024-11-19T20:20:08Z
 url: https://github.com/astral-sh/uv/issues/8144
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # insufficient retrying around transient errors during `uv sync` (os error 104 in this case)
@@ -42,10 +42,6 @@ The log does not reveal if any retry was attempted. Such transient errors should
 
 As I have thought and talked a lot about the relevance of retries around transient errors in distributed systems and CI: once we improve the retrying logic it would be great to have explicit logs indicating those error and retries, leading up to success.
 
-
----
-
-_Referenced in [astral-sh/uv#3514](../../astral-sh/uv/issues/3514.md) on 2024-10-12 11:22_
 
 ---
 
@@ -125,10 +121,6 @@ Let me know if there's anything useful I can run to help. I can't reproduce it c
 ---
 
 _Label `help wanted` added by @zanieb on 2024-10-16 17:24_
-
----
-
-_Referenced in [astral-sh/uv#8285](../../astral-sh/uv/pulls/8285.md) on 2024-10-17 10:45_
 
 ---
 
@@ -1549,10 +1541,6 @@ Find below as much as the end log as I could fit in this post, if you need me to
 
 ---
 
-_Referenced in [astral-sh/uv#8444](../../astral-sh/uv/pulls/8444.md) on 2024-10-22 10:48_
-
----
-
 _Comment by @jgehrcke on 2024-10-22 12:12_
 
 I am following this with keen eyes. Thanks for the efforts here @konstin and also @notatallshaw for providing quick feedback.
@@ -1938,10 +1926,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-18 21:55_
 
 ---
 
-_Referenced in [astral-sh/uv#9213](../../astral-sh/uv/pulls/9213.md) on 2024-11-19 02:08_
-
----
-
 _Closed by @charliermarsh on 2024-11-19 04:15_
 
 ---
@@ -1959,13 +1943,5 @@ Thank you @charliermarsh!
 _Comment by @notatallshaw-gts on 2024-11-19 20:20_
 
 FYI, I still got an error on 0.5.3  but I was running docker build without `--progress=plain` 😞, so I only have the last few lines and didn't see if retried or not. I'll open a new issue if I am able to catch it again with more context.
-
----
-
-_Referenced in [astral-sh/uv#9246](../../astral-sh/uv/issues/9246.md) on 2024-11-19 20:42_
-
----
-
-_Referenced in [NVIDIA/gpu-driver-container#347](../../NVIDIA/gpu-driver-container/issues/347.md) on 2025-06-13 08:26_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T00:11:36Z
 updated_at: 2024-12-17T03:53:51Z
 url: https://github.com/astral-sh/uv/issues/5945
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Add documentation for installing common pytorch variants
@@ -57,15 +57,7 @@ Would also like to point out there's been this python package (recently recommen
 
 ---
 
-_Referenced in [astral-sh/uv#6498](../../astral-sh/uv/issues/6498.md) on 2024-08-23 12:44_
-
----
-
 _Label `help wanted` added by @zanieb on 2024-08-23 13:34_
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-08-23 14:54_
 
 ---
 
@@ -201,10 +193,6 @@ error: distribution torchvision==0.19.1+cpu @ registry+https://download.pytorch.
 This is on my macbook, where I would have expected it to resolve to just `torchvision`, sans `+cpu`.
 
 However, if I manually add `torchvision==0.19.1` to my `pyproject.toml` and `uv sync`, everything behaves as expected.
-
----
-
-_Referenced in [astral-sh/uv#7859](../../astral-sh/uv/issues/7859.md) on 2024-10-02 14:56_
 
 ---
 
@@ -370,9 +358,5 @@ _Closed by @charliermarsh on 2024-12-17 03:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-17 03:53_
-
----
-
-_Referenced in [chronicler-ai/chronicle#124](../../chronicler-ai/chronicle/pulls/124.md) on 2025-10-14 04:57_
 
 ---

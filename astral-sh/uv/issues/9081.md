@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T08:52:40Z
 updated_at: 2024-11-13T16:20:42Z
 url: https://github.com/astral-sh/uv/issues/9081
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uvx --with` does not work with complex version specifiers
@@ -64,10 +64,6 @@ This is fallout of attempting to support `--with "requests, flask"`.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-13 13:59_
-
----
-
-_Referenced in [astral-sh/uv#9089](../../astral-sh/uv/pulls/9089.md) on 2024-11-13 16:09_
 
 ---
 

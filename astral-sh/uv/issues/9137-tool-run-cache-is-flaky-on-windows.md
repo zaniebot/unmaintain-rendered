@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-15T00:25:15Z
 updated_at: 2024-11-18T02:43:04Z
 url: https://github.com/astral-sh/uv/issues/9137
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `tool_run_cache` is flaky on Windows
@@ -98,10 +98,6 @@ echo ""
 echo ""
 cargo run -- tool run -p 3.12 --cache-dir $CACHE_DIR black --version
 ```
-
----
-
-_Referenced in [astral-sh/uv#9185](../../astral-sh/uv/pulls/9185.md) on 2024-11-18 02:30_
 
 ---
 

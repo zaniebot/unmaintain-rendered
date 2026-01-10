@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-13T13:03:22Z
 updated_at: 2024-12-16T10:39:51Z
 url: https://github.com/astral-sh/uv/issues/8157
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Tracking issue: uv backtracks on the wrong package
@@ -97,43 +97,11 @@ https://github.com/astral-sh/uv/issues/3078#issuecomment-2062907457
 
 ---
 
-_Referenced in [astral-sh/uv#8171](../../astral-sh/uv/pulls/8171.md) on 2024-10-14 09:08_
-
----
-
-_Referenced in [astral-sh/uv#7830](../../astral-sh/uv/issues/7830.md) on 2024-10-16 20:02_
-
----
-
-_Referenced in [astral-sh/uv#2062](../../astral-sh/uv/issues/2062.md) on 2024-10-21 21:54_
-
----
-
-_Referenced in [astral-sh/uv#8813](../../astral-sh/uv/issues/8813.md) on 2024-11-04 19:54_
-
----
-
-_Referenced in [astral-sh/uv#8863](../../astral-sh/uv/issues/8863.md) on 2024-11-06 16:24_
-
----
-
 _Comment by @notatallshaw on 2024-11-07 15:13_
 
 I've added a comment on an issue of some recent findings I have on where pip finds a good solution but I think uv is actually doing the right thing: https://github.com/astral-sh/uv/issues/3078#issuecomment-2462455805
 
 My plan is to actually make pip behave more like uv, because in general it will produce a faster answer that is more explainable. That isn't to say pip will start producing exactly the same results as uv, many of the other examples here don't change with pip.
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#274](../../pubgrub-rs/pubgrub/pulls/274.md) on 2024-11-08 11:09_
-
----
-
-_Referenced in [astral-sh/uv#9159](../../astral-sh/uv/issues/9159.md) on 2024-11-16 03:24_
-
----
-
-_Referenced in [astral-sh/uv#9322](../../astral-sh/uv/issues/9322.md) on 2024-11-21 14:56_
 
 ---
 
@@ -165,10 +133,6 @@ I think it's a good idea, and would probably produce better resolutions in gener
 
 ---
 
-_Referenced in [astral-sh/uv#9413](../../astral-sh/uv/issues/9413.md) on 2024-11-25 13:44_
-
----
-
 _Comment by @konstin on 2024-11-26 08:46_
 
 There's two differently shaped problems in this issue:
@@ -176,14 +140,6 @@ There's two differently shaped problems in this issue:
 In some of the cases, an upper bound (or dependency that causes the conflict) is missing on an older version, so we search until we find that old version. This is logically sound, but causes a bad resolution.
 
 In other cases (sentry and airflow), there are upper bounds, but we're getting a lot of conflicts with versions of B until we've exhausted the range and finally start picking a lower version of A.
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -199,62 +155,10 @@ Give uv resolves so fast, I do wonder if it makes sense on a build failure, rath
 
 ---
 
-_Referenced in [crate/academy-fundamentals-course#32](../../crate/academy-fundamentals-course/pulls/32.md) on 2024-12-05 20:22_
-
----
-
-_Referenced in [crate/academy-fundamentals-course#35](../../crate/academy-fundamentals-course/pulls/35.md) on 2024-12-05 20:34_
-
----
-
-_Referenced in [crate/academy-fundamentals-course#37](../../crate/academy-fundamentals-course/pulls/37.md) on 2024-12-08 15:31_
-
----
-
-_Referenced in [crate/academy-fundamentals-course#39](../../crate/academy-fundamentals-course/pulls/39.md) on 2024-12-08 15:35_
-
----
-
-_Referenced in [astral-sh/packse#230](../../astral-sh/packse/pulls/230.md) on 2024-12-11 12:09_
-
----
-
-_Referenced in [astral-sh/pubgrub#36](../../astral-sh/pubgrub/pulls/36.md) on 2024-12-12 15:42_
-
----
-
-_Referenced in [astral-sh/uv#9843](../../astral-sh/uv/pulls/9843.md) on 2024-12-12 15:44_
-
----
-
-_Referenced in [astral-sh/pubgrub#38](../../astral-sh/pubgrub/pulls/38.md) on 2024-12-16 08:50_
-
----
-
 _Closed by @konstin on 2024-12-16 10:39_
 
 ---
 
 _Closed by @konstin on 2024-12-16 10:39_
-
----
-
-_Referenced in [astral-sh/uv#10664](../../astral-sh/uv/issues/10664.md) on 2025-01-16 02:25_
-
----
-
-_Referenced in [astral-sh/uv#10828](../../astral-sh/uv/issues/10828.md) on 2025-01-21 21:44_
-
----
-
-_Referenced in [astral-sh/uv#11636](../../astral-sh/uv/issues/11636.md) on 2025-02-19 20:05_
-
----
-
-_Referenced in [astral-sh/uv#12060](../../astral-sh/uv/issues/12060.md) on 2025-03-08 00:19_
-
----
-
-_Referenced in [astral-sh/uv#14523](../../astral-sh/uv/issues/14523.md) on 2025-07-09 16:48_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T09:40:38Z
 updated_at: 2024-11-05T02:32:47Z
 url: https://github.com/astral-sh/uv/issues/8412
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Outdated pip reference in "Strictness and spec enforcement" docs
@@ -54,10 +54,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-05 01:57_
 _Comment by @charliermarsh on 2024-11-05 01:57_
 
 I found something to replace this with.
-
----
-
-_Referenced in [astral-sh/uv#8822](../../astral-sh/uv/pulls/8822.md) on 2024-11-05 02:30_
 
 ---
 

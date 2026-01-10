@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:40:17Z
 updated_at: 2024-11-23T13:19:59Z
 url: https://github.com/astral-sh/uv/issues/4812
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `uv sync` should lock (unless `--locked` is provided)
@@ -32,15 +32,7 @@ _Label `preview` added by @charliermarsh on 2024-07-04 17:40_
 
 ---
 
-_Referenced in [astral-sh/uv#4803](../../astral-sh/uv/issues/4803.md) on 2024-07-04 17:41_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-04 22:27_
-
----
-
-_Referenced in [astral-sh/uv#4839](../../astral-sh/uv/pulls/4839.md) on 2024-07-05 21:43_
 
 ---
 

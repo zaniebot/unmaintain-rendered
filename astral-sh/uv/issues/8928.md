@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T09:25:42Z
 updated_at: 2024-11-08T15:07:10Z
 url: https://github.com/astral-sh/uv/issues/8928
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # uv 0.5.0 sh installer fail in github workflow
@@ -41,10 +41,6 @@ Ubuntu
   22.0
   LTS
   
-
----
-
-_Referenced in [andgineer/uv-venv#1](../../andgineer/uv-venv/issues/1.md) on 2024-11-08 09:29_
 
 ---
 

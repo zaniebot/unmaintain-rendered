@@ -3,21 +3,21 @@ number: 9878
 title: PyTorch install fails on M1 using a Debian container ?
 type: issue
 state: closed
-author: newresu
+author: santi-mir
 labels:
   - question
 assignees: []
 created_at: 2024-12-13T19:37:26Z
 updated_at: 2024-12-15T16:17:23Z
 url: https://github.com/astral-sh/uv/issues/9878
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # PyTorch install fails on M1 using a Debian container ?
 
 ---
 
-_Issue opened by @newresu on 2024-12-13 19:37_
+_Issue opened by @santi-mir on 2024-12-13 19:37_
 
 Here trying to set up the pyproject to install torch. Currently I just tried installing within a Debian Container, on an M1. 
 
@@ -71,7 +71,7 @@ I may be doing something wrong, but can not figure it out.
 
 ---
 
-_Renamed from "PyTorch install fails on MacOS?" to "PyTorch install fails on M1 using a Debian container ?" by @newresu on 2024-12-13 19:56_
+_Renamed from "PyTorch install fails on MacOS?" to "PyTorch install fails on M1 using a Debian container ?" by @santi-mir on 2024-12-13 19:56_
 
 ---
 
@@ -91,11 +91,11 @@ Or `docker run --platform linux/x86_64` if you don't want an arm64 image?
 
 ---
 
-_Closed by @newresu on 2024-12-13 21:22_
+_Closed by @santi-mir on 2024-12-13 21:22_
 
 ---
 
-_Comment by @newresu on 2024-12-15 16:13_
+_Comment by @santi-mir on 2024-12-15 16:13_
 
 Just to add:
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T16:38:42Z
 updated_at: 2024-11-08T17:03:10Z
 url: https://github.com/astral-sh/uv/issues/5609
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Support resolution strategy for python version 
@@ -30,23 +30,11 @@ Here is what I can suggest:
 
 ---
 
-_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 16:39_
-
----
-
 _Label `needs-decision` added by @zanieb on 2024-07-30 16:40_
 
 ---
 
 _Label `cli` added by @zanieb on 2024-07-30 16:40_
-
----
-
-_Referenced in [astral-sh/uv#8247](../../astral-sh/uv/issues/8247.md) on 2024-11-08 17:00_
-
----
-
-_Referenced in [astral-sh/uv#7779](../../astral-sh/uv/issues/7779.md) on 2024-11-08 17:02_
 
 ---
 
@@ -58,17 +46,5 @@ See also:
 - https://github.com/astral-sh/uv/issues/7562
 - https://github.com/astral-sh/uv/issues/7779
 
-
----
-
-_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-12-14 17:49_
-
----
-
-_Referenced in [astral-sh/uv#12122](../../astral-sh/uv/issues/12122.md) on 2025-03-12 17:53_
-
----
-
-_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-08 21:20_
 
 ---

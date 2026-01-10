@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T05:06:21Z
 updated_at: 2024-12-17T14:16:02Z
 url: https://github.com/astral-sh/uv/issues/9958
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Improve message when attempting to remove package from wrong dependency group
@@ -61,10 +61,6 @@ _Assigned to @zanieb by @zanieb on 2024-12-17 05:15_
 ---
 
 _Label `error messages` added by @zanieb on 2024-12-17 05:15_
-
----
-
-_Referenced in [astral-sh/uv#9959](../../astral-sh/uv/pulls/9959.md) on 2024-12-17 05:21_
 
 ---
 

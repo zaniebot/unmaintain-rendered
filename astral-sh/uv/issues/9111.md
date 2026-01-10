@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-14T03:22:16Z
 updated_at: 2024-11-14T06:05:44Z
 url: https://github.com/astral-sh/uv/issues/9111
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `pip list` in activated venv differs from `uv pip list`
@@ -67,9 +67,5 @@ Also, you may want to consider a `uv list` or similar command to display the pro
 ---
 
 _Closed by @nataziel on 2024-11-14 06:03_
-
----
-
-_Referenced in [astral-sh/uv#14215](../../astral-sh/uv/issues/14215.md) on 2025-06-25 23:34_
 
 ---

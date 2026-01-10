@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-13T04:16:33Z
 updated_at: 2024-12-05T01:59:10Z
 url: https://github.com/astral-sh/uv/issues/8155
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Get `Consider setting a lower bound` warning from root package
@@ -50,15 +50,7 @@ _Reopened by @DanielYang59 on 2024-10-13 04:20_
 
 ---
 
-_Referenced in [materialsproject/pymatgen#4073](../../materialsproject/pymatgen/pulls/4073.md) on 2024-10-13 04:34_
-
----
-
 _Label `bug` added by @konstin on 2024-10-13 08:17_
-
----
-
-_Referenced in [astral-sh/uv#9497](../../astral-sh/uv/pulls/9497.md) on 2024-11-28 12:28_
 
 ---
 
@@ -70,10 +62,6 @@ The warnings for the extras were a bug, fixed in #9497. For the resolution lowes
 uv pip install dist/pymatgen-2024.10.3.tar.gz pymatgen[ci,optional] --resolution=lowest
 ```
 Separate `uv pip install` invocations don't know about each other. With a regular (highest) resolution, we try to keep the versions also installed by treating them as preferred in the resolver. But with the lowest resolution, we are simulation the "worst case" of a user with lots of conflicting requirements that force old dependency versions. If you place both the file and the in one command, the resolver pins pymatgen to 2024.10.3 (we need to install the package, we can pick some other version form somewhere else), so we know that everything about `pymatgen[ci,optional]` is constrained.
-
----
-
-_Referenced in [materialsproject/pymatgen#4210](../../materialsproject/pymatgen/pulls/4210.md) on 2024-11-30 12:48_
 
 ---
 
@@ -221,10 +209,6 @@ Successfully built dist/pymatgen-2024.11.13.tar.gz
 _Comment by @zanieb on 2024-12-04 17:29_
 
 It's stable, we're using it in our tests. I can unhide it.
-
----
-
-_Referenced in [astral-sh/uv#9644](../../astral-sh/uv/pulls/9644.md) on 2024-12-04 17:55_
 
 ---
 

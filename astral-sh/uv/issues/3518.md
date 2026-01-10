@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-10T21:12:01Z
 updated_at: 2025-01-07T19:21:35Z
 url: https://github.com/astral-sh/uv/issues/3518
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Invalidate cache entries for same-version packages that have newer timestamps when also found externally (via --find-links)
@@ -155,9 +155,5 @@ _Renamed from "uv should use timestamps as same-version tiebreakers between pack
 ---
 
 _Renamed from "Use timestamps as same-version tiebreakers between cache packages and  --find-links packages" to "Invalidate cache entries for same-version packages that have newer timestamps when also found externally (via --find-links)" by @charlesnicholson on 2025-01-07 19:21_
-
----
-
-_Referenced in [astral-sh/uv#5731](../../astral-sh/uv/issues/5731.md) on 2025-06-20 15:21_
 
 ---

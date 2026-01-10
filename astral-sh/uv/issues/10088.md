@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-21T23:16:15Z
 updated_at: 2024-12-22T14:54:33Z
 url: https://github.com/astral-sh/uv/issues/10088
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:36:21Z
 ```
 
 # Is it possible to avoid re-checking direct URL dependencies each command?
@@ -205,10 +205,6 @@ _Reopened by @charliermarsh on 2024-12-22 00:37_
 
 ---
 
-_Referenced in [astral-sh/uv#10093](../../astral-sh/uv/pulls/10093.md) on 2024-12-22 13:37_
-
----
-
 _Closed by @charliermarsh on 2024-12-22 14:07_
 
 ---
@@ -245,10 +241,6 @@ Yes I believe so. It looks like they return `cache-control: max-age=0, private`,
 > As a side note, adding such direct URL dependency with a URL fragment is not supported in uv add still.
 
 Yeah feel free to open a separate issue for that.
-
----
-
-_Referenced in [astral-sh/uv#10094](../../astral-sh/uv/issues/10094.md) on 2024-12-22 14:54_
 
 ---
 

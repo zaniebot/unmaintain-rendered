@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-13T04:04:51Z
 updated_at: 2024-11-13T20:47:58Z
 url: https://github.com/astral-sh/uv/issues/9076
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # (🐞) `uv add` alphabetic preservation sorts prefixes after longer entries
@@ -105,14 +105,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-13 16:37_
 
 ---
 
-_Referenced in [astral-sh/uv#9097](../../astral-sh/uv/pulls/9097.md) on 2024-11-13 20:12_
-
----
-
 _Closed by @charliermarsh on 2024-11-13 20:47_
-
----
-
-_Referenced in [astral-sh/uv#13334](../../astral-sh/uv/pulls/13334.md) on 2025-05-07 17:58_
 
 ---

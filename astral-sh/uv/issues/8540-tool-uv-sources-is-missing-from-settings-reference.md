@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T20:08:32Z
 updated_at: 2024-10-24T23:17:51Z
 url: https://github.com/astral-sh/uv/issues/8540
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # `tool.uv.sources` is missing from settings reference
@@ -28,10 +28,6 @@ _Label `documentation` added by @charliermarsh on 2024-10-24 20:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-24 20:08_
-
----
-
-_Referenced in [astral-sh/uv#8543](../../astral-sh/uv/pulls/8543.md) on 2024-10-24 20:42_
 
 ---
 

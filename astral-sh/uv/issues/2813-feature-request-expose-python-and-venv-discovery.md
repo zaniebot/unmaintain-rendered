@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-03T16:19:22Z
 updated_at: 2024-11-06T02:13:42Z
 url: https://github.com/astral-sh/uv/issues/2813
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:36:19Z
 ```
 
 # Feature Request: Expose python and venv discovery as a machine interpretable uv subcommand
@@ -51,10 +51,6 @@ _Label `wish` added by @zanieb on 2024-04-03 16:24_
 
 ---
 
-_Referenced in [zed-industries/zed#7808](../../zed-industries/zed/issues/7808.md) on 2024-06-03 00:04_
-
----
-
 _Comment by @bersbersbers on 2024-11-05 20:54_
 
 I came across this issue when wondering how to figure out, in a script, how `uv` was installed on a system: specifically, I would like to know if the user installed `uv` via pip (in which case I should not uninstall `uv` during `uv pip sync`) or if it's a system-wide binary (in which case I do not need to special-case a `uv` pip package). Maybe figuring out `uv` kind of installation fits into this issue.
@@ -72,13 +68,5 @@ _Comment by @zanieb on 2024-11-05 21:11_
 _Comment by @bersbersbers on 2024-11-06 02:13_
 
 @zanieb yes, that was my idea, too. It's not straightforward, given symlinks, the various Python distributions, system installations vs. virtual environments (various ones), etc. But I assume `uv` itself may not know better, so maybe I'll just try myself :)
-
----
-
-_Referenced in [astral-sh/ty#526](../../astral-sh/ty/issues/526.md) on 2025-05-27 23:44_
-
----
-
-_Referenced in [zed-industries/zed#21743](../../zed-industries/zed/issues/21743.md) on 2025-05-29 18:43_
 
 ---

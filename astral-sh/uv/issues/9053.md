@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-12T09:46:00Z
 updated_at: 2024-11-12T13:09:53Z
 url: https://github.com/astral-sh/uv/issues/9053
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:36:20Z
 ```
 
 # Retaining Default Registry in `uv.lock` While Using PyPI Mirror
@@ -142,10 +142,6 @@ Or we could wait for the UV team to respond to the issue, as they will be the on
 _Comment by @liblaf on 2024-11-12 12:57_
 
 @FishAlchemist Thanks! I am opening a feature request to support configuration of mirrors.
-
----
-
-_Referenced in [astral-sh/uv#9056](../../astral-sh/uv/issues/9056.md) on 2024-11-12 13:08_
 
 ---
 
