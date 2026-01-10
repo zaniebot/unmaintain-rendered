@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parenthesize multi-context managers - astral-sh/ruff #9222</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parenthesize multi-context managers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9222">#9222</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-12-21 03:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-21 03:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements Black's <code>wrap_multiple_context_managers_in_parens</code> and <code>improved_async_statements_handling</code> preview styles.</p>
+<p>Closes #8889
+Closes #8890</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Verified that the similarity index remains unchanged</li>
+<li>Reviewed the preview ecosystem results locally</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-12-21 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2023-12-21 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-21 04:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+205 -124 lines in 31 files in 6 projects; 35 projects unchanged)</p>
+<details><summary><a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+3 -2 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/commaai/openpilot/blob/5e6290c4a24e31428b1c1d3d4580128b77e3efeb/selfdrive/thermald/tests/test_power_monitoring.py#L126'>selfdrive/thermald/tests/test_power_monitoring.py~L126</a></p>
+<pre><code class="language-diff">         POWER_DRAW = 0  # To stop shutting down for other reasons
+         TEST_TIME = 350
+         VOLTAGE_SHUTDOWN_MIN_OFFROAD_TIME_S = 50
+-        with pm_patch(&quot;VOLTAGE_SHUTDOWN_MIN_OFFROAD_TIME_S&quot;, VOLTAGE_SHUTDOWN_MIN_OFFROAD_TIME_S, constant=True), pm_patch(
+-            &quot;HARDWARE.get_current_power_draw&quot;, POWER_DRAW
++        with (
++            pm_patch(&quot;VOLTAGE_SHUTDOWN_MIN_OFFROAD_TIME_S&quot;, VOLTAGE_SHUTDOWN_MIN_OFFROAD_TIME_S, constant=True),
++            pm_patch(&quot;HARDWARE.get_current_power_draw&quot;, POWER_DRAW),
+         ):
+             pm = PowerMonitoring()
+             pm.car_battery_capacity_uWh = CAR_BATTERY_CAPACITY_uWh
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+79 -51 lines across 9 files)</summary>
+<p>
+<pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query_test.py#L909'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query_test.py~L909</a></p>
+<pre><code class="language-diff">     def mock_create_connection(server, server_ip, username, password, ntlm_connection, auto_bind):
+         return MockConnection()
+ 
+-    with patch(&quot;Active_Directory_Query.create_connection&quot;, side_effect=mock_create_connection), patch(
+-        &quot;Active_Directory_Query.Connection.unbind&quot;, side_effect=MockConnection.unbind
++    with (
++        patch(&quot;Active_Directory_Query.create_connection&quot;, side_effect=mock_create_connection),
++        patch(&quot;Active_Directory_Query.Connection.unbind&quot;, side_effect=MockConnection.unbind),
+     ):
+         command_results = Active_Directory_Query.test_credentials_command(BASE_TEST_PARAMS[&quot;server_ip&quot;], ntlm_connection=&quot;true&quot;)
+         assert command_results.readable_output == &quot;Credential test with username username_test_credentials succeeded.&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py#L188'>Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py~L188</a></p>
+<pre><code class="language-diff">     collections = [&quot;random_collections&quot;, &quot;Darkweb Marketplaces&quot;, &quot;Data Breaches&quot;, &quot;Compromised Endpoints&quot;, &quot;Compromised Cards&quot;]
+     incident_severity = [&quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;]
+ 
+-    with capfd.disabled(), pytest.raises(
+-        ValueError, match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {limit}&quot;
++    with (
++        capfd.disabled(),
++        pytest.raises(ValueError, match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {limit}&quot;),
+     ):
+         cyble_events(client, &quot;POST&quot;, &quot;some_random_token&quot;, url, args, {}, False, collections, incident_severity, True)
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py#L203'>Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py~L203</a></p>
+<pre><code class="language-diff">         &quot;from&quot;: &quot;0&quot;,
+         &quot;limit&quot;: &quot;-1&quot;,
+     }
+-    with capfd.disabled(), pytest.raises(
+-        ValueError, match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {args.get('limit', '50')}&quot;
++    with (
++        capfd.disabled(),
++        pytest.raises(
++            ValueError,
++            match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {args.get('limit', '50')}&quot;,
++        ),
+     ):
+         validate_input(args=args)
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py#L218'>Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py~L218</a></p>
+<pre><code class="language-diff">         &quot;from&quot;: &quot;0&quot;,
+         &quot;limit&quot;: &quot;-1&quot;,
+     }
+-    with capfd.disabled(), pytest.raises(
+-        ValueError, match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {args.get('limit', '50')}&quot;
++    with (
++        capfd.disabled(),
++        pytest.raises(
++            ValueError,
++            match=&quot;The limit argument should contain a positive number,&quot; f&quot; up to 1000, limit: {args.get('limit', '50')}&quot;,
++        ),
+     ):
+         validate_input(args=args, is_iocs=True)
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py#L234'>Packs/CybleEventsV2/Integrations/CybleEventsV2/CybleEventsV2_test.py~L234</a></p>
+<pre><code class="language-diff">         &quot;limit&quot;: &quot;1&quot;,
+     }
+ 
+-    with capfd.disabled(), pytest.raises(
+-        ValueError, match=f&quot;Start date {args.get('start_date')} cannot &quot; f&quot;be after end date {args.get('end_date')}&quot;
++    with (
++        capfd.disabled(),
++        pytest.raises(
++            ValueError, match=f&quot;Start date {args.get('start_date')} cannot &quot; f&quot;be after end date {args.get('end_date')}&quot;
++        ),
+     ):
+         validate_input(args=args, is_iocs=True)
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/McAfee-TIE/Integrations/McAfeeTIEV2/McAfeeTIEV2.py#L525'>Packs/McAfee-TIE/Integrations/McAfeeTIEV2/McAfeeTIEV2.py~L525</a></p>
+<pre><code class="language-diff"> 
+ @contextlib.contextmanager
+ def create_dxl_config(instance_cert: InstanceCertificates) -&gt; DxlClientConfig:
+-    with tempfile.NamedTemporaryFile(mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.crt&quot;) as broker_certs_file, tempfile.NamedTemporaryFile(
+-        mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.crt&quot;
+-    ) as client_cert_file, tempfile.NamedTemporaryFile(mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.key&quot;) as private_key_file:
++    with (
++        tempfile.NamedTemporaryFile(mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.crt&quot;) as broker_certs_file,
++        tempfile.NamedTemporaryFile(mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.crt&quot;) as client_cert_file,
++        tempfile.NamedTemporaryFile(mode=&quot;w+&quot;, dir=&quot;./&quot;, suffix=&quot;.key&quot;) as private_key_file,
++    ):
+         broker_certs_file.delete
+         create_temp_credentials(broker_certs_file, instance_cert.broker_ca_bundle)
+         create_temp_credentials(client_cert_file, instance_cert.client_cert)
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/ProofpointEmailSecurity/Integrations/ProofpointEmailSecurityEventCollector/ProofpointEmailSecurityEventCollector.py#L47'>Packs/ProofpointEmailSecurity/Integrations/ProofpointEmailSecurityEventCollector/ProofpointEmailSecurityEventCollector.py~L47</a></p>
+<pre><code class="language-diff">     if to_time:
+         url += f&quot;&amp;toTime={to_time}&quot;
+     extra_headers = {&quot;Authorization&quot;: f&quot;Bearer {api_key}&quot;}
+-    with connect(
+-        url.format(host=host, cluster_id=cluster_id, type=EventType.MESSAGE.value, time=since_time),
+-        additional_headers=extra_headers,
+-    ) as message_connection, connect(
+-        url.format(host=host, cluster_id=cluster_id, type=EventType.MAILLOG.value, time=since_time),
+-        additional_headers=extra_headers,
+-    ) as maillog_connection:
++    with (
++        connect(
++            url.format(host=host, cluster_id=cluster_id, type=EventType.MESSAGE.value, time=since_time),
++            additional_headers=extra_headers,
++        ) as message_connection,
++        connect(
++            url.format(host=host, cluster_id=cluster_id, type=EventType.MAILLOG.value, time=since_time),
++            additional_headers=extra_headers,
++        ) as maillog_connection,
++    ):
+         yield message_connection, maillog_connection
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/RDPCacheHunting/Scripts/SetIndicatorstype/SetIndicatorstype_test.py#L100'>Packs/RDPCacheHunting/Scripts/SetIndicatorstype/SetIndicatorstype_test.py~L100</a></p>
+<pre><code class="language-diff">     ]
+ 
+     # Patch demisto.context and argToList functions
+-    with patch.object(demisto, &quot;context&quot;, return_value={&quot;ExtractedIndicators&quot;: test_data}), patch.object(
+-        demisto, &quot;results&quot;
+-    ), patch.object(random, &quot;randint&quot;, return_value=123456):
++    with (
++        patch.object(demisto, &quot;context&quot;, return_value={&quot;ExtractedIndicators&quot;: test_data}),
++        patch.object(demisto, &quot;results&quot;),
++        patch.object(random, &quot;randint&quot;, return_value=123456),
++    ):
+         main()
+         result = demisto.results.call_args[0][0]
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/RDPCacheHunting/Scripts/SetIndicatorstype/SetIndicatorstype_test.py#L113'>Packs/RDPCacheHunting/Scripts/SetIndicatorstype/SetIndicatorstype_test.py~L113</a></p>
+<pre><code class="language-diff"> 
+ def test_main_without_data():
+     # Mock the demisto context and argToList functions
+-    with patch.object(demisto, &quot;context&quot;, return_value={&quot;ExtractedIndicators&quot;: None}), patch.object(
+-        demisto, &quot;results&quot;
+-    ) as mocked_results:
++    with (
++        patch.object(demisto, &quot;context&quot;, return_value={&quot;ExtractedIndicators&quot;: None}),
++        patch.object(demisto, &quot;results&quot;) as mocked_results,
++    ):
+         main()
+ 
+         # Check if the results function was called with the correct parameters for the empty data case
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/Slack/Integrations/SlackV3/SlackV3_test.py#L5060'>Packs/Slack/Integrations/SlackV3/SlackV3_test.py~L5060</a></p>
+<pre><code class="language-diff">     )
+     req = SocketModeRequest(type=&quot;event&quot;, payload=SAMPLE_PAYLOAD, envelope_id=default_envelope_id)
+     client = mock.MagicMock(spec=SocketModeClient)
+-    with mock.patch.object(SlackV3, &quot;get_user_details&quot;) as mock_get_user_details, mock.patch.object(
+-        demisto, &quot;debug&quot;
+-    ) as mock_debug, mock.patch.object(requests, &quot;post&quot;) as mock_send_slack_request, mock.patch.object(
+-        SlackV3, &quot;reset_listener_health&quot;
+-    ), mock.patch.object(demisto, &quot;handleEntitlementForUser&quot;) as mock_result:
++    with (
++        mock.patch.object(SlackV3, &quot;get_user_details&quot;) as mock_get_user_details,
++        mock.patch.object(demisto, &quot;debug&quot;) as mock_debug,
++        mock.patch.object(requests, &quot;post&quot;) as mock_send_slack_request,
++        mock.patch.object(SlackV3, &quot;reset_listener_health&quot;),
++        mock.patch.object(demisto, &quot;handleEntitlementForUser&quot;) as mock_result,
++    ):
+         # Set the return value of the mocked get_user_details function
+         mock_user = {&quot;id&quot;: &quot;mock_user_id&quot;, &quot;name&quot;: &quot;mock_user&quot;}
+         mock_get_user_details.return_value = mock_user
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/Workday/Integrations/WorkdaySignOnEventCollector/WorkdaySignOnEventCollector_test.py#L524'>Packs/Workday/Integrations/WorkdaySignOnEventCollector/WorkdaySignOnEventCollector_test.py~L524</a></p>
+<pre><code class="language-diff">     }
+ 
+     # When: Calling the fetch_sign_on_events_command
+-    with patch.object(Client, &quot;retrieve_events&quot;, return_value=mock_retrieve_response), patch(
+-        &quot;demistomock.getLastRun&quot;, return_value=mock_last_run
++    with (
++        patch.object(Client, &quot;retrieve_events&quot;, return_value=mock_retrieve_response),
++        patch(&quot;demistomock.getLastRun&quot;, return_value=mock_last_run),
+     ):
+         client = Client(
+             &quot;mock_url&quot;,
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/Workday/Integrations/WorkdaySignOnEventCollector/WorkdaySignOnEventCollector_test.py#L570'>Packs/Workday/Integrations/WorkdaySignOnEventCollector/WorkdaySignOnEventCollector_test.py~L570</a></p>
+<pre><code class="language-diff">     }
+ 
+     # Mocking demisto.command to return 'fetch-events'
+-    with patch(&quot;demistomock.command&quot;, return_value=&quot;fetch-events&quot;), patch(
+-        &quot;demistomock.getLastRun&quot;, return_value={&quot;some&quot;: &quot;data&quot;}
+-    ), patch(&quot;demistomock.setLastRun&quot;) as mock_set_last_run, patch(&quot;demistomock.params&quot;, return_value=mock_params), patch(
+-        &quot;WorkdaySignOnEventCollector.Client&quot;
+-    ) as mock_client, patch(
+-        &quot;WorkdaySignOnEventCollector.fetch_sign_on_events_command&quot;
+-    ) as mock_fetch_sign_on_events_command, patch(
+-        &quot;WorkdaySignOnEventCollector.send_events_to_xsiam&quot;
+-    ) as mock_send_events_to_xsiam:
++    with (
++        patch(&quot;demistomock.command&quot;, return_value=&quot;fetch-events&quot;),
++        patch(&quot;demistomock.getLastRun&quot;, return_value={&quot;some&quot;: &quot;data&quot;}),
++        patch(&quot;demistomock.setLastRun&quot;) as mock_set_last_run,
++        patch(&quot;demistomock.params&quot;, return_value=mock_params),
++        patch(&quot;WorkdaySignOnEventCollector.Client&quot;) as mock_client,
++        patch(&quot;WorkdaySignOnEventCollector.fetch_sign_on_events_command&quot;) as mock_fetch_sign_on_events_command,
++        patch(&quot;WorkdaySignOnEventCollector.send_events_to_xsiam&quot;) as mock_send_events_to_xsiam,
++    ):
+         # Mocking the output of fetch_sign_on_events_command
+         mock_events = [{&quot;event&quot;: &quot;data&quot;}]
+         mock_new_last_run = {&quot;new&quot;: &quot;data&quot;}
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Packs/Zoom/Integrations/Zoom/Zoom_test.py#L2487'>Packs/Zoom/Integrations/Zoom/Zoom_test.py~L2487</a></p>
+<pre><code class="language-diff">         &quot;messages&quot;: &quot;entitlement&quot;,
+     }
+     # Mock the required functions (get_integration_context, set_to_integration_context_with_retries) and any other dependencies
+-    with patch(&quot;Zoom.get_integration_context&quot;) as mock_get_integration_context, patch(
+-        &quot;Zoom.set_to_integration_context_with_retries&quot;
+-    ) as mock_set_integration_context:
++    with (
++        patch(&quot;Zoom.get_integration_context&quot;) as mock_get_integration_context,
++        patch(&quot;Zoom.set_to_integration_context_with_retries&quot;) as mock_set_integration_context,
++    ):
+         # Mock the return values of the mocked functions
+         mock_get_integration_context.return_value = {&quot;messages&quot;: []}
+         fixed_timestamp = &quot;2023-09-09 20:08:50&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/dbb76a65f09a791b246739dba95b5a60563b3075/Tests/tests_e2e/content/xsoar_saas/test_e2e_xsoar_saas.py#L174'>Tests/tests_e2e/content/xsoar_saas/test_e2e_xsoar_saas.py~L174</a></p>
+<pre><code class="language-diff">         instance_name=get_integration_instance_name(integration_params, default=&quot;SlackV3&quot;),
+     ):
+         playbook_id_name = &quot;TestSlackAskE2E&quot;
+-        with save_playbook(
+-            xsoar_saas_client,
+-            playbook_path=&quot;Tests/tests_e2e/content/xsoar_saas/TestSlackAskE2E.yml&quot;,
+-            playbook_id=playbook_id_name,
+-            playbook_name=playbook_id_name,
+-        ), save_incident(xsoar_saas_client, playbook_id=playbook_id_name) as incident_response:
++        with (
++            save_playbook(
++                xsoar_saas_client,
++                playbook_path=&quot;Tests/tests_e2e/content/xsoar_saas/TestSlackAskE2E.yml&quot;,
++                playbook_id=playbook_id_name,
++                playbook_name=playbook_id_name,
++            ),
++            save_incident(xsoar_saas_client, playbook_id=playbook_id_name) as incident_response,
++        ):
+             # make sure the playbook finished successfully
+             assert xsoar_saas_client.poll_playbook_state(
+                 incident_response.id, expected_states=(InvestigationPlaybookState.COMPLETED,)
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+13 -8 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/fronzbot/blinkpy/blob/5e58c1a14f7a8b2919c173358496d25242ad86de/tests/test_blinkpy.py#L69'>tests/test_blinkpy.py~L69</a></p>
+<pre><code class="language-diff">         self.assertEqual(self.blink.last_refresh, None)
+         self.assertEqual(self.blink.check_if_ok_to_update(), True)
+         self.assertEqual(self.blink.last_refresh, None)
+-        with mock.patch(
+-            &quot;blinkpy.sync_module.BlinkSyncModule.refresh&quot;, return_value=True
+-        ), mock.patch(&quot;blinkpy.blinkpy.Blink.get_homescreen&quot;, return_value=True):
++        with (
++            mock.patch(
++                &quot;blinkpy.sync_module.BlinkSyncModule.refresh&quot;, return_value=True
++            ),
++            mock.patch(&quot;blinkpy.blinkpy.Blink.get_homescreen&quot;, return_value=True),
++        ):
+             await self.blink.refresh(force=True)
+ 
+         self.assertEqual(self.blink.last_refresh, now)
+</code></pre>
+<p><a href='https://github.com/fronzbot/blinkpy/blob/5e58c1a14f7a8b2919c173358496d25242ad86de/tests/test_blinkpy.py#L81'>tests/test_blinkpy.py~L81</a></p>
+<pre><code class="language-diff">     async def test_not_available_refresh(self):
+         &quot;&quot;&quot;Check that setup_post_verify executes on refresh when not avialable.&quot;&quot;&quot;
+         self.blink.available = False
+-        with mock.patch(
+-            &quot;blinkpy.sync_module.BlinkSyncModule.refresh&quot;, return_value=True
+-        ), mock.patch(
+-            &quot;blinkpy.blinkpy.Blink.get_homescreen&quot;, return_value=True
+-        ), mock.patch(&quot;blinkpy.blinkpy.Blink.setup_post_verify&quot;, return_value=True):
++        with (
++            mock.patch(
++                &quot;blinkpy.sync_module.BlinkSyncModule.refresh&quot;, return_value=True
++            ),
++            mock.patch(&quot;blinkpy.blinkpy.Blink.get_homescreen&quot;, return_value=True),
++            mock.patch(&quot;blinkpy.blinkpy.Blink.setup_post_verify&quot;, return_value=True),
++        ):
+             self.assertTrue(await self.blink.refresh(force=True))
+             with mock.patch(&quot;time.time&quot;, return_value=time.time() + 4):
+                 self.assertFalse(await self.blink.refresh())
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+29 -20 lines across 5 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/pandas-dev/pandas/blob/e0e47e8d37d4fc7c2e7634c5f9ca0ab7e44c1291/pandas/core/apply.py#L1320'>pandas/core/apply.py~L1320</a></p>
+<pre><code class="language-diff"> 
+         # Convert from numba dict to regular dict
+         # Our isinstance checks in the df constructor don't pass for numbas typed dict
+-        with set_numba_data(self.obj.index) as index, set_numba_data(
+-            self.columns
+-        ) as columns:
++        with (
++            set_numba_data(self.obj.index) as index,
++            set_numba_data(self.columns) as columns,
++        ):
+             res = dict(nb_func(self.values, columns, index))
+ 
+         return res
+</code></pre>
+<p><a href='https://github.com/pandas-dev/pandas/blob/e0e47e8d37d4fc7c2e7634c5f9ca0ab7e44c1291/pandas/tests/frame/methods/test_first_and_last.py#L60'>pandas/tests/frame/methods/test_first_and_last.py~L60</a></p>
+<pre><code class="language-diff">         obj = tm.get_obj(obj, frame_or_series)
+ 
+         msg = &quot;'first' only supports a DatetimeIndex index&quot;
+-        with tm.assert_produces_warning(
+-            FutureWarning, match=deprecated_msg
+-        ), pytest.raises(TypeError, match=msg):  # index is not a DatetimeIndex
++        with (
++            tm.assert_produces_warning(FutureWarning, match=deprecated_msg),
++            pytest.raises(TypeError, match=msg),
++        ):  # index is not a DatetimeIndex
+             obj.first(&quot;1D&quot;)
+ 
+         msg = &quot;'last' only supports a DatetimeIndex index&quot;
+-        with tm.assert_produces_warning(
+-            FutureWarning, match=last_deprecated_msg
+-        ), pytest.raises(TypeError, match=msg):  # index is not a DatetimeIndex
++        with (
++            tm.assert_produces_warning(FutureWarning, match=last_deprecated_msg),
++            pytest.raises(TypeError, match=msg),
++        ):  # index is not a DatetimeIndex
+             obj.last(&quot;1D&quot;)
+ 
+     def test_last_subset(self, frame_or_series):
+</code></pre>
+<p><a href='https://github.com/pandas-dev/pandas/blob/e0e47e8d37d4fc7c2e7634c5f9ca0ab7e44c1291/pandas/tests/io/parser/common/test_read_errors.py#L58'>pandas/tests/io/parser/common/test_read_errors.py~L58</a></p>
+<pre><code class="language-diff">     msg = &quot;'utf-8' codec can't decode byte&quot;
+ 
+     # Stream must be binary UTF8.
+-    with open(path, &quot;rb&quot;) as handle, codecs.StreamRecoder(
+-        handle, utf8.encode, utf8.decode, codec.streamreader, codec.streamwriter
+-    ) as stream:
++    with (
++        open(path, &quot;rb&quot;) as handle,
++        codecs.StreamRecoder(
++            handle, utf8.encode, utf8.decode, codec.streamreader, codec.streamwriter
++        ) as stream,
++    ):
+         with pytest.raises(UnicodeDecodeError, match=msg):
+             parser.read_csv(stream)
+ 
+</code></pre>
+<p><a href='https://github.com/pandas-dev/pandas/blob/e0e47e8d37d4fc7c2e7634c5f9ca0ab7e44c1291/pandas/tests/io/pytables/test_append.py#L939'>pandas/tests/io/pytables/test_append.py~L939</a></p>
+<pre><code class="language-diff">     df1.iloc[1, df1.columns.get_indexer([&quot;A&quot;, &quot;B&quot;])] = np.nan
+     df = concat([df1, df2], axis=1)
+ 
+-    with ensure_clean_store(setup_path) as store, pd.option_context(
+-        &quot;io.hdf.dropna_table&quot;, True
++    with (
++        ensure_clean_store(setup_path) as store,
++        pd.option_context(&quot;io.hdf.dropna_table&quot;, True),
+     ):
+         # dropna=False shouldn't synchronize row indexes
+         store.append_to_multiple(
+</code></pre>
+<p><a href='https://github.com/pandas-dev/pandas/blob/e0e47e8d37d4fc7c2e7634c5f9ca0ab7e44c1291/pandas/tests/io/test_gcs.py#L113'>pandas/tests/io/test_gcs.py~L113</a></p>
+<pre><code class="language-diff">     &quot;&quot;&quot;
+     if compression == &quot;zip&quot;:
+         # Only compare the CRC checksum of the file contents
+-        with zipfile.ZipFile(BytesIO(result)) as exp, zipfile.ZipFile(
+-            BytesIO(expected)
+-        ) as res:
++        with (
++            zipfile.ZipFile(BytesIO(result)) as exp,
++            zipfile.ZipFile(BytesIO(expected)) as res,
++        ):
+             for res_info, exp_info in zip(res.infolist(), exp.infolist()):
+                 assert res_info.CRC == exp_info.CRC
+     elif compression == &quot;tar&quot;:
+-        with tarfile.open(fileobj=BytesIO(result)) as tar_exp, tarfile.open(
+-            fileobj=BytesIO(expected)
+-        ) as tar_res:
++        with (
++            tarfile.open(fileobj=BytesIO(result)) as tar_exp,
++            tarfile.open(fileobj=BytesIO(expected)) as tar_res,
++        ):
+             for tar_res_info, tar_exp_info in zip(
+                 tar_res.getmembers(), tar_exp.getmembers()
+             ):
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+59 -29 lines across 11 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/rotkehlchen.py#L1178'>rotkehlchen/rotkehlchen.py~L1178</a></p>
+<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+             return  # only for cryptocompare for now
+ 
+-        with contextlib.suppress(
+-            UnknownAsset
++        with (
++            contextlib.suppress(UnknownAsset)
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+             self.cryptocompare.create_cache(
+                 from_asset=from_asset,
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/api/test_balances.py#L1049'>rotkehlchen/tests/api/test_balances.py~L1049</a></p>
+<pre><code class="language-diff">         side_effect={ChainID.ETHEREUM: ()},
+     )  # noqa: E501
+ 
+-    with account_balance_patch, query_tokens_patch, price_inquirer_patch, defi_query_patch, vaults_patch, multieth_balance_patch, protocols_patch, proxies_inquirer_patch:  # noqa: E501
++    with (
++        account_balance_patch,
++        query_tokens_patch,
++        price_inquirer_patch,
++        defi_query_patch,
++        vaults_patch,
++        multieth_balance_patch,
++        protocols_patch,
++        proxies_inquirer_patch,
++    ):  # noqa: E501
+ 
+         def query_blockchain_balance(num: int) -&gt; Any:
+             &quot;&quot;&quot;Refreshes blockchain balances `num` number of times&quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/api/test_misc.py#L96'>rotkehlchen/tests/api/test_misc.py~L96</a></p>
+<pre><code class="language-diff">         expected_version, rotki.data_dir, latest_version=expected_version
+     )  # noqa: E501
+ 
+-    with version_patch, release_patch, patch.dict(
+-        os.environ, {&quot;ROTKI_ACCEPT_DOCKER_RISK&quot;: &quot;whatever&quot;}
++    with (
++        version_patch,
++        release_patch,
++        patch.dict(os.environ, {&quot;ROTKI_ACCEPT_DOCKER_RISK&quot;: &quot;whatever&quot;}),
+     ):  # noqa: E501
+         response = requests.get(
+             url=api_url_for(
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/api/test_snapshots.py#L579'>rotkehlchen/tests/api/test_snapshots.py~L579</a></p>
+<pre><code class="language-diff">     # check that POST with the file works.
+     csv_dir2 = str(tmpdir_factory.mktemp(&quot;test_csv_dir_2&quot;))
+     _create_snapshot_with_valid_data_for_post(csv_dir2, Timestamp(1651075))
+-    with open(
+-        f&quot;{csv_dir2}/{BALANCES_FOR_IMPORT_FILENAME}&quot;, encoding=&quot;utf8&quot;
+-    ) as balances_file, open(
+-        f&quot;{csv_dir2}/{LOCATION_DATA_IMPORT_FILENAME}&quot;, encoding=&quot;utf8&quot;
+-    ) as locations_file:  # noqa: E501
++    with (
++        open(f&quot;{csv_dir2}/{BALANCES_FOR_IMPORT_FILENAME}&quot;, encoding=&quot;utf8&quot;) as balances_file,
++        open(f&quot;{csv_dir2}/{LOCATION_DATA_IMPORT_FILENAME}&quot;, encoding=&quot;utf8&quot;) as locations_file,
++    ):  # noqa: E501
+         response = requests.post(
+             api_url_for(
+                 rotkehlchen_api_server,
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/data_migrations/test_migrations.py#L481'>rotkehlchen/tests/data_migrations/test_migrations.py~L481</a></p>
+<pre><code class="language-diff">             websocket_connection=websocket_connection,
+         )
+ 
+-    with GlobalDBHandler().conn.write_ctx() as write_cursor:  # check the global db for the polygon etherscan node  # noqa: E501
++    with (
++        GlobalDBHandler().conn.write_ctx() as write_cursor
++    ):  # check the global db for the polygon etherscan node  # noqa: E501
+         assert (
+             write_cursor.execute(
+                 'SELECT COUNT(*) FROM default_rpc_nodes WHERE name=&quot;polygon etherscan&quot;'
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/data_migrations/test_migrations.py#L494'>rotkehlchen/tests/data_migrations/test_migrations.py~L494</a></p>
+<pre><code class="language-diff">             ).fetchone()[0]
+             == 1
+         )  # noqa: E501
+-    with rotki.data.db.user_write() as write_cursor:  # check the user db for the polygon etherscan node  # noqa: E501
++    with (
++        rotki.data.db.user_write() as write_cursor
++    ):  # check the user db for the polygon etherscan node  # noqa: E501
+         assert (
+             write_cursor.execute(
+                 'SELECT COUNT(*) FROM rpc_nodes WHERE name=&quot;polygon etherscan&quot;'
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/exchanges/test_bitstamp.py#L164'>rotkehlchen/tests/exchanges/test_bitstamp.py~L164</a></p>
+<pre><code class="language-diff">     def mock_api_query_response(endpoint):  # pylint: disable=unused-argument
+         return MockResponse(HTTPStatus.OK, '{&quot;key&quot;}')
+ 
+-    with patch.object(
+-        mock_bitstamp, &quot;_api_query&quot;, side_effect=mock_api_query_response
+-    ), pytest.raises(RemoteError):  # noqa: E501
++    with (
++        patch.object(mock_bitstamp, &quot;_api_query&quot;, side_effect=mock_api_query_response),
++        pytest.raises(RemoteError),
++    ):  # noqa: E501
+         mock_bitstamp.query_balances()
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/exchanges/test_bitstamp.py#L228'>rotkehlchen/tests/exchanges/test_bitstamp.py~L228</a></p>
+<pre><code class="language-diff">     def mock_api_query_response(endpoint):  # pylint: disable=unused-argument
+         return MockResponse(HTTPStatus.OK, '{&quot;link_balance&quot;: &quot;1.00000000&quot;}')
+ 
+-    with patch(&quot;rotkehlchen.exchanges.bitstamp.Inquirer&quot;, return_value=inquirer), patch.object(
+-        mock_bitstamp, &quot;_api_query&quot;, side_effect=mock_api_query_response
++    with (
++        patch(&quot;rotkehlchen.exchanges.bitstamp.Inquirer&quot;, return_value=inquirer),
++        patch.object(mock_bitstamp, &quot;_api_query&quot;, side_effect=mock_api_query_response),
+     ):  # noqa: E501
+         assert mock_bitstamp.query_balances() == ({}, &quot;&quot;)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/external_apis/test_bisq_market.py#L18'>rotkehlchen/tests/external_apis/test_bisq_market.py~L18</a></p>
+<pre><code class="language-diff"> def test_missing_market_request():
+     &quot;&quot;&quot;Test that error is correctly raised when there is no market. Not VCRed since
+     the only failure is timeout here and VCR does not record them&quot;&quot;&quot;
+-    with patch(
+-        &quot;rotkehlchen.db.settings.CachedSettings.get_timeout_tuple&quot;, return_value=(1, 1)
+-    ), pytest.raises(RemoteError):  # noqa: E501
++    with (
++        patch(&quot;rotkehlchen.db.settings.CachedSettings.get_timeout_tuple&quot;, return_value=(1, 1)),
++        pytest.raises(RemoteError),
++    ):  # noqa: E501
+         get_bisq_market_price(A_3CRV.resolve_to_crypto_asset())
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/integration/test_blockchain.py#L125'>rotkehlchen/tests/integration/test_blockchain.py~L125</a></p>
+<pre><code class="language-diff"> 
+     assert addr1 in blockchain.accounts.eth
+ 
+-    with etherscan_patch, evmtokens_max_chunks_patch, defi_balances_mock, add_defi_mock, beaconchain_patch:  # noqa: E501
++    with (
++        etherscan_patch,
++        evmtokens_max_chunks_patch,
++        defi_balances_mock,
++        add_defi_mock,
++        beaconchain_patch,
++    ):  # noqa: E501
+         greenlets = [
+             # can't call query_eth_balances directly since we have to update totals
+             gevent.spawn_later(
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/unit/test_bitcoin.py#L584'>rotkehlchen/tests/unit/test_bitcoin.py~L584</a></p>
+<pre><code class="language-diff">             check_balances(balances)
+ 
+             # Third source fails - FATALITY!!!
+-            with patch(
+-                &quot;rotkehlchen.chain.bitcoin._query_mempool_space&quot;,
+-                MagicMock(side_effect=RemoteError(&quot;Fatality&quot;)),
+-            ), pytest.raises(RemoteError):  # noqa: E501
++            with (
++                patch(
++                    &quot;rotkehlchen.chain.bitcoin._query_mempool_space&quot;,
++                    MagicMock(side_effect=RemoteError(&quot;Fatality&quot;)),
++                ),
++                pytest.raises(RemoteError),
++            ):  # noqa: E501
+                 get_bitcoin_addresses_balances(addresses)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/unit/test_inquirer.py#L429'>rotkehlchen/tests/unit/test_inquirer.py~L429</a></p>
+<pre><code class="language-diff"> @pytest.mark.parametrize(&quot;use_clean_caching_directory&quot;, [True])
+ @pytest.mark.parametrize(&quot;should_mock_current_price_queries&quot;, [False])
+ def test_find_curve_lp_token_price(inquirer_defi, ethereum_manager):
+-    with GlobalDBHandler().conn.write_ctx() as write_cursor:  # querying curve lp token price normally triggers curve cache query. Set all query ts to now, so it does not happen.  # noqa: E501
++    with (
++        GlobalDBHandler().conn.write_ctx() as write_cursor
++    ):  # querying curve lp token price normally triggers curve cache query. Set all query ts to now, so it does not happen.  # noqa: E501
+         write_cursor.execute(
+             &quot;UPDATE general_cache SET last_queried_ts=? WHERE key=?&quot;, (ts_now(), &quot;CURVE_LP_TOKENS&quot;)
+         )  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/edf2ec2647a4ebccb7b78fe4f38758fb656cf80e/rotkehlchen/tests/unit/test_tasks_manager.py#L248'>rotkehlchen/tests/unit/test_tasks_manager.py~L248</a></p>
+<pre><code class="language-diff">     )  # pylint: disable=protected-member  # noqa: E501
+     queried_receipts = set()
+     try:
+-        with gevent.Timeout(
+-            timeout
+-        ), receipt_get_patch as receipt_task_mock, mock_evm_chains_with_transactions():  # noqa: E501
++        with (
++            gevent.Timeout(timeout),
++            receipt_get_patch as receipt_task_mock,
++            mock_evm_chains_with_transactions(),
++        ):  # noqa: E501
+             task_manager.schedule()
+             with database.conn.read_ctx() as cursor:
+                 while len(queried_receipts) != 2:
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (+22 -14 lines across 4 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/builders/__init__.py#L362'>sphinx/builders/<strong>init</strong>.py~L362</a></p>
+<pre><code class="language-diff">             # save the environment
+             from sphinx.application import ENV_PICKLE_FILENAME
+ 
+-            with progress_message(__(&quot;pickling environment&quot;)), open(
+-                path.join(self.doctreedir, ENV_PICKLE_FILENAME), &quot;wb&quot;
+-            ) as f:
++            with (
++                progress_message(__(&quot;pickling environment&quot;)),
++                open(path.join(self.doctreedir, ENV_PICKLE_FILENAME), &quot;wb&quot;) as f,
++            ):
+                 pickle.dump(self.env, f, pickle.HIGHEST_PROTOCOL)
+ 
+             # global actions
+</code></pre>
+<p><a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/builders/linkcheck.py#L72'>sphinx/builders/linkcheck.py~L72</a></p>
+<pre><code class="language-diff"> 
+         output_text = path.join(self.outdir, &quot;output.txt&quot;)
+         output_json = path.join(self.outdir, &quot;output.json&quot;)
+-        with open(output_text, &quot;w&quot;, encoding=&quot;utf-8&quot;) as self.txt_outfile, open(
+-            output_json, &quot;w&quot;, encoding=&quot;utf-8&quot;
+-        ) as self.json_outfile:
++        with (
++            open(output_text, &quot;w&quot;, encoding=&quot;utf-8&quot;) as self.txt_outfile,
++            open(output_json, &quot;w&quot;, encoding=&quot;utf-8&quot;) as self.json_outfile,
++        ):
+             for result in checker.check(self.hyperlinks):
+                 self.process_result(result)
+ 
+</code></pre>
+<p><a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/util/docutils.py#L232'>sphinx/util/docutils.py~L232</a></p>
+<pre><code class="language-diff"> @contextmanager
+ def patch_docutils(confdir: str | None = None) -&gt; Generator[None, None, None]:
+     &quot;&quot;&quot;Patch to docutils temporarily.&quot;&quot;&quot;
+-    with patched_get_language(), patched_rst_get_language(), using_user_docutils_conf(
+-        confdir
+-    ), du19_footnotes():
++    with (
++        patched_get_language(),
++        patched_rst_get_language(),
++        using_user_docutils_conf(confdir),
++        du19_footnotes(),
++    ):
+         yield
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_build_linkcheck.py#L800'>tests/test_build_linkcheck.py~L800</a></p>
+<pre><code class="language-diff"> 
+ @pytest.mark.sphinx(&quot;linkcheck&quot;, testroot=&quot;linkcheck-localserver&quot;, freshenv=True)
+ def test_too_many_requests_retry_after_int_delay(app, capsys, status):
+-    with http_server(make_retry_after_handler([(429, &quot;0&quot;), (200, None)])), mock.patch(
+-        &quot;sphinx.builders.linkcheck.DEFAULT_DELAY&quot;, 0
+-    ), mock.patch(&quot;sphinx.builders.linkcheck.QUEUE_POLL_SECS&quot;, 0.01):
++    with (
++        http_server(make_retry_after_handler([(429, &quot;0&quot;), (200, None)])),
++        mock.patch(&quot;sphinx.builders.linkcheck.DEFAULT_DELAY&quot;, 0),
++        mock.patch(&quot;sphinx.builders.linkcheck.QUEUE_POLL_SECS&quot;, 0.01),
++    ):
+         app.build()
+     content = (app.outdir / &quot;output.json&quot;).read_text(encoding=&quot;utf8&quot;)
+     assert json.loads(content) == {
+</code></pre>
+<p><a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_build_linkcheck.py#L859'>tests/test_build_linkcheck.py~L859</a></p>
+<pre><code class="language-diff"> 
+ @pytest.mark.sphinx(&quot;linkcheck&quot;, testroot=&quot;linkcheck-localserver&quot;, freshenv=True)
+ def test_too_many_requests_retry_after_without_header(app, capsys):
+-    with http_server(make_retry_after_handler([(429, None), (200, None)])), mock.patch(
+-        &quot;sphinx.builders.linkcheck.DEFAULT_DELAY&quot;, 0
++    with (
++        http_server(make_retry_after_handler([(429, None), (200, None)])),
++        mock.patch(&quot;sphinx.builders.linkcheck.DEFAULT_DELAY&quot;, 0),
+     ):
+         app.build()
+     content = (app.outdir / &quot;output.json&quot;).read_text(encoding=&quot;utf8&quot;)
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-21 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:541 on 2023-12-21 09:13</div>
+            <div class="timeline-body"><p>It seems I don't understand these rules after all :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-12-21 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-22 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_with.rs</code>:145 on 2023-12-22 02:23</div>
+            <div class="timeline-body"><p>That's a lot of cases, nice job figuring it out...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-22 02:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-12-22 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-12-22 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-22 03:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:07:49 UTC
+    </footer>
+</body>
+</html>

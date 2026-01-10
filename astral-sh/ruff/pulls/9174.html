@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement `empty-comment` (`PLR2044`) - astral-sh/ruff #9174</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement <code>empty-comment</code> (<code>PLR2044</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9174">#9174</a>
+        opened by <a href="https://github.com/mdbernard">@mdbernard</a>
+        on 2023-12-18 03:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-18 03:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #970.</p>
+<p>This adds Pylint's <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/empty-comment.html">R0244 empty_comment</a> lint as well as an always-safe fix.</p>
+<h2>Test Plan</h2>
+<p>The included snapshot verifies the following:</p>
+<ul>
+<li>A line containing only a non-empty comment is not changed</li>
+<li>A line containing leading whitespace before a non-empty comment is not changed</li>
+<li>A line containing only an empty comment has its content deleted</li>
+<li>A line containing only leading whitespace before an empty comment has its content deleted</li>
+<li>A line containing only leading and trailing whitespace on an empty comment has its content deleted</li>
+<li>A line containing trailing whitespace after a non-empty comment is not changed</li>
+<li>A line containing only a single newline character (i.e. a blank line) is not changed</li>
+<li>A line containing code followed by a non-empty comment is not changed</li>
+<li>A line containing code followed by an empty comment has its content deleted after the last non-whitespace character</li>
+<li>Lines containing code and no comments are not changed</li>
+<li>Empty comment lines within block comments are ignored</li>
+<li>Empty comments within triple-quoted sections are ignored</li>
+</ul>
+<h2>Comparison to Pylint</h2>
+<p>Running Ruff and Pylint 3.0.3 with Python 3.12.0 against the <code>empty_comment.py</code> file added in this PR, we see the following:</p>
+<ul>
+<li><p>Identical behavior:</p>
+<ul>
+<li>empty_comment.py:3:0: R2044: Line with empty comment (empty-comment)</li>
+<li>empty_comment.py:4:0: R2044: Line with empty comment (empty-comment)</li>
+<li>empty_comment.py:5:0: R2044: Line with empty comment (empty-comment)</li>
+<li>empty_comment.py:18:0: R2044: Line with empty comment (empty-comment)</li>
+</ul>
+</li>
+<li><p>Differing behavior:</p>
+<ul>
+<li>Pylint doesn't ignore empty comments in block comments commonly used for visual spacing; I decided these were fine in this implementation since many projects use these and likely do not want them removed.<ul>
+<li>empty_comment.py:28:0: R2044: Line with empty comment (empty-comment)</li>
+</ul>
+</li>
+<li>Pylint detects &quot;empty comments&quot; within the triple-quoted section at the bottom of the file, which is arguably a bug in the Pylint implementation since these are not truly comments. These are ignored by this implementation.<ul>
+<li>empty_comment.py:37:0: R2044: Line with empty comment (empty-comment)</li>
+<li>empty_comment.py:38:0: R2044: Line with empty comment (empty-comment)</li>
+<li>empty_comment.py:39:0: R2044: Line with empty comment (empty-comment)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-18 04:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+27 -2 violations, +0 -0 fixes in 6 projects; 35 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/docs/exts/docroles.py#L20'>docs/exts/docroles.py:20:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/docs/exts/docroles.py#L21'>docs/exts/docroles.py:21:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/providers/common/sql/hooks/test_sql.py#L18'>tests/providers/common/sql/hooks/test_sql.py:18:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/providers/databricks/hooks/test_databricks_sql.py#L18'>tests/providers/databricks/hooks/test_databricks_sql.py:18:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/providers/exasol/hooks/test_sql.py#L18'>tests/providers/exasol/hooks/test_sql.py:18:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/providers/google/suite/transfers/test_gcs_to_gdrive.py#L117'>tests/providers/google/suite/transfers/test_gcs_to_gdrive.py:117:5:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/providers/snowflake/hooks/test_sql.py#L18'>tests/providers/snowflake/hooks/test_sql.py:18:1:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/apache/airflow/blob/7cd326ccbd5da03900b01695c74a805ced980855/tests/system/providers/google/cloud/storage_transfer/example_cloud_storage_transfer_service_aws.py#L121'>tests/system/providers/google/cloud/storage_transfer/example_cloud_storage_transfer_service_aws.py:121:5:</a> PLR2044 [*] Line with empty comment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/034e027b4010a709d101a035fa41813c63bc790e/samcli/local/docker/lambda_container.py#L149'>samcli/local/docker/lambda_container.py:149:9:</a> PLR2044 [*] Line with empty comment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/b86e0023787809eafb8153084ad66b72c9586703/pymilvus/client/abstract.py#L114'>pymilvus/client/abstract.py:114:9:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/milvus-io/pymilvus/blob/b86e0023787809eafb8153084ad66b72c9586703/pymilvus/client/abstract.py#L18'>pymilvus/client/abstract.py:18:9:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/milvus-io/pymilvus/blob/b86e0023787809eafb8153084ad66b72c9586703/pymilvus/client/abstract.py#L99'>pymilvus/client/abstract.py:99:9:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/milvus-io/pymilvus/blob/b86e0023787809eafb8153084ad66b72c9586703/pymilvus/client/types.py#L133'>pymilvus/client/types.py:133:5:</a> PLR2044 [*] Line with empty comment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+2 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/37975ebafae0ded16951a23d027ba63d23dca349/pandas/tests/extension/decimal/array.py#L175'>pandas/tests/extension/decimal/array.py:175:9:</a> PLC0415 `import` should be at the top-level of a file
+- <a href='https://github.com/pandas-dev/pandas/blob/37975ebafae0ded16951a23d027ba63d23dca349/pandas/tests/extension/decimal/array.py#L176'>pandas/tests/extension/decimal/array.py:176:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/pandas-dev/pandas/blob/37975ebafae0ded16951a23d027ba63d23dca349/pandas/tests/extension/decimal/array.py#L233'>pandas/tests/extension/decimal/array.py:233:9:</a> PLR6301 Method `_formatter` could be a function, class method, or static method
+- <a href='https://github.com/pandas-dev/pandas/blob/37975ebafae0ded16951a23d027ba63d23dca349/pandas/tests/extension/decimal/array.py#L234'>pandas/tests/extension/decimal/array.py:234:9:</a> PLR6301 Method `_formatter` could be a function, class method, or static method
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L752'>rotkehlchen/tests/db/test_db.py:752:48:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L757'>rotkehlchen/tests/db/test_db.py:757:48:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L795'>rotkehlchen/tests/db/test_db.py:795:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L797'>rotkehlchen/tests/db/test_db.py:797:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L801'>rotkehlchen/tests/db/test_db.py:801:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L834'>rotkehlchen/tests/db/test_db.py:834:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L837'>rotkehlchen/tests/db/test_db.py:837:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L843'>rotkehlchen/tests/db/test_db.py:843:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L844'>rotkehlchen/tests/db/test_db.py:844:52:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/rotki/rotki/blob/d786be1da4a115513ade47701e95c2b05333fcb1/rotkehlchen/tests/db/test_db.py#L845'>rotkehlchen/tests/db/test_db.py:845:52:</a> PLR2044 [*] Line with empty comment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/baf6c68ab8d6861b17179d4087933d2601b010f9/zerver/lib/export.py#L842'>zerver/lib/export.py:842:5:</a> PLR2044 [*] Line with empty comment
++ <a href='https://github.com/zulip/zulip/blob/baf6c68ab8d6861b17179d4087933d2601b010f9/zerver/lib/export.py#L867'>zerver/lib/export.py:867:5:</a> PLR2044 [*] Line with empty comment
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (3 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR2044 | 25 | 25 | 0 | 0 | 0 |
+| PLC0415 | 2 | 1 | 1 | 0 | 0 |
+| PLR6301 | 2 | 1 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-18 04:32</div>
+            <div class="timeline-body"><p>Looks like the ecosystem checks found some edge cases not currently covered:</p>
+<ul>
+<li>&quot;empty comment&quot; lines within block comments, which add vertical whitespace for clarity, especially common as header comments for files</li>
+<li>lines containing a trailing <code>#</code> character in multi-line comments, which should not be considered empty comments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 04:36</div>
+            <div class="timeline-body"><p>Nice, thanks for kicking this off! Agreed on the edge cases described above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @mdbernard on 2023-12-18 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mdbernard">@mdbernard</a> reviewed on 2023-12-18 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mdbernard">@mdbernard</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/empty_comment.py</code>:1 on 2023-12-18 06:15</div>
+            <div class="timeline-body"><ul>
+<li>[x]  Add test for &quot;empty comment&quot; lines in multi-line strings/comments</li>
+<li>[x]   Add test for &quot;empty comment&quot; lines in block comments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-20 06:47</div>
+            <div class="timeline-body"><ul>
+<li>[x] Account for comment style with trailing <code>#</code> at end of comment, e.g. https://github.com/rotki/rotki/blob/63302ca6d67ab928fd6cac7b6137c41df416416c/rotkehlchen/chain/ethereum/modules/l2/loopring.py#L527:</li>
+</ul>
+<pre><code class="language-python"># -- Methods following the EthereumModule interface -- #
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-20 06:51</div>
+            <div class="timeline-body"><ul>
+<li>[x] Account for comment style with multiple <code>#</code> symbols on a single line (tying in with the above comment, probably best to just lint when a comment consists of only a single <code>#</code> symbol followed by only whitespace through the end of the line.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mdbernard">@mdbernard</a> reviewed on 2023-12-27 06:31</div>
+            <div class="timeline-body"><ul>
+<li>[x] Rebase</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mdbernard on 2023-12-28 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-12-28 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-28 16:39</div>
+            <div class="timeline-body"><p>This looks great, I really like what I'm seeing in the ecosystem checks too -- thank you!</p>
+<p>I'm going to explore making this a token-based rule rather than a physical line-based rule, just because we want to avoid using physical lines when possible, but it'll be a mostly mechanical change...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-28 16:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Pylint doesn't ignore empty comments in block comments commonly used for visual spacing; I decided these were fine in this implementation since many projects use these and likely do not want them removed.</p>
+</blockquote>
+<p>I agree, we shouldn't flag these.</p>
+<blockquote>
+<p>Pylint detects &quot;empty comments&quot; within the triple-quoted section at the bottom of the file, which is arguably a bug in the Pylint implementation since these are not truly comments. These are ignored by this implementation.</p>
+</blockquote>
+<p>I agree, flagging empty comments within a multi-line string seems like a bug to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-28 19:43</div>
+            <div class="timeline-body"><ul>
+<li>[ ] Noting that I might've missed an edge case where two empty comments exist on consecutive lines forming a &quot;block&quot; comment.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdbernard">@mdbernard</a> on 2023-12-28 19:44</div>
+            <div class="timeline-body"><blockquote>
+<p>we want to avoid using physical lines when possible</p>
+</blockquote>
+<p>Out of curiosity, why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-29 02:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Out of curiosity, why?</p>
+</blockquote>
+<p>Primarily because physical line-based approaches tend to be slower, since we need to run the rule over <em>every</em> line. This rule is actually a good example: we already <em>know</em> the locations of all comments in the file (via <code>CommentRanges</code>), so iterating over every line, then checking if the line intersects with the comment ranges, is wasteful as compared to merely iterating over the comment ranges directly. In general, we often have information we've already computed and/or can exploit to limit the search space vs. iterating over the physical lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-29 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2023-12-29 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[pylint] add PLR2044 empty_comment" to "[`pylint`] Implement `empty-comment` (`PLR2044`)" by @charliermarsh on 2023-12-29 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-29 02:49</div>
+            <div class="timeline-body"><p>This is great work! I ended up moving to the token checker, and added support for the case in which we have multiple consecutive empty comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-29 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-29 02:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 23:07:49 UTC
+    </footer>
+</body>
+</html>
