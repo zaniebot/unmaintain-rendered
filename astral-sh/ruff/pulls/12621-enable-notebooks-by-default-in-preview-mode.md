@@ -1,0 +1,383 @@
+```yaml
+number: 12621
+title: Enable notebooks by default in preview mode
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - configuration
+  - preview
+assignees: []
+merged: true
+base: main
+head: enable-notebooks-by-default-in-preview
+created_at: 2024-08-02T08:04:10Z
+updated_at: 2024-08-02T13:46:13Z
+url: https://github.com/astral-sh/ruff/pull/12621
+synced_at: 2026-01-10T21:47:02Z
+```
+
+# Enable notebooks by default in preview mode
+
+---
+
+_Pull request opened by @MichaReiser on 2024-08-02 08:04_
+
+## Summary
+
+This PR enables linting and formatting of notebooks in preview mode. 
+
+
+This is the first step towards https://github.com/astral-sh/ruff/issues/12456 
+
+## Test Plan
+
+Added integration test
+
+
+---
+
+_Label `configuration` added by @MichaReiser on 2024-08-02 08:04_
+
+---
+
+_Label `preview` added by @MichaReiser on 2024-08-02 08:04_
+
+---
+
+_Comment by @github-actions[bot] on 2024-08-02 08:17_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+1348 -0 violations, +0 -0 fixes in 8 projects; 46 projects unchanged)
+
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ docs/source/guides/time_series.ipynb:cell 1:4:1: E402 Module level import not at top of cell
++ docs/source/guides/time_series.ipynb:cell 1:6:1: E402 Module level import not at top of cell
++ docs/source/guides/time_series.ipynb:cell 1:7:1: E402 Module level import not at top of cell
++ docs/source/guides/time_series.ipynb:cell 1:8:1: E402 Module level import not at top of cell
++ docs/source/resources/frequently_asked_questions.ipynb:cell 101:5:8: E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+185 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ docs/notebooks/analysis/fit_functions.ipynb:cell 12:3:39: NPY002 Replace legacy `np.random.normal` call with `np.random.Generator`
++ docs/notebooks/analysis/fit_functions.ipynb:cell 9:1:10: PLC2801 Unnecessary dunder call to `__str__`. Use `str()` builtin.
++ docs/notebooks/analysis/nullpoint.ipynb:cell 11:10:1: T201 `print` found
++ docs/notebooks/analysis/nullpoint.ipynb:cell 11:9:1: T201 `print` found
++ docs/notebooks/analysis/nullpoint.ipynb:cell 14:10:1: T201 `print` found
++ docs/notebooks/analysis/nullpoint.ipynb:cell 14:11:1: T201 `print` found
++ docs/notebooks/analysis/nullpoint.ipynb:cell 9:1:5: D103 Missing docstring in public function
++ docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb:cell 24:29:42: FBT003 Boolean positional value in function call
++ docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb:cell 24:29:48: FBT003 Boolean positional value in function call
++ docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb:cell 24:2:1: PLR6104 Use `*=` to perform an augmented assignment directly
+... 175 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ dev/stats/explore_pr_candidates.ipynb:cell 1:1:1: CPY001 Missing copyright notice at top of file
++ dev/stats/explore_pr_candidates.ipynb:cell 1:1:1: F821 Undefined name `sys`
++ dev/stats/explore_pr_candidates.ipynb:cell 1:1:1: I002 [*] Missing required import: `from __future__ import annotations`
++ dev/stats/explore_pr_candidates.ipynb:cell 1:3:1: E402 Module level import not at top of cell
++ dev/stats/explore_pr_candidates.ipynb:cell 1:3:1: I001 [*] Import block is un-sorted or un-formatted
++ dev/stats/explore_pr_candidates.ipynb:cell 1:3:8: S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ dev/stats/explore_pr_candidates.ipynb:cell 1:4:1: E402 Module level import not at top of cell
++ dev/stats/explore_pr_candidates.ipynb:cell 1:4:8: TID253 `pandas` is banned at the module level
++ dev/stats/explore_pr_candidates.ipynb:cell 1:5:1: E402 Module level import not at top of cell
++ dev/stats/explore_pr_candidates.ipynb:cell 1:5:41: F401 [*] `get_important_pr_candidates.PrStat` imported but unused
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+725 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 10:3:15: Q000 [*] Single quotes found but double quotes preferred
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 10:3:1: T201 `print` found
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 10:3:38: Q000 [*] Single quotes found but double quotes preferred
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 11:1:1: PD901 Avoid using the generic variable name `df` for DataFrames
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 11:1:32: Q000 [*] Single quotes found but double quotes preferred
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 11:1:53: Q000 [*] Single quotes found but double quotes preferred
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:100:3: Q000 [*] Single quotes found but double quotes preferred
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:101:3: Q000 [*] Single quotes found but double quotes preferred
+... 482 additional changes omitted for rule Q000
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:10:14: E241 [*] Multiple spaces after comma
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:10:14: W291 [*] Trailing whitespace
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:237:13: COM812 [*] Trailing comma missing
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:254:19: COM812 [*] Trailing comma missing
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:258:89: E501 Line too long (145 > 88)
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:261:1: E111 Indentation is not a multiple of 4
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:261:3: T201 `print` found
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:30:89: E501 Line too long (121 > 88)
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:49:89: E501 Line too long (92 > 88)
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:50:3: ERA001 Found commented-out code
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:50:89: E501 Line too long (99 > 88)
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:72:89: E501 Line too long (94 > 88)
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:81:3: ERA001 Found commented-out code
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 13:82:11: W291 [*] Trailing whitespace
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 15:3:89: E501 Line too long (95 > 88)
+... 39 additional changes omitted for rule E501
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 15:7:22: COM812 [*] Trailing comma missing
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 16:11:9: T201 `print` found
++ superset-frontend/plugins/legacy-plugin-chart-country-map/scripts/Country Map GeoJSON Generator.ipynb:cell 16:19:5: T201 `print` found
+... 699 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+299 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ examples/models/structure/ModelStructureExample.ipynb:cell 11:2:5: T201 `print` found
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:1:1: B018 Found useless expression. Either assign it to a variable or remove it.
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:17: Q000 [*] Single quotes found but double quotes preferred
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:23: E225 [*] Missing whitespace around operator
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:40: Q000 [*] Single quotes found but double quotes preferred
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:59: Q000 [*] Single quotes found but double quotes preferred
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:63: E231 [*] Missing whitespace after ','
++ examples/models/structure/ModelStructureExample.ipynb:cell 13:2:64: Q000 [*] Single quotes found but double quotes preferred
++ examples/models/structure/ModelStructureExample.ipynb:cell 14:1:15: Q000 [*] Single quotes found but double quotes preferred
++ examples/models/structure/ModelStructureExample.ipynb:cell 14:1:1: F821 Undefined name `pd`
++ examples/models/structure/ModelStructureExample.ipynb:cell 14:1:29: E231 [*] Missing whitespace after ','
+... 288 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+51 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ libs/cli/langchain_cli/integration_template/docs/chat.ipynb:cell 11:4:89: E501 Line too long (102 > 88)
++ libs/cli/langchain_cli/integration_template/docs/chat.ipynb:cell 12:1:1: T201 `print` found
++ libs/cli/langchain_cli/integration_template/docs/chat.ipynb:cell 14:7:89: E501 Line too long (97 > 88)
++ libs/cli/langchain_cli/integration_template/docs/chat.ipynb:cell 3:5:89: E501 Line too long (98 > 88)
++ libs/cli/langchain_cli/integration_template/docs/document_loaders.ipynb:cell 12:1:1: T201 `print` found
++ libs/cli/langchain_cli/integration_template/docs/document_loaders.ipynb:cell 3:4:89: E501 Line too long (94 > 88)
++ libs/cli/langchain_cli/integration_template/docs/kv_store.ipynb:cell 3:5:89: E501 Line too long (98 > 88)
++ libs/cli/langchain_cli/integration_template/docs/llms.ipynb:cell 3:5:89: E501 Line too long (98 > 88)
+... 8 additional changes omitted for rule E501
++ libs/cli/langchain_cli/integration_template/docs/provider.ipynb:cell 2:1:1: I001 [*] Import block is un-sorted or un-formatted
++ libs/cli/langchain_cli/integration_template/docs/provider.ipynb:cell 2:1:29: F401 [*] `__module_name__.Chat__ModuleName__` imported but unused
+... 41 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ examples/hello_milvus.ipynb:cell 14:13:9: T201 `print` found
++ examples/hello_milvus.ipynb:cell 14:14:1: T201 `print` found
++ examples/hello_milvus.ipynb:cell 16:5:1: T201 `print` found
++ examples/hello_milvus.ipynb:cell 16:6:1: T201 `print` found
++ examples/hello_milvus.ipynb:cell 18:7:9: T201 `print` found
++ examples/hello_milvus.ipynb:cell 18:8:1: T201 `print` found
+... 5 additional changes omitted for rule T201
++ examples/hello_milvus.ipynb:cell 2:1:1: I001 [*] Import block is un-sorted or un-formatted
+... 4 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+34 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ doc/source/user_guide/style.ipynb:cell 113:31:89: E501 Line too long (90 > 88)
++ doc/source/user_guide/style.ipynb:cell 113:33:89: E501 Line too long (98 > 88)
++ doc/source/user_guide/style.ipynb:cell 123:5:56: E741 Ambiguous variable name: `l`
++ doc/source/user_guide/style.ipynb:cell 125:2:13: C408 Unnecessary `dict` call (rewrite as a literal)
++ doc/source/user_guide/style.ipynb:cell 125:4:13: C408 Unnecessary `dict` call (rewrite as a literal)
++ doc/source/user_guide/style.ipynb:cell 125:6:13: C408 Unnecessary `dict` call (rewrite as a literal)
++ doc/source/user_guide/style.ipynb:cell 125:8:13: C408 Unnecessary `dict` call (rewrite as a literal)
++ doc/source/user_guide/style.ipynb:cell 126:1:1: NPY002 Replace legacy `np.random.seed` call with `np.random.Generator`
++ doc/source/user_guide/style.ipynb:cell 126:2:1: PLW0127 Self-assignment of variable `cmap`
++ doc/source/user_guide/style.ipynb:cell 126:2:8: PLW0128 Redeclared variable `cmap` in assignment
+... 24 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (95 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| Q000 | 539 | 539 | 0 | 0 | 0 |
+| T201 | 152 | 152 | 0 | 0 | 0 |
+| E501 | 75 | 75 | 0 | 0 | 0 |
+| E231 | 70 | 70 | 0 | 0 | 0 |
+| ANN001 | 62 | 62 | 0 | 0 | 0 |
+| E226 | 33 | 33 | 0 | 0 | 0 |
+| NPY002 | 32 | 32 | 0 | 0 | 0 |
+| D103 | 25 | 25 | 0 | 0 | 0 |
+| W293 | 23 | 23 | 0 | 0 | 0 |
+| ANN201 | 22 | 22 | 0 | 0 | 0 |
+| E241 | 20 | 20 | 0 | 0 | 0 |
+| FBT003 | 17 | 17 | 0 | 0 | 0 |
+| I001 | 15 | 15 | 0 | 0 | 0 |
+| E225 | 13 | 13 | 0 | 0 | 0 |
+| E203 | 13 | 13 | 0 | 0 | 0 |
+| F401 | 12 | 12 | 0 | 0 | 0 |
+| PLR6104 | 11 | 11 | 0 | 0 | 0 |
+| W291 | 11 | 11 | 0 | 0 | 0 |
+| COM812 | 11 | 11 | 0 | 0 | 0 |
+| E201 | 10 | 10 | 0 | 0 | 0 |
+| CPY001 | 9 | 9 | 0 | 0 | 0 |
+| E302 | 8 | 8 | 0 | 0 | 0 |
+| E305 | 8 | 8 | 0 | 0 | 0 |
+| E402 | 7 | 7 | 0 | 0 | 0 |
+| PTH123 | 6 | 6 | 0 | 0 | 0 |
+| W391 | 6 | 6 | 0 | 0 | 0 |
+| C408 | 6 | 6 | 0 | 0 | 0 |
+| F841 | 5 | 5 | 0 | 0 | 0 |
+| E261 | 5 | 5 | 0 | 0 | 0 |
+| ERA001 | 5 | 5 | 0 | 0 | 0 |
+| ANN202 | 5 | 5 | 0 | 0 | 0 |
+| E701 | 5 | 5 | 0 | 0 | 0 |
+| PD011 | 4 | 4 | 0 | 0 | 0 |
+| F821 | 4 | 4 | 0 | 0 | 0 |
+| PD901 | 4 | 4 | 0 | 0 | 0 |
+| E251 | 4 | 4 | 0 | 0 | 0 |
+| PLR2004 | 4 | 4 | 0 | 0 | 0 |
+| UP031 | 4 | 4 | 0 | 0 | 0 |
+| E228 | 4 | 4 | 0 | 0 | 0 |
+| PLW1514 | 3 | 3 | 0 | 0 | 0 |
+| B007 | 3 | 3 | 0 | 0 | 0 |
+| T203 | 3 | 3 | 0 | 0 | 0 |
+| SLF001 | 3 | 3 | 0 | 0 | 0 |
+| RUF001 | 3 | 3 | 0 | 0 | 0 |
+| PTH110 | 3 | 3 | 0 | 0 | 0 |
+| FURB103 | 3 | 3 | 0 | 0 | 0 |
+| E741 | 2 | 2 | 0 | 0 | 0 |
+| PLR1736 | 2 | 2 | 0 | 0 | 0 |
+| PLW2901 | 2 | 2 | 0 | 0 | 0 |
+| I002 | 2 | 2 | 0 | 0 | 0 |
+| E111 | 2 | 2 | 0 | 0 | 0 |
+| PD002 | 2 | 2 | 0 | 0 | 0 |
+| PLW0602 | 2 | 2 | 0 | 0 | 0 |
+| ARG001 | 2 | 2 | 0 | 0 | 0 |
+| F811 | 2 | 2 | 0 | 0 | 0 |
+| E721 | 1 | 1 | 0 | 0 | 0 |
+| PLC2801 | 1 | 1 | 0 | 0 | 0 |
+| B008 | 1 | 1 | 0 | 0 | 0 |
+| S403 | 1 | 1 | 0 | 0 | 0 |
+| TID253 | 1 | 1 | 0 | 0 | 0 |
+| SIM115 | 1 | 1 | 0 | 0 | 0 |
+| S301 | 1 | 1 | 0 | 0 | 0 |
+| PLR0913 | 1 | 1 | 0 | 0 | 0 |
+| PLR0917 | 1 | 1 | 0 | 0 | 0 |
+| BLE001 | 1 | 1 | 0 | 0 | 0 |
+| RUF010 | 1 | 1 | 0 | 0 | 0 |
+| E265 | 1 | 1 | 0 | 0 | 0 |
+| PD008 | 1 | 1 | 0 | 0 | 0 |
+| PLW0108 | 1 | 1 | 0 | 0 | 0 |
+| S113 | 1 | 1 | 0 | 0 | 0 |
+| PTH111 | 1 | 1 | 0 | 0 | 0 |
+| PTH202 | 1 | 1 | 0 | 0 | 0 |
+| PTH102 | 1 | 1 | 0 | 0 | 0 |
+| FBT001 | 1 | 1 | 0 | 0 | 0 |
+| D400 | 1 | 1 | 0 | 0 | 0 |
+| D415 | 1 | 1 | 0 | 0 | 0 |
+| PTH107 | 1 | 1 | 0 | 0 | 0 |
+| C405 | 1 | 1 | 0 | 0 | 0 |
+| B018 | 1 | 1 | 0 | 0 | 0 |
+| N803 | 1 | 1 | 0 | 0 | 0 |
+| E271 | 1 | 1 | 0 | 0 | 0 |
+| C901 | 1 | 1 | 0 | 0 | 0 |
+| FURB154 | 1 | 1 | 0 | 0 | 0 |
+| SIM910 | 1 | 1 | 0 | 0 | 0 |
+| E711 | 1 | 1 | 0 | 0 | 0 |
+| RUF005 | 1 | 1 | 0 | 0 | 0 |
+| DOC201 | 1 | 1 | 0 | 0 | 0 |
+| D205 | 1 | 1 | 0 | 0 | 0 |
+| D212 | 1 | 1 | 0 | 0 | 0 |
+| SIM108 | 1 | 1 | 0 | 0 | 0 |
+| UP030 | 1 | 1 | 0 | 0 | 0 |
+| UP032 | 1 | 1 | 0 | 0 | 0 |
+| S506 | 1 | 1 | 0 | 0 | 0 |
+| PLW0127 | 1 | 1 | 0 | 0 | 0 |
+| PLW0128 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2024-08-02 09:34_
+
+---
+
+_@dhruvmanila reviewed on 2024-08-02 09:43_
+
+---
+
+_Review comment by @dhruvmanila on `docs/configuration.md`:404 on 2024-08-02 09:43_
+
+nit: I think it might be useful for this note to be right below the "Jupyter Notebook Discovery" section
+
+---
+
+_@dhruvmanila approved on 2024-08-02 09:43_
+
+---
+
+_Merged by @MichaReiser on 2024-08-02 13:36_
+
+---
+
+_Closed by @MichaReiser on 2024-08-02 13:36_
+
+---
+
+_Branch deleted on 2024-08-02 13:36_
+
+---

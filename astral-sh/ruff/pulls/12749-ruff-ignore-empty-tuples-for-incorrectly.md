@@ -1,0 +1,207 @@
+```yaml
+number: 12749
+title: "[ruff] Ignore empty tuples for `incorrectly-parenthesized-tuple-in-subscript (RUF031)`"
+type: pull_request
+state: merged
+author: dylwil3
+labels: []
+assignees: []
+merged: true
+base: main
+head: ruf031-empty-tuple
+created_at: 2024-08-08T11:07:59Z
+updated_at: 2024-08-08T11:25:09Z
+url: https://github.com/astral-sh/ruff/pull/12749
+synced_at: 2026-01-10T21:47:02Z
+```
+
+# [ruff] Ignore empty tuples for `incorrectly-parenthesized-tuple-in-subscript (RUF031)`
+
+---
+
+_Pull request opened by @dylwil3 on 2024-08-08 11:07_
+
+## Summary
+
+It is a syntax error to replace `d[()]` with `d[]`, so we skip empty tuples when checking for violations of RUF031.
+
+Closes #12739.
+
+
+---
+
+_@MichaReiser approved on 2024-08-08 11:17_
+
+Thanks!
+
+---
+
+_Merged by @MichaReiser on 2024-08-08 11:18_
+
+---
+
+_Closed by @MichaReiser on 2024-08-08 11:18_
+
+---
+
+_Comment by @github-actions[bot] on 2024-08-08 11:21_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+259 -0 violations, +0 -0 fixes in 4 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/dd1e6aab5ff89e15d509b1672431db2f41d02425/disnake/ext/commands/slash_core.py#L39'>disnake/ext/commands/slash_core.py:39:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+108 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L101'>superset/extensions/metadb.py:101:35:</a> ARG002 Unused method argument: `url`
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D200 One-line docstring should fit on one line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D212 [*] Multi-line docstring summary should start at the first line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D401 First line of docstring should be in imperative mood: "A custom Shillelagh SQLAlchemy dialect with a single adapter configured."
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L105'>superset/extensions/metadb.py:105:9:</a> DOC201 `return` is not documented in docstring
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L114'>superset/extensions/metadb.py:114:22:</a> COM812 [*] Trailing comma missing
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D200 One-line docstring should fit on one line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D212 [*] Multi-line docstring summary should start at the first line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D401 First line of docstring should be in imperative mood: "Decorator that prevents DML against databases where it's not allowed."
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:57:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `*args`
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:72:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `**kwargs`
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:80:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `wrapper`
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L134'>superset/extensions/metadb.py:134:19:</a> TRY003 Avoid specifying long messages outside the exception class
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L134'>superset/extensions/metadb.py:134:36:</a> EM102 Exception must not use an f-string literal, assign to variable first
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L137'>superset/extensions/metadb.py:137:5:</a> DOC201 `return` is not documented in docstring
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L141'>superset/extensions/metadb.py:141:5:</a> D200 One-line docstring should fit on one line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L141'>superset/extensions/metadb.py:141:5:</a> D212 [*] Multi-line docstring summary should start at the first line
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L141'>superset/extensions/metadb.py:141:5:</a> D401 First line of docstring should be in imperative mood: "Decorator that prevents updates/deletes on tables without a rowid."
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L146'>superset/extensions/metadb.py:146:57:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `*args`
++ <a href='https://github.com/apache/superset/blob/e77f7557653b1a29377cb0d21546eec2944285d4/superset/extensions/metadb.py#L146'>superset/extensions/metadb.py:146:72:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `**kwargs`
+... 88 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L197'>stdlib/tkinter/__init__.pyi:197:16:</a> PYI052 Need type annotation for `Activate`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L198'>stdlib/tkinter/__init__.pyi:198:19:</a> PYI052 Need type annotation for `ButtonPress`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L200'>stdlib/tkinter/__init__.pyi:200:21:</a> PYI052 Need type annotation for `ButtonRelease`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L201'>stdlib/tkinter/__init__.pyi:201:17:</a> PYI052 Need type annotation for `Circulate`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L202'>stdlib/tkinter/__init__.pyi:202:24:</a> PYI052 Need type annotation for `CirculateRequest`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L203'>stdlib/tkinter/__init__.pyi:203:21:</a> PYI052 Need type annotation for `ClientMessage`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L204'>stdlib/tkinter/__init__.pyi:204:16:</a> PYI052 Need type annotation for `Colormap`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L205'>stdlib/tkinter/__init__.pyi:205:17:</a> PYI052 Need type annotation for `Configure`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L206'>stdlib/tkinter/__init__.pyi:206:24:</a> PYI052 Need type annotation for `ConfigureRequest`
++ <a href='https://github.com/python/typeshed/blob/e9b3b03764d0557e103e1b2c4d95ce02965db22b/stdlib/tkinter/__init__.pyi#L207'>stdlib/tkinter/__init__.pyi:207:14:</a> PYI052 Need type annotation for `Create`
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+112 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1005'>testing/test_config.py:1005:9:</a> PLR6301 Method `test_inifilename` could be a function, class method, or static method
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1089'>testing/test_config.py:1089:13:</a> PLR6301 Method `load` could be a function, class method, or static method
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1124'>testing/test_config.py:1124:13:</a> PLR6301 Method `load` could be a function, class method, or static method
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1151'>testing/test_config.py:1151:13:</a> PLR6301 Method `load` could be a function, class method, or static method
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1179'>testing/test_config.py:1179:13:</a> PLR6301 Method `load` could be a function, class method, or static method
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L120'>testing/test_config.py:120:9:</a> PLR6301 Method `test_ini_names` could be a function, class method, or static method
+... 86 additional changes omitted for rule PLR6301
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L15'>testing/test_config.py:15:28:</a> PLC2701 Private name import `_pytest`
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L16'>testing/test_config.py:16:28:</a> PLC2701 Private name import `_pytest`
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L17'>testing/test_config.py:17:28:</a> PLC2701 Private name import `_pytest`
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L18'>testing/test_config.py:18:28:</a> PLC2701 Private name import `_pytest`
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1978'>testing/test_config.py:1978:43:</a> PLC2701 Private name import `_pytest`
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L1978'>testing/test_config.py:1978:5:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L19'>testing/test_config.py:19:28:</a> PLC2701 Private name import `_pytest`
+... 10 additional changes omitted for rule PLC2701
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L34'>testing/test_config.py:34:1:</a> PLR0904 Too many public methods (23 > 20)
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L621'>testing/test_config.py:621:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L630'>testing/test_config.py:630:1:</a> PLR0904 Too many public methods (24 > 20)
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L919'>testing/test_config.py:919:25:</a> PLC1901 `value == ""` can be simplified to `not value` as an empty string is falsey
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/testing/test_config.py#L929'>testing/test_config.py:929:25:</a> PLC1901 `value == ""` can be simplified to `not value` as an empty string is falsey
+... 94 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (36 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR6301 | 92 | 92 | 0 | 0 | 0 |
+| PYI052 | 38 | 38 | 0 | 0 | 0 |
+| D212 | 19 | 19 | 0 | 0 | 0 |
+| PLC2701 | 15 | 15 | 0 | 0 | 0 |
+| D200 | 13 | 13 | 0 | 0 | 0 |
+| ANN401 | 12 | 12 | 0 | 0 | 0 |
+| DOC201 | 9 | 9 | 0 | 0 | 0 |
+| TRY003 | 9 | 9 | 0 | 0 | 0 |
+| EM102 | 6 | 6 | 0 | 0 | 0 |
+| DOC501 | 4 | 4 | 0 | 0 | 0 |
+| D401 | 3 | 3 | 0 | 0 | 0 |
+| EM101 | 3 | 3 | 0 | 0 | 0 |
+| PLC0415 | 3 | 3 | 0 | 0 | 0 |
+| TCH002 | 3 | 3 | 0 | 0 | 0 |
+| ARG002 | 2 | 2 | 0 | 0 | 0 |
+| COM812 | 2 | 2 | 0 | 0 | 0 |
+| E501 | 2 | 2 | 0 | 0 | 0 |
+| ARG004 | 2 | 2 | 0 | 0 | 0 |
+| PLR2004 | 2 | 2 | 0 | 0 | 0 |
+| D107 | 2 | 2 | 0 | 0 | 0 |
+| PLR0904 | 2 | 2 | 0 | 0 | 0 |
+| PLC1901 | 2 | 2 | 0 | 0 | 0 |
+| RUF022 | 1 | 1 | 0 | 0 | 0 |
+| D102 | 1 | 1 | 0 | 0 | 0 |
+| CPY001 | 1 | 1 | 0 | 0 | 0 |
+| RUF012 | 1 | 1 | 0 | 0 | 0 |
+| FBT001 | 1 | 1 | 0 | 0 | 0 |
+| FBT002 | 1 | 1 | 0 | 0 | 0 |
+| SIM102 | 1 | 1 | 0 | 0 | 0 |
+| ANN204 | 1 | 1 | 0 | 0 | 0 |
+| E721 | 1 | 1 | 0 | 0 | 0 |
+| B905 | 1 | 1 | 0 | 0 | 0 |
+| DOC402 | 1 | 1 | 0 | 0 | 0 |
+| ERA001 | 1 | 1 | 0 | 0 | 0 |
+| TCH003 | 1 | 1 | 0 | 0 | 0 |
+| UP035 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Branch deleted on 2024-08-08 11:25_
+
+---

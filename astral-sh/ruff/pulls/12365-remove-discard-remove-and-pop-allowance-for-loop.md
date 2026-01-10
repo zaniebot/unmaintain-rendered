@@ -1,0 +1,214 @@
+```yaml
+number: 12365
+title: "Remove `discard`, `remove`, and `pop` allowance for `loop-iterator-mutation`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: charlie/B909
+created_at: 2024-07-17T14:15:11Z
+updated_at: 2024-07-17T17:51:52Z
+url: https://github.com/astral-sh/ruff/pull/12365
+synced_at: 2026-01-10T21:47:02Z
+```
+
+# Remove `discard`, `remove`, and `pop` allowance for `loop-iterator-mutation`
+
+---
+
+_Pull request opened by @charliermarsh on 2024-07-17 14:15_
+
+## Summary
+
+Pretty sure this should still be an error, but also, I think I added this because of ecosystem CI? So want to see what pops up.
+
+Closes https://github.com/astral-sh/ruff/issues/12164.
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-07-17 14:15_
+
+---
+
+_Comment by @github-actions[bot] on 2024-07-17 14:28_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+17 -0 violations, +0 -0 fixes in 8 projects; 46 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/dc3a7308b4edf1c7c5ed0ccccc1ec2268edeb61b/tests/providers/amazon/aws/executors/batch/test_batch_executor.py#L653'>tests/providers/amazon/aws/executors/batch/test_batch_executor.py:653:17:</a> B909 Mutation to loop iterable `os.environ` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_sampledata_xref.py#L206'>src/bokeh/sphinxext/bokeh_sampledata_xref.py:206:36:</a> B909 Mutation to loop iterable `refs` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/6625af7fd0bfdf75fd596e7a9a871528cb539ef7/examples/example_bulkwriter.py#L371'>examples/example_bulkwriter.py:371:17:</a> B909 Mutation to loop iterable `task_ids` during iteration
++ <a href='https://github.com/milvus-io/pymilvus/blob/6625af7fd0bfdf75fd596e7a9a871528cb539ef7/examples/example_bulkwriter.py#L374'>examples/example_bulkwriter.py:374:17:</a> B909 Mutation to loop iterable `task_ids` during iteration
++ <a href='https://github.com/milvus-io/pymilvus/blob/6625af7fd0bfdf75fd596e7a9a871528cb539ef7/pymilvus/orm/prepare.py#L67'>pymilvus/orm/prepare.py:67:17:</a> B909 Mutation to loop iterable `tmp_fields` during iteration
++ <a href='https://github.com/milvus-io/pymilvus/blob/6625af7fd0bfdf75fd596e7a9a871528cb539ef7/pymilvus/orm/schema.py#L524'>pymilvus/orm/schema.py:524:13:</a> B909 Mutation to loop iterable `tmp_fields` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/tests/conftest.py#L304'>tests/conftest.py:304:17:</a> B909 Mutation to loop iterable `os.environ` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/60497e1c99752e5a4b48d3d97f7b04dfa37ceb1b/rotkehlchen/api/rest.py#L526'>rotkehlchen/api/rest.py:526:25:</a> B909 Mutation to loop iterable `self.rotkehlchen.api_task_greenlets` during iteration
++ <a href='https://github.com/rotki/rotki/blob/60497e1c99752e5a4b48d3d97f7b04dfa37ceb1b/rotkehlchen/chain/evm/decoding/decoder.py#L919'>rotkehlchen/chain/evm/decoding/decoder.py:919:21:</a> B909 Mutation to loop iterable `action_items` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/eb0f72ecefaf4b71c82801f2f9a8a3044aa71151/zerver/lib/events.py#L922'>zerver/lib/events.py:922:21:</a> B909 Mutation to loop iterable during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/dbc6707c7bbda70ad303a72ed6e7af5cfa402ea1/indico/modules/events/models/persons.py#L330'>indico/modules/events/models/persons.py:330:17:</a> B909 Mutation to loop iterable `other.event_links` during iteration
++ <a href='https://github.com/indico/indico/blob/dbc6707c7bbda70ad303a72ed6e7af5cfa402ea1/indico/modules/events/models/persons.py#L342'>indico/modules/events/models/persons.py:342:17:</a> B909 Mutation to loop iterable `other.abstract_links` during iteration
++ <a href='https://github.com/indico/indico/blob/dbc6707c7bbda70ad303a72ed6e7af5cfa402ea1/indico/modules/events/models/persons.py#L354'>indico/modules/events/models/persons.py:354:17:</a> B909 Mutation to loop iterable `other.contribution_links` during iteration
++ <a href='https://github.com/indico/indico/blob/dbc6707c7bbda70ad303a72ed6e7af5cfa402ea1/indico/modules/events/models/persons.py#L363'>indico/modules/events/models/persons.py:363:17:</a> B909 Mutation to loop iterable `other.subcontribution_links` during iteration
++ <a href='https://github.com/indico/indico/blob/dbc6707c7bbda70ad303a72ed6e7af5cfa402ea1/indico/modules/events/models/persons.py#L372'>indico/modules/events/models/persons.py:372:17:</a> B909 Mutation to loop iterable `other.session_block_links` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/d489247505a953885a156e61d4473497cbc167ea/src/_pytest/pytester.py#L310'>src/_pytest/pytester.py:310:17:</a> B909 Mutation to loop iterable `self.calls` during iteration
++ <a href='https://github.com/pytest-dev/pytest/blob/d489247505a953885a156e61d4473497cbc167ea/src/_pytest/recwarn.py#L214'>src/_pytest/recwarn.py:214:24:</a> B909 Mutation to loop iterable `self._list` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| B909 | 17 | 17 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-07-17 14:29_
+
+@carljm - Would you mind taking a look at the ecosystem checks and judging whether they're false positives?
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2024-07-17 16:48_
+
+---
+
+_Comment by @carljm on 2024-07-17 17:15_
+
+The `airflow` and `poetry` cases would technically be introducing a false positive; their code works fine. The reason is that `os.environ` is not actually a dict, it's an instance of an `_Environ` class that has different behavior: its `__iter__` method captures the current set of keys as a list snapshot, and iterates that list. So calling `.pop()` during iteration doesn't change the list you are actually iterating over. Though this is a bit subtle: what airflow is doing is OK because they pop the current element; if they were to pop some other key, that key could still show up later in the iteration (because it's still in the list snapshot of keys that was taken before iteration), and that could cause issues. Personally, I'd be comfortable with issuing this "false" positive: `os.environ` is meant to act like a dict, and I think it's reasonable (and not hard) to just avoid this iffy pattern.
+
+The `pymilvus` case looks like buggy code to me that will cause some items to be skipped in iteration (not to mention being quadratic-time.) The lint should fire on this.
+
+I can't easily evaluate the `indico` case because I don't know SQLAlchemy well enough to know what data structure it uses for db relationship backrefs, which is what it looks like they are iterating over there, and what iteration behavior that data structure has. The code might be buggy, or it might be more like the `os.environ` case, depending how exactly that data structure handles iteration. I would certainly be more comfortable with that code (and it would likely be a lot more efficient) if it instead collected a list of things to remove and then filtered them in a second pass.
+
+On the whole, I don't personally feel like these ecosystem results are a convincing reason not to broaden the rule. The patterns caught by this expanded rule are not safe in the common case of builtin data structures. They _might_ be safe, in some cases, for some custom data structures that implement iteration differently.
+
+
+
+
+
+---
+
+_@carljm approved on 2024-07-17 17:18_
+
+---
+
+_Comment by @charliermarsh on 2024-07-17 17:26_
+
+Awesome, thank you!
+
+---
+
+_Merged by @charliermarsh on 2024-07-17 17:42_
+
+---
+
+_Closed by @charliermarsh on 2024-07-17 17:42_
+
+---
+
+_Branch deleted on 2024-07-17 17:42_
+
+---
