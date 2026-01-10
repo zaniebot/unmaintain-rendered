@@ -14,7 +14,7 @@ head: konsti/implement-skip-existing
 created_at: 2024-10-24T15:59:23Z
 updated_at: 2024-10-31T15:23:14Z
 url: https://github.com/astral-sh/uv/pull/8531
-synced_at: 2026-01-10T12:08:42Z
+synced_at: 2026-01-10T12:54:11Z
 ```
 
 # Skip existing, second iteration: Check the index before uploading
@@ -56,7 +56,25 @@ _@konstin reviewed on 2024-10-24 16:01_
 
 ---
 
+_Review comment by @konstin on `crates/uv-client/src/registry_client.rs`:291 on 2024-10-24 16:01_
+
+This is the minimally invasive change. An alternative would be making the `Cache` an `Arc<Mutex<Cache>>`, acknowledging that we're editing externally mutable state.
+
+---
+
 _@konstin reviewed on 2024-10-24 16:01_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/registry_client.rs`:148 on 2024-10-24 16:01_
+
+Avoid the cost for creating another client.
+
+---
+
+_Review comment by @konstin on `crates/uv-publish/src/lib.rs`:448 on 2024-10-24 16:02_
+
+Do we need the index url here or will it do the right thing without it?
 
 ---
 
@@ -68,6 +86,12 @@ _@konstin reviewed on 2024-10-24 16:03_
 
 ---
 
+_Review comment by @konstin on `crates/uv-publish/src/lib.rs`:653 on 2024-10-24 16:03_
+
+We scrap the index-specific twine code entirely and do the skip existing checks for any bad status
+
+---
+
 _Review requested from @charliermarsh by @konstin on 2024-10-28 09:27_
 
 ---
@@ -76,7 +100,19 @@ _@charliermarsh reviewed on 2024-10-28 12:32_
 
 ---
 
+_Review comment by @charliermarsh on `crates/uv-publish/src/lib.rs`:448 on 2024-10-28 12:32_
+
+It depends. Was the client created with _only_ this index as the set of locations? It seems right to pass it in though.
+
+---
+
 _@charliermarsh reviewed on 2024-10-28 12:33_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 12:33_
+
+Why does this take an index, rather than a bool?
 
 ---
 
@@ -84,7 +120,19 @@ _@charliermarsh reviewed on 2024-10-28 12:36_
 
 ---
 
+_Review comment by @charliermarsh on `crates/uv-client/src/registry_client.rs`:291 on 2024-10-28 12:36_
+
+This seems off... Can we not create an entirely new client with a fresh cache?
+
+---
+
 _@konstin reviewed on 2024-10-28 12:47_
+
+---
+
+_Review comment by @konstin on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 12:47_
+
+It's the story documented in https://github.com/astral-sh/uv/issues/7917#issuecomment-2402208639 and https://github.com/astral-sh/uv/issues/7917#issuecomment-2408636016: An index may react arbitrarily to a file with a filename that does already exist: PyPI for example checks if the hash matches and then return a plain OK as for a fresh upload, while other registries error even when re-uploading the same file. By proactively checking the simple index over relying on unspecified, inconsistent behaviour, `uv publish` behaves consistently across registries, while also preventing one case of uploading inconsistent wheel/source dist combinations. In cases where we skip an upload, it is also faster than a twine-style skip existing bool.
 
 ---
 
@@ -92,7 +140,25 @@ _@charliermarsh reviewed on 2024-10-28 13:10_
 
 ---
 
+_Review comment by @charliermarsh on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 13:10_
+
+But why do we need to provide the index here? Because you need to be able to query for metadata, and the publish URL isn't sufficient?
+
+---
+
 _@konstin reviewed on 2024-10-28 13:16_
+
+---
+
+_Review comment by @konstin on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 13:16_
+
+There could e.g. be multiple index URLs, and we can't compute the index URL from the publish URL, so you need to manually provide the index URL that matches the publish URL. Making it explicit here seemed like a clear interface.
+
+---
+
+_Review comment by @konstin on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 13:59_
+
+I'm not overly attached to doing it this way, i mainly picked it because it seemed like a clear, explainable design.
 
 ---
 
@@ -104,7 +170,19 @@ _@zanieb reviewed on 2024-10-28 14:13_
 
 ---
 
+_Review comment by @zanieb on `crates/uv-cli/src/lib.rs`:4808 on 2024-10-28 14:13_
+
+This last sentence is a bit unclear.
+
+---
+
 _@zanieb reviewed on 2024-10-28 14:13_
+
+---
+
+_Review comment by @zanieb on `crates/uv-cli/src/lib.rs`:4810 on 2024-10-28 14:13_
+
+I'd say something like "The exact behavior will vary based on implementation details of the index. When uploading to PyPI, ..."
 
 ---
 
@@ -112,7 +190,19 @@ _@zanieb reviewed on 2024-10-28 14:14_
 
 ---
 
+_Review comment by @zanieb on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 14:14_
+
+Won't this be surprising when coming from another tool like `twine` where this is a bool? Should we call it something else?
+
+---
+
 _@konstin reviewed on 2024-10-28 14:36_
+
+---
+
+_Review comment by @konstin on `crates/uv-cli/src/lib.rs`:4815 on 2024-10-28 14:36_
+
+As I've said above, the name is open for bike shedding. I like it for being self explaining (`uv publish --skip-existing https://example.org/simple` means to skip any files existing on https://example.org/simple when publishing) and for not being confused with the regular index API.
 
 ---
 
@@ -236,6 +326,12 @@ _@konstin reviewed on 2024-10-29 23:10_
 
 ---
 
+_Review comment by @konstin on `crates/uv-client/src/registry_client.rs`:291 on 2024-10-29 23:10_
+
+My thought was avoiding that, so we only have to do a revalidation request. Is there an advantage in using a temp cache here?
+
+---
+
 _Comment by @konstin on 2024-10-29 23:18_
 
 The main design constraint here is that i feel strongly that the behavior should be consistent across all indexes, and I've picked the design with a mandatory index URL since it was the only one that could provide this consistency.
@@ -264,6 +360,16 @@ _@zanieb reviewed on 2024-10-31 13:33_
 
 ---
 
+_Review comment by @zanieb on `crates/uv-cli/src/lib.rs`:4823 on 2024-10-31 13:33_
+
+Maybe rephrase now?
+
+```suggestion
+    /// Check an index URL for existing files to skip duplicate uploads.
+ ```
+
+---
+
 _@zanieb approved on 2024-10-31 13:35_
 
 Thanks for your patience. I'm not sure re. @charliermarsh's comments about the client.
@@ -274,7 +380,19 @@ _@zanieb reviewed on 2024-10-31 13:36_
 
 ---
 
+_Review comment by @zanieb on `crates/uv-publish/src/lib.rs`:704 on 2024-10-31 13:36_
+
+This isn't quite descriptive
+
+---
+
 _@charliermarsh reviewed on 2024-10-31 13:40_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-client/src/registry_client.rs`:291 on 2024-10-31 13:40_
+
+I don't mean a temp cache. I mean a new `Cache` object that points to the same storage, but with a replaced `Refresh`. The advantage is we avoid this strange API.
 
 ---
 
@@ -282,7 +400,19 @@ _@charliermarsh reviewed on 2024-10-31 13:48_
 
 ---
 
+_Review comment by @charliermarsh on `crates/uv-publish/src/lib.rs`:421 on 2024-10-31 13:48_
+
+I think I'd prefer that this method _not_ take an `Option`, and we just don't call it if `index_client` is `None`.
+
+---
+
 _@charliermarsh reviewed on 2024-10-31 13:56_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-client/src/registry_client.rs`:291 on 2024-10-31 13:56_
+
+I can demonstrate what I mean with a refactor if it's not clear.
 
 ---
 
