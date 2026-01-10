@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Delay computation of 'unbound' visibility for implicit instance attributes - astral-sh/ruff #18669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Delay computation of 'unbound' visibility for implicit instance attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18669">#18669</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-06-13 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-13 19:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Consider the following example, which leads to a excessively large runtime on <code>main</code>. The reason for this is the following. When inferring types for <code>self.a</code>, we look up the <code>a</code> attribute on <code>C</code>. While looking for implicit instance attributes, we go through every method and check for <code>self.a = …</code> assignments. There are no such assignments here, but we always have an implicit <code>self.a = &lt;unbound&gt;</code> binding at the beginning over every method. This binding accumulates a complex visibility constraint in <code>C.f</code>, due to the <code>isinstance</code> checks. While evaluating that constraint, we need to infer the type of <code>self.b</code>. There's no binding for <code>self.b</code> either, but there's also an implicit <code>self.b = &lt;unbound&gt;</code> binding with the same complex visibility constraint (involving <code>self.b</code> recursively). This leads to a combinatorial explosion:</p>
+<pre><code class="language-py">class C:
+    def f(self: &quot;C&quot;):
+        if isinstance(self.a, str):
+            return
+
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        if isinstance(self.b, str):
+            return
+        # repeat 20 times
+</code></pre>
+<p>(note that the <code>self</code> parameter here is annotated explicitly because we currently still infer <code>Unknown</code> for <code>self</code> otherwise)</p>
+<p>The fix proposed here is rather simple: when there are no <code>self.name = …</code> attribute assignments in a given method, we skip evaluating the visibility constraint of the implicit <code>self.name = &lt;unbound&gt;</code> binding. This should also generally help with performance, because that's a very common case.</p>
+<p>This is <em>not</em> a fix for cases where there <em>are</em> actual bindings in the method. When we add <code>self.a = 1; self.b = 1</code> to that example above, we still see that combinatorial explosion of runtime. I still think it's worth to make this optimization, as it fixes the problems with <code>pandas</code> and <code>sqlalchemy</code> reported by users. I will open a ticket to track that separately.</p>
+<p>closes https://github.com/astral-sh/ty/issues/627
+closes https://github.com/astral-sh/ty/issues/641</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Made sure that <code>ty</code> finishes quickly on the MREs in https://github.com/astral-sh/ty/issues/627</li>
+<li>Made sure that <code>ty</code> finishes quickly on <code>pandas</code></li>
+<li>Made sure that <code>ty</code> finishes quickly on <code>sqlalchemy</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-06-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-06-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-06-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-06-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-13 19:37</div>
+            <div class="timeline-body"><p>We should probably also add a regression test/benchmark. I can look into that next week, in a follow-up, in case we want to merge this sooner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-13 19:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-13 19:50</div>
+            <div class="timeline-body"><p>Looks good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-06-13 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-13 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-13 19:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

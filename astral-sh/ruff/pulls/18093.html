@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`airflow`] Add unsafe fix module moved cases (`AIR302`) - astral-sh/ruff #18093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>airflow</code>] Add unsafe fix module moved cases (<code>AIR302</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18093">#18093</a>
+        opened by <a href="https://github.com/Lee-W">@Lee-W</a>
+        on 2025-05-14 13:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-05-14 13:29</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Add utility functions <code>generate_import_edit</code> and <code>generate_remove_and_runtime_import_edit</code> to generate the fix needed for the airflow rules.</p>
+<ol>
+<li><code>generate_import_edit</code> is for the cases where the member name has changed. (e.g., <code>airflow.datasts.Dataset</code> to <code>airflow.sdk.Asset</code>) It's just extracted from the original logic</li>
+<li><code>generate_remove_and_runtime_import_edit</code> is for cases where the member name has not changed. (e.g., <code>airflow.operators.pig_operator.PigOperator</code> to <code>airflow.providers.apache.pig.hooks.pig.PigCliHook</code>) This is newly introduced. As it introduced runtime import, I mark it as an unsafe fix. Under the hook, it tried to find the original import statement, remove it, and add a new import fix</li>
+</ol>
+<hr />
+<ul>
+<li>rules fix<ul>
+<li><code>airflow.sensors.external_task_sensor.ExternalTaskSensorLink</code> → <code>airflow.providers.standard.sensors.external_task.ExternalDagLink</code></li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>The existing test fixtures have been updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-05-14 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:983 on 2025-05-14 13:52</div>
+            <div class="timeline-body"><p>Hey @ntBre , I managed to put up a somewhat work version, but have a quick question. Is there a better way or correct way we can get rid of these expect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-14 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:983 on 2025-05-14 14:47</div>
+            <div class="timeline-body"><p>I guess it depends a bit on what could cause them to fail. I haven't really looked closely enough at <code>match_head</code> to see how they can fail. Just in general, you might be able to use <code>diagnostic.try_set_optional_fix</code> here, and you can return <code>Ok(None)</code> instead of calling <code>unwrap</code> or <code>expect</code>. Something like this:</p>
+<pre><code class="language-rust">let head = match_head(expr) else {
+    return Ok(None);
+};
+</code></pre>
+<p>That's probably the approach I would take if the result of <code>match_head</code> is truly <em>optional</em>. If it's an error you want logged, you could instead return an <code>anyhow::Result</code> from <code>match_head</code> and just use <code>?</code> here.</p>
+<p>(The main benefit of <code>try_set_fix</code> is that it logs any errors that occur in the closure.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-14 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:983 on 2025-05-14 14:50</div>
+            <div class="timeline-body"><p>Oh I see now that there are other <code>unwrap</code>/<code>expect</code> calls below. You may just want to factor out another function returning an <code>Option&lt;Fix&gt;</code> (or another type if <code>Fix</code> isn't right) and only call <code>diagnostic.try_set_fix</code> if it returns <code>Some</code>:</p>
+<pre><code class="language-rust">if let Some(fix) = new_fix_generating_function(/* args */) {
+    diagnostic.try_set_fix(|| /* more code finalizing the fix */);
+}
+</code></pre>
+<p>Then in <code>new_fix_generating_function</code> you can use <code>?</code> anywhere you'd otherwise call unwrap or expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 09:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve autofix to air302" to "[`airflow`] Add unsafe fix module moved cases (`AIR302`)" by @Lee-W on 2025-05-20 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-05-20 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:983 on 2025-05-20 09:35</div>
+            <div class="timeline-body"><p>It works great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Lee-W on 2025-05-20 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-05-27 14:34</div>
+            <div class="timeline-body"><p>@ntBre  Didn't notice another PR was merged 🤦‍♂️ Just rebased and fix this PR! If the idea looks good, I'm going to apply it to other rules. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-28 19:25</div>
+            <div class="timeline-body"><p>It looks like one of my PRs today caused another conflict. I was going to fix it and push here for you, but it looks like I can't edit the branch. I think you can see the diff <a href="https://github.com/astral-sh/ruff/compare/f6f7bd16ef88a244a92ecdccf36f6b032be5975d..950c1462e496e9b425aedf40c9f9ab3daf3e24de#diff-5222e811c4461edf353d24c329e4a07e14c48837c8eeff05b6810912de30135cR1203-R1236">here</a> if it helps.</p>
+<p>I'll go ahead and take a look now anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-05-28 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-05-28 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/helpers.rs</code>:184 on 2025-05-28 19:33</div>
+            <div class="timeline-body"><p>I think this can just be:</p>
+<pre><code class="language-suggestion">        Expr::Attribute(ExprAttribute { value, .. }) =&gt; value.as_name_expr(),
+</code></pre>
+<p>I thought this was recursing down the whole attribute sequence, but if by &quot;head&quot; you mean the first part, I think this should work too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:1227 on 2025-05-28 19:51</div>
+            <div class="timeline-body"><p>I wish there were a way to distinguish between these two cases without trying to generate both edits, but I played with it a bit and couldn't come up with something better. It would also be nice if we could propagate the <code>Result</code>s from the import calls to <code>try_set_fix</code>, but that looked awkward as well. If we stick with this implementation, I think we can still simplify it slightly to this:</p>
+<pre><code class="language-suggestion">    if let Some(fix) = generate_import_edit(expr, checker, module, name, ranged)
+        .or_else(|| generate_remove_and_runtime_import_edit(expr, checker, module, name))
+    {
+        diagnostic.set_fix(fix);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-28 20:07</div>
+            <div class="timeline-body"><p>Thanks. I didn't review all of the snaps in depth, but this makes sense to me. Just a couple of suggestions and the merge conflicts and then this is good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-05-29 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:1227 on 2025-05-29 08:31</div>
+            <div class="timeline-body"><p>I just tried a few methods, and the current one looks the best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/helpers.rs</code>:184 on 2025-05-29 08:44</div>
+            <div class="timeline-body"><p>Seems to work fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-05-29 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-29 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-29 20:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

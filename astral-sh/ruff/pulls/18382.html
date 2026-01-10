@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Argument type expansion for overload call evaluation - astral-sh/ruff #18382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Argument type expansion for overload call evaluation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18382">#18382</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-30 03:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 03:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of astral-sh/ty#104, closes: astral-sh/ty#468</p>
+<p>This PR implements the argument type expansion which is step 3 of the overload call evaluation algorithm.</p>
+<p>Specifically, this step needs to be taken if type checking resolves to no matching overload and there are argument types that can be expanded.</p>
+<h2>Test Plan</h2>
+<p>Add new test cases.</p>
+<h2>Ecosystem analysis</h2>
+<p>This PR removes 174 <code>no-matching-overload</code> false positives -- I looked at a lot of them and they all are false positives.</p>
+<p>One thing that I'm not able to understand is that in https://github.com/sphinx-doc/sphinx/blob/2b7e3adf27c158305acca9b5e4d0d93d3e4c6f09/sphinx/ext/autodoc/preserve_defaults.py#L179 the inferred type of <code>value</code> is <code>str | None</code> by ty and Pyright, which is correct, but it's only ty that raises <code>invalid-argument-type</code> error while Pyright doesn't. The constructor method of <code>DefaultValue</code> has declared type of <code>str</code> which is invalid.</p>
+<p>There are few cases of false positives resulting due to the fact that ty doesn't implement narrowing on attribute expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-05-30 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-30 03:09</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- error[no-matching-overload] pytest_robotframework/__init__.py:569:9: No overload of function `keyword` matches arguments
+- Found 228 diagnostics
++ Found 227 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[no-matching-overload] src/anyio/_core/_sockets.py:279:12: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/anyio/_core/_sockets.py:543:19: No overload of function `fspath` matches arguments
+- Found 111 diagnostics
++ Found 109 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[no-matching-overload] ignite/utils.py:345:14: No overload of bound method `__init__` matches arguments
+- Found 2254 diagnostics
++ Found 2253 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[no-matching-overload] rich/progress.py:496:14: No overload of bound method `open` matches arguments
+- warning[unused-ignore-comment] rich/progress.py:506:44: Unused blanket `type: ignore` directive
+- Found 394 diagnostics
++ Found 392 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[no-matching-overload] src/trio/_highlevel_open_unix_stream.py:63:28: No overload of function `fspath` matches arguments
+- Found 1094 diagnostics
++ Found 1093 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[no-matching-overload] src/check_jsonschema/cli/param_types.py:135:26: No overload of function `fspath` matches arguments
+- Found 66 diagnostics
++ Found 65 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- error[no-matching-overload] src/pywinctl/_pywinctl_linux.py:161:21: No overload of function `compile` matches arguments
+- error[no-matching-overload] src/pywinctl/_pywinctl_linux.py:215:20: No overload of function `compile` matches arguments
+- Found 38 diagnostics
++ Found 36 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[no-matching-overload] nox/_options.py:160:12: No overload of function `fspath` matches arguments
+- error[no-matching-overload] nox/command.py:84:33: No overload of function `fspath` matches arguments
+- error[no-matching-overload] nox/command.py:160:22: No overload of function `fspath` matches arguments
+- error[no-matching-overload] nox/command.py:161:17: No overload of function `fspath` matches arguments
+- Found 37 diagnostics
++ Found 33 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- error[no-matching-overload] src/schemathesis/core/rate_limit.py:15:13: No overload of function `urlparse` matches arguments
+- error[no-matching-overload] src/schemathesis/specs/openapi/checks.py:564:14: No overload of function `urlparse` matches arguments
+- Found 414 diagnostics
++ Found 412 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[no-matching-overload] tornado/auth.py:1221:12: No overload of function `quote` matches arguments
+- error[no-matching-overload] tornado/concurrent.py:177:9: No overload of function `future_add_done_callback` matches arguments
+- error[no-matching-overload] tornado/curl_httpclient.py:386:43: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/curl_httpclient.py:485:38: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/escape.py:59:24: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/escape.py:77:26: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/escape.py:128:12: No overload of function `quote_plus` matches arguments
+- error[no-matching-overload] tornado/escape.py:128:12: No overload of function `quote` matches arguments
+- error[no-matching-overload] tornado/escape.py:166:21: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/escape.py:170:24: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/httpclient.py:571:22: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/httputil.py:1162:12: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/httputil.py:1162:36: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/routing.py:535:33: No overload of function `compile` matches arguments
+- error[no-matching-overload] tornado/routing.py:570:26: No overload of function `compile` matches arguments
+- error[no-matching-overload] tornado/template.py:317:40: No overload of function `to_unicode` matches arguments
+- error[no-matching-overload] tornado/web.py:685:17: No overload of function `to_unicode` matches arguments
+- error[invalid-argument-type] tornado/web.py:2293:44: Argument to bound method `__init__` is incorrect: Expected `Pattern[Unknown]`, found `Unknown | str | Pattern[Unknown]`
++ error[invalid-argument-type] tornado/web.py:2293:44: Argument to bound method `__init__` is incorrect: Expected `Pattern[Unknown]`, found `Unknown | Pattern[str] | str | Pattern[Unknown]`
+- error[no-matching-overload] tornado/web.py:3561:30: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3583:43: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3654:13: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3764:13: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3777:21: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3779:21: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/web.py:3784:21: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/websocket.py:470:16: No overload of function `utf8` matches arguments
+- error[no-matching-overload] tornado/websocket.py:919:21: No overload of function `utf8` matches arguments
+- Found 353 diagnostics
++ Found 327 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[no-matching-overload] cki_lib/yaml.py:91:22: No overload of function `dirname` matches arguments
+- Found 170 diagnostics
++ Found 169 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[no-matching-overload] torchvision/datasets/eurosat.py:37:21: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/eurosat.py:53:21: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/folder.py:63:17: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/imagenet.py:53:28: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/imagenet.py:53:28: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:103:12: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:148:12: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:165:12: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:193:12: No overload of function `expanduser` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:312:32: No overload of function `fspath` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:353:19: No overload of function `dirname` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:359:35: No overload of function `basename` matches arguments
+- error[no-matching-overload] torchvision/datasets/utils.py:382:21: No overload of function `expanduser` matches arguments
+- Found 1546 diagnostics
++ Found 1533 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[no-matching-overload] src/urllib3/connectionpool.py:1150:12: No overload of function `_normalize_host` matches arguments
+- error[no-matching-overload] src/urllib3/util/url.py:438:16: No overload of function `_normalize_host` matches arguments
+- error[no-matching-overload] test/test_ssltransport.py:56:24: No overload of function `sample_request` matches arguments
+- Found 509 diagnostics
++ Found 506 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[no-matching-overload] scrapy/mail.py:143:13: No overload of bound method `set_payload` matches arguments
+- error[no-matching-overload] scrapy/mail.py:143:13: No overload of bound method `set_payload` matches arguments
+- Found 1334 diagnostics
++ Found 1332 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[no-matching-overload] mitmproxy/io/har.py:111:24: No overload of function `encode` matches arguments
+- error[no-matching-overload] mitmproxy/net/http/url.py:54:40: No overload of function `urlparse` matches arguments
+- warning[unused-ignore-comment] mitmproxy/net/http/url.py:60:71: Unused blanket `type: ignore` directive
++ error[invalid-assignment] mitmproxy/net/http/url.py:54:5: Object of type `ParseResult | ParseResultBytes` is not assignable to `ParseResult`
++ warning[possibly-unbound-attribute] mitmproxy/net/http/url.py:58:16: Attribute `encode` on type `str | None` is possibly unbound
+- error[no-matching-overload] mitmproxy/tools/web/app.py:102:21: No overload of function `always_str` matches arguments
+- error[no-matching-overload] mitmproxy/tools/web/app.py:119:21: No overload of function `always_str` matches arguments
+- error[no-matching-overload] test/mitmproxy/net/test_encoding.py:60:24: No overload of function `decode` matches arguments
+- Found 2111 diagnostics
++ Found 2107 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[no-matching-overload] mypy/checker.py:762:22: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:2240:25: No overload of function `get_proper_type` matches arguments
++ error[invalid-argument-type] mypy/checker.py:2309:28: Argument to function `is_equivalent` is incorrect: Expected `Type`, found `None | (ProperType &amp; ~AnyType)`
++ error[invalid-argument-type] mypy/checker.py:2317:33: Argument to function `is_subtype` is incorrect: Expected `Type`, found `None | (ProperType &amp; ~AnyType)`
+- error[no-matching-overload] mypy/checker.py:3749:15: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:4532:28: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:5310:42: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:6339:48: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:7618:25: No overload of function `conditional_types` matches arguments
+- error[no-matching-overload] mypy/checker.py:7992:23: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:8742:9: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checker.py:8752:11: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkexpr.py:438:24: No overload of function `get_proper_type` matches arguments
++ error[invalid-return-type] mypy/checkexpr.py:444:28: Return type does not match returned value: expected `Type`, found `Unknown | LiteralType | None`
+- error[no-matching-overload] mypy/checkexpr.py:1032:23: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkexpr.py:1469:23: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkexpr.py:2134:29: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkexpr.py:5346:19: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkexpr.py:6672:15: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/checkmember.py:1494:21: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/join.py:894:16: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/meet.py:529:19: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/messages.py:839:27: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/messages.py:1069:23: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/common.py:180:28: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/dataclasses.py:795:27: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/dataclasses.py:919:13: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/functools.py:125:35: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/singledispatch.py:102:17: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/plugins/singledispatch.py:131:22: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/solve.py:306:16: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/stats.py:358:13: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/stubtest.py:1149:27: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/subtypes.py:1540:15: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:217:27: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:287:22: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:396:25: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:458:32: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:474:21: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypy/typeops.py:993:9: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypyc/irbuild/classdef.py:343:20: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypyc/irbuild/classdef.py:641:20: No overload of function `get_proper_type` matches arguments
+- error[no-matching-overload] mypyc/irbuild/expression.py:224:11: No overload of function `get_proper_type` matches arguments
+- Found 3262 diagnostics
++ Found 3225 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[no-matching-overload] src/_pytest/_code/code.py:392:43: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/_pytest/config/argparsing.py:113:20: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/_pytest/config/argparsing.py:170:20: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/_pytest/pathlib.py:1004:17: No overload of function `abspath` matches arguments
+- error[no-matching-overload] src/_pytest/pytester.py:990:18: No overload of function `abspath` matches arguments
+- error[no-matching-overload] src/_pytest/pytester.py:1405:25: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/_pytest/reports.py:371:32: No overload of function `fspath` matches arguments
+- error[no-matching-overload] testing/python/collect.py:1232:16: No overload of function `fspath` matches arguments
+- error[no-matching-overload] testing/python/collect.py:1247:16: No overload of function `fspath` matches arguments
+- error[no-matching-overload] testing/test_recwarn.py:568:9: No overload of function `warn` matches arguments
+- Found 787 diagnostics
++ Found 777 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[no-matching-overload] src/werkzeug/_reloader.py:285:20: No overload of function `abspath` matches arguments
+- error[no-matching-overload] src/werkzeug/datastructures/accept.py:86:16: No overload of function `__getitem__` matches arguments
+- error[no-matching-overload] src/werkzeug/datastructures/file_storage.py:194:28: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/werkzeug/utils.py:426:20: No overload of function `abspath` matches arguments
+- error[no-matching-overload] src/werkzeug/utils.py:564:26: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/werkzeug/utils.py:564:48: No overload of function `fspath` matches arguments
+- Found 478 diagnostics
++ Found 472 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[no-matching-overload] tests/__init__.py:159:10: No overload of function `compile` matches arguments
+- Found 1297 diagnostics
++ Found 1296 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- error[no-matching-overload] discord/ext/commands/help.py:668:13: No overload of bound method `sort` matches arguments
++ warning[unused-ignore-comment] discord/ext/commands/help.py:648:75: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] discord/ext/commands/help.py:652:75: Unused blanket `type: ignore` directive
+- Found 619 diagnostics
++ Found 620 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- error[no-matching-overload] static_frame/core/util.py:1363:21: No overload of bound method `__init__` matches arguments
+- Found 1943 diagnostics
++ Found 1942 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[no-matching-overload] mesonbuild/mlog.py:571:54: No overload of function `basename` matches arguments
+- Found 1334 diagnostics
++ Found 1333 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[no-matching-overload] src/bokeh/command/subcommands/serve.py:1004:11: No overload of function `format_docstring` matches arguments
+- error[no-matching-overload] src/bokeh/embed/server.py:408:27: No overload of function `format_docstring` matches arguments
+- error[no-matching-overload] src/bokeh/embed/server.py:409:26: No overload of function `format_docstring` matches arguments
+- error[no-matching-overload] src/bokeh/server/tornado.py:810:24: No overload of function `format_docstring` matches arguments
+- error[no-matching-overload] src/bokeh/util/serialization.py:88:11: No overload of function `format_docstring` matches arguments
+- error[no-matching-overload] src/bokeh/util/serialization.py:319:35: No overload of function `format_docstring` matches arguments
+- Found 946 diagnostics
++ Found 940 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- error[no-matching-overload] sphinx/builders/html/__init__.py:1139:26: No overload of function `fspath` matches arguments
+- error[no-matching-overload] sphinx/builders/html/__init__.py:1167:31: No overload of function `fspath` matches arguments
+- error[no-matching-overload] sphinx/builders/html/_assets.py:166:16: No overload of function `fspath` matches arguments
+- error[call-non-callable] sphinx/config.py:205:16: Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown, Unknown, Unknown]`
+- error[no-matching-overload] sphinx/ext/autodoc/preserve_defaults.py:178:33: No overload of function `unparse` matches arguments
++ error[invalid-argument-type] sphinx/ext/autodoc/preserve_defaults.py:179:72: Argument to bound method `__init__` is incorrect: Expected `str`, found `str | None`
+- error[no-matching-overload] sphinx/ext/autodoc/type_comment.py:96:52: No overload of function `unparse` matches arguments
+- error[no-matching-overload] sphinx/search/__init__.py:497:36: No overload of function `fspath` matches arguments
+- error[no-matching-overload] sphinx/util/__init__.py:33:12: No overload of function `fspath` matches arguments
+- error[no-matching-overload] sphinx/util/docstrings.py:10:22: No overload of function `compile` matches arguments
+- error[no-matching-overload] sphinx/util/i18n.py:320:17: No overload of function `splitext` matches arguments
+- error[no-matching-overload] sphinx/util/i18n.py:320:17: No overload of function `splitext` matches arguments
+- error[no-matching-overload] sphinx/util/i18n.py:320:17: No overload of function `splitext` matches arguments
+- error[no-matching-overload] sphinx/util/inspect.py:981:25: No overload of function `unparse` matches arguments
+- error[no-matching-overload] sphinx/util/inspect.py:995:18: No overload of function `unparse` matches arguments
+- error[call-non-callable] sphinx/util/inventory.py:319:16: Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown, Unknown, Unknown, Unknown]`
+- error[no-matching-overload] sphinx/util/osutil.py:37:12: No overload of function `fspath` matches arguments
+- error[no-matching-overload] sphinx/util/rst.py:28:17: No overload of function `compile` matches arguments
+- Found 662 diagnostics
++ Found 646 diagnostics
+
+rotki (https://github.com/rotki/rotki)
++ warning[unused-ignore-comment] rotkehlchen/externalapis/etherscan.py:443:63: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] rotkehlchen/tests/db/test_history_events.py:268:46: Unused blanket `type: ignore` directive
+- error[no-matching-overload] rotkehlchen/tests/unit/test_calendar_reminders.py:145:25: No overload of function `get_decoded_events_of_transaction` matches arguments
+- Found 2043 diagnostics
++ Found 2044 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[no-matching-overload] tests/appsec/iast/aspects/aspect_utils.py:33:24: No overload of function `sub` matches arguments
+- Found 6912 diagnostics
++ Found 6911 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[no-matching-overload] zerver/tests/test_slack_importer.py:101:26: No overload of function `urlsplit` matches arguments
+- error[no-matching-overload] zerver/tornado/django_api.py:55:26: No overload of function `urlsplit` matches arguments
+- error[no-matching-overload] zproject/config.py:59:12: No overload of function `get_config` matches arguments
+- Found 6944 diagnostics
++ Found 6941 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[no-matching-overload] src/prefect/_internal/concurrency/calls.py:84:26: No overload of function `get_deadline` matches arguments
+- error[no-matching-overload] src/prefect/_internal/schemas/validators.py:297:12: No overload of function `fspath` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/actions.py:128:16: No overload of function `validate_schedule_max_scheduled_runs` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/actions.py:196:16: No overload of function `validate_schedule_max_scheduled_runs` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/objects.py:733:16: No overload of function `list_length_50_or_less` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/objects.py:738:16: No overload of function `validate_not_negative` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/objects.py:1594:16: No overload of function `validate_max_metadata_length` matches arguments
+- error[no-matching-overload] src/prefect/client/schemas/schedules.py:139:16: No overload of function `default_timezone` matches arguments
+- error[no-matching-overload] src/prefect/serializers.py:243:16: No overload of function `cast_type_names_to_serializers` matches arguments
+- error[no-matching-overload] src/prefect/server/schemas/actions.py:521:16: No overload of function `validate_cache_key_length` matches arguments
+- error[no-matching-overload] src/prefect/server/schemas/core.py:377:16: No overload of function `list_length_50_or_less` matches arguments
+- error[no-matching-overload] src/prefect/server/schemas/core.py:382:16: No overload of function `validate_not_negative` matches arguments
+- error[no-matching-overload] src/prefect/tasks.py:1067:16: No overload of function `run_task` matches arguments
+- error[no-matching-overload] src/prefect/utilities/collections.py:401:20: No overload of function `visit_collection` matches arguments
+- error[no-matching-overload] src/prefect/workers/base.py:140:16: No overload of function `return_v_or_none` matches arguments
+- Found 4499 diagnostics
++ Found 4484 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[no-matching-overload] sympy/utilities/exceptions.py:271:13: No overload of function `warn_explicit` matches arguments
+- Found 18573 diagnostics
++ Found 18572 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[no-matching-overload] scipy/_lib/_array_api.py:378:16: No overload of function `norm` matches arguments
+- error[no-matching-overload] scipy/sparse/linalg/tests/test_norm.py:134:59: No overload of function `norm` matches arguments
+- error[no-matching-overload] scipy/sparse/linalg/tests/test_norm.py:137:41: No overload of function `norm` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:1032:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:1182:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:1604:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:1905:78: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:1973:78: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] subprojects/highs/src/highspy/highs.py:2065:16: No overload of bound method `__init__` matches arguments
+- Found 7766 diagnostics
++ Found 7757 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-05-30 12:54</div>
+            <div class="timeline-body"><p>Maybe something like this would make a good test case:</p>
+<pre><code class="language-py">from typing import Self, Literal, Never, assert_type, overload
+from ty_extensions import Not, Intersection
+
+class MyTupleLike:
+    __match_args__ = (&quot;_0&quot;, &quot;_1&quot;)
+    _0: int
+    _1: str
+
+    def __new__(cls, _0: int, _1: str, /) -&gt; Self:
+        i = object.__new__(cls)
+        i._0 = _0
+        i._1 = _1
+        return i
+    def __len__(self) -&gt; Literal[2]:
+        return 2
+    @overload
+    def __getitem__(self, key: Literal[0]) -&gt; int: ...
+    @overload
+    def __getitem__(self, key: Literal[1]) -&gt; str: ...
+    @overload
+    def __getitem__(self, key: Intersection[int, Not[Literal[0, 1]]]) -&gt; Never: ...
+    
+    def __getitem__(self, key: int) -&gt; int | str:
+        match key:
+            case 0:
+                return self._0
+            case 1:
+                return self._1
+            case _:
+                raise IndexError(key)
+
+
+x = MyTupleLike(0, &quot;&quot;)
+a, b = x
+
+assert_type(a, int)
+assert_type(b, str)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:135 on 2025-05-30 16:18</div>
+            <div class="timeline-body"><p>This mainly an optimization to avoid cloning the <code>self.types</code> vector to initialize the <code>std::iter::successors</code> iterator. This would be useful in cases where no argument types can be expanded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:225 on 2025-05-30 16:19</div>
+            <div class="timeline-body"><p>I can avoid using <code>itertools</code> here and have a custom implementation for this but it would also require allocation so I thought that we might as well utilize an existing implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1253 on 2025-05-30 16:20</div>
+            <div class="timeline-body"><p>I need to spend some time thinking about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1173 on 2025-05-30 16:21</div>
+            <div class="timeline-body"><p>There's a possibility that this can be merged into a single loop that would also consider the expanded argument lists but for now I decided to just duplicate this part as it isn't too complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-30 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 16:25</div>
+            <div class="timeline-body"><p>I think there are few more cases to test and I also need to think a bit more around the bindings state at the end of a successful evaluation of an expanded argument lists but I'm marking this as ready for review to get some initial feedback, specifically on the structure of the implementation and if there's something obvious that I've missed or mis-interpreted based on my reading of the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-05-30 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:262 on 2025-05-30 17:49</div>
+            <div class="timeline-body"><p>I think it should work to compare the vec and array directly:</p>
+<pre><code class="language-suggestion">        assert_eq!(&amp;expanded, &amp;types);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:272 on 2025-05-30 17:49</div>
+            <div class="timeline-body"><p>Ditto here:</p>
+<pre><code class="language-suggestion">        assert_eq!(expanded, [
+            Type::BooleanLiteral(true),
+            Type::BooleanLiteral(false),
+        ]);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:316 on 2025-05-30 17:50</div>
+            <div class="timeline-body"><p>ditto</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:338 on 2025-05-30 17:50</div>
+            <div class="timeline-body"><p>ditto</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:127 on 2025-05-30 17:50</div>
+            <div class="timeline-body"><p>I like this implementation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1131 on 2025-05-30 17:52</div>
+            <div class="timeline-body"><p>Since you're unwrapping, here, you can just index directly</p>
+<pre><code class="language-suggestion">                self.overloads[index].check_types(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1172 on 2025-05-30 17:56</div>
+            <div class="timeline-body"><p>If you make this peekable you won't have to chain down below</p>
+<pre><code class="language-suggestion">        let mut expansions = argument_types.expand(db).peekable();
+
+        let Some(first_expansion) = expansions.peek() else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1180 on 2025-05-30 17:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        for expanded_argument_lists in expansions {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-30 18:04</div>
+            <div class="timeline-body"><p>Stepping out to pick up my son from school, here are some initial comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1095 on 2025-05-30 19:37</div>
+            <div class="timeline-body"><p>It doesn't look like to have to do any fancy merging of these snapshots, they just exist to mark a state to return back to. Could you achieve the same thing by just cloning <code>self</code>? There are some extra fields in <code>CallableBinding</code> and <code>Binding</code> that you'd end up copying, which your snapshot types don't include. But I don't think those fields are substantially larger than the parts that you're already copying in the snapshots, and it might simplify things quite a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1181 on 2025-05-30 19:39</div>
+            <div class="timeline-body"><p>Instead of building up a vec, and then only constructing and using the union if all expansions succeeded, you could build up in a <code>UnionBuilder</code> directly, and use a <code>bool</code> flag to tell you if one of the expansions fails and you should bail out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-30 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:27 on 2025-05-30 20:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># These match a single overload
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:56 on 2025-05-30 20:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Here, all of the calls below pass the arity check for all overloads, so we proceed to type checking
+which filters out all but the matching overload:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:1 on 2025-05-30 20:49</div>
+            <div class="timeline-body"><p>It looks like the implementation supports tuple expansion as well, and there's a Rust test for it. Any reason not to include an mdtest showing it in action?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-05-30 21:02</div>
+            <div class="timeline-body"><p>Just glanced quickly at the tests for semantics; looks like @dcreager already has it covered for detailed review of the code. This is fantastic, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1253 on 2025-06-02 04:39</div>
+            <div class="timeline-body"><p>I think this will require some kind of &quot;merge&quot; logic to make sure the bindings state is correct at the end of a successful argument lists evaluation.</p>
+<p>Consider the following abstract example which contains 4 overloads:</p>
+<pre><code class="language-py">@overload
+def f(...) -&gt; A: ...
+@overload
+def f(...) -&gt; B: ...
+@overload
+def f(...) -&gt; C: ...
+@overload
+def f(...) -&gt; D: ...
+</code></pre>
+<p>After expanding the first argument, we get two argument lists which matches overload 1 and 3 respectively. This means that we now have the winning overload matches (1 and 3), so the return type would be <code>A | C</code>.</p>
+<p>The logic in this PR is such that it restores the state of every binding after evaluating a single argument list, so at the end of evaluating the two argument lists (as stated above), the state would be as if we didn't perform type checking at all. I think this is incorrect.</p>
+<p>In <code>Binding</code>, there are 6 fields which we need to consider that gets updated during type checking which is what the <code>BindingSnapshot</code> is recording:</p>
+<pre><code class="language-rs">struct BindingSnapshot&lt;'db&gt; {
+    return_ty: Type&lt;'db&gt;,
+    specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
+    inherited_specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
+    argument_parameters: Box&lt;[Option&lt;usize&gt;]&gt;,
+    parameter_tys: Box&lt;[Option&lt;Type&lt;'db&gt;&gt;]&gt;,
+    errors_position: usize,
+}
+</code></pre>
+<p>Here, it's the <code>errors</code> field that represents whether an overload was &quot;matched&quot; or not while other fields represent additional information that type checking revealed.</p>
+<p>Coming back to the above abstract example:</p>
+<ol>
+<li>For overload 1, the first argument list evaluated successfully</li>
+<li>For overload 3, the second argument list evaluated successfully</li>
+<li>For overload 2 and 4, none of the argument lists matched</li>
+</ol>
+<p>For (1) and (2), the <code>errors</code> field for the <code>Binding</code> corresponding to the matched overload should be empty and other fields should have the information from the successful evaluation.</p>
+<p>For (3), I'm not exactly sure what would be the correct approach. My thinking is that:</p>
+<ul>
+<li>Combine all the <code>errors</code> from evaluating both argument lists</li>
+<li>Choose the <code>return_ty</code> from the last argument list</li>
+<li>Combine (?) the <code>specialization</code> and <code>inherited_specialization</code></li>
+<li>Choose the <code>argument_parameters</code> from the last argument list</li>
+<li>Choose the <code>parameter_tys</code> from the last argument list</li>
+</ul>
+<p>Quickly looking at what Pyright does, it seems that it re-evaluates it using the first argument list: https://github.com/microsoft/pyright/blob/321b6bf687c6c3ffa3eb627aeb8a143bc4740cde/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L9340-L9370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1181 on 2025-06-02 04:42</div>
+            <div class="timeline-body"><p>Yeah, I could do that. I did this to avoid the cost of <a href="https://github.com/astral-sh/ruff/blob/a44db261387ffa44e7849b4d25e2ef3eed2524cf/crates/ty_python_semantic/src/types/builder.rs#L215-L410">adding the type to the union</a> in the cases where this expansion doesn't evaluate successfully and we need to move to the next argument type to expand or exit the expansion process because there are no argument type remaining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1095 on 2025-06-02 04:43</div>
+            <div class="timeline-body"><p>We <em>might</em> have to do some kind of &quot;merge&quot; logic to determine the final state of the bindings when all the argument lists after expanding one or more types evaluates successfully. Refer to https://github.com/astral-sh/ruff/pull/18382#discussion_r2120026485 comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 04:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1095 on 2025-06-02 06:02</div>
+            <div class="timeline-body"><p>I also think that cloning <code>Signature</code> multiple times would be expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:1 on 2025-06-02 10:35</div>
+            <div class="timeline-body"><p>Added a test case for tuples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 10:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 10:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1891 on 2025-06-02 10:59</div>
+            <div class="timeline-body"><p>I <em>might've</em> overcomplicated a bit here, happy to revert / simplify here.</p>
+<p>One way to simplify would be to re-check the overloads by using the first argument list instead of the current implementation that merges the state from <em>all</em> argument lists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1139 on 2025-06-02 11:00</div>
+            <div class="timeline-body"><p>This TODO is important because we currently give <code>no-matching-overload</code> which is incorrect because we <em>did</em> match an overload, it's type checking that failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-02 18:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1181 on 2025-06-02 18:17</div>
+            <div class="timeline-body"><p>:+1: sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1095 on 2025-06-02 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>We <em>might</em> have to do some kind of &quot;merge&quot; logic to determine the final state of the bindings when all the argument lists after expanding one or more types evaluates successfully</p>
+</blockquote>
+<p>Make sense! We're not merging yet, but we might need to, so set the types up now to allow that :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-02 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-03 04:33</div>
+            <div class="timeline-body"><p><strong>Post review changes:</strong></p>
+<ol>
+<li>Add more test cases to mdtest consisting of generics, todos that are present in code (expanding enums, diagnostic reporting)</li>
+<li>Merged bindings state after a successful evaluation of all argument lists into a final state as per https://github.com/astral-sh/ruff/pull/18382#discussion_r2120026485</li>
+<li>Went through the ecosystem changes which all looks good</li>
+</ol>
+<p>I'd appreciate a final review especially with regards to merging the bindings state which I'm not sure if it's worth keeping as it doesn't really have any user facing effect unless I'm missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-06-03 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-03 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2025-06-03 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-03 14:52</div>
+            <div class="timeline-body"><p>I've put this in draft because I need to make some small tweaks with respect to the final state of the bindings that I've realized after talking with Carl in our 1:1 now. I'll quickly make those changes and will ask for review. Apologies if anyone was already looking at this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-03 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1253 on 2025-06-03 15:39</div>
+            <div class="timeline-body"><p>For (3), the updated merged state would be something like the following:</p>
+<pre><code>    initial     arglist 1    arglist 2    final
+    --------    ---------    ---------    -----
+1   unmatched   matched      unmatched    matched
+2   unmatched   unmatched    matched      matched
+3   unmatched   unmatched    unmatched    unmatched
+</code></pre>
+<p>The &quot;initial&quot; is the state of each overloads before performing argument type expansion i.e., all three overloads are unmatched.</p>
+<p>After evaluating the first argument list, it resulted in overload 1 being matched. Similarly, after evaluating the second argument list, it resulted in overload 2 being matched.</p>
+<p>So, the final state of the bindings would indicate the overload 1 and 2 are matched while overload 3 is unmatched. This means that information about parameter types and specializations for the matched overload should be from the argument list that resulted in the match.</p>
+<p>And, the return type would be the union of the &quot;matched&quot; overloads. This is a successful evaluation because both argument list resulted in a single matched overload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1891 on 2025-06-03 15:39</div>
+            <div class="timeline-body"><p>Simplified this part, so should be good now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-03 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-03 15:43</div>
+            <div class="timeline-body"><p>Ok, this is ready for a final review. I've commented <a href="https://github.com/astral-sh/ruff/pull/18382#discussion_r2124275665">here</a> to visualize what the final state of the bindings look like. Happy to answer any questions that you might have. (cc @dcreager @carljm)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-03 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-03 16:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, this is ready for a final review</p>
+</blockquote>
+<p>I'm heading into an interview but will try to take a look at this later today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-03 22:37</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:148 on 2025-06-04 00:54</div>
+            <div class="timeline-body"><p>nit: <code>expanded</code> is a slice iterator, so I think you should be able to replace <code>std::iter::once</code> with <code>std::slice::from_ref</code> and not have to use <code>Either</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:222 on 2025-06-04 00:55</div>
+            <div class="timeline-body"><p>Same here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-06-04 00:55</div>
+            <div class="timeline-body"><p>one last nit otherwise this looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-04 01:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:148 on 2025-06-04 01:55</div>
+            <div class="timeline-body"><p>I was planning to change this when I saw your comment suggesting the same on the other PR ;)</p>
+<p>Thank you for the suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-04 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:222 on 2025-06-04 02:05</div>
+            <div class="timeline-body"><p>This actually doesn't seem to be possible because I'm using <code>into_iter</code> here, I can't use <code>expanded.iter()</code> because <code>expanded</code> is created in this closure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-04 02:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:222 on 2025-06-04 02:06</div>
+            <div class="timeline-body"><p>I could do this which requires allocating a vector for the single element:</p>
+<pre><code class="language-rs">                    if let Some(expanded) = expand_type(db, element) {
+                        expanded.into_iter()
+                    } else {
+                        vec![element].into_iter()
+                    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-06-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-04 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 12:36</div>
+            <div class="timeline-body"><p>seems like this didn’t suffice to make the test case above work:</p>
+<p>https://play.ty.dev/093e1321-5e0f-4b1c-b46e-26745c902c1d</p>
+<blockquote>
+<p>Object of type <code>MyTupleLike</code> is not iterable (not-iterable) [Ln 34, Col 8]</p>
+</blockquote>
+<p>maybe another part of overload evaluation is responsible here. Should I file an issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-04 12:48</div>
+            <div class="timeline-body"><p>I'll need to look at your example a bit closely to see what you're trying to do but you're correct that this step of the algorithm wouldn't have solved it. Apologies for not noticing it earlier as this step is performing <em>argument</em> type expansion and in your example overload, the argument type is just <code>int</code>. For reference, other steps of the algorithm are being tracked as sub-issues over at https://github.com/astral-sh/ty/issues/104.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 13:09</div>
+            <div class="timeline-body"><p>The issue in my example is that ty knows that a class instance is iterable if it has a ~~<code>__getattr__</code>~~ <code>__getitem__</code> method that can be called with a single positional argument of type <code>int</code>. The issue with my example is that this is the case, but <code>ty</code> doesn’t understand that the overloaded method satisfies that interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-04 13:13</div>
+            <div class="timeline-body"><blockquote>
+<p>if it has a <code>__getattr__</code> method</p>
+</blockquote>
+<p>(I think you mean <code>__getitem__</code> :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 14:30</div>
+            <div class="timeline-body"><p>Here’s a (failing) mdtest case:</p>
+<pre><code class="language-markdown">### Filling niches
+
+`overloaded.pyi`:
+
+```pyi
+from typing import Literal, overload
+from ty_extensions import Not, Intersection
+
+class A: ...
+class B: ...
+
+@overload
+def f(x: Literal[0]) -&gt; A: ...
+@overload
+def f(x: Intersection[int, Not[Literal[0]]]) -&gt; B: ...
+```
+
+```py
+from overloaded import A, B, f
+
+def _(x: int):
+    reveal_type(f(0))  # revealed: A
+    reveal_type(f(1))  # revealed: B
+    reveal_type(f(x))  # revealed: A | B
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 14:50</div>
+            <div class="timeline-body"><p>@flying-sheep You're right that a type checker <em>could</em> expand <code>int</code> to a union of literal integer types and support this. It's not currently part of the typing spec to do this, and no other type checker does it, but it could certainly be done. It's a bit trickier than the <a href="https://typing.python.org/en/latest/spec/overload.html#argument-type-expansion">currently specified expansions</a> because it's an infinite expansion, but I suspect practically limiting it to some small integer types would work fine in practice. (Though sooner or later someone would come along and wonder why it works for small integers but not large ones... maybe it would be possible to actually inspect the overloaded function and see which literal int types appear to be present in the overload signatures?)</p>
+<p>I think we have higher priority things we need to do at the moment, though. It seems fairly easy to work around this issue: is there any downside to just adding an explicit third overload <code>def f(x: int) -&gt; A | B: ...</code>? That <a href="https://play.ty.dev/24c39a0b-679f-46d6-9b99-496976549ffe">seems to be enough</a> to make it behave the way you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 15:04</div>
+            <div class="timeline-body"><p>If I read steps 3 of the <a href="https://typing.python.org/en/latest/spec/overload.html#overload-call-evaluation">“overload call evaluation” part of the spec</a> correctly, that behavior is wrong:</p>
+<blockquote>
+<p>If all argument lists evaluate successfully, <em>combine their respective return types by union</em> to determine the final return type for the call, and stop.</p>
+</blockquote>
+<p>So since <code>int</code> overlaps with <code>Literal[0]</code>, given your definition, when passing <code>0</code>, <code>f(0)</code> should evaluate to <code>A|B</code>.</p>
+<p>Or am I wrong? PyRight complains when overlapping overloads like this exist</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>So since <code>int</code> overlaps with <code>Literal[0]</code>, given your definition, when passing <code>0</code>, <code>f(0)</code> should evaluate to <code>A|B</code>.</p>
+</blockquote>
+<p>That's not how overload evaluation is specified to work in Python. The first matching overload is used, not the union of the return types of all matching overloads.</p>
+<p>(I personally think it would be better to treat overloads as an un-ordered intersection of signatures, and union the return types of all matched overloads, but we actually tried this in ty and the results from the ecosystem made it clear that it would be too incompatible with existing usage. Which isn't too surprising, given that the existing ecosystem doesn't have negation types available, and you really need negation types to make the &quot;un-ordered intersection of signatures&quot; interpretation usable. The ordered behavior effectively gives you implicit negation by having a more specific overload shadow a more general one.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 15:20</div>
+            <div class="timeline-body"><p>OK, is there some explicit mention of that in the spec? The part I’m quoting seems to contradict that (at least in the presence of expandable unions), while Step 6 agrees with you.</p>
+<p>So PyRight (and maybe mypy) are just buggy?</p>
+<p>PS: my original motivation is “simply” being able to type unpacking a heterogeneous collection: https://play.ty.dev/9817830f-c7c1-4a44-b4be-91704fe9500d</p>
+<p>adding that overload will of course make that fail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 15:29</div>
+            <div class="timeline-body"><p>You need to consider the whole algorithm as presented in the spec, for any given case. Note that union expansion doesn't happen at all, unless zero overloads match after step 2.</p>
+<blockquote>
+<p>If two or more candidate overloads remain, proceed to step 4.</p>
+</blockquote>
+<p>In the case of passing <code>0</code> with the three-overload version here, two overloads match after step 2, which means we go directly to step 4, bypassing step 3. We end up reaching step 6 and choosing the first matching overload. The text you quoted about merging return types <em>only</em> applies when trying multiple different union expansions.</p>
+<blockquote>
+<p>So PyRight (and maybe mypy) are just buggy?</p>
+</blockquote>
+<p>I'm not sure which behavior you are referring to as buggy here.</p>
+<blockquote>
+<p>adding that overload will of course make that fail</p>
+</blockquote>
+<p>I don't think so? It works fine for direct indexing: https://play.ty.dev/01df94d6-0b7e-4df9-9d85-f7d4dbc92224</p>
+<p>It doesn't work for iteration/unpacking because we simply model a call to <code>__getitem__</code> with an argument of type <code>int</code> in order to determine the type returned by iterating using the legacy iteration protocol, we don't model it as calling with a sequence of literal integer types. This is a potential improvement we could make in the future, at least in the unpacking scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 15:36</div>
+            <div class="timeline-body"><p>Thanks for walking me through the algorithm, I wasn’t sure if I missed something!</p>
+<blockquote>
+<p>It works fine for direct indexing</p>
+</blockquote>
+<p>yeah, which is why I specified that what I care about here is the unpacking lol</p>
+<blockquote>
+<p>I'm not sure which behavior you are referring to as buggy here.</p>
+</blockquote>
+<p>See https://microsoft.github.io/pyright/#/configuration?id=type-check-rule-overrides</p>
+<blockquote>
+<p><code>reportOverlappingOverload</code> [boolean or string, optional]: Generate or suppress diagnostics for function overloads that overlap in signature and obscure each other or have incompatible return types. <strong>The default value for this setting is <code>&quot;error&quot;</code>.</strong></p>
+</blockquote>
+<p>You’re saying that the spec says that overlapping overloads are an intentional part of the spec. PyRight flags them as error unless you ignore that. Should I report a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>You’re saying that the spec says that overlapping overloads are an intentional part of the spec. PyRight flags them as error unless you ignore that. Should I report a bug?</p>
+</blockquote>
+<p>No; the second part &quot;have incompatible return types&quot; is critical there. The spec says that overlapping overloads are fine, as long as the later overload has a return type that is a super-type of the earlier overload. (This is what's necessary to make the overlapping overloads sound in the face of uncertain precision of the argument type.) That's the same logic that pyright's warning implements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 16:01</div>
+            <div class="timeline-body"><p>OK, so we’re at square 1:</p>
+<p>Currently, the only way to have a chance at correctly typing the unpacking of a heterogeneous collection is to</p>
+<ol>
+<li>do <em>exactly</em> what I’m doing in https://play.ty.dev/9817830f-c7c1-4a44-b4be-91704fe9500d (i.e. <em>do not</em> add the <code>int</code> overload)</li>
+<li>add support for that to type checkers</li>
+</ol>
+<p>right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-04 16:03</div>
+            <div class="timeline-body"><p>I don't understand why (1) is required, or how the extra overload causes a problem. (It meets the requirement I mentioned that its return type is a super type of the prior overlapping overload return types.) My link above adds the extra <code>int</code> overload, and direct indexing works as expected. So it seems to me that all that is needed is (2) for us to model the legacy iteration protocol as a sequence of calls with literal ints, rather than as a single call with <code>int</code> argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-06-04 16:07</div>
+            <div class="timeline-body"><p>Yeah, you’re right! That instead of “it’s an iterable over <code>T</code>, so unpacking yields a bunch of <code>T</code>s”.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

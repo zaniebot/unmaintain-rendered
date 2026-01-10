@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve support for `object.&lt;CURSOR&gt;` completions - astral-sh/ruff #18629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve support for <code>object.&lt;CURSOR&gt;</code> completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18629">#18629</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-06-11 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-11 15:00</div>
+            <div class="timeline-body"><p>This makes it work for a number of additional cases, like nested
+attribute access and things like <code>[].&lt;CURSOR&gt;</code>.</p>
+<p>The basic idea is that instead of selecting a covering node closest to a
+leaf that contains the cursor, we walk up the tree as much as we can.
+This lets us access the correct <code>ExprAttribute</code> node when performing
+nested access.</p>
+<p>This also adds a number of tests covering some interesting cases.</p>
+<p>Ref astral-sh/ty#86</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @BurntSushi on 2025-06-11 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 15:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-06-11 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-06-11 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:86 on 2025-06-11 16:18</div>
+            <div class="timeline-body"><p>This is probably out of scope for this PR. But for something like <code>import collections.&lt;CURSOR&gt;</code> or <code>from collections.&lt;CURSOR&gt;</code>, do we want to be able to provide autocomplete suggestions for the <code>collections.abc</code> submodule of <code>collections</code> in due course? (That would be cool!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:1 on 2025-06-11 16:24</div>
+            <div class="timeline-body"><p>Both appear to work as expected, but is it also worth adding tests for <code>3.14.&lt;CURSOR&gt;</code> (should provide completions for attributes on <code>float</code> instances) and <code>(1).&lt;CURSOR&gt;</code> (should provide completions for attributes on <code>int</code> instances)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/find_node.rs</code>:81 on 2025-06-11 16:28</div>
+            <div class="timeline-body"><p>slightly simpler?</p>
+<pre><code class="language-suggestion">        self.nodes.iter().rev().nth(1).copied()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/find_node.rs</code>:72 on 2025-06-11 16:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        *self.nodes.last().expect(&quot;`CoveringNode::nodes` should always be non-empty&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 16:36</div>
+            <div class="timeline-body"><p>this appears to work great for <code>class Foo: ...</code> and <code>def bar(): ...</code> at the top level. But in nested contexts, I still seem to be getting &quot;unwelcome&quot; autocompletions after ellipses when I run the playground locally using this branch:</p>
+<p><img src="https://github.com/user-attachments/assets/78c1fa06-12cc-4dcb-aafc-b05da289ad62" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/28c5d870-a724-47b8-b351-0fcb81a700a9" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:1481 on 2025-06-11 16:40</div>
+            <div class="timeline-body"><p>Also probably not something for this PR, but consider something like this:</p>
+<details>
+<summary>Playground screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/4dd6f097-192c-48f0-a414-d1c6f04cf9be" alt="image" /></p>
+</details>
+
+<p>Eventually, it would be great if <code>bar</code> and <code>mro</code> were positioned above <code>a</code> in the completion suggestions in this screenshot. <code>Foo.bar</code> and <code>Foo.mro</code> both have a <code>__defaults__</code> attribute (they're both <code>FunctionType</code> instances), but <code>Foo.a</code> does not (it's an <code>int</code>)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-11 16:41</div>
+            <div class="timeline-body"><p>Great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:86 on 2025-06-11 17:57</div>
+            <div class="timeline-body"><p>Definitely. Working on import auto-completions (<code>from module import &lt;CURSOR&gt;</code>) is next on my list. I think it would make sense to put <code>import module.&lt;CURSOR&gt;</code> in that bucket too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1 on 2025-06-11 18:02</div>
+            <div class="timeline-body"><p>Ah yeah, I tested both of those cases ad hoc, but looks like I didn't add tests for them. Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/find_node.rs</code>:81 on 2025-06-11 18:04</div>
+            <div class="timeline-body"><p>Ehhhhh. I think I very slightly prefer what I wrote since what I want is random access and not iteration (even though <a href="https://doc.rust-lang.org/src/core/slice/iter/macros.rs.html#205">your snippet almost certainly compiles down to random access anyway</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1481 on 2025-06-11 18:10</div>
+            <div class="timeline-body"><p>Yeah that's a tricky one. Not just taking the prefix context into account, but the suffix context as well. I added that to the completion notes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:13</div>
+            <div class="timeline-body"><p>Odd. I can't repro that in neovim. That is, if I have this:</p>
+<pre><code>class Foo:
+    def bar(self): ...&lt;CURSOR&gt;
+</code></pre>
+<p>Then I don't get completions, even if I specifically ask for them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:16</div>
+            <div class="timeline-body"><p>Huh... FWIW, the way I tested this PR locally with the playground was to checkout this branch, navigate to the <code>playground</code> directory, then run <code>npm start --workspace ty-playground</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-11 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-11 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:16</div>
+            <div class="timeline-body"><p>(no idea why the playground might be doing something different to neovim -- @MichaReiser or @dhruvmanila might be able to help there!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-11 18:16</div>
+            <div class="timeline-body"><p>Demo:</p>
+<p>https://github.com/user-attachments/assets/27c89b16-50a3-49e3-b931-2bb201676589</p>
+<p>(I still haven't setup VS Code.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:22</div>
+            <div class="timeline-body"><p>I got this initially when running <code>npm start --workspace ty-playground</code>:</p>
+<pre><code>[INFO]: ⬇️  Installing wasm-bindgen...
+[INFO]: License key is set in Cargo.toml but no LICENSE file(s) were found; Please add the LICENSE file(s) to your project directory
+[INFO]: ✨   Done in 23.87s
+[INFO]: 📦   Your wasm pkg is ready to publish at ../../playground/ty/ty_wasm.
+
+&gt; ty-playground@0.0.0 start
+&gt; vite
+
+sh: line 1: vite: command not found
+npm error Lifecycle script `start` failed with error:
+npm error code 127
+npm error path /home/andrew/astral/ruff/pr1/playground/ty
+npm error workspace ty-playground@0.0.0
+npm error location /home/andrew/astral/ruff/pr1/playground/ty
+npm error command failed
+npm error command sh -c vite
+npm notice
+npm notice New minor version of npm available! 11.3.0 -&gt; 11.4.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+npm notice To update run: npm install -g npm@11.4.1
+npm notice
+</code></pre>
+<p>I then went to install <code>vite</code> via the AUR and got this build error:</p>
+<pre><code>CMake Error at CMakeLists.txt:237 (message):
+  libglm-dev package is required, you might specify the include directory
+  where to find glm/glm.hpp through -DGLM_INC=/path/to/glm
+</code></pre>
+<p>I then installed <code>glm</code> and tried again and got more build errors:</p>
+<pre><code>CMake Error in src/CMakeLists.txt:
+  Found relative path while evaluating include directories of &quot;vite&quot;:
+
+    &quot;GLEW_INCLUDE_PATH-NOTFOUND&quot;
+
+
+
+CMake Error in src/CMakeLists.txt:
+  Found relative path while evaluating include directories of &quot;vite&quot;:
+
+    &quot;GLEW_INCLUDE_PATH-NOTFOUND&quot;
+
+
+
+CMake Error in src/CMakeLists.txt:
+  Found relative path while evaluating include directories of &quot;vite&quot;:
+
+    &quot;GLEW_INCLUDE_PATH-NOTFOUND&quot;
+</code></pre>
+<p>I'll try futzing with this later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:24</div>
+            <div class="timeline-body"><p><code>vite</code> appears to be a bunk AUR package. Trying with <code>vite-git</code> now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-11 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:24</div>
+            <div class="timeline-body"><p>Hah, I haven't got a clue when it comes to Javascript/typescript -- @MichaReiser's <em>definitely</em> your guy there 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:29</div>
+            <div class="timeline-body"><p>Okay I got it running... Does it serve it as a web site somewhere? How do I get to it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-11 18:31</div>
+            <div class="timeline-body"><p>Going to bring this in even with the unknown playground issue (which isn't a regression) since it improves a lot of other cases. I'm happy to do follow-ups if folks have them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-06-11 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-11 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-11 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:32</div>
+            <div class="timeline-body"><p>Should be serving at <code>localhost:5173</code> -- it should also say this on its terminal output, if it's working correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-11 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:37</div>
+            <div class="timeline-body"><p>Yeah I usually get to this state after running the command above:</p>
+<p><img src="https://github.com/user-attachments/assets/f069505c-ffbc-4f51-a474-9a84ec4d270c" alt="image" /></p>
+<p>And then I can just navigate to <code>localhost:5173</code> in a browser to use my local playground deploy. Which I can usually get to immediately by holding down <code>command</code> and then double-clicking on the <code>http://localhost:5173/</code> line in my terminal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:37</div>
+            <div class="timeline-body"><p>This is what I see:</p>
+<pre><code>[andrew@duff playground]$ npm start --workspace ty-playground
+
+&gt; ty-playground@0.0.0 prestart
+&gt; npm run dev:wasm
+
+
+&gt; ty-playground@0.0.0 dev:wasm
+&gt; wasm-pack build ../../crates/ty_wasm --dev --target web --out-dir ../../playground/ty/ty_wasm
+
+[INFO]: 🎯  Checking for the Wasm target...
+[INFO]: 🌀  Compiling to Wasm...
+   Compiling ruff_python_ast v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ruff_python_ast)
+   Compiling ty_wasm v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_wasm)
+   Compiling ruff_python_parser v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ruff_python_parser)
+   Compiling ruff_python_literal v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ruff_python_literal)
+   Compiling ruff_db v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ruff_db)
+   Compiling ty_python_semantic v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_python_semantic)
+   Compiling ty_vendored v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_vendored)
+   Compiling ruff_python_formatter v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ruff_python_formatter)
+   Compiling ty_ide v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_ide)
+   Compiling ty_project v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_project)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.36s
+[INFO]: ⬇️  Installing wasm-bindgen...
+[INFO]: License key is set in Cargo.toml but no LICENSE file(s) were found; Please add the LICENSE file(s) to your project directory
+[INFO]: ✨   Done in 13.45s
+[INFO]: 📦   Your wasm pkg is ready to publish at ../../playground/ty/ty_wasm.
+
+&gt; ty-playground@0.0.0 start
+&gt; vite
+</code></pre>
+<p>A &quot;vite&quot; window opens, but it's blank. And:</p>
+<pre><code>[andrew@duff playground]$ curl localhost:5173
+curl: (7) Failed to connect to localhost port 5173 after 0 ms: Could not connect to server
+</code></pre>
+<p>I am doing this on a remote box... And I'm guessing the vite window is opening via X11 forwarding. So I wonder if that's messing with things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-11 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:120 on 2025-06-11 18:39</div>
+            <div class="timeline-body"><p>Yeah it looks like things are hanging right after running <code>vite</code>. So this is probably an X11 forwarding issue. Boooooo.</p>
+<p>I'll try this directly on my laptop tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 07:46</div>
+            <div class="timeline-body"><p>This looks good!</p>
+<p>I haven't been able to reproduce the nested context issue that Alex pointed out, I've asked him to see if it's reproducible now otherwise we can ignore that for now.</p>
+<p>I think it might be useful to add couple of tests when the dot (<code>.</code>) character is inside a string and f-string. Following are couple of examples that already work correctly:</p>
+<pre><code class="language-py">foo = 1
+bar = 2
+
+class Foo:
+    def method(self): ...
+
+f = Foo()
+
+# String, this is not an attribute access
+&quot;f.&lt;CURSOR&gt;
+# F-string, this is an attribute access
+f&quot;{f.&lt;CURSOR&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-12 11:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't been able to reproduce the nested context issue that Alex pointed out, I've asked him to see if it's reproducible now otherwise we can ignore that for now.</p>
+</blockquote>
+<p>This still reproduces for me on https://play.ty.dev/:</p>
+<p>https://github.com/user-attachments/assets/c5703c90-af9b-415c-bf6e-325fc84a64f1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-12 11:37</div>
+            <div class="timeline-body"><blockquote>
+<p>This still reproduces for me on <a href="https://play.ty.dev/">play.ty.dev</a>:</p>
+</blockquote>
+<p>Interesting! Thanks, I'm able to reproduce it on the playground and in VS Code but not in Neovim!</p>
+<p><img width="624" alt="Screenshot 2025-06-12 at 17 03 44" src="https://github.com/user-attachments/assets/47cbf1e3-f8de-434a-9cd2-4d4aeffa5e00" /></p>
+<p>And, the trace logs:</p>
+<pre><code>[Trace - 5:06:24 PM] Sending request 'textDocument/completion - (146)'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///Users/dhruv/playground/ty_server/completions.py&quot;
+    },
+    &quot;position&quot;: {
+        &quot;line&quot;: 1,
+        &quot;character&quot;: 16
+    },
+    &quot;context&quot;: {
+        &quot;triggerKind&quot;: 2,
+        &quot;triggerCharacter&quot;: &quot;.&quot;
+    }
+}
+
+
+[Trace - 5:06:24 PM] Received response 'textDocument/completion - (146)' in 1ms.
+Result: [
+    {
+        &quot;label&quot;: &quot;Foo&quot;
+    }
+]
+</code></pre>
+<p>The above trace logs is for the following snippet along with the cursor position:</p>
+<pre><code class="language-py">class Foo:
+    class Bar: .&lt;CURSOR&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-12 11:43</div>
+            <div class="timeline-body"><p>Interesting. I've recorded that in my notes to try and address later. Once I get around to setting up VS Code.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

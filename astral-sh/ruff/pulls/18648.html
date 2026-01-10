@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Allow overriding rules for specific files - astral-sh/ruff #18648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Allow overriding rules for specific files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18648">#18648</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-12 14:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 14:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>[[overrides]]</code> configuration section that allows users to toggle rules at a file/path level.</p>
+<pre><code class="language-toml">[tool.ty.rules]
+division-by-zero = &quot;error&quot;
+
+# First override: all test files
+[[tool.ty.overrides]]
+include = [&quot;tests/**&quot;]
+
+[tool.ty.overrides.rules]
+division-by-zero = &quot;warn&quot;
+
+# Second override: specific test file (takes precedence)
+[[tool.ty.overrides]]
+include = [&quot;tests/important.py&quot;]
+
+[tool.ty.overrides.rules]
+division-by-zero = &quot;ignore&quot;
+</code></pre>
+<p>A file can match zero or many overrides sections. Later overrides take precedence over earlier overrides. Overrides inherit from the global configuration.</p>
+<p>I thought long whether we should allow at most one match (always taking the last) or multiple matches. I did some ecosystem research to see how <code>per-file-ignores</code> is used. The most common pattern that I've found is too disable some rules for a sub directory and within that subdirectory, disable more rules for specific files. From airflow:</p>
+<pre><code class="language-toml">&quot;src/tests_common/*&quot; = [&quot;S101&quot;, &quot;TRY002&quot;]
+# Test compat imports banned imports to allow testing against older airflow versions
+&quot;src/tests_common/test_utils/compat.py&quot; = [&quot;TID251&quot;, &quot;F401&quot;]
+&quot;src/tests_common/pytest_plugin.py&quot; = [&quot;F811&quot;]
+</code></pre>
+<p>This is why I ultimately decided to allow multiple matches. This complicates the implementation a bit but not too much. The main downside is that it will make it harder to warn if combining two overrides results in incompatible options because the validation happens lazily.</p>
+<p>The other downside is that it there's no real way override an existing match other than overriding every single. E.g. when the user configuration has an <code>overrides</code> that a project wants to override. I think that this is less common and we could consider introducing an option that would mark an <code>overrides</code> as the &quot;root&quot;, so that ty doesn't apply any more overrides.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/178</p>
+<h3>Glob syntax</h3>
+<p>I decided to use the same <code>include</code> and <code>exclude</code> syntax as we use at the <code>src</code> level. Technically, a single <code>include</code> option that allows both positive and negative patterns would be enough (and negative <code>exclude</code>s doesn't really make sense). However, I opted for the <code>src</code> syntax because I think a familiar syntax is important: It woudl be confusing if we allow different glob patterns in different <code>include</code> fields.</p>
+<h3>Naming</h3>
+<p>I went with <code>overrides</code>, similar to what mypy uses (although mypy filters on modules not paths). I think the name is fine but <code>overrides</code> are something entirely different in uv.</p>
+<p>I'm curious to hear more opinions. Alternatives are:</p>
+<ul>
+<li><p><code>files</code></p>
+</li>
+<li><p><code>sub_configurations</code></p>
+</li>
+<li><p>...?</p>
+</li>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-06-12 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-06-12 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-12 14:39</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-12 14:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:601 on 2025-06-13 09:18</div>
+            <div class="timeline-body"><p>I only moved this code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-13 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-13 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:732 on 2025-06-13 09:18</div>
+            <div class="timeline-body"><p>This is new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-06-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:675 on 2025-06-13 14:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// An `include` setting without any globs won't match any files. This is probably a mistake and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_macros/src/rust_doc.rs</code>:51 on 2025-06-13 14:13</div>
+            <div class="timeline-body"><p>I think you can just do <code>path_idents.eq(path)</code> here? Via <a href="https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html#method.eq"><code>Iterator::eq</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/docs/configuration.md</code>:348 on 2025-06-13 14:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`exclude` takes precedence over `include`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 14:32</div>
+            <div class="timeline-body"><p>I think this part is in contradiction with the third bullet point above.</p>
+<p>Also, assuming this part is right and the bullet above is wrong, can you say more about why <code>include</code> and <code>exclude</code> are different in this regard? I feel like they should be treated the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/src/args.rs</code>:211 on 2025-06-13 15:03</div>
+            <div class="timeline-body"><p>RIP eta reductions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/metadata/options.rs</code>:865 on 2025-06-13 15:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;Please open an issue on the ty repository and share the patterns that caused the error.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/metadata/options.rs</code>:791 on 2025-06-13 15:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;Please open an issue on the ty repository and share the patterns that caused the error.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-06-13 15:13</div>
+            <div class="timeline-body"><p>I think this looks great! I feel like the semantics here are very intuitive and also very flexible. I also agree with using two lists to make for a consistent UX.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-13 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 15:47</div>
+            <div class="timeline-body"><p>Only explaining why they're different. Anchoring <code>include</code> paths has the advantage that we can skip directories that we know can't match any pattern. However, this only works for as long as there's no pattern starting with a wildcard pattern like <code>**/src</code>.</p>
+<p>The same problem doesn't exist with <code>exclude</code>.</p>
+<p>Given that most users probably mean <code>./src</code> when writing source in an <code>include</code> list and the performance optimization that anchoring allows us to do, this seemed the better default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-13 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 16:00</div>
+            <div class="timeline-body"><p>Yeah hmmm. I guess that does mean users have to write <code>**/*.pyi</code> for an include rule when they want different rules for, say, stub files. I feel like most users are going to expect that <code>*.pyi</code> should work on its own. But I agree that this semantic implies there is some unavoidable costs imposed by more traversals. Because of that, I think I like what you settled on. But it might be worth highlighting in the docs somewhere that, e.g., <code>*.pyi</code> (or some other example) might not do what you expect.</p>
+<p>The other thing I might suggest is if we can make <code>exclude</code> consistent with <code>include</code>? I realize that it isn't needed as an optimization, but maybe a consistent semantic across <code>include</code> and <code>exclude</code> is less confusing? If users use <code>*.pyi</code> to exclude stub files <em>anywhere</em>, then they might expect <code>*.pyi</code> to work in <code>include</code> for stub files anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-13 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 16:39</div>
+            <div class="timeline-body"><p>I sort of like it because it allows you to write <code>exclude</code>'s in a more concise way. It also is the same behavior as uv's build backend (with the exception that uv doesn't anchor any exclude patterns, whereas we follow the gitignore semantic where any path with a <code>/</code> is anchored)</p>
+<p>I do acknowledge that the <code>*.pyi</code> example might be somewhat suprising but not more than <code>src</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-13 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 16:47</div>
+            <div class="timeline-body"><p>Yeah I guess I just think the consistency here we'll lead to less overall confusion, even at the expense of concision.</p>
+<p>But I think reasonable people can disagree here and I'm happy to defer to you. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-13 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 16:59</div>
+            <div class="timeline-body"><p>Let's hope some more folks chime in :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-13 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 22:45</div>
+            <div class="timeline-body"><p>I don't have a need to weigh in on this, but since it was requested, my preference would be for consistency over concision. I think it's confusing if <code>include</code> and <code>exclude</code> work differently, and this will trip people up. I really don't think it's a problem if you have to write <code>**/*.pyi</code> in your exclude pattern instead of just <code>*.pyi</code> -- I think that's better than it working one way in <code>include</code> and a different way in <code>exclude</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-13 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-13 22:57</div>
+            <div class="timeline-body"><p>I also agree with Carl and Andrew on this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-14 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-15 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/docs/configuration.md</code>:346 on 2025-06-15 06:15</div>
+            <div class="timeline-body"><p>Alright, I'll change this in a separate PR because this behavior existed before this PR (it only surfaced in this PR because I fixed the docs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-15 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-15 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-15 13:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

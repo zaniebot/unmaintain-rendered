@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add partial support for `TypeIs` - astral-sh/ruff #18294</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add partial support for <code>TypeIs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18294">#18294</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-05-25 01:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-25 01:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Redo of #16314, part of <a href="https://github.com/astral-sh/ty/issues/117">#117</a>.</p>
+<p><code>TypeIs[]</code> is a special form that allows users to define their own narrowing functions. Despite the syntax, <code>TypeIs</code> is not a generic and, on its own, it is meaningless as a type. <a href="https://typing.python.org/en/latest/spec/narrowing.html#typeis">Officially</a>, a function annotated as returning a <code>TypeIs[T]</code> is a <i>type narrowing function</i>, where <code>T</code> is called the <i><code>TypeIs</code> return type</i>.</p>
+<p>A <code>TypeIs[T]</code> may or may not be bound to a symbol. Only bound types have narrowing effect:</p>
+<pre><code class="language-python">def f(v: object = object()) -&gt; TypeIs[int]: ...
+
+a: str = returns_str()
+
+if reveal_type(f()):   # Unbound: TypeIs[int]
+	reveal_type(a)     # str
+
+if reveal_type(f(a)):  # Bound:   TypeIs[a, int]
+	reveal_type(a)     # str &amp; int
+</code></pre>
+<p>A <code>TypeIs[T]</code> type:</p>
+<ul>
+<li>Is fully static when <code>T</code> is fully static.</li>
+<li>Is a singleton/single-valued when it is bound.</li>
+<li>Has exactly two runtime inhabitants when it is unbound: <code>True</code> and <code>False</code>.
+In other words, an unbound type have ambiguous truthiness.
+It is possible to infer more precise truthiness for bound types; however, that is not part of this change.</li>
+</ul>
+<p><code>TypeIs[T]</code> is a subtype of or otherwise assignable to <code>bool</code>. <code>TypeIs</code> is invariant with respect to the <code>TypeIs</code> return type: <code>TypeIs[int]</code> is neither a subtype nor a supertype of <code>TypeIs[bool]</code>. When ty sees a function marked as returning <code>TypeIs[T]</code>, its <code>return</code>s will be checked against <code>bool</code> instead. ty will also report such functions if they don't accept a positional argument. Addtionally, a type narrowing function call with no positional arguments (e.g., <code>f()</code> in the example above) will be considered invalid.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2025-05-25 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2025-05-25 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2025-05-25 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @InSyncWithFoo on 2025-05-25 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-25 01:20</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- error[unresolved-attribute] beartype/_check/metadata/metadecor.py:467:34: Type `(...) -&gt; Unknown` has no attribute `__name__`
++ error[unresolved-attribute] beartype/_check/metadata/metadecor.py:467:34: Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
+- error[invalid-argument-type] beartype/_decor/_nontype/decornontype.py:369:23: Argument to function `no_type_check` is incorrect: Argument type `BeartypeableT` does not satisfy upper bound of type variable `_F`
++ warning[unused-ignore-comment] beartype/_decor/_nontype/decornontype.py:378:42: Unused blanket `type: ignore` directive
+- error[invalid-argument-type] beartype/_decor/_nontype/decornontype.py:409:9: Argument to function `make_func` is incorrect: Expected `((...) -&gt; Unknown) | None`, found `BeartypeableT`
++ error[invalid-type-guard-call] beartype/_decor/_type/_pep/_decortypepep557.py:324:31: Type guard call does not have a target
+- error[invalid-argument-type] beartype/_util/api/standard/utilfunctools.py:292:29: Argument to function `unwrap_func_once` is incorrect: Expected `(...) -&gt; Unknown`, found `BeartypeableT`
+- error[unresolved-attribute] beartype/_util/cache/utilcachecall.py:568:44: Type `CallableT` has no attribute `__name__`
++ error[unresolved-attribute] beartype/_util/cache/utilcachecall.py:568:44: Type `CallableT &amp; ((...) -&gt; object)` has no attribute `__name__`
+- error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:261:29: Type `(...) -&gt; Unknown` has no attribute `__name__`
++ error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:261:29: Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
+- error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:320:16: Type `(...) -&gt; Unknown` has no attribute `__qualname__`
++ error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:320:16: Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__qualname__`
+- error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:334:16: Type `(...) -&gt; Unknown` has no attribute `__qualname__`
++ error[unresolved-attribute] beartype/_util/func/utilfuncscope.py:334:16: Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__qualname__`
+- error[unresolved-attribute] beartype/_util/func/utilfunctest.py:907:16: Type `(...) -&gt; Unknown` has no attribute `__qualname__`
+- warning[possibly-unbound-attribute] beartype/_util/func/utilfunctest.py:1100:16: Attribute `__name__` on type `Any | ((...) -&gt; Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] beartype/_util/func/utilfunctest.py:1100:16: Attribute `__name__` on type `(Any &amp; ~MethodType) | ((...) -&gt; Unknown)` is possibly unbound
++ error[invalid-type-guard-call] beartype/_util/func/utilfuncwrap.py:428:38: Type guard call does not have a target
+- error[invalid-argument-type] beartype/_util/hint/pep/proposal/pep484585/pep484585ref.py:532:43: Argument to function `label_callable` is incorrect: Expected `(...) -&gt; Unknown`, found `((...) -&gt; Unknown) | None`
++ error[invalid-type-guard-call] beartype/door/_cls/doorsuper.py:667:27: Type guard call does not have a target
+- error[invalid-argument-type] beartype/door/_func/infer/inferhint.py:244:36: Argument to function `infer_hint_callable` is incorrect: Expected `(...) -&gt; Unknown`, found `~type`
+- Found 553 diagnostics
++ Found 551 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[call-non-callable] nion/utils/Binding.py:262:32: Object of type `None` is not callable
+- Found 17 diagnostics
++ Found 16 diagnostics
+
+bidict (https://github.com/jab/bidict)
+- error[call-non-callable] bidict/_iter.py:50:34: Object of type `None` is not callable
+- Found 15 diagnostics
++ Found 14 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[call-non-callable] pyinstrument/middleware.py:50:13: Object of type `None` is not callable
+- Found 89 diagnostics
++ Found 88 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[unresolved-attribute] kornia/utils/helpers.py:116:24: Type `(...) -&gt; Any` has no attribute `__name__`
+- Found 941 diagnostics
++ Found 940 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[call-non-callable] kopf/_core/intents/registries.py:470:16: Object of type `str` is not callable
+- error[call-non-callable] kopf/_core/intents/registries.py:470:16: Object of type `MetaFilterToken` is not callable
+- Found 163 diagnostics
++ Found 161 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[invalid-argument-type] src/anyio/from_thread.py:236:35: Argument to bound method `set_result` is incorrect: Expected `T_Retval`, found `@Todo(generic `typing.Awaitable` type) | Awaitable[T_Retval] | T_Retval`
+- Found 112 diagnostics
++ Found 111 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[invalid-argument-type] src/graphql/execution/execute.py:1901:9: Argument to function `experimental_execute_incrementally` is incorrect: Expected `((Any, /) -&gt; bool) | None`, found `bool | None | (def assume_not_awaitable(_value: Any) -&gt; bool)`
++ error[invalid-argument-type] src/graphql/execution/execute.py:1901:9: Argument to function `experimental_execute_incrementally` is incorrect: Expected `((Any, /) -&gt; bool) | None`, found `(bool &amp; ((...) -&gt; object)) | None | (def assume_not_awaitable(_value: Any) -&gt; bool)`
+- error[call-non-callable] src/graphql/execution/execute.py:2121:16: Object of type `None` is not callable
+- error[invalid-argument-type] src/graphql/graphql.py:147:9: Argument to function `graphql_impl` is incorrect: Expected `((Any, /) -&gt; bool) | None`, found `bool | None | (def assume_not_awaitable(_value: Any) -&gt; bool)`
++ error[invalid-argument-type] src/graphql/graphql.py:147:9: Argument to function `graphql_impl` is incorrect: Expected `((Any, /) -&gt; bool) | None`, found `(bool &amp; ((...) -&gt; object)) | None | (def assume_not_awaitable(_value: Any) -&gt; bool)`
+- Found 407 diagnostics
++ Found 406 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[call-non-callable] src/werkzeug/utils.py:505:19: Object of type `None` is not callable
+- error[call-non-callable] src/werkzeug/utils.py:505:19: Object of type `int` is not callable
+- error[unsupported-operator] src/werkzeug/utils.py:508:12: Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `int | (((str | None, /) -&gt; int | None) &amp; ~None) | (Unknown &amp; ~None)` with `Literal[0]`
++ error[unsupported-operator] src/werkzeug/utils.py:508:12: Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `(int &amp; ~((...) -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~((...) -&gt; object) &amp; ~None) | (@Todo(Type::Intersection.call()) &amp; ~None)` with `Literal[0]`
+- error[invalid-assignment] src/werkzeug/utils.py:512:9: Object of type `int | (((str | None, /) -&gt; int | None) &amp; ~None) | (Unknown &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
++ error[invalid-assignment] src/werkzeug/utils.py:512:9: Object of type `(int &amp; ~((...) -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~((...) -&gt; object) &amp; ~None) | (@Todo(Type::Intersection.call()) &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
+- Found 452 diagnostics
++ Found 450 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-argument-type] strawberry/cli/commands/codegen.py:20:24: Argument to function `issubclass` is incorrect: Expected `type`, found `object`
+- error[call-non-callable] strawberry/cli/utils/__init__.py:23:29: Object of type `object` is not callable
+- error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type &amp; ~&lt;Protocol with members 'to_pydantic'&gt;`
+- error[call-non-callable] strawberry/extensions/query_depth_limiter.py:149:17: Object of type `None` is not callable
+- error[call-non-callable] strawberry/types/field.py:134:38: Object of type `object` is not callable
+- Found 432 diagnostics
++ Found 427 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-argument-type] src/trio/_core/_tests/test_ki.py:685:43: Argument to function `_consume_async_generator` is incorrect: Expected `AsyncGenerator[None, None]`, found `object`
+- error[unresolved-attribute] src/trio/_core/_tests/test_ki.py:690:13: Type `object` has no attribute `send`
+- Found 1090 diagnostics
++ Found 1088 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[invalid-argument-type] pydantic/_internal/_fields.py:281:61: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type`
+- error[call-non-callable] pydantic/fields.py:1193:13: Object of type `None` is not callable
+- Found 762 diagnostics
++ Found 760 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[call-non-callable] src/poetry/utils/cache.py:147:21: Object of type `T` is not callable
+- error[invalid-return-type] src/poetry/utils/cache.py:149:16: Return type does not match returned value: expected `T`, found `(Unknown &amp; ~None) | Unknown | T | (() -&gt; T)`
++ error[invalid-return-type] src/poetry/utils/cache.py:149:16: Return type does not match returned value: expected `T`, found `(Unknown &amp; ~None) | @Todo(Type::Intersection.call()) | (T &amp; ~((...) -&gt; object)) | ((() -&gt; T) &amp; ~((...) -&gt; object))`
+- Found 1018 diagnostics
++ Found 1017 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[call-non-callable] ignite/handlers/base_logger.py:48:20: Object of type `list[Unknown]` is not callable
+- Found 2222 diagnostics
++ Found 2221 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[call-non-callable] nox/_option_set.py:207:21: Object of type `bool` is not callable
+- Found 37 diagnostics
++ Found 36 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[call-non-callable] scrapy/downloadermiddlewares/retry.py:109:22: Object of type `str` is not callable
+- error[call-non-callable] scrapy/downloadermiddlewares/retry.py:109:22: Object of type `Exception` is not callable
+- error[call-non-callable] scrapy/spiders/__init__.py:180:50: Object of type `None` is not callable
+- error[invalid-return-type] scrapy/spiders/crawl.py:48:16: Return type does not match returned value: expected `((...) -&gt; Unknown) | None`, found `((...) -&gt; Unknown) | str | None`
+- error[invalid-argument-type] scrapy/utils/decorators.py:43:21: Argument to function `deco` is incorrect: Expected `(...) -&gt; Unknown`, found `Any | None`
+- error[no-matching-overload] scrapy/utils/defer.py:387:36: No overload of function `ensure_future` matches arguments
+- warning[possibly-unbound-attribute] tests/test_utils_console.py:28:16: Attribute `__name__` on type `@Todo(Inference of subscript on special form) | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/test_utils_console.py:28:16: Attribute `__name__` on type `(@Todo(Inference of subscript on special form) &amp; ((...) -&gt; object)) | (None &amp; ((...) -&gt; object))` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_utils_console.py:34:16: Attribute `__name__` on type `@Todo(Inference of subscript on special form) | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/test_utils_console.py:34:16: Attribute `__name__` on type `(@Todo(Inference of subscript on special form) &amp; ((...) -&gt; object)) | (None &amp; ((...) -&gt; object))` is possibly unbound
+- Found 1342 diagnostics
++ Found 1336 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[invalid-return-type] src/jinja2/async_utils.py:70:12: Return type does not match returned value: expected `V`, found `Awaitable[V] | V`
++ warning[redundant-cast] src/jinja2/async_utils.py:68:22: Value is already of type `Awaitable[V]`
+
+websockets (https://github.com/aaugustin/websockets)
+- error[call-non-callable] src/websockets/legacy/server.py:633:29: Object of type `None` is not callable
+- Found 109 diagnostics
++ Found 108 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[invalid-type-form] cki_lib/messagequeue.py:373:36: Variable of type `def callable(obj: object, /) -&gt; @Todo(`TypeIs[]` special form)` is not allowed in a type expression
++ error[invalid-type-form] cki_lib/messagequeue.py:373:36: Variable of type `def callable(obj: object, /) -&gt; TypeIs[(...) -&gt; object]` is not allowed in a type expression
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-argument-type] test/datasets_utils.py:835:52: Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `Unknown | Sequence[int] | int | (((int, /) -&gt; Sequence[int] | int) &amp; ~None)`
++ error[invalid-argument-type] test/datasets_utils.py:835:52: Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `@Todo(Type::Intersection.call()) | (Sequence[int] &amp; ~((...) -&gt; object)) | (int &amp; ~((...) -&gt; object)) | (((int, /) -&gt; Sequence[int] | int) &amp; ~None &amp; ~((...) -&gt; object))`
+- error[call-non-callable] test/datasets_utils.py:835:57: Object of type `Sequence[int]` is not callable
+- error[call-non-callable] test/datasets_utils.py:835:57: Object of type `int` is not callable
+- error[call-non-callable] test/datasets_utils.py:956:57: Object of type `Sequence[int]` is not callable
+- error[call-non-callable] test/datasets_utils.py:956:57: Object of type `int` is not callable
+- error[call-non-callable] torchvision/models/_utils.py:201:43: Object of type `W` is not callable
+- error[call-non-callable] torchvision/models/_utils.py:201:43: Object of type `None` is not callable
+- error[invalid-return-type] torchvision/transforms/v2/_utils.py:149:16: Return type does not match returned value: expected `(Any, /) -&gt; Any`, found `(str &amp; ~Literal[&quot;default&quot;]) | ((Any, /) -&gt; Any) | None`
+- Found 1546 diagnostics
++ Found 1539 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-argument-type] src/hydra_zen/_launch.py:397:44: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `@Todo(Support for `typing.TypeAlias`) | Mapping[str, Any]`
+- error[invalid-argument-type] src/hydra_zen/_launch.py:478:50: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `@Todo(Support for `typing.TypeAlias`) | Mapping[str, Any]`
+- error[invalid-argument-type] src/hydra_zen/structured_configs/_implementations.py:1133:34: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `(~None &amp; ~&lt;Protocol with members '__iter__'&gt; &amp; ~type) | (Unknown &amp; ~type)`
+- warning[redundant-cast] src/hydra_zen/third_party/beartype.py:130:12: Value is already of type `_T`
+- warning[redundant-cast] src/hydra_zen/third_party/pydantic.py:111:16: Value is already of type `_T`
+- error[call-non-callable] src/hydra_zen/wrapper/_implementations.py:1610:20: Object of type `None` is not callable
++ warning[unused-ignore-comment] src/hydra_zen/wrapper/_implementations.py:1600:75: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/hydra_zen/wrapper/_implementations.py:1605:80: Unused blanket `type: ignore` directive
+- Found 639 diagnostics
++ Found 635 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[call-non-callable] tornado/escape.py:352:28: Object of type `str` is not callable
+- Found 351 diagnostics
++ Found 350 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- error[invalid-argument-type] static_frame/core/display.py:118:27: Argument to function `issubclass` is incorrect: Expected `type`, found `type | Unknown | dtype[Any]`
+- error[invalid-argument-type] static_frame/core/display.py:128:27: Argument to function `issubclass` is incorrect: Expected `type`, found `type | Unknown | dtype[Any]`
+- error[invalid-argument-type] static_frame/core/display.py:138:27: Argument to function `issubclass` is incorrect: Expected `type`, found `type | Unknown | dtype[Any]`
+- error[invalid-argument-type] static_frame/core/display.py:148:27: Argument to function `issubclass` is incorrect: Expected `type`, found `type | Unknown | dtype[Any]`
+- error[invalid-argument-type] static_frame/core/display.py:158:27: Argument to function `issubclass` is incorrect: Expected `type`, found `type | Unknown | dtype[Any]`
++ warning[unused-ignore-comment] static_frame/core/frame.py:7800:44: Unused blanket `type: ignore` directive
+- Found 2059 diagnostics
++ Found 2055 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/fixtures.py:1022:42: Argument to function `_eval_scope_callable` is incorrect: Expected `(str, Config, /) -&gt; Unknown`, found `Scope | (Unknown &amp; ~None) | (((str, Config, /) -&gt; Unknown) &amp; ~None)`
+- error[invalid-argument-type] src/_pytest/fixtures.py:1385:9: Argument is incorrect: Expected `tuple[object, ...] | ((Any, /) -&gt; object) | None`, found `None | Sequence[object] | (((Any, /) -&gt; object) &amp; ~None) | tuple[Unknown, ...]`
+- error[invalid-argument-type] src/_pytest/fixtures.py:1385:70: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Sequence[object] | (((Any, /) -&gt; object) &amp; ~None)`
++ error[invalid-argument-type] src/_pytest/fixtures.py:1385:70: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Sequence[object] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; object) &amp; ~None &amp; ~((...) -&gt; object))`
+- error[invalid-argument-type] src/_pytest/python.py:1380:13: Argument is incorrect: Expected `((Any, /) -&gt; object) | None`, found `None | Iterable[object] | (((Any, /) -&gt; object) &amp; ~None)`
+- Found 882 diagnostics
++ Found 879 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[call-non-callable] mesonbuild/compilers/compilers.py:1290:26: Object of type `None` is not callable
+- error[call-non-callable] mesonbuild/compilers/compilers.py:1290:26: Object of type `CompilerArgs` is not callable
+- error[call-non-callable] mesonbuild/compilers/compilers.py:1290:26: Object of type `list[Unknown]` is not callable
+- error[call-non-callable] mesonbuild/compilers/vala.py:152:26: Object of type `None` is not callable
+- error[call-non-callable] mesonbuild/compilers/vala.py:152:26: Object of type `CompilerArgs` is not callable
+- error[call-non-callable] mesonbuild/compilers/vala.py:152:26: Object of type `list[Unknown]` is not callable
+- Found 1398 diagnostics
++ Found 1392 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[call-non-callable] cloudinit/sources/helpers/azure.py:171:9: Object of type `None` is not callable
+- Found 705 diagnostics
++ Found 704 diagnostics
+
+altair (https://github.com/vega/altair)
++ error[invalid-argument-type] altair/utils/data.py:362:35: Argument to function `sanitize_geo_interface` is incorrect: Expected `MutableMapping[Any, Any]`, found `Series[Unknown] | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[invalid-argument-type] altair/utils/data.py:361:37: Argument to function `sanitize_pandas_dataframe` is incorrect: Argument type `SupportsGeoInterface` does not satisfy upper bound of type variable `_PandasDataFrameT`
+- error[call-non-callable] altair/utils/data.py:430:22: Object of type `None` is not callable
+- error[not-iterable] altair/utils/schemapi.py:1132:25: Object of type `Literal[False] | Iterable[Any]` may not be iterable
+- error[invalid-argument-type] altair/vegalite/v5/api.py:254:30: Argument to function `_dataset_name` is incorrect: Expected `dict[str, Any] | list[Unknown] | InlineDataset`, found `Unknown | UndefinedType`
+- error[invalid-assignment] altair/vegalite/v5/api.py:3863:13: Object of type `Facet | (@Todo(Support for `typing.TypeAlias`) &amp; ~str) | (UndefinedType &amp; ~str)` is not assignable to `Facet | FacetMapping`
+- error[invalid-argument-type] altair/vegalite/v5/api.py:4200:44: Argument to function `_repeat_names` is incorrect: Expected `list[str] | LayerRepeatMapping | RepeatMapping`, found `@Todo(Support for `typing.TypeAlias`) | UndefinedType`
+- Found 1299 diagnostics
++ Found 1294 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- error[call-non-callable] aiohttp/client.py:827:23: Object of type `bool` is not callable
+- error[unresolved-attribute] aiohttp/helpers.py:808:34: Type `ErrorableProtocol` has no attribute `done`
+- Found 173 diagnostics
++ Found 171 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[call-non-callable] apprise/manager.py:241:64: Object of type `None` is not callable
+- Found 3694 diagnostics
++ Found 3693 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[unresolved-attribute] tests/test_deprecated.py:56:12: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- error[unresolved-attribute] tests/test_deprecated.py:72:12: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- error[unresolved-attribute] tests/test_deprecated.py:192:12: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- error[unresolved-attribute] tests/test_experimental.py:51:12: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- error[unresolved-attribute] tests/test_experimental.py:64:12: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- Found 1061 diagnostics
++ Found 1056 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[invalid-return-type] src/bokeh/core/property/bases.py:187:20: Return type does not match returned value: expected `T`, found `(() -&gt; T) | T`
++ error[invalid-return-type] src/bokeh/core/property/bases.py:187:20: Return type does not match returned value: expected `T`, found `((() -&gt; T) &amp; ~((...) -&gt; object)) | (T &amp; ~((...) -&gt; object))`
+- error[invalid-return-type] src/bokeh/core/property/bases.py:190:24: Return type does not match returned value: expected `T`, found `(() -&gt; T) | T`
++ error[invalid-return-type] src/bokeh/core/property/bases.py:190:24: Return type does not match returned value: expected `T`, found `((() -&gt; T) &amp; ((...) -&gt; object)) | (T &amp; ((...) -&gt; object))`
+- error[call-non-callable] src/bokeh/core/property/bases.py:191:20: Object of type `T` is not callable
+- error[call-non-callable] src/bokeh/io/notebook.py:564:18: Object of type `str` is not callable
+- error[call-non-callable] src/bokeh/io/notebook.py:576:15: Object of type `str` is not callable
+- error[call-non-callable] src/bokeh/model/util.py:108:61: Object of type `None` is not callable
+- error[call-non-callable] src/bokeh/plotting/graph.py:120:28: Object of type `dict[int | str, Sequence[int | float]]` is not callable
+- Found 953 diagnostics
++ Found 948 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- error[invalid-assignment] sphinx/environment/__init__.py:371:13: Object of type `str | ((Node, /) -&gt; bool)` is not assignable to `Literal[False] | ((Node, /) -&gt; bool)`
++ error[invalid-assignment] sphinx/environment/__init__.py:371:13: Object of type `(str &amp; ((...) -&gt; object)) | (((Node, /) -&gt; bool) &amp; ((...) -&gt; object))` is not assignable to `Literal[False] | ((Node, /) -&gt; bool)`
+- error[call-non-callable] sphinx/util/inspect.py:102:19: Object of type `None` is not callable
+- error[unresolved-attribute] sphinx/util/inspect.py:296:33: Type `object` has no attribute `__self__`
+- Found 657 diagnostics
++ Found 655 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[invalid-return-type] lib/streamlit/runtime/metrics_util.py:262:16: Return type does not match returned value: expected `str`, found `object`
+- error[invalid-argument-type] lib/streamlit/testing/v1/element_tree.py:1664:29: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `object`
+- error[call-non-callable] lib/streamlit/vendor/pympler/asizeof.py:269:12: Object of type `None` is not callable
+- error[call-non-callable] lib/streamlit/vendor/pympler/asizeof.py:275:12: Object of type `None` is not callable
+- error[call-non-callable] lib/streamlit/vendor/pympler/asizeof.py:281:12: Object of type `None` is not callable
+- Found 3271 diagnostics
++ Found 3266 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[call-non-callable] openlibrary/plugins/worksearch/code.py:225:34: Object of type `str` is not callable
+- Found 742 diagnostics
++ Found 741 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-type-form] ddtrace/internal/datadog/profiling/ddup/test/interface.py:53:20: Variable of type `def callable(obj: object, /) -&gt; @Todo(`TypeIs[]` special form)` is not allowed in a type expression
++ error[invalid-type-form] ddtrace/internal/datadog/profiling/ddup/test/interface.py:53:20: Variable of type `def callable(obj: object, /) -&gt; TypeIs[(...) -&gt; object]` is not allowed in a type expression
+
+zulip (https://github.com/zulip/zulip)
+- error[invalid-argument-type] zerver/lib/event_schema.py:462:54: Argument to function `issubclass` is incorrect: Expected `type`, found `type | UnionType`
+- warning[possibly-unbound-attribute] zerver/tests/test_openapi.py:584:58: Attribute `__name__` on type `(Unknown &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | ((...) -&gt; Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] zerver/tests/test_openapi.py:584:58: Attribute `__name__` on type `(Unknown &amp; ((...) -&gt; object) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | (@Todo(map_with_boundness: intersections with negative contributions) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | ((...) -&gt; Unknown)` is possibly unbound
+- Found 6977 diagnostics
++ Found 6976 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[call-non-callable] sympy/matrices/common.py:3069:20: Object of type `None` is not callable
+- warning[possibly-unbound-implicit-call] sympy/matrices/common.py:3077:24: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-implicit-call] sympy/matrices/common.py:3077:24: Method `__getitem__` of type `(Unknown &amp; ~FunctionType) | None | @Todo(list comprehension type)` is possibly unbound
+- error[invalid-argument-type] sympy/matrices/common.py:3078:24: Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
++ error[invalid-argument-type] sympy/matrices/common.py:3078:24: Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown &amp; ~FunctionType) | None | @Todo(list comprehension type)`
+- error[not-iterable] sympy/matrices/common.py:3079:31: Object of type `Unknown | None` may not be iterable
++ error[not-iterable] sympy/matrices/common.py:3079:31: Object of type `(Unknown &amp; ~FunctionType) | None | @Todo(list comprehension type)` may not be iterable
+- error[not-iterable] sympy/matrices/common.py:3082:52: Object of type `Unknown | None` may not be iterable
++ error[not-iterable] sympy/matrices/common.py:3082:52: Object of type `(Unknown &amp; ~FunctionType) | None | @Todo(list comprehension type)` may not be iterable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:240:13: Object of type `None` is not callable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:255:17: Object of type `None` is not callable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:266:17: Object of type `None` is not callable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:278:13: Object of type `None` is not callable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:295:21: Object of type `None` is not callable
+- error[call-non-callable] sympy/plotting/pygletplot/color_scheme.py:308:21: Object of type `None` is not callable
+- error[call-non-callable] sympy/utilities/lambdify.py:892:23: Object of type `Literal[False]` is not callable
+- error[call-non-callable] sympy/utilities/lambdify.py:892:23: Object of type `Literal[False]` is not callable
+- error[call-non-callable] sympy/utilities/lambdify.py:892:23: Object of type `Literal[False]` is not callable
+- Found 18553 diagnostics
++ Found 18543 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:387:43: Attribute `shape` on type `int | float | @Todo(Support for `typing.TypeAlias`) | None` is possibly unbound
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:388:43: Attribute `shape` on type `int | float | @Todo(Support for `typing.TypeAlias`) | None` is possibly unbound
+- error[call-non-callable] scipy/_lib/array_api_compat/array_api_compat/common/_helpers.py:749:20: Object of type `None` is not callable
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_compat/array_api_compat/dask/array/_aliases.py:221:43: Attribute `shape` on type `int | float | @Todo(Support for `typing.TypeAlias`) | None` is possibly unbound
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_compat/array_api_compat/dask/array/_aliases.py:222:43: Attribute `shape` on type `int | float | @Todo(Support for `typing.TypeAlias`) | None` is possibly unbound
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_lazy.py:342:45: Argument to function `device` is incorrect: Expected `Array`, found `Array | int | float | complex`
++ warning[unused-ignore-comment] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_utils/_helpers.py:193:22: Unused blanket `type: ignore` directive
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_utils/_helpers.py:213:23: Attribute `dtype` on type `Array | int | float | complex` is possibly unbound
+- warning[possibly-unbound-attribute] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_utils/_helpers.py:214:38: Attribute `dtype` on type `Array | int | float | complex` is possibly unbound
+- error[invalid-return-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_utils/_helpers.py:226:12: Return type does not match returned value: expected `tuple[Array, Array]`, found `tuple[Unknown, Array | int | float | complex | Unknown] | tuple[Array | int | float | complex | Unknown, Unknown]`
+- error[invalid-argument-type] scipy/integrate/_ivp/ivp.py:574:52: Argument to function `issubclass` is incorrect: Expected `type`, found `Unknown | Literal[&quot;RK45&quot;]`
+- error[call-non-callable] scipy/integrate/_quad_vec.py:381:38: Object of type `Literal[&quot;2&quot;]` is not callable
+- error[call-non-callable] scipy/integrate/_quad_vec.py:417:42: Object of type `Literal[&quot;2&quot;]` is not callable
+- error[call-non-callable] scipy/optimize/_basinhopping.py:708:9: Object of type `None` is not callable
+- error[call-non-callable] scipy/optimize/_basinhopping.py:719:19: Object of type `None` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:478:26: Object of type `Literal[1]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:485:25: Object of type `Literal[2]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:573:20: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:589:22: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:591:20: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:623:24: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:639:24: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_axis_nan_policy.py:648:24: Object of type `Literal[0]` is not callable
+- error[call-non-callable] scipy/stats/_binned_statistic.py:652:24: Object of type `Literal[&quot;mean&quot;]` is not callable
+- error[invalid-argument-type] scipy/stats/_multivariate.py:783:27: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Unknown &amp; ~AlwaysFalsy) | Literal[1] | tuple[Unknown, ...] | tuple[(Unknown &amp; ~AlwaysFalsy) | Literal[1] | tuple[Unknown, ...]]`
+- error[call-non-callable] scipy/stats/_sensitivity_analysis.py:629:27: Object of type `Literal[&quot;saltelli_2010&quot;]` is not callable
+- Found 7754 diagnostics
++ Found 7730 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-25 01:22</div>
+            <div class="timeline-body"><p>Regarding the three problems outlined <a href="https://github.com/astral-sh/ruff/pull/16314#issuecomment-2676178735">here</a>:</p>
+<ul>
+<li>Function definition checking: Not covered in this PR.</li>
+<li>Arbitrary guard expressions: Only names and calls are allowed.</li>
+<li><code>TypeGuard</code> narrowing logic: <code>TypeGuard</code> is not covered in this PR.</li>
+</ul>
+<p><code>invalid-type-guard-definition</code> and <code>TypeGuard</code> tests are kept, however.</p>
+<p>This PR itself has two new issues:</p>
+<ul>
+<li><p>In <code>reveal_type(g(a))</code>, where <code>g(a)</code> returns a bound <code>TypeIs</code> type, the <code>reveal_type()</code> call is incorrectly recognized as a guard call, since it returns the inner <code>TypeIs</code> unchanged. I tried checking for the declared return type of <code>callable_ty</code> (if it is a literal function) using <code>infer_expression_types()</code>, but it panicked, saying that there was no <code>Expression</code> associated with the function's return type expression.</p>
+</li>
+<li><p>In this particular example and no other, the constraints are not inverted in the negative case, for some reason that's beyond me:</p>
+<pre><code class="language-py">def guard_str(a: object) -&gt; TypeGuard[str]: return True
+def is_int(a: object) -&gt; TypeIs[int]: return True
+def _(a: str | int):
+    if guard_str(a):
+        # TODO: Should be `str`
+        reveal_type(a)  # revealed: str | int
+    else:
+        reveal_type(a)  # revealed: str | int
+
+    if is_int(a):
+        reveal_type(a)  # revealed: int
+    else:
+        # Should be `str &amp; ~int`!
+        reveal_type(a)  # revealed: str | int
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-25 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @InSyncWithFoo on 2025-05-25 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-29 00:47</div>
+            <div class="timeline-body"><p>Sorry, didn't realize there was a comment here looking for feedback. (In general I don't see draft PRs in my notifications, and I assume draft PRs are not ready for review, unless I'm pinged by name for comment.)</p>
+<blockquote>
+<ul>
+<li>In <code>reveal_type(g(a))</code>, where <code>g(a)</code> returns a bound <code>TypeIs</code> type, the <code>reveal_type()</code> call is incorrectly recognized as a guard call</li>
+</ul>
+</blockquote>
+<p>I think this is a feature, not a bug. The point of <code>reveal_type</code> being an identity function is that it can be wrapped around any expression in existing code, without changing the meaning of the code. This should be true in a type-is check call just as much as anywhere else. So I would not make any effort to adjust this behavior.</p>
+<blockquote>
+<ul>
+<li>In this particular example and no other, the constraints are not inverted in the negative case</li>
+</ul>
+</blockquote>
+<p>Happy to dig into this tomorrow, if this is the only issue blocking this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-29 01:07</div>
+            <div class="timeline-body"><p>@carljm Actually, I think I got them:</p>
+<ul>
+<li>Reporting <code>invalid-type-guard-call</code> may lead to multiple false positives, since such calls are not always used for their narrowing effects. Now ty will only report this lint for <code>TypeIs</code> function calls that have no arguments.</li>
+<li>The second problem was a simple logic error that have since been fixed.</li>
+</ul>
+<p>The only blocking problem left is that <a href="https://github.com/astral-sh/ruff/actions/runs/15313404253/job/43082745392?pr=18294">the fuzzer says this PR causes new panics</a>. Here's the generated snippet:</p>
+<pre><code class="language-python">for name_3 in something:
+
+    class name_5[**name_4](name_3):
+        pass
+else:
+
+    class name_3[name_5](b'', name_5=name_1):
+        pass
+    name_5()
+for name_2 in something:
+    pass
+else:
+
+    @name_3
+    def name_3():
+        pass
+(name_3 := f'') and (name_1 := name_2)
+assert name_3
+</code></pre>
+<p>I reckon this has something to do with the <code>evaluate_expr_named()</code> method in <code>narrow.rs</code>, but I'm not sure.</p>
+<p>Otherwise, this is ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @InSyncWithFoo on 2025-05-29 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2025-05-29 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 00:24</div>
+            <div class="timeline-body"><p>Sorry I didn't get to this sooner; been focused on getting the big attribute-assignment-narrowing PR landed; it's now landed!</p>
+<p>It looks like this currently has a build issue and needs conflict resolution with main. @InSyncWithFoo let me know if you're able to get it back into shape; if so I can look into the new panic right away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:130 on 2025-06-06 00:27</div>
+            <div class="timeline-body"><p>TODO comment for an error here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:162 on 2025-06-06 00:29</div>
+            <div class="timeline-body"><p>no, this error should I think go away when we support splatted arguments in calls</p>
+<pre><code class="language-suggestion">    # TODO: no error, once we support splatted call args
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:174 on 2025-06-06 00:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # TODO: Should be `tuple[int, str]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:176 on 2025-06-06 00:33</div>
+            <div class="timeline-body"><p>Why is this test in &quot;invalid calls&quot; section instead of &quot;narrowing&quot; section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:230 on 2025-06-06 00:46</div>
+            <div class="timeline-body"><p>I am a bit hesitant to land this PR with this TODO unfixed, because it suggests that the approach used for preserving context in the <code>TypeIs</code> type may need significant re-working in order to address this TODO.</p>
+<p>But maybe it won't; maybe it will just require storing some additional context (probably the visible definitions at the point of the <code>TypeIs</code> call).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:801 on 2025-06-06 00:47</div>
+            <div class="timeline-body"><p>The problem with this approach of simply commenting out the <code>static_assert</code> is that the test won't fail when we add <code>TypeGuard</code> support, and we may forget to uncomment it.</p>
+<p>I actually think you should be able to uncomment this as-is and it will pass, since <code>TypeGuard</code> is currently inferred as a Todo type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1036 on 2025-06-06 00:50</div>
+            <div class="timeline-body"><p>Does this end up returning just the normalized nested type, no longer a <code>TypeIs</code> type? Seems like we need to wrap this in a <code>type_is.with_ty(...)</code> call?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:355 on 2025-06-06 00:53</div>
+            <div class="timeline-body"><p>Maybe also test that it's a subtype of <code>int</code>, too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9244 on 2025-06-06 00:59</div>
+            <div class="timeline-body"><p>Given the scope and the symbol ID, we should be able to look up the symbol name? Also, I'm not sure we need to include the symbol name in the display of a bound <code>TypeIs</code> anyway. So I would remove the <code>String</code> here.</p>
+<p>Also, I think this information will be insufficient to properly handle the case where the symbol may be re-bound. I think we will need to store the visible definitions of the symbol here to support that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9239 on 2025-06-06 01:00</div>
+            <div class="timeline-body"><p>I don't think we need/want a <code>return_ref</code> on a field that is a <code>Type</code> -- <code>Type</code> is small and <code>Copy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9240 on 2025-06-06 01:00</div>
+            <div class="timeline-body"><p>nit: would prefer a more descriptive name here, e.g. <code>narrowed_type</code>. (We've also been moving away from using variables named <code>ty</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5596 on 2025-06-06 01:08</div>
+            <div class="timeline-body"><p>What kind of handling would we expect here? I don't think it's valid to expect narrowing from returning a union where one of the elements is a <code>TypeIs</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-06 01:14</div>
+            <div class="timeline-body"><p>Some initial review comments. Thanks for your work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-06 01:54</div>
+            <div class="timeline-body"><p>@carljm Thanks for the heads up. I probably won't be able to work on this earlier than Sunday (June 8th). Also, the reason for the panic was that the same <code>ExprName</code> in a named expression had two corresponding IDs (50 and 52, to be exact); I'm not sure why that is even the case, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-06-06 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:176 on 2025-06-06 01:58</div>
+            <div class="timeline-body"><p><code>a[0]</code> wasn't considered a valid narrowing target. Well, at least not until I learned about #17643.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @InSyncWithFoo on 2025-06-09 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-09 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-09 12:31</div>
+            <div class="timeline-body"><p>This PR is unsalvageable; I submitted #18589 as replacement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-06-09 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5596 on 2025-06-09 12:33</div>
+            <div class="timeline-body"><p>True. As for intersections, <code>TypeIs[a, str] &amp; TypeIs[b, int]</code> should have narrowing effect, but I'm not sure if that type is constructable from Python code.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

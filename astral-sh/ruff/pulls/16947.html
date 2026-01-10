@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] simplify &quot;removing&quot; in UnionBuilder::add - astral-sh/ruff #16947</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] simplify &quot;removing&quot; in UnionBuilder::add</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16947">#16947</a>
+        opened by <a href="https://github.com/alex-700">@alex-700</a>
+        on 2025-03-24 11:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alex-700">@alex-700</a> on 2025-03-24 11:33</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Simplify &quot;removing&quot; in UnionBuilder::add
+It's now O(m) instead of O(n + m) and easier to read.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>cargo test (incl. mdtest)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @alex-700 on 2025-03-24 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @alex-700 on 2025-03-24 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @alex-700 on 2025-03-24 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @alex-700 on 2025-03-24 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-24 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-24 11:39</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-24 15:55</div>
+            <div class="timeline-body"><p>Thanks for the PR! Codspeed is <a href="https://codspeed.io/astral-sh/ruff/branches/alex-700%3Alatyshev%2Fbuilder-simplify-remove">neutral</a> on this PR, but I'm hesitant to make lots of changes to this code motivated by performance until we have better benchmarks for code that involves lots of large unions. Certain third-party libraries often do create large unions, which has created lots of pathological performance problems for other type checkers (I wroteup a list of some examples in https://github.com/astral-sh/ty/issues/240). I sort of think we should prioritise adding better benchmarks for code with big unions before making too many changes like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:114 on 2025-03-24 16:18</div>
+            <div class="timeline-body"><p>I do like the improvement overall as it simplifies the code quiet a bit and it also reduces runtime complexity</p>
+<p>I agree that the existing code is somewhat hard to reason about.</p>
+<p>I'm getting the impression that this new code changes behavior because it now always swaps the first element to remove with the added element where, I think, previously, the <code>to_add</code> was always appended at the end.</p>
+<p>A version of this that's closer to the original is:</p>
+<pre><code class="language-rust">match to_remove[..] {
+    [] =&gt; self.elements.push(to_add),
+    [index] =&gt; self.elements[index] = to_add,
+    _ =&gt; {
+        // We iterate in descending order to keep remaining indices valid after `swap_remove`.
+        for index in to_remove.into_iter().rev() {
+            self.elements.swap_remove(index);
+        }
+
+        self.elements.push(to_add);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-700">@alex-700</a> on 2025-03-24 17:18</div>
+            <div class="timeline-body"><p>@AlexWaygood thanks for the quick response!
+This PR was motiviert mostly by simplicity and consistency (the pattern is already used <a href="https://github.com/astral-sh/ruff/blob/67cb2e8dbe17da5d3b851af02e567ca292ba53cb/crates/red_knot_python_semantic/src/types/builder.rs#L377-L379">here</a>, <a href="https://github.com/astral-sh/ruff/blob/67cb2e8dbe17da5d3b851af02e567ca292ba53cb/crates/red_knot_python_semantic/src/types/builder.rs#L394-L396">here</a>, and <a href="https://github.com/astral-sh/ruff/blob/67cb2e8dbe17da5d3b851af02e567ca292ba53cb/crates/red_knot_python_semantic/src/types/builder.rs#L466-L468">here</a>).</p>
+<p>I completely agree with you that performance-wise changes should be measured through better benchmark.</p>
+<p>Thoughts about performance:</p>
+<ul>
+<li>it is unlikely that the new code will be worse, than the current one.</li>
+<li>before the code [from PR] we will spend the time in the <a href="https://github.com/astral-sh/ruff/blob/67cb2e8dbe17da5d3b851af02e567ca292ba53cb/crates/red_knot_python_semantic/src/types/builder.rs#L84">loop</a>. So:</li>
+<li>It is non-trivial to challenge one implementation or another for perf.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alex-700">@alex-700</a> reviewed on 2025-03-24 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alex-700">@alex-700</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:114 on 2025-03-24 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm getting the impression that this new code changes behavior because it now always swaps the first element to remove with the added element where, I think, previously, the to_add was always appended at the end.</p>
+</blockquote>
+<p>Yes. It does.</p>
+<p>Also it now changes the order of <code>elements</code> by multiple <code>swap_remove</code>-s (before it was the order-preserving algorithm of removing).</p>
+<p>But AFAIU there are no order-related requirements for this code (e.g. it could <code>self.elements[index] = to_add</code> to the middle). It's not important to preserve previous behavior, so I chose the current version in favor of simplicity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:114 on 2025-03-24 17:43</div>
+            <div class="timeline-body"><p>In general we <em>prefer</em> not to change the order of union elements if it's possible <em>and</em> it's cheap to avoid doing so. However, if it leads to significantly worse performance to retain the order of union elements, we're okay with mutating the order (that's the reason why we already use <code>swap_remove</code> in several places).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alex-700">@alex-700</a> reviewed on 2025-03-24 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alex-700">@alex-700</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:114 on 2025-03-24 17:54</div>
+            <div class="timeline-body"><p>Ok. In this case it is strange to have the optimization (?) <code>self.elements[index] = to_add</code> in one instance, and do not have it in another.</p>
+<p>The option, where we append <code>to_add</code> always to the end:</p>
+<pre><code class="language-rust">// We iterate in descending order to keep remaining indices valid after `swap_remove`.
+for index in to_remove.into_iter().rev() {
+    self.elements.swap_remove(index);
+}
+self.elements.push(to_add);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:114 on 2025-03-24 18:01</div>
+            <div class="timeline-body"><p>I think we want to generally preserve the order of user-provided union annotations, but once we are modifying a union, I think it's a pretty weak preference and easily overridden by simplicity or performance.</p>
+<p>I also note that no existing test requires changing here, suggesting that the difference in behavior is minimal in practice and doesn't seem to affect common scenarios. And as @alex-700 points out, the new simpler implementation is arguably more consistent in how it handles the ordering.</p>
+<p>I would be inclined to accept this change as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-24 18:02</div>
+            <div class="timeline-body"><p>Thanks for the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

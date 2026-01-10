@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Pull types on synthesized Python files created by mdtest - astral-sh/ruff #18539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Pull types on synthesized Python files created by mdtest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18539">#18539</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-07 18:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 18:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Our &quot;corpus tests&quot; run an AST visitor that attempts to exhaustively check that each sub-expression in an AST has a type inferred for it. This is a great way to catch potential panics that might happen when you're hovering over an expression in an IDE, for example, since ty will try to retrieve the type of that node so that the IDE can show a nice tooltip to the user.</p>
+<p>The corpus tests have a problem, though. There are a number of typing symbols to which ty applies heavy special casing. <a href="https://github.com/astral-sh/ruff/commit/72552f31e40577f32195624279ead0a5364a82e0">It's</a> <a href="https://github.com/astral-sh/ruff/commit/95497ffaaba5bbceebda7c58c50a47292f9bdd39">quite</a> <a href="https://github.com/astral-sh/ruff/pull/18534">common</a> for us to forget to store a type for a subexpression when inferring types for these heavily special-cased symbols, especially in cases where these symbols are being used invalidly. Our corpus of Python snippets that we run the &quot;corpus tests&quot; over doesn't provide great coverage for these symbols, so it's easy for these mistakes to go unnnoticed.</p>
+<p>We <em>do</em> have a corpus of Python snippets that <em>do</em> have good coverage for these symbols, however, and which even have pretty good coverage of these symbols being used invalidly: the Python files embedded inside our mdtests! Running the <code>PullTypesVisitor</code> over all snippets in our Markdown files should give us a much higher level of confidence that we're not forgetting to store types for any subexpressions in any files.</p>
+<p>This PR adds a step to mdtest that runs the <code>PullTypesVisitor</code> over every synthesized file created by the mdtest framework. There are six existing mdtest suites that fail this new step; these Markdown files have been added to a <code>KNOWN_PULL_TYPES_FAILURES</code> list in the <code>ty_test</code> crate.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-06-07 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-07 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-07 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_test/src/lib.rs</code>:300 on 2025-06-07 18:38</div>
+            <div class="timeline-body"><p>I tried for quite a while to use <code>catch_unwind</code> like we already do in <code>ty_project</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/86e5a311f05943095f8e7480dea1a69fdc8c787e/crates/ty_project/tests/check.rs#L132-L151</p>
+<p>The advantage is that if a file starts passing, we're forced to remove it from <code>KNOWN_PULL_TYPES_FAILURES</code>.</p>
+<p>I couldn't get similar logic to work here, however, and I couldn't figure out why. Even when the <code>pull_types</code> function was panicking on a given file, the surrounding <code>catch_unwind</code> call appeared to be returning an <code>Ok()</code> variant for some reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-07 18:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-07 18:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-09 14:44</div>
+            <div class="timeline-body"><p>I would probably move this to the semantic crate. It doesn't depend on any project related behavior. In fact, it's very tight to how our semantic model works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:300 on 2025-06-09 14:46</div>
+            <div class="timeline-body"><p>I'd have to debug this. Is there any inner or outer catch unwind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:473 on 2025-06-09 14:48</div>
+            <div class="timeline-body"><p>It would be nice if we had a specific syntax in mdtests instead of maintaining this list (of tests that this crate doesn't depend on).</p>
+<p>It has the advantage that I can see that this test isn't fully functioning when editing the md test file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-09 14:48</div>
+            <div class="timeline-body"><p>This is a great idea!</p>
+<p>Let me know if I should take a look at the catch unwind thingy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-09 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-09 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_test/src/lib.rs</code>:473 on 2025-06-09 15:58</div>
+            <div class="timeline-body"><p>That's a great idea. It would enable us to more easily narrow down which specific subsection of the Markdown file is causing panics when types are pulled, too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-09 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-09 15:59</div>
+            <div class="timeline-body"><p>makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-09 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-09 17:22</div>
+            <div class="timeline-body"><p>Should we just move the whole corpus test (and the existing corpus of Python code itself) into the <code>ty_python_semantic</code> crate? It's usually changes to <code>ty_python_semantic</code> that break those tests. I've been annoyed more than once that running <code>cargo test -p ty_python_semantic</code> has passed locally for a PR branch, only for tests in <code>ty_project</code> (a crate my PR didn't touch!) to fail in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-09 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-09 17:26</div>
+            <div class="timeline-body"><p>If we are moving the visitor anyway, and there aren't other dependencies that make this move difficult, then I would say yes, let's move it all into <code>ty_python_semantic</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-09 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-09 17:34</div>
+            <div class="timeline-body"><p>I think the only reason why they're in <code>ty_project</code> is because the tests use the <code>ProjectDatabase</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-10 09:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/pull_types_visitor.rs</code>:5 on 2025-06-10 09:57</div>
+            <div class="timeline-body"><p>Yes, it looks like moving the test to <code>ty_python_semantic</code> would at least require a little refactoring (I gave it a quick try yesterday). For now I'll leave the test where it is so as not to increase the scope of this PR any further, but I can open a followup issue for moving the test and the corpus itself to <code>ty_python_semantic</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:300 on 2025-06-10 10:38</div>
+            <div class="timeline-body"><p>I think the problem here is that <code>KNOWN_PULL_TYPES_FAILURE</code> is at the mdtest file level, but <code>filter_map</code> runs for every test inside the MDTEST file (but pull types doesn't panic for all tests in that file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-10 10:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-10 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_test/src/lib.rs</code>:300 on 2025-06-10 11:17</div>
+            <div class="timeline-body"><p>Ahhh, that makes sense. So https://github.com/astral-sh/ruff/pull/18539#discussion_r2135867389 might fix this too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2025-06-11 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-11 19:53</div>
+            <div class="timeline-body"><p>Okay, this has now been reimplemented as a &quot;proper mdtest feature&quot;, that can be disabled on a per-test basis by adding the <code>&lt;!-- pull-types:skip --&gt;</code> directive to a test.</p>
+<p>This is what it looks like if the step fails with an unexpected error:</p>
+<p><img src="https://github.com/user-attachments/assets/3cfdfdb8-5a8f-4ce6-9825-9d9c39df70d9" alt="image" /></p>
+<p>And this is what an unexpected success looks like:</p>
+<p><img src="https://github.com/user-attachments/assets/47d01bd4-454f-4860-b89e-a189aa14302c" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-11 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-11 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/Cargo.toml</code>:53 on 2025-06-12 06:00</div>
+            <div class="timeline-body"><p>Huh, I'm surprised that a crate is allowed to depend on itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-12 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-12 06:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-12 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-12 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 09:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Don't recommend decorating staticmethods with `@singledispatch` (`PLE1519`, `PLE1520`) - astral-sh/ruff #10637</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Don't recommend decorating staticmethods with <code>@singledispatch</code> (<code>PLE1519</code>, <code>PLE1520</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10637">#10637</a>
+        opened by <a href="https://github.com/alex-700">@alex-700</a>
+        on 2024-03-27 20:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alex-700">@alex-700</a> on 2024-03-27 20:05</div>
+            <div class="timeline-body"><p>…andling</p>
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #10619</p>
+<p>The behaviour, introduced in this PR, is different from original <code>pylint</code>'s one, but this one is more natural.</p>
+<p>According to the docs of <a href="https://docs.python.org/3/library/functions.html#staticmethod">staticmethod</a>, the method marked with <code>@staticmethod</code> can be called via class (<code>C.foo()</code>) and via the instance (<code>C().foo()</code> (UFCS: <code>C.foo(C())</code>). Marking such method with <code>@singledispatch</code> allows only call via class, but not via the instance. Marking such method with <code>@singledispatchmethod</code> supports both <code>C.foo()</code> and <code>C().foo()</code>. The latter also is supported by <a href="https://docs.python.org/3/library/functools.html#functools.singledispatchmethod"><code>singledispatchmethod</code> docs</a> via</p>
+<blockquote>
+<p>@singledispatchmethod supports nesting with other decorators such as <a href="https://docs.python.org/3/library/functions.html#classmethod">@classmethod</a>.
+...
+The same pattern can be used for other similar decorators: <a href="https://docs.python.org/3/library/functions.html#staticmethod">@staticmethod</a>, <a href="https://docs.python.org/3/library/abc.html#abc.abstractmethod">@abstractmethod</a>, and others.</p>
+</blockquote>
+<details><summary>Example</summary>
+<p>
+
+<pre><code class="language-python">class C:
+    @singledispatchmethod
+    @staticmethod
+    def foo(x): raise NotImplementedError()
+
+    @foo.register
+    @staticmethod
+    def _(x: int) -&gt; int: return x
+
+
+print(C.foo(1))
+print(C().foo(1))
+</code></pre>
+<p>prints</p>
+<pre><code>1
+1
+</code></pre>
+<p>but</p>
+<pre><code class="language-python">class C:
+    @singledispatch
+    @staticmethod
+    def foo(x): raise NotImplementedError()
+
+    @foo.register
+    @staticmethod
+    def _(x: int) -&gt; int: return x
+
+
+print(C.foo(1))
+print(C().foo(1))
+</code></pre>
+<p>fails with</p>
+<pre><code>C.foo() takes 1 positional argument but 2 were given
+</code></pre>
+</p>
+</details> 
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>cargo test</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-27 20:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-03-27 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-04-02 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-04-02 16:39</div>
+            <div class="timeline-body"><p>Thanks @alex-700!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`] Fix `singledispatchmethod[_function]` in `@staticmethod` h…" to "[`pylint`] Don't recommend decorating staticmethods with `@singledispatch` (`PLE1519`, `PLE1520`)" by @AlexWaygood on 2024-04-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-02 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-02 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-04-11 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 20:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

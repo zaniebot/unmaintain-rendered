@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Handle extra arguments to `deque` (`RUF037`) - astral-sh/ruff #18614</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Handle extra arguments to <code>deque</code> (<code>RUF037</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18614">#18614</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-10 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-10 19:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/18612 by:</p>
+<ul>
+<li>Bailing out without a fix in the case of <code>*args</code>, which I don't think we can fix reliably</li>
+<li>Using an <code>Edit::deletion</code> from <code>remove_argument</code> instead of an <code>Edit::range_replacement</code> in the presence of unrecognized keyword arguments</li>
+</ul>
+<p>I thought we could always switch to the <code>Edit::deletion</code> approach initially, but it caused problems when <code>maxlen</code> was passed positionally, which we didn't have any existing tests for.</p>
+<p>The replacement fix can easily delete comments, so I also marked the fix unsafe in these cases and updated the docs accordingly.</p>
+<h2>Test Plan</h2>
+<p>New test cases derived from the issue.</p>
+<h2>Stabilization</h2>
+<p>These are pretty significant changes, much like those to PYI059 in https://github.com/astral-sh/ruff/pull/18611 (and based a bit on the implementation there!), so I think it probably makes sense to un-stabilize this for the 0.12 release, but I'm open to other thoughts there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-10 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-10 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-10 19:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-06-10 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 05:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF037_RUF037.py.snap</code>:174 on 2025-06-11 05:55</div>
+            <div class="timeline-body"><p>Very nit picky, but I think this is unsafe if the dict contains an <code>iterable</code> keyword. The same if there are any other keywords around:</p>
+<pre><code>&gt;&gt;&gt; from collections import deque
+&gt;&gt;&gt; a = deque(iterable=[1, 2])
+&gt;&gt;&gt; list(a)
+[1, 2]
+&gt;&gt;&gt; list(a)
+KeyboardInterrupt
+&gt;&gt;&gt; a = deque([1], iterable=[1, 2])
+Traceback (most recent call last):
+  File &quot;&lt;python-input-6&gt;&quot;, line 1, in &lt;module&gt;
+    a = deque([1], iterable=[1, 2])
+TypeError: argument for deque() given by name ('iterable') and position (1)
+</code></pre>
+<p>We should mark the fix as unsafe if there are any other arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-11 05:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF037_RUF037.py.snap</code>:174 on 2025-06-11 11:02</div>
+            <div class="timeline-body"><p>Wow nice catch! I added this case:</p>
+<pre><code class="language-py">def f():
+    deque([], iterable=[])
+</code></pre>
+<p>and realized that I was mishandling the range passed to <code>remove_argument</code> because this was returning an <code>Err</code>! I was only passing the <code>ArgOrKeyword::value</code> not the whole <code>ArgOrKeyword</code>.</p>
+<p>I fixed that, and then also marked the fix unsafe if we find an unrecognized number of arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-11 11:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-12 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-12 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 13:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

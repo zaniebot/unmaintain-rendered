@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add infrastructure for AST garbage collection - astral-sh/ruff #18445</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add infrastructure for AST garbage collection</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18445">#18445</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-06-03 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-03 17:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>https://github.com/astral-sh/ty/issues/214 will require a couple invasive changes that I would like to get merged even before garbage collection is fully implemented (to avoid rebasing):</p>
+<ul>
+<li><code>ParsedModule</code> can no longer be dereferenced directly. Instead you need to load a <code>ParsedModuleRef</code> to access the AST, which requires a reference to the salsa database (as it may require re-parsing the AST if it was collected).</li>
+<li><code>AstNodeRef</code> can only be dereferenced with the <code>node</code> method, which takes a reference to the <code>ParsedModuleRef</code>. This allows us to encode the fact that ASTs do not live as long as the database and may be collected as soon a given instance of a <code>ParsedModuleRef</code> is dropped. There are a number of places where we currently merge the <code>'db</code> and <code>'ast</code> lifetimes, so this requires giving some types/functions two separate lifetime parameters.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ibraheemdev on 2025-06-03 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ibraheemdev on 2025-06-03 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ibraheemdev on 2025-06-03 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ibraheemdev on 2025-06-03 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ibraheemdev on 2025-06-03 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-03 17:20</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-03 17:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-03 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/completion.rs</code>:15 on 2025-06-03 17:37</div>
+            <div class="timeline-body"><p>should fix the compile error on the MSRV build:</p>
+<pre><code class="language-suggestion">    let parsed = parsed_module(db.upcast(), file).load(db.upcast());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-03 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add infrastructure for AST garbage collection" to "[ty] Add infrastructure for AST garbage collection" by @AlexWaygood on 2025-06-03 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2295 on 2025-06-04 07:45</div>
+            <div class="timeline-body"><p>One of the added benefits of having pass <code>parsed_module</code> now is that it becomes more appearant when a function does a cross-file AST access (which always need to be encapsualted by a query to avoid cross-file query dependencies)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:759 on 2025-06-04 07:46</div>
+            <div class="timeline-body"><p>It's probably a bit excessive to document this everywhere but we should document it at least for <code>AstNodeRef</code> that the method panics if <code>module</code> belongs to a different file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:764 on 2025-06-04 07:47</div>
+            <div class="timeline-body"><p>Should this method take a <code>ParsedModuleRef</code>. Or what's the reason that this method resolves it internally but <code>node</code> doesn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:997 on 2025-06-04 07:47</div>
+            <div class="timeline-body"><p>Same here: Would it make sense to change this method to take a <code>ParsedModuleRef</code> argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2045 on 2025-06-04 07:48</div>
+            <div class="timeline-body"><p>I think it would be more consistent if this method take a <code>ParsedModuleRef</code> argument, similar to some other range functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/context.rs</code>:164 on 2025-06-04 07:49</div>
+            <div class="timeline-body"><p>I think it could make sense for <code>InferContext</code> to store the parsed module as a field, given that it is only created inside type inference builder where we always have a parsed module.</p>
+<p>We could then also expose it as a method so that we can cheaply retrieve the parsed module everywhere where we have an <code>InferContext</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:647 on 2025-06-04 07:55</div>
+            <div class="timeline-body"><p>Should we just clone the ref to avoid the additional lifetime argument? This should be cheap, given that it is a thin wrapper around an <code>Arc</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4864 on 2025-06-04 07:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.infer_target(target, iter, |builder, iter_expr| {
+            // TODO: `infer_comprehension_definition` reports a diagnostic if `iter_ty` isn't iterable
+            //  but only if the target is a name. We should report a diagnostic here if the target isn't a name:
+            //  `[... for a.x in not_iterable]
+            if is_first {
+                infer_same_file_expression_type(
+                    builder.db(),
+                    builder.index.expression(iter_expr),
+                    builder.module,
+                )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:77 on 2025-06-04 07:58</div>
+            <div class="timeline-body"><p>Should we just clone the <code>ParsedModuleRef</code> here to avoid the extra lifetime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:66 on 2025-06-04 07:59</div>
+            <div class="timeline-body"><p>Let's document that this method panics if <code>parsed</code> isn't a reference to the same <code>ParsedModule</code> (including revision) as for which the <code>AstNodeRef</code> was created with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5070 on 2025-06-04 08:05</div>
+            <div class="timeline-body"><p>@carljm it seems problematic to me that this <code>Type</code> method access the AST. Are there some guardrails in place that I can't see from the method's signature that prevent this from creating cross-module dependencies? Maybe there is because we pass in scope? Should we make this method <code>pub(crate)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-04 08:07</div>
+            <div class="timeline-body"><p>Nice. This looks good to me.</p>
+<p>The main thing that's unclear to me is when/how you decided which functions resolve <code>ParsedModuleRef</code> internally vs taking it as an argument. Some context there would be helpful.</p>
+<p>Otherwise, I think it would be good to add <code>ParsedModuleRef</code> to <code>InferContext</code> and use the module from the <code>InferContext</code> where possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-04 12:06</div>
+            <div class="timeline-body"><blockquote>
+<p>The main thing that's unclear to me is when/how you decided which functions resolve <code>ParsedModuleRef</code> internally vs taking it as an argument.</p>
+</blockquote>
+<p>Generally if the function returned a value referencing the AST it needs to take a reference to the parsed module, otherwise it's fine to resolve internally. A lot of the functions already resolved <code>semantic_index</code> internally so it seems there wasn't a performance concern (and we could probably create a query that merges both of those if it becomes noticeable). A lot of the methods could take a <code>ParsedModuleRef</code> and avoid performing the query, but doing it this way also made the changes easier to make programmatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-04 12:53</div>
+            <div class="timeline-body"><p>I went through and made the code more consistent in terms of only calling <code>parsed_module</code> in a query or in a function where we already call <code>semantic_index</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-04 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:77 on 2025-06-04 12:56</div>
+            <div class="timeline-body"><p>The separate lifetime makes it easier to work with internally because it can be copied around without borrowing <code>self</code>, which can interfere with calling methods that take<code> &amp;mut self</code> as well as a reference to the module. Otherwise we end up having to clone the module again before calling mutable methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-06-05 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-06-05 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-05 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-05 23:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5070 on 2025-06-05 23:57</div>
+            <div class="timeline-body"><p>I think this case is currently fine in practice, because we pass in <code>scope_id</code>, and this is always a <code>scope_id</code> from the file we are currently inferring, never cross-file. You can see this from the fact that every call site of <code>Type::in_type_expression</code> in <code>TypeInferenceBuilder</code> passes in <code>self.scope()</code> for the scope argument.</p>
+<p>It would definitely be fine to make this method <code>pub(crate)</code>, though I don't know how much that would really help prevent a possible future mis-use. We could also add a note to the method doc comment.</p>
+<p>Not sure what else we could do here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-06 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5070 on 2025-06-06 00:06</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/18488 -- open to additional suggestions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-06-11 10:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

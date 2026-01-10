@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix instance vs callable subtyping/assignability - astral-sh/ruff #18260</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix instance vs callable subtyping/assignability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18260">#18260</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-05-22 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 18:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix some issues with subtying/assignability for instances vs callables. We need to look up dunders on the class, not the instance, and we should limit our logic here to delegating to the type of <code>__call__</code>, so it doesn't get out of sync with the calls we allow.</p>
+<p>Also, we were just entirely missing assignability handling for <code>__call__</code> implemented as anything other than a normal bound method (though we had it for subtyping.)</p>
+<p>A first step towards considering what else we want to change in https://github.com/astral-sh/ty/issues/491</p>
+<h2>Test Plan</h2>
+<p>mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-05-22 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-05-22 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-05-22 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-22 18:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-assignment] strawberry/federation/scalar.py:133:9: Object of type `_T | None` is not assignable to `((...) -&gt; Unknown) | None`
+- error[invalid-argument-type] strawberry/types/scalar.py:110:29: Argument to bound method `__init__` is incorrect: Expected `(Any, /) -&gt; Any`, found `_T`
+- error[invalid-assignment] strawberry/types/scalar.py:209:9: Object of type `_T | None` is not assignable to `((...) -&gt; Unknown) | None`
+- Found 436 diagnostics
++ Found 433 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[invalid-argument-type] src/jinja2/ext.py:168:27: Argument to bound method `call` is incorrect: Expected `(...) -&gt; Any`, found `Any | Undefined`
+- Found 234 diagnostics
++ Found 233 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-22 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:677 on 2025-05-22 19:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">An instance type is assignable to a compatible callable type if the instance type's class has a callable `__call__` attribute.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1162 on 2025-05-22 19:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">An instance type can be a subtype of a compatible callable type if the instance type's class has a callable `__call__` attribute.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-22 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-05-22 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-22 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-22 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/call/dunder.md</code>:243 on 2025-05-23 07:45</div>
+            <div class="timeline-body"><p>Minor: This test here is very similar to the &quot;Operating on instances&quot; test above (search for <code>ThisFails</code>). Could we maybe add the &quot;Class-level annotations with no value&quot; part of this to the section above, instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-05-27 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/dunder.md</code>:243 on 2025-05-27 19:04</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/18343</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

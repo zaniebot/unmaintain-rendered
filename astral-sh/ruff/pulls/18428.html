@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-return`] Fix `RET504` autofix generating a syntax error - astral-sh/ruff #18428</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-return</code>] Fix <code>RET504</code> autofix generating a syntax error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18428">#18428</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-02 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-02 14:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #18411</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Add regression test.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-02 14:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_return/rules/function.rs</code>:620 on 2025-06-10 11:05</div>
+            <div class="timeline-body"><p>This now produces a syntax error for:</p>
+<pre><code class="language-py">def f():
+    x = (1
+              )
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-10 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-06-10 11:06</div>
+            <div class="timeline-body"><p>This can now result in a different syntax error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2025-06-10 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_return/rules/function.rs</code>:618 on 2025-06-11 06:45</div>
+            <div class="timeline-body"><p>Iterating over all tokens is unnecessarily slow. Especially given that you know exactly what token you're looking for. You can use <code>checker.tokens().in_range(assign.range()</code>  or <code>after(assign.start)</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_return/rules/function.rs</code>:626 on 2025-06-11 06:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                if content[eq_token.end().to_usize()..]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_return/rules/function.rs</code>:618 on 2025-06-11 06:50</div>
+            <div class="timeline-body"><p>I think the safest here is to use <code>before</code> and take all tokens up to the start of the assignment value. Then use <code>rfind</code> to find the last equal sign</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2025-06-11 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-06-11 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-06-11 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-11 13:38</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-11 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-11 13:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

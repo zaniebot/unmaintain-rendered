@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support cancellation requests - astral-sh/ruff #18627</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support cancellation requests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18627">#18627</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-11 13:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 13:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for the LSP's cancellation requests.</p>
+<p>This is mainly a backport of the following two ty PRs:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/18273</li>
+<li>https://github.com/astral-sh/ruff/pull/18211</li>
+</ul>
+<p>Unlike ty, this PR doesn't add support for retries. Retries aren't necessary because
+Ruff doesn't have to handle Salsa cancellations</p>
+<ul>
+<li>It removes <code>Requester</code>, <code>Responder</code> and <code>Notifier</code> and unifies them under a single <code>Client</code> API. I found them more confusing than helpful, and I don't see any reason why we should restrict background tasks from sending requests.</li>
+<li>It removes <code>ClientSender</code>: This is mostly a fallout of the above.</li>
+<li>Split <code>IOThreads</code> out of <code>Connection</code>: This removes the entire complexity around weak references because scoping rules now ensure that <code>Connection</code> (and its senders) are dropped before we join the thread.</li>
+<li>Remove the global <code>MESSENGER</code> and instead require callers to explicitly pass a <code>Client</code>. This helped find <code>show_message</code> call sites where <code>MESSENGER</code> wasn't initialized. It also removes global state, which is always good</li>
+<li>Responses are sent to the main loop and not directly to the client. This is required to mark the request as complete (or omit the response if the request was cancelled), and it is only possible with a mut reference to <code>Session</code> that background tasks don't have. This approach is the same as r-a's.</li>
+<li>Notifications and requests are still sent directly to the client to reduce load on the main loop. We could change that if we want but I decided against it for now.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Started VS code with the new ruff server.</p>
+<ul>
+<li>Verified that diagnostics still show up.</li>
+<li>Verified that no ruff process is running after closing VS code</li>
+<li>I added a 1s sleep to the diagnostic handler. I verified that there are cancellation requests (and the requests are cancelled)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-06-11 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 13:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 13:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-06-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-06-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-06-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-06-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-11 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-06-11 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:359 on 2025-06-12 09:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;The Ruff language server exited with a panic. See the logs for more details.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/request_queue.rs</code>:1 on 2025-06-12 10:03</div>
+            <div class="timeline-body"><p>This looks exactly the same as the one in the <code>ty_server</code>, can we re-use it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/client.rs</code>:1 on 2025-06-12 10:05</div>
+            <div class="timeline-body"><p>This also looks the same as the one in <code>ty_server</code> except for the <code>retry</code> method, maybe this could be re-used as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/main_loop.rs</code>:217 on 2025-06-12 10:07</div>
+            <div class="timeline-body"><p>If we can't re-use the client implementation, we should probably inline the single enum variant in <code>Event</code>:</p>
+<pre><code class="language-rs">#[derive(Debug)]
+pub enum Event {
+    /// An incoming message from the LSP client.
+    Message(lsp_server::Message),
+
+    /// Send a response to the client
+    SendResponse(lsp_server::Response),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-06-12 10:09</div>
+            <div class="timeline-body"><p>Looks good! I haven't looked very closely at the code but it all looks almost same as the one in <code>ty_server</code> so I've provided a couple of recommendations to de-duplicate if possible. This doesn't need to happen in this PR and we can also open a &quot;help-wanted&quot; issue for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-12 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/client.rs</code>:1 on 2025-06-12 17:14</div>
+            <div class="timeline-body"><p>Yes, it's almost the same with the exception that it doesn't have a <code>retry</code> function.</p>
+<p>It's not a &quot;difficult&quot; problem but there is no good place for the files that are shared between ruff and the ty server. And <code>Client</code> depends on <code>Session</code>, which makes the reuse a bit of a challenge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-12 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-06-12 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-12 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-12 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 20:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

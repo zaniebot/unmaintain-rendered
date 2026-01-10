@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Create separate `FunctionLiteral` and `FunctionType` types - astral-sh/ruff #18360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Create separate <code>FunctionLiteral</code> and <code>FunctionType</code> types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18360">#18360</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-05-29 01:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-29 01:27</div>
+            <div class="timeline-body"><p>This updates our representation of functions to more closely match our representation of classes.</p>
+<p>The new <code>OverloadLiteral</code> and <code>FunctionLiteral</code> classes represent a function definition in the AST. If a function is generic, this is unspecialized. <code>FunctionType</code> has been updated to represent a function type, which is specialized if the function is generic. (These names are chosen to match <code>ClassLiteral</code> and <code>ClassType</code> on the class side.)</p>
+<p>This PR does not add a separate <code>Type</code> variant for <code>FunctionLiteral</code>. Maybe we should? Possibly as a follow-on PR?</p>
+<p>Part of https://github.com/astral-sh/ty/issues/462</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-05-29 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-29 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-29 17:45</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-05-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-05-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-05-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:64 on 2025-05-30 05:50</div>
+            <div class="timeline-body"><p>Nit: Should we use <code>1 &lt;&lt; 0</code> similar to <code>FunctionDecorators</code> to have a single style for defining bitflags</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:441 on 2025-05-30 05:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[returns(deref)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-30 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:413 on 2025-05-30 07:59</div>
+            <div class="timeline-body"><p>This method is now always returning as oppose to using an <code>Option&lt;...&gt;</code>. Looking at the implementation, I think for non-overloaded functions the return type would be <code>([], Some(fn))</code> and for an overloaded function it would be <code>([overload1, overload2, ...], ...)</code> i.e., the difference between the return type would be whether the overload slice is empty or not. Is that correct?</p>
+<p>I've a slight preference to keeping it as an <code>Option&lt;...&gt;</code> to make the difference between an overloaded and a non-overloaded function explicit. It's also easier to then skip any logic which is not intended for a non-overloaded function like the overload checks (<code>check_overloaded_functions</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2329 on 2025-05-30 08:01</div>
+            <div class="timeline-body"><p>The previous version is only looping over the overloads and excludes checking the implementation while the new version includes the implementation. Is this expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-30 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:64 on 2025-05-30 14:25</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2329 on 2025-05-30 14:29</div>
+            <div class="timeline-body"><p>My reading of the comment above suggested that we should look in the implementation, too, particularly this part:</p>
+<blockquote>
+<p>just use the params of the last seen usage of <code>@dataclass_transform</code></p>
+</blockquote>
+<p>Do you know if we should only look at the overloads? I can change it to be consistent with the previous version if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:413 on 2025-05-30 15:20</div>
+            <div class="timeline-body"><p>My thinking here was that wrapping the result in <code>Option</code> doesn't play nicely with <code>OverloadLiteral</code> and <code>FunctionLiteral</code> now being different types. If this returns <code>None</code> for the non-overloaded case, you'd have to then call some other method to get the non-overloaded <code>OverloadLiteral</code>. (That name might be unfortunate, since there is still one <code>OverloadLiteral</code> for a non-overloaded function.)</p>
+<p>If you don't care about whether the function is overloaded or not, that's either because you just want the signature (and <code>signature</code> does the right thing for you), or you just want the last definition, regardless of whether that's (a) the only definition of a non-overloaded function, (b) the implementation of an overloaded function, or (c) the last overload of an overloaded function that has no implementation. And for that you can just access the <code>current_overload</code> field — though given this discussion, I think that should maybe be renamed to <code>last_definition</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-30 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-30 15:27</div>
+            <div class="timeline-body"><p>@dhruvmanila's comment also makes me realize that these types are not well structured for specialized generic functions. (And what this is replacing wasn't either!) It is the individual overloads of a function that are generic or not, but we're currently record a list of specializations for the function as a whole! This is correct for the <code>inherited_generic_context</code>, which comes from the containing class and does apply to every overload. But it's not correct for specializations of individual overloads.</p>
+<p>I'm going to put this back to draft while I have a think about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-05-30 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-30 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2329 on 2025-05-30 15:49</div>
+            <div class="timeline-body"><p>Sorry, you're right! I missed one line in the diff where the previous version was looking at <code>f</code> directly which would correspond to either the overload implementation or the last overload. And, come to think of it, that would do duplicate work if the decorator was on the last overload and there's no implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-30 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:413 on 2025-05-30 16:11</div>
+            <div class="timeline-body"><p>Thank you! This is useful context</p>
+<blockquote>
+<p>My thinking here was that wrapping the result in <code>Option</code> doesn't play nicely with <code>OverloadLiteral</code> and <code>FunctionLiteral</code> now being different types. If this returns <code>None</code> for the non-overloaded case, you'd have to then call some other method to get the non-overloaded <code>OverloadLiteral</code>.</p>
+</blockquote>
+<p>I see. Wouldn't we still require <code>.unwrap</code> because the non-overloaded function literal would be represented by <code>Option&lt;OverloadLiteral&gt;</code> (second element in the tuple)? And, in the <code>None</code> case, we could use the <code>current_overload</code> that would represent the non-overloaded function literal, right?</p>
+<p>That said, I do see the potential downsides of using an <code>Option&lt;(..., ...)&gt;</code> as the resulting type. I'm curious to know if you have an example use-case in mind which you have thought of that would benefit from a non-option type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-30 19:44</div>
+            <div class="timeline-body"><blockquote>
+<p>@dhruvmanila's comment also makes me realize that these types are well structured for specialized generic functions. (And what this is replacing wasn't either!) It is the individual overloads of a function that are generic or not, but we're currently record a list of specializations for the function as a whole! This is correct for the <code>inherited_generic_context</code>, which comes from the containing class and does apply to every overload. But it's not correct for specializations of individual overloads.</p>
+</blockquote>
+<p>We discussed this in Discord, and I think that the current representation is okay.</p>
+<p>I think there are still <a href="https://discuss.python.org/t/pep-718-subscriptable-functions/28457/45">open questions</a> about what it would even mean to explicitly specialize an overloaded function. Until those questions are addressed, we don't need to worry about it, since we don't persist specializations of generic functions. We infer specializations of individual overloads as part of calling one, but we use those specializations immediately to infer the return type, and then throw it away. The only way that specialized functions show up persistently is via a containing generic class (e.g. <code>C[int].method</code>), and those are handled correctly by the current representation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:413 on 2025-05-30 20:17</div>
+            <div class="timeline-body"><blockquote>
+<p>That said, I do see the potential downsides of using an <code>Option&lt;(..., ...)&gt;</code> as the resulting type. I'm curious to know if you have an example use-case in mind which you have thought of that would benefit from a non-option type?</p>
+</blockquote>
+<p>It's more that I don't think we need the extra <code>Option</code> wrapper to tell you if the function is overloaded, since <code>overloads.is_empty()</code> tells you that, e.g.</p>
+<p>https://github.com/astral-sh/ruff/blob/86eba968d99e66eac9f7ce3785563afca2bb3777/crates/ty_python_semantic/src/types/infer.rs#L1134-L1137</p>
+<p>(I had forgotten that check in the draft you were looking at before, though I think it doesn't add any incorrectness to perform the check on <em>all</em> functions — if a function isn't overloaded, the &quot;check all overloads&quot; loops will not have anything to loop over!)</p>
+<p>I also did the renaming I suggested above, so if you don't care if the function is overloaded, and just want the last definition, you can call <code>function.last_definition(db)</code> and not have to worry about <code>overloads_and_implementation</code> at all.</p>
+<p>I also added a big module comment trying to explain this context more. lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-30 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-05-30 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:260 on 2025-05-30 21:31</div>
+            <div class="timeline-body"><p>This TODO is confusing me. The &quot;when generic function types are supported&quot; part of it looks kind of obsolete -- haven't they been supported for a while now?</p>
+<p>But it does look like we still don't show the generic context here, so maybe the overall TODO is still relevant? Is there something blocking us from resolving this? (If not, that doesn't mean it needs to be resolved in this PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:5 on 2025-05-30 21:33</div>
+            <div class="timeline-body"><p>And individual overloads of a given function can independently be generic or not-generic, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:18 on 2025-05-30 21:37</div>
+            <div class="timeline-body"><p>What is the actual TODO here? Is it to stop representing these as <code>Type::Callable</code> with the <code>is_function_like</code> flag that @sharkdp added, and instead include them in our function representation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:338 on 2025-05-30 21:54</div>
+            <div class="timeline-body"><p>I find this comment slightly vague/confusing. This field is part of the identity of a <code>FunctionLiteral</code> type, so it kind of doesn't make sense to say &quot;if... being used to...&quot; -- this isn't an ephemeral thing that only shows up when the function is used in a certain way. Can we be more explicit/clear here about precisely under what circumstances we will have an <code>inherited_generic_context</code> on a function literal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:260 on 2025-05-30 22:12</div>
+            <div class="timeline-body"><p>I think this doc comment has kind of migrated along with various refactors since I think I originally wrote it -- but looking at the current state of the code, I am not convinced it's fully accurate -- I don't think we actually use this at all for type checking the body of the function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:448 on 2025-05-30 22:13</div>
+            <div class="timeline-body"><p>This doc comment I think also deserves the same warning about not calling it cross-file. (I guess the fact that it's private should help here.) It's important that all cross-file access goes through the Salsa-tracked <code>FunctionType::signature</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-30 22:16</div>
+            <div class="timeline-body"><p>Pro refactoring: zero tests touched!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 03:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:413 on 2025-06-02 03:51</div>
+            <div class="timeline-body"><blockquote>
+<p>(I had forgotten that check in the draft you were looking at before, though I think it doesn't add any incorrectness to perform the check on <em>all</em> functions — if a function isn't overloaded, the &quot;check all overloads&quot; loops will not have anything to loop over!)</p>
+</blockquote>
+<p>Got it, thanks for updating.</p>
+<blockquote>
+<p>I also added a big module comment trying to explain this context more. lmkwyt</p>
+</blockquote>
+<p>This reads well, thank you for adding that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-02 03:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:359 on 2025-06-02 03:54</div>
+            <div class="timeline-body"><p>nit: I'd prefer to just inline this as I think it's only being used once? Or, if you have any other use cases in mind, feel free to keep it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:260 on 2025-06-02 17:24</div>
+            <div class="timeline-body"><p>Nothing blocking other than deciding whether it's what we want to do.  I've reworded the TODO comment for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:5 on 2025-06-02 17:25</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:18 on 2025-06-02 17:30</div>
+            <div class="timeline-body"><p>Yes, this comment https://github.com/astral-sh/ruff/pull/18242#issuecomment-2898173409</p>
+<p>It's also somewhat combined with the point above about &quot;known&quot; functions, and the idea we've floated about pulling some of the special-case logic out from <code>call/bind.rs</code> and <code>infer.rs</code> into hook fields of the function representation.</p>
+<p>I can reword or remove this if it's too muddled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:260 on 2025-06-02 17:32</div>
+            <div class="timeline-body"><p>That's a good point, the signature is only used when analyzing call sites. (We do use the parameter and return type annotations when type-checking the body, but we don't get those from the function's <code>Signature</code>)</p>
+<p>Removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:338 on 2025-06-02 17:37</div>
+            <div class="timeline-body"><p>I'll answer the question here to help figure out what change to make to the comment.</p>
+<p>For something like</p>
+<pre><code class="language-py">class C[T]:
+    def __init__(self, x: T) -&gt; None: ...
+</code></pre>
+<p>when we encounter <code>__init__</code> during type inference, we infer a <code>FunctionLiteral</code> for the definition. But we don't check right then whether the method is a generic class constructor, and so (like all other function definitions), this field is <code>None</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/f379eb6e624e03583bd23ca3a9b3bc53cf1448a3/crates/ty_python_semantic/src/types/infer.rs#L2038</p>
+<p>During <em>member lookup</em> (which is performed as part of class construction), we special-case <code>__init__</code> and <code>__new__</code> to <em>update</em> this field to hold the generic context of the containing class:</p>
+<p>https://github.com/astral-sh/ruff/blob/f379eb6e624e03583bd23ca3a9b3bc53cf1448a3/crates/ty_python_semantic/src/types/class.rs#L1285-L1288</p>
+<p>That means we end up creating a <em>second</em> <code>FunctionLiteral</code> for the method, which is what we pass on to the call binding logic, to let us infer a specialization of a class.</p>
+<p>So I think it actually <em>is</em> an ephemeral thing that only shows up during a constructor call.</p>
+<p>Maybe it's enough to reword it as &quot;when this function is a class method [etc]&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:359 on 2025-06-02 17:40</div>
+            <div class="timeline-body"><p>Yep good call</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:448 on 2025-06-02 17:46</div>
+            <div class="timeline-body"><p>Added.  I also added a similar comment to <code>OverloadLiteral::signature</code> above, which is crate-public, since it is called by the <code>display()</code> implementation, and when rendering diagnostics (which I think are both okay places to add the cross-file dependency?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-02 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-03 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:338 on 2025-06-03 14:45</div>
+            <div class="timeline-body"><p>Added a summary of :point_up: to the field comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-06-03 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-06-03 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-03 14:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

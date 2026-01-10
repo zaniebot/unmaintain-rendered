@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Treat type statement value as typing references - astral-sh/ruff #16981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Treat type statement value as typing references</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16981">#16981</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-03-26 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-26 13:01</div>
+            <div class="timeline-body"><p>Closes #16886</p>
+<h2>Summary</h2>
+<p>This treats references inside PEP 695 deferred type aliases as typing references as long as the type alias itself does not have any runtime references.</p>
+<h2>Test Plan</h2>
+<p><code>cargo insta test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-26 13:03</div>
+            <div class="timeline-body"><p>We may want to consider putting this new behavior behind the preview flag or add a new setting so it's user-configurable. See the linked issue for some discussion about why we may want to go one way or the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-26 13:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-26 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-31 12:55</div>
+            <div class="timeline-body"><p>I'm a bit worried about making this behavior the default because it now increases the likelihood that Ruff breaks your code. I think I'd prefer gating this behind a new setting. Would a more generic configuring how type annotations are used in this project (runtime or typing only) be useful in other places too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-31 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit worried about making this behavior the default because it now increases the likelihood that Ruff breaks your code. I think I'd prefer gating this behind a new setting. Would a more generic configuring how type annotations are used in this project (runtime or typing only) be useful in other places too?</p>
+</blockquote>
+<p>I tend to agree, At least for public type aliases. I think with private type aliases (i.e. prefixed with an underscore) we could more or less safely make this behavior the default. The flake8 plugin has been treating all PEP 695 aliases this way for more than a year and there hasn't really been any feedback on that front. But given that the audience for PEP 695 features is probably still relatively small, that doesn't really say that much.</p>
+<p>Then there's also PEP 695 type parameter bounds and PEP 696 type parameter defaults, which I didn't cover in this change, but I think they're worth a discussion as well. I think we could safely treat those as typing-only as well, since introspection of type parameters is very rare (I don't see very many use-cases for this beyond doing something beartype-ish and injecting runtime checks into <code>__class__getitem__</code> to validate the generic subscript is valid, I see more potential use-cases for type var defaults, since it would allow runtime type libraries to fill the missing type parameter with the default type, rather than emit an error for the missing type parameter), we could use <code>runtime-evaluated-base-classes</code> to make those two type expressions runtime required, just like with annotations.</p>
+<p>As for how generally useful a generic setting about typing-use in a project would be? I'm not sure, there's also my other open PR that allows more fine-grained control over which expressions TC001-004 are allowed to quote to keep imports typing only. Should all of these things be individual knobs? Or can we assume more broadly that most/all people that only want to support typing-only use of their types want the same behavior. I.e. can we segment our audience in a handful of broad categories like:</p>
+<ul>
+<li>assume no runtime use of types (except for the uses we can see)</li>
+<li>assume runtime use of public types excluding annotations</li>
+<li>assume runtime use of all types excluding annotations</li>
+<li>assume runtime use of all types including annotations (this essentially would make every type annotation runtime required, so you should never get a TC001-003 violation)</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

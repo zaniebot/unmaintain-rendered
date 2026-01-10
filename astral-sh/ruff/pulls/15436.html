@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] implement unit-test-super (RUF058) - astral-sh/ruff #15436</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] implement unit-test-super (RUF058)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15436">#15436</a>
+        opened by <a href="https://github.com/njhearp">@njhearp</a>
+        on 2025-01-11 19:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/njhearp">@njhearp</a> on 2025-01-11 19:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This implements a rule to catch unit test methods (setUp, tearDown, setUpClass, tearDownClass) that do not call their corresponding super methods. Addresses #14009</p>
+<h2>Test Plan</h2>
+<p>cargo test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-11 19:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/7e57477dea0b2736bbc04466c6b90cb5d6567d23/tools/tests/test_zulint_custom_rules.py#L17'>tools/tests/test_zulint_custom_rules.py:17:9:</a> RUF058 Call super methods for unit test methods
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/477e9283aabc93f8d3ad34ff0b98f68b5a432aa8/testing/example_scripts/unittest/test_setup_skip.py#L10'>testing/example_scripts/unittest/test_setup_skip.py:10:9:</a> RUF058 Call super methods for unit test methods
++ <a href='https://github.com/pytest-dev/pytest/blob/477e9283aabc93f8d3ad34ff0b98f68b5a432aa8/testing/example_scripts/unittest/test_setup_skip_class.py#L11'>testing/example_scripts/unittest/test_setup_skip_class.py:11:9:</a> RUF058 Call super methods for unit test methods
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF058 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unit_test_super.rs</code>:91 on 2025-01-11 22:27</div>
+            <div class="timeline-body"><p>Is it intentional to disallow the super call in a nested block: E.g. this would not detect:</p>
+<pre><code>class Test(...):
+	def setUp(self): 
+		with SomeContext():
+			super.setUp(0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unit_test_super.rs</code>:66 on 2025-01-11 22:28</div>
+            <div class="timeline-body"><p>Nit: I'd use a <code>match</code> statement here</p>
+<pre><code class="language-suggestion">            if matches!(name, &quot;setUp&quot; | &quot;tearDown&quot; | &quot;setUpClass&quot; | &quot;tearDownClass) &amp;&amp; !has_super_call(body, name) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unit_test_super.rs</code>:79 on 2025-01-11 22:28</div>
+            <div class="timeline-body"><p>We should use the <code>checker.semantic_model().resolve_qualified_name</code> to ensure this name resolves to <code>unittest.TestClass</code> and not any other class named <code>TestClass</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-11 22:29</div>
+            <div class="timeline-body"><p>Thanks. I left a few comments. the ecosystem check shows that this rule should be skipped for stub files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-11 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-01-11 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/njhearp">@njhearp</a> reviewed on 2025-01-11 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/njhearp">@njhearp</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unit_test_super.rs</code>:91 on 2025-01-11 22:44</div>
+            <div class="timeline-body"><p>That's not intended I'm going to work on a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/njhearp">@njhearp</a> reviewed on 2025-01-11 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/njhearp">@njhearp</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unit_test_super.rs</code>:79 on 2025-01-11 22:45</div>
+            <div class="timeline-body"><p>I'll work on adjusting it to use <code>checker.semantic_model().resolve_qualified_name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-01-13 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 07:54</div>
+            <div class="timeline-body"><p>We should also come to a conclusion first whether this rule should flag subclasses of <code>TestCase</code> or only cases where a class extends from a custom <code>TestCase</code>, see https://github.com/astral-sh/ruff/issues/14009</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-01-13 15:23</div>
+            <div class="timeline-body"><p>I think it would be best to wait for the multi-file analysis. I do not think it would be worth the false negatives as AlexWaygood was mentioning in #14009.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @njhearp on 2025-01-13 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-13 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

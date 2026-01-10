@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centralize client options validation - astral-sh/ruff #18623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Centralize client options validation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18623">#18623</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-11 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 09:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The main motivation for this refactor was to port the ty LSP refactors to Ruff. However, I ran into the problem that <code>ResolvedClientSettings::new</code> uses <code>show_err_msg</code> that now would require a <code>Client</code>, but I don't easily have access to a <code>Client</code> in <code>make_document_ref</code> (which is called from <code>take_snapshot</code>).</p>
+<p>Now, the refactor in this PR goes beyond what's required to remove the <code>Client</code> dependency but I only realized this when I was done with the larger refactor. I'm interested in second opinions on if I should narrow the refactor or if, what I've done here, overall improves the code (I think it does).</p>
+<p>The changes required to remove the <code>Client</code> dependency are:</p>
+<ol>
+<li>Change <code>ResolvedClientSettings::new</code> to return a <code>Result</code>. This way, it's up to the caller to call <code>show_err_msg</code></li>
+<li>Introduce a new <code>GlobalClientSettings</code> that validates the global options exactly once (instead everytime they're needed). We can store a <code>Client</code> on <code>GlobalClientOptions</code> instead of having to pass it to <code>make_document_ref</code>.</li>
+</ol>
+<p>Now, the other refactor that I did was to align the settings handling with Ruff/ty:</p>
+<ul>
+<li><code>Options</code> is the unresolved configuration as specified by the users. All values use <code>Option&lt;T&gt;</code> (<code>ClientSettings</code> -&gt; <code>ClientOptions</code>, <code>AllSettings</code> -&gt; <code>AllOptions</code>, ...)</li>
+<li><code>Settings</code> are the resolved configurations with defaults filled (<code>ResolvedClientSettings</code> -&gt; <code>ClientSettings</code>)</li>
+<li>Split resolving the options to settings and combining options from different sources into two steps:<ol>
+<li>Implement <code>Combine</code> on <code>ClientOptions</code>. Options from different sources can be <em>combined</em> together</li>
+<li>Add the <code>Options::into_settings</code> method that resolves (and validates) the options into settings</li>
+</ol>
+</li>
+</ul>
+<p>I find this two staged process easier to reason about and using the same terminology as in Ruff and ty helps when navigating the code.</p>
+<h2>Test plan</h2>
+<ul>
+<li>I tested that toggling global options toggles the corresponding behavior in the server</li>
+<li>I verified that settings can be overriden at the workspace level</li>
+<li>I verified that the server shows no error message when using an invalid rule code at the global level if the same setting is overriden at the workspace level</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-06-11 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session.rs</code>:41 on 2025-06-11 09:31</div>
+            <div class="timeline-body"><p>Somewhat scary that we clone the settings for every request! We should probably use an <code>Arc</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 09:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:233 on 2025-06-11 09:34</div>
+            <div class="timeline-body"><p>This resulted in constructing and validating the global settings on every keystroke (worst case) which then could result in Ruff spamming the user with errors. We can now simply cache settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 09:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/options.rs</code>:442 on 2025-06-11 11:22</div>
+            <div class="timeline-body"><p>It's a bit unfortunate that this is now our third version of <code>Combine</code>. I tried to use Ruff's <code>CombineOptions</code> but had to realise that the server's combine logic is closer to ty's but also inconsistent. Making it impossible to use either ty's nor Ruff's implementation</p>
+<ul>
+<li>Unlike Ruff, the server deeply merges options. E.g., setting <code>lint</code> in the workspace settings doesn't override all <code>lint</code> settings from the global settings.</li>
+<li>Unlike ty, the server doesn't merge vectors.</li>
+<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn't exist. Now, we'll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor Ruff-server options" to "Centralize client options validation" by @MichaReiser on 2025-06-11 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-06-11 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session.rs</code>:41 on 2025-06-11 11:57</div>
+            <div class="timeline-body"><p>I fixed this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/options.rs</code>:1 on 2025-06-11 11:58</div>
+            <div class="timeline-body"><p>The additions in this file primarily consist of the types that I moved from <code>settings</code> to here.</p>
+<p>The main notable changes are:</p>
+<ul>
+<li>The <code>Combine</code> implementations</li>
+<li>The <code>into_settings</code> implementations</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:80 on 2025-06-12 07:52</div>
+            <div class="timeline-body"><p>Rename to align with the new enum name</p>
+<pre><code class="language-suggestion">        let mut all_options = AllOptions::from_value(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index.rs</code>:233 on 2025-06-12 08:25</div>
+            <div class="timeline-body"><p>Thanks! This makes sense, I have a half baked branch doing something similar locally ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/options.rs</code>:442 on 2025-06-12 08:30</div>
+            <div class="timeline-body"><p>Yeah, there are two parts to settings resolution in the server:</p>
+<ol>
+<li>The server needs to pick the value from either the global or the workspace setting.</li>
+<li>Combine the options from different sources like inline configuration / configuration file and the editor settings</li>
+</ol>
+<p>In (1), this split between the global and workspace mainly exists in VS Code and is one of the reason I want to move us away from this model and pull the settings for a workspace from the client directly so that the client gives us the final value that we need to use and the only thing we need to do is (2).</p>
+<blockquote>
+<ul>
+<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn't exist. Now, we'll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
+</ul>
+</blockquote>
+<p>Yeah, I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-06-12 08:44</div>
+            <div class="timeline-body"><p>Looks good! Thanks for making this change. I think what you're calling &quot;combine&quot; is actually &quot;choosing&quot; between the workspace and global options :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-12 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-12 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-12 16:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

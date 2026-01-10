@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support cancellation and retry in the server - astral-sh/ruff #18273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support cancellation and retry in the server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18273">#18273</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-23 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 09:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements the following releated features:</p>
+<ul>
+<li>Support re-trying requests after they failed due to a salsa Cancellation (some content in the db was modified)</li>
+<li>Support for the LSP cancel request: Don't retry requests that were cancelled. Don't run background requests that were cancelled before they run on the background thread</li>
+</ul>
+<p>This required significant refactoring of the server's request/notification/respond model because tracking the pending requests requires access to <code>Session</code>, which we don't have in background tasks.</p>
+<p>This PR:</p>
+<ul>
+<li>It removes <code>Requester</code>, <code>Responder</code> and <code>Notifier</code> and unifies them under a single <code>Client</code> API. I found them more confusing than helpful, and I don't see any reason why we should restrict background tasks from sending requests.</li>
+<li>It removes <code>ClientSender</code>: This is mostly a fallout of the above.</li>
+<li>Split <code>IOThreads</code> out of <code>Connection</code>: This removes the entire complexity around weak references because scoping rules now ensure that <code>Connection</code> (and its senders) are dropped before we join the thread.</li>
+<li>Remove the global <code>MESSENGER</code> and instead require callers to explicitly pass a <code>Client</code>. This helped find <code>show_message</code> call sites where <code>MESSENGER</code> wasn't initialized. It also removes global state, which is always good</li>
+<li>Responses are sent to the main loop and not directly to the client. This is required to mark the request as complete (or omit the response if the request was cancelled), and it is only possible with a mut reference to <code>Session</code> that background tasks don't have. This approach is the same as r-a's.</li>
+<li>Notifications and requests are still sent directly to the client to reduce load on the main loop. We could change that if we want but I decided against it for now.</li>
+</ul>
+<p>Closes https://github.com/astral-sh/ty/issues/75</p>
+<h2>Test Plan</h2>
+<ul>
+<li>I added a timeout in the background task scheduling and verified that requests weren't processed that were cancelled by the client</li>
+<li>I added a timeout to completions (that now has retry enabled) and verified that the request is re-executed after a salsa cancellation</li>
+<li>I tested that a panic on the main loop still shows a message box</li>
+<li>I tested that a panic in a background task shows a message box</li>
+<li>I tested that the server correctly restarts when issuing the restart server command</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-23 09:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-05-23 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-23 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-23 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-23 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-23 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-26 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mscheifer">@mscheifer</a> reviewed on 2025-05-27 05:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mscheifer">@mscheifer</a> on <code>crates/ty_server/src/lib.rs</code>:30 on 2025-05-27 05:55</div>
+            <div class="timeline-body"><p>This should stay as <code>min</code> I think. See this PR: https://github.com/astral-sh/ruff/pull/17421</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_server/src/server/api.rs</code>:216 on 2025-05-27 07:18</div>
+            <div class="timeline-body"><p>When reading this file top-to-bottom, this comment confused me for a bit, because of where it is located. Should this be moved one line down (into the branch), or changed to something like the following?</p>
+<pre><code class="language-suggestion">            // Check if request was canceled due to some modifications to the salsa database:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-05-27 07:46</div>
+            <div class="timeline-body"><p>Thank you very much. This all looks very reasonable, but I can not review this as deeply as it might be necessary. I'm not (yet) familiar with the LSP server code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:97 on 2025-05-28 03:20</div>
+            <div class="timeline-body"><p>Just want to understand whether the capacity of this channel is based on an analysis / experimentation or is it mainly that this should be good enough for now. I'm assuming it's the latter as it's mainly used for responses. Regardless, maybe we could extract it out as a constant (https://docs.astral.sh/ruff/rules/magic-value-comparison/ :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/client.rs</code>:242 on 2025-05-28 03:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Sends a warning to the client with a formatted message. The message is sent in a
+/// `window/showMessage` notification.
+#[macro_export]
+macro_rules! show_warn_msg {
+    ($client:expr, $msg:expr$(, $($arg:tt)*)?) =&gt; {{
+        let result = $client.show_message(::core::format_args!($msg$(, $($arg)*)?), lsp_types::MessageType::WARNING);
+
+        if let Err(err) = result {
+            tracing::error!(&quot;Failed to send warning message to client: {err}&quot;);
+        }
+    }};
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/client.rs</code>:223 on 2025-05-28 03:53</div>
+            <div class="timeline-body"><p>nit: I'm inclined to remove these macros and instead just make it a method on the <code>Client</code> itself like the special case of the existing <code>show_message</code> (<code>show_error_message</code>, <code>show_warning_message</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/client.rs</code>:60 on 2025-05-28 04:05</div>
+            <div class="timeline-body"><p>Should we add any info for which request this error response is for? Like the request method? Or, is it that the trace logs will allow us to link the request for this response?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/client.rs</code>:79 on 2025-05-28 04:06</div>
+            <div class="timeline-body"><p>I think this should be the &quot;Client response was invalid&quot; ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/completion.rs</code>:22 on 2025-05-28 04:30</div>
+            <div class="timeline-body"><p>Curious to know how should we decide which requests are useful to retry on cancellation. Like, I think for completion it's mainly because each keystroke would change the file content which means the old completion items might be not relevant so it would be useful to re-compute the completion items.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/connection.rs</code>:16 on 2025-05-28 04:35</div>
+            <div class="timeline-body"><p>Now that the <code>threads</code> field is removed, I wonder if it's possible to use the <code>lsp::Connection</code> instead of the custom <code>Connection</code> struct. I'm guessing probably not because of the custom <code>handle_shutdown</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-28 04:40</div>
+            <div class="timeline-body"><p>This is great! It simplifies a bunch of stuff.</p>
+<p>A few questions / notes going through the diff:</p>
+<ul>
+<li>The spec mentions that cancellation would make it possible to return partial results. I don't think that's supported right now and I don't even think it's required or necessary now or in the near future until we've completed most of the capabilities. I don't know if partial results is going to be useful and if so how much.</li>
+<li>Does the current implementation only &quot;records&quot; that this request has been cancelled and not actually cancel the running thread?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 06:51</div>
+            <div class="timeline-body"><blockquote>
+<p>The spec mentions that cancellation would make it possible to return partial results. I don't think that's supported right now and I don't even think it's required or necessary now or in the near future until we've completed most of the capabilities. I don't know if partial results is going to be useful and if so how much.</p>
+</blockquote>
+<p>That's correct. The current implementation always omits the entire result. Partial results would complicate things a bit because</p>
+<p>The server can't send the cancelled response immediately if the request is already in progress. We also need to pass the <code>CancellationToken</code> to the request handler so that it can decide itself what it wants to do if it gets cancelled. I'm not sure how well that would work overall because cancellations are mainly issued after changes and changes result in a write to the db -&gt; any db access unwinds with a <code>Salsa::Cancelled</code> payload. But definetely something worth exploring in the future</p>
+<blockquote>
+<p>Does the current implementation only &quot;records&quot; that this request has been cancelled and not actually cancel the running thread?</p>
+</blockquote>
+<p>This is correct. However, I don't think it should matter in most cases because the main reason for a client to send a cancellation is when some content changed, which results in mutating the database. Salsa implements mutation by unwinding all other db clones when they are accessed the next time. What this means in practice is that salsa cancels in-flight requests. However, we could pass the <code>CancellationToken</code> to the request handler if we have some computationally intensive logic that doesn't perform any database access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 06:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:97 on 2025-05-28 06:52</div>
+            <div class="timeline-body"><p>Yeah, it's a made-up number. I can add a comment. I'm not a fan of the magic-value-comparison rule myself because it only adds indirection for a value that's used exactly once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/client.rs</code>:60 on 2025-05-28 06:54</div>
+            <div class="timeline-body"><p>I've to study this code. It's mainly copied over. But I think it could be nice to also create a tracing span</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/completion.rs</code>:22 on 2025-05-28 06:57</div>
+            <div class="timeline-body"><p>I don't have a good heuristic for it yet. We don't need to retry diagnostic requests because the LSP has special support for retrying them.</p>
+<p>go-to-type definition are probably no longer relevant and the user can easily re-trigger them by moving the mouse a little. I think we may want retry for inlay hints (but some servers also support retrying?). I expect that it takes us a few iterations to figure out where and when we should apply retrying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-28 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:97 on 2025-05-28 07:46</div>
+            <div class="timeline-body"><p>Adding a comment sounds reasonable as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-28 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/completion.rs</code>:22 on 2025-05-28 07:49</div>
+            <div class="timeline-body"><p>That sounds reasonable 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/connection.rs</code>:16 on 2025-05-28 08:23</div>
+            <div class="timeline-body"><p>Possibly. I'd like to keep it as is for now. I like that <code>handle_shutdown</code> is on our <code>Connection</code> type because it makes it clear that other main loop messages won't be processed anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/client.rs</code>:60 on 2025-05-28 08:33</div>
+            <div class="timeline-body"><p>I added a debug span and included the method in more messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-28 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-28 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-28 08:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

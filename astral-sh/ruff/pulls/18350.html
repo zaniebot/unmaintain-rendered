@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Split `Type::KnownInstance` into two type variants - astral-sh/ruff #18350</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Split <code>Type::KnownInstance</code> into two type variants</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18350">#18350</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-28 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-28 10:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR splits <code>Type::KnownInstance</code> into two <code>Type</code> variants.</p>
+<p>Although the variants of <code>KnownInstanceType</code> are more similar to each other than they are to any other <code>Type</code> variants, there's nonetheless a blurring of two somewhat distinct concepts in the enum as it currently stands:</p>
+<ul>
+<li>Most variants represent a single symbol that will always exist at one (or possibly two, if it's backported via <code>typing_extensions</code>) known locations at runtime. For example: <code>typing.Required</code>, <code>typing.ClassVar</code>, <code>typing.Final</code>, etc.</li>
+<li>Four variants, however, are special enough that they could arguably each have their own <code>Type</code> variant. I don't think that would be worth the extra branches everywhere (and the associated maintenance burden), but the point stands that these each represent distinct concepts to the other variants in <code>KnownInstanceType</code>. These variants are <code>KnownInstanceType::TypeAliasType()</code> (used for all PEP-695 <code>type</code> statements), <code>KnownInstanceType::TypeVar()</code>, <code>KnownInstanceType::Generic()</code> and <code>KnownInstanceType::Protocol()</code>.</li>
+</ul>
+<p>This PR therefore splits the <code>Type::KnownInstance</code> variant into two, and splits the <code>KnownInstanceType</code> enum into two. <code>Type::KnownInstance()</code> continues to wrap associated data of type <code>KnownInstanceType</code>, but <code>KnownInstanceType</code> now only holds four variants (the four very special variants described above). <code>Type::SpecialForm</code> is added in this PR, and it wraps associated data of type <code>SpecialFormType</code>. All variants except the four special ones are moved to the new <code>SpecialFormType</code> enum.</p>
+<p>The vast majority of variants previously on <code>KnownInstanceType</code> are now on <code>SpecialFormType</code>, and the refactor here enables the implementation of <code>SpecialFormType</code> to be significantly simpler than the previous version of <code>KnownInstanceType</code> was:</p>
+<ul>
+<li>Because no variant wraps any associated data, <code>SpecialFormType</code> can now implement <code>Display</code> directly rather than having to have a <code>display()</code> method that takes a <code>db</code>. This simplifies the construction of many diagnostics.</li>
+<li>Because no variant wraps any associated data, we can now use <code>strum_macros::EnumString</code> to autogenerate the <code>FromStr</code> deserialization used in <code>SpecialFormType::try_from_file_and_name()</code>. Previously this had to be written out by hand due to some variants wrapping data, but we know from experience that it's hard to remember to keep methods like this up to date (and the compiler can't enforce exhaustiveness over a <code>match</code> where the enum variants are on the right-hand side of the <code>match</code>).</li>
+<li><code>SpecialFormType</code> no longer needs a <code>normalized()</code> method: now that no variants wrap any data, they all just normalize to themselves.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Existing tests pass</li>
+<li>This should be a pure refactor with no mypy_primer diff</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-05-28 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-28 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-28 10:56</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-05-28 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-28 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-28 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-28 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-05-28 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1370 on 2025-05-28 15:34</div>
+            <div class="timeline-body"><p>nit: Update comment since <code>typing.Type</code> is a <code>SpecialForm</code> now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2349 on 2025-05-28 15:35</div>
+            <div class="timeline-body"><p>update comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-28 15:38</div>
+            <div class="timeline-body"><p>Was there a rationale for moving this back into <code>types.rs</code>? All else equal, I quite liked how we were moving things into dedicated modules, to help reduce the overwhelming size of this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5684 on 2025-05-28 15:41</div>
+            <div class="timeline-body"><p>Are the parts about the number of inhabitants true here? Each call to <code>typing.TypeVar</code>, for instance, produces a distinct runtime object. That's why there's associated data — to distinguish the different runtime objects and how they behave differently.</p>
+<p>(The part about &quot;heavy special-casing&quot; is definitely true, and describes well why this type variant exists)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-05-28 15:46</div>
+            <div class="timeline-body"><p>I very much like not having to thread the <code>db</code> through in as many places as before</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5684 on 2025-05-28 16:28</div>
+            <div class="timeline-body"><p>hmm, yes, you're right -- I didn't rewrite this sufficiently from the wording of the <code>KnownInstanceType</code> docstring on <code>main</code>. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-28 16:29</div>
+            <div class="timeline-body"><p>Oh, I'm definitely in favour of continuing to reduce the size of <code>types.rs</code>! I mainly put this here because it didn't seem big enough anymore to deserve its own module, and I wasn't sure it really had enough in common with <code>SpecialFormType</code> to share a module with that enum. (What would we call the module?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:520 on 2025-05-28 16:43</div>
+            <div class="timeline-body"><p>Can we add a docstring here summarizing what this variant represents?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5699 on 2025-05-28 16:57</div>
+            <div class="timeline-body"><p>These two docstrings must be wrong (or at least incomplete -- I think they only cover the case of wrapping <code>None</code>), because &quot;the symbol <code>typing.Protocol</code>&quot; and &quot;the symbol <code>typing.Generic</code>&quot; should be simple singleton (barring <code>typing_extensions</code>) SpecialForms that don't need to wrap any data. So what all can these variants represent, when they do and when they don't wrap a <code>GenericContext</code>?</p>
+<p>(I'm not entirely convinced that having these wrap <code>Option&lt;GenericContext&gt;</code> is the clearest representation, now that you've done the <code>SpecialForm</code> vs <code>KnownInstance</code> split. It feels like maybe <code>typing.Protocol</code> and <code>typing.Generic</code> <em>should</em> be simple <code>SpecialForm</code> (how are they different from other <code>SpecialForm</code>?) and parametrized <code>Protocol</code> and <code>Generic</code> should be represented here, wrapping a non-optional <code>GenericContext</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-28 16:58</div>
+            <div class="timeline-body"><p>Perhaps the same thing it was called before, <code>known_instance.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-28 17:06</div>
+            <div class="timeline-body"><p>It gives me slight pause how many of the cases need to be the same for <code>SpecialForm</code> and <code>KnownInstance</code>, but overall I do think the simplification and clarification of <code>SpecialForm</code> is worth it. Nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-28 17:19</div>
+            <div class="timeline-body"><p>put them both in <code>known_instance.rs</code>? Or put them in separate modules: <code>SpecialFormType</code> in <code>special_form.rs</code> and <code>KnownInstanceType</code> in <code>known_instance.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5699 on 2025-05-28 17:21</div>
+            <div class="timeline-body"><blockquote>
+<p>(I'm not entirely convinced that having these wrap <code>Option&lt;GenericContext&gt;</code> is the clearest representation, now that you've done the <code>SpecialForm</code> vs <code>KnownInstance</code> split. It feels like maybe <code>typing.Protocol</code> and <code>typing.Generic</code> <em>should</em> be simple <code>SpecialForm</code> (how are they different from other <code>SpecialForm</code>?) and parametrized <code>Protocol</code> and <code>Generic</code> should be represented here, wrapping a non-optional <code>GenericContext</code>.)</p>
+</blockquote>
+<p>that's a great idea! I didn't love this either, but didn't have the &quot;inspiration&quot; to think of this as a solution :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-29 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-29 13:25</div>
+            <div class="timeline-body"><p>(Landing this, but happy to address this in a followup!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-05-29 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5742 on 2025-05-29 13:30</div>
+            <div class="timeline-body"><p>(Happy with a followup) I like your suggestion of separate modules <code>special_form</code> and <code>known_instance</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-29 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-29 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-03 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

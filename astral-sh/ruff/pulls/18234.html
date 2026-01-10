@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `ViolationMetadata::rule` method - astral-sh/ruff #18234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>ViolationMetadata::rule</code> method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18234">#18234</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-05-20 22:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-20 22:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a macro-generated method to retrieve the <code>Rule</code> associated with a given <code>Violation</code> struct, which makes it substantially cheaper than parsing from the rule name. The rule is then converted to a <code>NoqaCode</code> for storage on the <code>Message</code> (and eventually on the new diagnostic type). The <code>ViolationMetadata::rule_name</code> method was now unused, so the <code>rule</code> method replaces it.</p>
+<p>Several types had to be moved from the <code>ruff_diagnostics</code> crate to the <code>ruff_linter</code> crate to make this work, namely the <code>Violation</code> traits and the old <code>Diagnostic</code> type, which had a constructor generic over a <code>Violation</code>.</p>
+<p>It's actually a fairly small PR, minus the hundreds of import changes. The main changes are in these files:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/ruff/pull/18234/files#diff-139754ea310d75f28307008d21c771a190038bd106efe3b9267cc2d6c0fa0921">crates/ruff_linter/src/message/mod.rs</a></li>
+<li><a href="https://github.com/astral-sh/ruff/pull/18234/files#diff-8e8ea5c586935bf21ea439f24253fcfd5955d2cb130f5377c2fa7bfee3ea3a81">crates/ruff_diagnostics/src/lib.rs</a></li>
+<li><a href="https://github.com/astral-sh/ruff/pull/18234/files#diff-1d0c9aad90d8f9446079c5be5f284150d97797158715bd9729e6f1f70246297a">crates/ruff_linter/src/diagnostic.rs</a></li>
+<li><a href="https://github.com/astral-sh/ruff/pull/18234/files#diff-eb93ef7e78a612f5fa9145412c75cf6b1a5cefba1c2233e4a11a880a1ce1fbcc">crates/ruff_linter/src/lib.rs</a></li>
+</ul>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-20 22:42</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fviolation-rules">CodSpeed Performance Report</a></h2>
+<h3>Merging #18234 will <strong>improve performances by 21.11%</strong></h3>
+<p><sub>Comparing <code>brent/violation-rules</code> (daa0d26) with <code>main</code> (a3ee6bb)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 8</code> improvements<br />
+<code>✅ 26</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 4.2 ms | 4 ms | +5.03% |
+| ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 738.4 µs | 684.4 µs | +7.9% |
+| ⚡ | <code>linter/all-rules[pydantic/types.py]</code> | 8.8 ms | 8.2 ms | +7.04% |
+| ⚡ | <code>linter/all-rules[unicode/pypinyin.py]</code> | 2.2 ms | 1.8 ms | +21.11% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code> | 5.1 ms | 4.8 ms | +6.13% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 842.5 µs | 794 µs | +6.11% |
+| ⚡ | <code>linter/all-with-preview-rules[pydantic/types.py]</code> | 10.5 ms | 9.9 ms | +6.49% |
+| ⚡ | <code>linter/all-with-preview-rules[unicode/pypinyin.py]</code> | 2.5 ms | 2.1 ms | +20.21% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 22:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-20 22:45</div>
+            <div class="timeline-body"><p>Those benchmarks are pretty promising, maybe this is worth pursuing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-21 06:11</div>
+            <div class="timeline-body"><p>The speedups look promising. However, I don't think we want or even can store a <code>Rule</code> on the new <code>ruff_db::Diagnostic</code>. How would this work in that new model?</p>
+<p>I think my overall preference would be to reduce the need to access <code>Rule</code> after <code>report_diagnostic</code> has been called (and instead, use <code>NoqaCode</code> directly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-27 00:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 00:36</div>
+            <div class="timeline-body"><p>I think this is ready for review. I tried to regroup all of the imports I added to keep the <code>crate</code> blocks separate from the others.</p>
+<p>I also changed <code>Message</code> to store a <code>NoqaCode</code> instead of a <code>Rule</code> directly, fortunately without losing much, if any, of the performance improvement. Some of the smaller benchmarks actually sped up a little, I think.</p>
+<p>I also moved the <code>RULE</code> constant to a <code>ViolationMetadata::rule</code> method, replacing <code>ViolationMetadata::rule_name</code>, which was now unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-05-27 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-05-27 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[test] Try adding a `Violation::RULE` constant" to "Add a `ViolationMetadata::rule` method" by @ntBre on 2025-05-27 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 00:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/lib.rs</code>:18 on 2025-05-27 00:48</div>
+            <div class="timeline-body"><p>This is not strictly necessary, it just made rewriting some of the imports automatically a little easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-05-27 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-05-27 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-05-27 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-05-27 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/diagnostic.rs</code>:28 on 2025-05-27 05:50</div>
+            <div class="timeline-body"><p>Do we allow <code>needless_pass_by_value</code> because passing by reference would require changing all call sites? It might be worth adding a note why we allow this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/diagnostic.rs</code>:20 on 2025-05-27 05:51</div>
+            <div class="timeline-body"><p>Our plan is to remove this <code>Diagnostic</code> type with <code>ruff_db::Diagnostic</code>. What's your plan on how to remove <code>rule</code> from here because we can't add it to <code>ruff_db::Diagnostic</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/lib.rs</code>:18 on 2025-05-27 05:52</div>
+            <div class="timeline-body"><p>Do we need all the re-exports. E.g. <code>SourceMap</code> is probably less common</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/map_codes.rs</code>:478 on 2025-05-27 05:54</div>
+            <div class="timeline-body"><p>Can we move this impl block out of the macro code? It doesn't seem to depend on any placeholders (same for the <code>AsRule</code> implementation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/map_codes.rs</code>:467 on 2025-05-27 05:55</div>
+            <div class="timeline-body"><p>I think one of the next important refactors is to remove <code>rule</code> (and <code>AsRule</code>) from <code>Diagnostic</code> because that won't work long-term</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-27 05:56</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>The only thing that's unclear to me and I would like to get a short summary on what the next steps are is how you plan on removing <code>rule</code> (and <code>AsRule</code>) from <code>Diagnostic</code> because we won't be able to add it to <code>ruff_db::Diagnostic</code>. IMO, I think that's the next important refactor we shoul do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>The only thing that's unclear to me and I would like to get a short summary on what the next steps are is how you plan on removing <code>rule</code> (and <code>AsRule</code>) from <code>Diagnostic</code> because we won't be able to add it to <code>ruff_db::Diagnostic</code>. IMO, I think that's the next important refactor we shoul do</p>
+</blockquote>
+<p>My plan was to get rid of this old <code>Diagnostic</code> kind entirely soon. I was picturing <code>Message</code> as its successor, which is why I only updated it to use the <code>NoqaCode</code> instead of also updating <code>Diagnostic</code>. I was thinking that would take care of most uses, but the <code>rule_enabled</code> checks might be slightly trickier. We could still implement <code>AsRule</code> via <code>FromStr</code> as long as we have the rule name stored, or we can possibly move that enabled check into <code>Checker::report_diagnostic</code> like we discussed a bit on #18232.</p>
+<p>In short, I think most of the need for this field goes away when we combine the diagnostic types, and we should be able to work around the rest if needed. Does that sound right to you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_macros/src/map_codes.rs</code>:478 on 2025-05-27 13:47</div>
+            <div class="timeline-body"><p>Oh yes, good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/diagnostic.rs</code>:28 on 2025-05-27 13:50</div>
+            <div class="timeline-body"><p>Yes that's right. I was a bit confused why it wasn't already needless and thought further refactoring (like combining this with <code>Checker::report_diagnostic</code> in most cases) might make it not needless again. I'll add a note!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/lib.rs</code>:18 on 2025-05-27 13:55</div>
+            <div class="timeline-body"><p>Definitely not, I just got a bit tired/lazy updating imports and wanted to replace all <code>ruff_diagnostics::*</code> imports with <code>crate::*</code> in this crate. It should be easy enough to remove the less common ones like <code>IsolationLevel</code> and <code>SourceMap</code>, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-27 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I was thinking that would take care of most uses, but the rule_enabled checks might be slightly trickier.</p>
+</blockquote>
+<p>Do you have a link to this check. I think that should be fine as long as you have a <code>ViolationMetadata</code>.</p>
+<blockquote>
+<p>In short, I think most of the need for this field goes away when we combine the diagnostic types, and we should be able to work around the rest if needed. Does that sound right to you?</p>
+</blockquote>
+<p>It does sound right in that this is what I would hope to be possible. I don't have a clear enough picture to say whether it will be possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a link to this check. I think that should be fine as long as you have a <code>ViolationMetadata</code>.</p>
+</blockquote>
+<p>Oops, I meant <code>Checker::enabled</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/8d5655a7baa1ecc84a906cbfc0e2294cf173dee7/crates/ruff_linter/src/checkers/ast/mod.rs#L454-L457</p>
+<p>I think we can work around the uses that don't pass a <code>Rule</code> directly easily enough with a <code>ViolationMetadata</code>, like you said.</p>
+<blockquote>
+<p>It does sound right in that this is what I would hope to be possible. I don't have a clear enough picture to say whether it will be possible.</p>
+</blockquote>
+<p>Sounds good. It's not entirely clear to me either, but it feels like it should work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-27 14:15</div>
+            <div class="timeline-body"><p>Why would we have to change <code>checker.enabled</code>? Most call sites should have access to the rule or are there call sites where we check if the diagnostic's rule is enabled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 14:21</div>
+            <div class="timeline-body"><p>Yes, there are call sites where <code>diagnostic.rule()</code> is passed. Some of them are already replaced in #18232, but there are still a few left.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 14:43</div>
+            <div class="timeline-body"><p>Did I really break the mypy primer? I didn't think I touched any ty files, but everything should be up to date and it looks okay on main. I also tried rerunning once. It looks like this is the root cause:</p>
+<pre><code>fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/function/execute.rs:209:25 when checking `/tmp/mypy_primer/projects/arviz/arviz/data/inference_data.py`: `infer_definition_types(Id(c2a15)): execute: too many cycle iterations`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-27 15:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Did I really break the mypy primer? I didn't think I touched any ty files, but everything should be up to date and it looks okay on main. I also tried rerunning once. It looks like this is the root cause:</p>
+</blockquote>
+<p>seems unlikely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 15:46</div>
+            <div class="timeline-body"><p>I think it's possible that a recent commit on arviz (https://github.com/arviz-devs/arviz/commit/3205b82bb4d6097c31f7334d7ac51a6de37002d0? it landed a few hours ago) means that ty now crashes on that project when we didn't previously. There's the same crash being reported on https://github.com/astral-sh/ruff/pull/18333</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 15:47</div>
+            <div class="timeline-body"><p>if so we should just move the project from <code>good.txt</code> to <code>bad.txt</code> (these files [here
+(https://github.com/astral-sh/ruff/tree/main/crates/ty_python_semantic/resources/primer)) but would be good to confirm that that's the cause first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 16:38</div>
+            <div class="timeline-body"><p>Confirmed locally that ty @ Ruff's <code>main</code> branch crashes on arviz @ https://github.com/arviz-devs/arviz/commit/3205b82bb4d6097c31f7334d7ac51a6de37002d0 but not on the prior commit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 16:43</div>
+            <div class="timeline-body"><p>filed https://github.com/astral-sh/ruff/pull/18336 to fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>filed #18336 to fix</p>
+</blockquote>
+<p>Which has now landed -- the primer panic should go away if you rebase!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 18:49</div>
+            <div class="timeline-body"><p>Amazing, thank you @AlexWaygood!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-27 18:59</div>
+            <div class="timeline-body"><p>Hmm, I got a new cascade of errors on this one.</p>
+<pre><code>fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/views.rs:114:9 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/build.py`: `No downcaster registered for type `dyn ty_python_semantic::db::Db` in `Views``
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/__main__.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/parser.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/grammar_parser.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/grammar.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/sccutils.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/first_sets.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/__init__.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/tokenizer.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/utils.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/python_generator.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/parser_generator.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/grammar_visualizer.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/web.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/[481](https://github.com/astral-sh/ruff/actions/runs/15283313638/job/42987393320?pr=18234#step:6:482)8b15/src/zalsa.rs:210:32 when checking `/tmp/mypy_primer/projects/pegen/src/pegen/validator.py`: `index `23` is uninitialized
+</code></pre>
+<p>I'll try rerunning once to see if that helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-28 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-28 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-28 13:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

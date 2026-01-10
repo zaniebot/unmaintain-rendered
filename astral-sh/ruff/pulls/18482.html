@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] AST garbage collection - astral-sh/ruff #18482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] AST garbage collection</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18482">#18482</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-06-05 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-05 17:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Garbage collect ASTs once we are done checking a given file. Queries with a cross-file dependency on the AST will reparse the file on demand. This reduces ty's peak memory usage by ~20-30%.</p>
+<p>The primary change of this PR is adding a <code>node_index</code> field to every AST node, that is assigned by the parser. <code>ParsedModule</code> can use this to create a flat index of AST nodes any time the file is parsed (or reparsed). This allows <code>AstNodeRef</code> to simply index into the current instance of the <code>ParsedModule</code>, instead of storing a pointer directly.</p>
+<p>The indices are somewhat hackily (using an atomic integer) assigned by the <code>parsed_module</code> query instead of by the parser directly. Assigning the indices in source-order in the (recursive) parser turns out to be difficult, and collecting the nodes during semantic indexing is impossible as <code>SemanticIndex</code> does not hold onto a specific <code>ParsedModuleRef</code>, which the pointers in the flat AST are tied to. This means that we have to do an extra AST traversal to assign and collect the nodes into a flat index, but the small performance impact (~3% on cold runs) seems worth it for the memory savings.</p>
+<p>Part of https://github.com/astral-sh/ty/issues/214.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ibraheemdev on 2025-06-05 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-05 18:04</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-05 19:21</div>
+            <div class="timeline-body"><p>I'll review tomorrow. Can you add a log how many times we end up reparsing an ast and do a cold run on some project to see if we see any reparses to validate our assumption that this shouldn't happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-05 19:30</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fast-node-gc">CodSpeed Performance Report</a></h2>
+<h3>Merging #18482 will <strong>degrade performances by 4.43%</strong></h3>
+<p><sub>Comparing <code>ibraheem/ast-node-gc</code> (347934a) with <code>main</code> (76d9009)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>❌ 1</code> regressions<br />
+<code>✅ 32</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fast-node-gc">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[numpy/globals.py]</code> | 204.4 µs | 196.2 µs | +4.19% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 306.6 µs | 320.8 µs | -4.43% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-05 22:08</div>
+            <div class="timeline-body"><p>The incremental performance regression is expected. I'm not sure if we want less eager garbage collection for the LSP or if the initial hit is fine, and we instead try to keep recently reparsed ASTs around on subsequent runs?</p>
+<p>The cold check performance regression is pretty minor (~3% both on codspeed and locally on mypy_primer runs) even with the extra AST traversal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-05 23:16</div>
+            <div class="timeline-body"><p>Thanks for working on this! I'm going to let @MichaReiser handle review :)</p>
+<p>I'm curious about the new NodeIndex bit. Is the entire purpose of that so that we can use it in <code>AstNodeRef</code>, given we can no longer ensure a pointer into the AST will remain valid? Or are there other reasons we need it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:83 on 2025-06-06 06:09</div>
+            <div class="timeline-body"><p>It's not clear to me why this is the case, given that we collect ASTs mid-revision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:87 on 2025-06-06 06:09</div>
+            <div class="timeline-body"><p>Could we store the <code>NodeKind</code> and <code>TextRange</code> in debug builds and print them here. That would at least give us some idea of what node this is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/node_key.rs</code>:5 on 2025-06-06 06:11</div>
+            <div class="timeline-body"><p>Should we just store the <code>NodeIndex</code> here. That would also ensure that the type now shrinks to a <code>u32</code>. It probably even raises the question if <code>NodeKey</code> is still needed. It would probably be a good exercise to go through all uses and see where it can be replaced (maybe even with a <code>Vec</code> that directly indexes into the Nodes array)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-06 06:18</div>
+            <div class="timeline-body"><p>This is great!</p>
+<p>I'd prefer to implement the ID assigning in the parser. Not only enables this other crates to make use of the index, but it also allows us to change <code>NodeIndex</code> to a <code>u32</code> to which is <code>Copy</code>.</p>
+<p>Do you think it would be possible to collect the nodes inside the parser (as part of the parsing step?). That would remove the need for an extra traversal. We could add an option to only collect them when requested.</p>
+<p>Besides these code changes: It would be great to have some end to end benchmarks.</p>
+<ul>
+<li>Can you run <code>ty_benchmark</code> on some project and share the before/after runtime?</li>
+<li>Can you add some logging to when an AST gets reparsed because it was cleared before and run ty across some projects. Do we see any reparses within the same revisions? If so, why?</li>
+</ul>
+<p>For the LSP case. It probably makes sense for us not to purge any AST for a file that is in <code>project.open_files</code>. This should address any LSP concerns and I think even the perf regression in the benchmark</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-06 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:83 on 2025-06-06 09:51</div>
+            <div class="timeline-body"><p><code>ParsedModule</code> is an <code>Arc&lt;ArcSwap&lt;IndexedModule&gt;&gt;</code>. That outer <code>Arc</code> never changes, just like before. The garbage collection is invisible to Salsa.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-06 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/node_key.rs</code>:5 on 2025-06-06 09:52</div>
+            <div class="timeline-body"><p>Yeah I will do this once indices are assigned by the parser. Currently <code>NodeIndex</code> is <code>!Copy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-06 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm curious about the new NodeIndex bit. Is the entire purpose of that so that we can use it in AstNodeRef, given we can no longer ensure a pointer into the AST will remain valid? Or are there other reasons we need it?</p>
+</blockquote>
+<p><code>AstNodeRef</code> could still store a pointer to the AST, the difference is that it would have to store a weak pointer to the module (a strong reference would prevent garbage collection) and validate that reference before access. The problem comes when the module is garbage collected — we have to update the pointer to be into the new reparsed module. This has two problems:</p>
+<ul>
+<li>We need a way to mutate the <code>AstNodeRef</code>, which is tricky and probably requires it being a <code>Arc&lt;Mutex&lt;_&gt;&gt;</code> or similar.</li>
+<li>We have to traverse the entire AST to update every node that is accessed.</li>
+</ul>
+<p>Creating a flat index of the AST upfront allow us to avoid both of those, and <code>AstNodeRef</code> becomes a simple index into the flat AST, which will remain stable even across garbage collection cycles within the same revision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-09 18:21</div>
+            <div class="timeline-body"><p>The ty-benchmark results match the 3% regression on Codspeed.</p>
+<pre><code>black (cold)
+Benchmark 1: /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+  Time (mean ± σ):      56.9 ms ±   1.4 ms    [User: 290.4 ms, System: 74.9 ms]
+  Range (min … max):    53.1 ms …  59.9 ms    51 runs
+ 
+Benchmark 2: /home/ibraheem/dev/astral/ruff/target/profiling/ty-old
+  Time (mean ± σ):      55.8 ms ±   1.4 ms    [User: 281.9 ms, System: 72.1 ms]
+  Range (min … max):    52.1 ms …  59.0 ms    52 runs
+ 
+Summary
+  /home/ibraheem/dev/astral/ruff/target/profiling/ty-old ran
+    1.02 ± 0.04 times faster than /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+
+jinja (cold)
+Benchmark 1: /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+  Time (mean ± σ):      43.6 ms ±   1.6 ms    [User: 266.0 ms, System: 65.8 ms]
+  Range (min … max):    40.7 ms …  47.5 ms    65 runs
+ 
+ 
+Benchmark 2: /home/ibraheem/dev/astral/ruff/target/profiling/ty-old
+  Time (mean ± σ):      41.7 ms ±   1.5 ms    [User: 259.7 ms, System: 62.9 ms]
+  Range (min … max):    39.0 ms …  45.7 ms    74 runs
+ 
+Summary
+  /home/ibraheem/dev/astral/ruff/target/profiling/ty-old ran
+    1.05 ± 0.05 times faster than /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+
+isort (cold)
+Benchmark 1: /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+  Time (mean ± σ):      51.1 ms ±   2.5 ms    [User: 201.0 ms, System: 45.3 ms]
+  Range (min … max):    46.1 ms …  57.0 ms    56 runs
+ 
+ 
+Benchmark 2: /home/ibraheem/dev/astral/ruff/target/profiling/ty-old
+  Time (mean ± σ):      49.5 ms ±   2.4 ms    [User: 197.4 ms, System: 45.2 ms]
+  Range (min … max):    42.9 ms …  56.7 ms    62 runs
+
+Summary
+  /home/ibraheem/dev/astral/ruff/target/profiling/ty-old ran
+    1.03 ± 0.07 times faster than /home/ibraheem/dev/astral/ruff/target/profiling/ty-new
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-06-09 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:87 on 2025-06-09 18:27</div>
+            <div class="timeline-body"><p>I updated this to just store the <code>ParsedModuleRef</code> in debug mode (which prevents garbage collection).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-09 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-09 18:32</div>
+            <div class="timeline-body"><p>Given that the regression is quite minor I'm inclined to get this merged.</p>
+<p>I spent some time trying to assign indices in the parser but it turned out to be non-trivial. The parser is recursive-descendant and we want to assign indices in source-order, so we run into problems where the parent node depends on the result of the recursion, so we don't know whether or not to claim an outer index before parsing the inner nodes. I think we would end up having to do mini-traversals to adjust the children indices — it's much easier to do this in a separate pass. If the parser also collected the nodes then it could do a simple pass over those and assign the indices then, but that could also be addressed in a future PR.</p>
+<p>I also ran on a number of projects and was unable to trigger a reparse within a revision, I added some logs in case that ever happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-09 18:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-09 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>The parser is recursive-descendant and we want to assign indices in source-order, so we run into problems where the parent node depends on the result of the recursion, so we don't know whether or not to claim an outer index before parsing the inner nodes</p>
+</blockquote>
+<p>Just trying to understand this better. Can you share a specific instance of this?</p>
+<p>The main thing that I find slightly annoying is that <code>NodeId</code> isn't <code>Copy</code> because it's an <code>AtomicU32</code>. This is obviously not the end of the world but it would be nice if it could be avoided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node_index.rs</code>:23 on 2025-06-09 18:47</div>
+            <div class="timeline-body"><p>Could we change <code>NodeIndex</code> to be a wrapper around a <code>u32</code> and instead have an <code>AtomicNodeIndex</code> that internally uses an atomic? That would allow to use the non-atomic version in places where later mutations aren't necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-09 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node_index.rs</code>:72 on 2025-06-09 18:47</div>
+            <div class="timeline-body"><p>What's the reason for not deriving those implementations? Is it because <code>AtomicU32</code> uses a stricter load ordering by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-09 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-09 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_python_ast/src/node_index.rs</code>:72 on 2025-06-09 19:03</div>
+            <div class="timeline-body"><p><code>AtomicU32</code> doesn't implement of of those traits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-09 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Just trying to understand this better. Can you share a specific instance of this?</p>
+</blockquote>
+<p>In <a href="https://github.com/astral-sh/ruff/blob/b44062b9ae08dcd8941ac76dbce2ab2c61840691/crates/ruff_python_parser/src/parser/expression.rs#L150"><code>parse_expression_list</code></a> for example, we first parse the inner expression (which will increment the index), and then we conditionally wrap it in a <code>ExprTuple</code> node, which should have a lower index. Generally we would claim the parent index before recursing, but the conditional part makes this tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-09 19:20</div>
+            <div class="timeline-body"><blockquote>
+<p>the conditional part makes this tricky</p>
+</blockquote>
+<p>Curious - would there be negative consequences to skipping an index in some scenarios?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-09 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Curious - would there be negative consequences to skipping an index in some scenarios?</p>
+</blockquote>
+<p>Right now all indices are set strictly monotonic, so we can use a simple <code>Box&lt;[Node]&gt;</code> for the flat index, where each node's index matches its position in the list. If assigning indices in the parser means we have to switch to using a <code>HashMap</code>, or insert dummy nodes in the list, I'm not sure it's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 20:21</div>
+            <div class="timeline-body"><p>Could we update the index when wrapping the node in a tuple (it may require a traversal of the inner node)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-09 20:51</div>
+            <div class="timeline-body"><p>We could, but I guess I don't really see the benefit of doing that. Collecting the nodes as part of parsing would have a similar problem I think (we'd have to insert parent nodes into the middle of the list before it's children). The separate pass is much simpler and doesn't seem to impact performance noticeably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-10 01:59</div>
+            <div class="timeline-body"><p>Could we increase the index non-monotonically during parsing and then remove the gaps after the parsing is done? Or, would that be equivalent to visiting the parsed tree at the end to assign the index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-10 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:221 on 2025-06-10 07:22</div>
+            <div class="timeline-body"><p>Would it be possible to implement the logic in <code>enter_node</code> instead of having to override each visit function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:215 on 2025-06-10 07:24</div>
+            <div class="timeline-body"><p>It seems very unfortunate that the only reason that <code>NodeIndex</code> has to wrap an <code>AtomicU32</code> is because we don't have a <code>SourceOrderTransformer</code> (or <code>SourceOrderVisitorMut</code>).</p>
+<p>I think we should just add said visitor (as a separate PR and rebase on top of that). Most of the actual visiting logic is generated here https://github.com/astral-sh/ruff/blob/f6b7b7cfcca8112659e2e24a64521ce7df6651da/crates/ruff_python_ast/generate.py#L464-L482 and the rest is mostly boilerplate that you can copy from the <code>SourceOrderVisitor</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:72 on 2025-06-10 07:27</div>
+            <div class="timeline-body"><p><code>info</code> level logging is reserved for messages that users need to be aware. We should use debug here.</p>
+<pre><code class="language-suggestion">                tracing::debug!(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:73 on 2025-06-10 07:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    &quot;File `{}` was reparsed after being collected in the current Salsa revision.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:750 on 2025-06-10 07:32</div>
+            <div class="timeline-body"><p>What this type is, isn't clear to me wrom it's name. First I thought it's about types that can be a &quot;root&quot; from what the parser returns (<code>ModModule</code> or <code>ModExpression</code>) but that's not what it is. Instead, it's a very specific selection of nodes?</p>
+<p>Reading through the code, I get the impression that it is related to nodes to which we assign IDs. Which brings up a related question: Why are we only assigning IDs to some nodes but not all? IMO, it's confusing that only some nodes have a <code>NodeId</code>. I'd prefer to just assign an ID to every node instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:524 on 2025-06-10 07:38</div>
+            <div class="timeline-body"><p>Rustc uses an explicit placeholder for &quot;dummy&quot; node IDs to make them easier recognizable. I think it could be helpful to do the same:</p>
+<p>https://github.com/rust-lang/rust/blob/8a407a82848bbc926de1cbbbbcb381e1a96f5968/compiler/rustc_ast/src/node_id.rs#L23-L26</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:40 on 2025-06-10 07:44</div>
+            <div class="timeline-body"><p>I'd prefer if debug and release builds wouldn't differ in such significant ways as when and how AST nodes get collected. I worry that it will make it very difficult to became aware of when we suddenly start reparsing modules very often (because we all use debug builds by default).</p>
+<p>My preference here is to instead capture the <code>NodeKind</code> and <code>TextRange</code> of the node OR to capture the <code>Debug</code> output during creation and storing it in a <code>String</code>. I think the former is sufficient. It's rare that we directly debug print an <code>AstNodeRef</code> and it's always possible to call <code>node</code> to get the node and call debug on said node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-10 07:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I also ran on a number of projects and was unable to trigger a reparse within a revision, I added some logs in case that ever happens.</p>
+</blockquote>
+<p>Just double checking, did you do this check with a release build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:36 on 2025-06-10 07:45</div>
+            <div class="timeline-body"><p>Could we just use <code>File</code> here? Seems less magical and it allows us to remove the <code>ptr</code> method from <code>ParsedModule</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:163 on 2025-06-10 07:50</div>
+            <div class="timeline-body"><p>Future: It could be interesting to collect some more numbers about the parsed module here. E.g. how many expressions are there? This could help to correctly initialize the <code>HashMaps</code> in the <code>SemanticIndexBuilder</code> that currently suffer from many resizes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-10 08:59</div>
+            <div class="timeline-body"><p>I'm fine with the extra traversal for now. Eventough a 3% regression is fairly substantial for something that doesn't add new typing features. But the memory reduction is probably a good justification for it.</p>
+<p>But no longer doing it in the parser invalidates the main reason why we added the <code>NodeIndex</code> to every AST node. I did a quick search and it seems that the only place where we create <code>AstNodeRef</code>s is in the <code>SemanticIndexBuilder</code>. This makes me wonder if an approach closer to <code>AstNodeIds</code> would be a better fit where:</p>
+<ul>
+<li><code>SemanticIndex</code> stores an: <code>nodes: IndexVec&lt;NodeIndex, AnyRootNodeRef&gt;</code> and an inverse map from <code>AnyNodeRef</code> (using ptr equality) to <code>NodeIndex</code>.</li>
+<li><code>SemanticIndexBuilder</code> has a <code>register_node</code> method that, given a <code>node</code>, returns an <code>AstNodeRef</code> to it</li>
+</ul>
+<p>This has a couple of advantages:</p>
+<ul>
+<li>No changes to the AST, no size increase of the AST</li>
+<li>We only register exactly the nodes we need and not all nodes.</li>
+<li>It doesn't require an extra traversal</li>
+</ul>
+<p>The obvious downside is that it requires an inverse hash map which might be coslty. What are your thoughts on building the index outside the AST?</p>
+<p>I wonder if it would make sense to split this PR into a few smaller PRs to, at least, get the most annoying changes landed sooner and also have a chance to better focus on some discussions:</p>
+<ul>
+<li>Add <code>NodeIndex</code>: Decide on which nodes have a <code>NodeIndex</code>, whether it should be an atomic or not</li>
+<li>Add a <code>SourceOrderMutVisitor</code> (if we decide to not use atomics)</li>
+<li>The actual AST GC implementation</li>
+</ul>
+<p>But I leave this decision up to you.</p>
+<p>On the atomic discussion. I'm a bit undecided:</p>
+<ul>
+<li>I think we should remove the atomic and instead introduce a <code>SourceOrderMutVisitor</code> (or <code>SourceOrderTransformer</code>) if we don't plan on integrating the indexing/numbering into the semantic index step</li>
+<li>Otherwise, keeping atomic seems fine, but we should follow up with trying to integrate the pass into semantic indexing</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:62 on 2025-06-10 10:12</div>
+            <div class="timeline-body"><p>I think this no longer needs to be unsafe because dereferencing a node index that belongs to another module no longer results in UB but in a panic (out of bounds) or incorrect result. We could probably even add a debug assertion that verifies that <code>module_ref[index] == node</code>.</p>
+<p>We should also update the comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-10 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "AST garbage collection" to "[ty] AST garbage collection" by @MichaReiser on 2025-06-12 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-12 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_db/src/parsed.rs</code>:221 on 2025-06-12 20:06</div>
+            <div class="timeline-body"><p>The issue is that we need a <code>AnyRootNodeRef</code>, not a <code>AnyNodeRef</code>. The latter flattens nested enums, and <code>AstNodeRef</code> is often used with enum nodes, which we cannot recover from a reference to the inner value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-12 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_db/src/parsed.rs</code>:215 on 2025-06-12 20:06</div>
+            <div class="timeline-body"><p>A mutable visitor doesn't work because we need to hold on to immutable references to the nodes to form the flat index while traversing the tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-12 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_python_ast/generate.py</code>:750 on 2025-06-12 20:07</div>
+            <div class="timeline-body"><p>I added some documentation to why we need a new type.. the name isn't great but I'm not sure of a better one. I believe all nodes have a <code>NodeId</code>, unless I missed one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-12 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:36 on 2025-06-12 20:09</div>
+            <div class="timeline-body"><p>I don't think <code>File</code> is strong enough, because the <code>File</code> input ID will remain the same across revisions, while the <code>ParsedModule</code> will be re-created when the <code>File</code> changes in a new revision. We want to assert that the file has not changed, meaning that the AST will be identical across any <code>ParsedModuleRef</code> instance that belongs to the same <code>ParsedModule</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-12 20:15</div>
+            <div class="timeline-body"><p>I explored a number of options here:</p>
+<ul>
+<li>Integrating the AST traversal into the semantic index. Unfortunately this does not work because the flat AST index is directly tied (through pointers) to a given <code>ParsedModuleRef</code>, while <code>SemanticIndex</code> does not hold on to a specific <code>ParsedModuleRef</code> instance. The <code>SemanticIndex</code> is transparent to the current instance of the AST, which is it now uses indices to reference nodes.</li>
+<li>Similarly, the <code>node_index</code> field being on the AST nodes directly is important. Storing a lookup map in <code>SemanticIndex</code> would be tricky for the reasons above — we don't want <code>SemanticIndex</code> to rely on any AST pointers, only indices.</li>
+<li>Removing the atomics from <code>NodeIndex</code> and adding a mutable visitor. This doesn't work because we hold on to immutable references to the nodes while traversing the tree, to form the flat index.</li>
+</ul>
+<p>I think the current solution, where the flat index is created and managed directly by the <code>ParsedModule</code> and AST node indices are stored directly on the AST instance, makes the most sense and is easiest to reason about. The only future change I can see is if the node indices and collection are initialized even earlier by the parser, but I'm not sure that complexity is worth it (as I previously mentioned).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ibraheemdev on 2025-06-12 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__backspace_alias.snap</code>:4 on 2025-06-13 06:21</div>
+            <div class="timeline-body"><p>I always forget, is this because the snapshots haven't been touched in a while and so <code>cargo-insta</code> has removed this field on a recent version or is it that you've an older version of <code>cargo-insta</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__backspace_alias.snap</code>:10 on 2025-06-13 06:23</div>
+            <div class="timeline-body"><p>Should we generate a custom <code>Debug</code> implementation for the nodes to avoid including this field in the snapshot? Or, is it required that we include this field in the <code>Debug</code> implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_db/src/parsed.rs</code>:73 on 2025-06-13 06:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    &quot;File `{}` was reparsed after being collected in the current Salsa revision&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:477 on 2025-06-13 06:33</div>
+            <div class="timeline-body"><p>Can we remove the <code>unsafe</code> here too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:337 on 2025-06-13 06:34</div>
+            <div class="timeline-body"><p>Can we remove the <code>unsafe</code> from this method, given that it's no longer UB if <code>node</code> doesn't belong to <code>parsed</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/generate.py</code>:780 on 2025-06-13 06:35</div>
+            <div class="timeline-body"><p>We can add an example here to explain what does &quot;root&quot; mean like we can say that this will include the top level <code>Stmt</code> enum but will not include the individual variants of the <code>Stmt</code> enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:72 on 2025-06-13 06:36</div>
+            <div class="timeline-body"><p>Nit: I still think it would be nice to have a non atomic <code>NodeIndex</code>, because it isn't really required here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-13 06:36</div>
+            <div class="timeline-body"><p>I'll leave this to Micha but a few things I noticed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:112 on 2025-06-13 06:36</div>
+            <div class="timeline-body"><p>Maybe: use <code>finish_non_exhaustive</code> to make clear that there's more but we can't show it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-13 06:38</div>
+            <div class="timeline-body"><p>Nice! This is great and thank you for exploring all my not very fruitful alternatives.</p>
+<p>I think it could be nice to have a non atomic <code>NodeIndex</code> that we could use in <code>AstNodeRef</code>, <code>get_by_index</code> and in <code>NodeKey</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-13 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-13 12:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__backspace_alias.snap</code>:4 on 2025-06-13 12:10</div>
+            <div class="timeline-body"><p>I'm on the latest version of <code>cargo-insta</code> so I assume the former.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-13 12:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__backspace_alias.snap</code>:10 on 2025-06-13 12:11</div>
+            <div class="timeline-body"><p>I don't really see the benefit of removing this field, we may end up setting it in the parser later. I updated the debug implementation of <code>NodeIndex</code> to avoid the extra whitespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-06-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-06-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 20:34</div>
+            <div class="timeline-body"><p>Just noticed this had been merged after I made the alpha-10 release. I think a 20-30% peak memory reduction is worth noting for users! So in future I think we could leave off the <code>internal</code> label on such a PR.</p>
+<p>This is awesome!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support ephemeral uv virtual environments - astral-sh/ruff #18335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support ephemeral uv virtual environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18335">#18335</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-27 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 16:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements support for the ephemeral environments uv creates when you use the <code>--with</code> argument with <code>uv run</code>. It will only work with a version of uv that includes https://github.com/astral-sh/uv/commit/7bba3d00d4ad1fb3daba86b98eb25d8d9e9836ae (currently you have to build uv with the <code>main</code> branch; it hasn't been included in a release yet).</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/320</p>
+<h2>Test Plan</h2>
+<p>I added unit tests. I also manually tested the PR by doing the following:</p>
+<ol>
+<li><p>I first built the main branch of uv using <code>cargo build --release</code> in my local uv clone.</p>
+</li>
+<li><p>I next checked that ty on the main branch was not able to resolve imports if it was invoked with <code>uv run --with=ty</code>. To do this, I:
+a. Applied this diff to the <code>main</code> branch of my local Ruff clone:</p>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 0b983b27a0..1bdf25692f 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -3,7 +3,7 @@ requires = [&quot;maturin&gt;=1.0,&lt;2.0&quot;]
+ build-backend = &quot;maturin&quot;
+
+ [project]
+-name = &quot;ruff&quot;
++name = &quot;ty&quot;
+ version = &quot;0.11.11&quot;
+ description = &quot;An extremely fast Python linter and code formatter, written in Rust.&quot;
+ authors = [{ name = &quot;Astral Software Inc.&quot;, email = &quot;hey@astral.sh&quot; }]
+@@ -45,8 +45,8 @@ Changelog = &quot;https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md&quot;
+
+ [tool.maturin]
+ bindings = &quot;bin&quot;
+-manifest-path = &quot;crates/ruff/Cargo.toml&quot;
+-module-name = &quot;ruff&quot;
++manifest-path = &quot;crates/ty/Cargo.toml&quot;
++module-name = &quot;ty&quot;
+ python-source = &quot;python&quot;
+ strip = true
+ exclude = [
+</code></pre>
+<p>b. <code>cd</code>'d into the local clone of a Python project with third-party dependencies (https://github.com/AlexWaygood/typeshed-stats)
+c. Ran <code>../uv/target/release/uv run --force-reinstall --with=&quot;ty@../ruff&quot; ty check</code>
+d. Observed that ty ran on my project, but was not able to resolve any third-party dependencies, and reported 104 diagnostics</p>
+</li>
+<li><p>I next checked that this PR branch fixed the issue. I:
+a. Checked out this PR branch
+b. Applied the same <code>pyproject.toml</code> diff to this branch as I applied to the <code>main</code> banch in step (2)
+c. <code>cd</code>'d into my <code>typeshed-stats</code> again
+d. Again ran <code>../uv/target/release/uv run --force-reinstall --with=&quot;ty@../ruff&quot; ty check</code>
+e. Observed that ty was able to resolve all third-party dependencies, and reported only 11 diagnostics</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-27 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-27 17:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-05-27 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-27 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-27 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-27 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-27 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:7 on 2025-05-27 17:52</div>
+            <div class="timeline-body"><p>I haven't had time yet to review this PR but can you explain the motivation for using an <code>IndexSet</code>? Could we use <code>deduplicate_nested_paths</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:7 on 2025-05-27 17:58</div>
+            <div class="timeline-body"><p>Just to ensure that we didn't end up with duplicate <code>site-packages</code> paths being added if a virtual environment (somehow?) ends up being marked as a <code>--system-site-packages</code> path and also as having a parent environment, and they end up pointing to the same system installation. I don't know how we realistically end up in that situation; I was just being defensive.</p>
+<blockquote>
+<p>Could we use <code>deduplicate_nested_paths</code>?</p>
+</blockquote>
+<p>I wasn't aware of this function! Do you think it offers significant advantages here, given that we will need to call <code>.collect()</code> on it anyway at some point (and therefore allocating memory is inevitable)?</p>
+<p>One thing I do quite like about using an ordered set here is that the type itself guarantees that there will be no duplicates; it makes it easy for readers of the code to understand that invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-27 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-27 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:7 on 2025-05-28 06:35</div>
+            <div class="timeline-body"><p>I don't think there's a benefit of <code>deduplicate_nested_paths</code> over an <code>IndexSet</code> when the only goal is to remove exact duplicates. <code>deduplicate_nested_paths</code> does more. It eliminates entries that overlap:</p>
+<ul>
+<li><code>/src/typeshed</code></li>
+<li><code>/src</code></li>
+</ul>
+<p>gets simplified to</p>
+<ul>
+<li><code>/src</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:352 on 2025-05-28 06:40</div>
+            <div class="timeline-body"><p>Unrelated to your PR but we should make this proper diagnostics and not just tracing warnings (that are easy to miss in the LSP)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:1435 on 2025-05-28 06:41</div>
+            <div class="timeline-body"><p>Could this have been an mdtest? Or is there still a feature that mdtests don't support that you need here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-28 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:7 on 2025-05-28 06:44</div>
+            <div class="timeline-body"><p>That makes sense. I think it would be very strange to have one site-packages path that's a sub-directory of another, though — exact duplicates seem more plausible, but even they're pretty unlikely. I'll add a comment for why I'm using an IndexSet here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:352 on 2025-05-28 11:48</div>
+            <div class="timeline-body"><p>I'll open a followup issue for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-28 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:1435 on 2025-05-28 13:56</div>
+            <div class="timeline-body"><p>It did require new features in mdtest 🙃 But I have now implemented said features in mdtest for this PR, and have converted this to be an mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-28 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-28 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-28 14:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

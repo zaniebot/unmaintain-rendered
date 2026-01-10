@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve completions by leveraging scopes - astral-sh/ruff #18281</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve completions by leveraging scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18281">#18281</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-05-23 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-23 16:27</div>
+            <div class="timeline-body"><p>This PR improves completions by leveraging scopes. That is, we try to
+identify an expression corresponding to the cursor's current position.
+We then use that expression to find it scope. Our completions are then
+the names in that scope's (and its ancestors') symbol tables.</p>
+<p>The most straight-forward way this improves on the status quo can be
+seen from a simple example:</p>
+<pre><code class="language-python">def foo():
+    def foofoo(): ...
+&lt;CURSOR&gt;
+</code></pre>
+<p>Today, this would include <code>foofoo</code> in the completions. But with this
+PR, <code>foofoo</code> is not included.</p>
+<p>I had originally started off with a bit more shenanigans in terms of
+identifying the expression under the cursor. But in the end, at least
+for scopes, a very simple solution seems to work well.</p>
+<p>The major caveat here is that this <em>doesn't</em> work well when requesting
+completions before having typed anything. While this doesn't fail in
+every case, it is somewhat common. For example:</p>
+<pre><code class="language-python">def foo():
+    def foofoo(): ...
+    &lt;CURSOR&gt;
+</code></pre>
+<p>In this instance, the AST nodes for <code>foo</code> and <code>foofoo</code> actually end
+at exactly the same byte offset, so there is nothing for us to easily
+latch on to that comes after <code>foofoo</code> but before the end of <code>foo</code>.
+In particular, we really want to enumerate the symbols for the scope
+contained in the function body of <code>foo</code>. But it's unclear how to
+(easily) actually get the scope given the cursor's position. One
+approach might be to tweak the ranges of the AST nodes to make finding
+overlapping AST nodes easier. Either way, in this case currently, we
+fall back to the global scope. So we don't end up with a complete
+failure, but I'm guessing this will prove to be frustrating for users.</p>
+<p>(I do not think we need to fix this in this PR.)</p>
+<p>Note that this doesn't apply when something has been typed. For example:</p>
+<pre><code class="language-python">def foo():
+    def foofoo(): ...
+    f&lt;CURSOR&gt;
+</code></pre>
+<p>In this case, we see that <code>f</code> is part of the body of <code>foo</code> and
+correctly provide completions for both <code>foo</code> and <code>foofoo</code>.</p>
+<p>There are some other cases where a <code>&lt;CURSOR&gt;</code> being in leading/trailing
+whitespace results in sub-optimal failures. The commented out test
+cases in the second commit cover a smattering of them.</p>
+<p>Ref https://github.com/astral-sh/ty/issues/86</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @BurntSushi on 2025-05-23 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-23 16:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-23 16:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-05-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-05-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-05-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-23 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-23 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:131 on 2025-05-23 17:50</div>
+            <div class="timeline-body"><p>This is funny but makes sense :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:147 on 2025-05-23 17:50</div>
+            <div class="timeline-body"><p>I forgot that our completion is indeed naive... I was like, wait, why does <code>foo</code> show up but makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:230 on 2025-05-23 17:54</div>
+            <div class="timeline-body"><p>Instead of assuming any relationship between node and scope. I think I'd prefer if the IDE integration traverses downwards to find a node who's indentation matches the indentation at the current position, then lookup the scope for that node. This may require passing the scope to <code>model.completions</code> because our AST, unfortunately, doesn't support traversing upwards once you have an <code>AnyNodeRef</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:345 on 2025-05-23 17:54</div>
+            <div class="timeline-body"><p>Should we instead use <code>#[test(ignore=&quot;reason&quot;)]</code> or have the test pass but we add a TODO comment that documents the expected output (this is what we generally do in ty)</p>
+<p>The benefit of having the test is that it will start failing if this ever gets fixed and the expected output is already documented (which should make it easy to accept the changes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-23 17:56</div>
+            <div class="timeline-body"><p>Nice. I think this is a great starting point! We can look into those tricky cases in a separate PR.</p>
+<p>I recommend uncommenting the tests and instead add a TODO to each test with the expected snapshot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-23 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:345 on 2025-05-23 18:05</div>
+            <div class="timeline-body"><p>I'm fine with uncommenting and adding the expected snapshot as a TODO.</p>
+<p>I think <code>#[ignore(reason = &quot;...&quot;)]</code> ` is probably not that much better than what I have. It does avoid bitrot though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-23 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:230 on 2025-05-23 18:06</div>
+            <div class="timeline-body"><p>I don't think scopes are a public API, but I think I get what you're saying. I'm not sure that will work, but I think it will work in some cases and certainly seems worth exploring!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_ide/src/completion.rs</code>:147 on 2025-05-23 19:39</div>
+            <div class="timeline-body"><p>It looks like some other part of the LSP stack filters this out, though? Like if I try this in the editor, it won't actually show &quot;foo&quot; when &quot;g&quot; is already typed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_ide/src/completion.rs</code>:23 on 2025-05-23 19:54</div>
+            <div class="timeline-body"><p>Just something I randomly noticed: there's no deduplication here. If you have something like the following, <code>foo</code> will show up twice in the suggested completions:</p>
+<pre><code class="language-py">def foo():
+    pass
+
+class C:
+    def foo(self):
+        pass
+
+    def bar(self):
+        f&lt;CURSOR&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_ide/src/completion.rs</code>:773 on 2025-05-23 19:59</div>
+            <div class="timeline-body"><p>Does it make sense to add tests where identifiers would potentially clash with keywords? Something like</p>
+<pre><code class="language-py">classy_variable_name = 1
+
+class&lt;CURSOR&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-23 20:07</div>
+            <div class="timeline-body"><p>This does not take type information into account. For example, it will include symbols from unreachable branches:</p>
+<pre><code class="language-py">import sys
+
+if sys.version_info &lt; (3, 0):
+    legacy_symbol = 1
+
+l&lt;CURSOR&gt;  # will include legacy_symbol
+</code></pre>
+<p>The <code>extend_with_declarations_and_bindings</code> function in https://github.com/astral-sh/ruff/pull/18251 does something similar to this, but excludes definitely-unbound symbols.</p>
+<p>I'm not sure what the desired functionality here is (or if there is a performance tradeoff). Maybe it's fine to error on the side of providing too many completions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_ide/src/completion.rs</code>:773 on 2025-05-23 20:09</div>
+            <div class="timeline-body"><p>Another thing that might be worth adding (it already works fine!):</p>
+<pre><code class="language-py">some_symbol = 1
+
+print(f&quot;{some&lt;TAB&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-23 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-23 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-23 20:09</div>
+            <div class="timeline-body"><p>I think we would at least want to make sure that unreachable bindings are included in the autocomplete suggestions if the user is editing a branch of code that is itself understood by ty to be unreachable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-26 10:48</div>
+            <div class="timeline-body"><p>Yeah, I think it would be useful to exclude symbols that are unreachable although that doesn't necessarily need to be done in this PR itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/completion.rs</code>:147 on 2025-05-26 11:08</div>
+            <div class="timeline-body"><p>Yeah, filtering is usually done on the client side so that it's consistent across other language servers but the server can do it's own filtering as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/completion.rs</code>:458 on 2025-05-26 11:15</div>
+            <div class="timeline-body"><p>This is due to error recovery. The source code contains a syntax error because the identifier is absent (<code>[ for bar in [1, 2, 3]</code>) and the parser recovers by converting <code>for</code> into an identifier. The fix is to improve error recovery where the parser is converting keywords into an identifier. There are benefits for doing this but maybe not doing this conversion might be more beneficial. Point 12 in #10653.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/completion.rs</code>:559 on 2025-05-26 11:19</div>
+            <div class="timeline-body"><p>Yeah, parentheses aren't part of the node's range unless it's relevant e.g., tuples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/completion.rs</code>:23 on 2025-05-26 11:27</div>
+            <div class="timeline-body"><p>Yeah, we would need to model shadowing here somehow because the completions should understand the kind of &quot;foo&quot; symbol.</p>
+<p>I guess a naive way to solve this would be to keep a running list of completions as we traverse the scope upwards and avoid adding a symbol if it already exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-26 11:29</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-26 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-26 12:00</div>
+            <div class="timeline-body"><p>Note that I'm actually saying the opposite to Dhruv and David here. I agree that excluding unreachable bindings makes sense if the user is editing reachable code. But what if we've got a situation like this?</p>
+<p>Config: <code>--python-version=3.10</code></p>
+<pre><code class="language-py">import sys
+
+if sys.version_info &gt;= (3, 11):
+    long_variable_name = []
+    lo&lt;CURSOR&gt;
+</code></pre>
+<p>I think it'll be pretty annoying for the user there if we don't include <code>long_variable_name</code> in the list of autocomplete suggestions when the cursor is at that location. But the binding is in unreachable code!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-26 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-26 12:24</div>
+            <div class="timeline-body"><p>That's why I was wondering if we should lean towards providing too many completions.</p>
+<p>But note that other LSPs also have degraded experience in unreachable code sections:</p>
+<p><img src="https://github.com/user-attachments/assets/92e73013-59f3-49c3-8f78-f7411953c290" alt="image" /></p>
+<p>That's not a <em>great</em> reason for not trying to do better here. But I also don't think it's high priority to provide the best-possible LSP experience inside unreachable sections of code. For other languages, I often deliberately change the config when I'm editing otherwise unreachable code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-05-27 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_ide/src/completion.rs</code>:23 on 2025-05-27 19:35</div>
+            <div class="timeline-body"><p>I think another important issue revealed by this example is that we aren't modeling the quirks of Python name resolution, e.g. that names in a class scope are not visible within nested function scopes (so only the global <code>foo</code> should even be visible here.) Doesn't necessarily need to be in this PR, but I think this will be important to fix; having all methods of a class wrongly show up as autocomplete suggestions within other methods of the class will be pretty annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-29 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:23 on 2025-05-29 13:58</div>
+            <div class="timeline-body"><p>For now, I've &quot;fixed&quot; this by just sorting and de-duplicating the completions returned by the server. I had assumed the client would de-duplicate since it was already doing prefix matching, but that does not appear to be the case. I've also added tests covering these cases (along with an appropriate FIXME for the false positives that @carljm points out).</p>
+<p>I agree that what we're doing right now is <em>very</em> dumb. I'm working my way up to fancier things. :-) I agree that the false positives here should be fixed <em>and</em> that completions should be more than just name strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-29 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:773 on 2025-05-29 14:09</div>
+            <div class="timeline-body"><p>Yes! Nice test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-29 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:66 on 2025-05-29 14:13</div>
+            <div class="timeline-body"><p>Yeah I agree we can do better here, but I think I generally prefer offering too many completions in a case like this until we can implement what @AlexWaygood suggests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-29 14:15</div>
+            <div class="timeline-body"><p>OK, I've addressed what feedback I think is plausible to do in this PR. I've recorded the notes about where completions can be improved (which I'll try to summarize in GitHub issues when I get a chance) for future work. I don't have a good sense of how hard some of these things are yet. e.g., Detecting whether the cursor is in an unreachable scope and ensuring that instance methods aren't treated as if they were normal functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-05-29 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-05-29 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-29 14:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

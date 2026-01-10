@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] add list of base class exceptions for `FURB180` - astral-sh/ruff #18148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] add list of base class exceptions for <code>FURB180</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18148">#18148</a>
+        opened by <a href="https://github.com/robsdedude">@robsdedude</a>
+        on 2025-05-17 11:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-05-17 11:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add a config option <code>tool.ruff.lint.refurb.allow-abc-meta-bases</code> (<code>[&quot;typing.Protocol&quot;, &quot;typing_extensions.Protocol&quot;]</code> by default) that allows to specify a list such that if  class has at least one base-class and all base-classes are in this list it is exempt from <code>FURB180</code>. This is useful for classes that validate their base-classes at runtime such as the two that are the default value.</p>
+<h2>Test Plan</h2>
+<p>Besides the adjusted test <code>ruff_linter::rules::refurb::tests::rules</code>, I created a minimal Python project to test the configuration option.</p>
+<h2>References</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/13307 (together with https://github.com/astral-sh/ruff/pull/18149)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-25 11:00</div>
+            <div class="timeline-body"><p>@ntBre could you take a look at this PR when you're back?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-05-29 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-05-29 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-05-29 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:3425 on 2025-05-29 19:52</div>
+            <div class="timeline-body"><p>One thing to note here, which might be fine, is that this example will remove <code>typing.Protocol</code> and <code>typing_extensions.Protocol</code> from the list, so users will have to include those manually when modifying this. We often include an <code>extend_*</code> variant of the settings to get around this, but maybe that's overkill in this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-05-29 19:59</div>
+            <div class="timeline-body"><p>I think I'd probably slightly prefer something like this to avoid having to allocate a <code>HashSet</code>:</p>
+<pre><code class="language-suggestion">    let bases = class_def.bases();
+    let all_bases_allowed = !bases.is_empty()
+        &amp;&amp; bases.iter().all(|base| {
+            checker
+                .semantic()
+                .resolve_qualified_name(base)
+                .map(|qualified_name| qualified_name.to_string())
+                .is_some_and(|name| checker.settings.refurb.allow_abc_meta_bases.contains(&amp;name))
+        });
+
+    if all_bases_allowed {
+        return;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-05-29 20:00</div>
+            <div class="timeline-body"><p>Thanks, this all makes sense to me! I just had a couple of minor suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-29 20:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-05-30 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_workspace/src/options.rs</code>:3425 on 2025-05-30 19:01</div>
+            <div class="timeline-body"><p>I'm happy to implement the extend approach, if you prefer to have it. I don't expect it to take very long to do.</p>
+<ol>
+<li>Do you want me to?</li>
+<li>If yes, should the extend config co-exist with the full list config that I've added? If yes to this as well, when both configs are given, I assume they should be merged?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-05-30 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-05-30 19:04</div>
+            <div class="timeline-body"><p>Smart :cookie:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-05-30 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-05-30 21:47</div>
+            <div class="timeline-body"><p>Actually, thinking about it more, shouldn't it be that no lint is emitted if any of the base classes is in the whitelist,  instead of all as currently implemented? I'm thinking that if even one of the bases is known to be one that does run-time checks on other base classes (or otherwise change it's behavior in an unwanted way when fixing this lint), the lint should probably be silenced. What do you think @ntBre?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @robsdedude on 2025-06-03 05:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-06-03 06:38</div>
+            <div class="timeline-body"><p>I just went with <code>any</code> for now. The commit can be reverted easily, I figured.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 06:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_workspace/src/options.rs</code>:3425 on 2025-06-03 06:39</div>
+            <div class="timeline-body"><p>I added an extension option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @robsdedude on 2025-06-03 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @robsdedude on 2025-06-03 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-03 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:3425 on 2025-06-03 14:27</div>
+            <div class="timeline-body"><p>Sorry my suggestion was a bit vague, I just didn't have strong feelings either way. I think it does make sense to have the extend version for convenience!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-03 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-06-03 14:29</div>
+            <div class="timeline-body"><p>Ah <code>any</code> does make sense to me. I thought <code>all</code> was preserving the behavior of <code>is_subset</code>, but I might have gotten that wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/settings.rs</code>:20 on 2025-06-03 14:32</div>
+            <div class="timeline-body"><p>This is kind of minor, but I think we usually go ahead and combine the settings at this point. For example:</p>
+<p>https://github.com/astral-sh/ruff/blob/87a15f7e4cf328e6485cee98960d19f51a955ef4/crates/ruff_workspace/src/options.rs#L1457-L1468</p>
+<p>That should simplify the check a bit in the rule itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:42 on 2025-06-03 14:45</div>
+            <div class="timeline-body"><p>It would be a bit more verbose, but I think something like <code>allowed-abc-meta-bases</code> and <code>extend-allowed-abc-meta-bases</code> would be more similar to our other settings like this. It would be even longer still, but I might prefer <code>base-classes</code> instead of just <code>bases</code> too.</p>
+<p>cc @MichaReiser, do you have any suggestions for the names?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB180_FURB180.py.snap</code>:3 on 2025-06-03 14:49</div>
+            <div class="timeline-body"><p>Is it possible that you ran quite an old version of cargo-insta? I don't remember seeing this before, and it seems like it was removed in 2022 (https://github.com/mitsuhiko/insta/pull/218).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/mod.rs</code>:129 on 2025-06-03 14:57</div>
+            <div class="timeline-body"><p>Could this use the <code>test_case</code> macro? Maybe something like this:</p>
+<pre><code class="language-suggestion">    #[test_case(&amp;[&quot;ast.Name&quot;, &quot;FURB180_exceptions.A0&quot;]; allow_abc_meta_bases)]
+    fn test_furb180_exemption(settings: refurb::settings::Settings) -&gt; Result&lt;()&gt; {
+</code></pre>
+<p>and then change the type of the argument to <code>&amp;[&amp;str]</code> or something. That would only work if the <code>Settings</code> fields were combined as in my other comment. You could also pass <code>Settings</code> directly via <code>test_case</code> but that might be a bit unwieldy.</p>
+<p>If <code>extend</code> is handled before the <code>Settings</code> conversion, there might be less reason for two tests here anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-03 15:17</div>
+            <div class="timeline-body"><p>Thanks, this is looking good. Just a couple more suggestions, and one question about naming</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:88 on 2025-06-03 15:50</div>
+            <div class="timeline-body"><p>I think <code>all</code> does indeed preserve the functionality of <code>is_subset</code>. Your suggested re-write just made it more obvious what it does and that made me think whether I really want what I wrote :upside_down_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:42 on 2025-06-03 15:56</div>
+            <div class="timeline-body"><p>@ntBre I based the design (the naming as well as not merging the options) on the existing <code>allowed_markup_calls</code> and <code>extend_markup_names</code> config options pair... Which I just realized isn't even a pair. Reading do be hard 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "FURB180: add list of base class exceptions" to "[`refurb`] add list of base class exceptions for `FURB180`" by @robsdedude on 2025-06-03 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB180_FURB180.py.snap</code>:3 on 2025-06-03 16:08</div>
+            <div class="timeline-body"><p>Oh wow :see_no_evil: That really confused me for a hot minute. My insta was up-to-date, I'm just a silly. I manually renamed the new snapshot files instead of using <code>cargo insta review</code>. I didn't anticipate it to do anything other that that, and doing it manually allowed me to use diff tooling that better suits me. Welp, that won't happen again :sweat_smile: thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-03 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:42 on 2025-06-03 16:16</div>
+            <div class="timeline-body"><p>However, <code>Flake8GetTextOptions</code> has <code>function_names</code> and <code>extend_function_names</code> which works as you suggested. Similarly with <code>Flake8ImportConventionsOptions</code>'s <code>aliases</code> and <code>extend_aliases</code> and <code>Flake8SelfOptions</code>'s <code>ignore_names</code> and <code>extend_ignore_names</code>. There are some more option pairs that work like this.</p>
+<p>And then, there's <code>Flake8PytestStyleOptions</code>, which has <code>raises_require_match_for</code> and <code>raises_extend_require_match_for</code> as well as <code>warns_require_match_for</code> and <code>warns_extend_require_match_for</code>. So this plugin follows its own naming scheme and is not merged either.</p>
+<p>So it seems there is prior art for pretty much any approach :upside_down_face: However, the one you suggested seems to be the most common. So I'll get the PR aligned with this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-03 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:42 on 2025-06-03 19:07</div>
+            <div class="timeline-body"><p>Yeah I did a double take on the markup rule too :smile: I'm sure we're not totally consistent, so this is more of a preference than a hard requirement. Micha might have some insight here too.</p>
+<p>I was having trouble highlighting this subtle difference in the code formatting, but I still think allow<strong>ed</strong> might be better than &quot;allow&quot; alone. When I was searching through the settings earlier, it looked like <code>allow-</code> is usually for boolean settings like <code>allow-multiline</code>, while <code>allowed-</code> is more often used for lists (although there are exceptions there too!)</p>
+<p>I think that's my last nit/bike-shedding suggestion on the name, though. For more context, it's a bit of a pain to deprecate/rename config options later, which is the only reason I'm so worried about nailing the names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-03 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB180_FURB180.py.snap</code>:3 on 2025-06-03 19:08</div>
+            <div class="timeline-body"><p>Ahh, gotcha. I wouldn't have expected that either!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-03 19:10</div>
+            <div class="timeline-body"><p>Awesome, thanks again! This is good to go from my perspective, modulo any further bike-shedding on the name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-06-04 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:42 on 2025-06-04 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I was having trouble highlighting this subtle difference in the code formatting</p>
+</blockquote>
+<p>Oh :innocent: I missed that detail indeed. This seems like the appropriate kind of bike-shedding to me :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @robsdedude on 2025-06-04 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-11 16:25</div>
+            <div class="timeline-body"><p>@ntBre Just want to make sure this is still on your radar :eyes:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 16:42</div>
+            <div class="timeline-body"><p>Oh yes, thank you! Let me actually cc someone who might have an opinion on the name (@MichaReiser any thoughts on the names and maybe the two separate options?)</p>
+<p>I believe the current state is that we added two new config options:</p>
+<ul>
+<li><code>lint.refurb.allowed_abc_meta_bases</code></li>
+<li><code>lint.refurb.extend_allowed_abc_meta_bases</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-12 06:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:3423 on 2025-06-12 06:24</div>
+            <div class="timeline-body"><p>Do we need to gate this behind preview, given that we now emit fewer lints (which can lead to unused noqa comments) or do we consider this a bug fix?</p>
+<p>From our versioning policy</p>
+<blockquote>
+<p>A new configuration option is added in a backwards compatible way (no formatting changes or new lint errors)</p>
+</blockquote>
+<p>So I think we need to gate this behind preview</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh yes, thank you! Let me actually cc someone who might have an opinion on the name (@MichaReiser any thoughts on the names and maybe the two separate options?)</p>
+</blockquote>
+<p>I'm not entirely sure I understnad what you want feedback on. I see that this PR introduces two new options. Are you asking for my opinion on the option names? Is there mroe feedback that you're looking for?</p>
+<p>Looking at the issue https://github.com/astral-sh/ruff/issues/13307#issuecomment-2340770515 it's unclear if we want these options. More specifically, options have a non-zero cost because users need to understand them. This PR also changes the default for everyone using the rule, which may not what they want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-13 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>This PR also changes the default for everyone using the rule, which may not what they want.</p>
+</blockquote>
+<p>That's a fair point. I figured if users are in the situation where this becomes relevant, they have code along the lines of</p>
+<pre><code class="language-python">class Foo(Protocol, metaclass=ABCMeta): ...
+</code></pre>
+<p>I imagine if a user wants this to be linted, the lint shouldn't be &quot;use ABC as a base instead of ABCMeta&quot;, but  rather &quot;don't bother specifying ABC/ABCMeta if the base(s) already includes ABC in the class hierarchy&quot;.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

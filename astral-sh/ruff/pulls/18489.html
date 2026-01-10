@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] remove unnecessary Either - astral-sh/ruff #18489</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] remove unnecessary Either</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18489">#18489</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-06 01:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 01:24</div>
+            <div class="timeline-body"><p>Just a quick review-comment follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-06-06 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-06-06 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-06-06 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-06-06 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-06 01:27</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-06-06 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-06 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-06 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 16:41</div>
+            <div class="timeline-body"><p>It could be even simpler, FWIW...</p>
+<pre><code class="language-diff">--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -9021,9 +9021,9 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db, '_&gt; {
+     ) -&gt; Type&lt;'db&gt; {
+         let arguments = &amp;*subscript_node.slice;
+         let (args, args_number) = if let ast::Expr::Tuple(t) = arguments {
+-            (t.iter(), t.len())
++            (&amp;*t.elts, t.len())
+         } else {
+-            (std::slice::from_ref(arguments).iter(), 1)
++            (std::slice::from_ref(arguments), 1)
+         };
+         if args_number != expected_arg_count {
+             if let Some(builder) = self.context.report_lint(&amp;INVALID_TYPE_FORM, subscript_node) {
+@@ -9040,8 +9040,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db, '_&gt; {
+         }
+         let ty = class.to_specialized_instance(
+             self.db(),
+-            args.into_iter()
+-                .map(|node| self.infer_type_expression(node)),
++            args.iter().map(|node| self.infer_type_expression(node)),
+         );
+         if arguments.is_tuple_expr() {
+             self.store_expression_type(arguments, ty);
+</code></pre>
+<p>...but I don't think it's worth a followup PR just for this :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-06 16:57</div>
+            <div class="timeline-body"><p>In which case you could even remove the <code>len</code> because of <code>slice.len</code> ;)</p>
+<p>Maybe something for claude</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-07 02:18</div>
+            <div class="timeline-body"><p>PRs are cheap :) https://github.com/astral-sh/ruff/pull/18526</p>
+<p>And this is too simple for Claude -- it'd be way more work to explain it to Claude than to just make the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2025-06-07 02:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return `DiagnosticGuard` from `Checker::report_diagnostic` - astral-sh/ruff #18232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Return <code>DiagnosticGuard</code> from <code>Checker::report_diagnostic</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18232">#18232</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-05-20 20:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-20 20:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a <code>DiagnosticGuard</code> type to ruff that is adapted from the <code>DiagnosticGuard</code> and <code>LintDiagnosticGuard</code> types from ty. This guard is returned by <code>Checker::report_diagnostic</code> and derefs to a <code>ruff_diagnostics::Diagnostic</code> (<code>OldDiagnostic</code>), allowing methods like <code>OldDiagnostic::set_fix</code> to be called on the result. On <code>Drop</code> the <code>DiagnosticGuard</code> pushes its contained <code>OldDiagnostic</code> to the <code>Checker</code>.</p>
+<p>The main motivation for this is to make a following PR adding a <code>SourceFile</code> to each diagnostic easier. For every rule where a <code>Checker</code> is available, this will now only require modifying <code>Checker::report_diagnostic</code> rather than all the rules.</p>
+<p>In the few cases where we need to create a diagnostic before we know if we actually want to emit it, there is a <code>DiagnosticGuard::defuse</code> method, which consumes the guard without emitting the diagnostic. I was able to restructure about half of the rules that naively called this to avoid calling it, but a handful of rules still need it.</p>
+<p>One of the fairly common patterns where <code>defuse</code> was needed initially was something like</p>
+<pre><code class="language-rust">let diagnostic = Diagnostic::new(DiagnosticKind, range);
+
+if !checker.enabled(diagnostic.rule()) {
+    return;
+}
+</code></pre>
+<p>So I also added a <code>Checker::checked_report_diagnostic</code> method that handles this check internally. That helped to avoid some additional <code>defuse</code> calls. The name is a bit repetitive, so I'm definitely open to suggestions there. I included a warning against using it in the docs since, as we've seen, the conversion from a diagnostic to a rule is actually pretty expensive.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-05-20 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-05-20 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-20 20:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-05-20 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-05-20 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-05-20 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-05-20 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:408 on 2025-05-21 06:41</div>
+            <div class="timeline-body"><p>It's unfortunate that this has to go through <code>diagnostic.rule</code> which requires a lookup. I'm leaning towards adding a <code>rule</code> method to <code>ViolationMetadata</code>. That should be easy enough to derive and does make sense to me. This will also allow us to resolve the noqa code in a future version.</p>
+<p>That makes me wonder if <code>report_diagnostic</code> should always to the <code>self::enabled</code> call but I suspect that handling with the <code>Option</code> return type is too annoying in many cases that it isn't worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3103 on 2025-05-21 06:43</div>
+            <div class="timeline-body"><p>we shouldn't emit the diagnostic if the thread is unwinding:</p>
+<pre><code class="language-suggestion">        if std::thread::panicking {
+            return;
+        }
+        
+        if let Some(diagnostic) = self.diagnostic.take() {
+            self.checker.diagnostics.borrow_mut().push(diagnostic);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:1217 on 2025-05-21 06:45</div>
+            <div class="timeline-body"><p>It would be nice if we could avoid creating the diagnsotic by moving this check before the <code>report_diagnostic </code>call. Diagnostics are rather heavy weight and creating them for what's valid code is non ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:980 on 2025-05-21 06:46</div>
+            <div class="timeline-body"><p>Same here. It would be great if we could move this check before creating the diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/suggested_to_update_3_0.rs</code>:300 on 2025-05-21 06:47</div>
+            <div class="timeline-body"><p>Same as for the other airflow rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs</code>:1182 on 2025-05-21 06:53</div>
+            <div class="timeline-body"><p>Maybe: <code>report_diagnostic_if_enabled</code>. THe <code>checker.checked</code> reads a bit strangely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-21 06:55</div>
+            <div class="timeline-body"><p>This is great. I didn't review all rule changes (there are too many).</p>
+<p>I think it would be good to add <code>rule</code> to <code>Violation</code> to avoid the need to go through <code>diagnostic.rule</code> only to check if the rule is enabled (which could lead to a somewhat significant perf regression).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-21 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3103 on 2025-05-21 12:52</div>
+            <div class="timeline-body"><p>Makes sense, I saw that in ty but thought it might be ty-specific. Do you know if I also need the second one after the <code>take</code> call?</p>
+<p>https://github.com/astral-sh/ruff/blob/839c637abb8c7f684f7577885a53432bff949169/crates/ty_python_semantic/src/types/context.rs#L503-L516</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-21 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:408 on 2025-05-21 13:03</div>
+            <div class="timeline-body"><p>Oh nice, I'll try to clean https://github.com/astral-sh/ruff/pull/18234 up for review at some point then. That makes sense to resolve the <code>NoqaCode</code> and store <em>that</em> on the <code>Diagnostic</code> instead but use the <code>Rule</code> directly here.</p>
+<p>It does sound pretty appealing to always do the <code>enabled</code> check if it's cheap enough too. I think in most cases it should just be a <code>let-else</code> that returns if <code>None</code>, but it will be another big refactor to apply that everywhere for sure. I'm getting better at using ast-grep for these, though 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-21 13:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3103 on 2025-05-21 13:07</div>
+            <div class="timeline-body"><p>Hmm no, I think that's just wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3103 on 2025-05-27 14:29</div>
+            <div class="timeline-body"><p>Added one check before the <code>take</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs</code>:1182 on 2025-05-27 14:35</div>
+            <div class="timeline-body"><p>Nice, I like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 19:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:1217 on 2025-05-27 19:50</div>
+            <div class="timeline-body"><p>I reworked this a bit to avoid the <code>defuse</code> call. I also stored a <code>QualifiedName</code> directly on the rule struct to avoid a <code>to_string</code> call, but I needed to pass along a lifetime parameter in the derive macro using <code>split_for_impl</code> too. I could revert that part if we wanted, but it seemed like it could be helpful in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-27 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:1217 on 2025-05-27 20:15</div>
+            <div class="timeline-body"><p>On second thought, I could definitely revert this. 2/4 airflow rules I updated actually needed <code>String</code>s, so I couldn't change those to <code>QualifiedName</code> and the mix is a bit inconsistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-28 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:408 on 2025-05-28 06:08</div>
+            <div class="timeline-body"><blockquote>
+<p>It does sound pretty appealing to always do the enabled check if it's cheap enough too. I think in most cases it should just be a let-else that returns if None, but it will be another big refactor to apply that everywhere for sure. I'm getting better at using ast-grep for these, though 😄</p>
+</blockquote>
+<p>Let's keep it at what we have for now. We can consider this if it proves necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-28 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-28 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-28 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-28 11:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>

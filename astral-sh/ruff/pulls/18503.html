@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] implement disjointness of Callable vs SpecialForm - astral-sh/ruff #18503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] implement disjointness of Callable vs SpecialForm</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18503">#18503</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-06 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 16:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/557</p>
+<h2>Test Plan</h2>
+<p>Stable property tests succeed with a million iterations. Added mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-06-06 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-06-06 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-06-06 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-06-06 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-06-06 16:52</div>
+            <div class="timeline-body"><p>This special form is callable: https://github.com/astral-sh/ruff/blob/1274521f9fda19507921c85442d0ca991b67b846/crates/ty_python_semantic/src/types/special_form.rs#L102</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-06 16:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-06-06 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 22:21</div>
+            <div class="timeline-body"><p>@AlexWaygood It looks like <code>ChainMap</code>, <code>DefaultDict</code>, <code>Counter</code>, <code>Deque</code>, and <code>OrderedDict</code> (the collections proxies) are callable at runtime, but in typeshed are annotated as <code>_Alias</code>, which has no <code>__call__</code>. Do you think we should model their runtime callability as a special case, or trust typeshed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 22:27</div>
+            <div class="timeline-body"><p>The collections proxies are callable, but the builtins proxies aren't?! That's... Odd. I had in my head that all the legacy stdlib aliases were not callable!</p>
+<p>We should probably treat them as callable if they are at runtime — can we just delegate to the constructor signatures of the classes they're aliasing? I don't love the idea of hardcoding their constructors' signatures somewhere in our model — some of those classes have reasonably complicated constructor methods IIRC</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-07 02:08</div>
+            <div class="timeline-body"><blockquote>
+<p>can we just delegate to the constructor signatures of the classes they're aliasing</p>
+</blockquote>
+<p>Yeah, that should be possible. It's beyond the scope of what I was looking to do in this PR, but I added a TODO for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-06-07 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-07 04:55</div>
+            <div class="timeline-body"><blockquote>
+<p>can we just delegate to the constructor signatures of the classes they're aliasing</p>
+</blockquote>
+<p>In that case, is there any reason not to just treat them as direct aliases? That is, remove their SpecialForm type entirely and act as if <code>typing.pyi</code> imported them directly from <code>collections</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 07:55</div>
+            <div class="timeline-body"><p><a href="https://peps.python.org/pep-0585/#implementation">PEP 585</a> states:</p>
+<blockquote>
+<p>Importing [the legacy aliases] from <code>typing</code> is deprecated. Due to <a href="https://peps.python.org/pep-0563/">PEP 563</a> and the intention to minimize the runtime impact of typing, this deprecation will not generate DeprecationWarnings. Instead, type checkers may warn about such deprecated usage when the target version of the checked program is signalled to be Python 3.9 or newer. It’s recommended to allow for those warnings to be silenced on a project-wide basis.</p>
+</blockquote>
+<p>I think pyright implements this deprecation, and it would be nice if we could eventually as well. If we didn't distinguish between <code>typing.ChainMap</code> and <code>collections.ChainMap</code> at all in our model, that might be tricky?</p>
+<p>Edit: Hmm, come to think of it, though, we'll have the same &quot;tricky&quot; issue when it comes to implementing deprecation warnings for <code>typing.Iterator</code>, <code>typing.Iterable</code>, <code>typing.Mapping</code>, etc. According to typeshed, these aren't just aliases for stdlib classes in <code>collections.abc</code> -- according to typeshed, these are actually <em>defined</em> in <code>typing</code> (and re-exported in <code>collections.abc</code>). There have been numerous attempts to move the class definitions to the <code>collections.abc</code> stub, but it's tough because existing type checkers hardcode assumptions that these class definitions will be found in <code>typing</code>.</p>
+<p>Given that we'll maybe have to solve that issue for the <code>collections.abc</code> aliases anyway, maybe it doesn't actually help us at all to represent <code>typing.ChainMap</code> as a different type internally to <code>collections.ChainMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-07 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-07 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/special_form.rs</code>:255 on 2025-06-07 08:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // TypedDict can be called as a constructor to create TypedDict types
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p>The collections proxies are callable, but the builtins proxies aren't?! That's... Odd. I had in my head that all the legacy stdlib aliases were not callable!</p>
+</blockquote>
+<p>It looks like the builtin aliases are specifically excluded from being callable at runtime by passing the <code>inst=False</code> keyword argument: https://github.com/python/cpython/blob/24069fbca861a5904ee7718469919e84828f22e7/Lib/typing.py#L2701-L2785. Why the decision was made to treat these aliases differently to other stdlib aliases, I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-06-10 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-10 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-06-11 10:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

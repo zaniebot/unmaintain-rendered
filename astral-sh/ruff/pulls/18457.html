@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix `--python` argument for Windows, and improve error messages for bad `--python` arguments - astral-sh/ruff #18457</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix <code>--python</code> argument for Windows, and improve error messages for bad <code>--python</code> arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18457">#18457</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-04 11:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-04 11:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/556.</p>
+<p>On Windows, system installations have different layouts to virtual environments. In Windows virtual environments, the Python executable is found at <code>&lt;sys.prefix&gt;/Scripts/python.exe</code>. But in Windows system installations, the Python executable is found at <code>&lt;sys.prefix&gt;/python.exe</code>. That means that Windows users were able to point to Python executables inside virtual environments with the <code>--python</code> flag, but they weren't able to point to Python executables inside system installations.</p>
+<p>This PR fixes that issue. It also makes a couple of other changes:</p>
+<ul>
+<li>Nearly all <code>sys.prefix</code> resolution is moved inside <code>site_packages.rs</code>. That was the original design of the <code>site-packages</code> resolution logic, but features implemented since the initial implementation have added some resolution and validation to <code>resolver.rs</code> inside the module resolver. That means that we've ended up with a somewhat confusing code structure and a situation where several checks are unnecessarily duplicated between the two modules.</li>
+<li>I noticed that we had quite bad error messages if you e.g. pointed to a path that didn't exist on disk with <code>--python</code> (we just gave a somewhat impenetrable message saying that we &quot;failed to canonicalize&quot; the path). I improved the error messages here and added CLI tests for <code>--python</code> and the <code>environment.python</code> configuration setting.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Existing tests pass</li>
+<li>Added new CLI tests</li>
+<li>I manually checked that virtual-environment discovery still works if no configuration is given</li>
+</ul>
+<p>I'd love it if somebody who has a Windows machine setup for development could do some manual testing to check that pointing <code>--python</code> to a system-installation executable now works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-04 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-04 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-04 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-04 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-04 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-04 11:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty/tests/cli.rs</code>:1055 on 2025-06-04 11:03</div>
+            <div class="timeline-body"><p>this TODO can be resolved by propagating whether the <code>python</code> setting was obtained from a CLI flag or from a configuration file, and adding a new <code>SysPrefixPathOrigin</code> variant that captures this information. For now I'm deferring this to a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-04 11:04</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-04 11:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-06-04 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/cli.rs</code>:1055 on 2025-06-05 06:59</div>
+            <div class="timeline-body"><p>Should we create a help wanted issue for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-05 07:01</div>
+            <div class="timeline-body"><p>Nice. Thanks for fixing this and improving the diagnostics and documentatin along the way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-05 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty/tests/cli.rs</code>:1055 on 2025-06-05 07:18</div>
+            <div class="timeline-body"><p>I actually already have the fix locally — it was originally part of the same patch, but I split it out from this PR as I realised it wasn't directly required to fix the bug here and the patch was starting to sprawl over too much code :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-05 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-05 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-05 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @dhruvmanila on 2025-06-11 10:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] support callability of bound/constrained typevars - astral-sh/ruff #18389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] support callability of bound/constrained typevars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18389">#18389</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-05-30 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 18:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Allow a typevar to be callable if it is bound to a callable type, or constrained to callable types.</p>
+<p>I spent some time digging into why this support didn't fall out naturally, and ultimately the reason is that we look up <code>__call__</code> on the meta type (since its a dunder), and our implementation of <code>Type::to_meta_type</code> for <code>Type::Callable</code> does not return a type with <code>__call__</code>.</p>
+<p>A more general solution here would be to have <code>Type::to_meta_type</code> for <code>Type::Callable</code> synthesize a protocol with <code>__call__</code> and return an intersection with that protocol (since for a type to be callable, we know its meta-type must have <code>__call__</code>). That solution could in principle also replace the special-case handling of <code>Type::Callable</code> itself, here in <code>Type::bindings</code>. But that more general approach would also be slower, and our protocol support isn't quite ready for that yet, and handling this directly in <code>Type::bindings</code> is really not bad.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/480</p>
+<h2>Test Plan</h2>
+<p>Added mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-05-30 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-05-30 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-05-30 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-05-30 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-30 18:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pegen (https://github.com/we-like-parsers/pegen)
+- error[call-non-callable] src/pegen/parser.py:32:20: Object of type `F` is not callable
+- error[call-non-callable] src/pegen/parser.py:37:16: Object of type `F` is not callable
+- error[call-non-callable] src/pegen/parser.py:66:20: Object of type `F` is not callable
+- Found 56 diagnostics
++ Found 53 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:243:71: Object of type `CallableT` is not callable
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:243:71: Object of type `CallableT` is not callable
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:259:20: Object of type `CallableT` is not callable
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:470:71: Object of type `CallableT` is not callable
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:470:71: Object of type `CallableT` is not callable
+- error[call-non-callable] beartype/_util/cache/utilcachecall.py:486:20: Object of type `CallableT` is not callable
+- Found 576 diagnostics
++ Found 570 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[call-non-callable] kopf/_cogs/clients/auth.py:41:30: Object of type `_F` is not callable
+- error[call-non-callable] kopf/_cogs/clients/auth.py:51:34: Object of type `_F` is not callable
+- error[call-non-callable] kopf/_core/intents/callbacks.py:254:20: Object of type `_FnT` is not callable
+- error[call-non-callable] kopf/_core/intents/callbacks.py:260:20: Object of type `_FnT` is not callable
+- error[call-non-callable] kopf/_core/intents/callbacks.py:266:20: Object of type `_FnT` is not callable
+- error[call-non-callable] kopf/_core/intents/callbacks.py:272:24: Object of type `_FnT` is not callable
+- error[call-non-callable] kopf/_kits/webhacks.py:86:24: Object of type `_ServerFn` is not callable
+- Found 163 diagnostics
++ Found 156 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[call-non-callable] src/check_jsonschema/cli/param_types.py:21:20: Object of type `C` is not callable
+- error[call-non-callable] src/check_jsonschema/cli/param_types.py:22:16: Object of type `C` is not callable
+- Found 68 diagnostics
++ Found 66 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[call-non-callable] ignite/utils.py:413:20: Object of type `F` is not callable
+- Found 2223 diagnostics
++ Found 2222 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[call-non-callable] test/__init__.py:186:20: Object of type `_TestFuncT` is not callable
+- Found 443 diagnostics
++ Found 442 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[call-non-callable] paasta_tools/utils.py:3990:22: Object of type `_UseRequestsCacheFuncT` is not callable
+- Found 943 diagnostics
++ Found 942 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[call-non-callable] src/jinja2/compiler.py:56:16: Object of type `F` is not callable
+- error[call-non-callable] src/jinja2/runtime.py:139:16: Object of type `F` is not callable
+- Found 230 diagnostics
++ Found 228 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[call-non-callable] src/werkzeug/datastructures/mixins.py:235:14: Object of type `F` is not callable
+- error[call-non-callable] src/werkzeug/local.py:379:16: Object of type `F` is not callable
+- Found 451 diagnostics
++ Found 449 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[call-non-callable] psycopg/psycopg/pq/_debug.py:96:18: Object of type `Func` is not callable
+- Found 1115 diagnostics
++ Found 1114 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[call-non-callable] torchvision/models/_utils.py:201:43: Object of type `W` is not callable
++ error[call-non-callable] torchvision/models/_utils.py:201:43: Object of type `WeightsEnum` is not callable
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[call-non-callable] src/hydra_zen/_hydra_overloads.py:110:20: Object of type `F` is not callable
+- error[call-non-callable] src/hydra_zen/_hydra_overloads.py:341:16: Object of type `F` is not callable
+- error[call-non-callable] src/hydra_zen/_utils/coerce.py:199:16: Object of type `_T` is not callable
+- Found 640 diagnostics
++ Found 637 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[call-non-callable] boostedblob/globals.py:254:26: Object of type `F` is not callable
+- error[call-non-callable] boostedblob/path.py:268:16: Object of type `F` is not callable
+- error[call-non-callable] boostedblob/path.py:272:16: Object of type `F` is not callable
+- Found 40 diagnostics
++ Found 37 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[call-non-callable] mypyc/codegen/emitmodule.py:230:15: Object of type `F` is not callable
+- error[call-non-callable] mypyc/test-data/fixtures/testutil.py:102:16: Object of type `F` is not callable
+- error[call-non-callable] mypyc/test/testutil.py:129:15: Object of type `F` is not callable
+- Found 3330 diagnostics
++ Found 3327 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- error[call-non-callable] pymongo/_csot.py:108:38: Object of type `F` is not callable
+- error[call-non-callable] pymongo/_csot.py:109:26: Object of type `F` is not callable
+- error[call-non-callable] pymongo/_csot.py:118:32: Object of type `F` is not callable
+- error[call-non-callable] pymongo/_csot.py:119:20: Object of type `F` is not callable
+- error[call-non-callable] pymongo/asynchronous/helpers.py:47:26: Object of type `F` is not callable
+- error[call-non-callable] pymongo/asynchronous/helpers.py:67:30: Object of type `F` is not callable
+- error[call-non-callable] pymongo/synchronous/helpers.py:47:20: Object of type `F` is not callable
+- error[call-non-callable] pymongo/synchronous/helpers.py:67:24: Object of type `F` is not callable
+- Found 560 diagnostics
++ Found 552 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:53:16: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:62:16: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:76:15: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:85:15: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:103:20: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:118:20: Object of type `_TV_FN_Operator` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:237:20: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:556:20: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:650:20: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/interpreterbase/decorators.py:806:20: Object of type `TV_func` is not callable
+- error[call-non-callable] mesonbuild/rewriter.py:99:20: Object of type `TV_func` is not callable
+- Found 1398 diagnostics
++ Found 1387 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[call-non-callable] src/bokeh/document/locking.py:93:19: Object of type `F` is not callable
+- error[call-non-callable] src/bokeh/document/locking.py:97:13: Object of type `F` is not callable
+- error[call-non-callable] src/bokeh/server/session.py:94:30: Object of type `F` is not callable
+- Found 953 diagnostics
++ Found 950 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[call-non-callable] lib/streamlit/deprecation_util.py:97:18: Object of type `TFunc` is not callable
+- error[call-non-callable] lib/streamlit/elements/dialog_decorator.py:99:17: Object of type `F` is not callable
+- error[call-non-callable] lib/streamlit/runtime/fragment.py:245:38: Object of type `F` is not callable
+- error[call-non-callable] lib/streamlit/runtime/metrics_util.py:443:22: Object of type `F` is not callable
+- Found 3274 diagnostics
++ Found 3270 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- error[call-non-callable] rotkehlchen/chain/evm/transactions.py:78:22: Object of type `T` is not callable
+- Found 2043 diagnostics
++ Found 2042 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[call-non-callable] corporate/tests/test_stripe.py:153:33: Object of type `CallableT` is not callable
+- error[call-non-callable] zerver/lib/rest.py:217:12: Object of type `_F` is not callable
+- error[call-non-callable] zerver/tests/test_auth_backends.py:1095:28: Object of type `AuthFuncT` is not callable
+- error[call-non-callable] zerver/tests/test_auth_backends.py:8094:28: Object of type `AuthFuncT` is not callable
+- error[call-non-callable] zproject/backends.py:349:16: Object of type `AuthFuncT` is not callable
+- error[call-non-callable] zproject/backends.py:357:16: Object of type `AuthFuncT` is not callable
+- error[call-non-callable] zproject/backends.py:376:14: Object of type `AuthFuncT` is not callable
+- error[call-non-callable] zproject/backends.py:386:14: Object of type `AuthFuncT` is not callable
+- Found 6977 diagnostics
++ Found 6969 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-30 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-05-30 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-30 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-30 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-06-02 11:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:45:31 UTC
+    </footer>
+</body>
+</html>
