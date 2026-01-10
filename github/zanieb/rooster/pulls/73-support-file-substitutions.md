@@ -12,7 +12,7 @@ head: support-substitutions
 created_at: 2025-08-12T01:29:18Z
 updated_at: 2025-08-26T16:22:20Z
 url: https://github.com/zanieb/rooster/pull/73
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Support file substitutions

@@ -12,7 +12,7 @@ head: zb/tracking
 created_at: 2025-02-14T16:14:08Z
 updated_at: 2025-07-17T18:56:14Z
 url: https://github.com/zanieb/rooster/pull/50
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Find pull requests from rebased-merged commits in tracking pull requests

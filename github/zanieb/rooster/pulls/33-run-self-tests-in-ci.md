@@ -12,7 +12,7 @@ head: zb/test-self
 created_at: 2024-03-24T17:03:51Z
 updated_at: 2024-10-01T22:04:12Z
 url: https://github.com/zanieb/rooster/pull/33
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Run self-tests in CI

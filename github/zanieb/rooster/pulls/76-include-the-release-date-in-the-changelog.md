@@ -12,7 +12,7 @@ head: zb/release-date
 created_at: 2025-09-08T14:35:36Z
 updated_at: 2025-09-08T14:45:35Z
 url: https://github.com/zanieb/rooster/pull/76
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Include the release date in the changelog

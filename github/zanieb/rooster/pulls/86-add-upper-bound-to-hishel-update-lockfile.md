@@ -12,7 +12,7 @@ head: zb/hishel
 created_at: 2025-10-29T15:17:25Z
 updated_at: 2025-10-29T15:18:00Z
 url: https://github.com/zanieb/rooster/pull/86
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Add upper bound to hishel, update lockfile

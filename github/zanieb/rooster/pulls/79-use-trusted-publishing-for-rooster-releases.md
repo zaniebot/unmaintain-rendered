@@ -12,7 +12,7 @@ head: zb/trusted
 created_at: 2025-09-11T13:09:53Z
 updated_at: 2025-09-11T13:11:01Z
 url: https://github.com/zanieb/rooster/pull/79
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Use trusted publishing for rooster releases

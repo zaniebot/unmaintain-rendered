@@ -13,7 +13,7 @@ head: zb/release
 created_at: 2024-02-22T20:40:33Z
 updated_at: 2024-02-22T20:47:32Z
 url: https://github.com/zanieb/rooster/pull/15
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Add release workflows

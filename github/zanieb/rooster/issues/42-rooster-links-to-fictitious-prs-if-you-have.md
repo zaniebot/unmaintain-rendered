@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-09T17:35:01Z
 updated_at: 2025-09-08T14:45:10Z
 url: https://github.com/zanieb/rooster/issues/42
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Rooster links to fictitious PRs if you have `origin` pointing to a fork locally instead of the upstream repo

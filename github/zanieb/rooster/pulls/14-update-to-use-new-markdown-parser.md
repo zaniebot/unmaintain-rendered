@@ -13,7 +13,7 @@ head: zb/parser
 created_at: 2024-02-22T19:33:58Z
 updated_at: 2024-03-24T16:50:08Z
 url: https://github.com/zanieb/rooster/pull/14
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Update to use new markdown parser

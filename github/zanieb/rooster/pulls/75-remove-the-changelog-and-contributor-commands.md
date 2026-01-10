@@ -12,7 +12,7 @@ head: zb/remove-cmds
 created_at: 2025-09-08T12:55:21Z
 updated_at: 2025-09-08T12:55:34Z
 url: https://github.com/zanieb/rooster/pull/75
-synced_at: 2026-01-10T00:06:37Z
+synced_at: 2026-01-10T00:06:57Z
 ---
 
 # Remove the changelog and contributor commands from the README
