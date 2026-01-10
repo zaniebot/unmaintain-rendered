@@ -1,0 +1,101 @@
+```yaml
+number: 865
+title: "Add `--seed` flag to `venv` to allow seed package environments"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+merged: true
+base: main
+head: charlie/seed
+created_at: 2024-01-10T01:33:08Z
+updated_at: 2024-01-10T01:45:57Z
+url: https://github.com/astral-sh/uv/pull/865
+synced_at: 2026-01-10T15:39:02Z
+```
+
+# Add `--seed` flag to `venv` to allow seed package environments
+
+---
+
+_Pull request opened by @charliermarsh on 2024-01-10 01:33_
+
+## Summary
+
+Installs the seed packages you get with `virtualenv`, but opt-in rather than opt-out.
+
+Closes https://github.com/astral-sh/puffin/issues/852.
+
+## Test Plan
+
+```
+❯ ./scripts/benchmarks/venv.sh
++ hyperfine --runs 20 --warmup 3 --prepare 'rm -rf .venv' './target/release/puffin venv' --prepare 'rm -rf .venv' 'virtualenv --without-pip .venv' --prepare 'rm -rf .venv' 'python -m venv --without-pip .venv'
+Benchmark 1: ./target/release/puffin venv
+  Time (mean ± σ):       4.6 ms ±   0.2 ms    [User: 2.4 ms, System: 3.6 ms]
+  Range (min … max):     4.3 ms …   4.9 ms    20 runs
+
+  Warning: Command took less than 5 ms to complete. Note that the results might be inaccurate because hyperfine can not calibrate the shell startup time much more precise than this limit. You can try to use the `-N`/`--shell=none` option to disable the shell completely.
+
+Benchmark 2: virtualenv --without-pip .venv
+  Time (mean ± σ):      73.3 ms ±   0.3 ms    [User: 57.4 ms, System: 14.2 ms]
+  Range (min … max):    72.8 ms …  74.0 ms    20 runs
+
+Benchmark 3: python -m venv --without-pip .venv
+  Time (mean ± σ):      22.5 ms ±   0.3 ms    [User: 17.0 ms, System: 4.9 ms]
+  Range (min … max):    22.0 ms …  23.2 ms    20 runs
+
+Summary
+  './target/release/puffin venv' ran
+    4.92 ± 0.20 times faster than 'python -m venv --without-pip .venv'
+   16.00 ± 0.63 times faster than 'virtualenv --without-pip .venv'
++ hyperfine --runs 20 --warmup 3 --prepare 'rm -rf .venv' './target/release/puffin venv --seed' --prepare 'rm -rf .venv' 'virtualenv .venv' --prepare 'rm -rf .venv' 'python -m venv .venv'
+Benchmark 1: ./target/release/puffin venv --seed
+  Time (mean ± σ):      20.2 ms ±   0.4 ms    [User: 8.6 ms, System: 15.7 ms]
+  Range (min … max):    19.7 ms …  21.2 ms    20 runs
+
+Benchmark 2: virtualenv .venv
+  Time (mean ± σ):     135.1 ms ±   2.4 ms    [User: 66.7 ms, System: 65.7 ms]
+  Range (min … max):   133.2 ms … 142.8 ms    20 runs
+
+Benchmark 3: python -m venv .venv
+  Time (mean ± σ):      1.656 s ±  0.014 s    [User: 1.447 s, System: 0.186 s]
+  Range (min … max):    1.641 s …  1.697 s    20 runs
+
+Summary
+  './target/release/puffin venv --seed' ran
+    6.67 ± 0.17 times faster than 'virtualenv .venv'
+   81.79 ± 1.70 times faster than 'python -m venv .venv'
+```
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-01-10 01:33_
+
+---
+
+_Review requested from @konstin by @charliermarsh on 2024-01-10 01:40_
+
+---
+
+_Marked ready for review by @charliermarsh on 2024-01-10 01:40_
+
+---
+
+_@zanieb approved on 2024-01-10 01:43_
+
+---
+
+_Merged by @charliermarsh on 2024-01-10 01:45_
+
+---
+
+_Closed by @charliermarsh on 2024-01-10 01:45_
+
+---
+
+_Branch deleted on 2024-01-10 01:45_
+
+---
