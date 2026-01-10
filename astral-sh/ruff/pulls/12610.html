@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make server panic hook more error resilient - astral-sh/ruff #12610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make server panic hook more error resilient</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12610">#12610</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-01 11:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 11:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>eprintln</code> can panic when the stderr pipe is broken which is very unfortunate if it happens in the server's panic hook.</p>
+<p>This PR uses <code>writeln</code> with <code>.ok()</code> as a more forgiving way to write the error message.</p>
+<p>This should fix https://github.com/astral-sh/ruff/issues/12545 although it is still unclear to me how to get into the broken pipe case.</p>
+<h2>Test Plan</h2>
+<p>I added a panic in the diagnostics request:</p>
+<ul>
+<li>NeoVim shows an error that the ruff server panicked</li>
+<li>The log contains the panic<pre><code>    0.008529319s ERROR ruff:worker:0 ruff_server::message: panicked at crates/ruff_server/src/server/api/requests/diagnostic.rs:23:9:
+  no diagnostics for you
+     0: ruff_server::message::init_messenger::{{closure}}
+     1: std::panicking::rust_panic_with_hook
+     2: std::panicking::begin_panic_handler::{{closure}}
+     3: std::sys_common::backtrace::__rust_end_short_backtrace
+     4: rust_begin_unwind
+     5: core::panicking::panic_fmt
+     6: &lt;ruff_server::server::api::requests::diagnostic::DocumentDiagnostic as ruff_server::server::api::traits::BackgroundDocumentRequestHandler&gt;::run_with_snapshot
+     7: core::ops::function::FnOnce::call_once{{vtable.shim}}
+     8: core::ops::function::FnOnce::call_once{{vtable.shim}}
+     9: std::sys_common::backtrace::__rust_begin_short_backtrace
+    10: core::ops::function::FnOnce::call_once{{vtable.shim}}
+    11: std::sys::pal::unix::thread::Thread::new::thread_start
+    12: &lt;unknown&gt;
+    13: &lt;unknown&gt;
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Make ruff-server panic hook more error resilient" to "Make server panic hook more error resilient" by @MichaReiser on 2024-08-01 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-01 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-08-01 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-01 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 11:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/main.rs</code>:97 on 2024-08-01 11:29</div>
+            <div class="timeline-body"><p>Looking at the original trace, I strongly suspect that ruff panics here... when trying to print the reason why ruff errored:</p>
+<pre><code class="language-rust">failed printing to stderr: Broken pipe (os error 32)
+   0: ruff_server::message::init_messenger::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+   3: std::sys_common::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   6: std::io::stdio::_eprint
+   7: ruff::main
+   8: std::sys_common::backtrace::__rust_begin_short_backtrace
+   9: std::rt::lang_start::{{closure}}
+  10: std::rt::lang_start_internal
+  11: main
+  12: &lt;unknown&gt;
+  13: __libc_start_main
+  14: &lt;unknown&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-01 11:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-08-01 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-02 09:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:167 on 2024-08-02 09:55</div>
+            <div class="timeline-body"><p>The main change is to use <code>writeln</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-02 09:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/message.rs</code>:42 on 2024-08-02 09:56</div>
+            <div class="timeline-body"><p>I decided to move this out of Messenger to ensure that we unset the panic hook when the server shuts down. We may consider using <code>catch_unwind</code> on a per request/response model in the future. But I think that's good enough for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-08-02 09:57</div>
+            <div class="timeline-body"><p>This seems reasonable although I've never faced this panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-02 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-02 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 10:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

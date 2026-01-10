@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gracefully handle errors in CLI - astral-sh/ruff #12747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gracefully handle errors in CLI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12747">#12747</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-08 09:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 09:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Replace the remaining <code>unwrap</code> calls in the CLI with more gracefully propagating the errors.</p>
+<p>Long term, my goal is to replace <code>anyhow::Error</code> with a more structured representation (ideally it's just another form of Diagnostic)
+because these errors don't look as nice as they could. But this matches Ruff's current behavior</p>
+<h2>Test Plan</h2>
+<p>Examples:</p>
+<pre><code>ruff failed
+  Cause: Provided current-directory path '../test/a.py' is not a directory.
+</code></pre>
+<pre><code>ruff failed
+  Cause: Failed to search the virtual environment directory for `site-packages`
+  Cause: No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-08 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-08 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-08 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:96 on 2024-08-08 09:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // This communicates that this isn't a linter error but red-knot itself hard-errored for
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:152 on 2024-08-08 09:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // TODO: Move verification of the other search path settings
+    // out of the module resolver 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-08 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-08 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:93 on 2024-08-08 10:07</div>
+            <div class="timeline-body"><p>Since this is a path yielded by a call to <code>read_directory()</code>, I don't think it's possible for <code>path.file_name()</code> to be <code>None</code>. Given that, I find the current code on <code>main</code> marginally easier to understand, since this <code>continue</code> can never be executed. We could also use <code>path.file_name().expect(...)</code>, I suppose?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-08 10:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-08 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:93 on 2024-08-08 10:10</div>
+            <div class="timeline-body"><p>(But using <code>.file_name()</code> instead of <code>.components().next_back()</code> is definitely an improvement, of course :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-08 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:152 on 2024-08-08 10:50</div>
+            <div class="timeline-body"><p>I prefer the comment as is because I don't think we want to move the verification logic <em>out</em> of the module resolver We mainly want to call it earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-08 10:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:152 on 2024-08-08 10:53</div>
+            <div class="timeline-body"><p>Then maybe this? I don't think the way you have it is accurate because we do verify them currently, we just do it at the wrong stage</p>
+<pre><code class="language-suggestion">    // TODO: Verify the remaining search path settings eagerly
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-08 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:152 on 2024-08-08 10:55</div>
+            <div class="timeline-body"><p>Let's not overthink the todo comment and instead make a decision of how we want to restructure the code ;P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-08 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:100 on 2024-08-08 10:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        writeln!(stderr, &quot;{}&quot;, &quot;Red Knot failed&quot;.red().bold()).ok();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-08 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-08 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-08 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-08 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:100 on 2024-08-08 15:14</div>
+            <div class="timeline-body"><p>This was resolved in https://github.com/astral-sh/ruff/commit/d28c5afd14a9ae01f960bf812298065d3450a91f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:135 on 2024-08-08 21:00</div>
+            <div class="timeline-body"><p>Nit: <code>s/unicode/UTF-8/</code>.</p>
+<p>We have no idea if it contains unicode or not, because unicode is just a set of numeric code points, it's not an encoding. It may well be valid Unicode encoded as UTF-32, for all we know. It's just not valid UTF8-encoded text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-08 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-09 05:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:135 on 2024-08-09 05:52</div>
+            <div class="timeline-body"><p>I'm not so sure if we're limited to UTF8 here. <a href="https://doc.rust-lang.org/stable/std/ffi/struct.OsString.html#method.to_string_lossy"><code>Path::to_string_lossly</code></a> specifically mentioned unicode and not UTF8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-09 06:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:135 on 2024-08-09 06:25</div>
+            <div class="timeline-body"><p>It only handles UTF-8. (Well, on Windows it handles a weird Windows-specific variant of UTF-8, but close enough.) It's not possible to transparently and automatically handle all the various Unicode encodings; they are ambiguous with each other. You have to either assume or specify a particular encoding.</p>
+<p>It's too bad that the rust docs are also careless with this wording. It's meaningless to say that a byte string &quot;is Unicode&quot; or &quot;is not Unicode&quot;, unless by &quot;Unicode&quot; you mean (or assume) some specific encoding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-09 06:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:135 on 2024-08-09 06:30</div>
+            <div class="timeline-body"><p>Yeah, still not sure about this. It's true that you can only store one encoding, but you can decode between encodings. E.g. Rust converts the Windows UTF16 paths to UTF8. That means, it isn't about what unicode encoding paths use on the file system, for as long as Rust decodes the paths to UTF8 before hand.</p>
+<p>Also, from the camino docs https://docs.rs/camino/latest/camino/</p>
+<p>Either way. I think using Unicode here is &quot;correct&quot; enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-09 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:135 on 2024-08-09 06:41</div>
+            <div class="timeline-body"><p>I see. You (and probably the rust docs too) don't want to say UTF-8 (even though the actual decode that's failing is definitely a decode from UTF-8, or the windows &quot;wide&quot; variant of it) because the original path on disk on windows is UTF-16 (decoded by rust and re-encoded as &quot;wide&quot; UTF-8 in the OsStr). So we use &quot;Unicode&quot; as imprecise shorthand for &quot;the typical Unicode encoding used on your OS, ie UTF-16 on Windows and UTF-8 everywhere else.&quot; I guess maybe that's reasonable, for lack of a more precise term.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

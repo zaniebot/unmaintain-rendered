@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Derive `site-packages` from a venv path - astral-sh/ruff #12716</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Derive <code>site-packages</code> from a venv path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12716">#12716</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-06 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-06 14:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This adds very basic <code>site-packages</code> discovery to red-knot: if we're passed a path to a virtual environment, we figure out where the <code>site-packages</code> directory is inside that virtual environment. There are however several subtleties to take note of:</p>
+<ul>
+<li>On Windows <code>site-packages</code> is always found in a <code>Lib/site-packages</code> subdirectory of the venv directory.</li>
+<li>On Unix:<ul>
+<li>If you're on a free-threaded build (only applicable to Python 3.13 and newer), <code>site-packages</code> could be in one or both of the following subdirectories:<ul>
+<li><code>lib/python3.${MINOR_VERSION}t/site-packages</code></li>
+<li><code>lib64/python3.${MINOR_VERSION}t/site-packages</code></li>
+</ul>
+</li>
+<li>Otherwise, <code>site-packages</code> will be in one or both of the following subdirectories:<ul>
+<li><code>lib/python3.${MINOR_VERSION}/site-packages</code></li>
+<li><code>lib64/python3.${MINOR_VERSION}/site-packages</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Some further notes on the Unix variants:</p>
+<ul>
+<li>If the <code>sys</code>-module documentation is to be believed, we can safely ignore the <code>lib64</code> <code>site-packages</code> variants, since they are only used for C extensions, which we don't care about.</li>
+<li>The <code>MINOR_VERSION</code> cannot be inferred from the <code>--target-version</code> passed by the user, since they might be asking us to type check they're code &quot;as if&quot; they're running Python 3.8 (the lowest version of Python their library supports) even though they're running Python 3.12 locally.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I verified that red-knot was able to successfully find <code>site-packages</code> directories from existing virtual environments by running commands such as <code>cargo run -p red_knot -- -v --venv-path .venv</code> locally.</p>
+<p>I haven't added any tests as part of this PR yet. I'm happy to do so if we think they'd be valuable, but they might be quite complex to set up. (I think the only way to write a test that actually makes useful assertions would be to create a Python virtual environment in the test and then verify that red-knot is able to find the <code>site-packages</code> directory inside that virtual environment.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-06 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-06 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-06 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:142 on 2024-08-06 14:48</div>
+            <div class="timeline-body"><p>Planning on tackling this TODO in a followup. I wanted to keep the logic in this PR as simple as possible for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 14:49</div>
+            <div class="timeline-body"><p>Could you tell me more about how such a setup looks like? Would they create a windows venv on linux? How would that be done?</p>
+<p>I think a test for this would be valuable. We can simply commit a test project. Take a look at uv's <a href="https://github.com/astral-sh/uv/tree/main/scripts/workspaces">test workspaces</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 14:55</div>
+            <div class="timeline-body"><p>You're on Windows (because it's the weekend, and you're away from the office, and your personal computer is a Windows machine for some reason), and you create a Windows virtual environment, but you pass <code>--platform=linux</code> to red-knot, because you know that in production your servers run on Linux, and you want to emulate the production environment when you're type-checking things locally.</p>
+<p>The <code>--platform=linux</code> argument allows red-knot to statically infer that <a href="https://github.com/python/typeshed/blob/8a7f09e3511f3a1d04281c60167b8dcc3b78938b/stdlib/time.pyi#L13-L14">branches like this</a> in stubs are always true for type-checking purposes, and that <a href="https://github.com/python/typeshed/blob/8a7f09e3511f3a1d04281c60167b8dcc3b78938b/stdlib/time.pyi#L28-L32">branches like this</a> are always false. (This is <a href="https://typing.readthedocs.io/en/latest/spec/directives.html#version-and-platform-checking">specified in the typing spec</a>.)</p>
+<p>However, when it comes to figuring out where the <code>site-packages</code> directory is in the virtual environment, the <code>--platform</code> argument is totally irrelevant. We need to figure out the actual platform of the host machine (which in this case is Windows), not the <code>--platform</code> argument that the user may or may not have passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 14:59</div>
+            <div class="timeline-body"><p>(We don't actually have a <code>--platform</code> argument yet for red-knot, but this is something that all other Python type checkers offer.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-06 14:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 16:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I think a test for this would be valuable. We can simply commit a test project. Take a look at uv's <a href="https://github.com/astral-sh/uv/tree/main/scripts/workspaces?rgh-link-date=2024-08-06T14%3A49%3A10Z">test workspaces</a></p>
+</blockquote>
+<p>In order to create a realistic temporary virtual environment to use as part of a test, I believe we'll need to have our tests depend on either Python or uv (we'll need to use one or the other to create the virtual environment). Do you have a preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 16:14</div>
+            <div class="timeline-body"><p>Thanks for the explanation but I think I'm now more confused than before :laughing:</p>
+<blockquote>
+<p>However, when it comes to figuring out where the site-packages directory is in the virtual environment, the --platform argument is totally irrelevant.</p>
+</blockquote>
+<p>Wouldn't that mean that we could just use <code>if cfg!(target_os = &quot;windows&quot;) { .... }</code>?</p>
+<blockquote>
+<p>, I believe we'll need to have our tests depend on either Python or uv (we'll need to use one or the other to create the virtual environment). Do you have a preference?</p>
+</blockquote>
+<p>I would just commit the created venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 16:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Wouldn't that mean that we could just use <code>if cfg!(target_os = &quot;windows&quot;) { .... }</code>?</p>
+</blockquote>
+<p>Yes, that also works!</p>
+<blockquote>
+<p>I would just commit the created venv.</p>
+</blockquote>
+<p>Ah, that's a nice idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, that also works!</p>
+</blockquote>
+<p>Oh okay. In that case, I would prefer to use <code>cfg</code> because we then only ship the relevant code in the released binary. It's also how we do this kind of branching in <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:15 on 2024-08-06 16:27</div>
+            <div class="timeline-body"><p>Yes, that makes sense. I forgot that <code>cfg</code> was the Rusty way of doing this kind of thing. I'm working on the changes :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-06 16:44</div>
+            <div class="timeline-body"><p>Okay, I created an empty venv using <code>uv</code> and committed it to <code>red_knot_workspace/resource/test/empty-test-venv</code>, so that I could add a test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-06 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/resources/test/empty-test-venv/bin/activate</code>:1 on 2024-08-06 16:47</div>
+            <div class="timeline-body"><p>Personally I'd be inclined to remove some totally-irrelevant files from the virtualenv (all the activate scripts), but it's not a big deal either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 16:55</div>
+            <div class="timeline-body"><p>This routine (at least as currently written) isn't really specific to a venv, it's just encoding knowledge about Python installation layouts in general. Given a Python binary, you go up one directory to find the &quot;base&quot; of the installation (which could be a venv, or not), and there you expect to find <code>lib/</code> or <code>Lib/</code>. I would be inclined to name the functions accordingly and not over-fit to the case of a virtualenv; we should also support non-virtualenv Pythons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:82 on 2024-08-06 16:56</div>
+            <div class="timeline-body"><p>If you're going to tackle system site packages as a follow up, it seems like the need to parse <code>pyvenv.cfg</code> is going to come quite soon?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:86 on 2024-08-06 16:56</div>
+            <div class="timeline-body"><p>In the non-Windows case, do we not validate that <code>site-packages</code> actually exists and is a directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-06 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:82 on 2024-08-06 16:58</div>
+            <div class="timeline-body"><p>Spoilers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:86 on 2024-08-06 17:01</div>
+            <div class="timeline-body"><p>Oh, good point. We verify that <code>&lt;venv_path&gt;/lib</code> exists and is a directory, but not <code>&lt;venv_path&gt;/lib/site-packages</code>. This is a result of some refactoring I did of my patch while working on it; good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:50 on 2024-08-06 17:02</div>
+            <div class="timeline-body"><p>Along the lines of another comment below -- could we make this more general and just take the path to a Python binary to use? Virtual environments are not that &quot;special&quot; , and I don't think our CLI should make them seem more special than they are. We can easily support both virtual and non-virtual Python installations, and I think we should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:05</div>
+            <div class="timeline-body"><p>Are you sure you can generalise to that extent? For example, here's what I get with my Brew-installed system Python installation:</p>
+<pre><code class="language-pycon">/dev % /opt/homebrew/bin/python
+Python 3.12.4 (main, Jun  6 2024, 18:26:44) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import site, sys
+&gt;&gt;&gt; sys.executable
+'/opt/homebrew/opt/python@3.12/bin/python3.12'
+&gt;&gt;&gt; site.getsitepackages()
+['/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:16</div>
+            <div class="timeline-body"><p>Pretty sure, yeah :) The behavior of &quot;start with binary location, go up one directory, then look for <code>lib/...</code> (specifically it looks for the <code>os.py</code> file in the standard library) is hardcoded directly into CPython as the way to determine where the standard library is found in the first place, so someone would have to change that code in CPython itself to change that behavior.</p>
+<p>Of course it is possible to modify <code>site.py</code> (or do whatever you want in <code>sitecustomize.py</code>) to divorce the location of site-packages from the <code>lib</code> directory, but that kind of trickery we can't handle at all with the approach in this PR, the only way to handle it is to run Python and query it, like <code>uv</code> does.</p>
+<p>In your Homebrew case, I suspect you'll find that <code>/opt/homebrew/opt/python@3.12/bin/python3.12</code> is a symlink (possibly via several symlink steps) to <code>/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/bin/python</code>. You do have to resolve symlinks of the python binary to get this correct in general, because CPython does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Of course it is possible to modify <code>site.py</code> (or do whatever you want in <code>sitecustomize.py</code>) to divorce the location of site-packages from the <code>lib</code> directory, but that kind of trickery we can't handle at all with the approach in this PR, the only way to handle it is to run Python and query it, like <code>uv</code> does.</p>
+</blockquote>
+<p>Right, but I understood that this kind of &quot;trickery&quot; was pretty common for system Python installations provided by Homebrew and Linux distros. Common enough, I'd argue, that you can only guarantee that this routine -- as it currently stands -- will work for a virtual environment, not really for an arbitrary system installation. I think the &quot;standard&quot; way Python installation layouts are &quot;meant&quot; to be is pretty irrelevant if that doesn't reflect the experience of people who actually have system installations of Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-06 17:23</div>
+            <div class="timeline-body"><p>The test I added doesn't work on Windows, because I committed a virtual environment with a Unix layout, and part of the point of these utilities is that they account for the fact that virtual environments created on a Windows machine have a different layout to ones on Unix. There are three options here:</p>
+<ol>
+<li>Also commit a virtual environment created on a Windows machine, and use that for the test if the test is being run on Windows. I don't have a Windows machine to hand; maybe someone else does?</li>
+<li>Add a dependency on Python or uv to create the virtual environment dynamically as part of the test</li>
+<li>Remove the test</li>
+</ol>
+<p>@MichaReiser, thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:28</div>
+            <div class="timeline-body"><p>I don't think it is common at all to move site-packages elsewhere; I've never heard of a distro (or Homebrew) doing that. Debian adds an extra <code>dist-packages</code> directory; that's the only similar case I've heard of; we can special-case that. (I'm not sure if you processed the last paragraph of my response, which clarifies that your case is not an example of Homebrew breaking the usual layout; it's following the usual layout, once you follow the symlinks on the binary.)</p>
+<p>The more important point is, however we handle system Python oddities, we have to handle them regardless, if we are to support <code>include-system-site-packages</code> in venvs. So if we have to make at least a best effort to handle system Pythons regardless, why treat venvs specially?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:28</div>
+            <div class="timeline-body"><blockquote>
+<p>In your Homebrew case, I suspect you'll find that <code>/opt/homebrew/opt/python@3.12/bin/python3.12</code> is a symlink (possibly via several symlink steps) to <code>/opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/bin/python</code>. You do have to resolve symlinks of the python binary to get this correct in general, because CPython does.</p>
+</blockquote>
+<p>Looks like there are some symlinks in there, yup, but even after resolving the symlinks, the Python executable is nowhere near the <code>site-packages</code> directory:</p>
+<pre><code class="language-pycon">/dev % /opt/homebrew/bin/python
+Python 3.12.4 (main, Jun  6 2024, 18:26:44) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import pathlib, sys, site
+&gt;&gt;&gt; pathlib.Path(sys.executable).resolve()
+PosixPath('/opt/homebrew/Cellar/python@3.12/3.12.4/Frameworks/Python.framework/Versions/3.12/bin/python3.12')
+&gt;&gt;&gt; pathlib.Path(site.getsitepackages()[0]).resolve()
+PosixPath('/opt/homebrew/lib/python3.12/site-packages')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-06 17:37</div>
+            <div class="timeline-body"><p>I think we should go with option 1; add a Windows-layout virtualenv. I don't have Windows. But I also don't think it's blocking that the committed test venv be an actual virtualenv created on Windows; we know what a Windows venv looks like inasmuch as it matters for this test, and can create that layout manually for now and someone with a Windows machine handy can improve it later. (Or if you prefer, skip the test on Windows for now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-06 17:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I also don't think it's blocking that the committed test venv be an actual virtualenv created on Windows; we know what a Windows venv looks like inasmuch as it matters for this test, and can create that layout manually for now</p>
+</blockquote>
+<p>Right, we could easily do this, but I'm just not sure what we'd actually be testing. We'd just be repeating the logic in the function itself inside the test. I think I'd prefer to just skip the test on Windows for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:43</div>
+            <div class="timeline-body"><p>What is in <code>/opt/homebrew/Cellar/python@3.12/3.12.4/Frameworks/Python.framework/Versions/3.12/lib</code>?</p>
+<p>And note that <code>/opt/homebrew/lib/python3.12/site-packages</code> is exactly where you'd expect to find it relative to <code>/opt/homebrew/bin/python</code>.</p>
+<p>I don't have access to your system, and I may have forgotten the details about which paths should be symlink-resolved and which shouldn't (<code>Modules/getpath.py</code> in CPython is the source of truth here), but I am pretty sure that while Homebrew may do some symlinking stuff, it doesn't hack the site-packages location, it sets it up in a way that works with CPython's lib-finding code.</p>
+<p>But like I said above, the more important point is that we have to solve these complexities either way, if we will support include-system-site-packages. So we can't get out of handling these by claiming to only support virtualenvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>But like I said above, the more important point is that we have to solve these complexities either way, if we will support include-system-site-packages. So we can't get out of handling these by claiming to only support virtualenvs.</p>
+</blockquote>
+<p><code>include-system-site-packages</code> is somewhat unusual (I think?). I was wondering about simply invoking Python to figure out where the system <code>site-packages</code> are if we find that setting in the <code>pyvenv.cfg</code> file. But I suppose we could try the static method first, and then if we can't find a directory where we &quot;expect&quot;, just fall back to invoking Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>What is in <code>/opt/homebrew/Cellar/python@3.12/3.12.4/Frameworks/Python.framework/Versions/3.12/lib</code>?</p>
+</blockquote>
+<p>Looks like we've got a <code>libpython3.12.dylib</code> file, a <code>pkgconfig</code> directory with some <code>.pc</code> files in it, and a <code>python3.12</code> directory that contains the standard library</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-06 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>We'd just be repeating the logic in the function itself inside the test.</p>
+</blockquote>
+<p>That's not necessarily a problem; it's OK for a test to just test that the code actually does what we think it does. The value of the test is still that it will fail in CI if someone accidentally breaks or bypasses the Windows logic in future (probably because they also aren't using or testing on Windows locally.)</p>
+<p>But I also agree that it would be ideal to commit something we've verified is what a real Windows venv looks like, and I'm OK skipping on Windows until then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/main.rs</code>:50 on 2024-08-06 17:56</div>
+            <div class="timeline-body"><p>One other reason why I called it <code>--venv-path</code> is that that's the name pyright gives this option</p>
+<p>How would we name it if we wanted it to be more general? <code>--python</code> isn't quite right, because it's not the path to the Python installation that's being passed. <code>red_knot --venv-path .venv</code> doesn't point to a Python installation (<code>red_knot --venv-path .venv/bin/python</code> would, but that's more for users to type, and not all users will necessarily know where the Python installation is inside their venv directory)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 17:57</div>
+            <div class="timeline-body"><blockquote>
+<p>and a python3.12 directory that contains the standard library</p>
+</blockquote>
+<p>Within which (if your Homebrew install is like mine) there's a <code>site-packages</code> which is a symlink all the way back to <code>/opt/homebrew/lib/python3.12/site-packages</code> :) So yeah, Homebrew's just playing a lot of symlinking tricks in a way that still works as a normal layout.</p>
+<blockquote>
+<p>I was wondering about simply invoking Python to figure out where the system site-packages are if we find that setting in the pyvenv.cfg file. But I suppose we could try the static method first, and then if we can't find a directory where we &quot;expect&quot;, just fall back to invoking Python.</p>
+</blockquote>
+<p>Ah, makes sense. I do think it's reasonable if you prefer to only use the static-finding approach for virtualenvs, and always fall back to invoking Python for system Pythons. I agree include-system-site-packages isn't super common, and venvs should be the most common scenario we deal with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:21 on 2024-08-06 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Within which (if your Homebrew install is like mine) there's a <code>site-packages</code> which is a symlink all the way back to <code>/opt/homebrew/lib/python3.12/site-packages</code> :) So yeah, Homebrew's just playing a lot of symlinking tricks in a way that still works as a normal layout.</p>
+</blockquote>
+<p>I see... you're quite right!</p>
+<p>I think I'll rename this routine to something more generic (so that we can reuse it for system site-packages, as you suggest), but keep the CLI command as <code>--venv-path</code> (unless you have suggestions in response to my question at https://github.com/astral-sh/ruff/pull/12716#discussion_r1705919180)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:50 on 2024-08-06 18:06</div>
+            <div class="timeline-body"><p><code>--python-home</code> would be a name that matches CPython's <code>PYTHONHOME</code> env var, and CPython's naming in general, to refer to the directory containing <code>lib</code> / <code>Lib</code>.</p>
+<p>Given the value of matching pyright, and the fact that many users who do just always use a virtualenv might find the <code>--venv-path</code> name more discoverable, I think it might make sense to have both <code>--venv-path</code> and <code>--python-home</code> as options (they might even just be aliases that do the same thing)? And it's fine with me if we just call it <code>--venv-path</code> for now and defer the system Pythons question for now; we aren't locking in any CLI choices yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-06 18:23</div>
+            <div class="timeline-body"><p>Rename and added comments look excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-06 18:31</div>
+            <div class="timeline-body"><p>Thanks both for the excellent reviews!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-06 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-06 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-06 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/resources/test/empty-unix-venv/bin/activate.bat</code>:1 on 2024-08-06 19:29</div>
+            <div class="timeline-body"><p>We may want to remove files that aren't strictly necessary unless we plan to use the venv for other tests as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-06 19:31</div>
+            <div class="timeline-body"><p>We generally prefer usinf if cfg over replacing entire functions. The former has the advantage that the code compiles on all platforms. That makes it easier to change the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-06 19:35</div>
+            <div class="timeline-body"><p>See https://doc.rust-lang.org/rust-by-example/attribute/cfg.html</p>
+<p>Llvm should still remove the dead code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-06 19:36</div>
+            <div class="timeline-body"><p>Ah, perhaps I misunderstood how <code>if cfg!()</code> worked. My understanding was that <code>if cfg!()</code> (unlike <code>#[cfg()]</code>) didn't remove any code from the shipped binary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-06 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/resources/test/empty-unix-venv/bin/activate.bat</code>:1 on 2024-08-06 19:37</div>
+            <div class="timeline-body"><p>These activate scripts will never be relevant to any test we will ever write in red-knot, which is why I'd suggested to remove them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-06 19:38</div>
+            <div class="timeline-body"><p>Sorry, I posted ^that comment before I saw your second comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-06 19:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/empty-unix-venv/bin/activate.bat</code>:1 on 2024-08-06 19:41</div>
+            <div class="timeline-body"><p>I don't have a strong objection to removing them, just that it feels like the more we &quot;tamper&quot; with the virtual environment, the less it feels like a &quot;real&quot; virtual environment and the more it feels like just a mock</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-07 05:31</div>
+            <div class="timeline-body"><p>I do find the use of the term <em>runtime</em> in the <code>cfg!</code> documentation confusing. That's why I created a small test in <a href="https://godbolt.org/z/WEveE9Mc4">compiler explorer</a>. Looking at the generated assembly, you can see that only the string &quot;Linux&quot; makes it into the binary.</p>
+<p>The way I understand it is that the Rust compiler only generates code for the matching target when using <code>#[cfg]</code>, which is what you want when using platform-specific instructions (because that code wouldn't compile on other platforms). With <code>cfg!</code>, rust does generate the instructions for all code, but it replaces the <code>cfg!</code> expression with a constant <code>true</code> or <code>false</code>, which LLVM then can remove when doing dead code detection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-07 05:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/site_packages.rs</code>:33 on 2024-08-07 07:08</div>
+            <div class="timeline-body"><p>I'll fix this up as part of the followup PR I'm working on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

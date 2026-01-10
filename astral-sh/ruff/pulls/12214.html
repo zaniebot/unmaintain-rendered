@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Rename `FileSystem` to `System` - astral-sh/ruff #12214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Rename <code>FileSystem</code> to <code>System</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12214">#12214</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-06 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-06 14:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is mainly a renaming PR to address the confusion around the existing <code>FileSystem</code> trait.</p>
+<p>Today, Red Knot uses a <code>FileSystem</code> trait to abstract the system-dependent file-level operations. They're system-dependent because reading a file differs between the CLI (always goes to disk), the LSP (may return unsaved content), and WASM (has no file system). So far, this makes sense. However, it all became very confusing when we introduced the <code>VendoredFileSystem</code>, which doesn't implement <code>FileSystem</code> because the logic isn't system-dependent. Still, its name suggests that it should implement the <code>FileSystem</code> trait (it is a filesystem-like interface, after all).</p>
+<p>This PR renames the <code>FileSystem</code> trait to <code>System</code> (and <code>VfsPath::FileSystem</code> to <code>VfsPath::System</code>, <code>FileSystemPath</code> to <code>SystemPath</code>, and <code>FileSystemPathBuf</code> to <code>SystemPathBuf</code>) to make the distinction more clear. The trait isn't about abstracting a way a file-system like API; it's solely for abstracting system-dependent logic, which, for now, is mainly IO-related, but I can envision more:</p>
+<ul>
+<li>Reading a file as a notebook rather than a string</li>
+<li>Getting information about the runtime environment: CLI/LSP (OS, architecture, etc), WASM: wasm engine in addition to the OS architecture, etc</li>
+<li>Setting up watch tasks (I'm not 100% sure about this one yet, mainly because it requires tight integration into the host's main loop and, therefore, might not be possible to abstract away)</li>
+<li>Traversing a directory</li>
+<li>Getting the current working directory (again, WASM doesn't know the concept of current working directory)</li>
+<li>Getting the configuration directory</li>
+</ul>
+<p>The second rename that I've done as part of this PR is to rename <code>Vfs</code> to <code>Files</code>, <code>VfsFile</code> to <code>File</code>, and <code>VfsPath</code> to <code>FilePath</code>. While it is correct that <code>Files</code> emulates a virtual file system by supporting both vendors and system paths, it seemed to me that it over-emphasizes that fact. As far as all upstream code is concerned, these are just files that Red Knot can operate on. That's why I opted for a simpler name.</p>
+<h3>Should <code>VendoredFileSystem</code> and <code>System</code> have a shared <code>ReadOnlyFileSystem</code> trait?</h3>
+<p>I mulled over this for a long time. It is very intriguing: Both implement a file system-like API. However, I’m concluding that they should not have a shared base trait because:</p>
+<ul>
+<li>We have no use case today for a generic operation over a file system (either using <code>impl</code> or <code>dyn</code>). Such an operation would have the form of <code>fs.read_to_string(path)</code> where <code>fs</code> can either be <code>vendored</code> or <code>system</code>.</li>
+<li>Even if the two have a shared base trait, they couldn’t be used interchangeably because <code>VendoredFileSystem</code> uses <code>VendoredPath</code> and <code>System</code> uses <code>SystemPath</code>. We could remove the distinction between <code>VendoredPath</code> and <code>SystemPath,</code> but I think this distinction is more valuable than having a shared base trait.
+A shared base trait would widen the API of <code>VendoredFileSystem</code> because it suddenly must support <code>FileType::Symlink</code> and permissions.</li>
+</ul>
+<p>I’m open to reconsidering introducing a shared base trait when we have a use case for it.</p>
+<h3>Exposing the <code>VendoredFileSystem</code></h3>
+<p>Today, <code>VendoredFileSystem</code> is a field on <code>Files</code> (<code>Vfs</code>). This PR introduces a new <code>vendored</code> method on the <code>Db</code>. A trait method is necessary because the <code>ruff_db</code> function <code>source_text</code> and the <code>Files</code> struct operate on vendored files. but the vendored typeshed stubs only ship with <code>red_knot_module_resolver</code>.</p>
+<p>For tests, I decided that each test stores its own <code>VendoredFileSystem</code> instance. This allows replacing the <code>VendoredFileSystem</code> with an ad-hoc built zip file and also guarantees full isolation between tests.</p>
+<h3>Should <code>Db</code> implement <code>System</code>?</h3>
+<p>An alternative to what's done in this PR is to remove the <code>system</code> method on <code>Db</code> and instead make <code>Db</code> extend <code>System</code>. The main advantage is that it removes one additional dynamic-dispatch (<code>system()</code> returns <code>dyn System</code>).</p>
+<p>I opted for keeping the function because:</p>
+<ul>
+<li>It's not entirely clear to me yet if we'll have code that needs to be generic over system that runs before constructing <code>Program</code>.</li>
+<li>It's easier to share code between the different runtime environments. We can have a single <code>Program</code> that takes a <code>&amp;dyn System</code> as argument instead of having a custom <code>Program</code> for each environment (although we may still want to do that, this is unclear to me)</li>
+</ul>
+<p>Overall, I think this can easily be changed later if we decide that <code>Db</code> extending <code>System</code> is the right way.</p>
+<h3>Should it be named <code>Host</code>?</h3>
+<p>An alternative to <code>System</code> is <code>Host</code>. I prefer <code>System</code> but don't have a strong reasoning for it. I'm open to renaming it to <code>Host</code> (or any other name)` if someone feels strongly. I prefer not to rename it if we all think both are about as good, just to safe some time.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-06 14:48</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/file-system-to-system">CodSpeed Performance Report</a></h2>
+<h3>Merging #12214 will <strong>improve performances by 4.09%</strong></h3>
+<p><sub>Comparing <code>file-system-to-system</code> (2047b82) with <code>main</code> (16a63c8)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 32</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>file-system-to-system</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[unicode/pypinyin.py]</code> | 2.5 ms | 2.4 ms | +4.09% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-06 15:15</div>
+            <div class="timeline-body"><p>Hmm interesting. It seems that just including vendored file system causes a 60% perf regression because dropping it (the Zip has a ton of metadata) is so expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-06 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm interesting. It seems that just including vendored file system causes a 60% perf regression because dropping it (the Zip has a ton of metadata) is so expensive.</p>
+</blockquote>
+<p>I was wondering about using a <code>Lazy</code> static variable for it, since it's immutable read-only data:</p>
+<pre><code class="language-diff">diff --git a/Cargo.lock b/Cargo.lock
+index 1da9a1e54..f426a6cd2 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1894,6 +1894,7 @@ dependencies = [
+  &quot;camino&quot;,
+  &quot;compact_str&quot;,
+  &quot;insta&quot;,
++ &quot;once_cell&quot;,
+  &quot;path-slash&quot;,
+  &quot;ruff_db&quot;,
+  &quot;ruff_python_stdlib&quot;,
+diff --git a/crates/red_knot_module_resolver/Cargo.toml b/crates/red_knot_module_resolver/Cargo.toml
+index 99e69f35c..a6761665d 100644
+--- a/crates/red_knot_module_resolver/Cargo.toml
++++ b/crates/red_knot_module_resolver/Cargo.toml
+@@ -16,6 +16,7 @@ ruff_python_stdlib = { workspace = true }
+ 
+ compact_str = { workspace = true }
+ camino = { workspace = true }
++once_cell = { workspace = true }
+ rustc-hash = { workspace = true }
+ salsa = { workspace = true }
+ tracing = { workspace = true }
+diff --git a/crates/red_knot_module_resolver/src/lib.rs b/crates/red_knot_module_resolver/src/lib.rs
+index d6ec501cc..0a1a77577 100644
+--- a/crates/red_knot_module_resolver/src/lib.rs
++++ b/crates/red_knot_module_resolver/src/lib.rs
+@@ -12,4 +12,4 @@ pub use module::{Module, ModuleKind};
+ pub use module_name::ModuleName;
+ pub use resolver::{resolve_module, set_module_resolution_settings, RawModuleResolutionSettings};
+ pub use supported_py_version::TargetVersion;
+-pub use typeshed::{TypeshedVersionsParseError, TypeshedVersionsParseErrorKind};
++pub use typeshed::{TypeshedVersionsParseError, TypeshedVersionsParseErrorKind, TYPESHED};
+diff --git a/crates/red_knot_module_resolver/src/typeshed.rs b/crates/red_knot_module_resolver/src/typeshed.rs
+index c8a36b462..718192d0d 100644
+--- a/crates/red_knot_module_resolver/src/typeshed.rs
++++ b/crates/red_knot_module_resolver/src/typeshed.rs
+@@ -1,22 +1,29 @@
+ mod versions;
+ 
++use once_cell::sync::Lazy;
++
+ pub(crate) use versions::{
+     parse_typeshed_versions, LazyTypeshedVersions, TypeshedVersionsQueryResult,
+ };
+ pub use versions::{TypeshedVersionsParseError, TypeshedVersionsParseErrorKind};
+ 
++use ruff_db::vendored::VendoredFileSystem;
++
++// The file path here is hardcoded in this crate's `build.rs` script.
++// Luckily this crate will fail to build if this file isn't available at build time.
++const TYPESHED_ZIP_BYTES: &amp;[u8] = include_bytes!(concat!(env!(&quot;OUT_DIR&quot;), &quot;/zipped_typeshed.zip&quot;));
++
++pub static TYPESHED: Lazy&lt;VendoredFileSystem&gt; =
++    Lazy::new(|| VendoredFileSystem::new(TYPESHED_ZIP_BYTES).unwrap());
++
+ #[cfg(test)]
+ mod tests {
+     use std::io::{self, Read};
+     use std::path::Path;
+ 
+-    use ruff_db::vendored::VendoredFileSystem;
+-    use ruff_db::vfs::VendoredPath;
++    use ruff_db::vendored::path::VendoredPath;
+ 
+-    // The file path here is hardcoded in this crate's `build.rs` script.
+-    // Luckily this crate will fail to build if this file isn't available at build time.
+-    const TYPESHED_ZIP_BYTES: &amp;[u8] =
+-        include_bytes!(concat!(env!(&quot;OUT_DIR&quot;), &quot;/zipped_typeshed.zip&quot;));
++    use super::*;
+ 
+     #[test]
+     fn typeshed_zip_created_at_build_time() {
+@@ -39,7 +46,6 @@ mod tests {
+     #[test]
+     fn typeshed_vfs_consistent_with_vendored_stubs() {
+         let vendored_typeshed_dir = Path::new(&quot;vendor/typeshed&quot;).canonicalize().unwrap();
+-        let vendored_typeshed_stubs = VendoredFileSystem::new(TYPESHED_ZIP_BYTES).unwrap();
+ 
+         let mut empty_iterator = true;
+         for entry in walkdir::WalkDir::new(&amp;vendored_typeshed_dir).min_depth(1) {
+@@ -58,16 +64,16 @@ mod tests {
+                 .unwrap_or_else(|_| panic!(&quot;Expected {relative_path:?} to be valid UTF-8&quot;));
+ 
+             assert!(
+-                vendored_typeshed_stubs.exists(vendored_path),
++                TYPESHED.exists(vendored_path),
+                 &quot;Expected {vendored_path:?} to exist in the `VendoredFileSystem`!
+ 
+                 Vendored file system:
+ 
+-                {vendored_typeshed_stubs:#?}
++                {TYPESHED:#?}
+                 &quot;
+             );
+ 
+-            let vendored_path_kind = vendored_typeshed_stubs
++            let vendored_path_kind = TYPESHED
+                 .metadata(vendored_path)
+                 .unwrap_or_else(|| {
+                     panic!(
+@@ -75,7 +81,7 @@ mod tests {
+ 
+                         Vendored file system:
+ 
+-                        {vendored_typeshed_stubs:#?}
++                        {TYPESHED:#?}
+                         &quot;
+                     )
+                 })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 15:23</div>
+            <div class="timeline-body"><p>Maybe <code>FilePathBuf</code>, to emphasize the fact that the variants both contain owned data?</p>
+<pre><code class="language-suggestion">pub enum FilePathBuf {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:161 on 2024-07-06 15:26</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/ruff/pull/11863#discussion_r1642716996, you said you &quot;strongly&quot; preferred not to implement <code>Default</code> for this struct ;) What made you change your mind on this? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-06 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:161 on 2024-07-06 15:37</div>
+            <div class="timeline-body"><p>Haha. I guess the only reason is that I needed an empty <code>VendoredFileSystem</code> to construct <code>TestDb</code>s</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-06 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 15:38</div>
+            <div class="timeline-body"><p>I prefer to only use <code>Owned</code> <code>Ref</code>, and <code>Buf</code> for types that both have an owned and unowned representation because it otherwise implies that there are two types (a ref and owned). Here, we only have an owned type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-06 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I was wondering about using a Lazy static variable for it, since it's immutable read-only data:</p>
+</blockquote>
+<p>Hmm yeah, but we would also need to make it lazy in <code>Program</code> but it might be worth it. Anyway, I fixed the benchmarks by excluding the drop time :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-06 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm yeah, but we would also need to make it lazy in <code>Program</code></p>
+</blockquote>
+<p>I don't think <code>Program</code> would need to own a reference to it if it was just a module-level <code>static</code> variable. Code that needs to lookup a file in the vendored typeshed stubs could just reference the existing static variable from the module resolver crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 15:46</div>
+            <div class="timeline-body"><p>I see that reasoning, but here I think it incorrectly implies that this is an unsized type, since most other <code>*Path</code> types (including all others in <code>ruff_db</code>) are unsized: <code>std::path::Path</code>, <code>camino::Utf8Path</code>, <code>SystemPath</code>, <code>VendoredPath</code>, etc.</p>
+<p>I was also planning on using this enum in <code>red_knot_module_resolver::path.rs</code> for standard-library paths. I think there's a strong possibility that doing so might mean we'd need to add a <code>SystemPathRef</code> version of this enum. (But I suppose I could do the renaming then, as part of that PR, if I do go down that road.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:161 on 2024-07-06 15:52</div>
+            <div class="timeline-body"><p>I guess I'm just not <em>necessarily</em> sure it needs to be a field on <code>(Test)Db</code> at all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:246 on 2024-07-06 15:55</div>
+            <div class="timeline-body"><p>What's the motivation for changing the inner type from <code>&amp;'static [u8]</code> to <code>Cow&lt;&amp;'static, [u8]&gt;</code> here? Is this so that you can get rid of the <code>once_cell</code> dependency in the test code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-06 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:246 on 2024-07-06 15:59</div>
+            <div class="timeline-body"><p>No, it's so that tests can build an ad-hoc zip file (that doesn't have a <code>'static</code> lifetime) but that we can still avoid cloning the vendored data to the heap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-06 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think Program would need to own a reference to it if it was just a module-level static variable. Code that needs to lookup a file in the vendored typeshed stubs could just reference the existing static variable from the module resolver crate.</p>
+</blockquote>
+<p>That's correct. That works for <code>Program</code> but not for the <code>TestDb</code> databases where each test should get their own instance. We could use <code>Cow</code> there as well, but I think the real solution is to just make <code>VendoredFileSystem</code> lazy by having an inner enum which is either <code>Raw(Cow&lt;'static, [u8]&gt;)</code> or <code>Zip(ZipArchive...)</code>. This way, the complexity is isolated into the <code>VendoredFileSystem</code> implementation without concerning the downstream code. I don't plan on changing this as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-06 16:12</div>
+            <div class="timeline-body"><p>Why does each test need to have its own <code>VendoredFileSystem</code> instance? I thought we agreed that using <code>--custom-typeshed-dir</code> and the <code>MemoryFileSystem</code> was sufficient for mocking out typeshed in tests. I expect only integration tests to need to look up files from a <code>VendoredFileSystem</code>, except for the small number of tests we already have in <code>ruff_db</code> that are focused unit tests for the specific functionality of the <code>VendoredFileSystem</code> itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-06 17:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought we agreed that using --custom-typeshed-dir and the MemoryFileSystem was sufficient for mocking out typeshed in test</p>
+</blockquote>
+<p>I understood that we agreed on that the ability to create ad-hoc zip files AND custom typeshed dir is sufficient. The former requires that tests have their own <code>VendoredFileSystem</code>.</p>
+<p>There are also a few tests in <code>ruff_db</code> where we don't have the stubbed vendored files.</p>
+<p>I don't think that storing a <code>&amp;'static VendoredFileSystem</code> on <code>Program</code> would solve the initialization cost. The zip file still gets loaded eagerly when creating the <code>Program</code>. The main advantage that I see is that dropping a <code>Program</code> doesn't require deallocating the <code>VendoredFileSystem</code>. But we shouldn't make too big a deal out of it. The Zip file doesn't store that much data, at least not compared to the amount of data that we'll store when loading builtins.</p>
+<p>The only other solution is to not store <code>vendored</code> on <code>Program</code> and instead make all code directly access a global static. I prefer not to have global variables because they make things harder to test. But more fundamentally, there's code in <code>ruff_db</code> that needs access to the vendored file system but the typeshed files are only available in <code>red_knot_module_resolver</code> and higher.</p>
+<p>Either way. I prefer not to solve this as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-06 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:161 on 2024-07-06 17:04</div>
+            <div class="timeline-body"><p>There are tests in <code>ruff_db</code> where it has to be a field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-06 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 17:08</div>
+            <div class="timeline-body"><p>Do mean a <code>FilePathRef</code>?.</p>
+<p>We can look into this when we need it. For now, we don't, and I think the refactor that @carljm proposed might also remove the need for it.</p>
+<p>I also consider this out of the scope of this (draft) PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 17:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Do mean a <code>FilePathRef</code>?</p>
+</blockquote>
+<p>Yes! Sorry</p>
+<blockquote>
+<p>We can look into this when we need it</p>
+</blockquote>
+<p>SGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-06 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-06 17:14</div>
+            <div class="timeline-body"><p>Though I still feel like calling it <code>FilePath</code> makes it inconsistent with <code>std::path::Path</code>, <code>camino::Utf8Path</code>, <code>SystemPath</code> and <code>VendoredPath</code>, which are all unsized types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-06 18:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Either way. I prefer not to solve this as part of this PR.</p>
+</blockquote>
+<p>Sure — the reason for my questions was I was trying to understand the motivation for the changes you <em>were</em> making as part of this PR, which might not necessarily be desirable if we went in a slightly different direction :-)</p>
+<p>But I agree we don't need to come to a conclusive answer on these questions now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-07 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/path.rs</code>:13 on 2024-07-07 07:38</div>
+            <div class="timeline-body"><p>I agree that there's some inconsistency, but the opposite is also true: Naming it <code>PathBuf</code> implies the existence of <code>Path</code> and that would be inconsistent.</p>
+<p>I'll resolve this. I only renamed the type from <code>VfsPath</code> to <code>FilePath</code> and I think we're over bikeshedding on the name here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-07 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-07 08:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:1 on 2024-07-07 08:51</div>
+            <div class="timeline-body"><p>This is now mainly a building block for systems that don't want to use a real fs (or can't because it doesn't exist).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:1 on 2024-07-07 08:53</div>
+            <div class="timeline-body"><p>The main changes here are:</p>
+<ul>
+<li>The <code>FileSystem</code> is now wrapped in an <code>Arc</code> to implement <code>snapshot</code> (necessary for <code>ParallelDatabase</code>)</li>
+<li>I created some inline function to reduce monomorphization</li>
+<li>Added a <code>VendoredFileSystemBuilder</code> that can be used in tests</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-07 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-07-07 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-07 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-07 09:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:9 on 2024-07-07 19:29</div>
+            <div class="timeline-body"><p>Nit: I'd prefer these imports to be below the module docstring and below the standard-library imports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/state.rs</code>:4 on 2024-07-07 19:33</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">use ruff_db::system::System;
+
+use crate::db::Db;
+use crate::supported_py_version::TargetVersion;
+use crate::typeshed::LazyTypeshedVersions;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/typeshed.rs</code>:3 on 2024-07-07 19:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">use ruff_db::vendored::VendoredFileSystem;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:4 on 2024-07-07 19:45</div>
+            <div class="timeline-body"><p>nit: there's now some places in this file where we refer to <code>std::io::Cursor</code> as <code>io::Cursor</code>, and other places in this file where we just refer to it as <code>Cursor</code>. It would be nice to be consistent inside this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:46 on 2024-07-07 19:47</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">            inner: Arc::clone(self.inner),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:13 on 2024-07-07 19:53</div>
+            <div class="timeline-body"><p>I think I'd prefer to do something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_db/src/files.rs b/crates/ruff_db/src/files.rs
+index 20d48a954..0510df95d 100644
+--- a/crates/ruff_db/src/files.rs
++++ b/crates/ruff_db/src/files.rs
+@@ -257,7 +257,7 @@ mod tests {
+     use crate::files::{system_path_to_file, vendored_path_to_file};
+     use crate::system::DbWithTestSystem;
+     use crate::tests::TestDb;
+-    use crate::vendored::VendoredFileSystemBuilder;
++    use crate::vendored::tests::VendoredFileSystemBuilder;
+ 
+     #[test]
+     fn file_system_existing_file() -&gt; crate::system::Result&lt;()&gt; {
+diff --git a/crates/ruff_db/src/parsed.rs b/crates/ruff_db/src/parsed.rs
+index 3b5e1d575..fec144858 100644
+--- a/crates/ruff_db/src/parsed.rs
++++ b/crates/ruff_db/src/parsed.rs
+@@ -76,7 +76,8 @@ mod tests {
+     use crate::parsed::parsed_module;
+     use crate::system::{DbWithTestSystem, SystemPath};
+     use crate::tests::TestDb;
+-    use crate::vendored::{VendoredFileSystemBuilder, VendoredPath};
++    use crate::vendored::VendoredPath;
++    use crate::vendored::tests::VendoredFileSystemBuilder;
+ 
+     #[test]
+     fn python_file() -&gt; crate::system::Result&lt;()&gt; {
+diff --git a/crates/ruff_db/src/vendored.rs b/crates/ruff_db/src/vendored.rs
+index 1bed7443d..2a2a47b01 100644
+--- a/crates/ruff_db/src/vendored.rs
++++ b/crates/ruff_db/src/vendored.rs
+@@ -8,9 +8,7 @@ use zip::{read::ZipFile, ZipArchive, ZipWriter};
+ 
+ use crate::file_revision::FileRevision;
+ 
+-pub use self::path::{VendoredPath, VendoredPathBuf};
+-#[cfg(test)]
+-pub use self::tests::VendoredFileSystemBuilder;
++pub use path::{VendoredPath, VendoredPathBuf};
+ 
+ mod path;
+ 
+@@ -340,7 +338,7 @@ impl&lt;'a&gt; From&lt;&amp;'a VendoredPath&gt; for NormalizedVendoredPath&lt;'a&gt; {
+ }
+ 
+ #[cfg(test)]
+-mod tests {
++pub(crate) mod tests {
+     use std::io::Write;
+ 
+     use insta::assert_snapshot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-07-07 19:55</div>
+            <div class="timeline-body"><p>After playing around with this and thinking about it some more, this LGTM. Thanks for talking it through with me! Some minor nits below, but nothing blocking:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-08 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:9 on 2024-07-08 10:07</div>
+            <div class="timeline-body"><p>Makes sense, but this is not a module level comment. I'll fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-08 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/typeshed.rs</code>:3 on 2024-07-08 10:10</div>
+            <div class="timeline-body"><p>RustRover disagrees with this. I need to use the <code>self::</code> prefix to get the desired sorting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-08 10:19</div>
+            <div class="timeline-body"><p>I'll wait with merging to give @carljm a chance to look at it as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/system.rs</code>:38 on 2024-07-08 17:55</div>
+            <div class="timeline-body"><p>Now that this is <code>System</code> and not <code>FileSystem</code>, I think <code>exists()</code> is too vague a method name:</p>
+<pre><code class="language-suggestion">    fn path_exists(&amp;self, path: &amp;SystemPath) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:38 on 2024-07-08 17:56</div>
+            <div class="timeline-body"><p>rename this variable from <code>fs</code> to <code>sys</code> or <code>system</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/system.rs</code>:32 on 2024-07-08 18:02</div>
+            <div class="timeline-body"><p>Similar to below:</p>
+<pre><code class="language-suggestion">    fn path_metadata(&amp;self, path: &amp;SystemPath) -&gt; Result&lt;Metadata&gt;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-08 18:02</div>
+            <div class="timeline-body"><p>I definitely think this renaming makes things clearer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-09 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-09 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-09 07:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

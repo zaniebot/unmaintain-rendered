@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Implement mutable-contextvar-default (B039) - astral-sh/ruff #12113</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Implement mutable-contextvar-default (B039)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12113">#12113</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-06-30 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-06-30 21:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement mutable-contextvar-default (B039) which was added to flake8-bugbear in https://github.com/PyCQA/flake8-bugbear/pull/476.</p>
+<p>This rule is similar to <a href="https://docs.astral.sh/ruff/rules/mutable-argument-default">mutable-argument-default (B006)</a> and <a href="https://docs.astral.sh/ruff/rules/function-call-in-default-argument">function-call-in-default-argument (B008)</a>, except that it checks the <code>default</code> keyword argument to <code>contextvars.ContextVar</code>.</p>
+<pre><code>B039.py:19:26: B039 Do not use mutable data structures for ContextVar defaults
+   |
+18 | # Bad
+19 | ContextVar(&quot;cv&quot;, default=[])
+   |                          ^^ B039
+20 | ContextVar(&quot;cv&quot;, default={})
+21 | ContextVar(&quot;cv&quot;, default=list())
+   |
+   = help: Replace with `None`; initialize with `.set()` after checking for `None`
+</code></pre>
+<p>In the upstream flake8-plugin, this rule is written expressly as a corollary to B008 and shares much of its logic. Likewise, this implementation reuses the logic of the Ruff implementation of B008, namely</p>
+<p>https://github.com/astral-sh/ruff/blob/f765d194028ef0ebd01ef0a21e30732d4d5ff184/crates/ruff_linter/src/rules/flake8_bugbear/rules/function_call_in_argument_default.rs#L104-L106</p>
+<p>and</p>
+<p>https://github.com/astral-sh/ruff/blob/f765d194028ef0ebd01ef0a21e30732d4d5ff184/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L106</p>
+<p>Thus, this rule deliberately replicates B006's and B008's heuristics. For example, this rule assumes that all functions are mutable unless otherwise qualified. If improvements are to be made to B039 heuristics, they should probably be made to B006 and B008 as well (whilst trying to match the upstream implementation).</p>
+<p>This rule does not have an autofix as it is unknown where the ContextVar next used (and it might not be within the same file).</p>
+<p>Closes #12054</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tjkuson on 2024-06-30 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-01 01:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-07-01 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-01 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-01 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-01 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-05 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

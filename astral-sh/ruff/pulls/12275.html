@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explicitly add schemars to ruff_python_ast Cargo.toml - astral-sh/ruff #12275</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explicitly add schemars to ruff_python_ast Cargo.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12275">#12275</a>
+        opened by <a href="https://github.com/GaetanLepage">@GaetanLepage</a>
+        on 2024-07-10 12:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-07-10 12:38</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Context: <a href="https://github.com/NixOS/nixpkgs/pull/324823">Updating ruff from 0.5.0 to 0.5.1 on nixpkgs</a>.</p>
+<p>We noticed that since https://github.com/astral-sh/ruff/commit/5109b50bb3847738eeb209352cf26bda392adf62, <code>ruff</code> was not building successfully in our pipeline:</p>
+<pre><code>thread 'main' panicked at cargo-auditable/src/collect_audit_data.rs:77:9:
+error: Package `ruff_python_ast v0.0.0 (/build/source/crates/ruff_python_ast)` does not have feature `schemars`. It has an optional dependency with that name, but that dependency us&gt;
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: could not compile `ruff_python_formatter` (bin &quot;ruff_python_formatter&quot;)
+</code></pre>
+<p>This patch by @eljamm seems to fix it on our end.</p>
+<h2>Test Plan</h2>
+<p>We were able to build <code>ruff</code> 0.5.1 with this patch and its test suite is passing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 12:40</div>
+            <div class="timeline-body"><p>Thanks for the PR.</p>
+<p>I'm hesitant merging the PR because it's unclear to me where this feature is used (I can't find any usage in our code). Ideally we would change the usage rather than the features exposed by the crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 12:42</div>
+            <div class="timeline-body"><p>Do you have a link to the CI log where the build on nix fails? I wonder what command it is using</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-07-10 12:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a link to the CI log where the build on nix fails? I wonder what command it is using</p>
+</blockquote>
+<p>Here is the entire log. I am afraid that it won't help you much more than the error message I shared.
+https://pastebin.com/RCDPtNmj (the build command is at line 50).</p>
+<p>It is weird, because manually running the exact same <code>cargo build</code> command on the exact same source files works fine.
+Our sandbox might be doing something weird here, but I have no idea what.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eljamm">@eljamm</a> on 2024-07-10 16:41</div>
+            <div class="timeline-body"><p>After a bit more of digging, this is my best guess of what's going on. According to <a href="https://doc.rust-lang.org/cargo/reference/features.html#optional-dependencies">Features - The Cargo Book</a>:</p>
+<blockquote>
+<p>By default, this optional dependency implicitly defines a feature that looks like this:</p>
+<pre><code class="language-rust">[features]
+gif = [&quot;dep:gif&quot;]
+</code></pre>
+</blockquote>
+<p>But, it also says that:</p>
+<blockquote>
+<p>If you specify the optional dependency with the dep: prefix anywhere in the [features] table, that disables the implicit feature</p>
+</blockquote>
+<p>Which is exactly what's happening here:</p>
+<pre><code class="language-rust">[features]
+serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;, &quot;dep:schemars&quot;]
+</code></pre>
+<p>This is what the error is complaining about :</p>
+<blockquote>
+<p>error: Package <code>ruff_python_ast v0.0.0 (/build/source/crates/ruff_python_ast)</code> does not have feature <code>schemars</code>. It has an optional dependency with that name, but that dependency uses the &quot;dep:&quot; syntax in the features table, so it does not have an implicit feature with that name.</p>
+</blockquote>
+<p>Adding <code>schemars = [&quot;dep:schemars&quot;]</code> to the features satisfies this condition and makes the program compile correctly.</p>
+<p>But why is this happening? I have no clue :shrug:</p>
+<p>schemars is apparently needed in <code>ruff_python_ast/src/name.rs#L183</code></p>
+<pre><code class="language-rust">#[cfg(feature = &quot;serde&quot;)]
+impl schemars::JsonSchema for Name {
+    fn is_referenceable() -&gt; bool {
+        String::is_referenceable()
+    }
+...
+</code></pre>
+<p>Because when I remove <code>&quot;dep:schemars&quot;</code> from the features:</p>
+<pre><code class="language-diff"> [features]
+-serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;, &quot;dep:schemars&quot;]
++serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;]
+</code></pre>
+<p>That's where it complains about it being missing in <a href="https://github.com/user-attachments/files/16165022/ruff-schemars.log">ruff.log</a></p>
+<p>But even though schemars is included as a dep of serde, it's not being used. In <a href="https://github.com/search?q=repo%3Aastral-sh%2Fruff+language%3Atoml+schemars&amp;type=code">other crates</a> like <a href="https://github.com/astral-sh/ruff/blob/abcf07c8c5188400adaa75a60712ce97a78ee9ef/crates/ruff_python_formatter/Cargo.toml#L63">ruff_python_formatter</a>, we can see that schemars is defined independently from serde, so I don't know why it's different for <code>ruff_python_ast</code>.</p>
+<p><strong>Note:</strong> Another solution is to make schemars non-optional:</p>
+<details>
+
+<summary> non-optional-schemars.patch </summary>
+
+<pre><code class="language-diff">---
+ crates/ruff_python_ast/Cargo.toml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/crates/ruff_python_ast/Cargo.toml b/crates/ruff_python_ast/Cargo.toml
+index bd41c71b6..e4e8e4304 100644
+--- a/crates/ruff_python_ast/Cargo.toml
++++ b/crates/ruff_python_ast/Cargo.toml
+@@ -25,12 +25,12 @@ is-macro = { workspace = true }
+ itertools = { workspace = true }
+ once_cell = { workspace = true }
+ rustc-hash = { workspace = true }
+-schemars = { workspace = true, optional = true }
++schemars = { workspace = true }
+ serde = { workspace = true, optional = true }
+ compact_str = { workspace = true }
+ 
+ [features]
+-serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;, &quot;dep:schemars&quot;]
++serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;]
+ 
+ [lints]
+ workspace = true
+-- 
+2.45.1
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 17:06</div>
+            <div class="timeline-body"><p>Your analysis is correct. The part that I don't understand is that the error can only occur if some code adds a dependency to <code>ruff_python_ast</code> with <code>features=[&quot;schemars&quot;]</code> or has a feature that enables <code>ruff_python_ast</code>s <code>schemars</code> feature, which doesn't exist.</p>
+<p>I haven't found any code that enables that feature or requires that feature from <code>ruff_python_ast</code>. The only reference I've seen reference the <code>serde</code> feature, which does exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eljamm">@eljamm</a> on 2024-07-10 19:12</div>
+            <div class="timeline-body"><p>I finally found an explanation of why this is happening, from https://github.com/parcel-bundler/lightningcss/pull/713#issuecomment-2130870582:</p>
+<blockquote>
+<p><a href="https://github.com/NixOS/nixpkgs/pull/223320">cargo-auditable</a> is a tool to store the exact versions of dependencies in rust binaries and makes it easier/possible to audit the dependency tree of rust binaries.</p>
+<p>It is a <a href="https://www.reddit.com/r/rust/comments/zgz96m/cargo_auditable_can_now_be_used_as_a_dropin/">drop-in replacement</a> of cargo. Mainly this lets easier identification of vulnerabilities (CVEs). Nixpkgs by default uses cargo auditable to build rust binaries.</p>
+<p>Stricter checks like these are implemented by cargo-auditable. And hence this PR. cargo auditable is compatible with cargo itself, so this change won't affect builds with cargo.</p>
+</blockquote>
+<p>As proposed by the PR above, to fix this issues for cargo-auditable, it's enough to just remove the <code>dep:</code> prefix:</p>
+<pre><code class="language-diff"> [features]
+-serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;, &quot;dep:schemars&quot;]
++serde = [&quot;dep:serde&quot;, &quot;ruff_text_size/serde&quot;, &quot;dep:ruff_cache&quot;, &quot;compact_str/serde&quot;, &quot;dep:ruff_macros&quot;, &quot;schemars&quot;]
+</code></pre>
+<p>With this, ruff compiled successfully both manually (with cargo) and in nixpkgs (with cargo-auditable).</p>
+<p>I tracked the main issue behind this down to https://github.com/rust-secure-code/cargo-auditable/issues/124 which appears to be caused by cargo in which it passes the wrong features to cargo-auditable.</p>
+<p>It would be nice to fix this in ruff, but I'm also worried that it would be confusing as <code>schemars</code> is marked optional but is not called with the <code>dep:</code> prefix. If this is wrongly assumed to be a mistake in the future, it can be re-added and thus break the compilation again in nixpkgs.</p>
+<p>What do you think @MichaReiser @GaetanLepage ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 20:11</div>
+            <div class="timeline-body"><p>Wow nice find! I think what I'll do is to split the feature into three:</p>
+<ul>
+<li>schemars</li>
+<li>Serde</li>
+<li>Cache</li>
+</ul>
+<p>Which is also more consistent with other crates and should reduce the risk of breaking in the future because someone readds the dep prefix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-07-10 21:49</div>
+            <div class="timeline-body"><p>Thanks so much @eljamm for this amazing deep dive !
+What should we do now ? Should I apply <a href="https://github.com/astral-sh/ruff/pull/12275#issuecomment-2221245280">your patch</a> in this PR ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eljamm">@eljamm</a> on 2024-07-10 21:59</div>
+            <div class="timeline-body"><p>I'll leave that call to @MichaReiser if he wants to add this change now or wait until he implements his suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-11 06:36</div>
+            <div class="timeline-body"><p>The exact command to reproduce the error is <code>cargo auditable build  --target x86_64-unknown-linux-gnu</code> Building without a target succeeds</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-07-11 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-11 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-11 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-11 06:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

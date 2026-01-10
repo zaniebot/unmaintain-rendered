@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add a `read_directory()` method to the `ruff_db::system::System` trait - astral-sh/ruff #12289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add a <code>read_directory()</code> method to the <code>ruff_db::system::System</code> trait</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12289">#12289</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-11 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-11 16:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Editable installations in Python are (usually[^1]) implemented via static <code>.pth</code> files that are inserted into <code>site-packages</code> by the build backend. If the sole contents of a <code>.pth</code> file in the <code>site-packages</code> directory are an absolute path to a directory on disk, Python will consider that path to be an additional module-resolution search path that will be appended to <code>sys.path</code> on startup.</p>
+<p>To support editable installations in the red-knot module resolver, we'll need to similarly search through the top level of <code>site-packages</code> searching for <code>.pth</code> files. In order to achieve this, this PR adds a <code>read_dir()</code> method to the <code>ruff_db::system::System</code> trait.</p>
+<p>A rough indication of the functionality we'll need for editable support can be seen in the following function, which is part of the port @charliermarsh did of pyright's module resolver:</p>
+<p>https://github.com/astral-sh/ruff/blob/d0298dc26d471666acc01dacdb603e3e95aca06f/crates/ruff_python_resolver/src/search.rs#L97-L134</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ruff_db</code></p>
+<p>[^1]: Newer versions of setuptools use a more dynamic approach for editable installations, where the <code>.pth</code> file contains Python code which, when executed, dynamically computes the path which should be appended to <code>sys.path</code>. Setuptools is alone in using this approach for editable installations, and no other type checkers support editable installations produced via this method. Setuptools also provides a way of switching to the old approach for editable installations, where the <code>.pth</code> file simply contains a static path. As such, I do not intend to attempt to support editable installations created using this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-07-11 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-07-11 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-11 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-11 16:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-11 20:21</div>
+            <div class="timeline-body"><p>Looks reasonable to me, but I'd rather have Micha look at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system.rs</code>:57 on 2024-07-11 20:26</div>
+            <div class="timeline-body"><p>Can we rename the method to read_directory. We use directory everywhere else</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-07-11 20:28</div>
+            <div class="timeline-body"><p>The implementation isn't just for testing. It's also used for wasm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:252 on 2024-07-11 20:29</div>
+            <div class="timeline-body"><p>Why does this copy all keys and not just collect the relevant paths?</p>
+<p>If we already collect, then let's just return a vec iterator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:98 on 2024-07-11 20:31</div>
+            <div class="timeline-body"><p>Is there no into_path method? We should avoid allocating a new path here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:99 on 2024-07-11 20:34</div>
+            <div class="timeline-body"><p>Interesting, why can file_type fail. Should our DirEntry also implement file_type lazily (by storing a Result<FileType>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-11 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hnasar">@Hnasar</a> on 2024-07-11 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>If the sole contents of a .pth file in the site-packages directory are an absolute path to a directory on disk</p>
+</blockquote>
+<p>Just noting for the future that pth files may contain multiple paths, and the paths need not be absolute.</p>
+<p>https://docs.python.org/3/library/site.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-07-11 21:40</div>
+            <div class="timeline-body"><p>Ah, I didn't realise. That changes things :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-11 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-11 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:252 on 2024-07-11 21:44</div>
+            <div class="timeline-body"><p>I tried for quite a while to figure out a way of doing this without collecting, but couldn't get it past the borrow checker. In the end I gave up and figured it didn't matter much, since I believed this implementation was solely for testing. But you pointed out elsewhere that that's incorrect :( so I'll revisit this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:252 on 2024-07-12 08:26</div>
+            <div class="timeline-body"><p>I don't mind collecting to a <code>Vec</code> because returning an <code>Iterator</code> that holds on to the lock can cause a dead lock if the iterating code calls another memory file system method.</p>
+<p>I think you can do something like this:</p>
+<pre><code class="language-rust">		let mut entries = Vec::new();
+
+        for (entry_path, entry) in by_path.range(normalized.clone()..).skip(1) {
+            if !entry_path.starts_with(&amp;normalized) {
+                break;
+            }
+
+            if entry_path.parent() == Some(&amp;normalized) {
+                let file_type = match entry {
+                    Entry::File(_) =&gt; FileType::File,
+                    Entry::Directory(_) =&gt; FileType::Directory,
+                };
+
+                entries.push(Ok(DirectoryEntry {
+                    path: SystemPathBuf::from_utf8_path_buf(entry_path.to_path_buf()),
+                    file_type,
+                }));
+            }
+        }
+
+        Ok(ReadDirectory {
+            entries: entries.into_iter(),
+        })
+</code></pre>
+<p>Which only collects the relevant paths instead of all of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 08:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-07-12 08:27</div>
+            <div class="timeline-body"><p>I think you want to use <code>metadata</code> here to raise the correct error when the file doesn't exist:</p>
+<pre><code class="language-rust">        let metadata = self.metadata(path)?;
+        if !metadata.file_type().is_directory() {
+            return Err(not_a_directory());
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-12 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system.rs</code>:57 on 2024-07-12 10:49</div>
+            <div class="timeline-body"><p>I called it <code>read_dir()</code> for consistency with <code>std::fs::read_dir()</code>, <code>camino::Utf8Path::read_dir()</code> and <code>camino::Utf8Path::read_dir_utf8()</code>. But I guess our equivalent of e.g. <code>is_dir()</code> in those other libraries is <code>is_directory()</code> (and I prefer fully spelling it out as well). So I'll make the change!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add a `read_dir()` method to the `ruff_db::system::System` trait" to "[red-knot] Add a `read_directory()` method to the `ruff_db::system::System` trait" by @AlexWaygood on 2024-07-12 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-12 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/os.rs</code>:99 on 2024-07-12 11:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, why can file_type fail.</p>
+</blockquote>
+<p>Unclear. The <code>camino::Utf8DirEntry::file_type</code> method just delegates to <code>std::fs::DirEntry::file_type</code>. Neither method's documentation gives any information about why it might return an error.</p>
+<blockquote>
+<p>Should our DirEntry also implement file_type lazily (by storing a Result?)</p>
+</blockquote>
+<p>Sure, I can do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-12 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-07-12 11:44</div>
+            <div class="timeline-body"><p>Isn't that already taken care of a couple of lines above, where I do</p>
+<pre><code class="language-rs">let entry = by_path.get(&amp;normalized).ok_or_else(not_found)?;
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-12 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:241 on 2024-07-12 11:53</div>
+            <div class="timeline-body"><p>Let's make this <code>pub</code>. I think it's useful outside this crate as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:244 on 2024-07-12 11:55</div>
+            <div class="timeline-body"><p>I like to have named return types (over <code>impl</code>) because callers can then name those types (and e.g. store it in a <code>Struct</code>).</p>
+<p>I would suggest introducing a <code>ReadDirectory</code> struct similar to <code>std::fs::read_dir</code> that is a thin wrapper around <code>std::vec::IntoIter</code> (or whatever the type of your wild iter chain below is)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:161 on 2024-07-12 11:57</div>
+            <div class="timeline-body"><p>Remove <code>dbg</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/path.rs</code>:308 on 2024-07-12 11:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn as_utf8_path(&amp;self) -&gt; &amp;Utf8Path {
+</code></pre>
+<p>To be consistent with <code>from_utf8_path_buf</code> and to match the type's name (and not the crate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system.rs</code>:80 on 2024-07-12 11:58</div>
+            <div class="timeline-body"><p>Nit: Some documentation? Especially around the semantics for paths that aren't UTF8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-12 12:00</div>
+            <div class="timeline-body"><p>Neat</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-12 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:244 on 2024-07-12 12:08</div>
+            <div class="timeline-body"><p>I see the value in doing that generally, but here I wonder if an opaque return type might actually be better? If you're e.g. relying on the exact type being returned from this method in a test (for example), you might get into difficulties if you later switch the test to using the <code>OsSystem</code> and find that a different type is returned from that struct's <code>read_directory()</code> method. I think there's some value in saying that the only API guarantee we give here is that some kind of iterator is returned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 12:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:244 on 2024-07-12 12:12</div>
+            <div class="timeline-body"><p>If the argument is API compatibility with <code>System</code> than the method should also return a <code>Box&lt;dyn...&gt;</code> (and accept <code>&amp;SystemPath</code> instead of <code>AsRef&lt;SystemPath&gt;</code> as the argument). I think it's rare that we would switch between systems in tests and the change would be minimal. But having a concrete type can be helpful for a system implementation that's based on the memory file system (e.g. WASM).</p>
+<p>Anyway, I don't feel strongly (except that we shouldn't change the return type to <code>Box&lt;dyn&gt;</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-12 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:244 on 2024-07-12 12:23</div>
+            <div class="timeline-body"><p>I don't feel strongly either. But I propose we add it when we need it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-07-12 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-12 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-12 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-12 20:45</div>
+            <div class="timeline-body"><p>I just noticed one technical difference. The <code>path</code> returned on <code>DirEntry</code> by<code>std::fs::read_dir</code> returns the joined path of the path passed to <code>read_dir</code> and the entry in the directory. That means, if you call <code>read_dir(&quot;a&quot;)</code>, you get <code>a/bar.py</code> and <code>a/foo.py</code> but not an absolute path. The <code>MemoryFileSystem::read_directory</code> always returns absolute paths.</p>
+<p>This might be fine, but it could also be a real foot gun where tests pass because the paths are absolute and later fail in production.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

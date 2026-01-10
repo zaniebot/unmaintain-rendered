@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use vendored typeshed stubs for stdlib module resolution - astral-sh/ruff #12224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use vendored typeshed stubs for stdlib module resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12224">#12224</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-07 22:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-07 22:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If the user does not pass a <code>--custom-typeshed-dir</code> flag via the CLI or via a configuration flag, fall back to using the <code>VendoredFileSystem</code> to resolve standard-library modules in the module resolver. Work towards #11653.</p>
+<p>(This PR is stacked on top of #12215)</p>
+<h2>Test Plan</h2>
+<p>I added a test to <code>resolver.rs</code> that demonstrates that vendored files now work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-07-07 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-07-07 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-07 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-07 22:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:45 on 2024-07-08 08:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn join(&amp;self, other: impl AsRef&lt;VendoredPath&gt;) -&gt; VendoredPathBuf {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:66 on 2024-07-08 08:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        prefix: impl AsRef&lt;VendoredPath&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored/path.rs</code>:91 on 2024-07-08 08:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn push(&amp;mut self, component: impl AsRef&lt;VendoredPath&gt;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/db.rs</code>:135 on 2024-07-08 08:26</div>
+            <div class="timeline-body"><p>Nit: I would align the <code>with_vendored_stubs</code> and <code>use_mocked_typeshed</code>. Now the variable and method name are exactly the opposite, making it hard to see that the two are related.</p>
+<p>I'm prefering <code>use_vendored_stubs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/db.rs</code>:193 on 2024-07-08 08:30</div>
+            <div class="timeline-body"><p>Maybe we could have two versions of it. The basic functionality we need is to have a way to specify a custom typeshed directory.</p>
+<p>The second part is to set up <code>fs</code> with the typeshed stubs. I think I would change the API (and field) to</p>
+<pre><code class="language-rust">pub(crate) fn use_custom_typeshed_directory(mut self, directory: &amp;SystemPath) -&gt; Self {
+    self.custom_typeshed_directory = Some(directory.to_path_buf());
+    self
+}
+
+pub(crate) fn use_mocked_typeshed(mut self) -&gt; Self {
+    let fs = self.db.system().memory_file_system();
+
+    // ... write files
+
+    Self::use_custom_typeshed_directory(directory)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/typeshed/versions.rs</code>:89 on 2024-07-08 08:31</div>
+            <div class="timeline-body"><p>Doesn't that mean that we now include the file twice? What's the reason why you decided not to read the file from the vendored file system</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/typeshed/versions.rs</code>:45 on 2024-07-08 08:32</div>
+            <div class="timeline-body"><p>Nit: The <code>db</code> argument should always be the first argument for consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/path.rs</code>:186 on 2024-07-08 09:11</div>
+            <div class="timeline-body"><p>I'm very hesitant of adding a <code>Ref</code> version. It's a lot of code to maintain because we have to duplicate very single method to keep a consistent API (e.g. <code>parent</code> is currently missing from <code>FilePath</code>). I wouldn't mind doing it we could implement <code>AsRef</code> but that's, unfortunately not possible.</p>
+<p>I also think that a <code>PathRef</code> version wouldn't be necessary once we address:</p>
+<pre><code>/// Internal abstractions for differentiating between different kinds of search paths.
+///
+/// TODO(Alex): Should we use different types for absolute vs relative paths?
+/// &lt;https://github.com/astral-sh/ruff/pull/12141#discussion_r1667010245&gt;
+</code></pre>
+<p>Because we could then have an owned <code>Path</code> for the module search path roots and use <code>Utf8Path</code> and <code>Utf8PathBuf</code> for the relative module paths. That means, we get away by just using <code>FilePath</code>.</p>
+<p>I'm okay deferring the above refactor but I want to avoid that we introduce more extra code just to work around it for not.</p>
+<p>To unblock us now, my recommendation is to have a resolver local <code>StandardLibraryPathRef</code> enum type. It does require moving some code from <code>ModuleResolutionPathRef</code> to <code>ModuleResolutionPathBuf</code> but I think that's fine. See the following patch.</p>
+<details>
+<summary>Patch</summary>
+
+<pre><code class="language-patch">Subject: [PATCH] Handle cancellation (or at least, try)
+---
+Index: crates/red_knot_module_resolver/src/path.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_module_resolver/src/path.rs b/crates/red_knot_module_resolver/src/path.rs
+--- a/crates/red_knot_module_resolver/src/path.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/red_knot_module_resolver/src/path.rs	(date 1720429732897)
+@@ -1,4 +1,8 @@
+-use ruff_db::files::{system_path_to_file, File, FilePath, FilePathRef};
++use crate::module_name::ModuleName;
++use crate::state::ResolverState;
++use crate::typeshed::TypeshedVersionsQueryResult;
++use camino::Utf8Components;
++use ruff_db::files::{system_path_to_file, File, FilePath};
+ use ruff_db::system::{SystemPath, SystemPathBuf};
+ use ruff_db::vendored::{VendoredPath, VendoredPathBuf};
+ /// Internal abstractions for differentiating between different kinds of search paths.
+@@ -7,10 +11,6 @@
+ /// &lt;https://github.com/astral-sh/ruff/pull/12141#discussion_r1667010245&gt;
+ use std::fmt;
+ 
+-use crate::module_name::ModuleName;
+-use crate::state::ResolverState;
+-use crate::typeshed::TypeshedVersionsQueryResult;
+-
+ /// Enumeration of the different kinds of search paths type checkers are expected to support.
+ ///
+ /// N.B. Although we don't implement `Ord` for this enum, they are ordered in terms of the
+@@ -150,12 +150,12 @@
+ 
+     #[must_use]
+     pub(crate) fn is_regular_package(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; bool {
+-        ModuleResolutionPathRef::from(self).is_regular_package(search_path, resolver)
++        self.0.is_regular_package(&amp;search_path.0, resolver)
+     }
+ 
+     #[must_use]
+     pub(crate) fn is_directory(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; bool {
+-        ModuleResolutionPathRef::from(self).is_directory(search_path, resolver)
++        self.0.is_directory(&amp;search_path.0, resolver)
+     }
+ 
+     #[must_use]
+@@ -170,83 +170,33 @@
+ 
+     #[must_use]
+     pub(crate) fn relativize_path&lt;'a&gt;(
+-        &amp;'a self,
+-        absolute_path: &amp;FilePathRef&lt;'a&gt;,
++        &amp;self,
++        absolute_path: &amp;'a FilePath,
+     ) -&gt; Option&lt;ModuleResolutionPathRef&lt;'a&gt;&gt; {
+-        ModuleResolutionPathRef::from(self).relativize_path(absolute_path)
++        self.0
++            .relativize_path(absolute_path)
++            .map(ModuleResolutionPathRef)
+     }
+ 
+     /// Returns `None` if the path doesn't exist, isn't accessible, or if the path points to a directory.
+     pub(crate) fn to_file(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; Option&lt;File&gt; {
+-        ModuleResolutionPathRef::from(self).to_file(search_path, resolver)
+-    }
+-}
+-
+-impl fmt::Debug for ModuleResolutionPathBuf {
+-    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+-        match &amp;self.0 {
+-            ModuleResolutionPathBufInner::Extra(path) =&gt; f
+-                .debug_tuple(&quot;ModuleResolutionPathBuf::Extra&quot;)
+-                .field(path)
+-                .finish(),
+-            ModuleResolutionPathBufInner::FirstParty(path) =&gt; f
+-                .debug_tuple(&quot;ModuleResolutionPathBuf::FirstParty&quot;)
+-                .field(path)
+-                .finish(),
+-            ModuleResolutionPathBufInner::SitePackages(path) =&gt; f
+-                .debug_tuple(&quot;ModuleResolutionPathBuf::SitePackages&quot;)
+-                .field(path)
+-                .finish(),
+-            ModuleResolutionPathBufInner::StandardLibrary(path) =&gt; f
+-                .debug_tuple(&quot;ModuleResolutionPathBuf::StandardLibrary&quot;)
+-                .field(path)
+-                .finish(),
+-        }
++        self.0.to_file(&amp;search_path.0, resolver)
+     }
+ }
+ 
+-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+-enum ModuleResolutionPathRefInner&lt;'a&gt; {
+-    Extra(&amp;'a SystemPath),
+-    FirstParty(&amp;'a SystemPath),
+-    StandardLibrary(FilePathRef&lt;'a&gt;),
+-    SitePackages(&amp;'a SystemPath),
+-}
+-
+-impl&lt;'a&gt; ModuleResolutionPathRefInner&lt;'a&gt; {
++impl ModuleResolutionPathBufInner {
+     #[must_use]
+-    fn query_stdlib_version&lt;'db&gt;(
+-        module_path: &amp;FilePathRef&lt;'a&gt;,
+-        stdlib_search_path: Self,
+-        stdlib_root: &amp;FilePathRef&lt;'a&gt;,
+-        resolver_state: &amp;ResolverState&lt;'db&gt;,
+-    ) -&gt; TypeshedVersionsQueryResult {
+-        let Some(module_name) = stdlib_search_path
+-            .relativize_path(module_path)
+-            .and_then(Self::to_module_name)
+-        else {
+-            return TypeshedVersionsQueryResult::DoesNotExist;
+-        };
+-        let ResolverState {
+-            db,
+-            typeshed_versions,
+-            target_version,
+-        } = resolver_state;
+-        typeshed_versions.query_module(&amp;module_name, *db, stdlib_root, *target_version)
+-    }
+-
+-    #[must_use]
+-    fn is_directory(&amp;self, search_path: Self, resolver: &amp;ResolverState) -&gt; bool {
+-        match (self, search_path) {
++    fn is_directory(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; bool {
++        match (self, &amp;search_path) {
+             (Self::Extra(path), Self::Extra(_)) =&gt; resolver.system().is_directory(path),
+             (Self::FirstParty(path), Self::FirstParty(_)) =&gt; resolver.system().is_directory(path),
+             (Self::SitePackages(path), Self::SitePackages(_)) =&gt; resolver.system().is_directory(path),
+             (Self::StandardLibrary(path), Self::StandardLibrary(stdlib_root)) =&gt; {
+-                match Self::query_stdlib_version(path, search_path, &amp;stdlib_root, resolver) {
++                match Self::query_stdlib_version(path, search_path, stdlib_root, resolver) {
+                     TypeshedVersionsQueryResult::DoesNotExist =&gt; false,
+                     TypeshedVersionsQueryResult::Exists | TypeshedVersionsQueryResult::MaybeExists =&gt; match path {
+-                        FilePathRef::System(path) =&gt; resolver.system().is_directory(path),
+-                        FilePathRef::Vendored(path) =&gt; resolver.vendored().is_directory(path)
++                        FilePath::System(path) =&gt; resolver.system().is_directory(path),
++                        FilePath::Vendored(path) =&gt; resolver.vendored().is_directory(path)
+                     }
+                 }
+             }
+@@ -257,7 +207,7 @@
+     }
+ 
+     #[must_use]
+-    fn is_regular_package(&amp;self, search_path: Self, resolver: &amp;ResolverState) -&gt; bool {
++    fn is_regular_package(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; bool {
+         fn is_non_stdlib_pkg(state: &amp;ResolverState, path: &amp;SystemPath) -&gt; bool {
+             let file_system = state.system();
+             file_system.exists(&amp;path.join(&quot;__init__.py&quot;))
+@@ -272,11 +222,11 @@
+             // (1) Account for VERSIONS
+             // (2) Only test for `__init__.pyi`, not `__init__.py`
+             (Self::StandardLibrary(path), Self::StandardLibrary(stdlib_root)) =&gt; {
+-                match Self::query_stdlib_version( path, search_path, &amp;stdlib_root, resolver) {
++                match Self::query_stdlib_version(path, search_path, &amp;stdlib_root, resolver) {
+                     TypeshedVersionsQueryResult::DoesNotExist =&gt; false,
+                     TypeshedVersionsQueryResult::Exists | TypeshedVersionsQueryResult::MaybeExists =&gt; match path {
+-                        FilePathRef::System(path) =&gt; resolver.db.system().exists(&amp;path.join(&quot;__init__.pyi&quot;)),
+-                        FilePathRef::Vendored(path) =&gt; resolver.db.vendored().exists(path.join(&quot;__init__.pyi&quot;)),
++                        FilePath::System(path) =&gt; resolver.db.system().exists(&amp;path.join(&quot;__init__.pyi&quot;)),
++                        FilePath::Vendored(path) =&gt; resolver.db.vendored().exists(path.join(&quot;__init__.pyi&quot;)),
+                     },
+                 }
+             }
+@@ -286,7 +236,7 @@
+         }
+     }
+ 
+-    fn to_file(self, search_path: Self, resolver: &amp;ResolverState) -&gt; Option&lt;File&gt; {
++    fn to_file(&amp;self, search_path: &amp;Self, resolver: &amp;ResolverState) -&gt; Option&lt;File&gt; {
+         match (self, search_path) {
+             (Self::Extra(path), Self::Extra(_)) =&gt; system_path_to_file(resolver.db.upcast(), path),
+             (Self::FirstParty(path), Self::FirstParty(_)) =&gt; system_path_to_file(resolver.db.upcast(), path),
+@@ -306,35 +256,149 @@
+     }
+ 
+     #[must_use]
+-    fn to_module_name(self) -&gt; Option&lt;ModuleName&gt; {
++    fn query_stdlib_version&lt;'db&gt;(
++        module_path: &amp;FilePath,
++        stdlib_search_path: &amp;Self,
++        stdlib_root: &amp;FilePath,
++        resolver_state: &amp;ResolverState&lt;'db&gt;,
++    ) -&gt; TypeshedVersionsQueryResult {
++        let Some(module_name) = stdlib_search_path
++            .relativize_path(module_path)
++            .and_then(|path| path.to_module_name())
++        else {
++            return TypeshedVersionsQueryResult::DoesNotExist;
++        };
++        let ResolverState {
++            db,
++            typeshed_versions,
++            target_version,
++        } = resolver_state;
++        typeshed_versions.query_module(&amp;module_name, *db, stdlib_root, *target_version)
++    }
++
++    #[must_use]
++    fn relativize_path&lt;'a&gt;(
++        &amp;self,
++        absolute_path: &amp;'a FilePath,
++    ) -&gt; Option&lt;ModuleResolutionPathRefInner&lt;'a&gt;&gt; {
++        match (self, absolute_path) {
++            (Self::Extra(root), FilePath::System(absolute_path)) =&gt; {
++                absolute_path.strip_prefix(root).ok().and_then(|path| {
++                    path.extension()
++                        .map_or(true, |ext| matches!(ext, &quot;py&quot; | &quot;pyi&quot;))
++                        .then_some(ModuleResolutionPathRefInner::Extra(path))
++                })
++            }
++            (Self::FirstParty(root), FilePath::System(absolute_path)) =&gt; {
++                absolute_path.strip_prefix(root).ok().and_then(|path| {
++                    path.extension()
++                        .map_or(true, |ext| matches!(ext, &quot;pyi&quot; | &quot;py&quot;))
++                        .then_some(ModuleResolutionPathRefInner::FirstParty(path))
++                })
++            }
++            (Self::StandardLibrary(root), FilePath::System(absolute_path)) =&gt; match root {
++                FilePath::System(root) =&gt; absolute_path.strip_prefix(root).ok().and_then(|path| {
++                    path.extension().map_or(true, |ext| ext == &quot;pyi&quot;).then_some(
++                        ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::System(
++                            path,
++                        )),
++                    )
++                }),
++                FilePath::Vendored(_) =&gt; None,
++            },
++            (Self::SitePackages(root), FilePath::System(absolute_path)) =&gt; {
++                absolute_path.strip_prefix(root).ok().and_then(|path| {
++                    path.extension()
++                        .map_or(true, |ext| matches!(ext, &quot;pyi&quot; | &quot;py&quot;))
++                        .then_some(ModuleResolutionPathRefInner::SitePackages(path))
++                })
++            }
++            (Self::Extra(_), FilePath::Vendored(_)) =&gt; None,
++            (Self::FirstParty(_), FilePath::Vendored(_)) =&gt; None,
++            (Self::StandardLibrary(root), FilePath::Vendored(absolute_path)) =&gt; match root {
++                FilePath::System(_) =&gt; None,
++                FilePath::Vendored(root) =&gt; {
++                    absolute_path.strip_prefix(&amp;root).ok().and_then(|path| {
++                        path.extension().map_or(true, |ext| ext == &quot;pyi&quot;).then_some(
++                            ModuleResolutionPathRefInner::StandardLibrary(
++                                StandardLibraryPath::Vendored(path),
++                            ),
++                        )
++                    })
++                }
++            },
++            (Self::SitePackages(_), FilePath::Vendored(_)) =&gt; None,
++        }
++    }
++}
++
++impl fmt::Debug for ModuleResolutionPathBuf {
++    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
++        match &amp;self.0 {
++            ModuleResolutionPathBufInner::Extra(path) =&gt; f
++                .debug_tuple(&quot;ModuleResolutionPathBuf::Extra&quot;)
++                .field(path)
++                .finish(),
++            ModuleResolutionPathBufInner::FirstParty(path) =&gt; f
++                .debug_tuple(&quot;ModuleResolutionPathBuf::FirstParty&quot;)
++                .field(path)
++                .finish(),
++            ModuleResolutionPathBufInner::SitePackages(path) =&gt; f
++                .debug_tuple(&quot;ModuleResolutionPathBuf::SitePackages&quot;)
++                .field(path)
++                .finish(),
++            ModuleResolutionPathBufInner::StandardLibrary(path) =&gt; f
++                .debug_tuple(&quot;ModuleResolutionPathBuf::StandardLibrary&quot;)
++                .field(path)
++                .finish(),
++        }
++    }
++}
++
++#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
++enum ModuleResolutionPathRefInner&lt;'a&gt; {
++    Extra(&amp;'a SystemPath),
++    FirstParty(&amp;'a SystemPath),
++    StandardLibrary(StandardLibraryPath&lt;'a&gt;),
++    SitePackages(&amp;'a SystemPath),
++}
++
++#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
++enum StandardLibraryPath&lt;'a&gt; {
++    System(&amp;'a SystemPath),
++    Vendored(&amp;'a VendoredPath),
++}
++
++impl&lt;'a&gt; StandardLibraryPath&lt;'a&gt; {
++    #[cfg(test)]
++    fn system(path: &amp;'a str) -&gt; Self {
++        Self::System(SystemPath::new(path))
++    }
++
++    fn components(&amp;self) -&gt; Utf8Components {
+         match self {
+-            Self::Extra(path) | Self::FirstParty(path) | Self::SitePackages(path) =&gt; {
+-                let parent_components = path
+-                    .parent()?
+-                    .components()
+-                    .map(|component| component.as_str());
+-                if path.ends_with(&quot;__init__.py&quot;) || path.ends_with(&quot;__init__.pyi&quot;) {
+-                    ModuleName::from_components(parent_components)
+-                } else {
+-                    ModuleName::from_components(parent_components.chain(path.file_stem()))
+-                }
+-            }
+-            Self::StandardLibrary(path) =&gt; {
+-                let parent = path.parent()?;
+-                let parent_components = parent.components().map(|component| component.as_str());
+-                let skip_final_part = match path {
+-                    FilePathRef::System(path) =&gt; path.ends_with(&quot;__init__.pyi&quot;),
+-                    FilePathRef::Vendored(path) =&gt; path.ends_with(&quot;__init__.pyi&quot;),
+-                };
+-                if skip_final_part {
+-                    ModuleName::from_components(parent_components)
+-                } else {
+-                    ModuleName::from_components(parent_components.chain(path.file_stem()))
+-                }
+-            }
++            StandardLibraryPath::System(path) =&gt; path.components(),
++            StandardLibraryPath::Vendored(path) =&gt; path.components(),
++        }
++    }
++
++    fn file_stem(&amp;self) -&gt; Option&lt;&amp;str&gt; {
++        match self {
++            StandardLibraryPath::System(path) =&gt; path.file_stem(),
++            StandardLibraryPath::Vendored(path) =&gt; path.file_stem(),
++        }
++    }
++
++    #[cfg(test)]
++    fn to_path_buf(self) -&gt; FilePath {
++        match self {
++            StandardLibraryPath::System(path) =&gt; FilePath::System(path.to_path_buf()),
++            StandardLibraryPath::Vendored(path) =&gt; FilePath::Vendored(path.to_path_buf()),
+         }
+     }
++}
+ 
++impl&lt;'a&gt; ModuleResolutionPathRefInner&lt;'a&gt; {
+     #[must_use]
+     fn with_pyi_extension(&amp;self) -&gt; ModuleResolutionPathBufInner {
+         match self {
+@@ -342,12 +406,12 @@
+             Self::FirstParty(path) =&gt; {
+                 ModuleResolutionPathBufInner::FirstParty(path.with_extension(&quot;pyi&quot;))
+             }
+-            Self::StandardLibrary(FilePathRef::System(path)) =&gt; {
++            Self::StandardLibrary(StandardLibraryPath::System(path)) =&gt; {
+                 ModuleResolutionPathBufInner::StandardLibrary(FilePath::System(
+                     path.with_extension(&quot;pyi&quot;),
+                 ))
+             }
+-            Self::StandardLibrary(FilePathRef::Vendored(path)) =&gt; {
++            Self::StandardLibrary(StandardLibraryPath::Vendored(path)) =&gt; {
+                 ModuleResolutionPathBufInner::StandardLibrary(FilePath::Vendored(
+                     path.with_pyi_extension(),
+                 ))
+@@ -375,52 +439,39 @@
+     }
+ 
+     #[must_use]
+-    fn relativize_path(&amp;self, absolute_path: &amp;FilePathRef&lt;'a&gt;) -&gt; Option&lt;Self&gt; {
+-        match (self, absolute_path) {
+-            (Self::Extra(root), FilePathRef::System(absolute_path)) =&gt; {
+-                absolute_path.strip_prefix(root).ok().and_then(|path| {
+-                    path.extension()
+-                        .map_or(true, |ext| matches!(ext, &quot;py&quot; | &quot;pyi&quot;))
+-                        .then_some(Self::Extra(path))
+-                })
+-            }
+-            (Self::FirstParty(root), FilePathRef::System(absolute_path)) =&gt; {
+-                absolute_path.strip_prefix(root).ok().and_then(|path| {
+-                    path.extension()
+-                        .map_or(true, |ext| matches!(ext, &quot;pyi&quot; | &quot;py&quot;))
+-                        .then_some(Self::FirstParty(path))
+-                })
++    fn to_module_name(&amp;self) -&gt; Option&lt;ModuleName&gt; {
++        match self {
++            Self::Extra(path) | Self::FirstParty(path) | Self::SitePackages(path) =&gt; {
++                let parent_components = path
++                    .parent()?
++                    .components()
++                    .map(|component| component.as_str());
++                if path.ends_with(&quot;__init__.py&quot;) || path.ends_with(&quot;__init__.pyi&quot;) {
++                    ModuleName::from_components(parent_components)
++                } else {
++                    ModuleName::from_components(parent_components.chain(path.file_stem()))
++                }
+             }
+-            (Self::StandardLibrary(root), FilePathRef::System(absolute_path)) =&gt; match root {
+-                FilePathRef::System(root) =&gt; {
+-                    absolute_path.strip_prefix(root).ok().and_then(|path| {
+-                        path.extension()
+-                            .map_or(true, |ext| ext == &quot;pyi&quot;)
+-                            .then_some(Self::StandardLibrary(FilePathRef::System(path)))
+-                    })
+-                }
+-                FilePathRef::Vendored(_) =&gt; None,
+-            },
+-            (Self::SitePackages(root), FilePathRef::System(absolute_path)) =&gt; {
+-                absolute_path.strip_prefix(root).ok().and_then(|path| {
+-                    path.extension()
+-                        .map_or(true, |ext| matches!(ext, &quot;pyi&quot; | &quot;py&quot;))
+-                        .then_some(Self::SitePackages(path))
+-                })
+-            }
+-            (Self::Extra(_), FilePathRef::Vendored(_)) =&gt; None,
+-            (Self::FirstParty(_), FilePathRef::Vendored(_)) =&gt; None,
+-            (Self::StandardLibrary(root), FilePathRef::Vendored(absolute_path)) =&gt; match root {
+-                FilePathRef::System(_) =&gt; None,
+-                FilePathRef::Vendored(root) =&gt; {
+-                    absolute_path.strip_prefix(root).ok().and_then(|path| {
+-                        path.extension()
+-                            .map_or(true, |ext| ext == &quot;pyi&quot;)
+-                            .then_some(Self::StandardLibrary(FilePathRef::Vendored(path)))
+-                    })
++            Self::StandardLibrary(path) =&gt; {
++                let parent = match path {
++                    StandardLibraryPath::System(system) =&gt; {
++                        StandardLibraryPath::System(system.parent()?)
++                    }
++                    StandardLibraryPath::Vendored(vendored) =&gt; {
++                        StandardLibraryPath::Vendored(vendored.parent()?)
++                    }
++                };
++                let parent_components = parent.components().map(|component| component.as_str());
++                let skip_final_part = match path {
++                    StandardLibraryPath::System(path) =&gt; path.ends_with(&quot;__init__.pyi&quot;),
++                    StandardLibraryPath::Vendored(path) =&gt; path.ends_with(&quot;__init__.pyi&quot;),
++                };
++                if skip_final_part {
++                    ModuleName::from_components(parent_components)
++                } else {
++                    ModuleName::from_components(parent_components.chain(path.file_stem()))
+                 }
+-            },
+-            (Self::SitePackages(_), FilePathRef::Vendored(_)) =&gt; None,
++            }
+         }
+     }
+ }
+@@ -429,33 +480,6 @@
+ pub(crate) struct ModuleResolutionPathRef&lt;'a&gt;(ModuleResolutionPathRefInner&lt;'a&gt;);
+ 
+ impl&lt;'a&gt; ModuleResolutionPathRef&lt;'a&gt; {
+-    #[must_use]
+-    pub(crate) fn is_directory(
+-        &amp;self,
+-        search_path: impl Into&lt;Self&gt;,
+-        resolver: &amp;ResolverState,
+-    ) -&gt; bool {
+-        self.0.is_directory(search_path.into().0, resolver)
+-    }
+-
+-    #[must_use]
+-    pub(crate) fn is_regular_package(
+-        &amp;self,
+-        search_path: impl Into&lt;Self&gt;,
+-        resolver: &amp;ResolverState,
+-    ) -&gt; bool {
+-        self.0.is_regular_package(search_path.into().0, resolver)
+-    }
+-
+-    #[must_use]
+-    pub(crate) fn to_file(
+-        self,
+-        search_path: impl Into&lt;Self&gt;,
+-        resolver: &amp;ResolverState,
+-    ) -&gt; Option&lt;File&gt; {
+-        self.0.to_file(search_path.into().0, resolver)
+-    }
+-
+     #[must_use]
+     pub(crate) fn to_module_name(self) -&gt; Option&lt;ModuleName&gt; {
+         self.0.to_module_name()
+@@ -470,11 +494,6 @@
+     pub(crate) fn with_py_extension(self) -&gt; Option&lt;ModuleResolutionPathBuf&gt; {
+         self.0.with_py_extension().map(ModuleResolutionPathBuf)
+     }
+-
+-    #[must_use]
+-    pub(crate) fn relativize_path(&amp;self, absolute_path: &amp;FilePathRef&lt;'a&gt;) -&gt; Option&lt;Self&gt; {
+-        self.0.relativize_path(absolute_path).map(Self)
+-    }
+ }
+ 
+ impl fmt::Debug for ModuleResolutionPathRef&lt;'_&gt; {
+@@ -508,10 +527,10 @@
+                 ModuleResolutionPathRefInner::FirstParty(path)
+             }
+             ModuleResolutionPathBufInner::StandardLibrary(FilePath::System(path)) =&gt; {
+-                ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::System(path))
++                ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::System(path))
+             }
+             ModuleResolutionPathBufInner::StandardLibrary(FilePath::Vendored(path)) =&gt; {
+-                ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::Vendored(path))
++                ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::Vendored(path))
+             }
+             ModuleResolutionPathBufInner::SitePackages(path) =&gt; {
+                 ModuleResolutionPathRefInner::SitePackages(path)
+@@ -527,10 +546,12 @@
+             ModuleResolutionPathRefInner::Extra(path) =&gt; path == other,
+             ModuleResolutionPathRefInner::FirstParty(path) =&gt; path == other,
+             ModuleResolutionPathRefInner::SitePackages(path) =&gt; path == other,
+-            ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::System(path)) =&gt; {
++            ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::System(path)) =&gt; {
+                 path == other
+             }
+-            ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::Vendored(_)) =&gt; false,
++            ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::Vendored(_)) =&gt; {
++                false
++            }
+         }
+     }
+ }
+@@ -559,8 +580,8 @@
+             ModuleResolutionPathRefInner::Extra(_) =&gt; false,
+             ModuleResolutionPathRefInner::FirstParty(_) =&gt; false,
+             ModuleResolutionPathRefInner::SitePackages(_) =&gt; false,
+-            ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::System(_)) =&gt; false,
+-            ModuleResolutionPathRefInner::StandardLibrary(FilePathRef::Vendored(path)) =&gt; {
++            ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::System(_)) =&gt; false,
++            ModuleResolutionPathRefInner::StandardLibrary(StandardLibraryPath::Vendored(path)) =&gt; {
+                 path == other
+             }
+         }
+@@ -715,7 +736,7 @@
+ 
+         assert_eq!(
+             ModuleResolutionPathRef(ModuleResolutionPathRefInner::StandardLibrary(
+-                FilePathRef::system(&quot;foo.pyi&quot;)
++                StandardLibraryPath::system(&quot;foo.pyi&quot;)
+             ))
+             .to_module_name(),
+             ModuleName::new_static(&quot;foo&quot;)
+@@ -734,7 +755,7 @@
+     fn module_name_2_parts() {
+         assert_eq!(
+             ModuleResolutionPathRef(ModuleResolutionPathRefInner::StandardLibrary(
+-                FilePathRef::system(&quot;foo/bar&quot;)
++                StandardLibraryPath::system(&quot;foo/bar&quot;)
+             ))
+             .to_module_name(),
+             ModuleName::new_static(&quot;foo.bar&quot;)
+@@ -842,13 +863,13 @@
+             ModuleResolutionPathBuf::standard_library(FilePath::system(&quot;foo/stdlib&quot;)).unwrap();
+ 
+         // Must have a `.pyi` extension or no extension:
+-        let bad_absolute_path = FilePathRef::system(&quot;foo/stdlib/x.py&quot;);
++        let bad_absolute_path = FilePath::system(&quot;foo/stdlib/x.py&quot;);
+         assert_eq!(root.relativize_path(&amp;bad_absolute_path), None);
+-        let second_bad_absolute_path = FilePathRef::system(&quot;foo/stdlib/x.rs&quot;);
++        let second_bad_absolute_path = FilePath::system(&quot;foo/stdlib/x.rs&quot;);
+         assert_eq!(root.relativize_path(&amp;second_bad_absolute_path), None);
+ 
+         // Must be a path that is a child of `root`:
+-        let third_bad_absolute_path = FilePathRef::system(&quot;bar/stdlib/x.pyi&quot;);
++        let third_bad_absolute_path = FilePath::system(&quot;bar/stdlib/x.pyi&quot;);
+         assert_eq!(root.relativize_path(&amp;third_bad_absolute_path), None);
+     }
+ 
+@@ -856,10 +877,10 @@
+     fn relativize_non_stdlib_path_errors() {
+         let root = ModuleResolutionPathBuf::extra(&quot;foo/stdlib&quot;).unwrap();
+         // Must have a `.py` extension, a `.pyi` extension, or no extension:
+-        let bad_absolute_path = FilePathRef::system(&quot;foo/stdlib/x.rs&quot;);
++        let bad_absolute_path = FilePath::system(&quot;foo/stdlib/x.rs&quot;);
+         assert_eq!(root.relativize_path(&amp;bad_absolute_path), None);
+         // Must be a path that is a child of `root`:
+-        let second_bad_absolute_path = FilePathRef::system(&quot;bar/stdlib/x.pyi&quot;);
++        let second_bad_absolute_path = FilePath::system(&quot;bar/stdlib/x.pyi&quot;);
+         assert_eq!(root.relativize_path(&amp;second_bad_absolute_path), None);
+     }
+ 
+@@ -868,10 +889,10 @@
+         assert_eq!(
+             ModuleResolutionPathBuf::standard_library(FilePath::system(&quot;foo/baz&quot;))
+                 .unwrap()
+-                .relativize_path(&amp;FilePathRef::system(&quot;foo/baz/eggs/__init__.pyi&quot;))
++                .relativize_path(&amp;FilePath::system(&quot;foo/baz/eggs/__init__.pyi&quot;))
+                 .unwrap(),
+             ModuleResolutionPathRef(ModuleResolutionPathRefInner::StandardLibrary(
+-                FilePathRef::system(&quot;eggs/__init__.pyi&quot;)
++                StandardLibraryPath::system(&quot;eggs/__init__.pyi&quot;)
+             ))
+         );
+     }
+Index: crates/ruff_db/src/files/path.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_db/src/files/path.rs b/crates/ruff_db/src/files/path.rs
+--- a/crates/ruff_db/src/files/path.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/ruff_db/src/files/path.rs	(date 1720429770237)
+@@ -182,64 +182,3 @@
+         other == self
+     }
+ }
+-
+-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+-pub enum FilePathRef&lt;'a&gt; {
+-    System(&amp;'a SystemPath),
+-    Vendored(&amp;'a VendoredPath),
+-}
+-
+-impl&lt;'a&gt; FilePathRef&lt;'a&gt; {
+-    pub fn to_path_buf(self) -&gt; FilePath {
+-        match self {
+-            Self::System(path) =&gt; FilePath::System(path.to_path_buf()),
+-            Self::Vendored(path) =&gt; FilePath::Vendored(path.to_path_buf()),
+-        }
+-    }
+-
+-    pub fn parent(&amp;self) -&gt; Option&lt;Self&gt; {
+-        match self {
+-            Self::System(path) =&gt; path.parent().map(Self::System),
+-            Self::Vendored(path) =&gt; path.parent().map(Self::Vendored),
+-        }
+-    }
+-
+-    pub fn components(&amp;self) -&gt; camino::Utf8Components {
+-        match self {
+-            Self::System(path) =&gt; path.components(),
+-            Self::Vendored(path) =&gt; path.components(),
+-        }
+-    }
+-
+-    pub fn file_stem(&amp;self) -&gt; Option&lt;&amp;str&gt; {
+-        match self {
+-            Self::System(path) =&gt; path.file_stem(),
+-            Self::Vendored(path) =&gt; path.file_stem(),
+-        }
+-    }
+-
+-    #[inline]
+-    pub fn to_file(self, db: &amp;dyn Db) -&gt; Option&lt;File&gt; {
+-        match self {
+-            Self::System(path) =&gt; system_path_to_file(db, path),
+-            Self::Vendored(path) =&gt; vendored_path_to_file(db, path),
+-        }
+-    }
+-
+-    pub fn system(path: &amp;'a (impl AsRef&lt;SystemPath&gt; + ?Sized)) -&gt; Self {
+-        Self::System(path.as_ref())
+-    }
+-
+-    pub fn vendored(path: &amp;'a (impl AsRef&lt;VendoredPath&gt; + ?Sized)) -&gt; Self {
+-        Self::Vendored(path.as_ref())
+-    }
+-}
+-
+-impl&lt;'a&gt; From&lt;&amp;'a FilePath&gt; for FilePathRef&lt;'a&gt; {
+-    fn from(value: &amp;'a FilePath) -&gt; Self {
+-        match value {
+-            FilePath::System(path) =&gt; FilePathRef::System(path),
+-            FilePath::Vendored(path) =&gt; FilePathRef::Vendored(path),
+-        }
+-    }
+-}
+Index: crates/red_knot_module_resolver/src/resolver.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_module_resolver/src/resolver.rs b/crates/red_knot_module_resolver/src/resolver.rs
+--- a/crates/red_knot_module_resolver/src/resolver.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/red_knot_module_resolver/src/resolver.rs	(date 1720429722761)
+@@ -1,7 +1,7 @@
+ use std::ops::Deref;
+ use std::sync::Arc;
+ 
+-use ruff_db::files::{File, FilePath, FilePathRef};
++use ruff_db::files::{File, FilePath};
+ use ruff_db::system::SystemPathBuf;
+ 
+ use crate::db::Db;
+@@ -78,14 +78,14 @@
+ pub(crate) fn file_to_module(db: &amp;dyn Db, file: File) -&gt; Option&lt;Module&gt; {
+     let _span = tracing::trace_span!(&quot;file_to_module&quot;, ?file).entered();
+ 
+-    let path = FilePathRef::from(file.path(db.upcast()));
++    let path = file.path(db.upcast());
+ 
+     let resolver_settings = module_resolver_settings(db);
+ 
+     let relative_path = resolver_settings
+         .search_paths()
+         .iter()
+-        .find_map(|root| root.relativize_path(&amp;path))?;
++        .find_map(|root| root.relativize_path(path))?;
+ 
+     let module_name = relative_path.to_module_name()?;
+ 
+Index: crates/red_knot_module_resolver/src/typeshed/versions.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_module_resolver/src/typeshed/versions.rs b/crates/red_knot_module_resolver/src/typeshed/versions.rs
+--- a/crates/red_knot_module_resolver/src/typeshed/versions.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/red_knot_module_resolver/src/typeshed/versions.rs	(date 1720428655392)
+@@ -8,7 +8,7 @@
+ use once_cell::sync::Lazy;
+ use rustc_hash::FxHashMap;
+ 
+-use ruff_db::files::{system_path_to_file, File, FilePathRef};
++use ruff_db::files::{system_path_to_file, File, FilePath};
+ use ruff_db::source::source_text;
+ 
+ use crate::db::Db;
+@@ -41,13 +41,13 @@
+         &amp;self,
+         module: &amp;ModuleName,
+         db: &amp;'db dyn Db,
+-        stdlib_root: &amp;FilePathRef,
++        stdlib_root: &amp;FilePath,
+         target_version: TargetVersion,
+     ) -&gt; TypeshedVersionsQueryResult {
+         let versions = self.0.get_or_init(|| {
+             let versions_path = match stdlib_root {
+-                FilePathRef::System(path) =&gt; path.join(&quot;VERSIONS&quot;),
+-                FilePathRef::Vendored(_) =&gt; return &amp;VENDORED_VERSIONS,
++                FilePath::System(path) =&gt; path.join(&quot;VERSIONS&quot;),
++                FilePath::Vendored(_) =&gt; return &amp;VENDORED_VERSIONS,
+             };
+             let Some(versions_file) = system_path_to_file(db.upcast(), &amp;versions_path) else {
+                 todo!(
+Index: crates/ruff_db/src/vendored/path.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_db/src/vendored/path.rs b/crates/ruff_db/src/vendored/path.rs
+--- a/crates/ruff_db/src/vendored/path.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/ruff_db/src/vendored/path.rs	(date 1720429040819)
+@@ -42,7 +42,7 @@
+     }
+ 
+     #[must_use]
+-    pub fn join(&amp;self, other: impl AsRef&lt;Utf8Path&gt;) -&gt; VendoredPathBuf {
++    pub fn join(&amp;self, other: impl AsRef&lt;VendoredPath&gt;) -&gt; VendoredPathBuf {
+         VendoredPathBuf(self.0.join(other.as_ref()))
+     }
+ 
+@@ -63,7 +63,7 @@
+ 
+     pub fn strip_prefix(
+         &amp;self,
+-        prefix: impl AsRef&lt;Utf8Path&gt;,
++        prefix: impl AsRef&lt;VendoredPath&gt;,
+     ) -&gt; Result&lt;&amp;Self, path::StripPrefixError&gt; {
+         self.0.strip_prefix(prefix.as_ref()).map(Self::new)
+     }
+Index: crates/ruff_db/src/files.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_db/src/files.rs b/crates/ruff_db/src/files.rs
+--- a/crates/ruff_db/src/files.rs	(revision 129b3b9ac3148b2fe1a93a7d83ef775f875dc26d)
++++ b/crates/ruff_db/src/files.rs	(date 1720429773624)
+@@ -3,7 +3,7 @@
+ use countme::Count;
+ use dashmap::mapref::entry::Entry;
+ 
+-pub use path::{FilePath, FilePathRef};
++pub use path::FilePath;
+ 
+ use crate::file_revision::FileRevision;
+ use crate::files::private::FileStatus;
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:479 on 2024-07-08 09:16</div>
+            <div class="timeline-body"><p>I wonder if we could remove a lot of code if the structure would instead be:</p>
+<pre><code>enum ModuleResolutionPathInner {
+    System { path: SystemPath, kind: ResolutionPathKind },
+    vendored { path: VendoredPath }
+}
+</code></pre>
+<p>because most of these branches have exactly the same code. The only difference is the variant taht they construct. But we can defer this for now because I think Carl's recommendation would also address this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-08 09:18</div>
+            <div class="timeline-body"><p>Overall looks good.</p>
+<p>I would prefer if we can avoid introducing a <code>FilePathRef</code>, see the inline comment why and a solution on how we can avoid it.</p>
+<p>Overall, I start to like Carl's recommendation more and more. I think the current design makes some transformation unnecessarily verbose. But I'm okay moving forward with this (but would prefer for Carl to have a look at the PR as well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-08 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/typeshed/versions.rs</code>:45 on 2024-07-08 09:22</div>
+            <div class="timeline-body"><p>ah, sorry, you mentioned that in your review of my last PR but I must have missed this instance :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-08 11:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/db.rs</code>:193 on 2024-07-08 11:15</div>
+            <div class="timeline-body"><p>Hmm, this is a bit of a rabbit hole 😁 there's other refactors we could also do to the test suite more broadly that would make this nicer, but it makes the diff messier and bigger than is necessary here IMO... I think I'd prefer to defer this to a followup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-08 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/db.rs</code>:193 on 2024-07-08 11:19</div>
+            <div class="timeline-body"><p>Sounds good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-08 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/typeshed/versions.rs</code>:89 on 2024-07-08 11:37</div>
+            <div class="timeline-body"><p>That's correct, yeah. I don't feel strongly, but going via the vendored file system felt like unnecessary overhead/complexity in this case. We know exactly where the file is located relative to this file, and we know it's tiny (5KB), so this seemed simpler. But I'm happy to go via the vendored file system if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-08 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/typeshed/versions.rs</code>:89 on 2024-07-08 12:40</div>
+            <div class="timeline-body"><p>I prefer going over the vendored file system. 5KB isn't a lot, but it isn't nothing (IMO, not tiny). I don't think the overhead over the vendored file system is going to be significant in the grand scheme.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:378 on 2024-07-08 18:31</div>
+            <div class="timeline-body"><p>This is doing exactly the same as in the above clause, why should it be structured differently (which obscures the fact that it's actually the same)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:435 on 2024-07-08 18:36</div>
+            <div class="timeline-body"><p>It looks like this takes <code>absolute_path</code> as a <code>StandardLibraryPathRef</code>, not because it really must be a standard library path at all (in many cases we will have to smuggle some other kind of path claiming that it is a <code>StandardLibraryPathRef</code>), but simply because that's the only way we can make it possible to ever give a <code>VendoredPath</code>?</p>
+<p>IMO this makes it super clear that we really do need a refactor of how paths are represented here, this is just a lie in the type signature of the function, and very confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-08 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-08 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:435 on 2024-07-08 19:18</div>
+            <div class="timeline-body"><p>Ah, you're right, this is indeed very confusing naming from me. I'll fix this, thanks.</p>
+<p>(This is because it was originally envisaged as a general-purpose <code>FilePathRef</code> enum in <code>ruff_db</code>, but Micha asked me to move it to this crate for now. I renamed it without thinking too much about it when I moved it into this crate, but <code>FilePathRef</code> probably is better after all.)</p>
+<p>Separately, I do still also agree that your suggested refactoring from the other PR sounds good, and still have it on my to-do list to look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-08 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:378 on 2024-07-08 19:38</div>
+            <div class="timeline-body"><p>If I make this change:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_module_resolver/src/path.rs
++++ b/crates/red_knot_module_resolver/src/path.rs
+@@ -376,8 +376,10 @@ impl&lt;'a&gt; ModuleResolutionPathRefInner&lt;'a&gt; {
+                 }
+             }
+             Self::StandardLibrary(path) =&gt; {
+-                let parent = path.parent()?;
+-                let parent_components = parent.components().map(|component| component.as_str());
++                let parent_components = path
++                    .parent()?
++                    .components()
++                    .map(|component| component.as_str());
+</code></pre>
+<p>The borrow checker complains at me:</p>
+<pre><code>error[E0716]: temporary value dropped while borrowed
+   --&gt; crates/red_knot_module_resolver/src/path.rs:379:41
+    |
+379 |                   let parent_components = path
+    |  _________________________________________^
+380 | |                     .parent()?
+    | |______________________________^ creates a temporary value which is freed while still in use
+381 |                       .components()
+382 |                       .map(|component| component.as_str());
+    |                                                           - temporary value is freed at the end of this statement
+...
+388 |                       ModuleName::from_components(parent_components)
+    |                                                   ----------------- borrow later used here
+    |
+    = note: consider using a `let` binding to create a longer lived value
+</code></pre>
+<p>I can't really understand why it's okay with the first branch but not with the second. I guess I'll make the first branch more like the second.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-07-09 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-09 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-09 09:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

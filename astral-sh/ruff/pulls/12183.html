@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Prevent salsa cancellation from aborting the program - astral-sh/ruff #12183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Prevent salsa cancellation from aborting the program</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12183">#12183</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-04 09:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-04 09:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR wraps the public-visible <code>Program</code> methods to use <code>Cancelled::catch</code> to prevent that any salsa cancellation tears down its thread.</p>
+<p>I honestly don't think this change is safe in Rust terms, but it is what rust-analyzer and other Salsa based compilers to (most implement the <code>UnwindSafe</code> marker trait but I prefer not to do this).
+I've opened a Zulip thread to get more guidance but, for now, I think this is sufficiently &quot;safe&quot; (I hate this).</p>
+<h2>Test Plan</h2>
+<p>I ran <code>red_knot</code> with <code>RED_KNOT_SLOW_LINT=1</code> which adds an artificial 10s pause to the <code>lint</code> query. The query was correctly cancelled when I made changes to a file in the workspace directory without tearing down the entire rayon thread pool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-04 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-07-04 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-04 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Prevent salsa cancellation to abort program" to "[red-knot] Prevent salsa cancellation from aborting the program" by @MichaReiser on 2024-07-04 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-04 09:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/mod.rs</code>:62 on 2024-07-04 15:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // For example, multi-threaded code inside `Program` that calls a query could panic and unwind, before
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-04 15:37</div>
+            <div class="timeline-body"><p>Sigh. Even though it's a bit verbose, I really liked the explicit approach with a Result that we used in our own pseudo-Salsa before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-08 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot/src/program/mod.rs</code>:79 on 2024-07-08 17:11</div>
+            <div class="timeline-body"><p>I don't have a ton of context here, but I'm not too concerned about this personally. Unwind Safety is not the same as Safety in Rust-speak. Like, there's no UB risk here. Violating unwind safety can lead to logic bugs around mutation or inconsistent state, but is never supposed to lead to UB. (I use the weasel word &quot;supposed to&quot; here because anyone can write unsound APIs in Rust that purportedly rely on unwind safety to avoid UB, but, well, that's unsound. And the fault is on the code relying on unwind safety to avoid UB and <em>not</em> on the code using <code>AssertUnwindSafe</code>.) There have been rumblings about <a href="https://internals.rust-lang.org/t/pre-rfc-deprecating-unwindsafe/15974">deprecating unwind safety altogether</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot/src/program/mod.rs</code>:79 on 2024-07-08 17:12</div>
+            <div class="timeline-body"><p>With that said, is this using panicking as a means of error handling? That seems like bad juju, but like, I have no context at all on which to judge that design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-08 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-09 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/mod.rs</code>:79 on 2024-07-09 08:05</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi. That's very helpful. I share some of the sentiment from the linked thread. It was very unclear to me how big of a problem it is. The compiler erroring makes it extremely scary. I now feel less bad about this.</p>
+<blockquote>
+<p>With that said, is this using panicking as a means of error handling?</p>
+</blockquote>
+<p>Unfortunately yes. Salsa uses panics to abort queries when some input has changed to not waste time computing outdated results to error out and to recover from cyclic queries. I would rather prefer a <code>Result</code>, but I can see how this would hurt ergonomics quite a bit. But maybe something to bring up again, although I think it's an unlikely change to be accepted because rust-analyzer would have to rewrite all their code to Result's.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-09 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-09 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-09 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-09 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-09 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot/src/program/mod.rs</code>:79 on 2024-07-09 13:52</div>
+            <div class="timeline-body"><p>Ah I see. It circumvents the &quot;cancellation&quot; problem. Yeah, I can see how panics would be a very attractive solution to that problem.</p>
+<p>IIRC, Go's runtime implements pre-emptive multi-tasking by spawning signals to interrupt CPU heavy code. It's not the <em>same</em> problem as here, but it feels similarish. (I'm not suggesting the use of signals, but rather, pointing out the difficulty of arbitrary cancellation.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

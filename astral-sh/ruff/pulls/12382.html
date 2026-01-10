@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improved file watching  - astral-sh/ruff #12382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improved file watching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12382">#12382</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-18 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-18 16:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves Red Knot's file watching by handling all events emitted by notify (except the ones we aren't interested in) and adding tests.</p>
+<p>This PR also makes the following changes:</p>
+<ul>
+<li>It adds a new <code>--watch</code> option to the CLI. Red knot does a one pass analysis if the option is set to <code>false</code> (default).</li>
+<li>It splits the <code>by_path</code> in <code>Files</code> into two: One for system paths and another for vendored paths. It helps to reduce the search space when syncing the state of all files (because we can easily skip all vendored paths)</li>
+</ul>
+<h3>Why aren't we using <a href="https://github.com/notify-rs/notify/tree/main/notify-debouncer-mini"><code>notify-debouncer-mini</code></a> or <a href="https://github.com/notify-rs/notify/tree/main/notify-debouncer-full"><code>notify-debouncer-full</code></a>?</h3>
+<p><code>notify-debouncer-mini</code> is too minimal. It aggregates all events to a <a href="https://github.com/notify-rs/notify/blob/main/notify-types/src/debouncer_mini.rs">single event type</a>, indicating that <em>something</em> happened, but we would no longer know what happened.</p>
+<p><code>notify-debouncer-full</code> is very promising, and it even provides functionality to match the rename events <code>MovedFrom</code> and <code>MovedTo</code>, which allows Red Knot to do less when a file or directory is moved. However, this functionality depends on the system's file handles, and the way it gets the file handles (at least on non-Unix and Android systems) is by recursively traversing every watched directory (<a href="https://github.com/notify-rs/notify/blob/128bf6230c03d39dbb7f301ff7b20e594e34c3a2/notify-debouncer-full/src/cache.rs#L68-L83">source</a>). I don't think this is a good trade-off for us. This means Red Knot eagerly traverses all module search paths and the workspace root during initialization. This is in addition to Red Knot already walking all packages during startup, significantly delaying the time until Red Knot starts checking.</p>
+<p>There's an option to disable the file-id caching by using <code>NoCache</code>. This would give us the event merging on UNIX (because it doesn't require the file cache and instead uses the <code>inotify</code> tracker) but not on all other platforms. While nice, I rather prefer consistent behavior between platforms and this implementation already optimizes the <code>MovedFrom</code> event if it is known that the path was a file (because we tracked it in <code>Files</code>). In which case we would end up doing more work than necessary.</p>
+<p>So here we are. One does too much, and the other does too little 😆</p>
+<h2>Test Plan</h2>
+<p>See the added integration tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-18 16:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-19 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-07-19 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-19 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-19 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-19 10:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:138 on 2024-07-19 10:01</div>
+            <div class="timeline-body"><p>We may want to optimize this in the future, but I have decided against it for now. I suspect that the cost of iterating all files is neglectable compared to the necessary sys-calls to read the file metadata.</p>
+<p>We'll see once Red Knot is capable of analyzing real world projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/watch/watcher.rs</code>:171 on 2024-07-20 02:39</div>
+            <div class="timeline-body"><p>Is this a case where <code>Rescan</code> might make sense? Or is that too aggressive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/file_watching.rs</code>:45 on 2024-07-20 02:42</div>
+            <div class="timeline-body"><p>Is this unavoidable? What kind &quot;catching up&quot; is needed that can't be expressed explicitly via a method that waits for the appropriate conditions? Sleeping in tests for an arbitrary amount of time is never good; inevitably it ends up being too short on some system and leading to flakiness, and wastes test-running time on every other system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-20 02:45</div>
+            <div class="timeline-body"><p>Looks great! Love all the tests, and although there's a lot of code here, the overall structure is pretty clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-20 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/file_watching.rs</code>:45 on 2024-07-20 07:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this unavoidable?</p>
+</blockquote>
+<p>I couldn't figure out an alternative. I hate it too.</p>
+<p>There are a couple of things involved:</p>
+<ul>
+<li>We have to wait for the platform-specific syscall (<code>inotify</code>, <code>fsevents</code>, ...) to inform us about the file change</li>
+<li>The syscall doesn't happen on the main thread. So we have to wait for the file watcher, then the debounce threads to wake up and handle the event</li>
+</ul>
+<p>I considered using a spin-loop that waits until the first event comes in, but even that's not guaranteed and risks dead-locking. So we would need something more complicated that avoids dead-locks as well (another debounce implementation :laughing:)</p>
+<p>I'm open to any suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-20 10:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/watch/watcher.rs</code>:171 on 2024-07-20 10:24</div>
+            <div class="timeline-body"><p>Possibly, not sure. I honestly don't understand when this is happening well enough yet. We may also have to propagate errors to <code>apply_changes</code> for it to decide what to do in the case of an error.</p>
+<p>For now, I prefer to leave it as is and wait until we can do some testing on real world projects (e.g. by navigating through individual commits) and hopefully that allows us to trigger some of the errors and then decide what we should do about them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-22 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/file_watching.rs</code>:45 on 2024-07-22 21:46</div>
+            <div class="timeline-body"><p>Yes, this is tricky. Although not perfect, I think better than a fixed wait would be to have the watcher thread set a condvar (maybe only in tests) when it has debounced some events, and do a <code>wait_timeout</code> on that condvar here. The <code>wait_timeout</code> ensures that in the failure case where no event ever arrives we don't deadlock, but since in the success case we don't have to wait the full timeout, we can set it sufficiently high that it should never timeout just due to a slow system.</p>
+<p>But I'm also OK with just adding a TODO here for now, and delaying improvement until such future time when we are specifically investing in reducing test-running time or test flakiness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-23 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/file_watching.rs</code>:45 on 2024-07-23 06:18</div>
+            <div class="timeline-body"><p>I don't think we need any condvar for this. We can try to read from the <code>changes_receiver</code> (using the <code>select!</code> macro) and use a high timeout if no message is received in that time. But this is still not perfect. What if we receive a first batch of changes but then miss the last change message because it was a bit slower?</p>
+<p>I don't think a TODO is warranted because I don't plan to do anything about it unless the tests prove to be flaky. I also rather prefer the 10ms slow down than any complex system that only is prone to other kind of errors and is further away to what we use in production.  I'm not worried about the test performance. Ten ms isn't long enough to significantly slow down tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-23 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-23 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-23 06:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore using `bumpalo` for the AST - astral-sh/ruff #12419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore using <code>bumpalo</code> for the AST</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12419">#12419</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-20 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-20 14:47</div>
+            <div class="timeline-body"><p>This doesn't make full use of the bump allocator yet. We should also</p>
+<ul>
+<li>Use <code>bumpalo:Vec</code> instead of <code>Vec</code> except in places where the vec can become large (mainly suite?)</li>
+<li>Use the allocator in the lexer to avoid calls to <code>alloc_str</code> in the parser (which copies over the strings)</li>
+<li>Change <code>Int</code> to store a <code>&amp;'ast str</code></li>
+<li>Verify that no node (other than nodes storing a <code>Suite</code>) store any heap allocated data. Replace <code>Box&lt;'ast, T&gt;</code> with <code>&amp;'ast mut T</code>.</li>
+</ul>
+<p>FIXME:</p>
+<p>I think the current implementation leaks memory. We need to wrap all <code>Stmt</code> in <code>Box</code></p>
+<h2>Performance results</h2>
+<h3>Linux</h3>
+<p>Baseline is this PR</p>
+<pre><code>     Running benches/parser.rs (target/release/deps/parser-ec26802c53781234)
+parser/numpy/globals.py time:   [10.445 µs 10.449 µs 10.453 µs]
+                        thrpt:  [282.28 MiB/s 282.39 MiB/s 282.49 MiB/s]
+                 change:
+                        time:   [+9.7857% +10.037% +10.220%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-9.2721% -9.1216% -8.9135%]
+                        Performance has regressed.
+parser/unicode/pypinyin.py
+                        time:   [42.188 µs 42.200 µs 42.214 µs]
+                        thrpt:  [99.538 MiB/s 99.570 MiB/s 99.600 MiB/s]
+                 change:
+                        time:   [+21.042% +21.139% +21.228%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-17.510% -17.450% -17.384%]
+                        Performance has regressed.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) low mild
+parser/pydantic/types.py
+                        time:   [330.02 µs 330.14 µs 330.27 µs]
+                        thrpt:  [77.219 MiB/s 77.248 MiB/s 77.277 MiB/s]
+                 change:
+                        time:   [+18.761% +18.851% +18.938%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-15.923% -15.861% -15.797%]
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+parser/numpy/ctypeslib.py
+                        time:   [141.37 µs 141.55 µs 141.76 µs]
+                        thrpt:  [117.46 MiB/s 117.63 MiB/s 117.78 MiB/s]
+                 change:
+                        time:   [+20.951% +21.285% +21.647%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-17.795% -17.550% -17.322%]
+                        Performance has regressed.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+parser/large/dataset.py time:   [806.13 µs 807.07 µs 808.15 µs]
+                        thrpt:  [50.341 MiB/s 50.408 MiB/s 50.467 MiB/s]
+                 change:
+                        time:   [+23.943% +24.686% +25.328%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-20.209% -19.799% -19.318%]
+                        Performance has regressed.
+Found 16 outliers among 100 measurements (16.00%)
+  3 (3.00%) high mild
+  13 (13.00%) high severe
+
+</code></pre>
+<h3>Windows</h3>
+<pre><code>parser/numpy/globals.py time:   [10.741 µs 10.780 µs 10.826 µs]
+                        thrpt:  [272.56 MiB/s 273.73 MiB/s 274.72 MiB/s]
+                 change:
+                        time:   [+17.135% +18.111% +19.307%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-16.183% -15.334% -14.628%]
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  1 (1.00%) high mild
+  3 (3.00%) high severe
+parser/unicode/pypinyin.py
+                        time:   [40.251 µs 40.344 µs 40.458 µs]
+                        thrpt:  [103.86 MiB/s 104.15 MiB/s 104.39 MiB/s]
+                 change:
+                        time:   [+16.971% +17.762% +18.521%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-15.627% -15.083% -14.508%]
+                        Performance has regressed.
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+parser/pydantic/types.py
+                        time:   [309.84 µs 311.47 µs 313.18 µs]
+                        thrpt:  [81.432 MiB/s 81.879 MiB/s 82.311 MiB/s]
+                 change:
+                        time:   [+17.420% +19.085% +20.424%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-16.960% -16.026% -14.835%]
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+parser/numpy/ctypeslib.py
+                        time:   [133.15 µs 133.65 µs 134.17 µs]
+                        thrpt:  [124.11 MiB/s 124.59 MiB/s 125.06 MiB/s]
+                 change:
+                        time:   [-1.7608% -0.6216% +0.6461%] (p = 0.31 &gt; 0.05)
+                        thrpt:  [-0.6420% +0.6255% +1.7924%]
+                        No change in performance detected.
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+parser/large/dataset.py time:   [785.39 µs 786.57 µs 787.76 µs]
+                        thrpt:  [51.644 MiB/s 51.722 MiB/s 51.799 MiB/s]
+                 change:
+                        time:   [-0.6162% +0.1879% +1.0326%] (p = 0.67 &gt; 0.05)
+                        thrpt:  [-1.0221% -0.1875% +0.6200%]
+                        No change in performance detected.
+Found 7 outliers among 100 measurements (7.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 15:44</div>
+            <div class="timeline-body"><p>Very interested in this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-20 16:25</div>
+            <div class="timeline-body"><p>Very painful is this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-20 16:52</div>
+            <div class="timeline-body"><p>Do or do not, there is no try...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-21 15:39</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/bump-allo">CodSpeed Performance Report</a></h2>
+<h3>Merging #12419 will <strong>improve performances by 19.16%</strong></h3>
+<p><sub>Comparing <code>bump-allo</code> (56edbef) with <code>main</code> (2e2b1b4)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 10</code> improvements
+<code>✅ 3</code> untouched benchmarks</p>
+<p><code>⁉️ 20</code> dropped benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/bump-allo">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>bump-allo</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⁉️ | <code>formatter[large/dataset.py]</code> | 9.3 ms | N/A | N/A |
+| ⁉️ | <code>formatter[numpy/ctypeslib.py]</code> | 1.9 ms | N/A | N/A |
+| ⁉️ | <code>formatter[numpy/globals.py]</code> | 240.3 µs | N/A | N/A |
+| ⁉️ | <code>formatter[pydantic/types.py]</code> | 3.5 ms | N/A | N/A |
+| ⁉️ | <code>formatter[unicode/pypinyin.py]</code> | 656.2 µs | N/A | N/A |
+| ⚡ | <code>lexer[large/dataset.py]</code> | 1,071.2 µs | 997 µs | +7.45% |
+| ⚡ | <code>lexer[numpy/ctypeslib.py]</code> | 216.3 µs | 204.4 µs | +5.8% |
+| ⚡ | <code>lexer[pydantic/types.py]</code> | 481.5 µs | 453 µs | +6.29% |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 73.9 µs | 69.3 µs | +6.65% |
+| ⁉️ | <code>linter/all-rules[large/dataset.py]</code> | 16.3 ms | N/A | N/A |
+| ⁉️ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 4.1 ms | N/A | N/A |
+| ⁉️ | <code>linter/all-rules[numpy/globals.py]</code> | 719.7 µs | N/A | N/A |
+| ⁉️ | <code>linter/all-rules[pydantic/types.py]</code> | 8 ms | N/A | N/A |
+| ⁉️ | <code>linter/all-rules[unicode/pypinyin.py]</code> | 2.2 ms | N/A | N/A |
+| ⁉️ | <code>linter/default-rules[large/dataset.py]</code> | 3.7 ms | N/A | N/A |
+| ⁉️ | <code>linter/default-rules[numpy/ctypeslib.py]</code> | 916.8 µs | N/A | N/A |
+| ⁉️ | <code>linter/default-rules[numpy/globals.py]</code> | 183.9 µs | N/A | N/A |
+| ⁉️ | <code>linter/default-rules[pydantic/types.py]</code> | 1.9 ms | N/A | N/A |
+| ⁉️ | <code>linter/default-rules[unicode/pypinyin.py]</code> | 356 µs | N/A | N/A |
+| ⁉️ | <code>linter/all-with-preview-rules[large/dataset.py]</code> | 19.2 ms | N/A | N/A |
+| ... | ... | ... | ... | ... |</p>
+<p><br/></p>
+<blockquote>
+<p>:information_source: <em>Only the first 20 benchmarks are displayed. <a href="https://codspeed.io/astral-sh/ruff/branches/bump-allo">Go to the app to view all benchmarks</a>.</em></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-22 05:58</div>
+            <div class="timeline-body"><p>The last commit where we use <code>bumpalo::Vec</code> seems like to have regressed performance by a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 08:19</div>
+            <div class="timeline-body"><p>If anyone is interested in fixing some lifetime issues, feel free to PR it (or directly push to this branch). I might drop the last commit again because the result isn't promising enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 10:45</div>
+            <div class="timeline-body"><p>Overall this is very painful for <em>marginal</em> wins. I wonder if an alternative AST structure that uses indices would be a better approach, similar to what Zig does https://ziglang.org/download/0.8.0/release-notes.html#Reworked-Memory-Layout</p>
+<p>Let's say we have</p>
+<pre><code class="language-rust">#[derive(Debug, Clone)]
+struct SyntaxNode {
+	kind: NodeKind,
+	parent: NodeIndex,
+	children: Range&lt;NodeIndex&gt;,
+	extra_data: Range&lt;ExtraDataIndex&gt;
+}
+</code></pre>
+<p>and</p>
+<pre><code class="language-rust">struct SyntaxTree {
+	nodes: IndexVec&lt;NodeIndex, SyntaxNode&gt;,
+	extra_data: IndexVec&lt;ExtraDataIndex, ExtraData??&gt;
+}
+
+struct Parsed {
+	root: SyntaxNode,
+	tree: Arc&lt;SyntaxTree&gt;
+}
+</code></pre>
+<p>We could then have AST facade nodes similar to Biome/RustAnalzyer</p>
+<pre><code class="language-rust">#[derive(Clone)]
+struct IfStatement {
+	syntax: SyntaxNode,
+	tree: Arc&lt;SyntaxTree&gt;
+
+	fn test(&amp;self) -&gt; Expression {
+		Expression::cast_unwrap(self.children(&amp;tree)[0])
+	}
+
+	fn body(&amp;self) -&gt; Suite {
+		Suite::cast_unwrap(self.children(&amp;tree)[1])
+	}
+
+
+	fn children(&amp;self) -&gt; &amp;[SyntaxNode] {
+		self.syntax.children(&amp;self.tree)
+	}
+</code></pre>
+<p>It would require some changes to our AST, most notably that a node can no longer contain a sequence of children. Instead, it would need a single list node (e.g. suite) that wraps the list of children.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-07 14:48</div>
+            <div class="timeline-body"><p>I still think this is interesting and if anyone wants to work on this, feel free to pick it up. But I don't have the required time to finish this anytime soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-07 14:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

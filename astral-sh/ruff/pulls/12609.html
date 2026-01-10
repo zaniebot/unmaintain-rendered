@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Allow multiple `site-packages` search paths - astral-sh/ruff #12609</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Allow multiple <code>site-packages</code> search paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12609">#12609</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-01 11:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-01 11:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a virtual environment's <code>pyvenv.cfg</code> file contains the line <code>include-system-site-packages = true</code>, anything installed in the system Python installation's site-packages directory will be accessible when the virtual environment is activated, <em>as well as</em> anything inside the virtual environment's site-packages directory. That means that we could have 0, 1, or many <code>site-packages</code> directories that we'd need to consider as search paths -- currently we only contemplate the <code>0</code> or <code>1</code> possibilities. As such, it makes sense for the <code>site_packages</code> field on <code>Program</code> to be a <code>Vec</code> rather than an <code>Option</code>. This is the first commit of this PR.</p>
+<p>The second commit of the PR updates some of the logic in the resolver to reflect the fact that if there are two <code>site-packages</code> directories on <code>sys.path</code> at runtime, any editable installs provided via <code>.pth</code> files in the first <code>site-packages</code> directory will take precedence over the second <code>site-packages</code> directory when it comes to module resolution.</p>
+<h2>Test plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-01 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-01 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2024-08-01 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-01 11:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-08-01 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Make the `site-packages` search-path setting a vector of paths" to "[red-knot] Allow multiple `site-packages` search paths; enable easier mocking in tests" by @AlexWaygood on 2024-08-01 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 11:49</div>
+            <div class="timeline-body"><p>The paths in <code>Program</code> all must be resolved or it will be impossible to implement persistent caching. That means, any python and site package discovery <strong>must</strong> happen before setting the search paths on <code>Program</code>.</p>
+<p>That's why I think we don't need this enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 11:53</div>
+            <div class="timeline-body"><p>That makes sense to me, but then I don't understand why we're setting <code>SystemPathBuf</code>s (which represent unvalidated, unresolved search paths) on <code>Program</code> at all, rather than <code>SearchPath</code>s (which represent validated, resolved search paths). This was my concern I expressed in my review comment https://github.com/astral-sh/ruff/pull/12318#discussion_r1677156390 when you created the <code>Program</code> struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-01 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-01 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 12:15</div>
+            <div class="timeline-body"><p>I'm working on an alternative solution which is a more significant refactor, but perhaps will address your concern here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 12:32</div>
+            <div class="timeline-body"><p>We could validate the settings earlier, but we don't necessarily have to.</p>
+<p>The problem with storing <code>SearchPath</code> on <code>Program</code> is that <code>Program</code> is in <code>ruff_db</code>... That's what I commented in your other PR around validation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 12:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm working on an alternative solution which is a more significant refactor, but perhaps will address your concern here</p>
+</blockquote>
+<p>I think what we have here is fine, except that it can always be a vec. I don't think we have to do any significant refactors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 18:22</div>
+            <div class="timeline-body"><p>The reason why I think we should do the validation outside of salsa is because I consider failing to resolve Python a fatal error. See this comment https://github.com/astral-sh/ruff/pull/12376#issuecomment-2247800148</p>
+<p>That's why I want to avoid making any changes that need to be undone when migrating to this model.</p>
+<p>I also strongly prefer avoiding any refactors until we've figured out the error handling. We should instead focus on shipping the features that we've set out for this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-01 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 18:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I consider failing to resolve Python a fatal error</p>
+</blockquote>
+<p>Failing to resolve Python is a very different thing to failing to resolve the site-packages directories from a resolved path to a Python executable.</p>
+<blockquote>
+<p>I also strongly prefer avoiding any refactors until we've figured out the error handling. We should instead focus on shipping the features that we've set out for this week.</p>
+</blockquote>
+<p>Fair enough, but this is one of the features that I set out for the week, that we agreed a couple of weeks ago that it would be good for me to work on 😅</p>
+<p>I'm okay with putting off larger refactors for now, but it's unclear to me how to complete work on deriving site-packages from a Python executable unless we're agreed on where that logic should be. Anyway, I can do other work for now, and we can discuss in Runes planning tomorrow.</p>
+<p>I did some interesting work today experimenting with broader refactors — I'm very unsure what I have locally is the way we want to go, but I think it was interesting anyway. I'll put it up tomorrow so you can see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 19:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Failing to resolve Python is a very different thing to failing to resolve the site-packages directories from a resolved path to a Python executable.</p>
+</blockquote>
+<p>What would you expect to happen if we fail to detect python (and its site packages) when running the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-01 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 19:15</div>
+            <div class="timeline-body"><p>When running the CLI, I agree that failing to resolve site-packages should probably be a fatal error. I just want to be clear about what exactly I'm trying to accomplish here, because they're very different things.</p>
+<p>(In an LSP context, I definitely think it <em>shouldn't</em> be fatal if e.g. the user deactivates a virtual environment so we try to fall back to the system site-packages directory instead, and we can't. But I think we agree on that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-01 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:83 on 2024-08-01 19:29</div>
+            <div class="timeline-body"><p>That makes sense. For now, I would suggest to plug your logic somewhere into the red knot crate (or at least call it from there when constructing Program). I think the change from one to many site packages is still worth landing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:207 on 2024-08-01 20:44</div>
+            <div class="timeline-body"><p>I'll add some tests tomorrow for the changes made to this function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-01 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Allow multiple `site-packages` search paths; enable easier mocking in tests" to "[red-knot] Allow multiple `site-packages` search paths" by @AlexWaygood on 2024-08-01 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 21:05</div>
+            <div class="timeline-body"><p>Okay, I'll wait with reviewing then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-02 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-02 13:16</div>
+            <div class="timeline-body"><p>I added a test and updated the PR description. Ready for re-review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:248 on 2024-08-02 13:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let root = files.try_add_root(
+            db.upcast(),
+            site_packages_dir,
+            FileRootKind::LibrarySearchPath,
+        );
+        
+        dynamic_paths
+            .push(SearchPath::site_packages(system, site_packages_dir.to_owned()).unwrap());
+
+        // This query needs to be re-executed each time a `.pth` file
+        // is added, modified or removed from the `site-packages` directory.
+        // However, we don't use Salsa queries to read the source text of `.pth` files;
+        // we use the APIs on the `System` trait directly. As such, add a dependency on the
+        // site-package directory's revision.
+				root.revision(db.upcast());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:238 on 2024-08-02 13:19</div>
+            <div class="timeline-body"><p>I do think that moving site packages constructing into the dynamic modules query will make it harder for validation but whatever. Let's ignore this for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-02 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-02 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:238 on 2024-08-02 13:26</div>
+            <div class="timeline-body"><p>Yeah, @carljm was wondering if all this lazy <code>.pth</code>-file iteration was a bit too fancy -- we should maybe just collect all search paths eagerly. Definitely open to that; I have no idea how much lazy iteration through <code>.pth</code> files actually saves us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-02 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-02 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-02 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:238 on 2024-08-02 16:35</div>
+            <div class="timeline-body"><p>I can't imagine lazy iteration of <code>.pth</code> files saves us anything at all in any realistic scenario. It would require that there is a site-packages path, with editables installed into it, that the project never actually imports anything from; all imports are first-party. So yeah, I'd favor simplifying by just collecting all search paths eagerly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

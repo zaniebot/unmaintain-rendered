@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add basic workspace support - astral-sh/ruff #12318</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add basic workspace support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12318">#12318</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-14 09:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-14 09:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for checking an entire workspace rather than just individual files. But it does more than that. It lays the foundation for how Red Knot integrates settings long-term.</p>
+<p>The CLI changes from <code>red_knot &lt;files&gt;</code> to something more cargo like where running <code>red_knot</code> defaults to checking the entire workspace in the current directory. Right now, any directory is a valid workspace and each workspace always has exactly one package. The long-term goal is to find the enclosing workspace by reading Ruff's configuration (one with a <code>[workspace]</code> section?) and then finding all packages specified in <code>[workspace.members]</code>.</p>
+<h3>New <code>Workspace</code> and <code>Package</code> ingredients</h3>
+<p>These ingredients represent the project's structure. They aren't used in any queries today, but I foresee the following usages:</p>
+<ul>
+<li><code>package.check</code>: Checks all files in the package. We could make this a query to short-circuit the analysis. This should be especially useful in projects with many packages.</li>
+<li><code>package.files</code> and <code>package.settings</code>: See below for the details on how we can compute the <code>files</code> and <code>settings</code> lazily.</li>
+</ul>
+<p>This PR also introduces <code>WorkspaceMetadata</code> and <code>PackageMetdata</code> struct. These are the equivalent of <code>Workspace</code> and <code>Package</code> but as non-Salsa ingredient. The key motivation for these two is that we need to resolve the <code>target-version</code> and the module-resolution settings to decide on the persistent cache to load. This requires access to the workspace's and package's settings, and that's what these two structs will expose in the future.</p>
+<h3>Should <code>Workspace</code> be a singleton?</h3>
+<p>Possibly? I'm not sure. The idea is that a <code>Database</code> has exactly one <code>Workspace</code>. To me it is unclear if it may be necessary to create a second <code>Workspace</code> in response to file changes. E.g. what if the <code>workspace</code>'s <code>ruff.toml</code> gets deleted? Maybe we should just create a new <code>Database</code> in that case but that complicates things in the CLI's main loop. My current thinking is to create a new <code>Workspace</code> ingredient in that case (which would fail if it is a singleton) and swap the <code>Program</code>'s <code>Workspace</code>. This should also allow us to keep the existing <code>Workspace</code> if loading the new one, for whatever reason, fails.</p>
+<h3>New <code>Program</code> ingredient</h3>
+<p>The new <code>Program</code> ingredient (singleton) mainly generalizes the existing module resolution settings and moves them into <code>ruff_db</code>. The motivation is that these settings aren't just important for module resolution. They're fundamental to the entire analysis. Two analyses using different program settings aren't compatible and should be cached (persistent) separately.</p>
+<p>@AlexWaygood we have to figure out how to solve our merge conflicts.</p>
+<p>I decided to rename the root <code>Database</code> from <code>Program</code> to <code>RootDatabase</code>, mainly because I found it counterintuitive that a program contains a <code>Workspace</code> and to avoid a naming conflict with the new <code>Program</code> ingredient.</p>
+<h3>Should the <code>Database</code> support multiple open <code>Workspace</code>s?</h3>
+<p>My initial thinking was that it probably should, but I've concluded that it would complicate persistent caching by a lot.</p>
+<p>Ideally, Ruff uses a different persistent cache for different workspaces. Storing multiple <code>Workspace</code>s in a single <code>Database</code> creates the challenge that it becomes necessary to decide for every <code>Ingredient</code> into which persistent cache it should be stored. Loading the persistent cache would require merging the <code>Ingredient</code>s from different caches, which seems a headache.</p>
+<p>Having a single <code>Database</code> per <code>ProgramSettings</code> also simplifies caching runs using different target-versions individually: <code>ruff check --target-version 3.8</code> and <code>ruff check --target-version 3.10</code> should each use their own persistent cache.</p>
+<p>For now, I think it's best to have a 1:1 relationship between <code>Database</code> and <code>Workspace</code>. This doesn't mean Red Knot can't support multiple open <code>Workspace</code>s. It just means we must build this functionality around the <code>Database</code> instead of into the <code>Database</code>.</p>
+<h3>Checing individual files or folders</h3>
+<p>It remains possible to check a different folder using <code>red_knot—-current-directory path</code>. However, this PR removes the functionality for testing specific files or sub-folders. The challenge with explicit paths is that it isn't sufficient to detect the files in these paths once; instead, the paths must be monitored for newly added or removed files (and follow Ruff's exclude semantics). I'm not sure how to implement this best, but I think this is a CLI-specific problem and should be built on the added <code>open_files</code> feature.</p>
+<h3>How do settings work?</h3>
+<p>This is about the formatter or linter settings, not the workspace or package settings. Ruff supports that each directory can have its own linter and formatter settings. That means it is necessary to resolve the settings on a directory level.</p>
+<p>The easiest solution is to define a <code>linter_settings(File)</code> query that returns the liner settings for a given file by searching the closest package and asking that package what its settings are. The main downside is that the query is more granular than what Ruff allows (it's a file-level query rather than a directory-level query). A possible solution is to create a new <code>Directory</code> ingredient (interned) and change the query to <code>linter_settings(Directory)</code>. While this query now has the correct granularity, it still means we're creating too many ingredients if a project has only a custom setting in exactly two directories.</p>
+<p>I think the best solution is to instead create a <code>Settings</code> input ingredient that has tracked <code>linter_settings</code>, <code>formatter_settings</code>, etc. methods. A package would create all the <code>Settings</code> the first time it is asked for a setting file (we can find all the settings while discovering all the package files). Resolving the linter settings for a file then simply becomes:</p>
+<ul>
+<li>Find the closest package</li>
+<li>Ask the package for the <code>Settings</code> (can use a router similar to Ruff today)</li>
+<li>Call <code>settings.linter_settings</code> (salsa query)</li>
+</ul>
+<p>Dependent queries would only re-run when:</p>
+<ul>
+<li>A new package is added or an existing package is removed from a workspace</li>
+<li>New settings have been added or removed from this package</li>
+<li>The linter settings of this path have changed</li>
+</ul>
+<p>That's pretty good.</p>
+<h3>Can <code>packages.files</code> and <code>packages.settings</code> be lazy?</h3>
+<p>In this PR, discovering the files of a package is done eagerly. I think it should be possible to make this lazily but i would prefer to do this in a separate PR. The overall idea is:</p>
+<ul>
+<li>Introduce a new <code>SourceRoot</code> input ingredient. A source root is a directory, but it's not a 1:1 mapping between <code>SourceRoot</code> and a directory on the disk. A source root has two fields: Its a path (id) and a <code>revision.</code></li>
+<li>We create a <code>SourceRoot</code> for the <code>Workspace</code> and every <code>Package</code></li>
+<li>The semantic of <code>revision</code> depends on the specific <code>SourceRoot</code><ul>
+<li>For packages: <code>max</code>:<ul>
+<li>the last modified time of any ignore file</li>
+<li>the last deletion time of any ignore file</li>
+<li>the time when the last file was added</li>
+</ul>
+</li>
+<li>For the workspace: Same as for the package but don't bump the revision if the file belongs to a package</li>
+<li>For site packages: The last modified time of any root <code>ph</code> file (https://github.com/astral-sh/ruff/pull/12307)</li>
+</ul>
+</li>
+</ul>
+<p>Edit: I think we can simplify this by simple storing an incrementing counter on <code>Package</code> and <code>Workspace</code> rather then introducing a new ingredient.</p>
+<h3>Follow up work</h3>
+<ul>
+<li>File watching is a bit of a mess right now. I plan to tackle this next</li>
+<li>We don't do any error handling yet. We should look at this soon (by creating diagnostics).</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I ran <code>red_knot --current-directory ../test</code> and verified that the program is re-checked when adding, removing, or deleting files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-14 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add workspace support" to "[red-knot] Add basic workspace support" by @MichaReiser on 2024-07-14 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-07-14 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-14 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-14 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-14 13:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:103 on 2024-07-14 13:58</div>
+            <div class="timeline-body"><p>I thought the decision in https://github.com/astral-sh/ruff/issues/12250 was that the current behaviour here was correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-14 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-14 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:103 on 2024-07-14 14:14</div>
+            <div class="timeline-body"><p>I'm not changing the existing behavior. I just need an easy way for now to filter out files that we don't understand without relying on the configuration (which defaults to python files only)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:103 on 2024-07-14 14:15</div>
+            <div class="timeline-body"><p>Oh I see, you've added an extra method. Sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-14 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-14 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:103 on 2024-07-14 14:22</div>
+            <div class="timeline-body"><p>No worries. Would have been bad if I did change the behavior 😂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-14 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:11 on 2024-07-14 15:26</div>
+            <div class="timeline-body"><p>I'd prefer for this field and struct to be called <code>search_path_settings: SearchPathSettings</code>, rather than <code>search_paths: SearchPaths</code>. The fields on the struct don't yet represent search paths that we have confidence are valid for module resolution; they just represent the raw settings inputs given to us by the user. The most obvious example of this is the fact that we have a <code>custom_typeshed: Option&lt;SystemPathBuf&gt;</code> field. When we're <em>actually</em> resolving modules in the module resolver, we'll always have <em>a</em> path that represents the typeshed stdlib -- but at this stage, it's unknown whether we'll be using a custom (a this point still unvalidated) path given to us by the user to a directory on disk, or <code>VendoredPath(&quot;stdlib&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-15 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:11 on 2024-07-15 06:32</div>
+            <div class="timeline-body"><p>First, I don't mind renaming the struct. I just picked a name and probably not a very good one.</p>
+<blockquote>
+<p>The fields on the struct don't yet represent search paths that we have confidence are valid for module resolution; they just represent the user's raw settings inputs.</p>
+</blockquote>
+<p>Can you tell me a bit more about what form of validation is necessary?</p>
+<p>I think we should store the validated configuration on <code>Program</code>. The value we store here is <strong>after</strong> reading and resolving the workspace settings. The fact that it is after resolving the setting is important for persistent caching, where we want configurations that resolve in the same settings (e.g., it shouldn't matter if a user explicitly defines a value that is equal to the default or uses the default value) to have equal cache keys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:74 on 2024-07-15 19:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let canonicalized = cwd.as_utf8_path().canonicalize_utf8().unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace.rs</code>:52 on 2024-07-15 20:08</div>
+            <div class="timeline-body"><p>Some things that I think would be useful to clarify here (I'm putting &quot;package&quot; in quotes because I don't think we should use this word, as discussed below, but for now I'm matching the terminology here):</p>
+<ol>
+<li>Can &quot;packages&quot; be nested?</li>
+<li>Must &quot;packages&quot; be defined by a <code>pyproject.toml</code>, or can they be defined by a <code>ruff.toml</code> also?</li>
+<li>What is our default behavior if no configuration file is found at all?</li>
+<li>Can this layout also &quot;simplify&quot; to the simplest case, where there is just one &quot;package&quot; and it doesn't use a <code>src/</code> subdir; the workspace root is also the first-party import search path root for the only &quot;package&quot; it contains, and <code>pyproject.toml</code> lives right there alongside the top-level Python modules/packages? This is still a reasonably common structure for Python applications, and I think we need to make sure we can support it.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace.rs</code>:85 on 2024-07-15 20:19</div>
+            <div class="timeline-body"><p>I know this is a pain, but I would very strongly prefer that we <em>not</em> use the word &quot;Package&quot; for this concept. The term &quot;Package&quot; is already overloaded with two distinct meanings in Python-land. The older (and IMO stronger) usage of the word is for a Python module that is represented by a directory, not a file, and can thus contain sub-modules. (I.e. a directory containing <code>__init__.py</code>, or a namespace package.) This meaning definitely does not match what we have here: in the example layout above, <code>app-1</code> is not a package; <code>app-1/src/app1/</code> (the actual importable directory containing an <code>__init__.py</code>) is a package (and so would <code>app-1/src/app1/sub</code> -- packages can be arbitrarily nested.)</p>
+<p>The other colloquial meaning of &quot;package&quot; in the Python world is &quot;a PyPI distribution&quot; (or &quot;a directory that contains a <code>pyproject.toml</code> with PyPI metadata in it&quot;). I think this use of &quot;package&quot; should usually be avoided (due to confusion with the older above use), and instead &quot;project&quot; or &quot;distribution&quot; should be preferred.</p>
+<p>Our meaning here is more like the second meaning, but I think also slightly different, because I suspect we won't require PyPI distribution metadata? So using &quot;package&quot; here is introducing another slightly different overloaded meaning for an already-overloaded term.</p>
+<p>I think the term &quot;project&quot; would be a reasonable choice to replace &quot;package&quot; here, and it rhymes nicely with <code>pyproject.toml</code> as well, if that's our preferred way for people to supply our config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace/metadata.rs</code>:32 on 2024-07-15 20:34</div>
+            <div class="timeline-body"><p>Is this where we should have a TODO for some kind of default workspace heuristics? I think it's important that we don't just give up in the no-config scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace/metadata.rs</code>:35 on 2024-07-15 20:35</div>
+            <div class="timeline-body"><p>I don't want to require <code>pyproject.toml</code> metadata, so we should also have some kind of other fallback, like the directory name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/program.rs</code>:7 on 2024-07-15 21:12</div>
+            <div class="timeline-body"><p>It's not really clear to me why we should have both <code>Program</code> and <code>Workspace</code> as separate things. I realize that currently <code>Program</code> is a true singleton and <code>Workspace</code> is not, but the only reason for that is that we might want to hold onto the old Workspace when constructing a new one, in case we fail to build the new one, and it seems like this same rationale applies to <code>Program</code> just as much -- it is built from user settings that we might fail to parse. So what is the benefit of having <code>Program</code> and <code>Workspace</code> be separate, and what is the logic that defines what is owned by <code>Program</code> and what is owned by <code>Workspace</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-15 21:13</div>
+            <div class="timeline-body"><p>The core abstractions here make a lot of sense to me! This is a great step forward in clarifying how everything will fit together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:85 on 2024-07-16 05:48</div>
+            <div class="timeline-body"><p>I used package because <code>uv</code> uses this term and I want the two interfaces to be identical, at least when it comes to the most basic concepts.</p>
+<p>I personally don't see this as blocking the PR and am happy to do a follow-up PR to rename the struct if we decide on any other name for workspace members in uv and red knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 05:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace/metadata.rs</code>:32 on 2024-07-16 05:51</div>
+            <div class="timeline-body"><p>My preference is to add TODOs only for things that are incorrect but subtle to catch, not for missing features. Otherwise, we end up with a trillion to-dos and will never fix half of them because we decide that we don't need these features after all.</p>
+<p>Proper workspace heuristics is something so obvious that it is unlikely to miss, so we don't need a todo. Missing error recovery is more subtle and not so easy to find, that's when I think a TODO comment is appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 05:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace/metadata.rs</code>:35 on 2024-07-16 05:52</div>
+            <div class="timeline-body"><p>I agree; we can use the directory name. I can remove the TODO if you want but I intentionally don't implement the heuristic as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:7 on 2024-07-16 06:00</div>
+            <div class="timeline-body"><p>I explained one motivation in the summary:</p>
+<blockquote>
+<p>The new Program ingredient (singleton) mainly generalizes the existing module resolution settings and moves them into ruff_db. The motivation is that these settings aren't just important for module resolution. They're fundamental to the entire analysis. Two analyses using different program settings aren't compatible and should be cached (persistent) separately.</p>
+</blockquote>
+<p>That generally means that <code>Workspace</code> holds on to significantly more information than <code>Program</code>. It also solves a technical problem. Workspace must hold on to the <code>Configuration</code>/<code>Settings,</code> but the <code>Configuration</code> depends on the <code>LinterConfiguration</code> and <code>FormatterConfiguration</code> structs that are defined in <code>ruff_linter</code> and <code>ruff_python_formatter</code>. <code>ruff_db</code> can't depend on <code>ruff_linter</code>, because <code>ruff_linter</code> depends on <code>ruff_db</code>. The alternative is not to have a <code>Program</code> ingredient and instead keep per-crate specific inputs as we used to have with the module-resolver. But I prefer not to do that because input ingredients require manual creation (and updating).</p>
+<p>What should be on <code>Program</code>? Just the values that define the <em>identity</em> of a <code>Program</code>. Another way to think about it is that two projects can't be &quot;checked&quot; together if they require a different value for any of the <code>Program</code> fields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 06:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:52 on 2024-07-16 06:06</div>
+            <div class="timeline-body"><p>I think yes, &quot;packages&quot; can be nested.</p>
+<p>I intentionally didn't specify how the heuristic works I think it's not important for setting up the relevant concepts. We have to think about how the configuration works and what happens in the absence of any configuration, but I recommend doing this later and we should mirror uv's behavior for best compatibility between all Astral tools.</p>
+<p>My current thinking is:</p>
+<ol>
+<li>Yes packages, can be nested, workspaces can't (or they can, but ruff only picks up the closest workspace and ignores nested workspaces)</li>
+<li>I don't have an opinion on this yet, but I don't see why it can't be a <code>ruff.toml</code>.</li>
+<li>We should use Ruff's default configuration and assume the current folder is a workspace containing a single package/project.</li>
+<li>It's unclear to me what the challenge with that is. Yes, this should be supported. The workspace members can be arbitrary paths in the project.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-16 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/program.rs</code>:11 on 2024-07-16 12:55</div>
+            <div class="timeline-body"><p>There's a lot of TODOs around validation in the module-resolver crate at the moment; it's on my immediate list of things to work on. There's a lot of unwrapping where we should be bubbling up errors (<a href="https://github.com/astral-sh/ruff/blob/b1487b6b4fda8edc7c37261861b91c19ec2a6a64/crates/red_knot_module_resolver/src/resolver.rs#L138-L143">example</a>, <a href="https://github.com/astral-sh/ruff/blob/b1487b6b4fda8edc7c37261861b91c19ec2a6a64/crates/red_knot_module_resolver/src/typeshed/versions.rs#L62-L65">example</a>); there's some validation that we do that we probably don't need to do; and there's some validation that we don't yet do that we probably should. The validation that we do do is also all in the wrong place!</p>
+<p>But the intent I had with the <code>RawModuleResolutionSettings</code> struct on <code>main</code> (which this struct seems to emulate in its fields and data types) is that it should represent the settings more-or-less directly as passed by the user, that have not yet been validated and transformed into data types that can be used directly by the module resolver:</p>
+<p>https://github.com/astral-sh/ruff/blob/b1487b6b4fda8edc7c37261861b91c19ec2a6a64/crates/red_knot_module_resolver/src/resolver.rs#L112-L114</p>
+<p>If you want to store the validated settings on <code>Program</code>, I think you should be storing a struct that's more similar to <a href="https://github.com/astral-sh/ruff/blob/b1487b6b4fda8edc7c37261861b91c19ec2a6a64/crates/red_knot_module_resolver/src/resolver.rs#L184"><code>resolver::OrderedSearchPaths</code></a> on <code>main</code> (though my open editable-installs PR gets rid of that struct and replaces it with a <code>ValidatedSearchPathSettings</code> struct).</p>
+<blockquote>
+<p>Can you tell me a bit more about what form of validation is necessary?</p>
+</blockquote>
+<p>Here's validation that I think we should do eagerly w.r.t. the module-resolver settings. Again, some of this we half-do currently, and some of it we don't do at all currently:</p>
+<ul>
+<li>No path should be added as a module resolution search path unless we've verified it points to a directory</li>
+<li>If we're passed a custom typeshed directory, we should<ul>
+<li>verify that a <code>stdlib/</code> directory exists in that directory</li>
+<li>verify that a <code>stdlib/VERSIONS</code> file exists</li>
+<li>verify that the <code>stdlib/VERSIONS</code> file parses as we'd expect.</li>
+</ul>
+</li>
+<li>The <code>typeshed</code> field on the struct that represents the resolved settings should be a <code>FilePath</code> object, rather than an <code>Option&lt;SystemPathBuf&gt;</code> object: if no custom typeshed directory is passed, we'll just use the vendored stubs for the standard library, which is <code>FilePath::vendored(&quot;/stdlib&quot;)</code>. Additionally, for module resolution we'll be using the path to the stdlib directory inside the typeshed directory as a search path, not the path to the typeshed directory itself. We should just store the path to the stdlib directory on <code>Program</code> directly rather than constructing it from the path to the typeshed directoy every time we resolve a module.</li>
+<li>We need to make sure that no two search paths point to the same directory on disk, emulating the behaviour at runtime where no two entries on <code>sys.path</code> ever point to the same directory.</li>
+<li>After all the verification's been done, all paths should end up as <code>ModuleResolutionPathBuf</code> instances rather than <code>SystemPathBuf</code>, <code>VendoredPathBuf</code> or <code>FilePath</code> instances</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:52 on 2024-07-16 13:28</div>
+            <div class="timeline-body"><p>How this works in uv: https://github.com/astral-sh/uv/blob/00c055a6bd8a93c980c4d32772b7fd55069de4fe/crates/uv-distribution/src/workspace.rs#L70-L160</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace.rs</code>:85 on 2024-07-16 22:04</div>
+            <div class="timeline-body"><p>Ah, yeah, matching <code>uv</code> makes sense. And the term &quot;package&quot; is also pretty strongly embedded in the &quot;packaging&quot; space as well, so we may have trouble finding a better word there. I guess we'll just live with the overloaded term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-16 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-17 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:52 on 2024-07-17 09:16</div>
+            <div class="timeline-body"><p>I expanded the comment on the assumptions that I think are important regardless of the heuristic to discover workspaces.</p>
+<ul>
+<li>A workspace must always contain at least one package</li>
+<li>Packages can be nested</li>
+<li>Every file belongs to no or exactly one package.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-17 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/program.rs</code>:11 on 2024-07-17 09:26</div>
+            <div class="timeline-body"><p>Thanks. I like the name <code>SearchPathSettings</code> and I think we can actually defer some of the validation to after creating the program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-17 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-17 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-17 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

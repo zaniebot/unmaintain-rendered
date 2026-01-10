@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make setting and retrieving pydocstyle settings less tedious - astral-sh/ruff #12582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make setting and retrieving pydocstyle settings less tedious</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12582">#12582</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-30 14:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-30 14:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is stacked on top of #12581.</p>
+<p>The <code>pydocstyle</code> rules have settings that allow you to specify a list of decorators that should be considered property-like, and a list of decorators that should be ignored. The list of property-like decorators isn't just read by the pydocstyle rules; it's also used by many other rules so that they can pass in &quot;extra&quot; property-like decorators to <code>ruff_python_semantic::analyze::visibility::is_property()</code>.</p>
+<p>Currently the pydocstyle <code>Settings</code> struct exposes these two settings as <code>BTreeSet&lt;String&gt;</code>, however, which is somewhat useless. To do any analysis with these values, rules first have to convert these lists into lists of <code>QualifiedName</code>s, which is tedious and verbose. This PR therefore makes the <code>ignore_decorators</code> and <code>property_decorators</code> fields on <code>ruff_linter::rules::pydocstyle::settings::Settings</code> private. Instead, it exposes public methods for setting the fields, and public methods for lazily iterating over the property-decorators or ignored-decoratos where the iterators map each decorator to a <code>QualifiedName</code>. The PR also adjusts <code>ruff_python_semantic::analyze::visibility::is_property()</code> so that it is able to receive a lazy iterator of <code>QualifiedName</code>s for the <code>extra_property</code> field, rather than a slice of <code>QualifiedName</code>s.</p>
+<h2>Test Plan</h2>
+<p>No new tests added since this is a pure refactor that shouldn't change semantics at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-07-30 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-30 15:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/visibility.rs</code>:68 on 2024-07-30 15:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    mut extra_properties: impl IntoIterator&lt;Item = QualifiedName&lt;'a&gt;&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/definition.rs</code>:156 on 2024-07-30 15:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        extra_properties: impl IntoIterator&lt;Item = QualifiedName&lt;'a&gt;&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:2773 on 2024-07-30 15:26</div>
+            <div class="timeline-body"><p>I personally prefer the old code here because it guarantees that all properties get initialized. The fact that it leaks the <code>BTreeSet</code> internals is unfortunate but I rather have compile time guarantees (and guidance) on how new settings have to be added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-30 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-30 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/options.rs</code>:2773 on 2024-07-30 15:37</div>
+            <div class="timeline-body"><p>Yeah. I wondered about just creating a <code>Settings::new()</code> method, but went for this as I thought <code>Settings::default().with_property_decorators(&amp;[...])</code> was more readable than <code>Settings::new(None, &amp;[...], &amp;[])</code>. It's hard to tell with the <code>new()</code> call which decorator list is empty and which isn't, and having to pass in <code>None</code> explicitly for the <code>convention</code> argument feels awkward.</p>
+<p>But it's less code and it guarantees that all properties get initialized, so I guess I'll go for that instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-30 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/visibility.rs</code>:68 on 2024-07-30 15:56</div>
+            <div class="timeline-body"><p>I can't get this to work:</p>
+<pre><code>error[E0507]: cannot move out of `extra_properties`, a captured variable in an `FnMut` closure
+  --&gt; crates/ruff_python_semantic/src/analyze/visibility.rs:75:26
+   |
+71 |     let mut extra_properties = extra_properties.into_iter();
+   |         -------------------- captured outer variable
+72 |     decorator_list.iter().any(|decorator| {
+   |                               ----------- captured by this `FnMut` closure
+...
+75 |             .is_some_and(|qualified_name| {
+   |                          ^^^^^^^^^^^^^^^^ `extra_properties` is moved here
+76 |                 let extra_properties = extra_properties.into_iter();
+   |                                        ----------------
+   |                                        |
+   |                                        variable moved due to use in closure
+   |                                        move occurs because `extra_properties` has type `&lt;impl IntoIterator&lt;Item = QualifiedName&lt;'a&gt;&gt; as std::iter::IntoIterator&gt;::IntoIter`, which does not implement the `Copy` trait
+
+</code></pre>
+<p>But it occurs to me anyway that this optimisation (to use a lazy iterator rather than eagerly collecting everything as a slice) is incorrect as I currently have it. I'm using the same iterator on each iteration of the outer loop currently. The iterator could have been exhausted after the first iteration of the outer loop, which would lead to incorrect results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-07-31 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-31 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-31 09:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

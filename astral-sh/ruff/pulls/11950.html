@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable token-based rules on source with syntax errors - astral-sh/ruff #11950</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable token-based rules on source with syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11950">#11950</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-06-20 11:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-20 11:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the linter, specifically the token-based rules, to work on the tokens that come after a syntax error.</p>
+<p>For context, the token-based rules only diagnose the tokens up to the first lexical error. This PR builds up an error resilience by introducing a <code>TokenIterWithContext</code> which updates the <code>nesting</code> level and tries to reflect it with what the lexer is seeing. This isn't 100% accurate because if the parser recovered from an unclosed parenthesis in the middle of the line, the context won't reduce the nesting level until it sees the newline token at the end of the line.</p>
+<p>resolves: #11915</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Add test cases for a bunch of rules that are affected by this change.</li>
+<li>Run the fuzzer for a long time, making sure to fix any other bugs.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-06-20 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-28 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:97 on 2024-06-28 05:04</div>
+            <div class="timeline-body"><p>This is looking at string tokens and the lexer doesn't emit them if it's unterminated. So, we might get away with not doing anything in this case for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-28 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/doc_lines.rs</code>:29 on 2024-06-28 05:11</div>
+            <div class="timeline-body"><p>This extracts a specific set of comments so it doesn't require any specific update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-28 05:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_commas/rules/trailing_commas.rs</code>:260 on 2024-06-28 05:14</div>
+            <div class="timeline-body"><p>I think this should work as the newline tokens within f-strings are actually <code>NonLogicalNewline</code>, I'll move this into <code>TokenIterWithContext</code>. I'll test this a lot because f-strings are complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-28 05:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/directives.rs</code>:115 on 2024-06-28 05:58</div>
+            <div class="timeline-body"><p>The token stream doesn't contain the <code>EndOfFile</code> token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-28 06:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 2 project errors)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/gpt_actions_library/.gpt_action_getting_started.ipynb:11:1:1: Expected an expression
+error: Failed to parse examples/gpt_actions_library/gpt_action_bigquery.ipynb:13:1:1: Expected an expression
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-01 11:23</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/token-rules-with-syntax-errors">CodSpeed Performance Report</a></h2>
+<h3>Merging #11950 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/token-rules-with-syntax-errors</code> (2e932e3) with <code>main</code> (88a4cc4)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-07-01 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-01 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:502 on 2024-07-02 05:55</div>
+            <div class="timeline-body"><p>This is an improvement even without the error recoverability :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:564 on 2024-07-02 05:57</div>
+            <div class="timeline-body"><p>That's simpler than I expected. Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-02 05:57</div>
+            <div class="timeline-body"><p>This is nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-02 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-02 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-02 08:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] per-definition inference, use-def maps - astral-sh/ruff #12269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] per-definition inference, use-def maps</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12269">#12269</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-07-10 06:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-07-10 06:55</div>
+            <div class="timeline-body"><p>Implements definition-level type inference, with basic control flow (only if statements and if expressions so far) in Salsa.</p>
+<p>There are a couple key ideas here:</p>
+<ol>
+<li><p>We can do type inference queries at any of three region granularities: an entire scope, a single definition, or a single expression. These are represented by the <code>InferenceRegion</code> enum, and the entry points are the salsa queries <code>infer_scope_types</code>, <code>infer_definition_types</code>, and <code>infer_expression_types</code>. Generally per-scope will be used for scopes that we are directly checking and per-definition will be used anytime we are looking up symbol types from another module/scope. Per-expression should be uncommon: used only for the RHS of an unpacking or multi-target assignment (to avoid re-inferring the RHS once per symbol defined in the assignment) and for test nodes in type narrowing (e.g. the <code>test</code> of an <code>If</code> node). All three queries return a <code>TypeInference</code> with a map of types for all definitions and expressions within their region. If you do e.g. scope-level inference, when it hits a definition, or an independently-inferable expression, it should use the relevant query (which may already be cached) to get all types within the smaller region. This avoids double-inferring smaller regions, even though larger regions encompass smaller ones.</p>
+</li>
+<li><p>Instead of building a control-flow graph and lazily traversing it to find definitions which reach a use of a name (which is O(n^2) in the worst case), instead semantic indexing builds a use-def map, where every use of a name knows which definitions can reach that use. We also no longer track all definitions of a symbol in the symbol itself; instead the use-def map also records which defs remain visible at the end of the scope, and considers these the publicly-visible definitions of the symbol (see below).</p>
+</li>
+</ol>
+<p>Major items left as TODOs in this PR, to be done in follow-up PRs:</p>
+<ol>
+<li><p>Free/global references aren't supported yet (only lookup based on definitions in current scope), which means the override-check example doesn't currently work. This is the first thing I'll fix as follow-up to this PR.</p>
+</li>
+<li><p>Control flow outside of if statements and expressions.</p>
+</li>
+<li><p>Type narrowing.</p>
+</li>
+</ol>
+<p>There are also some smaller relevant changes here:</p>
+<ol>
+<li><p>Eliminate <code>Option</code> in the return type of member lookups; instead always return <code>Type::Unbound</code> for a name we can't find. Also use <code>Type::Unbound</code> for modules we can't resolve (not 100% sure about this one yet.)</p>
+</li>
+<li><p>Eliminate the use of the terms &quot;public&quot; and &quot;root&quot; to refer to module-global scope or symbols. Instead consistently use the term &quot;module-global&quot;. It's longer, but it's the clearest, and the most consistent with typical Python terminology. In particular I don't like &quot;public&quot; for this use because it has other implications around author intent (is an underscore-prefixed module-global symbol &quot;public&quot;?). And &quot;root&quot; is just not commonly used for this in Python.</p>
+</li>
+<li><p>Eliminate the <code>PublicSymbol</code> Salsa ingredient. Many non-module-global symbols can also be seen from other scopes (e.g. by a free var in a nested scope, or by class attribute access), and thus need to have a &quot;public type&quot; (that is, the type not as seen from a particular use in the control flow of the same scope, but the type as seen from some other scope.) So all symbols need to have a &quot;public type&quot; (here I want to keep the use of the term &quot;public&quot;, unless someone has a better term to suggest -- since it's &quot;public type of a symbol&quot; and not &quot;public symbol&quot; the confusion with e.g. initial underscores is less of an issue.) At least initially, I would like to try not having special handling for module-global symbols vs other symbols.</p>
+</li>
+<li><p>Switch to using &quot;definitions that reach end of scope&quot; rather than &quot;all definitions&quot; in determining the public type of a symbol. I'm convinced that in general this is the right way to go. We may want to refine this further in future for some free-variable cases, but it can be changed purely by making changes to the building of the use-def map (the <code>public_definitions</code> index in it), without affecting any other code. One consequence of combining this with no control-flow support (just last-definition-wins) is that some inference tests now give more wrong-looking results; I left TODO comments on these tests to fix them when control flow is added.</p>
+</li>
+</ol>
+<p>And some potential areas for consideration in the future:</p>
+<ol>
+<li>Should <code>symbol_ty</code> be a Salsa query? This would require making all symbols a Salsa ingredient, and tracking even more dependencies. But it would save some repeated reconstruction of unions, for symbols with multiple public definitions. For now I'm not making it a query, but open to changing this in future with actual perf evidence that it's better.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-07-10 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:32 on 2024-07-10 07:33</div>
+            <div class="timeline-body"><p>Would it make sense to instead have an <code>IndexVec</code> from <code>ScopedExpressionId</code> to <code>ScopedUseId</code> or are we using a map because only very few expression ids have <code>ScoipedUseId</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:22 on 2024-07-10 07:36</div>
+            <div class="timeline-body"><p>I think we also want the <code>ScopedExpressionId</code> as part of the <code>id</code>. Otherwise all expressions from the same scope have the same id.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:85 on 2024-07-10 07:37</div>
+            <div class="timeline-body"><p>Can we use <code>derive(PartialEq, Eq)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:22 on 2024-07-10 07:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let use_def = use_def_map(db, scope);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:30 on 2024-07-10 07:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">   let first = def_types.next().unwrap_or(Type::Unbound);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:15 on 2024-07-10 07:40</div>
+            <div class="timeline-body"><p>Is idea here that we don't cache the public symbol type anymore because we already cache the definition types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:474 on 2024-07-10 07:42</div>
+            <div class="timeline-body"><p>Pfff... :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 07:42</div>
+            <div class="timeline-body"><p>I don't fully understand all of it yet, but I like what I'm seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-10 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:32 on 2024-07-10 07:45</div>
+            <div class="timeline-body"><p>Yes, I did it this way because it's quite sparse; basically only <code>Name</code> expressions are uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-10 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:85 on 2024-07-10 07:46</div>
+            <div class="timeline-body"><p>Oh yeah, I took this from the symbol table, but there we manually implement PartialEq because we want to exclude a field from it. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-10 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:22 on 2024-07-10 07:57</div>
+            <div class="timeline-body"><p>Hmm. Is this also a problem with our current representation of <code>Definition</code>? https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/semantic_index/definition.rs#L12-L21</p>
+<p>There can be multiple definitions of the same symbol in the same scope, but the id of definition contains only file, scope, and symbol.</p>
+<p>I'm a little fuzzy on the implications of creating multiple tracked structs that share an id, or whether we should really be using id in these structs at all. The description of it at https://salsa-rs.github.io/salsa/overview.html#id-fields is all about tracking identity across re-orderings, but I think any reordering of Definitions or Expressions in a scope is going to change symbol IDs and expression IDs anyway, so I'm not sure if there is any useful &quot;identity&quot; that we are tracking here at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-10 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:30 on 2024-07-10 07:59</div>
+            <div class="timeline-body"><p>Is this better even though it means we'll make an entirely unnecessary second call to <code>def_types.next()</code> that we already know will return <code>None</code>? It seems like we may as well short-circuit here and just return Unbound directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:22 on 2024-07-10 08:05</div>
+            <div class="timeline-body"><p>It depends on the query that creates the structure. <code>Definitions</code> are created as part of the <code>semantic_index</code> query. Adding or removing any definition would offset all definitions by one. The worst-case outcome is that all queries taking a definition as an argument now return a different result (worst-case invalidation).</p>
+<p>This is mitigated by including the <code>scope</code> and <code>symbol</code> in the ID. The scope ensures that adding a definition to an outer (or even inner) scope doesn't change the IDs of the current scope. Whether we need <code>symbol_id</code> and <code>file_id</code> is unclear to me. We could probably do without them.</p>
+<p>The fact that <code>symbol_id</code> isn't unique doesn't matter. If two structs have the same ID, Salsa relies on order (at least that's what I understand).</p>
+<p>I would need to have a closer look at <code>Expression</code> to understand what makes sense here. So yes, maybe scope itself is sufficient, because we then only depend on the order of expressions per scope. But we might be able to do better by including an additional id so that adding/removing expressions doesn't invalidate all expressions in a scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-10 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:15 on 2024-07-10 08:06</div>
+            <div class="timeline-body"><p>Yeah... the thing is that all symbols (not just root-scope symbols) have a &quot;public type&quot; (i.e. the type as seen from another scope) -- for non-root-scope symbols they can be seen by a nested scope, for class-scope symbols they can also be seen by other scopes via class attribute access -- and I want to handle all of them the same way. And I'm not sure we want every symbol to be an ingredient.</p>
+<p>But this will be fairly easy to change in the future, I think; it can be an empirical question whether performance is better if we make all symbols an ingredient and cache public type of all symbols, or don't make them an ingredient and sometimes re-create the same union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-11 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:22 on 2024-07-11 01:48</div>
+            <div class="timeline-body"><p>Makes sense. The thing I don't understand about adding a <code>ScopedExpressionId</code> as part of the id here is that, given how we number expressions in-order within a scope, adding/removing expressions is going to result in changing the <code>ScopedExpressionId</code> of all the subsequent expressions anyway, right? So it's not clear to me how matching up by <code>ScopedExpressionId</code> is actually better (within a scope) than matching up by order of expressions; it seems like they are basically equivalent. In fact it seems like not having the <code>ScopedExpressionId</code> might be better, since only a few expressions are interned; without the <code>ScopedExpressionId</code> adding/removing non-interned expressions won't invalidate, but if we included the <code>ScopedExpressionId</code> then it would invalidate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-11 20:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-12 05:45</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm/defs">CodSpeed Performance Report</a></h2>
+<h3>Merging #12269 will <strong>improve performances by 6.95%</strong></h3>
+<p><sub>Comparing <code>cjm/defs</code> (c7e4ef9) with <code>main</code> (30cef67)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>cjm/defs</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[without_parse]</code> | 238.7 µs | 228.9 µs | +4.28% |
+| ⚡ | <code>red_knot_check_file[incremental]</code> | 90.2 µs | 84.4 µs | +6.95% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2024-07-12 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-07-12 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-12 06:24</div>
+            <div class="timeline-body"><p>This is ready for review. I've updated the PR description with a fuller narrative of what's in here and why.</p>
+<p>Benchmarks seem to say this PR has reclaimed most of the perf that was lost in the Salsa-type-interning PR, but I'm not sure why. It may be due to the removal of the ancestor-scope-walking name lookup code in favor of the use-def map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 06:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:15 on 2024-07-12 06:30</div>
+            <div class="timeline-body"><p>Working on a change to use <code>Cow</code> here so that repeated uses with the same set of visible definitions require fewer allocations. But this can also land as a follow-up PR if I don't get it done before review of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:174 on 2024-07-12 12:20</div>
+            <div class="timeline-body"><p>I know you just copied what I did, so this is really my mistake. Can't we use <code>self.use_map.len()</code> to compute the next id?</p>
+<pre><code class="language-suggestion">        let use_id = NextUseId::from_usize(self.uses_map.len());
+        self.uses_map.insert(expr.into(), use_id);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:97 on 2024-07-12 12:24</div>
+            <div class="timeline-body"><p>Should we also store the <code>target_index</code> here to be consistent with <code>ImportFromDefinitionNode</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:6 on 2024-07-12 12:26</div>
+            <div class="timeline-body"><p>I'm a bit surprised to find the <code>Expression</code> ingredient in this module. What's the motivation for placing it here rather than e.g. in its own module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 12:27</div>
+            <div class="timeline-body"><p>Should we just store the relevant node here, considering that we only need a part of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:15 on 2024-07-12 12:29</div>
+            <div class="timeline-body"><p>An alternative could be to have a separate <code>Vec</code> into which we write all these sub-vecs and instead just store a <code>Range</code> into that vec here (and uses that have the same definitions can just use the same range). But yes, I think it is worthwhile to spend some time investing if we can reduce the allocations (and clones)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:33 on 2024-07-12 12:32</div>
+            <div class="timeline-body"><p>Without having looked at the code. Should <code>infer_region</code> consume <code>self</code> and directly return the result or should it/is it possible to infer multiple regions at once?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:35 on 2024-07-12 12:33</div>
+            <div class="timeline-body"><p>One of the main concerns that you expressed is that it's now &quot;complicated&quot; to know which of the <code>infer_</code> methods to call. Could we add some documentation that gives guidance on which method to use? Like use <code>infer_expression_types</code> when. If you want x, use <code>infer_definition_types</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:595 on 2024-07-12 12:36</div>
+            <div class="timeline-body"><p>Is this allow still necessary. It seems <code>self</code> is used in the method body</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:263 on 2024-07-12 12:42</div>
+            <div class="timeline-body"><p>I don't fully understand how the different scopes are merged, or how we avoid performing the same type inference multiple times.</p>
+<p>Let's say we call type inferences on module. The builder runs over each statement, calls <code>infer_statement</code> and we ultimately arrive here, performing the inference.</p>
+<p>Now, some other code calls <code>infer_definition_ty(function_stmt)</code>. I would expect that this re-runs the type-inference for the entire function because the module-level type inference never called the salsa query.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:84 on 2024-07-12 12:45</div>
+            <div class="timeline-body"><p>I don't think we can use an <code>IndexVec</code> here any longer because each region only stores a very small subset of the expressions. I'm not quiet sure why the tests are passing but I would expect that all expression ids are off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 12:46</div>
+            <div class="timeline-body"><p>I like what I'm seeing here.</p>
+<p>My only concern is that I don't understand how the different type inference scopes are merged. See my inline comment.</p>
+<p>It will be interesting to see what the cost of storing the <code>definition -&gt; Ty</code> and <code>expression -&gt; Ty</code> hash maps on every level. That's a lot of hash maps and a lot of redundant information that we need to keep around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:97 on 2024-07-12 15:51</div>
+            <div class="timeline-body"><p>The reason I didn't do that here is that assignments are more complicated than imports, when considering unpacking assignment as well as multiple targets. For example:</p>
+<p><code>(x, (y, z)) = a = foo()</code></p>
+<p>But I guess we could still number these targets left to right, ignoring the nesting (<code>x</code> would be 0, <code>y</code> would be 1, <code>z</code> would be 2, <code>a</code> would be 3), and as long as the visit order of semantic indexing is the same as the visit order of inference, that should work too; it just felt less clear.</p>
+<p>I think it might be best to leave this alone for now and consider it as an option when we implement unpacking and multi-target assignment statements. I'll add a TODO comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:6 on 2024-07-12 15:52</div>
+            <div class="timeline-body"><p>Laziness :) I'll move it to its own module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:33 on 2024-07-12 15:54</div>
+            <div class="timeline-body"><p>Yeah, I think you're right; <code>infer_region()</code> and <code>finish()</code> should be the same method. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:84 on 2024-07-12 15:57</div>
+            <div class="timeline-body"><p>Yes, I think you're right. Tests are passing because at this stage tests are only actually exercising per-definition types; without type narrowing, nothing is currently using the stored per-expression types. I'll either add some unit tests or figure out what feature I can add to this PR that would actually exercise per-expression types in an integration test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:263 on 2024-07-12 15:58</div>
+            <div class="timeline-body"><p>Yes, you're totally right. The call above to <code>self.infer_function_definition</code> needs to go through the query instead, and then we need to merge the types from that query result. I just forgot to do this, and then no tests caught it. I'll add a test that would catch it, and fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 16:02</div>
+            <div class="timeline-body"><p>I have a comment just above about this. In type inference we will need to recognize specific cases where we need to use the per-expression query, and so I thought it was clearer to explicitly store those specific cases, rather than generically store any expression.</p>
+<p>Also, if I generically store any expression, then I'll need like a 15-variant enum here, for all the possible expression types. That seems more verbose and actually less clear about the &quot;cases&quot; we really deal with here.</p>
+<p>I don't see a big downside to the current approach; following one box pointer doesn't seem like a big cost in the context of everything else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-12 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It will be interesting to see what the cost of storing the definition -&gt; Ty and expression -&gt; Ty hash maps on every level. That's a lot of hash maps and a lot of redundant information that we need to keep around.</p>
+</blockquote>
+<p>Yeah :/ That's the part of this approach that I'm least happy about.</p>
+<p>We could reduce the number of hashmaps, and the redundancy, by using some kind of chaining (where an outer <code>TypeInference</code> will re-request the sub-query -- should be cached -- when needed to get sub-results instead of actually merging them into its own results), but that means more cost on lookup. I'm not sure how the tradeoffs will shake out.</p>
+<p>I'll think more about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-12 16:07</div>
+            <div class="timeline-body"><p>Thanks for the great review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't see a big downside to the current approach; following one box pointer doesn't seem like a big cost in the context of everything else?</p>
+</blockquote>
+<p>No, it's not a big cost. It's just unclear to me how we avoid the 15 variants even if we hold on to the parent node, because you would still need different kinds to know which different sub-node to take. Anyway. I feel comfortable moving forward with this. It's just a design decision that I don't fully understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 17:31</div>
+            <div class="timeline-body"><p>Understood that this isn't a blocking issue, but following up anyway to see if we can clear up our common understanding of this design choice, in case I'm missing something:</p>
+<blockquote>
+<p>It's just unclear to me how we avoid the 15 variants even if we hold on to the parent node, because you would still need different kinds to know which different sub-node to take.</p>
+</blockquote>
+<p>So the &quot;15 variants&quot; I'm talking about here is like one variant for <code>ExprName</code>, one for <code>ExprBinOp</code>, etc, for all the different Expr variants. Just because we don't have an <code>AstNodeRef</code> equivalent of <code>ExpressionRef</code>, as far as I know.</p>
+<p>If we hold the parent, we don't need those 15 variants, we just need one variant for each possible type of parent node that requires an independently-inferable expression, which will be more like 3 or 4 variants: one for StmtAssign, and one for each kind of branch statement that can contain a test expression, so <code>If</code>, <code>While</code>... not sure if there are any others? For each of those variants, there's only one sub-expression we could possibly mean (the RHS <code>value</code> for StmtAssign, the <code>test</code> for the others). And we don't need to enumerate all possible expression types anywhere, since type inference already handles that match over Expr variants.</p>
+<p>So this design is many fewer variants, and the variants we have are more semantically meaningful: rather than just being a bunch of boilerplate to handle all possible expression types, it actually enumerates each specific semantic context in which we need an <code>Expression</code> ingredient at all.</p>
+<p>Let me know if that still isn't making sense, or where I'm missing something!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-12 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 21:03</div>
+            <div class="timeline-body"><p>That makes sense. Thanks for explaining. I don't think the <code>Expr</code> limitation still applies to <code>AstNodeRef</code>.</p>
+<p>An <code>AstNodeRef</code> can store a reference to an <code>Expr</code>. Ultimately, <code>AstNodeRef</code> allows you to reference any reference with the same lifetime (a reference that is reachable from any AST node) as the parsed tree. There's no <code>where</code> clause restricting the type. The only constraint is that the thing stored on <code>AstNodeRef</code> is part of the AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:38 on 2024-07-12 23:21</div>
+            <div class="timeline-body"><p>Oh! In that case I will look to simplify this; we may not need an enum here at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-12 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:595 on 2024-07-12 23:32</div>
+            <div class="timeline-body"><p>Would love to have the nightly feature <code>expect</code> instead of <code>allow</code> to force cleaning these up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-13 07:22</div>
+            <div class="timeline-body"><blockquote>
+<p>We could reduce the number of hashmaps, and the redundancy, by using some kind of chaining (where an outer TypeInference will re-request the sub-query -- should be cached -- when needed to get sub-results instead of actually merging them into its own results), but that means more cost on lookup. I'm not sure how the tradeoffs will shake out.</p>
+</blockquote>
+<p>Here's an idea that's not in the salsa spirit but upholds the important constraints that matter to salsa.</p>
+<ul>
+<li>Add an <code>expression_types</code> field to <code>SemanticIndex</code> which is an <code>IndexVec&lt;ScopeId, ExpressionTypes&gt;</code>. Adding it to <code>SemanticIndex</code> causes it to get wiped every time the AST changes.</li>
+<li><code>ExpressionTypes</code> internally stores a <code>RwLock&lt;IndexVec&lt;ScopedExpressionId, Option&lt;Ty&gt;&gt;&gt;</code> (or <code>Mutex</code>, see below) and the <code>semantic_index</code> query either initialize it as empty, or with the right size, but all values set to <code>None</code></li>
+<li>All type inference stores the inferred expression types in <code>ExpressionTypes</code> (and not locally).</li>
+<li><code>ExpressionTypes</code> allows lookups and writes by <code>ScopedExpressionId</code> (which you can get from any expression by calling <code>scoped_ast_id()</code>). It uses internal mutability for writing. A <code>RwLock</code> does allow for race conditions where two threads both test if an expression has been inferred, before they start inferring that expression (and then writing it back). But I think this kind of race is okay. Both queries will infer the same type.</li>
+</ul>
+<p>This approach would mitigate most concerns. The only extra cost is that we need to test for every expression if it has already been inferred.</p>
+<p>I'm unclear on how it would work with any fixpoint iteration. How would we know which expression types need to be invalidated? Or would we know if we run a fixpoint and could then forcefully re-infer all expression types?</p>
+<p>Regarding the review: Please re-request review when you think I should have another look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-07-16 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-16 04:27</div>
+            <div class="timeline-body"><p>Ok, I think this is ready for review again.</p>
+<p>The use-def map building is now better (uses a single vec of definitions and ranges, instead of vecs of vecs) but there are probably ways it could be still better; open to comments. The main complexity is that avoiding vecs-of-vecs means sticking to a single range for the &quot;active&quot; defs of a given symbol, which means we always have to keep all the active defs for a given symbol adjacent. Sometimes at control-flow merge points this requires copying the same definition IDs from earlier to later in the all-definitions vector.</p>
+<p>I ended up adding basic control flow (just for if statements and expressions), because it makes a big difference in how the range-based use-def map building works.</p>
+<blockquote>
+<p>Here's an idea that's not in the salsa spirit but upholds the important constraints that matter to salsa. ...</p>
+</blockquote>
+<p>That's a neat idea. I would like to hold off on it though; it's purely a performance optimization that shouldn't make a difference to the API for type inference. So I would rather leave it until we are at a point where we can evaluate the performance impact on real code. For now I think we can move forward with some duplicated stored types and keep things more salsa-native. It's just extra id -&gt; id mappings; not a ton of wasted memory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:130 on 2024-07-16 06:50</div>
+            <div class="timeline-body"><p>We have our own <code>textwrap</code> in <code>ruff_python_trivia::textwrap</code>. Using it avoids adding new dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:190 on 2024-07-16 06:52</div>
+            <div class="timeline-body"><p>I think we only have expression ingredients for some nodes. Because of that, should the method return an <code>Option&lt;Expression&lt;'db&gt;&gt;</code>. If not, then we should document the cases in which this method panics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:412 on 2024-07-16 06:54</div>
+            <div class="timeline-body"><p>Nit: Can we have a more specific assertion than <code>len</code>. I always find <code>len</code> assertions hard to debug if the test fails. What entry was expected to be in there? Or I now get two, crap, which one is the incorrect entry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-16 06:57</div>
+            <div class="timeline-body"><p>I kind of prefer this to be called <code>root</code> scope. It's a very common term whereas I never heard of module-global before. It's also unclear to me if the <code>module-global</code> scope would be a parent or child of the built-in scope? For <code>root_scope</code> it is clear, it's the top-level scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:1 on 2024-07-16 07:02</div>
+            <div class="timeline-body"><p>Nit: Rename the module to <code>use_def</code> to be consistent with the casing. We could even argue that it should be called <code>use_definitions</code> because you consistently use <code>Definition</code> elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:11 on 2024-07-16 07:03</div>
+            <div class="timeline-body"><p>You could use an <code>IndexVec</code> here too, so that <code>Definitions::definitions</code> is a <code>Range&lt;DefinitionId&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:47 on 2024-07-16 07:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            definitions: Range::default(),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:63 on 2024-07-16 07:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// builder state: currently visible definitions for each symbol
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:81 on 2024-07-16 07:09</div>
+            <div class="timeline-body"><p>Nit: I would prefer a consistent use of <code>def</code> or <code>definition</code>.</p>
+<pre><code class="language-suggestion">    pub(super) fn record_definition(&amp;mut self, symbol: ScopedSymbolId, definition: Definition&lt;'db&gt;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:108 on 2024-07-16 07:11</div>
+            <div class="timeline-body"><p>When is it possible that <code>num_symbols</code> &gt; self.definitions_by_symbol.len()<code>? Is </code>Definitions::default` really the right default in that case.</p>
+<p>You can use  <code>truncate</code> if it is guaranteed that <code>num_symbols &lt; self.definitions_by_symbol.len</code> (and it would probably be worth adding an assertion)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:113 on 2024-07-16 07:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let current = &amp;mut self.definitions_by_symbol[symbol_id];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:121 on 2024-07-16 07:14</div>
+            <div class="timeline-body"><p>The parentheses here and in other branches are unnecessary</p>
+<pre><code class="language-suggestion">                current.definitions = current.definitions.start..to_merge.definitions.end;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:111 on 2024-07-16 07:15</div>
+            <div class="timeline-body"><p>The encapsulation of this method is unclear to me. It seems that we're extending the ranges of <code>definitions</code> without adding new items to <code>all_definitions</code>. What's guaranteeing that we can later dereference the definitions without having them pushed to <code>all_definitions</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:100 on 2024-07-16 07:18</div>
+            <div class="timeline-body"><p>I'm a bit worried about the size of this vector (contains all symbols of a scope) combined with the fact that we call snapshot for every branch. I don't think that's something we have to fix as part of this PR but I'm worried about the IO cost and we probably want something more granular (for example, instead of snapshoting, create a <code>Branch</code> that stores the &quot;merged&quot; symbols together with a local lookup table (HashMap)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:78 on 2024-07-16 07:24</div>
+            <div class="timeline-body"><p>Not for this PR: But I wonder if we could have different backing storages depending on the region. Because the scope-level inference could still use an <code>IndexVec</code> (and it probably makes sense for it to do so because there are many expressions, to the point where hasing becomes expensive)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:253 on 2024-07-16 07:27</div>
+            <div class="timeline-body"><p>I think we need some module level or struct level documentation explaining why there are two <code>infer_function_definition</code> methods. The difference in naming is so subtle and we better establish a convention or this is going to get very confusing. Ideally, these methods wouldn't be in the same builder, but I think that's difficult to accomplish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:295 on 2024-07-16 07:29</div>
+            <div class="timeline-body"><p>This seems to always be the same pattern. Convert node into definition, infer the definition types, extend.</p>
+<p>I think we can create a helper function for this</p>
+<pre><code>fn infer_definition(&amp;self, node: impl Into&lt;DefinitionNodeKey&gt;) {
+        let definition = self.index.definition(node);
+        let result = infer_definition_types(self.db, definition);
+        self.extend(result);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:620 on 2024-07-16 07:32</div>
+            <div class="timeline-body"><p>We should use the <code>index</code> directly here because using the <code>use_def_map</code> for better &quot;isolation&quot; doesn't give us anything because this query already depends on the AST and the semantic index.</p>
+<p>Using the query here actually results in a negative performance impact because we now pay the cost of another concurrent hash map lookup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:998 on 2024-07-16 07:35</div>
+            <div class="timeline-body"><p>Do you intentionally use an extra indent for the inline code?</p>
+<pre><code class="language-suggestion">            y = 1
+            y = 2
+            if flag:
+                y = 3
+            x = y
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:969 on 2024-07-16 07:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        db.write_file(&quot;src/a.py&quot;, &quot;x = y = 1&quot;)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:762 on 2024-07-16 07:37</div>
+            <div class="timeline-body"><p>I rather have this block next to the <code>TestDb</code>. It's otherwise unclear where the <code>write_dedented</code> method is coming from. The implementation isn't local to this test block, it's available in the entire crate (but is private)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1170 on 2024-07-16 07:39</div>
+            <div class="timeline-body"><p>I would remove the assertion here. The fact that <code>x_ty_2</code> resolves to a different type guarantees that the query did run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-16 07:40</div>
+            <div class="timeline-body"><p>The type inference part looks good to me.</p>
+<p>I started (for 1.5h) reviewing the use-def implementation but I must admit that I don't have enough context information to efficiently review the changes and the data structures are non-trivial. I would have preferred if adding use-def and then refactoring to a more efficient data structure were its own PR with a summary explaining how the data structures work together and what considerations have been made. But it's a bit too late for that. So I'm just gonna skip this part. We can come back to it later or set up a session where you walk me through the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-16 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-16 07:44</div>
+            <div class="timeline-body"><p>I somewhat strongly prefer module-global. The topmost scope is always called the &quot;module&quot; scope or the &quot;global&quot; scope in a Python context; I'm not sure I've ever heard it referred to as the &quot;root&quot; scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-16 07:49</div>
+            <div class="timeline-body"><p>Root scope is a term commonly used in the static analysis literature. Maybe not in Python. Anyway, I think I prefer <code>module</code> or <code>global</code> if that's what's used in the Python ecosystem over using both terms together. Using both seems unnecessary complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:1 on 2024-07-16 09:45</div>
+            <div class="timeline-body"><p>I would find some module level documentation useful. What's a use definition map? What kind of lookup operation does it support? How is the data structure model (what's a snapshot?) and what makes it a good data structure for this use case.</p>
+<p>Example:</p>
+<p>https://github.com/astral-sh/ruff/blob/6a1e5555377457f4a7c799b72341684a58c0887b/crates/ruff_python_formatter/src/comments/map.rs#L8-L44</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:190 on 2024-07-16 16:01</div>
+            <div class="timeline-body"><p>Yeah, good point. I can check how painful it is to return Option here, that's probably the best approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-16 16:04</div>
+            <div class="timeline-body"><p>I think this discussion clarifies why &quot;root scope&quot; is a bad term for module-global scope, because it is not actually the root scope in terms of lookup order; builtins scope is the root scope in that sense (the last fallback for name lookups.) All module scopes are &quot;children&quot; of the builtins scope in that sense.</p>
+<p>I'm OK with just using &quot;module scope&quot; for this, I think that's clear enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:1 on 2024-07-16 16:07</div>
+            <div class="timeline-body"><p>Yes, this is a good idea. As we discussed, I'll do this in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:1 on 2024-07-16 16:09</div>
+            <div class="timeline-body"><p>I agree with <code>use_def</code> for consistency. I would rather not go use <code>use_definitions</code> just because it's so long, I don't want to use that in variable names everywhere we use this, so for consistency it seems nicer to just stay with <code>use_def</code> everywhere we refer to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:11 on 2024-07-16 16:11</div>
+            <div class="timeline-body"><p>We can't use an <code>IndexVec</code> here because this has to list definitions in a specific order, and sometimes with the same definition listed more than once, in order to maintain that at any given point the active definitions for a symbol must all be adjacent in this vector. So it can't be just &quot;all definitions ordered by definition ID&quot;. Hopefully this will be clearer in the follow-up PR with the module doc comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:100 on 2024-07-16 16:14</div>
+            <div class="timeline-body"><p>I'm definitely open to iterating for better efficiency here, if we can find better options. I don't think I understand exactly what alternative you are proposing, but I don't think we have to sort it out here. I think (given that it's all private implementation detail and doesn't change the external API) I would actually prefer to defer further optimization here until we have enough features that we can run on real-world larger code samples and get higher-confidence performance measurements, so we know that our improvements are actually improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:121 on 2024-07-16 16:16</div>
+            <div class="timeline-body"><p>I personally find it harder to visually parse without the parens (given that we have single dots in the start and end expression, and then double dot in the middle, which is kind of visually subtle), but if this isn't common style, I don't mind removing the parens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:78 on 2024-07-16 16:18</div>
+            <div class="timeline-body"><p>Yes, I thought about this as well. I think it is definitely possible, and we can experiment with it and see how much difference it makes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:253 on 2024-07-16 16:18</div>
+            <div class="timeline-body"><p>Yes, I agree. I'll add such documentation in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:108 on 2024-07-16 16:37</div>
+            <div class="timeline-body"><p>(Feel free to either read and reply to comments here, or just wait for the follow up PR with module docs, whatever you prefer. I reply here first either way because it helps me to sort out what I need to write in the module docs.)</p>
+<p>The purpose of this method is to reset the builder state to some previous snapshot. For instance, when we have <code>if a: body_code else: else_code</code>, after we visit <code>body_code</code> we have to reset the visible-definitions state to what it was before the <code>if</code>, before we visit <code>else_code</code>, since either <code>body_code</code> or <code>else_code</code> can run, but not both, so definitions in <code>body_code</code> can never be visible to <code>else_code</code>.</p>
+<p>But we also have to make sure that every symbol we have seen (even in <code>body_code</code>) is included in <code>symbols_by_definition</code>, otherwise our symbol IDs in the IndexVec will get out of sync: we might try to record some new symbol in <code>else_code</code> with the wrong symbol ID, because we are missing the ones from <code>body_code</code>.</p>
+<p>Like say we have this:</p>
+<pre><code>if flag:
+    x = 1
+else:
+    y = 2
+</code></pre>
+<p>After visiting <code>x = 1</code> we need to visit the else clause with no visible definition for <code>x</code>. We reset the state to our snapshot from before the <code>if</code>, which doesn't even include <code>x</code> in <code>definitions_by_symbol</code> yet. But then when we visit <code>y = 2</code> we will insert it to the wrong slot in <code>definitions_by_symbol</code>, because we are missing <code>x</code> -- the symbol IDs don't line up correctly.</p>
+<p>Because we only add symbols as we visit code, never remove them, the current <code>num_symbols</code> can never be less than the number of symbols in the earlier snapshot we are resetting to, only greater (e.g. in the above example <code>num_symbols</code> is 1 -- it includes <code>x</code> -- but the snapshot we are resetting to has zero symbols). So the only case that can occur here is that we increase the size of the snapshot (in this case from zero to one), and add a &quot;no definitions&quot; for any missing symbols (in this case <code>x</code>). So <code>Definitions::default()</code> is correct here, because it represents &quot;no visible definitions&quot; (an empty range, with <code>may_be_unbound: true</code>).</p>
+<p>In the follow-up PR, in addition to the module doc comment, I'll add assertions and comments throughout this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:111 on 2024-07-16 16:41</div>
+            <div class="timeline-body"><p><code>all_definitions</code> never shrinks or is mutated, it only grows. And <code>FlowSnapshot</code> can only come from a snapshot of some previous state (barring that it comes from some other builder/scope entirely, but this would be a bug regardless.) So both <code>state.definitions_by_symbol</code> and <code>self.definitions_by_symbol</code> must refer to indices that are already present in <code>self.all_definitions</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:190 on 2024-07-16 17:00</div>
+            <div class="timeline-body"><p>After trying it out, I don't think Option makes sense here because this can only occur due to a bug in our code; the caller doesn't have any better choice than to panic if it gets <code>None</code> either. So I added a doc of when this will panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-16 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-16 17:08</div>
+            <div class="timeline-body"><p>Hmm, now I remember why I went with <code>module_global</code> and not just <code>module</code> -- because we have cases like <code>module_global_symbol_ty</code>, and changing that to <code>module_symbol_ty</code> is confusing, because we have some symbols that represent an entire module (like <code>foo</code> in <code>import foo</code>), and &quot;module symbol&quot; sounds like it could be that, rather than &quot;a module-scope symbol&quot;.</p>
+<p>I think just &quot;global&quot; could be OK too, as long as we understand that in Python, &quot;global&quot; means &quot;module global&quot; (but in Python that is what it generally means.)</p>
+<p>I might leave this change for a follow-up PR, because it's not feeling clear to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-16 17:42</div>
+            <div class="timeline-body"><p>Planning to merge this as-is once tests pass. All unresolved comments above will be addressed in follow-up PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-07-16 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-07-16 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-16 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 00:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:412 on 2024-07-17 00:35</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12355</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:253 on 2024-07-17 03:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12356</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:111 on 2024-07-17 06:35</div>
+            <div class="timeline-body"><p>(Oh, and in some of these cases we do add new items to <code>all_definitions</code>, using <code>extend_from_within</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:108 on 2024-07-17 06:51</div>
+            <div class="timeline-body"><p>Hopefully clearer with the docs in https://github.com/astral-sh/ruff/pull/12357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:111 on 2024-07-17 06:51</div>
+            <div class="timeline-body"><p>Hopefully clearer with the docs in https://github.com/astral-sh/ruff/pull/12357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-17 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/usedef.rs</code>:1 on 2024-07-17 06:51</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-18 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:491 on 2024-07-18 16:39</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12374</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

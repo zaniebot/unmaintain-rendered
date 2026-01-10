@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Mark `RUF023` fix as unsafe if `__slots__` is not a set and the binding is used elsewhere - astral-sh/ruff #12692</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Mark <code>RUF023</code> fix as unsafe if <code>__slots__</code> is not a set and the binding is used elsewhere</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12692">#12692</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-05 16:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 16:46</div>
+            <div class="timeline-body"><p>Fixes #12653. This required a little bit of refactoring: in order to know whether the <code>__slots__</code> binding is used or not, the rule must run after the AST tree has been visited in its entirety; that meant that the rule's hook had to be moved out of <code>statements.rs</code> and into <code>bindings.rs</code>. This, in turn, meant that the function implementing the rule had to accept a <code>Binding</code> rather than two AST nodes, and had to return an <code>Option&lt;Diagnostic&gt;</code> rather than <code>()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-08-05 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-08-05 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-05 16:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +0 -6 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+0 -0 violations, +0 -6 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L189'>disnake/components.py:189:34:</a> RUF023 [*] `Button.__slots__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L189'>disnake/components.py:189:34:</a> RUF023 `Button.__slots__` is not sorted
+- <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L269'>disnake/components.py:269:34:</a> RUF023 [*] `BaseSelectMenu.__slots__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L269'>disnake/components.py:269:34:</a> RUF023 `BaseSelectMenu.__slots__` is not sorted
+- <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L646'>disnake/components.py:646:34:</a> RUF023 [*] `TextInput.__slots__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/9383d15ff4a5bb53087db5f7a0fc23370a020d7d/disnake/components.py#L646'>disnake/components.py:646:34:</a> RUF023 `TextInput.__slots__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF023 | 6 | 0 | 0 | 0 | 6 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-08-05 18:00</div>
+            <div class="timeline-body"><p>I don’t think it is possible to know that the <code>__slots__</code> binding is not used, because it could be used outside the module, or even outside the whole project. <a href="https://docs.python.org/3/reference/datamodel.html#slots">The documentation</a> doesn’t explicitly say whether this is supported or whether <code>__slots__</code> is meant to be treated as private, but it does say:</p>
+<blockquote>
+<p>If a <a href="https://docs.python.org/3/library/stdtypes.html#dict"><code>dictionary</code></a> is used to assign <em>__slots__</em>, the dictionary keys will be used as the slot names. The values of the dictionary can be used to provide per-attribute docstrings that will be recognised by <a href="https://docs.python.org/3/library/inspect.html#inspect.getdoc"><code>inspect.getdoc()</code></a> and displayed in the output of <a href="https://docs.python.org/3/library/functions.html#help"><code>help()</code></a>.</p>
+</blockquote>
+<p>which implies that <code>__slots__</code> is meant to be accessible by other modules (e.g. <code>inspect</code>) so it is not enough to check for usages within the same module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 18:08</div>
+            <div class="timeline-body"><p>Yeah -- I agree with all that @dscorbett. And by the same logic, we could also argue that the fix for RUF022 should always be marked as unsafe.</p>
+<p>I do however feel like it's pretty uncommon to iterate over the <code>__slots__</code> of a class from an external module. I agree that <code>__slots__</code> is in a grey area where it's not really private API -- but practically speaking, I think the vast majority of library users think of the presence of <code>__slots__</code> on a class as an optimisation/implementation detail, and the order of the items in <code>__slots__</code> even more so.</p>
+<p>Overall I feel like this is a good compromise that reflects the fact that for arguably 99% of cases, this fix is safe if we can see that a class's <code>__slots__</code> are not read in the file in which that class is defined.</p>
+<blockquote>
+<p><a href="https://docs.python.org/3/reference/datamodel.html#slots">The documentation</a> doesn’t explicitly say whether this is supported or whether <code>__slots__</code> is meant to be treated as private, but it does say:</p>
+<blockquote>
+<p>If a <a href="https://docs.python.org/3/library/stdtypes.html#dict"><code>dictionary</code></a> is used to assign <em><strong>slots</strong></em>, the dictionary keys will be used as the slot names. The values of the dictionary can be used to provide per-attribute docstrings that will be recognised by <a href="https://docs.python.org/3/library/inspect.html#inspect.getdoc"><code>inspect.getdoc()</code></a> and displayed in the output of <a href="https://docs.python.org/3/library/functions.html#help"><code>help()</code></a>.</p>
+</blockquote>
+</blockquote>
+<p>FWIW, I wrote that bullet point in the documentation ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 18:13</div>
+            <div class="timeline-body"><p>To be clear: you may be right. This isn't an opinion I'm certain in; possibly this rule (and RUF022 as well?) should just have their autofixes marked as unsafe in nearly all instances. I'm interested to hear what other maintainers think here. (@carljm, maybe?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-05 18:27</div>
+            <div class="timeline-body"><p>I don't think it's <em>that</em> hard to imagine a scenario where <code>__slots__</code> are iterated from outside the module, e.g. I can totally imagine some framework/ORM doing something like that (though I wouldn't recommend it.)</p>
+<p>I also generally feel like we have unsafe fixes for a reason, and we should err on the side of marking fixes unsafe if there's a plausible scenario where they could break someone's code. (&quot;Plausible&quot; is of course doing a lot of heavy lifting there, and leaves a lot of room for debate.)</p>
+<p>I would probably mark this fix as unsafe, unless <code>__slots__</code> are defined as a set. But it's quite possible I'm too conservative on this. We could also go with the approach in this PR and wait to see if anyone ever files an issue for this rule breaking their code due to introspection of <code>__slots__</code> from another module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 18:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I also generally feel like we have unsafe fixes for a reason, and we should err on the side of marking fixes unsafe if there's a plausible scenario where they could break someone's code.</p>
+</blockquote>
+<p>agreed -- but there is also a cost to marking a fix as unsafe. It means users don't get the autofix unless they either opt into <em>all</em> unsafe fixes (the <code>--unsafe-fixes</code> flag), or they use the <a href="https://docs.astral.sh/ruff/settings/#lint_extend-safe-fixes"><code>extend-safe-fixes</code> config option</a> (which just overrides the default to mark this fix as safe <em>all the time</em>). I sort-of feel like the autofix is much more useful than the actual lint in this case -- to me (as the rule's author!), it feels too pedantic to bother with if it's not going to be autofixed -- so I'm slightly reluctant to put the fix behind another flag, when I feel like most users who've opted into the rule will probably have chiefly done so for the autofix in the first place anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-08-05 20:38</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/linter/#fix-safety">The documentation for fix safety</a> says “The meaning and intent of your code will be retained when applying safe fixes” but meaning and intent are hard to determine. Technically, no fix is 100% safe because a module’s source code can be inspected at runtime. That is an extreme case, of course; I’m just acknowledging that there’s always a trade-off.</p>
+<p>In the particular example with <code>__match_args__</code>, the fix is not merely unsafe: the order of <code>__match_args__</code> is central to its purpose, so indirectly changing its order will almost certainly break something. In a case like that I would still report the rule violation but not offer any fix, because the rule is clearly violated but it’s not clear what to do about it.</p>
+<p>Maybe for edge cases (i.e. the fixes which this PR still marks as safe) it would be sufficient to mark the fix as safe but document in the rule’s “Fix safety” section that the fix is actually unsafe in certain circumstances. I leave to you all to determine where to draw the line in this case and how complex to make the check, but I hope the unsafety will be taken into account somewhere, whether code or documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe for edge cases (i.e. the fixes which this PR still marks as safe) it would be sufficient to mark the fix as safe but document in the rule’s “Fix safety” section that the fix is actually unsafe in certain circumstances.</p>
+</blockquote>
+<p>Great suggestion. I pushed some more docs on fix safety -- for this rule and for RUF022 -- in https://github.com/astral-sh/ruff/pull/12692/commits/77bf58087c522575ba6fd345e3f0d0b2726645c4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:127 on 2024-08-07 06:59</div>
+            <div class="timeline-body"><p>Nit nit: We may want to consider adding an <code>is_unused</code> method. It reads more naturally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-07 06:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:127 on 2024-08-07 09:40</div>
+            <div class="timeline-body"><p>Agreed -- but there's quite a few other places where we might consider using that method, so I'll propose it in a followup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:127 on 2024-08-07 09:52</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/pull/12729</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

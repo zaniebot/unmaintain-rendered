@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce `HasTy` trait and `SemanticModel` facade - astral-sh/ruff #11963</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce <code>HasTy</code> trait and <code>SemanticModel</code> facade</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11963">#11963</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-21 10:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 10:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR introduces a new <code>HasTy</code> trait that AST nodes implement that support looking up their type.</p>
+<p>It also introduces a <code>SemanticModel</code> facade that acts as the public interface of the semantic analysis.</p>
+<p>I think the API could be better. It's a bit awkward that you need to construct a <code>typing_context</code> and pass that to type operations. I think we need to spend some more time on fully designing the API that we want to provide to lint rules.</p>
+<h2>Other changes</h2>
+<p>I changed the symbol table builder to not introduce new symbols for reads, if a parent scope defines a symbol with that name. There's probably a better and more correct way of implementing this but I needed a fix or using <code>typing.override</code> as a decorator would always resolve to <code>Unbound</code>.</p>
+<h2>Follow-up work</h2>
+<ul>
+<li>Implement <code>HasTy</code> for <code>Alias</code></li>
+<li>Merge <code>HasTy</code> with a <code>SemanticNode</code> trait that also gives access to the node's symbol (only <code>Some</code> for <code>ExprName</code> and <code>Alias</code>), or a node's scope. I decided not to implement this as part of this PR because it wasn't exactly clear to me what <code>scope</code> would return. Is it the enclosing scope or the scope that the node defines?</li>
+</ul>
+<h2>Test plan</h2>
+<p>I updated the <code>lint_bad_override</code> rule to use the new API. It's not optimized for performance. For example, we look up the <code>typing.override</code> type for every class definition.</p>
+<pre><code class="language-rust">fn lint_bad_override(context: &amp;SemanticLintContext, class: &amp;ast::StmtClassDef) {
+    let semantic = &amp;context.semantic;
+    let typing_context = semantic.typing_context();
+
+    // TODO we should have a special marker on the real typing module (from typeshed) so if you
+    //   have your own &quot;typing&quot; module in your project, we don't consider it THE typing module (and
+    //   same for other stdlib modules that our lint rules care about)
+    let Some(typing) = semantic.resolve_module(ModuleName::new(&quot;typing&quot;).unwrap()) else {
+        return;
+    };
+
+    let Some(typing_override) = semantic.public_symbol(typing, &quot;override&quot;) else {
+        return;
+    };
+
+    let override_ty = semantic.public_symbol_ty(typing_override);
+
+    let class_ty = class.ty(semantic);
+
+    for function in class
+        .body
+        .iter()
+        .filter_map(|stmt| stmt.as_function_def_stmt())
+    {
+        let Type::Function(ty) = function.ty(semantic) else {
+            return;
+        };
+
+        if ty.has_decorator(&amp;typing_context, override_ty) {
+            let method_name = ty.name(&amp;typing_context);
+            if class_ty
+                .inherited_class_member(&amp;typing_context, method_name)
+                .is_none()
+            {
+                // TODO should have a qualname() method to support nested classes
+                context.push_diagnostic(
+                    format!(
+                        &quot;Method {}.{} is decorated with `typing.override` but does not override any base class method&quot;,
+                        class_ty.name(&amp;typing_context),
+                        method_name,
+                    ));
+            }
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module/resolver.rs</code>:47 on 2024-06-21 10:56</div>
+            <div class="timeline-body"><ul>
+<li>Tracing is hard. It needs to be <code>entered</code> or the span exits immediately.</li>
+<li>I had to use <code>_span</code> because rust drops <code>_</code> immediately?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-21 11:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-21 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-21 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-06-21 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:44 on 2024-06-21 17:05</div>
+            <div class="timeline-body"><p>Not necessary to do in this PR, but if we will need this boilerplate in all functions we want to trace, it may be worth our own macro to a) consistently get it right and b) make it less noisy for reading the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/lib.rs</code>:6 on 2024-06-21 17:07</div>
+            <div class="timeline-body"><p>Random sidenote, but I'm a bit confused about import-sorting in rustfmt. I feel like sometimes rustfmt does move imports around, but then I also see changes like this one that look like manual changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:84 on 2024-06-21 17:11</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:96 on 2024-06-21 17:16</div>
+            <div class="timeline-body"><p>I think this might render <code>Scope.definition</code> field unnecessary? (And maybe also <code>Scope.defining_symbol</code>?)</p>
+<p>And to be clear, I think that's good -- I think it's cleaner to just handle this directly in terms of nodes and leave Definition out of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:115 on 2024-06-21 17:24</div>
+            <div class="timeline-body"><p>It seemed odd to me that the compiler would need an explicit lifetime here, when the lifetime is not otherwise involved in the function, but I guess this is a limitation specifically related to <code>impl Trait</code> arguments that has been lifted in unstable, but not yet in stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:32 on 2024-06-21 17:50</div>
+            <div class="timeline-body"><p>Maybe name these the same as the corresponding fields in <code>SemanticIndex</code>? This makes it clearer to the reader that they are the same thing. And if the name is better/clearer in <code>SemanticIndex</code>, it's also better here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 17:59</div>
+            <div class="timeline-body"><p>Ah! I had the nagging feeling reviewing the last PR that something else wasn't quite right with the &quot;walk up scopes looking for one that has the symbol&quot; logic added there, and now seeing this I realize what it is.</p>
+<p>This approach won't work when we add control flow and implement support for the <code>nonlocal</code> statement, because then you can have symbols in a scope that may be defined in the scope, but references to the name that don't see the definition (because they are before it, or because it's conditional) are still nonlocal references to an outer scope. So the approach for nonlocal names has to respect control flow, it can't just walk up scopes directly; we need to insert a Definition at the start of the scope (in place of Unbound) which indicates &quot;refer to outer scope public type.&quot;</p>
+<p>It makes sense to have a temporary solution in this PR to make the lint rule work, even without control flow. But I would much prefer if the temporary solution didn't touch the symbol table in this way that will have to be reverted later. Instead I think you could change the &quot;walk up scopes&quot; name resolution logic you added in type inference in the last PR, so that instead of &quot;walk up scopes if symbol doesn't exist&quot; it's &quot;walk up scopes if symbol does not have definitions in this scope.&quot; This will give the same temporary behavior, but it will localize the changes into the code that will need to change anyway when adding control flow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:23 on 2024-06-21 18:32</div>
+            <div class="timeline-body"><p>Not sure if this is a good idea, feel free to ignore, but it occurred to me that we do have a <code>Type::Module</code>and we could reduce the number of types exposed by the semantic model if this also returned a <code>Type</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:152 on 2024-06-21 18:40</div>
+            <div class="timeline-body"><p>It feels weird that we have to go the inner scope of the function, then walk up one or two scopes, worrying about details like AnnotationScope, just to find the scope in which the FunctionDef node occurs. We already keep a map from node to scope it occurs in for expressions, and there are a lot more of those; maybe we should keep the same mapping for some statements, too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-21 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-21 18:57</div>
+            <div class="timeline-body"><p>This looks great!</p>
+<blockquote>
+<p><code>SemanticNode</code> trait that also gives access to the node's symbol (only <code>Some</code> for <code>ExprName</code> and <code>Alias</code>)</p>
+</blockquote>
+<p>I think this makes sense. The only odd thing about it is what a small percentage of nodes it is <code>Some</code> for, but this isn't an actual problem. I do wonder if there's a strong reason to do this now, or if we should wait until we are implementing a use case that needs it, to better inform the design. It seems possible that any use case that would need this is actually something the semantic model should provide directly as a higher-level abstraction, but I'm not sure.</p>
+<blockquote>
+<p>or a node's scope. I decided not to implement this as part of this PR because it wasn't exactly clear to me what scope would return. Is it the enclosing scope or the scope that the node defines?</p>
+</blockquote>
+<p>The two are quite different, and both possibly useful in different circumstances, which probably suggests the name should be clear, and neither one should be named simply <code>scope</code>. But I have the same question about this: maybe better to design it alongside a clear motivating use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-21 19:06</div>
+            <div class="timeline-body"><p>On second thought I don't see any issue with adding nice APIs now to get from node to symbol/scope; it'll be useful internally regardless of whether we encourage lint rules to directly use those APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 19:09</div>
+            <div class="timeline-body"><p>I considered filtering in the type inference but having types in the symbol table that come from the parent scope feels like a huge foot gun because we would need to filter them whenever we lookup a symbol by name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:23 on 2024-06-21 19:11</div>
+            <div class="timeline-body"><p>Hmm not sure. But I can probably remove the method for now and revisit when I look into extracting dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:152 on 2024-06-21 19:13</div>
+            <div class="timeline-body"><p>I agree that the code here is painful but I'm worried about tracking too much data over just recomputing when necessary.</p>
+<p>An alternative I considered that could also make things more consistent is that the <code>Definition -&gt; Scope</code> map doesn't track the scope the node introduces, but the scope in which they are defined. This way, the scope returned is the same for all nodes, which isn't the case today where for functions, it's the function scope and for imports, it's the enclosing scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 19:15</div>
+            <div class="timeline-body"><blockquote>
+<p>On second thought I don't see any issue with adding nice APIs now to get from node to symbol/scope; it'll be useful internally regardless of whether we encourage lint rules to directly use those APIs.</p>
+</blockquote>
+<p>I'll hold off for now until we have a clear use case. We also need to figure out how we can avoid duplicating code just for internal/external API (the <code>ty</code> method takes a <code>SemanticModel</code>, which we don't really have internally).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-21 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 19:16</div>
+            <div class="timeline-body"><p>I don't understand. We don't have types in the symbol table at all. I'm not clear where the foot gun or filtering worry is.</p>
+<p>I explained above why we must have symbols in the symbol table if used in that scope, whether defined in that scope or not.</p>
+<p>If you want to leave this PR this way that's ok, I'll just have to revert this change again in the PR that adds control flow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:44 on 2024-06-21 19:17</div>
+            <div class="timeline-body"><p>I don't mind it too much. One thing I think would be worth exploring is if it's possible to add a <code>tracing</code> feature to <code>salsa-macros</code> or change the macro so that it applies other attributes correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:96 on 2024-06-21 19:20</div>
+            <div class="timeline-body"><p>I think that's different. It maps from <code>Function -&gt; Scope</code>. But <code>Scope.definitions</code> and <code>Scope.defining_symbol</code> map in the other direction. It's the equivalent of the <code>expression -&gt; Scope</code> mapping but for <code>NodeWithScope</code> (or later, definitions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-21 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 19:28</div>
+            <div class="timeline-body"><p>What I'm concerned about is that all call-sites of <code>symbol_table.symbol_by_name</code> will have to check whether the returned symbol is actually defined in that scope. I find it rather unexpected to find symbols in a scope that are inherited from the parent and it seems like an easy source for bugs.</p>
+<p>I'm okay patching this up in the call site, but how do we avoid that we don't have to do this in multiple places. For example, how can we avoid that we don't need to do it in the <code>SemanticNode::symbol</code> implementation of <code>ExprName</code> and in the type inference code? I guess one solution is to just implement it on <code>ExprName</code>, but it is then important that we only use that method too perform the lookup making it even more important that we don't expose <code>symbol_table</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-21 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 20:22</div>
+            <div class="timeline-body"><p>The symbol in the inner scope is a separate symbol from the symbol in the outer scope. In some cases one of a symbol's definitions may refer to the corresponding symbol in the outer scope, but this will be correctly reflected in the definitions; we'll have a <code>Definition:Nonlocal</code> or similar at the start of control flow of the inner scope, whose type is resolved by looking at the public type of the corresponding symbol in the outer scope.</p>
+<p>This precisely maps to how free variables are handled in the runtime: the two scopes have separate symbols of the same name, with separate local variable storage in the frame for each scope. At the start of the inner frame the local variable storage for a free variable is populated with a &quot;cell&quot; containing the value from the outer scope.</p>
+<p>So I don't think it's correct to assume that callers even <em>should</em> do the filtering you're describing, or that it will be a bug if they don't do it; it depends entirely on why the caller is asking for a symbol. Symbols exist in a scope, and if the caller asks for the symbol in scope X, they should get that symbol, not the one in some other outer scope. If the caller then wants to know where the symbol's value might have been defined, they should use Definitions to discover that, and Definitions will give them the right answer, possibly via <code>Definition::Nonlocal</code>. (But in most cases, the caller shouldn't be worrying about this at all, they should just ask for the type of the symbol, and type inference will already have handled the definitions lookup for them.)</p>
+<p>Even in type inference name lookup, the filtering we are discussing adding there is only a temporary hack to make the lint rule work until we add control flow. Once we have control flow, even type inference won't do the filtering (or the walking up scopes that you currently do) when inferring the type of an <code>ExprName</code>; it will just look for the reachable definition(s) in the local scope, one of which might be <code>Definition::Nonlocal</code>, and resolve the types of those definitions appropriately.</p>
+<p>If you have a specific use case for <code>Node::symbol</code> in mind that you are worried might do the wrong thing for free variables, we can discuss how to avoid that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-21 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-21 21:00</div>
+            <div class="timeline-body"><p>Another way of framing this: Python's name lookup rules are inherently quite complex (e.g. with <code>nonlocal</code>, <code>global</code>, the special rules about class scopes and annotation scopes, etc). Regardless of how we handle this particular case of free variables, we can't get rid of this complexity.</p>
+<p>One way of handling this, which is the direction you're headed in with this change, is to embed all of these name lookup rules inside how we build the symbol table itself. But this still means we have to duplicate this logic both in the symbol table builder and in every user of it. In this PR, the scope-walking is now duplicated both here and in type inference, and it has the same bugs regarding class and annotation scopes in both places, that would now have to be fixed separately in both places. So if we have multiple callers needing to do name lookup, this approach doesn't avoid duplication of the logic, it just adds one additional place (the symbol table builder) where the same logic has to exist.</p>
+<p>This approach also has trouble with <code>nonlocal</code> or <code>global</code> symbols that are defined both in the inner and outer scope; we can't treat these as just a single symbol, without ignoring the definition(s) in the inner scope, or else having outer scopes depend on inner ones, and if we treat them as two separate symbols, then we are right back to needing <code>Definition::Nonlocal</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lib.rs</code>:6 on 2024-06-22 16:54</div>
+            <div class="timeline-body"><p>I think part of it is RustRover's import formating (that organizes imports into group) and only then rustfmt that sorts the imports per group</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:96 on 2024-06-22 16:56</div>
+            <div class="timeline-body"><p>You're right. I removed <code>definition</code> and <code>defining_symbol</code> as they're currently unused. I also removed the extra <code>IndexVec</code> and added a <code>node</code> field on <code>scope</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:115 on 2024-06-22 16:57</div>
+            <div class="timeline-body"><p>Yeah, it's a bit annoying but not much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-22 16:58</div>
+            <div class="timeline-body"><p>I changed it. I'm still hesitant about creating symbol table entries for symbols that don't exist in that scope (and I think that's different from <code>nonlocal</code> because we would create a local symbol in that case). But we can discuss it in detail when you implement <code>nonlocal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-22 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:152 on 2024-06-22 17:02</div>
+            <div class="timeline-body"><p>I don't think the enclosing scope alone is enough information to find the correct inner scope if there are eg multiple classes with the same name defined in a scope. I think in the end we may want to track both separately for the cases where each can be relevant.</p>
+<p>Given that we already track enclosing-scope for expressions, which are much more numerous than function or class defs, it doesn't seem like it would add much at all in terms of overall storage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-22 17:08</div>
+            <div class="timeline-body"><p>Another example where I think we need the filtering. <code>public_symbol</code></p>
+<p>https://github.com/astral-sh/ruff/blob/085c33d48914db75e9010d86f03ffdabf2898151/crates/red_knot_python_semantic/src/semantic_index.rs#L61-L70</p>
+<p>It currently returns <code>Some</code> when looking up <code>x</code> in</p>
+<pre><code class="language-python">print(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-22 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:152 on 2024-06-22 17:21</div>
+            <div class="timeline-body"><p>I agree that it wouldn't add much. But performance dies by 100 cuts. It's an extra allocation for file and it requires writing extra data. That's not much, but also not nothing. I would like to avoid tracking redundant that where we can and I think here we can avoid it, by doing some simple traversal. I don't expect this code to get spread out over the entire code base. So handling type params here seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-22 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:141 on 2024-06-22 17:31</div>
+            <div class="timeline-body"><p>There's no need for filtering there. It's fine if the symbol returns Some, and its only definition in that scope is unbound. We have to handle the possibility of unbound regardless, so this doesn't introduce any new problem or case to handle.</p>
+<p>In the public symbols case it would be fine either way; in most typical lookups of names used within the scope, it will be simpler if we only have to handle a definition of Unbound or Nonlocal, rather than having to handle both that case and &quot;symbol doesn't exist&quot; (in the same way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-06-24 13:39</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-01 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-01 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-01 12:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

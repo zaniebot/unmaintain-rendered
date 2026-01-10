@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add cycle-free while-loop control flow - astral-sh/ruff #12413</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add cycle-free while-loop control flow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12413">#12413</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-07-19 23:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-07-19 23:31</div>
+            <div class="timeline-body"><p>Add support for while-loop control flow.</p>
+<p>This doesn't yet include general support for terminals and reachability; that is wider than just while loops and belongs in its own PR.</p>
+<p>This also doesn't yet add support for cyclic definitions in loops; that comes with enough of its own complexity in Salsa that I want to handle it separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-07-19 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-07-19 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-19 23:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-07-20 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:449 on 2024-07-20 10:08</div>
+            <div class="timeline-body"><p>Nit: Some grouping of the statements could help readability</p>
+<pre><code class="language-suggestion">                self.visit_expr(&amp;node.test);
+                
+                let pre_loop = self.flow_snapshot();
+                let mut break_states: Vec&lt;FlowSnapshot&gt; = vec![];
+                std::mem::swap(&amp;mut self.loop_break_states, &amp;mut break_states);
+                self.visit_body(&amp;node.body);
+                std::mem::swap(&amp;mut self.loop_break_states, &amp;mut break_states);
+                self.flow_merge(&amp;pre_loop);
+                
+                self.visit_body(&amp;node.orelse);
+                for break_state in break_states {
+                    self.flow_merge(&amp;break_state);
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:431 on 2024-07-20 10:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let mut break_states: Vec&lt;FlowSnapshot&gt; = std::mem::take(&amp;mut self.loop_break_states);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:449 on 2024-07-20 10:13</div>
+            <div class="timeline-body"><p>The break state logic is a bit confusing. I think that's to some extend because we reuse the same name</p>
+<pre><code class="language-suggestion">								// Saved break states from any outer loop
+                let mut saved_break_states = std::mem::take(&amp;mut self.loop_break_states);
+                self.visit_body(&amp;node.body);
+                let break_states = std::mem::replace(&amp;mut self.loop_break_states, saved_break_states);
+								for break_state in break_states {
+                    self.flow_merge(&amp;break_state);
+                }
+
+                self.flow_merge(&amp;pre_loop);
+                self.visit_body(&amp;node.orelse);
+</code></pre>
+<p>I'm not sure if the ordering of the merges matters. If not, then I think having the merging of the break states (which are related to the for body) closer to <code>visit_body</code> helps understanding the flow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-20 10:14</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>Would you mind extending our benchmarks fist to include a loop and then rebase this PR on top of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-20 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:449 on 2024-07-20 13:47</div>
+            <div class="timeline-body"><p>Ah, that is nicer, thanks!</p>
+<p>The ordering of the merges does matter (relative to visiting the <code>else</code>). The <code>else</code> block cannot see the break states, because breaking out of a loop bypasses the <code>else</code> clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-22 21:23</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm/while">CodSpeed Performance Report</a></h2>
+<h3>Merging #12413 will <strong>improve performances by 4.26%</strong></h3>
+<p><sub>Comparing <code>cjm/while</code> (e4813e8) with <code>main</code> (dbbe352)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 32</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>cjm/while</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>lexer[numpy/globals.py]</code> | 30.4 µs | 29.2 µs | +4.26% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-07-22 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-07-22 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-22 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

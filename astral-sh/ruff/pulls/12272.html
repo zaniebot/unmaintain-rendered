@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add more stress tests for module resolver invalidation - astral-sh/ruff #12272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add more stress tests for module resolver invalidation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12272">#12272</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-10 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-10 11:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a stress test to the module resolver to check that adding and removing files at various points in the module-resolution heirarchy invalidates the Salsa cache.</p>
+<p>~~The test currently fails. Deleting the first-party and stdlib functools modules should invalidate the cache, meaning that functools now resolves to the functools module in site-packages. That's not the case, however: after deleting those two files, the module resolver appears to still be resolving the module to the deleted src/functools.py file.~~</p>
+<p>~~I've tried to look into what might be causing this, but I haven't had any luck in figuring it out. Curious if @MichaReiser or @carljm have any ideas :/~~</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_module_resolver</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-07-10 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-07-10 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-10 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-10 11:53</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/module-resolver-salsa-bug">CodSpeed Performance Report</a></h2>
+<h3>Merging #12272 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>module-resolver-salsa-bug</code> (2f8e0ea) with <code>module-resolver-salsa-bug</code> (787f857)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1074 on 2024-07-10 12:02</div>
+            <div class="timeline-body"><p>Any <code>memory_file_system</code> operations don't go through salsa. In this case, salsa doesn't know that you deleted the files. We have to tell it that the files changed on the file system.</p>
+<p>In the CLI, a file watcher will take care of this, in tests, at least for now, we have to do this manually by either using <code>file.touch(db)</code> or <code>File::touch_path(db, path)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-10 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1074 on 2024-07-10 12:03</div>
+            <div class="timeline-body"><p>🤦 of course. I was looking for places where I was using the file-system APIs in the module resolver instead of going through Salsa, but I obviously need to do the same in the test as well...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Failing test to illustrate Salsa invalidation bug in module resolver" to "[red-knot] Add a stress test for module resolver invalidation" by @AlexWaygood on 2024-07-10 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-10 12:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1052 on 2024-07-10 12:37</div>
+            <div class="timeline-body"><p>The assertion here are good, but they don't assert that the query isn't re-executed.</p>
+<p>There are some helpers that allow you to verify if a query did execute again (you might have to move them) that you can call in addition to the assertions you already have.</p>
+<p>https://github.com/astral-sh/ruff/blob/ac04380f360b1fca84435fbbf3154f61e551a871/crates/red_knot_python_semantic/src/types.rs#L388-L393</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1063 on 2024-07-10 12:38</div>
+            <div class="timeline-body"><p>It could make sense to split each of these blocks (cases) into its own tests. But I don't feel strongly about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1075 on 2024-07-10 12:39</div>
+            <div class="timeline-body"><p>You can use <code>write_file</code> here</p>
+<pre><code class="language-suggestion">        db.write_file(&amp;stdlib_versions_path, &quot;&quot;)
+            .unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-10 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-10 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1052 on 2024-07-10 12:42</div>
+            <div class="timeline-body"><p>Hmm, where would you move these to? <code>ruff_db</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1052 on 2024-07-10 12:44</div>
+            <div class="timeline-body"><p>Probably yes. Let's hope they never depend on the specific DB type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1055 on 2024-07-10 13:19</div>
+            <div class="timeline-body"><p>@MichaReiser am I doing this right? It... doesn't pass for me locally, but I'm not sure if that's because there's a bug in the module resolver or (probably more likely?) I'm using the test function incorrectly...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-10 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1055 on 2024-07-10 13:33</div>
+            <div class="timeline-body"><p>You want to call <code>db.clear_salsa_events</code> before starting the mutations to remove the events from the previous computation.</p>
+<p>You also want to move the assertion after your new <code>resolve_module</code> call (that should be cached).</p>
+<p>Another way to think about it:</p>
+<ul>
+<li>Clear the events that you're not interested in. That's mainly the events from creating a &quot;warm&quot; salsa cache</li>
+<li>Execute whatever query you want to assert if it gets executed (or not)</li>
+<li>Call the assertion method to verify that the query was executed, or not</li>
+</ul>
+<pre><code class="language-rust">				// Adding a file to site-packages does not invalidate the query,
+        // since site-packages takes lower priority in the module resolution...
+        let site_packages_functools_path = site_packages.join(&quot;functools.py&quot;);
+        db.write_file(&amp;site_packages_functools_path, &quot;f: int&quot;)
+            .unwrap();
+				db.clear_salsa_events();
+	        
+				let functools_module = resolve_module(&amp;db, functools_module_name.clone()).unwrap();
+        assert_eq!(functools_module.search_path(), stdlib);
+        assert_eq!(
+            Some(functools_module.file()),
+            system_path_to_file(&amp;db, &amp;stdlib_functools_path)
+        );
+
+        let events = db.take_salsa_events();
+        assert_will_not_run_function_query::&lt;resolve_module_query, _, _&gt;(
+            &amp;db,
+            |res| &amp;res.function,
+            &amp;ModuleNameIngredient::new(&amp;db, functools_module_name.clone()),
+            &amp;events,
+        );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-10 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1055 on 2024-07-10 13:37</div>
+            <div class="timeline-body"><p>I see. Is it then worth renaming the test function from <code>assert_will_run_function_query()</code> to <code>assert_function_query_was_not_run()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-10 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1055 on 2024-07-10 13:45</div>
+            <div class="timeline-body"><p>Yeah, I think using past tense in the function name makes sense. I should have thought more about it but I was just happy when the generic madness finally compiled :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-10 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:1063 on 2024-07-10 14:00</div>
+            <div class="timeline-body"><p>At this stage, I guess I agree, it's quite a monster now 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add a stress test for module resolver invalidation" to "[red-knot] Add more stress tests for module resolver invalidation" by @AlexWaygood on 2024-07-10 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-07-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-10 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

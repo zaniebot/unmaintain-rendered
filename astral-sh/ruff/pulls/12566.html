@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Durability to 'HIGH' for most inputs and third-party libraries - astral-sh/ruff #12566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set Durability to 'HIGH' for most inputs and third-party libraries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12566">#12566</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-29 13:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-29 13:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Salsa supports inputs with different durability levels. Inputs with lower durability are more likely to change. Using higher durability levels allows Salsa to short-circuit the query validation if a query only depends on inputs with high durability and no high durability input has changed.</p>
+<ul>
+<li><code>Files</code>: Files from third-party dependencies or the vendored file system have a high durability</li>
+<li><code>FileRoot</code>s have a high durability</li>
+<li><code>Workspace</code>, <code>Package</code> have MEDIUM durability</li>
+<li><code>Program</code> has a high durability</li>
+</ul>
+<p>This PR only mitigates the cost for validating derived queries for unchanged inputs. The underlying problem that validating the <em>green</em> queries is &quot;expensive&quot; remains.</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/12323</p>
+<h2><code>Files</code> changes</h2>
+<p>I noticed that we should only call salsa setters if the input value has changed. We otherwise unnecessarily invalidate all queries depending on that input. However, fixing this revealed that the module resolver relied on this incorrect behavior.</p>
+<p>This PR fixes the module resolver to not use <code>system().is_directory</code> which by-passes the salsa invalidation. I instead changed <code>system_path_to_file</code> from returning an <code>Option</code> to returning a <code>Result</code>. The <code>is_directory</code> check can then be written by asserting that <code>system_path_to_file</code> returns <code>Err(IsADirectory)</code>.</p>
+<h2>Testing</h2>
+<p>The Salsa API currently doesn't expose enough information to automatically verify whether a query validation is short-circuited or not. But I take the codspeed improvement and that all tests still pass as verification enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-29 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-29 13:55</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/set-input-durability">CodSpeed Performance Report</a></h2>
+<h3>Merging #12566 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>set-input-durability</code> (6894611) with <code>set-input-durability</code> (20fad6c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-29 13:56</div>
+            <div class="timeline-body"><p>That's exactly the improvement I wanted to see!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 14:02</div>
+            <div class="timeline-body"><p>Lol wow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-29 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:322 on 2024-07-29 14:07</div>
+            <div class="timeline-body"><p>It's somewhat unexpected that Salsa downgrades the durability when setting a new value. I proposed changing the behavior in Salsa but I don't want to block this PR because of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-29 14:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-29 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:212 on 2024-07-29 16:12</div>
+            <div class="timeline-body"><p>Another bug haha! the memory file system never updated the last modified timestamp and the invalidation only worked because salsa never compared if the input actually changed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-07-29 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-29 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-29 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files.rs</code>:29 on 2024-07-29 16:35</div>
+            <div class="timeline-body"><p>Should <code>vendored_path_to_file()</code> also return a <code>Result</code>, for symmetry? Unlike <code>system_path_to_file</code>, we don't have a need right now to distinguish directories from files for vendored files... but the asymmetry between the two functions is a <em>little</em> odd now, IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-07-29 16:45</div>
+            <div class="timeline-body"><p>Nice! This LGTM and I like the change to return a <code>Result</code> from <code>system_path_to_file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace.rs</code>:333 on 2024-07-29 16:51</div>
+            <div class="timeline-body"><p>Is this a correctness requirement or just an optimization?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:414 on 2024-07-29 16:56</div>
+            <div class="timeline-body"><p>It is now possible here that we silence an <code>IsADirectory</code> error and claim it is a <code>NoVersionsFile</code> error -- I guess maybe technically we can argue it's not wrong (if <code>VERSIONS</code> is a directory then there is &quot;no versions file&quot;) -- but it's potentially confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-29 17:06</div>
+            <div class="timeline-body"><p>Looks great! Awesome benchmark results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-29 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:414 on 2024-07-29 17:08</div>
+            <div class="timeline-body"><p>I suppose we could take the opportunity here to give a custom error message if <code>stdlib/VERSIONS</code> is a directory rather than a file, now that we have that information with this refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-29 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:29 on 2024-07-29 17:13</div>
+            <div class="timeline-body"><p>I take another look tomorrow. Overall it feels overkill to return the same type only to get symmetry. Especially because it may also require quiet a bit of boilerplate (or we return more errors than are possible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-29 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:333 on 2024-07-29 17:14</div>
+            <div class="timeline-body"><p>It's an optimization. It avoids bumping the salsa revision and it avoids that <code>PackageFiles</code> is marked as changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-30 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-30 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-30 09:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

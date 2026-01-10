@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Migrate CLI to Salsa - astral-sh/ruff #11972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Migrate CLI to Salsa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11972">#11972</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-21 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-21 16:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR mainly deletes code that is now in one of the downstream crates or has been replaced by Salsa.</p>
+<h2>What's missing</h2>
+<p>The program currently panics when Salsa cancels a pending query. I <a href="https://salsa.zulipchat.com/#narrow/stream/145099-general/topic/How.20to.20use.20.60Cancelled.3A.3Acatch.60">reached out in the Salsa zulip</a> to learn out how to use <code>Cancelled::catch</code> correctly.</p>
+<h2>What I removed</h2>
+<p>I removed the code for scheduling dependencies. Mainly because I'm not sure if it still makes sense to do so:</p>
+<ul>
+<li>The main benefit is that we can load and parse dependencies concurrently. We may still want to do that</li>
+<li>I don't think it makes sense with the new definition-level inference to eagerly schedule type checking of third-party dependencies. We otherwise end up inferring more types than we have to (let's say you only import a single symbol from a dependency, it then doesn't make sense to type the entire file and all it's dependencies, although we might have to)</li>
+<li>I think we want to check all workspace files concurrently, but the current CLI only supports a single file.</li>
+</ul>
+<p>The main downside of not scheduling dependencies anymore is if the user only passes exactly one input file. Ruff might then infer the types of all third-party dependencies and the stdlib on a single thread. This doesn't sound ideal.</p>
+<p>We should revisit the scheduling when working on workspace support.</p>
+<h2>Test Plan</h2>
+<pre><code>[crates/red_knot/src/main.rs:173:21] diagnostics = [
+    &quot;Unresolved import 'Base1'&quot;,
+    &quot;Method A.foo is decorated with `typing.override` but does not override any base class method&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-21 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-02 14:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-03 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:23 on 2024-07-03 13:37</div>
+            <div class="timeline-body"><p>FIXME</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-07-03 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-03 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lib.rs</code>:44 on 2024-07-03 22:06</div>
+            <div class="timeline-body"><p>Pre-existing issue, but this comment looks pretty unrelated to the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-03 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-03 22:19</div>
+            <div class="timeline-body"><p>Some clippy complaints to address before landing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-04 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-04 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-04 07:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

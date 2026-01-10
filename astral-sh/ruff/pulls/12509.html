@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `salsa::report_untracked_read` when finding the dynamic module resolution paths - astral-sh/ruff #12509</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>salsa::report_untracked_read</code> when finding the dynamic module resolution paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12509">#12509</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-25 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-25 14:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR introduces a new <code>FileRoot</code> input ingredient. A file root is a root directory in which we track files.
+The main use case for <code>FileRoot</code> is to use it to determine a file's durability. Files in the <code>Workspace</code> have a <code>LOW</code> durability
+where files on any module search path are probably unlikely to change.</p>
+<p><code>FileRoot</code> also comes with a revision tracks the time when a file was last changed, added, or removed in that directory.
+I use the revision in this PR to make the editable installation paths query dependent on the site-package content, so that
+we no longer need the <code>db.report_untracked_read</code> call</p>
+<h2>Test Plan</h2>
+<p>I updated the test that @AlexWaygood added that shows that the editable paths are correctly re-resolved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-25 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-25 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-25 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:207 on 2024-07-25 14:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let ModuleResolutionSettings { static_search_paths, site_packages_root, .. } = module_resolution_settings(db);
+
+    let site_packages = static_search_paths
+        .iter()
+        .find(|path| path.is_site_packages());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:224 on 2024-07-25 14:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">	let mut dynamic_paths = Vec::new();
+
+    let (Some(site_packages), Some(site_packages_root)) = (site_packages, site_packages_root)
+    else {
+        return dynamic_paths;
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:12 on 2024-07-25 14:29</div>
+            <div class="timeline-body"><p>What's the reason for not doing so for editable-install search paths?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:72 on 2024-07-25 14:31</div>
+            <div class="timeline-body"><p>Maybe we could implement <code>path_slash::PathExt</code> for <code>SystemPathBuf</code> in <code>ruff_db</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-07-25 14:32</div>
+            <div class="timeline-body"><p>Nice! So good to get rid of the <code>report_untracked_read()</code> call</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-25 14:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 19:31</div>
+            <div class="timeline-body"><p>(I rebased your PR on top of my <code>path.rs</code> refactor that's just landed in <code>main</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-25 19:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:72 on 2024-07-25 19:41</div>
+            <div class="timeline-body"><p>I'm open to consider it when it is used more widely 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-25 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:12 on 2024-07-25 19:48</div>
+            <div class="timeline-body"><p>Hmm. Not sure. I think I don't understand them well enough.</p>
+<p>What I understand is that editable installs are for example used to make workspace packages available to other packages. Or to link in any external package that I plan to edit. The first is somewhat problematic because the path overlaps with the package path but we definitely want durability low for first party package files.</p>
+<p>For both cases I think what we want is durability low which will be the default for all files for which we can't find a file root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/files.rs</code>:62 on 2024-07-26 16:25</div>
+            <div class="timeline-body"><p>Can we add a doc comment here explaining what this is and why it's needed, similar to the above attributes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:406 on 2024-07-26 16:26</div>
+            <div class="timeline-body"><p>Can we add a doc comment for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:403 on 2024-07-26 16:26</div>
+            <div class="timeline-body"><p>Orthogonal to this PR, but this comment is confusing to me: where is it &quot;also stored separately&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/files.rs</code>:182 on 2024-07-26 16:27</div>
+            <div class="timeline-body"><p>I don't think the word &quot;routes&quot; makes sense here?</p>
+<pre><code class="language-suggestion">        let roots = inner.roots.read().unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/files.rs</code>:207 on 2024-07-26 16:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let roots = inner.roots.read().unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-26 16:27</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:403 on 2024-07-26 17:21</div>
+            <div class="timeline-body"><p>No idea. @AlexWaygood ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:207 on 2024-07-26 17:21</div>
+            <div class="timeline-body"><p>That's what you get for using Copilot lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-26 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:403 on 2024-07-26 17:31</div>
+            <div class="timeline-body"><p>It's not anymore after Micha refactored the code in https://github.com/astral-sh/ruff/commit/91338ae9021d64ba39d82717d633a510d70649f7 ;-)</p>
+<p>The comment is out of date following that commit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-26 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:403 on 2024-07-26 17:47</div>
+            <div class="timeline-body"><p>Originally in https://github.com/astral-sh/ruff/commit/9a2dafb43d36b62d45a604dea58224a0884cd6e5, the <code>site-packages</code> search path was stored as a separate field on the struct as well as being present in the <code>static_search_paths</code> field; that's what this comment referred to, before the code was refactored</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-29 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:12 on 2024-07-29 09:27</div>
+            <div class="timeline-body"><p>I'm landing this PR as is. I can create roots for editable installs when needed as part of a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-29 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/files/file_root.rs</code>:12 on 2024-07-29 09:29</div>
+            <div class="timeline-body"><p>Yes, fine by me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-29 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-29 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-29 09:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

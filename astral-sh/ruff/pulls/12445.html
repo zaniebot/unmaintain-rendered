@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raise syntax error for unparenthesized generator expr in multi-argument call - astral-sh/ruff #12445</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Raise syntax error for unparenthesized generator expr in multi-argument call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12445">#12445</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-22 03:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-22 03:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug to raise a syntax error when an unparenthesized generator expression is used as an argument to a call when there are more than one argument.</p>
+<p>For reference, the grammar is:</p>
+<pre><code>primary:
+    | ...
+    | primary genexp 
+    | primary '(' [arguments] ')' 
+    | ...
+
+genexp:
+    | '(' ( assignment_expression | expression !':=') for_if_clauses ')' 
+</code></pre>
+<p>The <code>genexp</code> requires the parenthesis as mentioned in the grammar. So, the grammar for a call expression is either a name followed by a generator expression or a name followed by a list of argument. In the former case, the parenthesis are excluded because the generator expression provides them while in the later case, the parenthesis are explicitly provided for a list of arguments which means that the generator expression requires it's own parenthesis.</p>
+<p>This was discovered in https://github.com/astral-sh/ruff/issues/12420.</p>
+<h2>Test Plan</h2>
+<p>Add test cases for valid and invalid syntax.</p>
+<p>Make sure that the parser from CPython also raises this at the parsing step:</p>
+<pre><code class="language-console">$ python3.13 -m ast parser/_.py
+  File &quot;parser/_.py&quot;, line 1
+    total(1, 2, x for x in range(5), 6)
+                ^^^^^^^^^^^^^^^^^^^
+SyntaxError: Generator expression must be parenthesized
+
+$ python3.13 -m ast parser/_.py
+  File &quot;parser/_.py&quot;, line 1
+    sum(x for x in range(10), 10)
+        ^^^^^^^^^^^^^^^^^^^^
+SyntaxError: Generator expression must be parenthesized
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-22 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-22 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-22 04:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_canvaslms.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb:17:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_canvaslms.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb:17:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-22 07:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-22 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-22 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-22 09:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

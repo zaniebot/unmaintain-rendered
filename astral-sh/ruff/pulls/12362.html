@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use fallback settings when indexing the project - astral-sh/ruff #12362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use fallback settings when indexing the project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12362">#12362</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-17 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-17 12:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the settings index building logic in the language server to consider the fallback settings for applying ignore filters in <code>WalkBuilder</code> and the exclusion via <code>exclude</code> / <code>extend-exclude</code>.</p>
+<p>This flow matches the one in the <code>ruff</code> CLI where the root settings is built by (1) finding the workspace setting in the ancestor directory (2) finding the user configuration if that's missing and (3) fallback to using the default configuration.</p>
+<p>Previously, the index building logic was being executed before (2) and (3). This PR reverses the logic so that the exclusion / <code>respect_gitignore</code> is being considered from the default settings if there's no workspace / user settings. This has the benefit that the server no longer enters the <code>.git</code> directory or any other excluded directory when a user opens a file in the home directory.</p>
+<p>Related to #11366</p>
+<h2>Test plan</h2>
+<p>Opened a test file from the home directory and confirmed with the debug trace (removed in #12360) that the server excludes the <code>.git</code> directory when indexing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-07-17 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-17 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-17 13:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-17 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:170 on 2024-07-17 14:36</div>
+            <div class="timeline-body"><p>Are these clones necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:170 on 2024-07-17 15:09</div>
+            <div class="timeline-body"><p>I think these are all <code>Arc&lt;RuffSettings&gt;</code> so this should be cheap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:175 on 2024-07-17 15:11</div>
+            <div class="timeline-body"><p>I'm a bit surprised why we return <code>Continue</code> but the comment at the top says: <em>If the directory is excluded from the workspace, skip it</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-17 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-17 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:170 on 2024-07-17 16:35</div>
+            <div class="timeline-body"><p>Yes, these are all <code>Arc</code>s</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-17 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:170 on 2024-07-17 16:38</div>
+            <div class="timeline-body"><p>It otherwise throws &quot;rustc: temporary value dropped while borrowed&quot; if I use a reference</p>
+<pre><code class="language-rs">                    let settings = index
+                        .read()
+                        .unwrap()
+                        .range(..directory.clone())
+                        .rfind(|(path, _)| directory.starts_with(path))
+                        .map(|(_, settings)| settings)
+                        .unwrap_or(&amp;fallback);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-17 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:175 on 2024-07-17 16:41</div>
+            <div class="timeline-body"><p>Oh my! Good catch. I think I confused <code>Skip</code> with <code>Continue</code> in https://github.com/astral-sh/ruff/pull/12299 🤦‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-17 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-18 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-18 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-18 03:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

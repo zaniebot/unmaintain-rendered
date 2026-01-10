@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Implement basic LSP server - astral-sh/ruff #12624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Implement basic LSP server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12624">#12624</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-02 09:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-02 09:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds basic LSP implementation for the Red Knot project.</p>
+<p>This is basically a fork of the existing <code>ruff_server</code> crate into a <code>red_knot_server</code> crate. The following are the main differences:</p>
+<ol>
+<li>The <code>Session</code> stores a map from workspace root to the corresponding Red Knot database (<code>RootDatabase</code>).</li>
+<li>The database is initialized with the newly implemented <code>LSPSystem</code> (implementation of <code>System</code> trait)</li>
+<li>The <code>LSPSystem</code> contains the server index corresponding to each workspace and an underlying OS system implementation. For certain methods, the system first checks if there's an open document in LSP system and returns the information from that. Otherwise, it falls back to the OS system to get that information. These methods are <code>path_metadata</code>, <code>read_to_string</code> and <code>read_to_notebook</code></li>
+<li>Add <code>as_any_mut</code> method for <code>System</code></li>
+</ol>
+<p><strong>Why fork?</strong></p>
+<p>Forking allows us to experiment with the functionalities that are specific to Red Knot. The architecture is completely different and so the requirements for an LSP implementation are different as well. For example, Red Knot only supports a single workspace, so the LSP system needs to map the multi-workspace support to each Red Knot instance. In the end, the server code isn't too big, it will be easier to implement Red Knot specific functionality without worrying about existing server limitations and it shouldn't be difficult to port the existing server.</p>
+<h2>Review</h2>
+<p>Most of the server files hasn't been changed. I'm going to list down the files that have been changed along with highlight the specific part of the file that's changed from the existing server code.</p>
+<p>Changed files:</p>
+<ul>
+<li>Red Knot CLI implementation: https://github.com/astral-sh/ruff/pull/12624/files#diff-579596339a29d3212a641232e674778c339b446de33b890c7fdad905b5eb50e1</li>
+<li>In https://github.com/astral-sh/ruff/pull/12624/files#diff-b9a9041a8a2bace014bf3687c3ef0512f25e0541f112fad6131b14242f408db6, server capabilities have been updated, dynamic capability registration is removed</li>
+<li>In https://github.com/astral-sh/ruff/pull/12624/files#diff-b9a9041a8a2bace014bf3687c3ef0512f25e0541f112fad6131b14242f408db6, the API for <code>clear_diagnostics</code> now take in a <code>Url</code> instead of <code>DocumentQuery</code> as the document version doesn't matter when clearing diagnostics after a document is closed</li>
+<li><a href="https://github.com/astral-sh/ruff/pull/12624/files#diff-9271370102a6f3be8defaca40c82485b0048731942520b491a3bdd2ee0e25493"><code>did_close</code></a>, <a href="https://github.com/astral-sh/ruff/pull/12624/files#diff-96fb53ffb12c1694356e17313e4bb37b3f0931e887878b5d7c896c19ff60283b"><code>did_close_notebook</code></a>, <a href="https://github.com/astral-sh/ruff/pull/12624/files#diff-60e852cf1aa771e993131cabf98eb4c467963a8328f10eccdb43b3e8f0f1fb12"><code>did_open</code></a>, <a href="https://github.com/astral-sh/ruff/pull/12624/files#diff-ac356eb5e36c3b2c1c135eda9dfbcab5c12574d1cb77c71f7da8dbcfcfb2d2f1"><code>did_open_notebook</code></a> are updated to open / close file from the corresponding Red Knot workspace</li>
+<li>The <a href="https://github.com/astral-sh/ruff/pull/12624/files#diff-4475f318fd0290d0292834569a7df5699debdcc0a453b411b8c3d329f1b879d9">diagnostic handler</a> is updated to request diagnostics from Red Knot</li>
+<li>The [<code>Session::new</code>] method in https://github.com/astral-sh/ruff/pull/12624/files#diff-55c96201296200c1cab37c8b0407b6c733381374b94be7ae50563bfe95264e4d is updated to construct the Red Knot databases for each workspace. It also contains the <code>index_mut</code> and <code>MutIndexGuard</code> implementation</li>
+<li>And, <code>LSPSystem</code> implementation is in https://github.com/astral-sh/ruff/pull/12624/files#diff-4ed62bd359c43b0bf1a13f04349dcd954966934bb8d544de7813f974182b489e</li>
+</ul>
+<h2>Test Plan</h2>
+<p>First, configure VS Code to use the <code>red_knot</code> binary</p>
+<ol>
+<li>Build the <code>red_knot</code> binary by <code>cargo build</code></li>
+<li>Update the VS Code extension to specify the path to this binary</li>
+</ol>
+<pre><code class="language-json">{
+	&quot;ruff.path&quot;: [&quot;/path/to/ruff/target/debug/red_knot&quot;]
+}
+</code></pre>
+<ol start="3">
+<li>Restart VS Code</li>
+</ol>
+<p>Now, open a file containing red-knot specific diagnostics, close the file and validate that diagnostics disappear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-02 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-04 09:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-08-04 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-04 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-04 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-08-04 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:3 on 2024-08-05 08:21</div>
+            <div class="timeline-body"><p>I prefer keeping the version set to <code>0.0.0</code> or <code>0.0.1</code> until we make our first release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server.rs</code>:168 on 2024-08-05 08:25</div>
+            <div class="timeline-body"><p>Would you mind incorporating the changes from https://github.com/astral-sh/ruff/pull/12610</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/session.rs</code>:36 on 2024-08-05 08:26</div>
+            <div class="timeline-body"><p>We may want to add a short comment explaining why this is an option and when it can be <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/session.rs</code>:69 on 2024-08-05 08:27</div>
+            <div class="timeline-body"><p>Do we need a different system for each workspace or could we use a single, shared system for all of them (where <code>LSPSystem</code> itself is cheap cloneable?)</p>
+<p>If so, then we could maybe even store the <code>system</code> on the <code>Session</code> so that we don't need to loop over all workspaces and take the index from each <code>LSPSystem</code>. Instead, we can just take the <code>Index</code> from the system stored on <code>index</code> (which is the one shared with all workspaces.)</p>
+<p>This may even remove the need for <code>system_mut</code> (and <code>as_any_mut</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:34 on 2024-08-05 08:32</div>
+            <div class="timeline-body"><p>Same as for <code>Session</code>. I recommend to add a note when <code>index</code> can be <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:119 on 2024-08-05 08:34</div>
+            <div class="timeline-body"><p>We may want to query the os file system to retrieve the permissions on disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:132 on 2024-08-05 08:37</div>
+            <div class="timeline-body"><p>This block seems a bit repetitive. I think I would change <code>system_path_to_document_ref</code> to return <code>Result&lt;Option&gt;</code>. So that this can be simplified to</p>
+<pre><code class="language-rust">let document = self.system_path_to_document_ref(path)?; 
+
+if let Some(document) = document {
+    if let DocumentQuery::Text { document, .. } = &amp;document {
+        Ok(documents.contents().to_string())
+    } else {
+        Err(...)
+    }
+} else {
+    self.os_system.read_to_string(path)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:144 on 2024-08-05 08:39</div>
+            <div class="timeline-body"><p>What's the motivation of erroring out when the document is a notebook? We would have to mention it in the <code>System</code> contract if calling <code>read_to_string</code> isn't allowed for notebooks).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:155 on 2024-08-05 08:40</div>
+            <div class="timeline-body"><p>Nit: Maybe move the cast to a function so that you only have to document the &quot;safety&quot; once</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:160 on 2024-08-05 08:43</div>
+            <div class="timeline-body"><p>Similar to <code>read_to_string</code>. What if a file does have the <code>ipynb</code> extension but the editor (e.g. neovim) didn't open it as a notebook? I think we should just fall back to calling <code>Notebook::from_source_code</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/lib.rs</code>:24 on 2024-08-05 08:43</div>
+            <div class="timeline-body"><p>Use the red knot or the server crate version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/session/settings.rs</code>:34 on 2024-08-05 08:45</div>
+            <div class="timeline-body"><p>I'm not sure if we should remove the <code>lint</code> and <code>format</code> settings for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/session/index.rs</code>:26 on 2024-08-05 08:48</div>
+            <div class="timeline-body"><p>We probably have to re-work how settings work because we need to pass them somehow to red knot. I'm leaning towards removing most/all setting support for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/requests/diagnostic.rs</code>:53 on 2024-08-05 08:53</div>
+            <div class="timeline-body"><p>I would prefer if the logic to go from <code>url</code> to <code>file</code> is hidden a way. Maybe a method on <code>snapshot.file()</code>?</p>
+<p>We may even want to store the <code>File</code> alongside with the document to avoid unnecessary <code>system_path_to_file</code> calls.</p>
+<p>Overall, calling <code>system_path_to_file</code> (or any other method not exposed on <code>db</code>) is &quot;dangerous&quot; becaues they may panic at any point when the database gets mutated. That's why we should avoid calling into any methods not exposed on <code>RootDatabase</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot/Cargo.toml</code>:3 on 2024-08-05 08:53</div>
+            <div class="timeline-body"><p>The only reason I added this was to simplify the VS Code setup because it wouldn't start the server unless it's 0.3.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open_notebook.rs</code>:45 on 2024-08-05 08:58</div>
+            <div class="timeline-body"><p>We only need to call <code>open_file</code> if you want that <code>workspace.check</code> only checks the open files and not all files in the workspace.</p>
+<p>This method can also possibiliy panic if another thread calls <code>get_mut</code> first. I guess that's &quot;impossible&quot; because <code>open_notebook_document</code> already aquires a lock on <code>Db</code>, but that's rather subtle. I'm leaning towards removing this call for now. We probably want to add a <code>RootDatabase.open_path</code> method or similar long term (and maybe this should happen in <code>open_notebook_dcument</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open.rs</code>:37 on 2024-08-05 08:58</div>
+            <div class="timeline-body"><p>Same as for <code>did_open_notebook</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close.rs</code>:40 on 2024-08-05 08:59</div>
+            <div class="timeline-body"><p>Same as for <code>did_open_notebook</code>. I would remove this for now.</p>
+<p>Do we need to inform the <code>RootDatabase</code> that the file migt have changed? E.g. in the case where there are unsaved changes that get discarded?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 09:03</div>
+            <div class="timeline-body"><p>This overall looks great. We may not have to add <code>system_mut</code> after all. I added an inline comment for that.</p>
+<p>The other two things that we have to figure out are but I would recommend removing for now:</p>
+<ul>
+<li>Settings</li>
+<li>API exposed to the LSP: Calling <code>system_path_to_file</code> can panic if any other thread calls <code>Handle::get_mut</code>. I think the LSP should instead use a facade with a limited set of queries that wrapps the queries in <code>RootDatabase::with_db</code>, similar to rust analyzer. Any queries not exposed on the facade should be considered internal.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:3 on 2024-08-05 09:04</div>
+            <div class="timeline-body"><p>Hmm, can we change the extension to skip the check if the binary's name is red_knot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot/Cargo.toml</code>:3 on 2024-08-05 11:56</div>
+            <div class="timeline-body"><p>Can do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/session.rs</code>:69 on 2024-08-05 12:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need a different system for each workspace or could we use a single, shared system for all of them (where <code>LSPSystem</code> itself is cheap cloneable?)</p>
+</blockquote>
+<p>Just to confirm, you mean just the system and not the root database as a whole, right?</p>
+<p>I think that should be possible, we already use a global index to store the open documents from all workspaces. This would mean that we store the <code>Index</code> inside the <code>LSPSystem</code> itself and both the <code>Session</code> and <code>RootDatabase</code> accesses this instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/system.rs</code>:132 on 2024-08-05 12:40</div>
+            <div class="timeline-body"><p>I'm not sure how this could work because <code>system_path_to_document_ref</code> could give two errors, (1) invalid input because system path to url conversion failed or (2) no document exists for the url. We should only fall back to the OS system in case it's (2).</p>
+<p>If we convert <code>system_path_to_document_ref</code> to return an <code>Option</code>, then we can't tell the difference between the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/system.rs</code>:144 on 2024-08-05 12:47</div>
+            <div class="timeline-body"><p>I think my main motivation was coming from my understanding of <code>read_to_string</code> where I thought it's the caller's responsibility to make sure that this function is used to only read a Python file and not a Notebook file. I think that might be incorrect. We might have to serialize the notebook to a JSON string in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/session.rs</code>:69 on 2024-08-05 12:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Just to confirm, you mean just the system and not the root database as a whole, right?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>This would mean that we store the Index inside the LSPSystem itself and both the Session and RootDatabase accesses this instead.</p>
+</blockquote>
+<p>That makes sense. It makes me wonder if we could implement <code>System</code> on <code>Index</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:132 on 2024-08-05 12:48</div>
+            <div class="timeline-body"><p>Sorry. I missed the second ` in the first sentence and it resulted in the sentence being truncated. I would return a <code>Result&lt;Option&lt;Document&gt;&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/system.rs</code>:160 on 2024-08-05 12:50</div>
+            <div class="timeline-body"><p>Yeah, I think this makes sense in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/lib.rs</code>:24 on 2024-08-05 12:52</div>
+            <div class="timeline-body"><p>Going with the server crate version as <code>red_knot</code> is now a CLI crate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/session.rs</code>:69 on 2024-08-05 12:55</div>
+            <div class="timeline-body"><blockquote>
+<p>It makes me wonder if we could implement <code>System</code> on <code>Index</code> instead.</p>
+</blockquote>
+<p>This is partly the reason the current solution exists. If we implement <code>System</code> on <code>Index</code>, we need to use an <code>Arc</code> here because it needs to exists on both the <code>RootDatabase</code> and <code>Session</code>. Otherwise we'll need to find a way to access <code>Index</code> from <code>RootDatabase</code> (not ideal). And, <code>Arc</code> would basically mean that we'd need the <code>MutIndexGuard</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/system.rs</code>:132 on 2024-08-05 12:56</div>
+            <div class="timeline-body"><p>Oh, I see. Yeah, that could work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/system.rs</code>:119 on 2024-08-05 13:05</div>
+            <div class="timeline-body"><p>I guess it depends on how are the permissions being utilized? I don't see any usages currently. I think one potential use-case from an editor perspective would be to re-check the file when the permission is changed but the content remains the same. Is that so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/session/settings.rs</code>:34 on 2024-08-05 13:06</div>
+            <div class="timeline-body"><p>(I'm assuming that this is inline with your other comment about settings.)</p>
+<p>Why so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-06 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/system.rs</code>:119 on 2024-08-06 06:15</div>
+            <div class="timeline-body"><p>There's no immediate use case for it anymore now that we have shifted towards building a type checker. The only use we have for permissions are the permission-lints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-06 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/session/index.rs</code>:26 on 2024-08-06 08:40</div>
+            <div class="timeline-body"><p>I've removed all settings except for the tracing related ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close.rs</code>:40 on 2024-08-06 08:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need to inform the <code>RootDatabase</code> that the file migt have changed? E.g. in the case where there are unsaved changes that get discarded?</p>
+</blockquote>
+<p>Yeah, that's a good point. I just checked how VS Code sends requests in these cases. In either cases of the following cases, VS Code will first send in a didChange request, refresh the diagnostics and then send a close request:</p>
+<ul>
+<li>Close an edited file by having auto-save on</li>
+<li>Close an edited file with auto-save off and discarding the changes</li>
+</ul>
+<p>I think these will be handled in the didChange notification handler in the future and shouldn't be in the didClose handler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-06 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2024-08-06 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-06 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open_notebook.rs</code>:45 on 2024-08-06 09:24</div>
+            <div class="timeline-body"><p>Actually, it seems that the <code>check_file</code> method doesn't provide any diagnostics without the open / close logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-06 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot/Cargo.toml</code>:3 on 2024-08-06 10:11</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff-vscode/pull/572</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-06 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open_notebook.rs</code>:45 on 2024-08-06 10:15</div>
+            <div class="timeline-body"><p>This is fixed in https://github.com/astral-sh/ruff/pull/12624/commits/df7ad478fecf8e5f8b1347069c690a1c4617124a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-06 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-06 10:36</div>
+            <div class="timeline-body"><p>I'll add a basic support for non-workspace files in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close_notebook.rs</code>:28 on 2024-08-06 11:05</div>
+            <div class="timeline-body"><p>Should we use the same code here as in the <code>didClose</code> handler?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open.rs</code>:35 on 2024-08-06 11:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let file = system_path_to_file(&amp;**db, &amp;path).unwrap();
+            file.sync(db.get_mut(), &amp;path);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open_notebook.rs</code>:37 on 2024-08-06 11:06</div>
+            <div class="timeline-body"><p>Should we use the same code here as in <code>didOpen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-06 11:08</div>
+            <div class="timeline-body"><p>Awesome. This looks great!</p>
+<p>If you can find the time, it would be great to have a follow up PR to store the file on <code>DocumentController</code> rather than looking it everytime we call <code>check_file</code> (or in close etc).</p>
+<p>We should also add a TODO that the LSP shouldn't use any queries and instead should only use methods exposed on <code>RootDatabase</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-08-06 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-06 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-06 11:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

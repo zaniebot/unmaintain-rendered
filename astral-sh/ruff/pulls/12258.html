@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use more threads when discovering python files - astral-sh/ruff #12258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use more threads when discovering python files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12258">#12258</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-09 12:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-09 12:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>ignore</code> crates defaults to two threads when using <code>build_parallel</code>. This PR adopts a simplified heuristic from ripgrep to get a &quot;good&quot; number of threads to use. This gives me on my machine a 25% boost when checking an already cached project.</p>
+<p>I also refactored the visitor to use a custom visitor builder.
+That allows us to push to local <code>Vec</code> and only merging them when the visitor gets dropped.
+I hoped for a more significant speedup than 0-1%. I don't mind reverting that change.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>ruff-main</code>: Baseline of this PR</li>
+<li><code>ruff</code>: This PR</li>
+<li><code>ruff-fn</code>: This PR but without using a custom visitor builder</li>
+</ul>
+<pre><code>❯ hyperfine --warmup 10 \
+        &quot;./target/release/ruff-main check ./crates/ruff_linter/resources/test/cpython/ -e -s&quot; \
+        &quot;./target/release/ruff check ./crates/ruff_linter/resources/test/cpython/ -e -s&quot; \
+       &quot;./target/release/ruff-fn check ./crates/ruff_linter/resources/test/cpython/ -e -s&quot;
+Benchmark 1: ./target/release/ruff-main check ./crates/ruff_linter/resources/test/cpython/ -e -s
+  Time (mean ± σ):      26.2 ms ±   1.1 ms    [User: 29.2 ms, System: 43.9 ms]
+  Range (min … max):    23.5 ms …  28.4 ms    109 runs
+ 
+Benchmark 2: ./target/release/ruff check ./crates/ruff_linter/resources/test/cpython/ -e -s
+  Time (mean ± σ):      21.2 ms ±   1.0 ms    [User: 37.7 ms, System: 58.7 ms]
+  Range (min … max):    18.4 ms …  24.6 ms    130 runs
+ 
+Benchmark 3: ./target/release/ruff-fn check ./crates/ruff_linter/resources/test/cpython/ -e -s
+  Time (mean ± σ):      21.4 ms ±   0.9 ms    [User: 38.3 ms, System: 58.3 ms]
+  Range (min … max):    19.3 ms …  24.4 ms    129 runs
+ 
+Summary
+  ./target/release/ruff check ./crates/ruff_linter/resources/test/cpython/ -e -s ran
+    1.01 ± 0.06 times faster than ./target/release/ruff-fn check ./crates/ruff_linter/resources/test/cpython/ -e -s
+    1.24 ± 0.08 times faster than ./target/release/ruff-main check ./crates/ruff_linter/resources/test/cpython/ -e -s
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-09 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-09 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-07-09 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:387 on 2024-07-09 12:57</div>
+            <div class="timeline-body"><p>New default for the number of threads</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-09 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-09 13:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-09 15:50</div>
+            <div class="timeline-body"><p>Sweet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-10 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-10 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-10 07:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

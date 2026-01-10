@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix NFKC normalization bug when removing unused imports - astral-sh/ruff #12571</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix NFKC normalization bug when removing unused imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12571">#12571</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-29 18:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-29 18:35</div>
+            <div class="timeline-body"><p>Fixes #12570.</p>
+<h2>Summary</h2>
+<p>Our lexer eagerly applies NFKC normalization to NKFC-confusable unicode characters; this is done to match Python's semantics at runtime, where the interpreter views these characters as the same. When removing unused imports, however, we use <code>libCST</code>, which doesn't apply the same normalization (it would be incorrect for <code>libCST</code> to do so, since it's a CST rather than an AST). This can lead to a <code>QualifiedName</code> constructed from a <code>libCST</code> node not comparing equal to a <code>QualifiedName</code> constructed from a <code>ruff_python_ast</code> node that represents the same sapn of source code as the <code>libCST</code> node. The difference here between the two parsers is the root cause of #12570.</p>
+<p>This PR therefore takes care to apply NFKC normalization when constructing <code>QualifiedName</code>s from <code>libCST</code> nodes, so that these <code>QualifiedName</code>s are always comparable to <code>QualifiedName</code>s constructed from <code>ruff_python_ast</code> nodes.</p>
+<h2>Test plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-29 18:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-07-29 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-29 19:38</div>
+            <div class="timeline-body"><p>Thanks for looking into this bug. This looks interesting.</p>
+<p>It would help me review if you could update the summary and include a short summary of what the issue was/how this PR fixes the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-29 19:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for looking into this bug. This looks interesting.</p>
+<p>It would help me review if you could update the summary and include a short summary of what the issue was/how this PR fixes the issue.</p>
+</blockquote>
+<p>Sorry, my bad. I provided an analysis of the bug in the issue, but forgot to copy it over in the PR summary. I'll do so first thing tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/fix/codemods.rs</code>:201 on 2024-07-30 06:20</div>
+            <div class="timeline-body"><p>What's the motivation for nesting these functions? Seems a fairly unrelated change and it took me quiet a bit to figure out <strong>what</strong> changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-30 06:21</div>
+            <div class="timeline-body"><p>If I understand the change correctly, the issue is that libCST doesn't perform nfkc normalization. Is that correct?</p>
+<blockquote>
+<p>Sorry, my bad. I provided an analysis of the bug in the issue, but forgot to copy it over in the PR summary. I'll do so first thing tomorrow.</p>
+</blockquote>
+<p>Linking to the analysis from the issue in the comment should be sufficient. I only want to avoid that we merge the PR with a stale summary (commit message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-30 09:22</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand the change correctly, the issue is that libCST doesn't perform nfkc normalization. Is that correct?</p>
+</blockquote>
+<p>Yup, that's correct. Our lexer eagerly performs NFKC normalization to match Python's semantics, whereas libCST's lexer leaves NFKC confusables untouched. I don't think that's a bug in libCST, since it's a CST rather than an AST; but it is a difference that we need to account for when building <code>QualifiedName</code>s from <code>libCST</code> trees, since a <code>QualifiedName</code> represents semantic information, and a <code>QualifiedName</code> built from a <code>libCST</code> node should be comparable with a <code>QualifiedName</code> built from a <code>ruff_python_ast</code> node that's built from the same source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-30 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/fix/codemods.rs</code>:201 on 2024-07-30 09:29</div>
+            <div class="timeline-body"><p>Sorry again for taking this out of draft mode before I had written a PR summary. The motivation here is that the <code>UnqualifiedName</code> produced by <code>unqualified_name_from_expression</code> should also strictly-speaking be NFKC-normalized before it's safe to be used elsewhere and potentially compared to other <code>UnqualifiedName</code>s; the same applies for the segments collected by <code>collect_segments()</code>. Currently we only use these functions from the <code>qualified_name_from_name_or_attribute()</code>, so I think it's okay (and <em>probably</em> more efficient? it allocates...) to just do a single NKFC normalization pass at the end of <code>qualified_name_from_name_or_attribute()</code>, <em>as long as</em> we enforce that <code>unqualified_name_from_expression()</code> and <code>collect_segments()</code> can't be called from other functions.</p>
+<p>Does that make sense? I suppose I should probably add a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-30 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/fix/codemods.rs</code>:201 on 2024-07-30 09:39</div>
+            <div class="timeline-body"><p>Kind of. I'm not that concerned because the functions are private anyway. But I don't feel strongly about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-30 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/fix/codemods.rs</code>:201 on 2024-07-30 09:40</div>
+            <div class="timeline-body"><p>Yeah, I was mostly concerned that other functions in this file might start using them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-07-30 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-07-30 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-07-30 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-30 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-30 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-30 09:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/f401-bug-2">CodSpeed Performance Report</a></h2>
+<h3>Merging #12571 will <strong>improve performances by ×2</strong></h3>
+<p><sub>Comparing <code>alex/f401-bug-2</code> (ffb7fd1) with <code>alex/f401-bug-2</code> (ed8e5ed)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 32</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>alex/f401-bug-2</code> | <code>alex/f401-bug-2</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[incremental]</code> | 534 µs | 264.4 µs | ×2 |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

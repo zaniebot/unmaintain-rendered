@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for untitled files - astral-sh/ruff #12492</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for untitled files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12492">#12492</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-24 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-24 14:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for untitled files in the Red Knot project.</p>
+<p>Refer to the <a href="https://github.com/astral-sh/ruff/discussions/12336">design discussion</a> for more details.</p>
+<h3>Changes</h3>
+<ul>
+<li>The <code>parsed_module</code> always assumes that the <code>SystemVirtual</code> path is of <code>PySourceType::Python</code>.</li>
+<li>For the module resolver, as suggested, I went ahead by adding a new <code>SystemOrVendoredPath</code> enum and renamed <code>FilePathRef</code> to <code>SystemOrVendoredPathRef</code> (happy to consider better names here).</li>
+<li>The <code>file_to_module</code> query would return if it's a <code>FilePath::SystemVirtual</code> variant because a virtual file doesn't belong to any module.</li>
+<li>The sync implementation for the system virtual path is basically the same as that of system path except that it uses the <code>virtual_path_metadata</code>. The reason for this is that the system (language server) would provide the metadata on whether it still exists or not and if it exists, the corresponding metadata.</li>
+</ul>
+<p>For point (1), VS Code would use <code>Untitled-1</code> for Python files and <code>Untitled-1.ipynb</code> for Jupyter Notebooks. We could use this distinction to determine whether the source type is <code>Python</code> or <code>Ipynb</code>.</p>
+<h2>Test Plan</h2>
+<p>Added test cases in #12526</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-07-24 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-24 14:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/path.rs</code>:627 on 2024-07-25 09:09</div>
+            <div class="timeline-body"><p>I don't think we can safely offer this method. For example, calling it for <code>untitled://name</code> would fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-25 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-25 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_db/src/system/path.rs</code>:627 on 2024-07-25 09:20</div>
+            <div class="timeline-body"><p>Is it because the file doesn't really exists and that the methods on <code>std::path::Path</code> would error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-07-25 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-07-25 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-07-25 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-25 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/path.rs</code>:627 on 2024-07-25 12:29</div>
+            <div class="timeline-body"><p>I don't think it would error. It's more that operations like <code>components</code> may not work as intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-25 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:36 on 2024-07-25 13:10</div>
+            <div class="timeline-body"><p>I think adding an extension method for virtual path should be possible if we document that a virtual path must:</p>
+<ul>
+<li>Use the file name as the last component</li>
+<li>Is only allowed to use <code>/</code> as separator.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/test.rs</code>:78 on 2024-07-25 13:13</div>
+            <div class="timeline-body"><p>I think I would add a hash map storing the virtual files to system instead of adding it to <code>MemoryFileSystem</code> because <code>MemoryFileSystem</code> isn't a full <code>System</code>, it's just a building block for <code>System</code> implementations that don't want to use a real fs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:35 on 2024-07-25 13:17</div>
+            <div class="timeline-body"><p>I would remove this method for now and instead add a <code>Files::add_virtual_file(path)</code> method (we'll want a <code>remove_virtual_file</code> long term). The reason why I think we don't need a <code>system_virtual_path_to_file</code> function is because we should never really have the need to go from path to file. Instead, the code that creates the virtual file should hold on to it (the LSP should store the <code>File</code> directly).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-25 13:18</div>
+            <div class="timeline-body"><p>Looks good to me. It would be great if we could add a test in parsed to demonstrate that it is working.</p>
+<p>@AlexWaygood is in the middle of refactoring <code>path</code> and I think your new struct will no longer be needed in the new version. But I'll let him have a look at the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 18:29</div>
+            <div class="timeline-body"><p>@dhruvmanila -- #12494 is ready to land now. I'm going to land it and then push to your branch to fixup the merge conflicts for you, since it feels unfair to do such a huge refactor and then expect you to have to fix the conflicts :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_db/src/parsed.rs</code>:36 on 2024-07-26 07:52</div>
+            <div class="timeline-body"><p>Do you think it's ok to use the <code>std::path::Path::extension</code> method to do this or should we add our own implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-26 07:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:36 on 2024-07-26 08:31</div>
+            <div class="timeline-body"><p>Not sure. It would need some tests to show that it's Okay. The alternative is to split of the part after the last <code>/</code> and then search for the last <code>.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-26 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_db/src/system/test.rs</code>:78 on 2024-07-26 08:34</div>
+            <div class="timeline-body"><p>I don't think I follow this. Would this be storing a hashmap (key is virtual file, value is system) or just storing a hashmap from virtual file path to virtual file in the <code>TestSystem</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/test.rs</code>:78 on 2024-07-26 09:35</div>
+            <div class="timeline-body"><p>Thinking about this more, let's just add it to <code>MemoryFileSystem</code> that internally stores a <code> FxHashMap&lt;SystemVirtualPathBuf, File&gt;</code> (or <code>DashMap</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-26 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-26 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-26 12:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

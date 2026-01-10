@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not bail code action resolution when a quick fix is requested - astral-sh/ruff #12462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not bail code action resolution when a quick fix is requested</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12462">#12462</a>
+        opened by <a href="https://github.com/osiewicz">@osiewicz</a>
+        on 2024-07-22 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/osiewicz">@osiewicz</a> on 2024-07-22 19:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When working on improving Ruff integration with Zed I noticed that it errors out when we try to resolve a code action of a <code>QUICKFIX</code> kind; apparently, per @dhruvmanila we shouldn't need to resolve it, as the edit is provided in the initial response for the code action. However, it's possible for the <code>resolve</code> call to fill out other fields (such as <code>command</code>).
+AFAICT Helix also tries to resolve the code actions unconditionally (as in, when either <code>edit</code> or <code>command</code> is absent); so does VSC. They can still apply the quickfixes though, as they do not error out on a failed call to resolve code actions - Zed does. Following suit on Zed's side does not cut it though, as we still get a log request from Ruff for that failure (which is surfaced in the UI).
+There are also other language servers (such as <a href="https://github.com/rust-lang/rust-analyzer/blob/c1c9e10f72ffd2e829d20ff1439ff49c2e121731/crates/rust-analyzer/src/handlers/request.rs#L1257">rust-analyzer</a>) that fill out both <code>command</code> and <code>edit</code> fields as a part of code action resolution.</p>
+<p>This PR makes the resolve calls for quickfix actions return the input value.</p>
+<h2>Test Plan</h2>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2024-07-22 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 19:23</div>
+            <div class="timeline-body"><p>Thanks! Assigning to @dhruvmanila.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @charliermarsh on 2024-07-22 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-07-23 04:58</div>
+            <div class="timeline-body"><p>I think this makes sense. We do this in <code>ruff-lsp</code> as well: https://github.com/astral-sh/ruff-lsp/blob/5488448c23274b9102747f867518b649f9234cfd/ruff_lsp/server.py#L1150-L1175</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff_server: Do not bail code action resolution when a quick fix is requested" to "Do not bail code action resolution when a quick fix is requested" by @dhruvmanila on 2024-07-23 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-23 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-23 05:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix replacement edit range computation - astral-sh/ruff #12171</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix replacement edit range computation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12171">#12171</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-03 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-03 15:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes various bugs for computing the replacement range between the original and modified source for the language server.</p>
+<ol>
+<li>When finding the end offset of the source and modified range, we should apply <code>zip</code> on the reversed iterator. The bug was that it was reversing the already zipped iterator. The problem here is that the length of both slices aren't going to be the same unless the source wasn't modified at all. Refer to the <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=44f860d31bd26456f3586b6ab530c22f">Rust playground</a> where you can see this in action.</li>
+<li>Skip the first line when computing the start offset because the first line start value will always be 0 and the default value of the source / modified range start is also 0. So, comparing 0 and 0 is not useful which means we can skip the first value.</li>
+<li>While iterating in the reverse direction, we should only stop if the line start is strictly less than the source start i.e., we should use <code>&lt;</code> instead of <code>&lt;=</code>.</li>
+</ol>
+<p>fixes: #12128</p>
+<h2>Test Plan</h2>
+<p>Add test cases where the text is being inserted, deleted, and replaced between the original and new source code, validate the replacement ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-03 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/replacement.rs</code>:25 on 2024-07-03 15:33</div>
+            <div class="timeline-body"><p>Skipping the first line start i.e., change (2)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/replacement.rs</code>:43 on 2024-07-03 15:33</div>
+            <div class="timeline-body"><p>The <code>zip</code> and <code>rev</code> bug u.e., change (1)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/replacement.rs</code>:46 on 2024-07-03 15:34</div>
+            <div class="timeline-body"><p>Switching from <code>&lt;=</code> to <code>&lt;</code> i.e., change (3)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-03 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-03 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-07-03 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-07-03 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/edit/replacement.rs</code>:25 on 2024-07-03 15:39</div>
+            <div class="timeline-body"><p>Is it guaranteed that <code>source_line_starts[0] == TextSize::new(0)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-03 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-03 15:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-04 03:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/replacement.rs</code>:25 on 2024-07-04 03:53</div>
+            <div class="timeline-body"><p>Yes:</p>
+<p>https://github.com/astral-sh/ruff/blob/8e6f722d9bcba39a5f0ef508e4d6e454eb86f349/crates/ruff_source_file/src/line_index.rs#L28-L32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-04 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-04 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-04 03:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] update benchmark to run on tomllib - astral-sh/ruff #12635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] update benchmark to run on tomllib</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12635">#12635</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-08-02 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-08-02 17:26</div>
+            <div class="timeline-body"><p>Changes the red-knot benchmark to run on the stdlib &quot;tomllib&quot; library (which is self-contained, four files, uses type annotations) instead of on very small bits of handwritten code.</p>
+<p>Also remove the <code>without_parse</code> benchmark: now that we are running on real code that uses typeshed, we'd either have to pre-parse all of typeshed (slow) or find some way to determine which typeshed modules will be used by the benchmark (not feasible with reasonable complexity.)</p>
+<h2>Test Plan</h2>
+<p><code>cargo bench -p ruff_benchmark --bench red_knot</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-08-02 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-08-02 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-08-02 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-02 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:29</div>
+            <div class="timeline-body"><p>Keep? Remove? Is there any other check we can do to assert that we didn't outright fail? E.g. we had it in the past that we didn't download the actual source but instead the HTML file. That obviously didn't measure what we intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-02 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:30</div>
+            <div class="timeline-body"><p>My plan was to re-add this once we actually lint tomllib cleanly. I think that should happen with our existing goals for this month; it's mostly &quot;undefined name&quot; warnings coming from places we don't create definitions yet where we should (function arguments, for example.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-02 17:32</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm/redbench">CodSpeed Performance Report</a></h2>
+<h3>Merging #12635 will <strong>degrade performances by 86.42%</strong></h3>
+<p><sub>Comparing <code>cjm/redbench</code> (765df65) with <code>main</code> (12177a4)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 2 (👁 2)</code> regressions
+<code>✅ 30</code> untouched benchmarks</p>
+<p><code>⁉️ 1 (👁 1)</code> dropped benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>cjm/redbench</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[cold]</code> | 14.2 ms | 40.2 ms | -64.62% |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 264.7 µs | 1,948.9 µs | -86.42% |
+| 👁 | <code>red_knot_check_file[without_parse]</code> | 6.8 ms | N/A | N/A |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-02 17:32</div>
+            <div class="timeline-body"><p>One thing to note here is that the &quot;without parse&quot; benchmark becomes less accurately named; we pre-parse builtins and the first party code, but there's no simple way to know in advance which parts of typeshed we end up pulling in, so we don't pre-parse any other typeshed modules used.</p>
+<p>One way to fix this would be to pre-parse all of typeshed? But I'm also not sure, as our benchmark gets bigger, if it's really important to have a benchmark that excludes parsing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 17:33</div>
+            <div class="timeline-body"><p>Tss, regressing performance.</p>
+<p>I'm okay with removing the <code>without_parse</code> benchmark.  The incremental hit is slightly concerning. It's still fast with 3ms vs 47 but not as fast.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-02 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:34</div>
+            <div class="timeline-body"><p>Can we hard-code the expected length for now? Or do something else to assert at least that the output matches our expectations? I'm otherwise worried that we see a huge perf improvement and the only reason for it is because we broke the benchmark :rofl: (happened before)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-02 17:36</div>
+            <div class="timeline-body"><p>Nice work on figuring out and fixing the salsa validation bug. I would love if we can find some way to assert that the benchmarks run correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-02 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:38</div>
+            <div class="timeline-body"><p>That motivation makes sense. The downside is that for the rest of this month, a lot of PRs improving type inference will seem to work locally, get pushed to CI, and then benchmarks will fail on CI because the number of errors reduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-02 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:39</div>
+            <div class="timeline-body"><p>I'd prefer it if we could add a comment to say why there's commented-out code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-02 17:40</div>
+            <div class="timeline-body"><p>I removed <code>without_parse</code>, and re-added an assertion on error count. I'm fine with that for now, we can re-assess if it becomes too painful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:38 on 2024-08-02 17:41</div>
+            <div class="timeline-body"><p>Is there a reason why we're excluding <code>__init__.py</code>? It might be nice to directly mimic the normal structure of a Python workspace here, where you'd have the package name nested inside the <code>src</code> directory:</p>
+<pre><code class="language-suggestion">    let init_path = SystemPath::new(&quot;/src/tomllib/__init__.py&quot;);
+    let parser_path = SystemPath::new(&quot;/src/tomllib/parser.py&quot;);
+    let re_path = SystemPath::new(&quot;/src/tomllib/_re.py&quot;);
+    let types_path = SystemPath::new(&quot;/src/tomllib/_types.py&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-02 17:41</div>
+            <div class="timeline-body"><p>Congrats on tracking down and fixing the Salsa bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-02 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>That motivation makes sense. The downside is that for the rest of this month, a lot of PRs improving type inference will seem to work locally, get pushed to CI, and then benchmarks will fail on CI because the number of errors reduced.</p>
+</blockquote>
+<p>Yeah that's a bit annoying but it also demonstrates progress :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-02 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:38 on 2024-08-02 17:47</div>
+            <div class="timeline-body"><p>Just simplicity; <code>__init__.py</code> contains very little code and I didn't think it would add value to the benchmark that makes it worth dealing with four files instead of three.</p>
+<p>But: I just realized that my approach of treating them as three separate top-level modules is broken; even when we add support for relative imports (which is going to look like a regression, because suddenly the imports between these files will start working) those imports would be invalid relative imports because they aren't inside a package.</p>
+<p>So yeah, good catch: I'll update to put these inside a package and include <code>__init__.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-02 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:122 on 2024-08-02 17:51</div>
+            <div class="timeline-body"><p>In the latest version there's no commented-out code anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-02 18:00</div>
+            <div class="timeline-body"><p>I am really not sure why the changes I just pushed (removing <code>without_parse</code> and putting all the code inside a <code>tomllib</code> package with <code>__init__.py</code>) made the incremental benchmark go from 10x slower to 2.5x faster...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-02 18:02</div>
+            <div class="timeline-body"><p>Oh! I see why; writing to the wrong path for <code>_re.py</code> now :/ Fixing.</p>
+<p>Good to know that re-checking with no changes is pretty fast :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-02 18:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-02 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-02 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

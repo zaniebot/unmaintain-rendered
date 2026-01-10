@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`numpy`] Update `NPY201` to include exception deprecations - astral-sh/ruff #12065</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>numpy</code>] Update <code>NPY201</code> to include exception deprecations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12065">#12065</a>
+        opened by <a href="https://github.com/mtsokol">@mtsokol</a>
+        on 2024-06-27 08:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-27 08:56</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>This PR updates <code>NPY201</code> rule to address https://github.com/astral-sh/ruff/issues/12034 and partially https://github.com/numpy/numpy/issues/26800.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-27 09:54</div>
+            <div class="timeline-body"><p>I'm having trouble generating new snapshots. The current <code>NPY201.py.snap</code> snapshot works with <code>NPY201.py</code> file up to the line <code>125</code>. With two last lines removed in <code>NPY201.py</code> the command <code>cargo insta test -p ruff_linter</code> passes.</p>
+<p>But when I add another function that is covered by the rule (as right now in the PR):</p>
+<pre><code class="language-python">
+    np.compare_chararrays
+
+</code></pre>
+<p>The above <code>test</code> command fails and doesn't generate new snap update file. How can I solve it?</p>
+<p>I did the existing changes to the NumPy snapshot file by running the above <code>test</code> command and <code>cargo insta review</code> which worked for the first functions that I added to the <code>.py</code> file. Is there a snapshot file line count limit or some other constraint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 12:48</div>
+            <div class="timeline-body"><p>I'll take a look. We might be hitting the limit we set on number of iterations during testing (this is just a safeguard).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-27 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 16:32</div>
+            <div class="timeline-body"><p>It seems that the fixes never converge</p>
+<pre><code>Failed to converge after 10 iterations. This likely indicates a bug in the implementation of the fix. Last diagnostics:
+NPY201.py:15:5: NPY201 `np.add_newdoc_ufunc` will be removed in NumPy 2.0. `add_newdoc_ufunc` is an internal function.
+   |
+13 |     add_newdoc
+14 | 
+15 |     np.add_newdoc_ufunc
+   |     ^^^^^^^^^^^^^^^^^^^ NPY201
+16 | 
+17 |     np.asfarray([1,2,3])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 16:52</div>
+            <div class="timeline-body"><p>I think more likely is that it needs more than 10 iterations due to conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 18:19</div>
+            <div class="timeline-body"><p>It seems we're only replacing one <code>ExprName</code> at a time...</p>
+<p>Probably because they all overlap because each of them tries to add the <code>numpy</code> import. Although it's unclear why we still try to add the numpy import when it already exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 18:24</div>
+            <div class="timeline-body"><p>They probably all touch the <code>numpy</code> import to ensure that it doesn't get removed by another rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 18:25</div>
+            <div class="timeline-body"><p>Yeah, the cullprint is this. Which works as intended for removals but also means that it only applies one fix at the time.</p>
+<p>https://github.com/astral-sh/ruff/blob/bf5b62edaccdc007dfcf559ab9e870be66c19877/crates/ruff_linter/src/importer/mod.rs#L304-L324</p>
+<p>An easy workaround could be to split the test into two files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 18:26</div>
+            <div class="timeline-body"><p>Yeah, or bump the limit a little bit. Either is ok with me. (We probably want a smarter strategy for this in the future.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 18:35</div>
+            <div class="timeline-body"><p>I'll do it and merge this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 18:53</div>
+            <div class="timeline-body"><p>I'm leaning toward splitting the tests. Many iterations can make it more difficult to debug real issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-27 18:53</div>
+            <div class="timeline-body"><p>Too late!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 18:54</div>
+            <div class="timeline-body"><p>Fair enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update `NPY201` rule" to "[`numpy`] Update `NPY201` to include exception deprecations" by @charliermarsh on 2024-06-27 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-27 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-27 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-27 18:58</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtsokol:update-numpy2-rule">CodSpeed Performance Report</a></h2>
+<h3>Merging #12065 will <strong>degrade performances by 5.15%</strong></h3>
+<p><sub>Comparing <code>mtsokol:update-numpy2-rule</code> (8726e6e) with <code>mtsokol:update-numpy2-rule</code> (38ca9b8)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 29</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/mtsokol:update-numpy2-rule">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>mtsokol:update-numpy2-rule</code> | <code>mtsokol:update-numpy2-rule</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[unicode/pypinyin.py]</code> | 2.1 ms | 2.3 ms | -5.15% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-28 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2024-06-28 07:31</div>
+            <div class="timeline-body"><p>Thank you for solving it! One comment - the python file test is still missing these new entries added to the rule:</p>
+<pre><code class="language-python">np.DTypePromotionError
+np.ModuleDeprecationWarning
+np.RankWarning
+np.TooHardError
+np.VisibleDeprecationWarning
+np.chararray
+np.format_parser
+</code></pre>
+<p>I didn't add them yesterday to reproduce the issue in a minimal configuration. We can still add them or leave the test as it's right now - both options are fine with me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-07-05 12:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

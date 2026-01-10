@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid syntax error notification for source code actions - astral-sh/ruff #12148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid syntax error notification for source code actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12148">#12148</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-02 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-02 11:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR avoids the error notification if a user selects the source code actions and there's a syntax error in the source.</p>
+<p>Before https://github.com/astral-sh/ruff/pull/12134, the change would've been different. But that PR disables generating fixes if there's a syntax error. This means that we can return an empty map instead as there won't be any fixes in the diagnostics returned by the <code>lint_fix</code> function.</p>
+<p>For reference, following are the screenshot as on <code>main</code> with the error:</p>
+<p><strong>VS Code:</strong></p>
+<img width="1715" alt="Screenshot 2024-07-02 at 16 39 59" src="https://github.com/astral-sh/ruff/assets/67177269/62f3e99b-0b0c-4608-84a2-26aeabcc6933">
+
+<p><strong>Neovim:</strong></p>
+<img width="1717" alt="Screenshot 2024-07-02 at 16 38 50" src="https://github.com/astral-sh/ruff/assets/67177269/5d637c36-d7f8-4a3b-8011-9a89708919a8">
+
+<p>fixes: #11931</p>
+<h2>Test Plan</h2>
+<p>Considering the following code snippet where there are two diagnostics (syntax error and useless semicolon <code>E703</code>):</p>
+<pre><code class="language-py">x;
+
+y =
+</code></pre>
+<h3>VS Code</h3>
+<p>https://github.com/astral-sh/ruff/assets/67177269/943537fc-ed8d-448d-8a36-1e34536c4f3e</p>
+<h3>Neovim</h3>
+<p>https://github.com/astral-sh/ruff/assets/67177269/4e6f3372-6e5b-4380-8919-6221066efd5b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-02 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-07-02 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-07-02 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-02 11:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -&gt; 'lint.ignore'
+  - 'select' -&gt; 'lint.select'
+  - 'unfixable' -&gt; 'lint.unfixable'
+  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'
+warning: `PGH001` has been remapped to `S307`.
+warning: `PGH002` has been remapped to `G010`.
+warning: `PLR1701` has been remapped to `SIM101`.
+ruff failed
+  Cause: Selection of deprecated rule `E999` is not allowed when preview is enabled.
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-03 06:41</div>
+            <div class="timeline-body"><p>The code changes look good, but I'm not sure if we want to keep some indicator to why the action failed?</p>
+<p>Let's say you have a very long document and the syntax error is outside the visible area. It might now be unclear to users why the manually triggered action does <em>nothing</em>.</p>
+<p>RustRover does show an error when running <code>rustfmt</code> failed because of a syntax error and I find this useful information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-03 08:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Let's say you have a very long document and the syntax error is outside the visible area. It might now be unclear to users why the manually triggered action does <em>nothing</em>.</p>
+<p>RustRover does show an error when running <code>rustfmt</code> failed because of a syntax error and I find this useful information.</p>
+</blockquote>
+<p>That is interesting. Does it show on every save? I don't mind providing a notification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-03 09:51</div>
+            <div class="timeline-body"><blockquote>
+<p>That is interesting. Does it show on every save? I don't mind providing a notification.</p>
+</blockquote>
+<p>Only when I issue the <em>Reformat code</em> manually. It doesn't show a notification when the formatting on save fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-04 04:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Only when I issue the <em>Reformat code</em> manually. It doesn't show a notification when the formatting on save fails.</p>
+</blockquote>
+<p>I think it's difficult for a language server to know whether something was invoked manually or automatically by the client except for code actions for which there's <code>CodeActionTriggerKind</code> but that's also optional. I'll make this change in a follow-up PR.</p>
+<p>I guess RustRover is able to do this <em>reliably</em> because the entire stack is in their control.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-07-04 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-04 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-04 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-04 04:34</div>
+            <div class="timeline-body"><p>I've opened https://github.com/astral-sh/ruff/issues/12176 for now and I can tackle it later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

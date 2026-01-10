@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix file watcher stop data race - astral-sh/ruff #12626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix file watcher stop data race</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12626">#12626</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-02 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 12:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug where stopping the file watcher could lead to a data race (and panic)
+where the debouncer thread already stopped but the notify callback tried to send one more change event
+that then failed because the corresponding receiver for the sender is gone.</p>
+<p>https://github.com/astral-sh/ruff/actions/runs/10214844462/job/28263055374?pr=12538</p>
+<pre><code>thread 'notify-rs inotify loop' panicked at /home/runner/work/ruff/ruff/crates/red_knot_workspace/src/watch/watcher.rs:86:86:
+called `Result::unwrap()` on an `Err` value: &quot;SendError(..)&quot;
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+thread 'changed_file' panicked at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/notify-6.1.1/src/inotify.rs:568:51:
+called `Result::unwrap()` on an `Err` value: &quot;SendError(..)&quot;
+</code></pre>
+<p>This PR fixes the race by removing the <code>Stop</code> message and instead rely on the precense of a
+sender to determine for how long the receiver should run. This guarantees that sending
+should always succeed in the notify callback.</p>
+<h2>Test Plan</h2>
+<p>CI? Not sure how to write a test for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-02 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-02 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-02 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-02 12:10</div>
+            <div class="timeline-body"><p>I'll let Carl review this one; I think he's more familiar with this code than me ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2024-08-02 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-02 12:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-02 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-02 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-02 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

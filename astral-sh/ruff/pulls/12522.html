@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] qualify function/class name with module/file - astral-sh/ruff #12522</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] qualify function/class name with module/file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12522">#12522</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-07-26 05:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-07-26 05:14</div>
+            <div class="timeline-body"><p>When we display a class or function type, include the module name, not just the class/function name.</p>
+<p>If the file in which it's defined is not an importable module (e.g. a script outside the import search paths), use the path to the file in brackets instead of a module name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-07-26 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-07-26 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-07-26 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-26 05:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:63 on 2024-07-26 06:08</div>
+            <div class="timeline-body"><p>I would prefer to fix the lint warning here instead, or to not make the type public (either way is fine)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 06:13</div>
+            <div class="timeline-body"><p>Is the main motivation for this change to support the assertions in tests?</p>
+<p>If so, then I don't think <code>Display</code> is the right approach.</p>
+<p>I just tested pylance and it doesn't always show the full qualified name. Which makes sense, it would be way to verbose for types imported from the same module, but it also doesn't do so for types from other modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-26 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:63 on 2024-07-26 13:59</div>
+            <div class="timeline-body"><p>This is a bug with making Salsa tracked functions <code>pub</code>. Even if the tracked <code>pub</code> function is both reachable and used (which it is in this PR), Salsa also creates a struct by the same name, which is not reachable, so whenever you make a Salsa tracked function <code>pub</code> and expose it with <code>pub use</code>, you get this spurious lint warning. I don't know any way to fix it, unless we make this whole submodule <code>pub</code>, or move the function out to <code>lib.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-26 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/resolver.rs</code>:63 on 2024-07-26 14:08</div>
+            <div class="timeline-body"><p>Ahh, a TODO would be helpful then.</p>
+<p>I know how to fix it, upgrade salsa :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-26 15:03</div>
+            <div class="timeline-body"><p>The main motivation for the change is not tests, it's just the fact that always displaying un-qualified names is ambiguous and potentially confusing. But I think you're right that we may want a smarter algorithm for deciding when to fully qualify names and when not to (e.g. if we are displaying an error message in a file, we probably don't want to fully qualify names in that same file).</p>
+<p>I still think &quot;fully unambiguous&quot; is the best default starting point, and we can try to optimize from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-26 15:27</div>
+            <div class="timeline-body"><p>Hmm, it does look like both pyright and mypy just never qualify type names, and if you have ambiguous names it's your own problem. Maybe that's strong enough evidence that we don't need this. I'm curious what @AlexWaygood thinks, but I'll close this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-07-26 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-26 15:41</div>
+            <div class="timeline-body"><p>It looks like both mypy and pyright have logic to use fully-qualified names only if there are actually two ambiguously-named types used in the same module. This makes sense as an approach, but it's something we can tackle later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-26 15:46</div>
+            <div class="timeline-body"><p>I think you're right that mypy uses the shorter name where possible in error messages, but note that if you call <code>reveal_type()</code> on an expression, it always gives you the fully qualified name of the type. That sorta feels annoyingly inconsistent to me, though I can see the logic in it — you want to keep error messages reasonably concise if you can, but if a user is calling <code>reveal_type</code> on an expression, they're likely debugging something, so you want to be 100% unambiguous in the information you're providing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-26 15:48</div>
+            <div class="timeline-body"><p>I don't think there's any pressing need to merge this change right now, so I'm putting the larger issue on the roadmap as something to tackle later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-26 17:20</div>
+            <div class="timeline-body"><p>Seems reasonable. We probably want something more than <code>Display</code> in that case. An ide probably wants to show both, but in different places.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>

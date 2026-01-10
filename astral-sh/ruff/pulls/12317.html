@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish wasm API to npm - astral-sh/ruff #12317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Publish wasm API to npm</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12317">#12317</a>
+        opened by <a href="https://github.com/mattrunyon">@mattrunyon</a>
+        on 2024-07-14 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-14 07:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Will need to add an actions secret <code>NPM_TOKEN</code> that is an npm token w/ publish rights to the <code>@astral-sh</code> org. It seems right now the &quot;best&quot; option for is a classic automation token which never expires (npm scoped tokens expire which would cause this to randomly fail after it expires).</p>
+<p>Fixes #1385</p>
+<p>Added <code>ruff_wasm</code> to the pyproject version_files.</p>
+<p>Added a build and publish wasm job with cargo-dist. I am not familiar with this toolchain, but I regenerated the publish action. Note this does not add the wasm build to the GH release artifacts.</p>
+<p>This will publish <code>@astral-sh/ruff-wasm-{target}</code> where target is web, bundler, or nodejs</p>
+<h2>Test Plan</h2>
+<p>I test published this in my fork with a few modifications</p>
+<ul>
+<li>workflow_dispatch for the build/publish action so it could be run standalone</li>
+<li>Published under my npm scope</li>
+<li>Changed repo URL to my fork so npm provenance works</li>
+<li>Bumped the version for the 2nd successful publish to check the LICENSE file copied properly</li>
+</ul>
+<p>Workflows: https://github.com/mattrunyon/ruff/actions/workflows/publish-wasm.yml
+npm: https://www.npmjs.com/package/@mattrunyon/ruff-api</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 06:16</div>
+            <div class="timeline-body"><p>I would prefer to keep this named <code>ruff_wasm</code>. We may have other API crates in the future that aren't wasm specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/README.md</code>:5 on 2024-07-15 06:17</div>
+            <div class="timeline-body"><p>We should add a very big warning saying that this API is experimental and that it can change at any time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-15 06:19</div>
+            <div class="timeline-body"><p>Wow this is neat.</p>
+<p>I prefer to keep the old <code>ruff_wasm</code> crate name. <code>ruff_api</code> feels to generic as a crate name.</p>
+<p>I see that this package now only publishes the <code>web</code> bindings. I wonder if we need multiple packages similar to what <a href="https://github.com/biomejs/biome/blob/main/packages/%40biomejs/js-api/package.json">BiomeJS</a> does (they actually have an even more complicated setup) where they have a <code>web</code>, <code>node</code> (possibly deno) and <code>bundler</code> package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattrunyon">@mattrunyon</a> reviewed on 2024-07-15 06:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 06:23</div>
+            <div class="timeline-body"><p>Would you still want to publish as <code>@astral-sh/ruff-api</code>? The crate name is used in the generated <code>package.json</code>, but there can be a CI step to rewrite that to use the preferred name for publishing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-15 06:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 06:29</div>
+            <div class="timeline-body"><p>Possibly. It depends on what we want to do about the different targets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattrunyon">@mattrunyon</a> reviewed on 2024-07-15 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 06:58</div>
+            <div class="timeline-body"><p>It looks like wasm-pack creates a different wasm file depending on the target (not just the JS glue code)</p>
+<p>Each of those wasm files is ~7.5MB. So publishing all under 1 package would mean a developer needs to download ~30MB. While that's not massive in terms of node_modules size, it's still pretty big and would be mostly unused</p>
+<p>So it might be better to upload separate packages per target. Also simplifies the CI since it could in theory just use a matrix w/ the targets and publish as <code>@astral-sh/ruff-api-{target}</code></p>
+<p>As an aside, projects shipping Rust native binaries on npm (such as <a href="https://www.npmjs.com/package/@swc/core">swc</a> often publish a single entry package w/ optional dependencies. This takes advantage of npm optional dependencies failing to install if the dependency package.json specifies a specific architecture requirement.</p>
+<p>The same can't be used here since web/node is not something you can specify with npm, but just pointing it out that it seems other projects tend to go towards multiple packages. Although the binaries for swc are 50MB and there's like 10 architectures, so in that case they definitely don't want to push 450MB of unusable code to every user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-15 07:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 07:15</div>
+            <div class="timeline-body"><p>That makes sense and also roughly matches what Biome does (one <code>js-api</code> package that has optional dependencies on <code>wasm-node</code> and <code>wasm-web</code>). I think it's okay to make it the users responsibility to install the optional dependencies (which we don't need for now).</p>
+<p>I'm leaning towards naming the packages <code>ruff-wasm-node</code>, and <code>ruff-wasm-web</code>. That would allow us to create a <code>ruff-api</code> package long term that wraps the glue code with a proper API. But I don't mind much either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattrunyon">@mattrunyon</a> reviewed on 2024-07-15 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on <code>crates/ruff_wasm/Cargo.toml</code>:2 on 2024-07-15 07:34</div>
+            <div class="timeline-body"><p>Oh neat I learned something new from looking at their package.</p>
+<p>Npm used to not install <code>peerDependencies</code> by default. They changed it in v7 to install them by default. Looks like now there's a <code>peerDependenciesMeta</code> field which can mark as optional so it doesn't install those by default on v7+</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-15 07:51</div>
+            <div class="timeline-body"><p>I've updated the warning and also adjusted the naming w/ a CI matrix job to publish 3 wasm-pack targets. I haven't used deno, but looks like it doesn't use package.json so it would need its own slightly different job probably</p>
+<p>Test run on my fork here: https://github.com/mattrunyon/ruff/actions/runs/9935706011
+Example should be published in a few minutes to https://www.npmjs.com/package/@mattrunyon/ruff-wasm-web</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-15 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_wasm/README.md</code>:3 on 2024-07-15 07:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">&gt; [!WARNING]
+&gt;
+&gt; This API is experimental and may change at any time
+</code></pre>
+<p>I'd suggest this instead of using a header:</p>
+<img width="729" alt="Screenshot 2024-07-15 at 13 27 30" src="https://github.com/user-attachments/assets/97155bfe-d70d-49c7-95a9-ab47b090070b">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattrunyon">@mattrunyon</a> reviewed on 2024-07-15 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on <code>crates/ruff_wasm/README.md</code>:3 on 2024-07-15 07:59</div>
+            <div class="timeline-body"><p>I tried this and it didn't seem to work on npm, only on github
+<img src="https://github.com/user-attachments/assets/b476c42f-6709-4a02-8fc1-65e8fc011b2a" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_wasm/README.md</code>:3 on 2024-07-15 08:02</div>
+            <div class="timeline-body"><p>Oh, I didn't realize this was going to be rendered on NPM. It's fine then to either use a header or block quote:</p>
+<pre><code>&gt; **⚠️ WARNING: This API is experimental and may change at any time**
+</code></pre>
+<blockquote>
+<p><strong>⚠️ WARNING: This API is experimental and may change at any time</strong></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-07-15 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-15 08:24</div>
+            <div class="timeline-body"><p>Nice thank you. We now need @charliermarsh to add the NPM token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @MichaReiser on 2024-07-15 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 14:57</div>
+            <div class="timeline-body"><p>Thanks for the ping -- I'll get to this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 15:55</div>
+            <div class="timeline-body"><p>@MichaReiser -- I added <code>NPM_TOKEN</code> to the repo with read/write access on <code>@astral-sh</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-16 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/Cargo.toml</code>:1 on 2024-07-16 16:04</div>
+            <div class="timeline-body"><p>We need to add the <code>Cargo.toml</code> to</p>
+<p>https://github.com/astral-sh/ruff/blob/7a7c601d5ed294a3c868b5e83f757105e0a189b8/pyproject.toml#L105-L112</p>
+<p>or it won't get automatically updated when doing the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 16:05</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh . Stupid question. How can I dry-run the workflow? And is the trigger for the npm workflow in the correct release step?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-16 16:10</div>
+            <div class="timeline-body"><p>I saw something about a <code>tag=dry-run</code> in some other workflows. If that actually runs the publish jobs, then could add a check to instead run <code>npm publish --dry-run</code> if that's the case. It will just print out what would have happened, but doesn't actually check the validity of the token (it will warn if there was no token)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-16 16:12</div>
+            <div class="timeline-body"><p>Nevermind, looks like dry-run probably doesn't publish based on this line in <code>publish.yml</code></p>
+<pre><code>publishing: ${{ inputs.tag &amp;&amp; inputs.tag != 'dry-run' }}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 16:15</div>
+            <div class="timeline-body"><p>Hmm okay. Let's see if @charliermarsh has an idea on how to test it or we'll test on release day :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-16 16:21</div>
+            <div class="timeline-body"><p>If anybody w/ more knowledge on the release system wants to adjust this in the future to separate build and publish, you would basically run everything except the <code>setup-node</code> and <code>publish</code> steps and upload the resulting <code>crates/ruff_wasm/pkg</code> to an artifact. Then download the artifacts, run <code>setup-node</code> and then <code>npm publish</code> for each.</p>
+<p>Could also run <code>setup-node</code> in both build and publish and then run <code>npm pack crates/ruff_wasm/pkg --pack-destination some_optional_dir_if_not_current_dir</code> to create a tarball. Then upload the resulting <code>&lt;name&gt;-&lt;version&gt;.tgz</code>. Then <code>npm publish &lt;name&gt;-&lt;version.tgz</code> those</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/publish-wasm.yml</code>:36 on 2024-07-16 16:24</div>
+            <div class="timeline-body"><p>Most our workflows use <a href="https://github.com/taiki-e/install-action"><code>taiki-e/install-action</code></a> for fast installation of cargo dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-16 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattrunyon">@mattrunyon</a> reviewed on 2024-07-16 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on <code>.github/workflows/publish-wasm.yml</code>:36 on 2024-07-16 16:27</div>
+            <div class="timeline-body"><p>I stole this setup from the playground workflow, so might want to update both at some point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 16:42</div>
+            <div class="timeline-body"><p>@MichaReiser - You should be able to release with <code>dry-run</code> as the tag (it should be the pre-populated default).</p>
+<p>The check in GitHub Actions is <code>${{ inputs.plan != '' &amp;&amp; !fromJson(inputs.plan).announcement_tag_is_implicit }}</code>. You can see an example in <code>build-docker.yml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-16 17:01</div>
+            <div class="timeline-body"><p>There is currently nothing handling dry-run in the action and build/publish are in the same workflow. So fair warning if the action runs at all it will try to publish. I mostly wasn't sure about how the different release steps worked w/ dry-run and I thought the publish jobs were skipped entirely w/ dry-run</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 17:07</div>
+            <div class="timeline-body"><p>@mattrunyon - I will check...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 17:10</div>
+            <div class="timeline-body"><p>Confirmed that publish jobs do not run with <code>dry-run</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 17:11</div>
+            <div class="timeline-body"><p>I think I would make just make the new job <code>workflow_dispatch</code> too and then skip the publish step if <code>${{ inputs.plan == '' || fromJson(inputs.plan).announcement_tag_is_implicit }}</code>, so we can test the rest manually without publishing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 20:15</div>
+            <div class="timeline-body"><p>LGTM! I’ll let @MichaReiser merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattrunyon">@mattrunyon</a> on 2024-07-16 20:18</div>
+            <div class="timeline-body"><p>Here's a run from my fork: https://github.com/mattrunyon/ruff/actions/runs/9963353823</p>
+<p>If there's no token, the 2nd or 3rd to last line of the dry-run publish output will say something like &quot;warning: You need to login to npm&quot;</p>
+<p>Due to how Github actions work, there's no way to dry-run this until it merges (since there's no workflow w/ the same name already on main)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-17 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-17 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-17 06:57</div>
+            <div class="timeline-body"><p>Thanks again @mattrunyon  for this amazing contribution. The dry run was completed successfully.</p>
+<p>https://github.com/astral-sh/ruff/actions/runs/9969546556/job/27546697354</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-17 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-17 08:20</div>
+            <div class="timeline-body"><p>Yes, the packages should be published once we do the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-18 18:32</div>
+            <div class="timeline-body"><p>The first version of the packages are up!</p>
+<ul>
+<li>Node.js: https://www.npmjs.com/package/@astral-sh/ruff-wasm-nodejs</li>
+<li>Bundler: https://www.npmjs.com/package/@astral-sh/ruff-wasm-bundler</li>
+<li>Web: https://www.npmjs.com/package/@astral-sh/ruff-wasm-web</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:33 UTC
+    </footer>
+</body>
+</html>

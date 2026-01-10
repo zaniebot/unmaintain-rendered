@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Implement `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - astral-sh/ruff #12480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Implement <code>incorrectly-parenthesized-tuple-in-subscript</code> (<code>RUF031</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12480">#12480</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-07-23 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-07-23 17:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements the new fixable lint rule RUF031 which checks for the use or omission of parentheses around tuples in subscripts, depending on the setting <code>lint.ruff.parenthesize-tuple-in-subscript</code>. By default, the use of parentheses is considered a violation.</p>
+<p>For example, if <code>d</code> is a dictionary then</p>
+<pre><code class="language-python">d[(0,1)]
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">d[0,1]
+</code></pre>
+<p>This closes #11990 and introduces configurations/options/settings for RUF rules.</p>
+<h2>Test Plan</h2>
+<p>Snapshot verified, <code>cargo test</code> passed, docs generated and checked that rule appeared.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-07-23 17:34</div>
+            <div class="timeline-body"><p>I'm not super happy with the names or descriptions for this rule and its structs/module/function/etc., so if folks have better ideas I'm all ears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dylwil3 on 2024-07-24 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2024-07-24 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-24 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-24 13:19</div>
+            <div class="timeline-body"><p>Thanks for your contribution.</p>
+<p>@AlexWaygood what's your take on this rule? I'm somewhat concerned of adding the rule to Ruff's rule set because it is a restriction lint rule, it forbids the use of specific syntax, and not a lint rule that improves the quality of the code overall.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-07-24 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-02 12:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm somewhat concerned of adding the rule to Ruff's rule set because it is a restriction lint rule, it forbids the use of specific syntax, and not a lint rule that improves the quality of the code overall.</p>
+</blockquote>
+<p>Hmm. I'm not sure I'd call this a &quot;restriction&quot; rule since it doesn't forbid the user from using any Python idioms that they'd otherwise be able to use. The recommendations the rule makes are purely cosmetic; the code's AST doesn't change at all if you follow the rule's recommendations. I'd call it a formatting rule, similar to many of our pycodestyle rules.</p>
+<p>This rule is quite opinionated, but I can definitely see that it's useful to enforce either one style or the other. The question is what style is preferable? The code becomes less noisy without the parens, but I'm not sure it's more <em>readable</em> -- it requires additional knowledge of Python's semantics to know that there's an implicit tuple formed by the comma there. So I think I'd support the rule being added, but I'd make it configurable (similar to e.g. our <code>flake8-pytest-style</code> rules) -- so you can either enforce that there are <em>never</em> parentheses, or that there are <em>always</em> parentheses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-02 12:31</div>
+            <div class="timeline-body"><p>Great! A good opportunity to learn about rule-specific configurations. I'll make the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dylwil3 on 2024-08-02 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-03 00:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+126 -259 violations, +0 -0 fixes in 10 projects; 44 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+3 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/b70b608abdb17d36da37e4c3b4fe7c6b1b2e59f9/disnake/ext/commands/slash_core.py#L39'>disnake/ext/commands/slash_core.py:39:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/b70b608abdb17d36da37e4c3b4fe7c6b1b2e59f9/disnake/ui/modal.py#L236'>disnake/ui/modal.py:236:22:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/DisnakeDev/disnake/blob/b70b608abdb17d36da37e4c3b4fe7c6b1b2e59f9/disnake/ui/view.py#L425'>disnake/ui/view.py:425:35:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/DisnakeDev/disnake/blob/b70b608abdb17d36da37e4c3b4fe7c6b1b2e59f9/disnake/ui/view.py#L530'>disnake/ui/view.py:530:29:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py#L345'>rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py:345:25:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/utils/test_train_utils.py#L117'>tests/utils/test_train_utils.py:117:67:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+88 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/configuration.py#L730'>airflow/configuration.py:730:42:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/configuration.py#L758'>airflow/configuration.py:758:34:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/configuration.py#L793'>airflow/configuration.py:793:34:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/configuration.py#L980'>airflow/configuration.py:980:69:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/jobs/scheduler_job_runner.py#L120'>airflow/jobs/scheduler_job_runner.py:120:43:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/jobs/scheduler_job_runner.py#L539'>airflow/jobs/scheduler_job_runner.py:539:29:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/jobs/scheduler_job_runner.py#L559'>airflow/jobs/scheduler_job_runner.py:559:29:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/jobs/scheduler_job_runner.py#L599'>airflow/jobs/scheduler_job_runner.py:599:54:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/jobs/scheduler_job_runner.py#L601'>airflow/jobs/scheduler_job_runner.py:601:21:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/migrations/versions/0046_1_10_5_change_datetime_to_datetime2_6_on_mssql_.py#L276'>airflow/migrations/versions/0046_1_10_5_change_datetime_to_datetime2_6_on_mssql_.py:276:25:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/apache/airflow/blob/454b5bbf529ea2a9b0b69a871803ff8920af0bb5/airflow/migrations/versions/0060_2_0_0_remove_id_column_from_xcom.py#L67'>airflow/migrations/versions/0060_2_0_0_remove_id_column_from_xcom.py:67:25:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+... 77 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+5 -108 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/scripts/permissions_cleanup.py#L32'>scripts/permissions_cleanup.py:32:19:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L101'>superset/extensions/metadb.py:101:35:</a> ARG002 Unused method argument: `url`
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D200 One-line docstring should fit on one line
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D212 [*] Multi-line docstring summary should start at the first line
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L102'>superset/extensions/metadb.py:102:9:</a> D401 First line of docstring should be in imperative mood: "A custom Shillelagh SQLAlchemy dialect with a single adapter configured."
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L105'>superset/extensions/metadb.py:105:9:</a> DOC201 `return` is not documented in docstring
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L114'>superset/extensions/metadb.py:114:22:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D200 One-line docstring should fit on one line
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D212 [*] Multi-line docstring summary should start at the first line
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L126'>superset/extensions/metadb.py:126:5:</a> D401 First line of docstring should be in imperative mood: "Decorator that prevents DML against databases where it's not allowed."
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:57:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `*args`
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:72:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `**kwargs`
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L131'>superset/extensions/metadb.py:131:80:</a> ANN401 Dynamically typed expressions (typing.Any) are disallowed in `wrapper`
+- <a href='https://github.com/apache/superset/blob/c2202454147936d1770137eaac334719b8e746e2/superset/extensions/metadb.py#L134'>superset/extensions/metadb.py:134:19:</a> TRY003 Avoid specifying long messages outside the exception class
+... 99 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/graph/node_and_edge_attributes.py#L21'>examples/topics/graph/node_and_edge_attributes.py:21:16:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sampledata/unemployment.py#L82'>src/bokeh/sampledata/unemployment.py:82:18:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sampledata/us_counties.py#L114'>src/bokeh/sampledata/us_counties.py:114:18:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/colors/test_util__colors.py#L141'>tests/unit/bokeh/colors/test_util__colors.py:141:24:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -38 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L197'>stdlib/tkinter/__init__.pyi:197:16:</a> PYI052 Need type annotation for `Activate`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L198'>stdlib/tkinter/__init__.pyi:198:19:</a> PYI052 Need type annotation for `ButtonPress`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L200'>stdlib/tkinter/__init__.pyi:200:21:</a> PYI052 Need type annotation for `ButtonRelease`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L201'>stdlib/tkinter/__init__.pyi:201:17:</a> PYI052 Need type annotation for `Circulate`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L202'>stdlib/tkinter/__init__.pyi:202:24:</a> PYI052 Need type annotation for `CirculateRequest`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L203'>stdlib/tkinter/__init__.pyi:203:21:</a> PYI052 Need type annotation for `ClientMessage`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L204'>stdlib/tkinter/__init__.pyi:204:16:</a> PYI052 Need type annotation for `Colormap`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L205'>stdlib/tkinter/__init__.pyi:205:17:</a> PYI052 Need type annotation for `Configure`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L206'>stdlib/tkinter/__init__.pyi:206:24:</a> PYI052 Need type annotation for `ConfigureRequest`
+- <a href='https://github.com/python/typeshed/blob/92cc5683251eab703468f6f68c813525f38e3251/stdlib/tkinter/__init__.pyi#L207'>stdlib/tkinter/__init__.pyi:207:14:</a> PYI052 Need type annotation for `Create`
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/chain/ethereum/modules/aave/v2/accountant.py#L34'>rotkehlchen/chain/ethereum/modules/aave/v2/accountant.py:34:30:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/chain/ethereum/modules/aave/v2/accountant.py#L71'>rotkehlchen/chain/ethereum/modules/aave/v2/accountant.py:71:30:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/chain/evm/decoding/cowswap/decoder.py#L199'>rotkehlchen/chain/evm/decoding/cowswap/decoder.py:199:41:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/tasks/assets.py#L441'>rotkehlchen/tasks/assets.py:441:29:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/tasks/manager.py#L331'>rotkehlchen/tasks/manager.py:331:60:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/tasks/manager.py#L341'>rotkehlchen/tasks/manager.py:341:39:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/tests/api/blockchain/test_evm.py#L432'>rotkehlchen/tests/api/blockchain/test_evm.py:432:43:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/rotki/rotki/blob/b20992a61d6b94ce69c045df61e5dd007fa6b780/rotkehlchen/tests/unit/globaldb/test_upgrades.py#L642'>rotkehlchen/tests/unit/globaldb/test_upgrades.py:642:32:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/analytics/lib/counts.py#L540'>analytics/lib/counts.py:540:28:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/actions/message_edit.py#L961'>zerver/actions/message_edit.py:961:17:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/email_notifications.py#L636'>zerver/lib/email_notifications.py:636:32:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/email_notifications.py#L638'>zerver/lib/email_notifications.py:638:32:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/mention.py#L133'>zerver/lib/mention.py:133:33:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/rate_limiter.py#L222'>zerver/lib/rate_limiter.py:222:33:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/rate_limiter.py#L243'>zerver/lib/rate_limiter.py:243:30:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/rate_limiter.py#L264'>zerver/lib/rate_limiter.py:264:13:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/rate_limiter.py#L266'>zerver/lib/rate_limiter.py:266:42:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/zulip/zulip/blob/d445137d363981374e3b8b69a6374bc0eadf1901/zerver/lib/user_topics.py#L290'>zerver/lib/user_topics.py:290:36:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/9799063a643b82b34dbd14b5420ef5abb922110a/indico/modules/rb/models/reservations.py#L82'>indico/modules/rb/models/reservations.py:82:32:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/indico/indico/blob/9799063a643b82b34dbd14b5420ef5abb922110a/indico/modules/users/util.py#L312'>indico/modules/users/util.py:312:30:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/indico/indico/blob/9799063a643b82b34dbd14b5420ef5abb922110a/indico/modules/users/util.py#L326'>indico/modules/users/util.py:326:34:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
++ <a href='https://github.com/indico/indico/blob/9799063a643b82b34dbd14b5420ef5abb922110a/indico/modules/users/util.py#L76'>indico/modules/users/util.py:76:13:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+0 -112 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1005'>testing/test_config.py:1005:9:</a> PLR6301 Method `test_inifilename` could be a function, class method, or static method
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1089'>testing/test_config.py:1089:13:</a> PLR6301 Method `load` could be a function, class method, or static method
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1124'>testing/test_config.py:1124:13:</a> PLR6301 Method `load` could be a function, class method, or static method
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1151'>testing/test_config.py:1151:13:</a> PLR6301 Method `load` could be a function, class method, or static method
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1179'>testing/test_config.py:1179:13:</a> PLR6301 Method `load` could be a function, class method, or static method
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L120'>testing/test_config.py:120:9:</a> PLR6301 Method `test_ini_names` could be a function, class method, or static method
+... 86 additional changes omitted for rule PLR6301
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L15'>testing/test_config.py:15:28:</a> PLC2701 Private name import `_pytest`
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L16'>testing/test_config.py:16:28:</a> PLC2701 Private name import `_pytest`
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L17'>testing/test_config.py:17:28:</a> PLC2701 Private name import `_pytest`
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L18'>testing/test_config.py:18:28:</a> PLC2701 Private name import `_pytest`
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1978'>testing/test_config.py:1978:43:</a> PLC2701 Private name import `_pytest`
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L1978'>testing/test_config.py:1978:5:</a> PLC0415 `import` should be at the top-level of a file
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L19'>testing/test_config.py:19:28:</a> PLC2701 Private name import `_pytest`
+... 10 additional changes omitted for rule PLC2701
+- <a href='https://github.com/pytest-dev/pytest/blob/0affd29062b507d9b16495675fe4c0d1b1d213a5/testing/test_config.py#L34'>testing/test_config.py:34:1:</a> PLR0904 Too many public methods (23 > 20)
+... 98 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (37 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF031 | 126 | 126 | 0 | 0 | 0 |
+| PLR6301 | 92 | 0 | 92 | 0 | 0 |
+| PYI052 | 38 | 0 | 38 | 0 | 0 |
+| D212 | 19 | 0 | 19 | 0 | 0 |
+| PLC2701 | 15 | 0 | 15 | 0 | 0 |
+| D200 | 13 | 0 | 13 | 0 | 0 |
+| ANN401 | 12 | 0 | 12 | 0 | 0 |
+| DOC201 | 9 | 0 | 9 | 0 | 0 |
+| TRY003 | 9 | 0 | 9 | 0 | 0 |
+| EM102 | 6 | 0 | 6 | 0 | 0 |
+| DOC501 | 4 | 0 | 4 | 0 | 0 |
+| D401 | 3 | 0 | 3 | 0 | 0 |
+| EM101 | 3 | 0 | 3 | 0 | 0 |
+| PLC0415 | 3 | 0 | 3 | 0 | 0 |
+| TCH002 | 3 | 0 | 3 | 0 | 0 |
+| ARG002 | 2 | 0 | 2 | 0 | 0 |
+| COM812 | 2 | 0 | 2 | 0 | 0 |
+| E501 | 2 | 0 | 2 | 0 | 0 |
+| ARG004 | 2 | 0 | 2 | 0 | 0 |
+| PLR2004 | 2 | 0 | 2 | 0 | 0 |
+| D107 | 2 | 0 | 2 | 0 | 0 |
+| PLR0904 | 2 | 0 | 2 | 0 | 0 |
+| PLC1901 | 2 | 0 | 2 | 0 | 0 |
+| RUF022 | 1 | 0 | 1 | 0 | 0 |
+| D102 | 1 | 0 | 1 | 0 | 0 |
+| CPY001 | 1 | 0 | 1 | 0 | 0 |
+| RUF012 | 1 | 0 | 1 | 0 | 0 |
+| FBT001 | 1 | 0 | 1 | 0 | 0 |
+| FBT002 | 1 | 0 | 1 | 0 | 0 |
+| SIM102 | 1 | 0 | 1 | 0 | 0 |
+| ANN204 | 1 | 0 | 1 | 0 | 0 |
+| E721 | 1 | 0 | 1 | 0 | 0 |
+| B905 | 1 | 0 | 1 | 0 | 0 |
+| DOC402 | 1 | 0 | 1 | 0 | 0 |
+| ERA001 | 1 | 0 | 1 | 0 | 0 |
+| TCH003 | 1 | 0 | 1 | 0 | 0 |
+| UP035 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2024-08-03 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-03 04:28</div>
+            <div class="timeline-body"><p>Any chance a reviewer could check whether the new <code>lint.ruff</code> option appears in &quot;Settings&quot; in the docs? For some reason I didn't see it and couldn't figure out why, but I may be messing up the local docs generation.</p>
+<p>They appear in the json schema but not in the output of <code>cargo dev generate-options</code>.</p>
+<p>If it matters, this is the first example of a &quot;plugin&quot; configuration being added to <code>LintOptions</code> rather than <code>LintCommonOptions</code> as <a href="https://github.com/astral-sh/ruff/blob/38e178e91488fd4f3b3f41cc0532a0a31126965c/crates/ruff_workspace/src/options.rs#L531">this dosctring warning</a> suggested - so hopefully I interpreted that correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-03 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:460 on 2024-08-03 07:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Options for the `ruff` plugin
+    #[option_group]
+    pub ruff: Option&lt;RuffOptions&gt;,
+</code></pre>
+<p>Our options macros are a bit complicated. Especially because you have to add both serde and non serde attributes. Anyway, adding <code>#[option_group]</code> should make the group to appear in the documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-08-03 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_workspace/src/options.rs</code>:460 on 2024-08-03 12:03</div>
+            <div class="timeline-body"><p>That did the trick, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-03 23:57</div>
+            <div class="timeline-body"><p>Ok, should be good to go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Implement `parentheses-in-tuple-slices` (`RUF031`)" to "[ruff] Implement `bad-format-tuple-in-getitem` (`RUF031`)" by @dylwil3 on 2024-08-03 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-05 07:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm. I'm not sure I'd call this a &quot;restriction&quot; rule since it doesn't forbid the user from using any Python idioms that they'd otherwise be able to use.</p>
+</blockquote>
+<p>It doesn't restrict the use of any python idoms but it does restrict the allowed syntax. Any use of subscript &gt; tuple is restricted.</p>
+<blockquote>
+<p>I'd call it a formatting rule, similar to many of our pycodestyle rules.</p>
+</blockquote>
+<p>Fair enough</p>
+<blockquote>
+<p>(similar to e.g. our flake8-pytest-style rules) -- so you can either enforce that there are never parentheses, or that there are always parentheses.</p>
+</blockquote>
+<p>I'm sorry to raise this so late. I'm concerned about this option because it limits the formatter's style guide options in the long term. Our formatter already removes unnecessary parentheses in some places, and I could see it removing more parentheses in the long term. That's why I would prefer <strong>not</strong> support the option and merge the rule without.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 08:10</div>
+            <div class="timeline-body"><blockquote>
+<p>It doesn't restrict the use of any python idoms but it does restrict the allowed syntax. Any use of subscript &gt; tuple is restricted.</p>
+</blockquote>
+<p>I'm concerned that the implied definition of a &quot;restriction&quot; rule here is quite broad. Almost every rule that we have &quot;restricts&quot; you from doing <em>something</em> that the rule deems bad in terms of correctness, style or formatting :-) But this is getting off-topic.</p>
+<blockquote>
+<p>I'm concerned about this option because it limits the formatter's style guide options in the long term. Our formatter already removes unnecessary parentheses in some places, and I could see it removing more parentheses in the long term. That's why I would prefer not support the option and merge the rule without.</p>
+</blockquote>
+<p>Hmm, I see. To me it feels very unclear which style is preferable, which is why I think this makes sense as a configurable linter rule rather than something the formatter should have an opinion on. But if we think this is something the formatter might want to take an opinion on in the future, then I suppose I'm not sure that this is a linter rule we should have at all, then -- perhaps we should simply teach the formatter to have an opinion on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-05 08:19</div>
+            <div class="timeline-body"><blockquote>
+<p>perhaps we should simply teach the formatter to have an opinion on this.</p>
+</blockquote>
+<p>It doesn't seem that we feel comfortable making that decision today. You explicitly state that you are unclear about what style you prefer.</p>
+<p>I wonder if the goal of the rule is to assert consistent formatting or if it is really about specifically restricting parenthesized tuples in subscriptions. What I hear is mainly that some people don't want to have parenthesized tuples in subscripts and less so that they want to enforce parentheses everywhere. Specifically restricting the use of parenthesized tuples also helps to give the rule a better name: <code>allow(parenthesized-tuple-in-subscript)</code> .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 08:25</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>perhaps we should simply teach the formatter to have an opinion on this.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>It doesn't seem that we feel comfortable making that decision today. You explicitly state that you are unclear about what style you prefer.</p>
+</blockquote>
+<p>Yep. That's why I <em>don't</em> think we should teach the formatter to have an opinion on this (ever), and why I would prefer a configurable linter rule ;-)</p>
+<p>Anyway, I've said my piece on this. For me, I can see it's useful to enforce a consistent style across a codebase, but I think the rule is too opinionated -- as either something to be incorporated in the formatter or a linter rule -- unless it can be made configurable. I think we're going round in circles now, so I'll bow out at this point :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 10:07</div>
+            <div class="timeline-body"><p>@AlexWaygood and I discussed this offline and I now agree that this isn't something the formatter should be opinionated about. Therefore, the lint rule as is is fine :)</p>
+<p>I would prefer to change the name: <code>bad</code> isn't very telling. How about <code>incorrectly-parenthesized-tuple-in-subscript</code> or <code>incorrectly-parenthesized-tuple-in-getitem</code>?</p>
+<p>For the setting, I think I would go with <code>parenthesize-tuple-in-getitem</code> to match the rule name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2024-08-05 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2024-08-05 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-05 15:33</div>
+            <div class="timeline-body"><p>Great! I've made the requested changes. Let me know if there's anything else, and thanks for the discussion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Implement `bad-format-tuple-in-getitem` (`RUF031`)" to "[ruff] Implement `incorrectly-parenthesized-tuple-in-getitem` (`RUF031`)" by @dylwil3 on 2024-08-05 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:4 on 2024-08-07 06:46</div>
+            <div class="timeline-body"><p>I would prefer to use an <code>if...else</code> over a match instead of suppressing the clippy warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:20 on 2024-08-07 06:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// convention may be preferred.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:82 on 2024-08-07 06:48</div>
+            <div class="timeline-body"><p>Nit: You can reduce the nesting by using <code>let .. else</code></p>
+<pre><code class="language-suggestion">    let Some(tuple_index) = subscript.slice.as_tuple_expr() else {
+    	return;
+  	]
+    if (tuple_index.parenthesized != prefer_parentheses) &amp;&amp; tuple_index.elts.len() &gt; 1 {
+        let locator = checker.locator();
+        let source_range = subscript.slice.range();
+        let new_source = match prefer_parentheses {
+            true =&gt; {
+                format!(&quot;({})&quot;, locator.slice(source_range))
+            }
+            false =&gt; {
+                locator.slice(source_range)[1..source_range.len().to_usize() - 1].to_string()
+            }
+        };
+        let edit = Edit::range_replacement(new_source, source_range);
+        checker.diagnostics.push(
+            Diagnostic::new(
+                IncorrectlyParenthesizedTupleInGetitem { prefer_parentheses },
+                source_range,
+            )
+            .with_fix(Fix::safe_edit(edit)),
+        );
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:62 on 2024-08-07 06:50</div>
+            <div class="timeline-body"><p>I would find a comment explaining why we check for <code>elts.len() &gt; 1</code> helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:16 on 2024-08-07 06:51</div>
+            <div class="timeline-body"><p>@AlexWaygood should we use subscript instead of <code>__getitem__</code>? I'm concerned that users will expect that this rule detects <code>a.__getitem__((a, b))</code> which it does not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF031.py</code>:6 on 2024-08-07 06:53</div>
+            <div class="timeline-body"><p>Could we add one more example of the form</p>
+<pre><code class="language-python">token_features[
+    (window_position, feature_name)
+] = self._extract_raw_features_from_token
+</code></pre>
+<p>It's quite common in the ecosystem check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-07 06:53</div>
+            <div class="timeline-body"><p>LGTM. Thanks for working on this. I left a few smaller nits and we may want to change the wording of the rule (@AlexWaygood )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:16 on 2024-08-07 10:16</div>
+            <div class="timeline-body"><p>Yes, I'd prefer to call the rule <code>parenthesized-tuple-in-subscript</code>, and refer to the rule as detecting &quot;parenthesized tuples in subscripts&quot; rather than &quot;parenthesized tuples in <code>__getitem__</code> calls&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:4 on 2024-08-07 10:20</div>
+            <div class="timeline-body"><p>Agreed. Sometimes in this kind of situation it can be more readable to introduce a custom enum and match on that instead, e.g.</p>
+<pre><code class="language-rs">enum ParenthesesPreference {
+    Keep,
+    Remove,
+}
+</code></pre>
+<p>but here I'm not sure I really see the need; I think I'd just stick with <code>bool</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:45 on 2024-08-07 10:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            true =&gt; format!(&quot;Use parentheses when evaluating `__getitem__` at a tuple.&quot;),
+</code></pre>
+<p>(And, like @MichaReiser, I think I'd refer to this rule as &quot;avoiding parentheses for tuples in subscripts&quot; rather than &quot;avoiding parentheses for tuples in <code>__getitem__</code> calls&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dylwil3 on 2024-08-07 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-07 11:35</div>
+            <div class="timeline-body"><p>Looks like you might have done a bad rebase there @dylwil3 -- the diff for this PR is now <code>+7,002 −438</code> lines, which feels a bit overkill ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Implement `incorrectly-parenthesized-tuple-in-getitem` (`RUF031`)" to "[ruff] Implement `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`)" by @dylwil3 on 2024-08-07 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:62 on 2024-08-07 11:48</div>
+            <div class="timeline-body"><p>I'm not sure why I did that actually - so I removed that restriction to single-element tuples (and updated the docstring).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-08-07 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2024-08-07 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-07 12:06</div>
+            <div class="timeline-body"><p>Oh dear... out of sync commits + a rebase accidentally triggered a new reviewer request and absurd diff. Sorry! If someone more expert in git knows how I can fix that, let me know...</p>
+<p>Other than that: all nits have been picked - thank you for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-07 12:08</div>
+            <div class="timeline-body"><p>I'll try and fix the diff for you. It may involve force-pushing to your branch, FYI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-07 12:18</div>
+            <div class="timeline-body"><p>@dylwil3, I fixed up your PR history for you. Before pushing any further updates to this PR, you'll now need to run the following commands locally in order to fetch your PR branch as it exists on GitHub (assuming your GitHub remote is called <code>origin</code>):</p>
+<pre><code>git fetch origin
+git reset origin/getitem-with-parens-tuple --hard
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:1 on 2024-08-07 12:19</div>
+            <div class="timeline-body"><p>Could you also rename this file to reflect the change of the rule name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:4 on 2024-08-07 12:20</div>
+            <div class="timeline-body"><p>It looks like this has been marked as resolved, but the comment hasn't been addressed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 12:20</div>
+            <div class="timeline-body"><p>Nearly there!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-08-07 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:1 on 2024-08-07 12:25</div>
+            <div class="timeline-body"><p>Done! And it looks like the match vs. if/else changes were undone in the gitfusion. I'll redo them. (I think that's actually what started the cascade of changes when rebasing - I commited those from github, then pulled with rebase because I was out of sync... one moment while I fix that...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-07 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_getitem.rs</code>:1 on 2024-08-07 12:31</div>
+            <div class="timeline-body"><p>Ahh, I've always wondered how this particular gitfusion happens! (We see it reasonably often at CPython.) I always pull with merge if my remote branch contains work that my local branch doesn't :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-07 12:39</div>
+            <div class="timeline-body"><p>Thanks for your help cleaning up my mess  😄</p>
+<p>Sorry for the last minute trouble and let me know if you find any other issues!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF031_prefer_parens.py</code>:27 on 2024-08-07 12:51</div>
+            <div class="timeline-body"><p>nit: can you add a newline to the end of this file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_subscript.rs</code>:11 on 2024-08-07 12:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Checks for consistent style regarding whether tuples in subscripts
+/// are parenthesized.
+///
+/// The exact nature of this violation depends on the setting
+/// [`lint.ruff.parenthesize-tuple-in-subscript`]. By default, the use of
+/// parentheses is considered a violation.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_subscript.rs</code>:42 on 2024-08-07 12:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            format!(&quot;Avoid parentheses for tuples in subscripts.&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_subscript.rs</code>:51 on 2024-08-07 12:55</div>
+            <div class="timeline-body"><p>I think these could be slightly more concise, so that we're not just repeating the violation message:</p>
+<pre><code class="language-suggestion">        if self.prefer_parentheses {
+            &quot;Parenthesize the tuple.&quot;.to_string()
+        } else {
+            &quot;Remove the parentheses.&quot;.to_string()
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-07 12:58</div>
+            <div class="timeline-body"><p>LGTM! I'll apply my final suggestions and then merge</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-07 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-07 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-07 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-07 13:34</div>
+            <div class="timeline-body"><p>Thanks for the PR @dylwil3 and for your patience -- this was a great contribution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-08-07 16:27</div>
+            <div class="timeline-body"><p>Many thanks to y'all, I'm thrilled this is now a thing !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-08-08 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

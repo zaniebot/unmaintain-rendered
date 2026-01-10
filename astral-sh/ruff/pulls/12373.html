@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] small efficiency improvements and bugfixes to use-def map building - astral-sh/ruff #12373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] small efficiency improvements and bugfixes to use-def map building</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12373">#12373</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-07-17 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-07-17 23:40</div>
+            <div class="timeline-body"><p>Adds inference tests sufficient to give full test coverage of the <code>UseDefMapBuilder::merge</code> method.</p>
+<p>In the process I realized that we could implement visiting of if statements in <code>SemanticBuilder</code> with fewer <code>snapshot</code>, <code>restore</code>, and <code>merge</code> operations, so I restructured that visit a bit.</p>
+<p>I also found one correctness bug in the <code>merge</code> method (it failed to extend the given snapshot with &quot;unbound&quot; for any missing symbols, meaning we would just lose the fact that the symbol could be unbound in the merged-in path), and two efficiency bugs (if one of the ranges to merge is empty, we can just use the other one, no need for copies, and if the ranges are overlapping -- which can occur with nested branches -- we can still just merge them with no copies), and fixed all three.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-07-17 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-07-17 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-07-17 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-17 23:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:301 on 2024-07-18 06:31</div>
+            <div class="timeline-body"><p>Nit: (and <code>snapshot</code>?)</p>
+<pre><code class="language-suggestion">            let current = &amp;mut current.definitions_range;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:306 on 2024-07-18 06:32</div>
+            <div class="timeline-body"><p>I think these checks are unnecessary because they are enforced by the <code>Range</code> constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:314 on 2024-07-18 06:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                *cur = snap.clone();
+</code></pre>
+<p>The same everywhere else where you assign to the range or don't take a <code>&amp;mut</code> for <code>cur</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:318 on 2024-07-18 06:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    cur.start.min(snap.start)..cur.end.max(snap.end);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-07-18 06:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:413 on 2024-07-18 06:39</div>
+            <div class="timeline-body"><p>Nit: Or, to avoid a write in every loop and make it a constant access instead</p>
+<pre><code class="language-suggestion">                let has_else = node.elif_else_clauses.last().is_some_and(|clause| clause.test.is_none());
+                if !has_else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-18 06:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-18 06:40</div>
+            <div class="timeline-body"><p>We should extend our benchmarks with code that has some control flow or we won't know if any of those improvements are any good (separate PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-18 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:301 on 2024-07-18 14:59</div>
+            <div class="timeline-body"><p>I don't like shadowing, I find it confusing :/ I'll try to find a solution that doesn't involve either shadowing or abbreviations :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-18 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:306 on 2024-07-18 15:14</div>
+            <div class="timeline-body"><p>It looks like they aren't? If I do <code>let rev_range = 5..2;</code> then <code>dbg!(rev_range);</code> shows <code>rev_range = 5..2</code>. If you iterate such a range, it's empty, but it seems like you are allowed to create one.</p>
+<p>May not be necessary to check but the logic below definitely depends on it, so I thought it didn't hurt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-07-18 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:301 on 2024-07-18 16:04</div>
+            <div class="timeline-body"><p>Ok, I got over it and just shadowed. I think it's not too bad: we shift gears to merging the definition ranges, and from that point on <code>current</code> and <code>snapshot</code> refer to just the ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-18 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:301 on 2024-07-18 16:06</div>
+            <div class="timeline-body"><p>I disliked shadowing in JS but it's more common in the Rust world and I kind of got used to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-07-18 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-07-18 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-18 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-18 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:301 on 2024-07-18 16:33</div>
+            <div class="timeline-body"><p>I <em>hate</em> shadowing in Python, but actually kinda like it in Rust. It's impossible to get confused about what the type of a symbol is in Rust because the compiler immediately starts screaming at you (so the major drawback is much less, in my opinion). And it's nice to keep the number of variables in any given function to a minimum; it sometimes makes the logic easier to understand, I think.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:34 UTC
+    </footer>
+</body>
+</html>

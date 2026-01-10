@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add delay between updating a file - astral-sh/ruff #12576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add delay between updating a file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12576">#12576</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-30 10:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 10:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR should fix some flaky integration tests in file watching.</p>
+<p>The test became flaky with https://github.com/astral-sh/ruff/pull/12566 because we now only write the last
+modified timestamp if it has changed. However, the last modified timestamp might remain unchanged
+if the write operations happen only a few ns seconds a part and the duration is larger than the system's precision of the last modified time.</p>
+<h2>Test Plan</h2>
+<p>I can't reproduce the test failures localy, which makes it difficult to verify that the flakiness is fixed.
+We can increment the delay if necessary.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-30 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-30 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-30 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-30 10:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/tests/file_watching.rs</code>:188 on 2024-07-30 10:52</div>
+            <div class="timeline-body"><p>I'm concerned by the warnings in the documentation here:</p>
+<blockquote>
+<p><strong>Disclaimer</strong>: These system calls might change over time.</p>
+</blockquote>
+<p>And</p>
+<blockquote>
+<p>Many I/O functions throughout the standard library are documented to indicate what various library or syscalls they are delegated to. This is done to help applications both understand what’s happening under the hood as well as investigate any possibly unclear semantics. Note, however, that this is informative, not a binding contract. The implementation of many of these functions are subject to change over time and may call fewer or more syscalls/library functions.</p>
+</blockquote>
+<p>(https://doc.rust-lang.org/nightly/std/time/struct.SystemTime.html#platform-specific-behavior and https://doc.rust-lang.org/nightly/std/io/index.html#platform-specific-behavior respectively.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-30 11:28</div>
+            <div class="timeline-body"><p>In general I share @carljm's concerns from https://github.com/astral-sh/ruff/pull/12382#discussion_r1685218148 about using hardcoded sleeps in tests. It's usually pretty hard to get them right and avoid flakiness.</p>
+<p>What if we did something like this?</p>
+<pre><code class="language-rs">use std::time::SystemTime;
+
+fn next_io_tick() {
+    let start = SystemTime::now();
+    std::thread::sleep(Duration::from_nanos(100));
+    // Continue sleeping until the system clock
+    // recognises that the time is later than it was
+    // when we started this function...
+    loop {
+        let Ok(elapsed) = SystemTime::now().duration_since(start) else {
+            std::thread::sleep(Duration::from_nanos(50));
+            continue;
+        }
+        if elapsed.as_nanos() == 0 {
+            std::thread::sleep(Duration::from_nanos(50));
+            continue;
+        }
+        return;
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 11:43</div>
+            <div class="timeline-body"><p>I also share the concern about sleeping in tests, but I'm not sure if it warrants the extra complexity. The only &quot;proper&quot; solution would be to create a file and write to it in a spin loop until the last modified time changes. Because only this approach would account for different precisions between different file systems.</p>
+<p>I would favor us leaning towards the <em>easiest</em> fix and to only rely on more complex solution if the flakiness remains and proves a problem in CI.</p>
+<p>Regarding the warning in the documentation. This is a test and not production code. We can change the code if Rust decides to change some precision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 11:51</div>
+            <div class="timeline-body"><p>I don't mind a proper solution but I want to avoid &quot;wasting&quot; time on it if a much simpler solution works reasonably well. We could even bump the timeout to 100ms or 1s without regressing the CI time significantly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-30 12:04</div>
+            <div class="timeline-body"><p>Slowing down CI isn't my primary concern here; Ruff's CI speed is ~okay, and I agree that a tiny sleep here isn't going to make a material difference considering the time it takes to build Ruff in CI. My primary concern is that adding the sleep won't get rid of the flakes completely, even if it's a large sleep that &quot;should&quot; be guaranteed to be longer than the system clock precision. That's been my experience working on other projects such as CPython.</p>
+<p>Maybe adding this sleep means that the test only flakes 1 in 500 times instead of 1 in 10 times. That's okay when you only have 1 test like this, but it ends up creating a reasonable amount of test flakiness in CI if we have 100 tests like this in a few weeks.</p>
+<p>I'm okay with this landing if you're confident it fixes the flakes, but I'd <em>prefer</em> a more principled solution, especially if we expect to use the <code>next_io_tick()</code> function more widely in our tests going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-30 12:47</div>
+            <div class="timeline-body"><p>I don't like sleeping in tests, but it's probably unavoidable in this case, and I suspect the most important factor here is that we shouldn't ever have hundreds or thousands of tests relying on this; most of our tests should not be integration tests at a level where we are testing file-watching responsiveness. Plus, as long as we <em>have</em> the abstraction of the <code>next_io_tick</code> function in place, we can always change its implementation as needed in the future without needing to change a bunch of tests.</p>
+<p>IMO the more likely issue that will cause us to have more flaky tests in future is just the fact that it's required to remember to call this manually in the test, rather than having it built-in to a file-writing utility used by all the file-watching tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-30 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-07-30 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-07-30 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-30 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-30 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-30 16:53</div>
+            <div class="timeline-body"><p>The test still appears to be flaky: https://github.com/astral-sh/ruff/actions/runs/10166452757/job/28116662757?pr=12582</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:47:35 UTC
+    </footer>
+</body>
+</html>
