@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break salsa cycle when inferring function signatures - astral-sh/ty #1729</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Break salsa cycle when inferring function signatures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1729">#1729</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-12-02 19:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-02 19:20</div>
+            <div class="timeline-body"><p>While digging into an unrelated issue, I noticed that we are currently very likely to enter a salsa cycle when inferring the signature of a function literal.</p>
+<p>The particular example I found involves the <code>functools.cache</code> decorator, whose definition is:</p>
+<pre><code class="language-py">def cache(fn: Callable[..., _T]) -&gt; _lru_cache_wrapper[_T]:
+    ...
+</code></pre>
+<p>Then when we infer the type of a function definition that is decorated with <code>@cache</code>:</p>
+<pre><code class="language-py">@cache
+def f(x: int) -&gt; int:
+    ...
+</code></pre>
+<ul>
+<li>We enter <code>infer_definition_types</code> for <code>f</code>.</li>
+<li>We construct a <code>Type::FunctionType</code> for the (undecorated) definition.</li>
+<li>We apply the <code>@cache</code> decorator:<ul>
+<li>This requires checking whether <code>f</code> is assignable to <code>Callable[..., T]</code>. To do that, we need the signature of <code>f</code>.</li>
+<li><code>OverloadLiteral::raw_signature</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/function.rs#L502">calls</a></li>
+<li><code>Signature::from_function</code>, which <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/signatures.rs#L489">calls</a></li>
+<li><code>Parameters::from_parameters</code>, which <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/signatures.rs#L1462">calls</a></li>
+<li><code>infer_method_information</code>, which <a href="https://github.com/astral-sh/ruff/blob/508c0a086181a265ce3f9012b50b6fe513b91776/crates/ty_python_semantic/src/types/signatures.rs#L72">calls</a></li>
+<li><code>infer_definition_types</code> for <code>f</code>, to check if <code>f</code> is a generic method, <code>@classmethod</code>, or <code>@staticmethod</code>.</li>
+</ul>
+</li>
+</ul>
+<p>We should see if there's a way to break that cycle. We might even consider not constructing the signatures lazily!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 20:20</div>
+            <div class="timeline-body"><p>I think there's a very similar (but possibly independent?) issue that can occur with overloaded function definitions in unreachable code -- in that case the cycle goes through <code>is_input_function_like</code>. A cycle shows up in this test in <code>overloads.md</code> (run under Python 3.9), which doesn't contain any apparent cyclic references:</p>
+<pre><code class="language-py">import sys
+from typing import overload
+
+if sys.version_info &lt; (3, 10):
+    def func(x: int) -&gt; int:
+        return x
+
+elif sys.version_info &lt;= (3, 12):
+    @overload
+    def func() -&gt; None: ...
+    @overload
+    def func(x: int) -&gt; int: ...
+    def func(x: int | None = None) -&gt; int | None:
+        return x
+
+reveal_type(func)  # revealed: def func(x: int) -&gt; int
+func()  # error: [missing-argument]
+</code></pre>
+<p>The cycle is in the second (overloaded) definition of <code>func</code> in the unreachable code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @dhruvmanila on 2025-12-03 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-04 03:41</div>
+            <div class="timeline-body"><p>Alternatively, we might need to improve our cycle-normalization handling so that it doesn't matter if <code>signature (infer_definition_types)</code> enters a query cycle. See https://github.com/astral-sh/ty/issues/1732#issuecomment-3609937420.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 04:24</div>
+            <div class="timeline-body"><p>Ideally we would do both -- frequently-occurring cycles in places where the semantics are not inherently cyclic are expensive for performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-04 12:51</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li><code>infer_method_information</code>, which <a href="https://github.com/astral-sh/ruff/blob/508c0a086181a265ce3f9012b50b6fe513b91776/crates/ty_python_semantic/src/types/signatures.rs#L72">calls</a></li>
+</ul>
+</blockquote>
+<p>Can you clarify how will it reach here? Because, the <code>infer_method_information</code> should short-circuit because <code>f</code> is not a method <a href="https://github.com/astral-sh/ruff/blob/508c0a086181a265ce3f9012b50b6fe513b91776/crates/ty_python_semantic/src/types/signatures.rs#L64">here</a> i.e., it should never reach the <code>infer_definition_types</code> for <code>f</code>.</p>
+<p>For context, I'm trying to see why am I seeing <code>Divergent</code> type in the following code on https://github.com/astral-sh/ruff/pull/21445:</p>
+<pre><code class="language-py">from typing import Callable
+
+def decorator[**P](c: Callable[P, int]) -&gt; Callable[P, str]: ...
+
+@decorator
+def func(a: int) -&gt; int: ...
+
+# ((a: int) -&gt; str) | ((a: Divergent) -&gt; str)
+reveal_type(func)
+</code></pre>
+<p>And, I thought I might be facing a similar issue as this so I'm trying to see where the cycle is present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-04 13:30</div>
+            <div class="timeline-body"><p>Ok, I think I know where the cycle is:</p>
+<ul>
+<li>We enter <code>infer_definition_types</code> for <code>f</code>.</li>
+<li>We construct a <code>Type::FunctionType</code> for the (undecorated) definition.</li>
+<li>We apply the <code>@cache</code> decorator:<ul>
+<li>This requires checking whether <code>f</code> is assignable to <code>Callable[..., T]</code>. To do that, we need the signature of <code>f</code>.</li>
+<li><code>OverloadLiteral::raw_signature</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/function.rs#L502">calls</a></li>
+<li><code>Signature::from_function</code>, which <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/signatures.rs#L489">calls</a></li>
+<li><code>Parameters::from_parameters</code>, which <a href="https://github.com/astral-sh/ruff/blob/3aefe85b32ff698b1a2086c2b50ff38af5c9dbed/crates/ty_python_semantic/src/types/signatures.rs#L1515">calls</a></li>
+<li><code>Parameter::from_node_and_kind</code> for <code>int</code> annotated type, which <a href="https://github.com/astral-sh/ruff/blob/3aefe85b32ff698b1a2086c2b50ff38af5c9dbed/crates/ty_python_semantic/src/types/signatures.rs#L1985">calls</a></li>
+<li><code>definition_expression_type</code>, which <a href="https://github.com/astral-sh/ruff/blob/3aefe85b32ff698b1a2086c2b50ff38af5c9dbed/crates/ty_python_semantic/src/types.rs#L190">calls</a></li>
+<li><code>infer_definition_types</code> for <code>f</code> because the same <code>Definition</code> is being passed around</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-12-05 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-12-05 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-05 14:56</div>
+            <div class="timeline-body"><p>I have an initial stab at this going in https://github.com/astral-sh/ruff/pull/21813</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dhruvmanila on 2025-12-05 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dcreager by @MichaReiser on 2025-12-10 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @MichaReiser on 2025-12-10 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 16:21</div>
+            <div class="timeline-body"><p>From what I understood, @dhruvmanila's now working on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-12-11 20:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

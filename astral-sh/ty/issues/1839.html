@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bounds and constraints of type variables cannot be generic - astral-sh/ty #1839</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bounds and constraints of type variables cannot be generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1839">#1839</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-12-10 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-10 12:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the current Python type specification, bounds and constraints for type variables must be concrete types and cannot contain type variables (even though it's possible at runtime).</p>
+<p><a href="https://peps.python.org/pep-0695/#type-parameter-scopes">peps.python.org/pep-0695#type-parameter-scopes</a></p>
+<p>So, all of the following cases should be reported as errors:</p>
+<pre><code class="language-py">from typing import TypeVar
+
+# OK
+T1 = TypeVar(&quot;T1&quot;, bound=list[int])
+T2 = TypeVar(&quot;T2&quot;, list[int], str)
+
+U = TypeVar(&quot;U&quot;)
+# error
+T3 = TypeVar(&quot;T3&quot;, bound=U)
+# error
+T4 = TypeVar(&quot;T4&quot;, bound=list[U])
+# error
+T5 = TypeVar(&quot;T5&quot;, bound=list[&quot;T5&quot;])
+# error
+T6 = TypeVar(&quot;T6&quot;, U, str)
+# error
+T7 = TypeVar(&quot;T7&quot;, list[&quot;T7&quot;], str)
+</code></pre>
+<pre><code class="language-py"># OK
+def _[T: list[int]](): ...
+def _[T: (list[int], str)](): ...
+
+# error
+def _[U, T: U](): ...
+# error
+def _[U, T: list[U]](): ...
+# error
+def _[T: list[T]](): ...
+# error
+def _[U, T: (U, str)](): ...
+# error
+def _[T: (list[T], str)](): ...
+</code></pre>
+<p>However, this is difficult to implement straightforwardly in the current implementation of ty, because bounds/constraints on type variables are lazily evaluated.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 12:33</div>
+            <div class="timeline-body"><blockquote>
+<p>However, this is difficult to implement straightforwardly in the current implementation of ty, because bounds/constraints on type variables are lazily evaluated.</p>
+</blockquote>
+<p>Evaluation of class bases is also deferred, so most checks that would involve iterating over a class's bases or MRO are done after the rest of the scope has been inferred. We can probably do something similar for checking type variables? See https://github.com/astral-sh/ruff/blob/ff7086d9ad24729891754ba597ca5abc513e4858/crates/ty_python_semantic/src/types/infer/builder.rs#L581</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-10 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-10 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Evaluation of class bases is also deferred, so most checks that would involve iterating over a class's bases or MRO are done after the rest of the scope has been inferred. We can probably do something similar for checking type variables? See <a href="https://github.com/astral-sh/ruff/blob/ff7086d9ad24729891754ba597ca5abc513e4858/crates/ty_python_semantic/src/types/infer/builder.rs#L581">astral-sh/ruff@<code>ff7086d</code>/crates/ty_python_semantic/src/types/infer/builder.rs#L581</a></p>
+</blockquote>
+<p>Ah, maybe we can use this pattern. I'll give it a try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @mtshiba on 2025-12-13 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mtshiba by @mtshiba on 2025-12-13 02:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>decorator with overload incorrectly inserts `Unknown` into the decorated function's type - astral-sh/ty #1821</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>decorator with overload incorrectly inserts `Unknown` into the decorated function's type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1821">#1821</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-12-09 07:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-09 07:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from typing import overload, Callable
+
+@overload
+def asdf(fn: Callable[[], str]) -&gt; str: ...
+
+
+@overload
+def asdf(fn: Callable[[], None]) -&gt; None: ...
+
+
+def asdf(fn: Callable[[], str | None]) -&gt; str | None:
+    return &quot;&quot;
+
+
+@asdf
+def foo() -&gt; None: ...
+
+
+reveal_type(foo)  # expected: `None`, actual: `None | Unknown`
+</code></pre>
+<p>https://play.ty.dev/eef6acf1-7d7c-4114-8ab9-c6e7c308e0e5</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-09 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @sharkdp on 2025-12-09 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-09 08:21</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Interesting. Overload call resolution seems to work just fine if we explicitly call <code>asdf(foo)</code>, so apparently we call <code>asdf</code> differently somehow when applying the decorator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-09 08:52</div>
+            <div class="timeline-body"><p>is it possible to make ty treat decorators the same way as a normal function call? it always annoyed me in mypy &amp; pyright how there were so many subtle differences between decorator calls and regular function calls even though they do the exact same thing at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-09 09:07</div>
+            <div class="timeline-body"><blockquote>
+<p>is it possible to make ty treat decorators the same way as a normal function call?</p>
+</blockquote>
+<p>That's how we implemented decorators, which is why I'm so confused by this bug 😄. Looking into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-12-09 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 11:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting. Overload call resolution seems to work just fine if we explicitly call asdf(foo), so apparently we call asdf differently somehow when applying the decorator.</p>
+</blockquote>
+<p>@dhruvmanila ran into a similar issue just recently and I think he narrowed it down to the cycle handling when inferring function literals https://github.com/astral-sh/ty/issues/1729#issuecomment-3612108797</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-09 15:29</div>
+            <div class="timeline-body"><p>Yeah, there is a cycle similar to #1729 looking at the logs:</p>
+<pre><code>2025-12-09 20:59:06.597968 DEBUG calling arguments arguments=def foo() -&gt; Divergent signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.598389 DEBUG after step 1 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.598472 DEBUG after step 2 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.598502 DEBUG after step 4 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.598778 DEBUG after step 5 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.598812 DEBUG return_ty: Unknown
+2025-12-09 20:59:06.598905 DEBUG calling arguments arguments=def foo() -&gt; None signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.599166 DEBUG after step 1 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.599203 DEBUG after step 2 matching_overload_index=Single(1) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.599223 DEBUG return_ty: None
+2025-12-09 20:59:06.599277 DEBUG calling arguments arguments=def foo() -&gt; None signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.599309 DEBUG after step 1 matching_overload_index=Multiple([0, 1]) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.59934 DEBUG after step 2 matching_overload_index=Single(1) signature=Overload[(fn: () -&gt; str) -&gt; str, (fn: () -&gt; None) -&gt; None]
+2025-12-09 20:59:06.599358 DEBUG return_ty: None
+</code></pre>
+<p>You can see that the return type of the callable argument is <code>Divergent</code>. So, what's happening is that when trying to infer the function definition <code>foo</code>, we're calling <code>asdf(foo)</code> which needs the return type and that calls <code>definition_expression_ty</code> on the function definition itself forming a cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-12-09 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @sharkdp on 2025-12-09 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-09 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-12 03:33</div>
+            <div class="timeline-body"><p>This is now resolved on <code>main</code>: https://play.ty.dev/dee3f534-cab7-4b4d-bd8b-3821dfa46b69 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-12-12 03:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

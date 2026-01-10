@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>await in jupyter notebooks marked as invalid-syntax - astral-sh/ty #1823</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>await in jupyter notebooks marked as invalid-syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1823">#1823</a>
+        opened by <a href="https://github.com/bvolkmer">@bvolkmer</a>
+        on 2025-12-09 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bvolkmer">@bvolkmer</a> on 2025-12-09 11:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>await</code> statements are flagged as <code>error[invalid-syntax]: </code>await<code> outside of an asynchronous function</code> even though it is allowed in Jupyter cells.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-09 11:43</div>
+            <div class="timeline-body"><p>FYI @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-09 11:58</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ruff/issues/17395</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @dhruvmanila on 2025-12-09 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 12:05</div>
+            <div class="timeline-body"><p>The easiest for now is probably to just skip this check based on the parsing mode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bvolkmer">@bvolkmer</a> on 2025-12-09 12:34</div>
+            <div class="timeline-body"><p>Also, <code>invalid-syntax</code> is not a rule that can be ignored in the config:</p>
+<pre><code>warning[unknown-rule]: Unknown rule `invalid-syntax`
+ --&gt; ty.toml:2:1
+  |
+1 | [rules]
+2 | invalid-syntax = &quot;ignore&quot;
+  | ^^^^^^^^^^^^^^
+  |
+</code></pre>
+<p>Edit: fixed underscore typo, still applies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-12-09 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 13:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, invalid-syntax is not a rule that can be ignored in the config:</p>
+</blockquote>
+<p>This is intentional as these should, except when a bug in ty or ruff, always be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 13:35</div>
+            <div class="timeline-body"><p>Could you share an example of your code? There should already be an exception to the rule for await in the module scope/at the top level of a cell:</p>
+<p>https://github.com/astral-sh/ruff/blob/e8540d9b085980bef22cc8e1d4c6e75531cf140c/crates/ruff_python_parser/src/semantic_errors.rs#L930-L934</p>
+<p>In a notebook with this code:</p>
+<pre><code class="language-py">import asyncio
+
+await asyncio.sleep(1)
+
+if True:
+    await asyncio.sleep(1)
+
+def foo():
+    await asyncio.sleep(1)
+</code></pre>
+<p>I only see an error for the last case, which seems correct to me.</p>
+<pre><code class="language-shell">❯ ty check crates/ruff_linter/resources/test/fixtures/pylint/await_outside_async.ipynb
+error[invalid-syntax]: `await` outside of an asynchronous function
+ --&gt; crates/ruff_linter/resources/test/fixtures/pylint/await_outside_async.ipynb:cell 1:9:5
+  |
+8 | def foo():
+9 |     await asyncio.sleep(1)  # # [await-outside-async]
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @AlexWaygood on 2025-12-14 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

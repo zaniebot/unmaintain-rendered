@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completions show function-local symbols with a type of `Never` - astral-sh/ty #1294</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Completions show function-local symbols with a type of `Never`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1294">#1294</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-01 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-01 14:13</div>
+            <div class="timeline-body"><p>Completions show function-local symbols with a type of <code>Never</code> if the end of the function scope is not reachable (usually because there is a <code>return</code> statement). This happens because we use <code>all_end_of_scope_symbol_declarations</code> and <code>all_end_of_scope_symbol_bindings</code> when listing members in <code>ide_support::all_declarations_and_bindings</code>, instead of getting the type for a (synthetic) use of the symbol at the cursor position. We might also be able to fix this by skipping reachability analysis for purposes of determining these end-of-scope-use-types?</p>
+<p>For example:</p>
+<p>https://play.ty.dev/c45ba126-18cd-4420-9b56-41cbf2b5fd1f</p>
+<p><img width="460" height="228" alt="Image" src="https://github.com/user-attachments/assets/d605878d-8d63-4e1c-bcbe-ec3b495a606d" /></p>
+<p><img width="671" height="398" alt="Image" src="https://github.com/user-attachments/assets/c0a8fcb4-ff22-4d22-86ac-4e2fcb720c5c" /></p>
+<p>Note that we can still get proper attribute completions, for example, because as soon as the symbol name is fully spelled out, we have an <em>actual</em> use of the symbol at that position:</p>
+<p><img width="739" height="307" alt="Image" src="https://github.com/user-attachments/assets/32efb446-4376-42c8-ba78-efc8faa5802e" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-01 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @sharkdp on 2025-10-01 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @sharkdp on 2025-10-01 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-12-08 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-08 18:15</div>
+            <div class="timeline-body"><p>It looks like this might have gotten worse in the sense that the completions for this case no longer show up (instead of showing up with the wrong type): https://github.com/astral-sh/ty-vscode/issues/233#issuecomment-3628384609</p>
+<p>I'll take a look at this this week, since &quot;not shown at all&quot; is categorically worse than &quot;shown but wrong info.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-08 18:23</div>
+            <div class="timeline-body"><p>Seems like the LSP is probably looking up <code>end_of_scope_*</code> from the use-def map where (for the local scope) it should probably be using <code>all_reachable_*</code> instead. Because if a function has an unconditional return, <em>no</em> bindings/declarations reach &quot;end-of-scope&quot;. (The ideal would be neither of those, it would be &quot;definitions reaching the cursor position&quot; -- but this would be quite tricky -- it would require knowing the cursor position when we do semantic indexing so we can record the live definitions at that point.)</p>
+<p>Switching from &quot;end-of-scope&quot; to &quot;all-reachable&quot; for module-global scopes would probably not be desirable -- it would mean in a case like this at module level we would respect both definitions instead of just the latter:</p>
+<pre><code class="language-py">x: int = 1
+x: str = &quot;foo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-08 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Switching from &quot;end-of-scope&quot; to &quot;all-reachable&quot; for module-global scopes would probably not be desirable -- it would mean in a case like this at module level we would respect both definitions instead of just the latter:</p>
+</blockquote>
+<p>I think what's correct for this example also depends on the cursor position?</p>
+<pre><code class="language-py">x: int = 1
+// `x` is an `int` here
+x: str = &quot;foo&quot;
+// `x` is a `str` here
+</code></pre>
+<p>We do have a similar issue with go to definitions and renames where we rename all definitions instead of just the last reachable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-08 19:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Seems like the LSP is probably looking up <code>end_of_scope_*</code> from the use-def map where (for the local scope) it should probably be using <code>all_reachable_*</code> instead</p>
+</blockquote>
+<p>I also suggested two strategies of solving this in first post here (type for a &quot;synthetic use&quot; at the cursor position, skip reachability analysis when looking up the end-of-scope symbol). Those two still seem like very reasonable ideas to me. The latter sounds rather easy to implement (?). The former has a less clear implementation strategy (I'm thinking about using those definition_by_definition maps maybe?), but might be more correct in some cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gracepetryk">@gracepetryk</a> on 2025-12-08 22:18</div>
+            <div class="timeline-body"><p>Was about to file an issue for this but found this one. I did some quick bisecting and it looks like the completions stopped showing up in <code>ty==0.0.1a30</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-11 13:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

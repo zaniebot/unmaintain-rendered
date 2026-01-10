@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-argument-type false positives with os.walk/fnmatch code - astral-sh/ty #1671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-argument-type false positives with os.walk/fnmatch code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1671">#1671</a>
+        opened by <a href="https://github.com/correctmost">@correctmost</a>
+        on 2025-11-29 04:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/correctmost">@correctmost</a> on 2025-11-29 04:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After https://github.com/astral-sh/ruff/pull/21553 landed, I started seeing <code>invalid-argument-type</code> errors with this code:</p>
+<pre><code class="language-python">import fnmatch
+import os
+from pathlib import Path
+
+
+for directory, _, files in os.walk(Path('.')):
+    for filename in fnmatch.filter(files, '*.json'):
+        continue
+</code></pre>
+<pre><code>walk.py:7:36: error[invalid-argument-type] Argument to function `filter` is incorrect: Argument type `Path` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+walk.py:7:36: error[invalid-argument-type] Argument to function `filter` is incorrect: Expected `Iterable[str]`, found `list[Path]`
+</code></pre>
+<p>Pyright, Pyrefly, and mypy do not emit similar warnings.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-11-29 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-11-29 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-11-29 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-29 14:51</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>https://github.com/astral-sh/ruff/pull/21553 allowed us to understand generic type aliases, so we now understand <a href="https://github.com/python/typeshed/blob/148b8e631d9a76f7bdcc5478d36692ff79e16227/stdlib/_typeshed/__init__.pyi#L184">typeshed's <code>GenericPath</code></a> which is used in the signature of <code>os.walk</code>:</p>
+<pre><code class="language-py">AnyStr = TypeVar(&quot;AnyStr&quot;, str, bytes)
+GenericPath: TypeAlias = AnyStr | PathLike[AnyStr]
+
+def walk(
+    top: GenericPath[AnyStr], topdown: bool = True, onerror: _OnError | None = None, followlinks: bool = False
+) -&gt; Iterator[tuple[AnyStr, list[AnyStr], list[AnyStr]]]:
+	…
+</code></pre>
+<p>Since we can't handle generic protocols in the generic solver yet, we solve <code>AnyStr</code> as <code>Path</code> here (first union element), instead of <code>str</code> (second union element), and therefore return <code>list[Path]</code> in the third tuple element instead of <code>list[str]</code>.</p>
+<p>This should be solved by #623.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-12-01 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-01 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @carljm on 2025-12-01 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @carljm on 2025-12-01 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/correctmost">@correctmost</a> on 2025-12-12 20:11</div>
+            <div class="timeline-body"><p>It looks like this issue was fixed by astral-sh/ruff@7bf50e70.</p>
+<p>https://play.ty.dev/15dcb62d-3910-42f7-8121-543ebfd3fb89</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-12 20:43</div>
+            <div class="timeline-body"><p>Aha! So it looks like this problem was caused by two bugs existing in ty simultaneously. Fixing either would have fixed this symptom, and one has now been fixed (by https://github.com/astral-sh/ruff/commit/7bf50e70)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-12 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-12 20:43</div>
+            <div class="timeline-body"><p>Thanks @correctmost!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory allocation failure with large tuple operations - astral-sh/ty #1870</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Memory allocation failure with large tuple operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1870">#1870</a>
+        opened by <a href="https://github.com/correctmost">@correctmost</a>
+        on 2025-12-12 22:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/correctmost">@correctmost</a> on 2025-12-12 22:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty crashes when checking this fuzzed code:</p>
+<pre><code class="language-python">for a in ('a', 'b'):
+    a + (a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a)
+</code></pre>
+<pre><code>memory allocation of 2199023255552 bytes failed
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1a34</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-12 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-12-12 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @AlexWaygood on 2025-12-12 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-12 22:41</div>
+            <div class="timeline-body"><p>Interesting. The tuple isn't even that large</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-12 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-12 23:21</div>
+            <div class="timeline-body"><p>If you make the tuple long enough you get an actual panic, which might be useful for debugging this:</p>
+<pre><code>PS ~&gt;echo (&quot;for a in ('a', 'b'): a + (&quot; + &quot;a, &quot; * 500 + &quot;)&quot;) &gt; issue.py; uvx ty check issue.py
+error[panic]: Panicked at /rustc/ed61e7d7e242494fb7057f2657300d9e77bb4fcb\library\core\src\iter\traits\iterator.rs:2027:9 when checking `C:\Users\GiGaGon\issue.py`: `capacity overflow`
+...
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates\ty_python_semantic\src\types\infer.rs:69
+   1: check_file_impl(Id(c00))
+             at crates\ty_project\src\lib.rs:535
+</code></pre>
+<p>No full backtrace since I don't have a debug build and the playground has stopped giving stack traces for whatever reason :(</p>
+<p>Something else that's fun, if the length of the <code>(&quot;a&quot;, &quot;b&quot;)</code> tuple is <code>n</code>, and the length of the <code>a + (...)</code> tuple is <code>k</code>, the number in the memory allocation message is equal to <code>16*(n**k)</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

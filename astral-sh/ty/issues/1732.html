@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix spurious unions of generics from fixpoint iteration - astral-sh/ty #1732</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix spurious unions of generics from fixpoint iteration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1732">#1732</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-02 20:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 20:25</div>
+            <div class="timeline-body"><p>When we fixpoint-iterate a cycle, we union the resulting types at each iteration with the previous iteration, to ensure monotonicity.</p>
+<p>This has an unfortunate side effect when the types involved are invariant generics or generics specialized with dynamic types; in those cases the unions don't simplify, and this can lead to undesired behavior. See for example the TODO <code>unsupported-base</code> errors in <code>mdtest/generics/legacy/classes.md</code>, or the TODOs for spurious unions with Divergent added in <code>call/methods.md</code> in https://github.com/astral-sh/ruff/pull/21551. These can both occur in reasonably common cases and show up in the ecosystem.</p>
+<p>(The latter TODOs might also be resolvable by fixing https://github.com/astral-sh/ty/issues/1729 to eliminate the seemingly-unnecessary cycle.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-02 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-12-02 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @carljm on 2025-12-02 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-04 03:40</div>
+            <div class="timeline-body"><p>The problem is that when a query cycles, even if it doesn't actually diverge, <code>Divergent</code> or a calculation result derived from it will remain due to the union with the provisional value from the previous cycle.
+However, the reason we must perform unioning is to suppress oscillations in type inference. If it's not oscillatory, it isn't necessary.
+For example, suppose the type of the previous cycle of a type inference query is <code>list[Divergent]</code> and the type of the current cycle is <code>list[int]</code>. In this case, it seems unnecessary to union them into <code>list[Divergent] | list[int]</code>.
+This is because if this type actually diverges recursively, the type of the current cycle would be something like <code>list[list[Divergent]]</code>.
+The fact that this is not the case suggests that <code>Divergent</code> can actually be removed. For example, suppose the query uses the result of <code>infer_definition_types</code>. <code>Divergent</code> in the result of <code>infer_definition_types</code> will be removed in subsequent cycles, becoming something like <code>int</code>, but the problem is that the query depends on it will continue to retain the previous result of <code>infer_definition_type</code> due to the union.</p>
+<p>Also, because this spurious <code>Divergent</code> has been removed, it seems unlikely that a type that was once determined to be <code>list[int]</code> can revert to <code>list[Divergent]</code> in a subsequent cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @MichaReiser on 2025-12-05 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 01:11</div>
+            <div class="timeline-body"><p>@mtshiba I played around with some ideas based on your suggestion above, and https://github.com/astral-sh/ruff/pull/21910 is the result so far. Still need to better understand the ecosystem impacts there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 03:54</div>
+            <div class="timeline-body"><p>I think there is likely more to be done here, but with the two merged fixes I consider the current state good enough for beta. We'll see what comes up in user reports to prioritize further work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-12 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-12 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @carljm on 2025-12-12 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-12 08:20</div>
+            <div class="timeline-body"><p>The ecosystem diff on https://github.com/astral-sh/ruff/pull/21935 demonstrates one case where we still produce unions with <code>Divergent</code>. We currently handle this with an explicit check (see diff in that PR), but eventually, we are going to want to remove the <code>asynccontexmanager</code> special handling, in which case this could pop up again.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

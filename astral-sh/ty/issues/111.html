@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced dataclass support - astral-sh/ty #111</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Advanced dataclass support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/111">#111</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-28 08:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 08:13</div>
+            <div class="timeline-body"><p>We already have initial support for dataclasses, but some more advanced features are still missing. The following list is most probably not complete:</p>
+<ul>
+<li>[x] Make sure that <code>dataclass</code> can be used as a non-decorator: <code>class C: …; C = dataclass(C)</code>. See empty <a href="https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L703C1-L703C6">test here</a>.</li>
+<li>[x] Emit an error if &gt;=2 variables in a dataclass class body are annotated with <code>KW_ONLY</code> (failing test <a href="https://github.com/astral-sh/ruff/blob/913f136d33fbc1b7d20fc91190431ccef2e2834c/crates/ty_python_semantic/resources/mdtest/dataclasses.md?plain=1#L744-L757">here</a>)</li>
+<li>[x] Support for <code>dataclasses.KW_ONLY</code></li>
+<li>[x] Support for <code>Final[…]</code> fields and <code>ClassVar[Final[…]]</code> fields.</li>
+<li>[x] Improve support for frozen dataclasses to <a href="https://github.com/astral-sh/ruff/pull/17974#discussion_r2101813542">handle subclasses of frozen dataclasses also</a></li>
+<li>[x] Support for <code>dataclasses.InitVar</code> https://github.com/astral-sh/ruff/pull/19527</li>
+<li>[x] Support for <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">dataclass <code>field</code>s</a></li>
+<li>[x] Add support for <a href="https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L366-L388">other synthesized functions / arguments</a><ul>
+<li>[x] unsafe_hash</li>
+<li>[x] match_args</li>
+<li>[x] kw_only</li>
+<li>[x] slots: astral-sh/ruff#20278</li>
+<li>[x] weakref_slot</li>
+<li>[x] The synthesized <code>__replace__</code> method on Python 3.13+ https://github.com/astral-sh/ruff/pull/19545</li>
+</ul>
+</li>
+<li>[ ] Emit diagnostic when defining a field without a default after a field with a default, see <a href="https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L120">existing TODO</a>: https://github.com/astral-sh/ruff/pull/19825</li>
+<li>[ ] Emit diagnostic when setting <code>order=True</code> on a dataclass that has a custom <code>__lt__</code> (or similar), see <a href="https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L361">existing TODO</a></li>
+<li>[ ] Verify signature of methods such as <code>__post_init__</code>, see <a href="https://github.com/astral-sh/ruff/pull/19527#discussion_r2228364684">this comment</a></li>
+<li>[ ] Emit diagnostic if <code>frozen=True</code> but the class has a custom <code>__setattr__</code> or <code>__delattr__</code> method in the class body (this raises <code>TypeError</code> at runtime) https://github.com/astral-sh/ruff/pull/21430</li>
+<li>[x] Add support for <code>dataclasses.field(kw_only=True)</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 10:41</div>
+            <div class="timeline-body"><p>We'll eventually want to support a generalised feature for slotted classes, where something like this is reported as an error:</p>
+<pre><code class="language-py">class Foo:
+    __slots__ = (&quot;a,&quot;)
+    b: int
+</code></pre>
+<p><code>Foo</code> cannot declare <code>b</code> as an instance variable here, because <code>Foo</code> is a slotted class and <code>b</code> is not present in <code>Foo.__slots__</code>; an assignment such as <code>Foo().b = 42</code> will therefore fail. When implementing that feature, we'll want to make sure that we understand slotted dataclasses (both those that use <code>slots=True</code> and those that manually define <code>__slots__</code> in the class namespace) consistently with how we understand other slotted classes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-05-04 02:39</div>
+            <div class="timeline-body"><p>@sharkdp once i wrap https://github.com/astral-sh/ruff/pull/17697 i'd be interested in taking a look at this, in particular:</p>
+<blockquote>
+<p>Add support for frozen dataclasses</p>
+</blockquote>
+<p>would it make sense to spin up individual issues for each of these features?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-04 05:59</div>
+            <div class="timeline-body"><p>I think it's a good idea to attempt to solve these items separately. I think it's fine to keep just this one ticket but implement it in several PRs. However, if you think that there is significant discussion needed for a sub-item,  please feel free to create additional issues and we can link them here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Advanced dataclass support" to "Advanced dataclass support" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @AlexWaygood on 2025-05-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @carljm on 2025-06-11 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-12 13:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Support for <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">dataclass fields</a></p>
+</blockquote>
+<p>I'd like to work on this. I have a way in mind, but would like to get it validated:</p>
+<p>In typeshed, <code>field</code> is annotated as returning the type of the <code>default</code> argument (or of <code>default_factory</code>'s return), and <em>not</em> a <code>Field</code> instance (which it will be at runtime):</p>
+<pre><code class="language-py"># NOTE: Actual return type is 'Field[_T]', but we want to help type checkers
+# to understand the magic that happens at runtime.
+if sys.version_info &gt;= (3, 14):
+    @overload  # `default` and `default_factory` are optional and mutually exclusive.
+    def field(
+        *,
+        default: _T,
+        default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
+        # more kwargs
+    ) -&gt; _T: ...
+</code></pre>
+<p>We need access to the value of, for example, <code>kw_only</code> when we synthesize the <code>__init__</code> method, but we do not have it right now. All we have is <code>_T</code>.</p>
+<p>I think we'd need to special case the inference of <code>field(...)</code> calls to consider their type as <code>Field[_T]</code> instead of <code>_T</code>, and then do another bit of special-casing in <code>is_assignable_to</code>, to consider <code>Field[_T]</code> to be assignable to <code>_T</code>.
+That way we will internally have access to all of the <code>field</code> call's params.
+Does that seem reasonable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-13 21:24</div>
+            <div class="timeline-body"><p>@abhijeetbodas2001 Thanks!</p>
+<p>It seems like that approach will also require the <code>Field</code> type to be a special-cased <code>Type</code> variant (something like <code>DataclassField</code>, similar to e.g. <code>DataclassTransformer</code> or <code>DataclassDecorator</code>), so it can carry along the parameter values from the <code>field</code> call? Simply having a <code>NominalInstance</code> of <code>dataclasses.Field</code> as defined in typeshed wouldn't give us that information.</p>
+<p>It's also important that we design our approach here so it works for other <code>dataclass_transform</code> users, not just for stdlib dataclasses. This means that any special-casing we apply should be applied to any function/class listed in the <code>field_specifiers</code> option of <code>dataclass_transform</code> (https://typing.python.org/en/latest/spec/dataclasses.html#dataclass-transform-parameters ), not just to <code>dataclasses.field</code>.</p>
+<p>I could also see an argument for possibly tackling something like <code>dataclasses.KW_ONLY</code> support first. It's also an important feature to support, and it's notable because it depends on lexical ordering of declarations, which isn't totally trivial to obtain in our model. It might be useful to understand the changes required to support this, before doing full field support?</p>
+<p>@sharkdp implemented our dataclass support and may have other thoughts here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-06-14 17:02</div>
+            <div class="timeline-body"><p>Yup, it will need a new <code>Type</code> variant.</p>
+<p>Re: non-stdlib field specifiers,
+The current implementation of <code>dataclass_transformer</code> does not store <code>field_specifiers</code>, and even once it does, there'd be some work needed to treat a given <code>field_specifier</code> as one.
+But modulo that, I think a single <code>Type</code> variant for <code>Field</code> should be able to serve both the stdlib's and 3rd party field specifiers, because the parameters of 3rd party field specifiers which type checkers are expected to understand <a href="https://typing.python.org/en/latest/spec/dataclasses.html#field-specifier-parameters">are a superset of stdlib's <code>field</code> parameters</a>. But maybe I'm jumping the gun here 😄 , things will be more clear once I have a draft.</p>
+<hr />
+<blockquote>
+<p>It's also an important feature to support, and it's notable because it depends on lexical ordering of declarations, which isn't totally trivial to obtain in our model.</p>
+</blockquote>
+<p>I did not understand this. I thought, the <code>public_places</code> and similar structures do keep track of declarations in the order they appear in the code? Wouldn't the order be also required for correctly synthesizing the <code>__init__</code> method, for example (which we already support)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 01:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought, the <code>public_places</code> and similar structures do keep track of declarations in the order they appear in the code? Wouldn't the order be also required for correctly synthesizing the <code>__init__</code> method, for example (which we already support)?</p>
+</blockquote>
+<p>Yes, you're right, I wasn't thinking clearly about this; we already do preserve lexical order, and it's necessary for <code>__init__</code> synthesis. Thanks anyway for the PR implementing <code>KW_ONLY</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 02:10</div>
+            <div class="timeline-body"><p>#657 has a good Pydantic example that should be solved by dataclass fields support (specifically, support for the <code>alias</code> parameter to a field constructor.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 09:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, you're right, I wasn't thinking clearly about this; we already do preserve lexical order, and it's necessary for <code>__init__</code> synthesis.</p>
+</blockquote>
+<p>I believe part of the confusion here may come from the use of the term &quot;lexical order&quot; which is also a synonym for <a href="https://en.wikipedia.org/wiki/Lexicographic_order">&quot;lexicographic order&quot;</a>, and that would imply some sort of alphabetical ordering of fields. I think everyone here is referring to &quot;order of appearance&quot; / &quot;source code order&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 15:09</div>
+            <div class="timeline-body"><p>I think everyone was talking about source order, so there was no confusion about the meaning of &quot;lexical&quot;. The confusion arose solely from me being wrong! I was forgetting that the use-def map does already guarantee returning definitions in source order, and we already rely on that for synthesizing <code>__init__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-14 10:11</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/21446 added support for <code>__weakref__</code> and <code>__match_args__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 17:38</div>
+            <div class="timeline-body"><p>It looks to me like the remaining listed features are all additional diagnostics we could emit, not features that impact our understanding of the dataclass itself. Does that seem accurate?</p>
+<p>That's why I have this as only a P2 for stable; it would be nice to get these additional diagnostics in if it isn't hard, but it doesn't seem critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-15 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks to me like the remaining listed features are all additional diagnostics we could emit, not features that impact our understanding of the dataclass itself. Does that seem accurate?</p>
+</blockquote>
+<p>That does seem accurate, yes. I marked <code>unsafe_hash</code> as done yesterday because I thought we wouldn't need to do anything. I read the documentation again now, and decided that we could easily model the actual semantics here (I opened https://github.com/astral-sh/ruff/pull/21470).</p>
+<blockquote>
+<p>That's why I have this as only a P2 for stable; it would be nice to get these additional diagnostics in if it isn't hard, but it doesn't seem critical.</p>
+</blockquote>
+<p>👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

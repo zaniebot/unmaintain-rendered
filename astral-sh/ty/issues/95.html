@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typevar identity should not matter for generic function subtyping/assignability - astral-sh/ty #95</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typevar identity should not matter for generic function subtyping/assignability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/95">#95</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-05-06 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-05-06 22:03</div>
+            <div class="timeline-body"><p>When we do subtype/assignability checks within a generic scope, we don't consider two different typevars to be equivalent, even if they have the same bounds/constraints, because they could specialize to two different types.</p>
+<p>But when we compare two unspecialized generic signatures for assignability/subtyping, this consideration does not apply. Two identical signatures, except that they use a different typevar (with the same bounds/constraints), are the same signature; typevar identity is irrelevant. In <a href="https://play.ty.dev/2654dd86-46c1-4a34-9056-e017e560ab30">this example</a>, all six assertions should pass; currently only the first and third and fifth pass:</p>
+<pre><code class="language-py">from typing import TypeVar, Callable
+
+from ty_extensions import is_assignable_to, is_subtype_of, static_assert
+
+T = TypeVar(&quot;T&quot;)
+U = TypeVar(&quot;U&quot;)
+
+static_assert(is_assignable_to(Callable[[T], T], Callable[[T], T]))
+static_assert(is_assignable_to(Callable[[T], T], Callable[[U], U]))
+
+static_assert(is_subtype_of(Callable[[T], T], Callable[[T], T]))
+static_assert(is_subtype_of(Callable[[T], T], Callable[[U], U]))
+
+static_assert(is_equivalent_to(Callable[[T], T], Callable[[T], T]))
+static_assert(is_equivalent_to(Callable[[T], T], Callable[[U], U]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-06 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-06 22:05</div>
+            <div class="timeline-body"><p>cc @dcreager</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-06 22:08</div>
+            <div class="timeline-body"><p>I <em>think</em> that generic callable signatures are the only place where an unspecialized typevar can appear in a context where we need to do subtyping/assignability checks on it based on, effectively, a form of &quot;gradual equivalence&quot; (i.e. if these two typevars can specialize to the same set of types, they are equivalent) rather the than strict equivalence we need to use within a generic scope (if these two typevars can possibly specialize to different types, they are not equivalent). So I think this can probably be handled within <code>Signature</code>? Though it may be cleanest by using a strategy parameter to <code>Type</code> equivalency/subtyping/assignability methods, not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-07 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] typevar identity should not matter for generic function subtyping/assignability" to "typevar identity should not matter for generic function subtyping/assignability" by @MichaReiser on 2025-05-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-05-08 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-30 23:00</div>
+            <div class="timeline-body"><p>I'm working on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-31 01:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Though it may be cleanest by using a strategy parameter to <code>Type</code> equivalency/subtyping/assignability methods, not sure.</p>
+</blockquote>
+<p>I don't think this will be enough. In your</p>
+<pre><code class="language-py">is_assignable_to(Callable[[T], T], Callable[[U], U])
+</code></pre>
+<p>example, we have to make sure not just that <code>T</code> and <code>U</code> have compatible bounds/constraints, but that <code>T</code> is &quot;lined up&quot; with <code>U</code> everywhere that it occurs.</p>
+<p>I think we can leverage our naive solver for this. Instantiate a <code>SpecializationBuilder</code>, call <code>infer</code> on the lhs and rhs types, and see if the specialization that you get maps each lhs typevar to an rhs typevar, and that every lhs typevar has a specialization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-31 01:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we can leverage our naive solver for this. Instantiate a <code>SpecializationBuilder</code>, call <code>infer</code> on the lhs and rhs types, and see if the specialization that you get maps each lhs typevar to an rhs typevar, and that every lhs typevar has a specialization.</p>
+</blockquote>
+<p>Or maybe, infer the specialization, <em>apply</em> it to the lhs type, and then compare them for assignability etc as we're already doing, since then lhs and rhs would be using the same typevars.</p>
+<p>(And that makes me think you're right that this can be handled in <code>Signature</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @LaBatata101 by @carljm on 2025-08-05 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @LaBatata101 by @carljm on 2025-08-15 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @carljm on 2025-08-15 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 08:18</div>
+            <div class="timeline-body"><p>This example seems related/the same, but could probably be added as a &quot;use case&quot; test that doesn't involve <code>static_assert</code>/<code>is_assignable_to</code>:</p>
+<pre><code class="language-py">from typing import Callable
+
+def invoke[A, B](fn: Callable[[A], B], value: A) -&gt; B:
+    return fn(value)
+
+def identity[T](x: T) -&gt; T:
+    return x
+
+invoke(identity, 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 00:38</div>
+            <div class="timeline-body"><p>It looks like https://github.com/astral-sh/ruff/pull/21551 alone won't solve this; bumping this out post-beta in that case, since it's not as high-priority as e.g. solving #1314</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-05 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-05 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 23:42</div>
+            <div class="timeline-body"><p>I confused myself here with an over-simplified repro that also depends on #1136. The actual issue that I was intending to describe here is already fixed in main, I suspect by the <code>inferable_typevars</code> work a while back. Here's a playground to demonstrate: https://play.ty.dev/2c664b0c-cc40-41d0-b695-7778b65e6295</p>
+<p>There is one remaining issue I see with equivalence, but I think it'll be clearer to open a new issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-12 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 23:48</div>
+            <div class="timeline-body"><p>Filed #1872 for the remaining equivalence issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

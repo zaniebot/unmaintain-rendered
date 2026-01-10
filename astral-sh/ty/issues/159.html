@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support type of `self` on instance methods and type of `cls` on classmethods - astral-sh/ty #159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support type of `self` on instance methods and type of `cls` on classmethods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/159">#159</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-26 18:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-26 18:03</div>
+            <div class="timeline-body"><p>Proper support here overlaps with generics (since <code>Self</code> operates like a bound typevar).</p>
+<ul>
+<li>[x] Implicit annotation of <code>self: Self</code> in the signature of methods</li>
+<li>[x] Implicit type of <code>self: Self</code> in the body of methods</li>
+<li>[x] Implicit annotation of <code>cls: type[Self]</code> in the signature of <code>@classmethod</code>s</li>
+<li>[x] Implicit type of <code>cls: type[Self]</code> in the body of <code>@classmethod</code>s</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-19 11:47</div>
+            <div class="timeline-body"><p>Should this need a new <code>Type::TypingSelf</code> or similarly named type?</p>
+<p>And should <code>KnownInstanceType::TypingSelf</code> contain a type, like <code>ClassLiteralType</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-21 14:41</div>
+            <div class="timeline-body"><p>Probably worth taking a careful look at <a href="https://typing.python.org/en/latest/spec/generics.html#self">the relevant section of the spec</a> if you're considering working on this.</p>
+<blockquote>
+<p>Should this need a new <code>Type::TypingSelf</code> or similarly named type?</p>
+</blockquote>
+<p>I don't <em>think</em> a new <code>Type</code> variant should be necessary here, because <code>Self</code> is specified to work the same as a typevar with an upper bound of the enclosing class type. In other words, these two are equivalent:</p>
+<pre><code class="language-py">class C1:
+    def method(self: Self) -&gt; Self: ...
+
+class C2:
+    def method[T: &quot;C2&quot;](self: T) -&gt; T: ...
+</code></pre>
+<p>So I think that when we see an annotation of <code>Self</code>, we should be able to just construct the appropriate <code>Type::TypeVar</code> type (and add a generic context to turn the function into a generic function), without needing a new dedicated type.</p>
+<blockquote>
+<p>And should <code>KnownInstanceType::TypingSelf</code> contain a type, like <code>ClassLiteralType</code>?</p>
+</blockquote>
+<p>No. <code>KnownInstanceType::TypingSelf</code> represents the object that you get at runtime when you do <code>from typing import Self</code>. It is the same everywhere that <code>typing.Self</code> is imported. It can't carry any knowledge of any particular location where <code>Self</code> is used in an annotation. Its only purpose is so that we can distinguish real usage of <code>typing.Self</code> from some random user class that happens to be named <code>Self</code>. In other words, the only special behavior <code>KnownInstanceType::TypingSelf</code> should have is its implementation of <code>in_type_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-26 15:46</div>
+            <div class="timeline-body"><p>I had a chat with Matthew and I'm working on this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Glyphack by @sharkdp on 2025-04-28 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] support `typing.Self`, type of `self`, and type of `cls` on classmethods" to "support `typing.Self`, type of `self`, and type of `cls` on classmethods" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "alpha" by @MichaReiser on 2025-05-07 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-07 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 06:34</div>
+            <div class="timeline-body"><p>Reopening this, as we now understand <code>typing.Self</code>, but not yet type of <code>self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-05-08 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-08 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 10:32</div>
+            <div class="timeline-body"><p>@AlexWaygood was it intentional that you closed this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 10:38</div>
+            <div class="timeline-body"><p>no, not at all -- all I did was sync my Ruff fork with the upstream repo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-05-08 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 10:39</div>
+            <div class="timeline-body"><p>Hmm, interesting. I think something similar happened to me yesterday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-09 10:46</div>
+            <div class="timeline-body"><p>It looks like we're currently only able to solve the <code>Self</code> TypeVar if the <code>self</code> argument in a method is explicitly annotated with <code>Self</code>:</p>
+<pre><code class="language-py">from typing import Self, reveal_type
+
+class Foo[T]:
+    x: T
+
+class Bar:
+    def method1(self: Self) -&gt; Self:
+        return self
+
+    def method2(self: Self) -&gt; Foo[Self]:
+        return Foo[Self]()
+
+    def method3(self) -&gt; Self:
+        return self
+
+    def method4(self) -&gt; Foo[Self]:
+        return Foo[Self]()
+
+reveal_type(Bar().method1())  # Bar
+reveal_type(Bar().method2().x)  # Bar
+reveal_type(Bar().method3())  # `Unknown`, but should be `Bar`
+reveal_type(Bar().method4().x)  # `Self`, but should be `Bar`
+</code></pre>
+<p>This is causing false positives to show up in the primer diff for https://github.com/astral-sh/ruff/pull/17832, because only a small minority of methods that include <code>Self</code> somewhere in their return annotations actually explicitly annotate the <code>self</code> argument with <code>Self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-09 14:01</div>
+            <div class="timeline-body"><p>I think @Glyphack is working on inferring the type <code>Self</code> for un-annotated <code>self</code> arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-05-09 15:46</div>
+            <div class="timeline-body"><p>Hey yes I'll send the pr by tomorrow latest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Alpha" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-05-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @dhruvmanila on 2025-05-31 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @dhruvmanila on 2025-05-31 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support `typing.Self`, type of `self`, and type of `cls` on classmethods" to "support type of `self` and type of `cls` on classmethods" by @carljm on 2025-07-25 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support type of `self` and type of `cls` on classmethods" to "support type of `self` on instance methods and type of `cls` on classmethods" by @carljm on 2025-07-25 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-08-16 22:16</div>
+            <div class="timeline-body"><p>For SEO purposes, this comes up when using pandas pd DataFrame Series slicing <code>__getitem__</code></p>
+<details>
+
+<pre><code class="language-python"># With pandas-stubs==2.3.0.250703
+from __future__ import annotations
+
+import pandas as pd
+from typing import Self, Iterable, Hashable, reveal_type, overload
+
+
+def main(df: pd.DataFrame):
+    reveal_type(df[df[&quot;x&quot;] &gt; 0])
+
+
+main(pd.DataFrame({&quot;x&quot;: [1, 2, 3]}))
+
+
+def reduced1(df: pd.DataFrame, series: pd.Series[bool]):
+    reveal_type(df[series])
+
+
+class DF2:
+    @overload
+    def get(self, key: int) -&gt; str: ...
+    @overload
+    def get(self, key: Iterable[Hashable]) -&gt; Self: ...
+    def get(self, *a, **kw):
+        raise NotImplementedError
+
+
+def reduced2(df: DF2, series: pd.Series[bool]):
+    reveal_type(df.get(series))
+
+
+class DF3:
+    def get(self, key: int) -&gt; Self:
+        raise NotImplementedError
+
+
+def reduced3(df: DF3, key: int):
+    reveal_type(df.get(key))
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-02 22:14</div>
+            <div class="timeline-body"><p>An update on the development. The version of ty that has implicit self (https://github.com/astral-sh/ruff/pull/18473) in method bodies has high execution time with attribute accesses in (<a href="https://github.com/astral-sh/ruff/pull/18473#issuecomment-3246087531">comment</a>). I couldn't fix those and @sharkdp is figuring out a way forward.
+Meanwhile I will continue https://github.com/astral-sh/ruff/pull/18007 there shouldn't be same attribute access problem for calls. So when the other one is ready we can hopefully merge both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Glyphack by @sharkdp on 2025-10-17 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-10-17 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-11-12 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-11-12 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "GA" by @carljm on 2025-11-12 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-11-12 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gjcarneiro">@gjcarneiro</a> on 2025-11-22 18:50</div>
+            <div class="timeline-body"><p>Please be sure to also support this:</p>
+<pre><code class="language-py">from typing import Self
+
+class Identifiable:
+    @classmethod
+    def with_uuid(cls, uuid: str) -&gt; Self | None: ...
+
+class MyModel(Identifiable):
+   ...
+
+obj = MyModel.with_uuid(&quot;xxx&quot;)
+reveal_type(obj)
+</code></pre>
+<p>mypy returns:</p>
+<pre><code>main.py:11: note: Revealed type is &quot;__main__.MyModel | None&quot;
+</code></pre>
+<p>While Ty returns:</p>
+<pre><code>    Revealed type: `Unknown | None` (revealed-type) [Ln 11, Col 13]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-11-23 12:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Please be sure to also support this:</p>
+</blockquote>
+<p>Thanks for the example. I think this will be solved with <a href="https://github.com/astral-sh/ruff/pull/20771">this PR</a>. Because the failing test I added there is similar to what you provided. I could not find a solution, I will spend more time on it in the next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @MichaReiser on 2025-11-29 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @MichaReiser on 2025-12-05 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @MichaReiser on 2025-12-05 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 18:04</div>
+            <div class="timeline-body"><p>At long last, I think we can consider this one done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-11 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

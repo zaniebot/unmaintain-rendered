@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equivalence of generic callables - astral-sh/ty #1872</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Equivalence of generic callables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1872">#1872</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-12 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 23:46</div>
+            <div class="timeline-body"><p>We understand assignability and subtyping of generic functions/callables reasonably well, but not equivalence:</p>
+<pre><code class="language-py">from ty_extensions import CallableTypeOf, static_assert, is_subtype_of, is_assignable_to, is_equivalent_to
+from typing import TypeVar
+
+def f[T](x: T) -&gt; T:
+    return x
+
+def g[T](x: T) -&gt; T:
+    return x
+
+_: CallableTypeOf[g] = f
+_: CallableTypeOf[f] = g
+
+
+static_assert(is_equivalent_to(CallableTypeOf[g], CallableTypeOf[f]))
+static_assert(is_subtype_of(CallableTypeOf[g], CallableTypeOf[f]))
+static_assert(is_subtype_of(CallableTypeOf[f], CallableTypeOf[g]))
+static_assert(is_assignable_to(CallableTypeOf[g], CallableTypeOf[f]))
+static_assert(is_assignable_to(CallableTypeOf[f], CallableTypeOf[g]))
+
+T = TypeVar(&quot;T&quot;)
+U = TypeVar(&quot;U&quot;)
+
+def h(x: T) -&gt; T:
+    return x
+
+def i(x: U) -&gt; U:
+    return x
+
+_: CallableTypeOf[h] = i
+_: CallableTypeOf[i] = h
+
+static_assert(is_equivalent_to(CallableTypeOf[h], CallableTypeOf[i]))
+static_assert(is_subtype_of(CallableTypeOf[h], CallableTypeOf[i]))
+static_assert(is_subtype_of(CallableTypeOf[i], CallableTypeOf[h]))
+static_assert(is_assignable_to(CallableTypeOf[h], CallableTypeOf[i]))
+static_assert(is_assignable_to(CallableTypeOf[i], CallableTypeOf[i]))
+</code></pre>
+<p>https://play.ty.dev/913c181c-03d3-4c0c-98bf-05e9622395b8</p>
+<p>All of those assertions should pass. Currently all of them pass except the two <code>is_equivalent_to</code> assertions. But mutual subtyping implies equivalence!</p>
+<p>I suspect with our current implementation of equivalence, this will require <code>normalized</code> also normalizing typevars by reusing a standard set of typevars.</p>
+<p>Or the other approach would be to fix this by switching to an implementation of equivalence based on mutual subtyping (of top/bottom materializations, for gradual types).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-12 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-12-12 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-12 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @carljm on 2025-12-12 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-12 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-12 23:47</div>
+            <div class="timeline-body"><p>This is related to #165.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>don't discard &quot;unused&quot; typevars from generic context of simplified generic type alias - astral-sh/ty #1846</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>don't discard &quot;unused&quot; typevars from generic context of simplified generic type alias</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1846">#1846</a>
+        opened by <a href="https://github.com/cmp0xff">@cmp0xff</a>
+        on 2025-12-10 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2025-12-10 20:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Summary</h2>
+<p>Hi, the following code snippet causes <code>invalid-type-arguments</code> in current <code>ty</code>, see <a href="https://play.ty.dev/5e7a9db4-c5cc-4b6e-87a5-46789473576a">the playground</a>:</p>
+<pre><code class="language-py">from collections.abc import Hashable, Sequence
+from typing import TypeAlias, TypeVar
+
+HashableT = TypeVar(&quot;HashableT&quot;, bound=Hashable)
+
+VType: TypeAlias = Hashable | Sequence[HashableT]
+
+def foo(p: VType[Hashable]) -&gt; None: ...   # Too many type arguments: expected 0, got 1 (invalid-type-arguments) [Ln 8, Col 18]
+</code></pre>
+<p>It passes the check of <code>mypy</code> and <code>pyright</code>.</p>
+<p>The issue arose from pandas-dev/pandas-stubs#1537.</p>
+<h2>Version</h2>
+<p>5dc0079e7</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 20:43</div>
+            <div class="timeline-body"><p>What is happening here is that the entire concept of a <code>Hashable</code> protocol is fundamentally broken in the Python type system, because <code>object</code> itself (a type which includes all Python objects) meets the requirements of <code>Hashable</code>, and yet many subtypes of <code>object</code> <em>remove</em> hashability (violating the Liskov Substitution Principle, which is the core assumption of all treatment of subclasses in Python typing.) Thus <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L520-L522">this comment in typeshed</a> describing <code>Hashable</code> as &quot;mostly useless for static type checking.&quot;</p>
+<p>Because of this, ty sees <code>Hashable</code> as equivalent to <code>object</code> (which is reasonable, given that the description of <code>object</code> in typeshed does satisfy <code>Hashable</code>), and thus sees the union of anything with <code>Hashable</code> as also equivalent to <code>object</code>. So <code>Hashable | Sequence[HashableT]</code> all simplifies to <code>object</code> -- thus the typevar is irrelevant as far as ty is concerned.</p>
+<p>I do have one question about the code here: why is it <code>Hashable | Sequence[HashableT]</code> rather than <code>HashableT | Sequence[HashableT]</code>? The latter seems to make more sense (it's not clear why only the type inside the sequence variant should be determined by the type argument), and it would eliminate this problem.</p>
+<p>I do think there are several improvements we need to consider for ty here:</p>
+<ol>
+<li>We probably need to do something to be more similar to other type checkers in their (unsound) treatment of <code>Hashable</code>. This is already tracked in https://github.com/astral-sh/ty/issues/1162</li>
+<li>Entirely apart from <code>Hashable</code>, I think we should not discard &quot;redundant&quot; typevars in type aliases, ideally. Even if the type alias were literally <code>VType: TypeAlias = object | Sequence[T]</code>, I think we ideally should not error on <code>VType[int]</code>, despite <code>VType[whatever]</code> always simplifying to <code>object</code>. Let's use this issue to track that improvement.</li>
+</ol>
+<p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`invalid-type-arguments` with `Union` type in `TypeAlias`" to "don't discard "unused" typevars from generic context of simplified generic type alias" by @carljm on 2025-12-10 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-10 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-10 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type aliases</span> added by @carljm on 2025-12-10 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 21:18</div>
+            <div class="timeline-body"><p>Point 2 seems related to / the same as #1666?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 21:20</div>
+            <div class="timeline-body"><p>Yes, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-10 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 21:24</div>
+            <div class="timeline-body"><p>Interesting. I assumed that <code>object</code> would be the one exception we would carve out for https://github.com/astral-sh/ty/issues/1666, since we consider even <code>Any</code> a subtype of (and redundant with) <code>object</code>. So surely any <code>TypeVar</code> should be too, even after you take into account the possibility that the <code>TypeVar</code> could be solved as <code>Any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 21:43</div>
+            <div class="timeline-body"><p>Hmm, yeah. So there may be something separate to solve here, where we collect typevars before eliminating union redundancies.</p>
+<p>Or we could decide that in general we're fine with <code>x: TypeAlias = object | list[T]</code> being treated as a non-generic type alias, because that's a weird thing to do -- so we we just need to handle <code>Hashable</code> differently. (But I don't think I agree with this. If the user put a typevar in their type alias, they are intending it to be generic -- eager union simplification should not change that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 21:45</div>
+            <div class="timeline-body"><p>Going to reopen this, since it does seem to require some different handling of typevars in union type aliases, even if #1666 is fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-12-10 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2025-12-14 08:25</div>
+            <div class="timeline-body"><p>Hi, with the new alpha release, the error message has shifted to</p>
+<blockquote>
+<p>Cannot subscript non-generic type: <code>&lt;types.UnionType special form 'Hashable'&gt;</code> is already specialized (non-subscriptable) [Ln 8, Col 12]</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2025-12-14 10:07</div>
+            <div class="timeline-body"><p>@carljm</p>
+<blockquote>
+<p>I do have one question about the code here: why is it <code>Hashable | Sequence[HashableT]</code> rather than <code>HashableT | Sequence[HashableT]</code>? The latter seems to make more sense (it's not clear why only the type inside the sequence variant should be determined by the type argument), and it would eliminate this problem.</p>
+</blockquote>
+<p>Good point, it was an old piece of code, but I dared to touch it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>

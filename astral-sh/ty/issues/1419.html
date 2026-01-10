@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression in latest ty update - astral-sh/ty #1419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression in latest ty update</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1419">#1419</a>
+        opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a>
+        on 2025-10-23 13:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2025-10-23 13:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+    from pathlib import Path
+
+
+class CachedFunction[**P, R]:  # noqa: B903
+    &quot;&quot;&quot;A function wrapper which is used to cache the output.&quot;&quot;&quot;
+
+    def __init__(
+        self,
+        function: Callable[P, R],
+        path: Path | Callable[P, Path | None] | None,
+    ) -&gt; None:
+        self._inner = function
+        self.Path = path
+
+    def _get_cache_path(self, *args: P.args, **kw: P.kwargs) -&gt; Path | None:
+        cache_path = self.Path(*args, **kw) if callable(self.Path) else self.Path
+        if cache_path is None:
+            return None
+        return cache_path
+</code></pre>
+<p>Todo &amp; !None should be assignable to Path |None</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+  --&gt; thesis_calculations/temp.py:21:65
+   |
+19 |         self.Path = path
+20 |
+21 |     def _get_cache_path(self, *args: P.args, **kw: P.kwargs) -&gt; Path | None:
+   |                                                                 ----------- Expected `Path | None` because of return type
+22 |         cache_path = self.Path(*args, **kw) if callable(self.Path) else self.Path
+23 |         if cache_path is None:
+24 |             return None
+25 |         return cache_path
+   |                ^^^^^^^^^^ expected `Path | None`, found `(@Todo &amp; ~None) | (Path &amp; ~(() -&gt; object)) | (((...) -&gt; Path | None) &amp; ~(() -&gt; object))`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 19:33</div>
+            <div class="timeline-body"><p>Thanks for the report. The issue here isn't the <code>Todo &amp; ~None</code> element of the union -- we do indeed consider this to be assignable to <code>Path | None</code>. <a href="https://play.ty.dev/74c785c5-11ae-4ea4-abd4-425e8d9ac34c">Here's a demo in the playground</a> that shows this (the demo uses <code>Any</code> rather than <code>Todo</code>, but <code>Any</code> and <code>Todo</code> are always treated the same by us internally).</p>
+<p>It's the <code>(((...) -&gt; Path | None) &amp; ~(() -&gt; object))</code> element of the union that causes us to complain that the returned object isn't assignable to the return type annotation. That <em>should</em> have been narrowed away by this line in your code:</p>
+<pre><code class="language-py">cache_path = self.Path(*args, **kw) if callable(self.Path) else self.Path
+</code></pre>
+<p>but our narrowing for <code>if callable</code> isn't quite corect at the moment.</p>
+<p>Apologies for the jargon, but: the ultimate cause of this is that <code>builtins.callable</code> in typeshed is annotated as returning <code>TypeIs[Callable[..., Any]]</code>, and our implementation of <code>TypeIs</code> implicitly converts <code>Callable[..., Any]</code> to the top-materialization of that type, and our implementation of the top materialization for <code>Callable</code> types is currently buggy due to <a href="https://github.com/astral-sh/ruff/blob/83a3bc4ee94de552d5cec9a3146aff00dade6903/crates/ty_python_semantic/src/types/signatures.rs#L1448-L1453">this TODO</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2025-10-23 19:48</div>
+            <div class="timeline-body"><p>Ah no problem feel free to close if it's a known issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 20:04</div>
+            <div class="timeline-body"><p>It was a known issue, but we didn't have a GitHub issue tracking it. I've written up a more focussed one now (https://github.com/astral-sh/ty/issues/1426); I'll close this in favour of that one, since it'll be easier to monitor what needs to be done that way.</p>
+<p>Thanks again for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-23 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-12-12 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-12 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:21 UTC
+    </footer>
+</body>
+</html>

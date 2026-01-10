@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>false positive `unsupported-base` for self-referential generic base - astral-sh/ty #1800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>false positive `unsupported-base` for self-referential generic base</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1800">#1800</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-12-07 20:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-07 20:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There are several examples of this in <a href="https://github.com/jorenham/optype">optype</a>, and this is a (stripped down version of) one of them (<a href="https://github.com/jorenham/optype/blob/2d03b31e0ce61c6fa827a9753ea131e2aada527a/optype/copy.py#L31-L43">src</a>):</p>
+<pre><code class="language-py">from typing import Protocol, override, Self
+
+class CanCopy[T](Protocol):
+    def __copy__(self, /) -&gt; T: ...
+
+class CanCopySelf(CanCopy[&quot;CanCopySelf&quot;], Protocol):
+    @override
+    def __copy__(self, /) -&gt; Self: ...
+</code></pre>
+<pre><code>Unsupported class base with type `&lt;class 'CanCopy[CanCopySelf]'&gt; | &lt;class 'CanCopy[CanCopySelf]'&gt;` (unsupported-base) [Ln 6, Col 19]
+</code></pre>
+<p>which runs just fine at runtime:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Protocol, override, Self
+... 
+... class CanCopy[T](Protocol):
+...     def __copy__(self, /) -&gt; T: ...
+... 
+... class CanCopySelf(CanCopy[&quot;CanCopySelf&quot;], Protocol):
+...     @override
+...     def __copy__(self, /) -&gt; Self: ...
+...     
+&gt;&gt;&gt; # ¯\_(ツ)_/¯
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-07 22:01</div>
+            <div class="timeline-body"><p>This is probably https://github.com/astral-sh/ty/issues/1732. I'll check tomorrow if it repros prior to https://github.com/astral-sh/ruff/commit/2c0c5ff4e7a0f347e81bdcdb6e38180dcee0688b landing (if not, it's almost certainly #1732)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-07 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-07 22:18</div>
+            <div class="timeline-body"><p>This is a bug in ty; we should support this (we shouldn't &quot;need&quot; to infer a union type there at all). But with regards to</p>
+<blockquote>
+<p>which runs just fine at runtime</p>
+</blockquote>
+<p>note that the error code was <code>unsupported-base</code> rather than <code>invalid-base</code>. <code>invalid-base</code> is about things that will cause runtime errors; <code>unsupported-base</code> is specifically about patterns that will not cause errors at runtime but which ty cannot support:</p>
+<ul>
+<li>https://docs.astral.sh/ty/reference/rules/#invalid-base</li>
+<li>https://docs.astral.sh/ty/reference/rules/#unsupported-base</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-08 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 00:13</div>
+            <div class="timeline-body"><p>Will be fixed by https://github.com/astral-sh/ruff/pull/21909</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-12-11 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-11 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:55:22 UTC
+    </footer>
+</body>
+</html>
