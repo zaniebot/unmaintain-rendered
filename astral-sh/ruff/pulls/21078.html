@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-gettext`] Fix false negatives for plural argument of ngettext (`INT001`, `INT002`, `INT003`) - astral-sh/ruff #21078</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-gettext</code>] Fix false negatives for plural argument of ngettext (<code>INT001</code>, <code>INT002</code>, <code>INT003</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21078">#21078</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-26 01:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-26 01:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21062. Extends the <code>INT001</code>, <code>INT002</code>, and <code>INT003</code> lint rules to check both the singular and plural arguments of <code>ngettext</code> function calls, fixing false negatives where formatting issues in the plural argument were not being detected.</p>
+<h2>Problem Analysis</h2>
+<p>The three rules (<code>f-string-in-get-text-func-call</code>, <code>format-in-get-text-func-call</code>, and <code>printf-in-get-text-func-call</code>) only checked the first argument (singular) of <code>ngettext</code> calls but ignored the second argument (plural). This caused false negatives when f-strings, <code>.format()</code> calls, or <code>%</code> formatting were used in the plural argument.</p>
+<p>The root cause was:</p>
+<ol>
+<li>Rule functions only examined <code>args.first()</code></li>
+<li>No logic to determine if a function call was specifically <code>ngettext</code> vs <code>gettext</code></li>
+<li>Missing checks for <code>args.get(1)</code> (the second argument)</li>
+</ol>
+<p>Example of the bug:</p>
+<pre><code class="language-python">ngettext(f&quot;one item&quot;, f&quot;{n} items&quot;, n)  # Only flagged first f-string, not second
+</code></pre>
+<h2>Approach</h2>
+<ol>
+<li><strong>Modified function signatures</strong>: Updated all three rule functions to accept the <code>func</code> parameter</li>
+<li><strong>Added ngettext detection</strong>: Created <code>is_ngettext_call()</code> helper that checks:<ul>
+<li>Direct name references (e.g., <code>ngettext(...)</code>)</li>
+<li>Qualified names ending with <code>ngettext</code> (e.g., <code>gettext_mod.ngettext(...)</code>)</li>
+</ul>
+</li>
+<li><strong>Extended argument checking</strong>: For <code>ngettext</code> calls, now check both first and second arguments</li>
+<li><strong>Code refactoring</strong>: Created shared <code>helpers.rs</code> module to eliminate duplication</li>
+<li><strong>Updated main checker</strong>: Modified expression analyzer to pass <code>func</code> parameter</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-26 01:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_gettext/snapshots/ruff_linter__rules__flake8_gettext__tests__preview__printf-in-get-text-func-call_INT003.py.snap</code>:200 on 2025-12-29 21:53</div>
+            <div class="timeline-body"><p>I think we have to customize the error messages depending on whether it's the first argument or the second. The <code>consider ...</code> suggestion doesn't make much sense here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_gettext/helpers.rs</code>:5 on 2025-12-29 21:54</div>
+            <div class="timeline-body"><p>We have an existing helper in <code>flake8_gettext/mod.rs</code>. I kind of think we should keep them together, either by moving this there or moving the other helper here. I don't have a strong preference but would slightly lean toward reusing the existing file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_gettext/helpers.rs</code>:18 on 2025-12-29 22:00</div>
+            <div class="timeline-body"><p>We should double check if these two are redundant. I would expect <code>resolve_qualified_name</code> on a name to return <code>[&quot;ngettext&quot;]</code>, which should pass the second check here, but I could be wrong. Checking the name might be a small perf optimization since the qualified name can be expensive, but I'd still be pretty tempted to turn the whole function into</p>
+<pre><code class="language-rust">checker.semantic().resolve_qualified_name(func).is_some_and(|qualified_name|
+    matches!(qualified_name, [.., &quot;ngettext&quot;])
+)
+</code></pre>
+<p>if it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-12-29 22:02</div>
+            <div class="timeline-body"><p>Thank you! And sorry for the delay on the review.</p>
+<p>I only had a couple of nits about the code, but I think we need to improve the error messages for these new cases. We should also make this a preview change as I mentioned on the issue since this substantially increases the scope of the rule, even if there are no ecosystem changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-29 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-29 22:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:41 UTC
+    </footer>
+</body>
+</html>

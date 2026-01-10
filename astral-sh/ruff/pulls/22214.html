@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-unused-arguments`] Mark `**kwargs` in `TypeVar` as used (`ARG001`) - astral-sh/ruff #22214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-unused-arguments</code>] Mark <code>**kwargs</code> in <code>TypeVar</code> as used (<code>ARG001</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22214">#22214</a>
+        opened by <a href="https://github.com/ValdonVitija">@ValdonVitija</a>
+        on 2025-12-26 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ValdonVitija">@ValdonVitija</a> on 2025-12-26 22:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes false positive in ARG001 when <code>**kwargs</code> is passed to <code>typing.TypeVar</code></p>
+<p>Closes #22178</p>
+<p>When <code>**kwargs</code> is used in a <code>typing.TypeVar</code> call, the checker was not recognizing it as a usage, leading to false positive &quot;unused function argument&quot; warnings.</p>
+<h3>Root Cause</h3>
+<p>In the AST, keyword arguments are represented by the <code>Keyword</code> struct with an <code>arg</code> field of type <code>Option&lt;Identifier&gt;</code>:</p>
+<ul>
+<li>Named keywords like <code>bound=int</code> have <code>arg = Some(&quot;bound&quot;)</code></li>
+<li>Dictionary unpacking like <code>**kwargs</code> has <code>arg = None</code></li>
+</ul>
+<p>The existing code only handled the <code>Some(id)</code> case, never visiting the expression when <code>arg</code> was <code>None</code>, so <code>**kwargs</code> was never marked as used.</p>
+<h3>Changes</h3>
+<p>Added an <code>else</code> branch to handle <code>**kwargs</code> unpacking by calling <code>visit_non_type_definition(value)</code> when <code>arg</code> is <code>None</code>. This ensures the <code>kwargs</code> variable is properly visited and marked as used by the semantic model.</p>
+<h2>Test Plan</h2>
+<p>Tested with the following code:</p>
+<pre><code class="language-python">import typing
+
+def f(
+    *args: object,
+    default: object = None,
+    **kwargs: object,
+) -&gt; None:
+    typing.TypeVar(*args, **kwargs)
+</code></pre>
+<p>Before :</p>
+<p><code>ARG001 Unused function argument: kwargs </code></p>
+<p>After :</p>
+<p><code>All checks passed!</code></p>
+<p>Run the example with the following command(from the root of ruff and please change the path to the module that contains the code example):</p>
+<p><code>cargo run -p ruff -- check /path/to/file.py --isolated --select=ARG --no-cache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 14:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/1834c5bb757c215cf9eb8f98f994a5843618ae6b/src/scikit_build_core/_compat/typing.py#L36'>src/scikit_build_core/_compat/typing.py:36:32:</a> RUF100 [*] Unused `noqa` directive (unused: `ARG001`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/1834c5bb757c215cf9eb8f98f994a5843618ae6b/src/scikit_build_core/_compat/typing.py#L36'>src/scikit_build_core/_compat/typing.py:36:32:</a> RUF100 [*] Unused `noqa` directive (unused: `ARG001`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1878 on 2025-12-29 15:04</div>
+            <div class="timeline-body"><p>I'm not sure we need the first part of this comment, but I like the example.</p>
+<pre><code class="language-suggestion">                                // Ex: typing.TypeVar(**kwargs)
+</code></pre>
+<p>I just removed the <code>*args</code> to make it even more clear which part is relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-29 15:07</div>
+            <div class="timeline-body"><p>Thank you! This is exactly the fix I had in mind.</p>
+<p>Could you add your manual test case from the PR summary as a new ARG001 case just to prevent future regressions?</p>
+<p>You could add it at the bottom of this file:</p>
+<p>https://github.com/astral-sh/ruff/blob/fbb5c8aa3c19891f2a6d78ccf335ae91c94f98ca/crates/ruff_linter/resources/test/fixtures/flake8_unused_arguments/ARG.py#L254-L258</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-29 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ValdonVitija">@ValdonVitija</a> reviewed on 2025-12-29 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ValdonVitija">@ValdonVitija</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1878 on 2025-12-29 20:59</div>
+            <div class="timeline-body"><p>@ntBre Added the required test case &amp; removed the first part of the comment.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-31 16:05</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Typevar does not recognize kwargs for arg001" to "[`flake8-unused-arguments`] Mark `**kwargs` in `TypeVar` as used (`ARG001`)" by @ntBre on 2025-12-31 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-31 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-31 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>

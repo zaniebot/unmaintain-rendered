@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Improve diagnostic range for `PLC0206` - astral-sh/ruff #22312</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Improve diagnostic range for <code>PLC0206</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22312">#22312</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-12-30 22:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-30 22:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes #14900 by:</p>
+<ul>
+<li>Restricting the diagnostic range from the whole <code>for</code> loop to only the <code>target in iter</code> part</li>
+<li>Adding secondary annotations to each use of the <code>dict[key]</code> accesses</li>
+<li>Adding a <code>fix_title</code> suggesting to use <code>for key in dict.items()</code></li>
+</ul>
+<p>I thought this approach sounded slightly nicer than the alternative of renaming the rule to focus on each indexing operation mentioned in https://github.com/astral-sh/ruff/issues/14900#issuecomment-2543923625, but I don't feel too strongly. This was easy to implement with our new diagnostic infrastructure too.</p>
+<p>This produces an example annotation like this:</p>
+<pre><code>PLC0206 Extracting value from dictionary without calling `.items()`
+  --&gt; dict_index_missing_items.py:59:5
+   |
+58 | # A case with multiple uses of the value to show off the secondary annotations
+59 | for instrument in ORCHESTRA:
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+60 |     data = json.dumps(
+61 |         {
+62 |             &quot;instrument&quot;: instrument,
+63 |             &quot;section&quot;: ORCHESTRA[instrument],
+   |                        ---------------------
+64 |         }
+65 |     )
+66 |
+67 |     print(f&quot;saving data for {instrument} in {ORCHESTRA[instrument]}&quot;)
+   |                                              ---------------------
+68 |
+69 |     with open(f&quot;{instrument}/{ORCHESTRA[instrument]}.txt&quot;, &quot;w&quot;) as f:
+   |                               ---------------------
+70 |         f.write(data)
+   |
+help: Use `for instrument, value in ORCHESTRA.items()` instead
+</code></pre>
+<p>which I think is a big improvement over:</p>
+<pre><code>PLC0206 Extracting value from dictionary without calling `.items()`
+  --&gt; dict_index_missing_items.py:59:1
+   |
+58 |   # A case with multiple uses of the value to show off the secondary annotations
+59 | / for instrument in ORCHESTRA:
+60 | |     data = json.dumps(
+61 | |         {
+62 | |             &quot;instrument&quot;: instrument,
+63 | |             &quot;section&quot;: ORCHESTRA[instrument],
+64 | |         }
+65 | |     )
+66 | |
+67 | |     print(f&quot;saving data for {instrument} in {ORCHESTRA[instrument]}&quot;)
+68 | |
+69 | |     with open(f&quot;{instrument}/{ORCHESTRA[instrument]}.txt&quot;, &quot;w&quot;) as f:
+70 | |         f.write(data)
+   | |_____________________^
+   |
+</code></pre>
+<p>The secondary annotation feels a bit bare without a message, but I thought it
+might be too busy to include one. Something like <code>value extracted here</code> or
+<code>indexed here</code> might work if we do want to include a brief message.</p>
+<p>To avoid collecting a <code>Vec</code> of annotation ranges, I added a <code>&amp;Checker</code> to the
+rule's visitor to emit diagnostics as we go instead of at the end.</p>
+<h2>Test Plan</h2>
+<p>Existing tests, plus a new case showing off multiple secondary annotations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-30 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-12-30 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-30 23:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+20 -20 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1474'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1474:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1474'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1474:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:17:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC0206 | 40 | 20 | 20 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+20 -20 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1474'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1474:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1474'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1474:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:17:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/77b200153f71b12b1d6d79a3c0b7b32a150acdea/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/85e830de46eea3dcd4959908782f8db03c5dfd89/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC0206 | 40 | 20 | 20 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-12-30 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-12-30 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:122 on 2025-12-31 08:02</div>
+            <div class="timeline-body"><p>Part of the confusion in the original issue was that it wasn't clear how to fix the violation. Could we add an info message sub-diagnostic suggesting the use of <code>Use for instrument, value in ORCHESTRA.items()</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:17 on 2025-12-31 08:06</div>
+            <div class="timeline-body"><p>Is it necessary to make this a preview-only change? To suppress PLC0206 today, you have to put the noqa on the line where the <code>for</code> statement starts. Will this change with this PR?</p>
+<p>The only example that I can think of is:</p>
+<pre><code class="language-py">ORCHESTRA = dict()
+
+for (  # noqa PLC0206
+    instrument
+) in ORCHESTRA:
+    print(f&quot;{instrument}: {ORCHESTRA[instrument]}&quot;)
+
+
+</code></pre>
+<p>But we could fix this by using <code>parenthesized_range</code> for the for-target.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs</code>:91 on 2025-12-31 08:07</div>
+            <div class="timeline-body"><p>Do we need the two lifetimes or would using <code>'a</code> everywhere be sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs</code>:84 on 2025-12-31 08:09</div>
+            <div class="timeline-body"><p>I suggest moving this into <code>SubscriptVisitor::new</code>, as it seems the better place once we remove the preview gating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs</code>:158 on 2025-12-31 08:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">						let guard = self.guard.get_or_init(|| self.checker
+                        .report_diagnostic(DictIndexMissingItems, self.range)
+          	};
+
+            if is_plc0206_narrower_range_enabled(self.checker.settings()) {
+          	    guard.secondary_annotation(&quot;&quot;, expr);
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-31 08:10</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-31 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:17 on 2025-12-31 13:54</div>
+            <div class="timeline-body"><p>Oh, I guess you're right! I saw the discussion about the breaking change in the issue, but that must have been in case we moved the diagnostic range to the indexing lines. I think that means I can drop the preview checks entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-31 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:17 on 2025-12-31 14:01</div>
+            <div class="timeline-body"><p>I think so, at least if the suppression ranges indeed remain unchanged (see my example above)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-31 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:17 on 2025-12-31 14:03</div>
+            <div class="timeline-body"><p>Yep, I tested out your example and added it as a test. I'll try to come up with any other tricky cases, but that seems to cover what I've tried so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs</code>:91 on 2025-12-31 14:13</div>
+            <div class="timeline-body"><p>I tried that first and just checked again, and I believe we do need both here. The compiler wants me to start annotating the parent functions if I use just <code>'a</code>.</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code>error: lifetime may not live long enough
+  --&gt; crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs:80:5
+   |
+62 | pub(crate) fn dict_index_missing_items(checker: &amp;Checker, stmt_for: &amp;ast::StmtFor) {
+   |                                        -------  - let's call the lifetime of this reference `'1`
+   |                                        |
+   |                                        has type `&amp;Checker&lt;'2&gt;`
+...
+80 |     SubscriptVisitor::new(stmt_for, dict_name, checker).visit_body(body);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument requires that `'1` must outlive `'2`
+   |
+   = note: requirement occurs because of the type `Checker&lt;'_&gt;`, which makes the generic argument `'_` invariant
+   = note: the struct `Checker&lt;'a&gt;` is invariant over the parameter `'a`
+   = help: see &lt;https://doc.rust-lang.org/nomicon/subtyping.html&gt; for more information about variance
+help: consider introducing a named lifetime parameter
+   |
+62 | pub(crate) fn dict_index_missing_items&lt;'a&gt;(checker: &amp;'a Checker&lt;'a&gt;, stmt_for: &amp;ast::StmtFor) {
+   |                                       ++++           ++        ++++
+
+error: lifetime may not live long enough
+  --&gt; crates/ruff_linter/src/rules/pylint/rules/dict_index_missing_items.rs:80:5
+   |
+62 | pub(crate) fn dict_index_missing_items(checker: &amp;Checker, stmt_for: &amp;ast::StmtFor) {
+   |                                        -------                      - let's call the lifetime of this reference `'3`
+   |                                        |
+   |                                        has type `&amp;Checker&lt;'2&gt;`
+...
+80 |     SubscriptVisitor::new(stmt_for, dict_name, checker).visit_body(body);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument requires that `'3` must outlive `'2`
+   |
+   = note: requirement occurs because of the type `Checker&lt;'_&gt;`, which makes the generic argument `'_` invariant
+   = note: the struct `Checker&lt;'a&gt;` is invariant over the parameter `'a`
+   = help: see &lt;https://doc.rust-lang.org/nomicon/subtyping.html&gt; for more information about variance
+help: consider introducing a named lifetime parameter
+   |
+62 | pub(crate) fn dict_index_missing_items&lt;'a&gt;(checker: &amp;Checker&lt;'a&gt;, stmt_for: &amp;'a ast::StmtFor) {
+   |                                       ++++                  ++++             ++
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-31 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__preview__PLC0206_dict_index_missing_items.py.snap</code>:122 on 2025-12-31 14:14</div>
+            <div class="timeline-body"><p>Oh yeah, that seems like a nice <code>fix_title</code> even without a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-31 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @ntBre on 2025-12-31 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-31 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-31 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-31 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>

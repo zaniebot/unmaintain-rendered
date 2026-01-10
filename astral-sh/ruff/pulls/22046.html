@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`airflow`] Passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR303`) - astral-sh/ruff #22046</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>airflow</code>] Passing positional argument into <code>airflow.lineage.hook.HookLineageCollector.create_asset</code> is not allowed (<code>AIR303</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22046">#22046</a>
+        opened by <a href="https://github.com/sjyangkevin">@sjyangkevin</a>
+        on 2025-12-18 02:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on 2025-12-18 02:53</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This is a follow up PR to https://github.com/astral-sh/ruff/pull/21096</p>
+<p>The new code AIR303 is added for checking function signature change in Airflow 3.0. The new rule added to AIR303 will check if positional argument is passed into <code>airflow.lineage.hook.HookLineageCollector.create_asset</code>. Since this method is updated to accept only keywords argument, passing positional argument into it is not allowed, and will raise an error. The test is done by checking whether positional argument with 0 index can be found.</p>
+<h2>Test Plan</h2>
+<p>A new test file is added to the fixtures for the code AIR303. Snapshot test is updated accordingly.</p>
+<p><img width="1444" height="513" alt="Screenshot from 2025-12-17 20-54-48" src="https://github.com/user-attachments/assets/bc235195-e986-4743-9bf7-bba65805fb87" /></p>
+<p><img width="981" height="433" alt="Screenshot from 2025-12-17 21-34-29" src="https://github.com/user-attachments/assets/492db71f-58f2-40ba-ad2f-f74852fa5a6b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[airflow] passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (AIR303)" to "[`airflow`] passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR303`)" by @sjyangkevin on 2025-12-18 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1275 on 2025-12-18 07:20</div>
+            <div class="timeline-body"><p>We probably can make a parent function like <code>airflow_3_function_signature_change_expr</code> and call <code>airflow_3_keyword_args_only_function</code> inside. IIRC, there're come other cases as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:11 on 2025-12-18 07:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[violation_metadata(preview_since = &quot;0.15.0&quot;)]
+</code></pre>
+<p>This is wrong. but will need to confirm which version we want to add this preview</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:19 on 2025-12-18 07:22</div>
+            <div class="timeline-body"><p>We could extend the description to include any kind of functional siguature change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:63 on 2025-12-18 07:25</div>
+            <div class="timeline-body"><p>I'm not sure whether we want to make this a replacement. Or should we just make it a <code>Message</code>? Or this probably should be something like <code>make pos arg passed through keyword</code>, but we'll need to store the order of that function as well. it's not super hard but not sure whether fixing that worth the effort</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-12-18 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-18 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:11 on 2025-12-18 16:39</div>
+            <div class="timeline-body"><p>Good catch. I think 0.14.11 would be a good start, assuming this might land next week. We can always bump the version again just before landing, if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-18 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-18 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-18 16:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-18 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1275 on 2025-12-18 17:49</div>
+            <div class="timeline-body"><p>Agree. The keyword argument enforcement is a specific case in this category. It's better to have a generic name for it, and then we can include more cases for function signature chage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-18 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:11 on 2025-12-18 17:50</div>
+            <div class="timeline-body"><p>Thanks for catching it and thank @ntBre for the feedback. I think we could set it to 0.14.11, and bump the version if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-18 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:63 on 2025-12-18 17:54</div>
+            <div class="timeline-body"><p>Yeah, I also came across thinking about this, and attempted to use a simple message. However, I am not sure if we want to do something like we can show the expected change to the user. for example,</p>
+<p>fn(&quot;a&quot;, &quot;b&quot;) -&gt; fn(a=&quot;a&quot;, b=&quot;b&quot;),</p>
+<p>not sure if it is the case easier and can be done through a replacement. I might need to take a deeper look into this to understand it better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:63 on 2025-12-19 02:54</div>
+            <div class="timeline-body"><p>I think I get what you suggest after looking again into the code. Just want to see if my understanding is correct.</p>
+<p>The current <code>Replacement</code> can do 5 things, such as replace name, update import, show message, etc. The added <code>AttrNameWithMessage</code> replace the name and show additional message.</p>
+<blockquote>
+<p>Or should we just make it a Message?</p>
+</blockquote>
+<p>In this check, since we check for argument type change (pos -&gt; keyword), instead of name change, so show a message might be more appropriate and straight-forward to implement, rather than using <code>Replacement::AttrNameWithMessage</code>.</p>
+<blockquote>
+<p>Or this probably should be something like make pos arg passed through keyword, but we'll need to store the order of that function as well.</p>
+</blockquote>
+<p>If we want to use Replacement, then we need to check the position of the argument, and somehow map it to the corresponding keyword argument. Do a &quot;FULL&quot; replacement, for both name and argument update.</p>
+<p>Let me know if my understanding is correct. I could try to look into the second option, as I feel it could offer a streamlined update. However, it could take into the complexity in checking the order of the arguments; but this kind of update can also be straight-forward done manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-19 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-12-19 02:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:63 on 2025-12-19 02:59</div>
+            <div class="timeline-body"><p>Yes, your understanding is correct 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on 2025-12-19 06:31</div>
+            <div class="timeline-body"><p>Hi @Lee-W , @ntBre , I've made the following updates to the PR. The updates might be more than what we've discussed, but please let me know if you have further feedback. Thanks for your time to review.</p>
+<h3>Updates</h3>
+<ul>
+<li>created a parent function <code>airflow_3_function_signature_change_expr</code> to call <code>airflow_3_keyword_args_only_function</code></li>
+<li>updated the <code>violation_metadata</code> to 0.14.11</li>
+<li>updated the struct document to be more generic for function signature change</li>
+<li>updated some namings and description for functions</li>
+<li>removed the check for <code>create_dataset</code>, which is checked by the <code>AIR301</code> for deprecation, implement only function signature change check for <code>create_asset</code> in <code>AIR303</code> (crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs <strong>L107</strong>)</li>
+<li>fixed the document generation issue, CI error for document generation should be fixed</li>
+</ul>
+<blockquote>
+<p>I'm not sure whether we want to make this a replacement. Or should we just make it a <code>Message</code>? Or this probably should be something like <code>make pos arg passed through keyword</code>, but we'll need to store the order of that function as well. it's not super hard but not sure whether fixing that worth the effort</p>
+</blockquote>
+<p>I think again based on the following trade-off, I feel make it a <code>Message</code> probably a better option. @Lee-W let me know if you have different thoughts, or you think there is a better way to implement it.</p>
+<p>Option 1: make it a message</p>
+<ul>
+<li>Implementation is straight-forward, and less maintenance efforts</li>
+<li>User experience might not be great, as they need to manually fix this, even though the fix is straight-forward</li>
+<li>Since it doesn't suggest any fix, no edge case to handle when suggesting/executing the fix</li>
+</ul>
+<p>Option 2: make a &quot;full replacement&quot;</p>
+<ul>
+<li>In this case, we will need to store the order of the arguments for a function. Then every update (e.g., <code>create_asset(uri, extra)</code> to <code>create_asset(uri, metadata)</code>) would require an update to the rule. I am wondering if it could introduce long-term maintenance effort to ensure the rule work properly</li>
+<li>Wondering if the handling of starred args would be complicated (e.g., <code>collector.create_asset(*some_list, **some_dict)</code>). This might be an edge case. In <code>node.rs</code>, seems like there is a function can resolve the order for this case, so it could possibly be handled as well.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Lee-W by @sjyangkevin on 2025-12-19 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @sjyangkevin on 2025-12-19 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:53 on 2025-12-19 07:10</div>
+            <div class="timeline-body"><p>Do you thing we want a new enum or keep using <code>Replacement</code>? I feel like it's less likely to reuse things like <code>SourceModuleMoved</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:126 on 2025-12-19 07:11</div>
+            <div class="timeline-body"><p>According to the description and the test output, we're not actually fixing anything. What is this for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-12-19 07:11</div>
+            <div class="timeline-body"><p>Left a few comments, but looks way better! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-19 07:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:126 on 2025-12-19 07:29</div>
+            <div class="timeline-body"><p>Right. Since I am referencing the AIR301 implementation, and that contains the fix. I should actually remove it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Lee-W by @sjyangkevin on 2025-12-19 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-19 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:53 on 2025-12-19 20:53</div>
+            <div class="timeline-body"><p>I created a new enum which use similar pattern as <code>Replacement</code>. I think in future if there are different types of function signature change, we could extend that enum to define specific message or fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-19 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:63 on 2025-12-19 20:56</div>
+            <div class="timeline-body"><p>I am wondering whether we should put it onto the heap using <code>to_string()</code>.</p>
+<p>The <code>message</code> is a fixed-size/static string as defined on L98.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-19 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:63 on 2025-12-19 22:56</div>
+            <div class="timeline-body"><p>I thinks as the definition <code>fn fix_title(&amp;self) -&gt; Option&lt;String&gt;</code>, we need to use <code>to_string()</code> to create a <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/airflow/AIR303_args.py</code>:1 on 2025-12-25 18:08</div>
+            <div class="timeline-body"><p>tiny nit: I would probably just call this AIR303.py unless you expect to have variants of the rule that don't apply to arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:69 on 2025-12-25 18:09</div>
+            <div class="timeline-body"><p>nit: Do we need the <code>_expr</code> suffix here? I'd usually only expect that if the rule were also applied to statements and there were a <code>_stmt</code> variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:84 on 2025-12-25 18:10</div>
+            <div class="timeline-body"><p>nit: I think I would probably just inline these functions:</p>
+<pre><code class="language-suggestion">    let Expr::Call(call_expr @ ExprCall { arguments, .. }) = expr else {
+        return;
+    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:97 on 2025-12-25 18:12</div>
+            <div class="timeline-body"><p>I think it might be nicer just to emit the diagnostic here and avoid the trail of <code>else { return }</code> arms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/helpers.rs</code>:41 on 2025-12-25 18:13</div>
+            <div class="timeline-body"><p>Could we include the <code>message: &amp;'static str</code> directly in the <code>Airflow3FunctionSignatureChange</code> struct? This enum doesn't look too helpful unless you have more variants planned for the future. We could at least include it directly in the <code>Airflow3FunctionSignatureChange</code> file if it's not shared with other rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:89 on 2025-12-25 18:15</div>
+            <div class="timeline-body"><p>Another small nit, but we typically avoid abbreviating names. I think we'd usually just call this <code>qualified_name</code>.</p>
+<pre><code class="language-suggestion">    let Some(qualified_name) = typing::resolve_assignment(value, checker.semantic()) else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:18 on 2025-12-25 18:32</div>
+            <div class="timeline-body"><p>What do you think about something like this?</p>
+<pre><code class="language-suggestion">/// Airflow 3.0 introduces changes to function signatures. Code that
+/// worked in Airflow 2.x will raise a runtime error if not updated to work with Airflow
+/// 3.0.
+</code></pre>
+<p>It seems like some function signatures have changed since y'all are adding this rule :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/airflow/AIR303_args.py</code>:10 on 2025-12-25 18:34</div>
+            <div class="timeline-body"><p>This might be quite unusual, but do you want to test something like:</p>
+<pre><code class="language-py">HookLineageCollector().create_asset(positional_arg)
+</code></pre>
+<p>I'm not sure if <code>resolve_assignment</code> will handle that case automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:39 on 2025-12-25 18:40</div>
+            <div class="timeline-body"><p>I don't think this name quite aligns with our <a href="https://docs.astral.sh/ruff/contributing/#rule-naming-convention">naming conventions</a>, specifically</p>
+<blockquote>
+<p>Ruff's rule names should make grammatical and logical sense when read as &quot;allow ${rule}&quot; or &quot;allow ${rule} items&quot;, as in the context of suppression comments</p>
+</blockquote>
+<p>but I'm not coming up with a great alternative either. Maybe something like <code>Airflow3IncompatibleFunctionSignature</code> or <code>Airflow3IncompatibleCall</code>?</p>
+<p>I'm okay with what you have now if it sounds better to you, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-25 18:44</div>
+            <div class="timeline-body"><p>Thank you! This looks great to me overall, I just had a few small suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-25 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/airflow/AIR303_args.py</code>:10 on 2025-12-25 18:53</div>
+            <div class="timeline-body"><p>One other probably rare case is <code>hlc.create_asset(*args)</code>. I don't think the rule would currently flag that because <code>find_positional</code> only checks the non-starred arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on 2025-12-27 06:24</div>
+            <div class="timeline-body"><p>Thanks @ntBre, I've made the following changes based on the feedback.</p>
+<ol>
+<li>Renamed the test file from <code>AIR303_args.py</code> to <code>AIR303.py</code></li>
+<li>Renamed <code>airflow_3_function_signature_change_expr</code> to <code>airflow_3_function_signature_change</code></li>
+</ol>
+<ol start="3">
+<li>Refactored the implementation to reduce the hierarchy of the function calls</li>
+<li>Emitted the diagnostic directly to avoid the trail of <code>else { return; }</code> arms</li>
+<li>Moved the enum <code>FunctionSignatureChangeType</code> into <code>function_signature_change_in_3.rs</code>, as it is less likely to be an enum shared by other modules/implementations. In case in future we need to tailor the message for different types of function signature changes, probably could still keep it.</li>
+<li>Renamed <code>qualname</code> to <code>qualified_name</code> to avoid abbreviating names</li>
+<li>Renamed <code>Airflow3FunctionSignatureChange</code> to <code>Airflow3IncompatibleFunctionSignature</code> to better align with naming convention</li>
+<li>Updated the struct document for <code>Airflow3IncompatibleFunctionSignature</code> according to the feedback</li>
+<li>Enhanced the check logic (use this condition <code>arguments.find_positional(0).is_some() || arguments.args.iter().any(Expr::is_starred_expr);</code>) to handle starred expressions (i.e., <code>*args</code> and <code>**kwargs</code>) ; the updated test cases and results are shown in <code>AIR303.py</code> and <code>ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>.</li>
+<li>Refactored the code to use <code>if let</code> instead of <code>match</code> as we only have a single pattern matching here. Using <code>match</code> raise a clippy warnings. We can refactor this to use <code>match</code> when more cases coming in the future.</li>
+</ol>
+<blockquote>
+<p>nit: I think I would probably just inline these functions:</p>
+</blockquote>
+<pre><code class="language-rust">if let [&quot;airflow&quot;, &quot;lineage&quot;, &quot;hook&quot;, &quot;HookLineageCollector&quot;] = qualified_name.segments() {
+    if attr.as_str() == &quot;create_asset&quot; &amp;&amp; has_positional_args {
+        ...
+</code></pre>
+<ol start="11">
+<li>Update the <code>message</code> to show better description in the document.
+<img width="1036" height="122" alt="Screenshot from 2025-12-27 00-51-14" src="https://github.com/user-attachments/assets/da4339b5-b764-45a3-8286-961231732d63" /></li>
+</ol>
+<p>@Lee-W , would you mind have a look into these changes whenever you have time, and let me know if you have further feedback?</p>
+<p>Thanks again for both your time in reviewing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2025-12-27 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:88 on 2025-12-27 06:31</div>
+            <div class="timeline-body"><p>Not sure if we should switch the order here, as resolving through assignment might be the majority pattern :thinking:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @sjyangkevin on 2025-12-27 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:14 on 2025-12-29 15:41</div>
+            <div class="timeline-body"><p>nit: Could you put this at the bottom of the file? We like to keep the <code>Violation</code> and then its implementation right at the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:44 on 2025-12-29 15:41</div>
+            <div class="timeline-body"><p>Rules have to start out in preview.</p>
+<pre><code class="language-suggestion">#[violation_metadata(preview_since = &quot;0.14.11&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:75 on 2025-12-29 15:42</div>
+            <div class="timeline-body"><p>nit: let's update this to match the new <code>Violation</code> name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:88 on 2025-12-29 15:45</div>
+            <div class="timeline-body"><p>This looks good to me! Checking that <code>value</code> is a <code>Call</code> should be quite cheap, and I don't mind having the special case first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:84 on 2025-12-29 15:46</div>
+            <div class="timeline-body"><p>Would something like this work, or do you need <code>call_expr</code> somewhere else later?</p>
+<pre><code class="language-suggestion">    let Expr::Call(ExprCall { func, arguments, .. }) = expr else {
+        return;
+    };
+
+    let Expr::Attribute(ExprAttribute { attr, value, .. }) = func else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-29 15:49</div>
+            <div class="timeline-body"><p>Thank you, this looks great!</p>
+<p>I just had a couple more nits after we mark the rule as preview. Otherwise this is good to go if @Lee-W is happy with it too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-12-29 15:57</div>
+            <div class="timeline-body"><p>will take another look early tomorrow. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on 2025-12-29 18:56</div>
+            <div class="timeline-body"><p>Thanks @ntBre , I've made the following updates based on your feedback.</p>
+<ol>
+<li>Put the enum <code>FunctionSignatureChangeType</code> to the bottom of the file</li>
+<li>Updated <code>stable_since</code> to <code>preview_since</code></li>
+<li>Renamed <code>airflow_3_function_signature_change</code> to <code>airflow_3_incompatible_function_signature</code> to match the new <code>Violation</code> name</li>
+<li>Refactored the logic for resolving the qualified name first resolve by assignment (the common pattern)</li>
+<li><code>call_expr</code> is only used to access <code>func</code>, directly destructure it is a better approach. Thanks!</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @sjyangkevin on 2025-12-29 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-12-30 03:24</div>
+            <div class="timeline-body"><p>LGTM! Thanks @sjyangkevin and @ntBre !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-30 16:30</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`airflow`] passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR303`)" to "[`airflow`] Passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR303`)" by @ntBre on 2025-12-30 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-30 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-30 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

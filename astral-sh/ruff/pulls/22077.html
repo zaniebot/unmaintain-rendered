@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Lockfiles for mdtests with external dependencies - astral-sh/ruff #22077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Lockfiles for mdtests with external dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22077">#22077</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-19 10:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-19 10:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add lockfiles for all mdtests which make use of external dependencies. When running tests normally, we use this lockfile when creating the temporary venv using <code>uv sync --locked</code>. A new <code>MDTEST_UPGRADE_LOCKFILES</code> environment variable is used to switch to a mode in which those lockfiles can be updated or regenerated. When using the Python mdtest runner, this environment variable is automatically set (because we use this command while developing, not to simulate exactly what happens in CI). A command-line flag is provided to opt out of this.</p>
+<h2>Test Plan</h2>
+<h3>Using the mdtest runner</h3>
+<h4>Adding a new test (no lockfile yet)</h4>
+<ul>
+<li>Removed <code>attrs.lock</code> to simulate this</li>
+<li>Ran <code>uv run crates/ty_python_semantic/mdtest.py -e external/</code>. The lockfile is generated and the test succeeds.</li>
+</ul>
+<h4>Upgrading/downgrading a dependency</h4>
+<ul>
+<li>Changed pydantic requirement from <code>pydantic==2.12.2</code> to <code>pydantic==2.12.5</code> (also tested with <code>2.12.0</code>)</li>
+<li>Ran <code>uv run crates/ty_python_semantic/mdtest.py -e external/</code>. The lockfile is updated and the test succeeds.</li>
+</ul>
+<h3>Using cargo</h3>
+<h4>Adding a new test (no lockfile yet)</h4>
+<ul>
+<li>Removed <code>attrs.lock</code> to simulate this</li>
+<li>Ran <code>MDTEST_EXTERNAL=1 cargo test -p ty_python_semantic --test mdtest mdtest__external</code> &quot;naively&quot;, which outputs:<blockquote>
+<p>Failed to setup in-memory virtual environment with dependencies: Lockfile not found at '/home/shark/ruff/crates/ty_python_semantic/resources/mdtest/external/attrs.lock'. Run with <code>MDTEST_UPGRADE_LOCKFILES=1</code> to generate it.</p>
+</blockquote>
+</li>
+<li>Ran <code>MDTEST_UPGRADE_LOCKFILES=1 MDTEST_EXTERNAL=1 cargo test -p ty_python_semantic --test mdtest mdtest__external</code>. The lockfile is updated and the test succeeds.</li>
+</ul>
+<h4>Upgrading/downgrading a dependency</h4>
+<ul>
+<li>Changed pydantic requirement from <code>pydantic==2.12.2</code> to <code>pydantic==2.12.5</code> (also tested with <code>2.12.0</code>)</li>
+<li>Ran <code>MDTEST_EXTERNAL=1 cargo test -p ty_python_semantic --test mdtest mdtest__external</code> &quot;naively&quot;, which outputs a similar error message as above.</li>
+<li>Ran the command suggested in the error message (<code>MDTEST_EXTERNAL=1 MDTEST_UPGRADE_LOCKFILES=1 cargo test -p ty_python_semantic --test mdtest mdtest__external</code>). The lockfile is updated and the test succeeds.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @sharkdp on 2025-12-19 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-12-19 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 10:52</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 10:54</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_block_document_references | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_block_document_references` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_variables | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `dict[str, Any] | T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 43 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any], generic[object]]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Top[Index[Any]] | TypeBlocks | ... omitted 6 union elements, generic[object]]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[SeriesHE[Any, Any], generic[object]]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[SeriesHE[Any, Any] | Top[Index[Any]] | TypeBlocks | ... omitted 7 union elements, generic[object]]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | TypeBlocks | Batch | ... omitted 7 union elements, generic[object]]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Top[Index[Any]] | TypeBlocks | ... omitted 7 union elements, generic[object]]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1223:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5085 diagnostics
++ Found 5086 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/tree_util.py:295:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- jax/_src/tree_util.py:298:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- jax/_src/tree_util.py:301:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- Found 2802 diagnostics
++ Found 2799 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -&gt; _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14416 diagnostics
++ Found 14415 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-12-19 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-12-19 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-12-19 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-12-19 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-12-19 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-19 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/external_dependencies.rs</code>:17 on 2025-12-19 11:51</div>
+            <div class="timeline-body"><p>Noo <code>Path</code> 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-19 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/external_dependencies.rs</code>:17 on 2025-12-19 11:52</div>
+            <div class="timeline-body"><p>It should be easy to use <code>SystemPath</code> or <code>Utf8Path</code> here, given that <code>lockfile_path</code> is an <code>Utf8PathBuf</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/external_dependencies.rs</code>:134 on 2025-12-19 11:54</div>
+            <div class="timeline-body"><p>Should this fail if the lock file is missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-19 11:54</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_test/src/external_dependencies.rs</code>:109 on 2025-12-19 12:22</div>
+            <div class="timeline-body"><p>uff, maybe we should ask uv to add a dedicated error code for this so we don't need to parse their stderr output 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-19 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-19 12:23</div>
+            <div class="timeline-body"><p>Looks reasonable to me, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-19 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_test/src/external_dependencies.rs</code>:109 on 2025-12-19 12:23</div>
+            <div class="timeline-body"><p>Yeah. It's not great... but it's also not the end of the world if this detection fails to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/mdtest.py</code>:1 on 2025-12-19 12:26</div>
+            <div class="timeline-body"><p>If you pass <code>--enable-external</code>, the default is that it will upgrade a lockfile. What does that mean exactly? Does that mean that it will, by default, bump the dependency pins in that lockfile? If so then that feels like an odd default -- I think you want the dependency pins to remain the same by default, otherwise there's not much point in a lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-19 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-19 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/mdtest.py</code>:1 on 2025-12-19 12:40</div>
+            <div class="timeline-body"><p>Hm, my understanding was different. Quoting from https://docs.astral.sh/uv/concepts/projects/sync/#upgrading-locked-package-versions:</p>
+<blockquote>
+<p>With an existing <code>uv.lock</code> file, uv will prefer the previously locked versions of packages when running <code>uv sync</code> and <code>uv lock</code>. Package versions will only change if the project's dependency constraints exclude the previous, locked version.</p>
+</blockquote>
+<p>This means that the lockfile will not change <em>unless you change the version constraints in the Markdown file</em>. And in that latter case, it seemed like a good default to make that opt-out when running via mdtest.py.</p>
+<p>In this sense <code>--locked</code> does <em>not</em> lead to a different environment in the case of success (which is different from <code>cargo</code>, right?).</p>
+<p>I'll clarify with someone from the uv team :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-19 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/mdtest.py</code>:1 on 2025-12-19 12:44</div>
+            <div class="timeline-body"><p>To be clear, I definitely don't consider myself an expert on uv's lockfiles 😄 but whatever the case, I think it might be good to add a comment saying exactly what the default is for this flag, and what that actually means in terms of the practical impliciations (even if it's just a link to the uv docs). I can never remember exactly what &quot;upgrading&quot; a uv lockfile implies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-19 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/mdtest.py</code>:1 on 2025-12-19 13:19</div>
+            <div class="timeline-body"><p>I changed the help text to:</p>
+<pre><code>  --no-lockfile-upgrades
+        By default, lockfiles will be upgraded when dependency requirements in the
+        Markdown test change. Set this flag to never upgrade any lockfiles.
+</code></pre>
+<p>I also checked with Konsti that my understanding here is correct. If you don't change the requirements, the default option should also never change and lockfiles. And you will still get reproducible venvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-12-19 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-19 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-19 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-19 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/mdtest.py</code>:1 on 2025-12-19 13:46</div>
+            <div class="timeline-body"><p>thank you</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

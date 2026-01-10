@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `help:` subdiagnostics for several Ruff rules that can sometimes appear to disagree with ty - astral-sh/ruff #22331</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>help:</code> subdiagnostics for several Ruff rules that can sometimes appear to disagree with ty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22331">#22331</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-01 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-01 17:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ruff has a bunch of rules that can sometimes appear to disagree with ty. For example, this snippet of code will trigger an <code>FBT001</code> violation:</p>
+<pre><code class="language-py"># third-party file somewhere...
+
+class Foo:
+    def f(self, x: bool): ...
+
+# first-party code...
+
+class Bar(Foo):
+    def f(self, x: bool): ...
+</code></pre>
+<p>But the author of this code can't change the definition of <code>Foo.f</code> (because it's third-party code), and they can't change <code>Bar.f</code> or ty will complain about a violation of the Liskov Substitution Principle.</p>
+<p>We've already added documentation notes to a bunch of these rules in https://github.com/astral-sh/ruff/pull/21644 that tell people to use <code>typing.override</code> in this situation. Ruff will generally ignore this kind of rule if it sees that the method is decorated with <code>@override</code>, because it knows that a user can't easily change an <code>@override</code>-decorated rule without violating the Liskov Substitution Principle. However, we've still received <a href="https://discord.com/channels/1039017663004942429/1279201882337705994/1451714410321285295">some reports from users</a> who are understandably confused about two Astral tools seeming to give contradictory orders about how the user should rewrite their code.</p>
+<p>This PR adds <code>help:</code> subdiagnostics to several Ruff rules. The subdiagnostics also point the user towards <code>typing.override</code>; having the hint directly presented in the terminal should be more approachable and harder to miss.</p>
+<h2>Test Plan</h2>
+<p>Snapshots updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2026-01-01 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-01 17:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-01 17:42</div>
+            <div class="timeline-body"><p>(There are a couple more rules that can cause issues with a type checker's Liskov enforcement. I basically just added <code>help:</code> subdiagnostics to the ones where it was easy to do so.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/invalid_function_name.rs</code>:142 on 2026-01-01 18:20</div>
+            <div class="timeline-body"><p>I kind of prefer this phrasing over the LSP version, but I don't feel strongly. I'm guessing we can't call the helper function here because the current scope isn't set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_arguments.rs</code>:132 on 2026-01-01 18:23</div>
+            <div class="timeline-body"><p>Can we use the helper here? Oh, I see it's an FBT helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2026-01-01 18:26</div>
+            <div class="timeline-body"><p>Makes sense to me, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-01 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/rules/too_many_arguments.rs</code>:132 on 2026-01-01 18:46</div>
+            <div class="timeline-body"><p>Right — I could put the helper somewhere more central, but wasn't totally sure where a good place would be :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/invalid_function_name.rs</code>:142 on 2026-01-02 22:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm guessing we can't call the helper function here because the current scope isn't set?</p>
+</blockquote>
+<p>That wasn't really my rationale for doing something slightly different here. The reasons why I did something slightly different here is that this violation is telling you to rename the function rather than change its signature, and renaming the function isn't going to cause a Liskov violation. It's just not necessarily what you <em>want</em> to do if the function is deliberately overriding something from a subclass 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-02 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2026-01-02 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-02 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-02 22:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>

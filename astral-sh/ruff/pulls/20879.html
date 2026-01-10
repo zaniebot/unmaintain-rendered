@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pandas-vet`] Fix false positive for `.values` on NumPy `NamedTuples` (`PD011`) - astral-sh/ruff #20879</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pandas-vet</code>] Fix false positive for <code>.values</code> on NumPy <code>NamedTuples</code> (<code>PD011</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20879">#20879</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-15 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-15 01:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20874 - False positive PD011: using <code>.values</code> on a NumPy NamedTuple, not a Pandas Series or Index object</p>
+<h2>Problem Analysis</h2>
+<p>The PD011 rule (<code>pandas-use-of-dot-values</code>) was incorrectly flagging <code>.values</code> usage on non-pandas objects, particularly:</p>
+<ol>
+<li><strong>NumPy NamedTuples</strong> returned by functions like <code>numpy.unique_inverse()</code>, <code>numpy.unique_all()</code>, and <code>numpy.unique_counts()</code></li>
+<li><strong>Simple non-pandas objects</strong> like integers, strings, or other data types that happen to have a <code>.values</code> attribute</li>
+</ol>
+<p>The original issue reported a false positive where <code>unique.values</code> was flagged, where <code>unique</code> was a <code>UniqueInverseResult</code> NamedTuple from NumPy, not a pandas object.</p>
+<h2>Approach</h2>
+<h3>General Solution Strategy</h3>
+<p>Rather than creating NumPy-specific logic, I enhanced the existing <code>test_expression</code> helper function in <code>crates/ruff_linter/src/rules/pandas_vet/helpers.rs</code> to be more intelligent about determining whether a binding comes from pandas-related sources.</p>
+<h3>Implementation Details</h3>
+<ol>
+<li><p><strong>Enhanced <code>test_expression</code> Function</strong>:</p>
+<ul>
+<li>Added logic to check if variable bindings come from pandas-related sources</li>
+<li>Uses <code>find_binding_value()</code> to trace back to the original assignment</li>
+<li>Calls new <code>is_pandas_related_value()</code> function to determine pandas relevance</li>
+</ul>
+</li>
+<li><p><strong>New <code>is_pandas_related_value()</code> Function</strong>:</p>
+<ul>
+<li>Analyzes expressions to determine if they originate from pandas</li>
+<li>Handles literals (numbers, strings, etc.) - returns <code>false</code> (not pandas-related)</li>
+<li>Handles pandas imports - returns <code>true</code> (pandas-related)</li>
+<li>Handles pandas method calls and function calls - returns <code>true</code></li>
+<li>Handles unknown expressions - returns <code>false</code> (conservative approach)</li>
+</ul>
+</li>
+</ol>
+<h2>Ecosystem Impact Analysis</h2>
+<p>The ecosystem bot reported <strong>-17 violations</strong> across 2 projects:</p>
+<h3>apache/superset (-14 violations)</h3>
+<ul>
+<li><strong>12 PD011 violations removed</strong>: These were false positives where <code>.values</code> was accessed on non-pandas objects in pandas postprocessing modules</li>
+<li><strong>1 PD013 violation removed</strong>: <code>.stack</code> usage that was incorrectly flagged</li>
+<li><strong>1 PD008 violation removed</strong>: <code>.at</code> usage that was incorrectly flagged</li>
+</ul>
+<h3>bokeh/bokeh (-3 violations)</h3>
+<ul>
+<li><strong>1 PD011 violation removed</strong>: <code>.values</code> usage on non-pandas object</li>
+<li><strong>1 PD013 violation removed</strong>: <code>.stack</code> usage that was incorrectly flagged</li>
+<li><strong>1 PD010 violation removed</strong>: <code>.pivot</code> usage that was incorrectly flagged</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 01:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -16 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -12 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/superset/common/query_context_processor.py#L187'>superset/common/query_context_processor.py:187:24:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/superset/common/query_context_processor.py#L225'>superset/common/query_context_processor.py:225:64:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L256'>tests/unit_tests/commands/databases/csv_reader_test.py:256:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L345'>tests/unit_tests/commands/databases/csv_reader_test.py:345:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L357'>tests/unit_tests/commands/databases/csv_reader_test.py:357:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L369'>tests/unit_tests/commands/databases/csv_reader_test.py:369:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L104'>tests/unit_tests/pandas_postprocessing/test_histogram.py:104:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L45'>tests/unit_tests/pandas_postprocessing/test_histogram.py:45:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L59'>tests/unit_tests/pandas_postprocessing/test_histogram.py:59:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L73'>tests/unit_tests/pandas_postprocessing/test_histogram.py:73:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L90'>tests/unit_tests/pandas_postprocessing/test_histogram.py:90:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/result_set_test.py#L164'>tests/unit_tests/result_set_test.py:164:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/categorical/heatmap_unemployment.py#L29'>examples/topics/categorical/heatmap_unemployment.py:29:19:</a> PD013 `.melt` is preferred to `.stack`; provides same functionality
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L188'>tests/unit/bokeh/models/test_sources.py:188:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L202'>tests/unit/bokeh/models/test_sources.py:202:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L214'>tests/unit/bokeh/models/test_sources.py:214:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PD011 | 15 | 0 | 15 | 0 | 0 |
+| PD013 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -16 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -12 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/superset/common/query_context_processor.py#L187'>superset/common/query_context_processor.py:187:24:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/superset/common/query_context_processor.py#L225'>superset/common/query_context_processor.py:225:64:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L256'>tests/unit_tests/commands/databases/csv_reader_test.py:256:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L345'>tests/unit_tests/commands/databases/csv_reader_test.py:345:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L357'>tests/unit_tests/commands/databases/csv_reader_test.py:357:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/commands/databases/csv_reader_test.py#L369'>tests/unit_tests/commands/databases/csv_reader_test.py:369:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L104'>tests/unit_tests/pandas_postprocessing/test_histogram.py:104:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L45'>tests/unit_tests/pandas_postprocessing/test_histogram.py:45:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L59'>tests/unit_tests/pandas_postprocessing/test_histogram.py:59:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L73'>tests/unit_tests/pandas_postprocessing/test_histogram.py:73:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/pandas_postprocessing/test_histogram.py#L90'>tests/unit_tests/pandas_postprocessing/test_histogram.py:90:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/be3690c22be743e8fbc0cf609feff285181dddb2/tests/unit_tests/result_set_test.py#L164'>tests/unit_tests/result_set_test.py:164:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/categorical/heatmap_unemployment.py#L29'>examples/topics/categorical/heatmap_unemployment.py:29:19:</a> PD013 `.melt` is preferred to `.stack`; provides same functionality
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L188'>tests/unit/bokeh/models/test_sources.py:188:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L202'>tests/unit/bokeh/models/test_sources.py:202:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/models/test_sources.py#L214'>tests/unit/bokeh/models/test_sources.py:214:20:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PD011 | 15 | 0 | 15 | 0 | 0 |
+| PD013 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pandas_vet/rules/attr.rs</code>:46 on 2025-10-15 21:44</div>
+            <div class="timeline-body"><p>I don't think this is specific to numpy. A very simple <a href="https://play.ruff.rs/90cd0ead-1783-400e-abf0-abe203f94b28">example</a> like this exhibits the same behavior:</p>
+<pre><code class="language-py">import pandas
+
+p = 1
+p.values
+</code></pre>
+<p>We also already have the <code>test_expression</code> helper that tries to filter out non-pandas bindings. It might be worth trying to improve that, which would be shared by the other pandas rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-15 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-15 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-16 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-16 08:11</div>
+            <div class="timeline-body"><p>Hi @danparizher. Thanks for working on this.</p>
+<p>If you want to help us as reviewers. What I'd find very useful is if you add a few more details to the PR summary explaining why you took this specific approach. What constraints did you consider? What are its up or downsides?</p>
+<p>I'd also find it very helpful if you could look at the ecosystem changes and summarize the result. This gives me confidence that there are no unexpected surprises and that this PR is ready to review.</p>
+<p>I understand that this will take more time on your side, but it will allow us to review your PRs more quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-19 19:56</div>
+            <div class="timeline-body"><p>Hi @MichaReiser, thanks for the feedback. I've updated the description for this PR and will continue to do so for future PRs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pandas_vet/helpers.rs</code>:106 on 2025-10-30 17:06</div>
+            <div class="timeline-body"><p>This looks a lot like the first part of the <code>match</code> in <code>test_expression</code>. Should we just recurse in <code>test_expression</code> for names, attributes, and calls? (And add <code>match</code> arms for attributes and calls like you have here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pandas_vet/mod.rs</code>:272 on 2025-10-30 17:09</div>
+            <div class="timeline-body"><p>Could we use the <code>paths</code> test runner just below this instead of <code>contents</code>? I think  it's a lot easier to read and modify files than these snippets.</p>
+<p>You can probably put these all in one file if you isolate them in separate functions like:</p>
+<pre><code class="language-py">def f():
+	import pandas as pd
+	import numpy as np
+	unique = np.unique_inverse([1, 2, 3, 2, 1])
+	result = unique.values
+</code></pre>
+<p>at least I've seen that pattern in other cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-30 17:22</div>
+            <div class="timeline-body"><p>I made a couple of inline comments, but then I started looking at the ecosystem check, and it looks like we've gone too far in the opposite direction. The first  two cases I clicked on:</p>
+<ul>
+<li><a href="https://github.com/apache/superset/blob/4ddc3f14ed32c99805d124814f5d3e76f1a9922d/superset/charts/client_processing.py#L110">superset/charts/client_processing.py:110:14:</a> PD013 <code>.melt</code> is preferred to <code>.stack</code>; provides same functionality</li>
+<li><a href="https://github.com/apache/superset/blob/4ddc3f14ed32c99805d124814f5d3e76f1a9922d/superset/utils/csv.py#L79">superset/utils/csv.py:79:21:</a> PD008 Use <code>.loc</code> instead of <code>.at</code>. If speed is important, use NumPy.</li>
+</ul>
+<p>seem like clear false negatives, at least to me. I guess we're having trouble detecting  them because the function arguments have been shadowed, but the parameters themselves are even annotated as pandas dataframes.</p>
+<p>This doesn't seem like an improvement to me and seems to be a step toward making the rules less useful, as Micha mentioned on the issue.</p>
+<p>I would probably lean toward closing this, especially since the user closed the issue as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-01 17:31</div>
+            <div class="timeline-body"><p>I pushed a change with your feedback. Feel free to close if it makes more sense, since the original issue was also closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-01 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-02 16:59</div>
+            <div class="timeline-body"><p>Thanks again for your work here and sorry for the delay in getting back to it. I think I will go ahead and close this for now based on the discussion above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2026-01-02 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-02 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`) - astral-sh/ruff #22205</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement <code>swap-with-temporary-variable</code> (<code>PLR1712</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22205">#22205</a>
+        opened by <a href="https://github.com/Bnyro">@Bnyro</a>
+        on 2025-12-26 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Bnyro">@Bnyro</a> on 2025-12-26 11:15</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR implements the <code>consider-swap-variables</code> rule from pylint. Basically it tries to find code parts that swap two variables with each other using a temporary variable.</p>
+<p>Example code:</p>
+<pre><code class="language-py">temp = x
+x = y
+y = temp
+</code></pre>
+<p>can be simplified to</p>
+<pre><code class="language-py">x, y = y, x
+</code></pre>
+<p>related:</p>
+<ul>
+<li>https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-swap-variables.html</li>
+<li>#970</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>I've added new snapshots tests.</p>
+<p>PS: Since this is my first contribution here and I'm not too familiar with the codebase, suggestions are very welcome! The implementation might also not be 100% memory-optimized yet, since we use <code>clone</code> a few times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-29 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-29 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:41 on 2025-12-29 13:56</div>
+            <div class="timeline-body"><p>I think we might need a different name here based on our <a href="https://docs.astral.sh/ruff/contributing/#rule-naming-convention">naming convention</a>. Something like <code>UnnecessaryTemporaryVariable</code> would work since it sounds nice after &quot;allow,&quot; but I'm definitely open to better suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:40 on 2025-12-29 13:57</div>
+            <div class="timeline-body"><p>Let's go ahead and put the next patch version here:</p>
+<pre><code class="language-suggestion">#[violation_metadata(preview_since = &quot;0.14.11&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:55 on 2025-12-29 13:58</div>
+            <div class="timeline-body"><p>nit: You can implement <code>AlwaysFixableViolation</code> instead for this:</p>
+<pre><code class="language-suggestion">impl AlwaysFixableViolation for ConsiderSwapVariables {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:60 on 2025-12-29 14:01</div>
+            <div class="timeline-body"><p>This is a pretty long message. I think I would move the part after the colon into the <code>fix_title</code>. Something like this:</p>
+<pre><code class="language-rust">#[derive_message_formats]
+fn message(&amp;self) -&gt; String {
+    &quot;Consider swapping `{first_var}` and {`second_var}` with tuple unpacking&quot;.to_string()
+}
+
+fn fix_title(&amp;self) -&gt; String {
+    &quot;Use `{first_var}, {second_var} = {second_var}, {first_var}` instead&quot;.to_string()
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:84 on 2025-12-29 14:02</div>
+            <div class="timeline-body"><p>I think this would be a good use for <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.tuple_windows"><code>tuple_windows</code></a> from the itertools crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:149 on 2025-12-29 14:05</div>
+            <div class="timeline-body"><p>If <code>start</code> and <code>end</code> are always from the same statement, I think we can just use a single <code>TextRange</code> here and <code>stmt.range()</code> to retrieve it. Then you can use <code>Edit::range_replacement</code> above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:125 on 2025-12-29 14:09</div>
+            <div class="timeline-body"><p>I haven't played with this myself, but we can almost always get away without cloning. Have you tried that here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:147 on 2025-12-29 14:09</div>
+            <div class="timeline-body"><p>I think we can use <code>let-else</code> here to avoid <code>expect</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:15 on 2025-12-29 14:11</div>
+            <div class="timeline-body"><p>I don't think we need the quotes here either:</p>
+<pre><code class="language-suggestion">/// Variables can be swapped by using tuple unpacking instead of using a temporary variable. That also makes the intention of the swapping logic more clear.
+</code></pre>
+<p>and as a small nit, can you wrap this to 80-100 columns? Anywhere in that range is good :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:93 on 2025-12-29 14:12</div>
+            <div class="timeline-body"><p>I think we can avoid cloning here too, but you may need a lifetime on the violation struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-12-29 14:14</div>
+            <div class="timeline-body"><p>Thank you! This looks good to me overall, just a few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 14:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+20 -21 violations, +0 -0 fixes in 6 projects; 49 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:17:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/scikit-build/scikit-build-core/blob/302e0fde412a4545adcc81d75d6bb49ee583e81c/src/scikit_build_core/_compat/typing.py#L36'>src/scikit_build_core/_compat/typing.py:36:32:</a> RUF100 [*] Unused `noqa` directive (unused: `ARG001`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC0206 | 40 | 20 | 20 | 0 | 0 |
+| RUF100 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+20 -2041 violations, +0 -0 fixes in 25 projects; 30 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+0 -28 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L13'>disnake/__init__.py:13:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L15'>disnake/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L16'>disnake/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L83'>disnake/__init__.py:83:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L11'>disnake/ext/mypy_plugin/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L7'>disnake/ext/mypy_plugin/__init__.py:7:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L38'>disnake/ext/tasks/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L39'>disnake/ext/tasks/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L40'>disnake/ext/tasks/__init__.py:40:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L41'>disnake/ext/tasks/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 18 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -12 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/__init__.py#L10'>rasa/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/cli/__init__.py#L5'>rasa/cli/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/__init__.py#L5'>rasa/core/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L28'>rasa/core/channels/__init__.py:28:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L47'>rasa/core/channels/__init__.py:47:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L10'>rasa/core/training/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L33'>rasa/core/training/__init__.py:33:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/__init__.py#L5'>rasa/nlu/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/classifiers/__init__.py#L3'>rasa/nlu/classifiers/__init__.py:3:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/utils/__init__.py#L11'>rasa/nlu/utils/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -402 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L130'>airflow-core/src/airflow/__init__.py:130:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L137'>airflow-core/src/airflow/__init__.py:137:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L38'>airflow-core/src/airflow/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L46'>airflow-core/src/airflow/__init__.py:46:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L80'>airflow-core/src/airflow/__init__.py:80:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/src/airflow/__init__.py#L84'>airflow-core/src/airflow/__init__.py:84:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 389 additional changes omitted for rule RUF067
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/airflow/blob/9bdd6536e5d12f57aed81b80a4a1d0799784a667/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+... 400 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -73 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset-core/src/superset_core/mcp/__init__.py#L100'>superset-core/src/superset_core/mcp/__init__.py:100:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset-core/src/superset_core/mcp/__init__.py#L41'>superset-core/src/superset_core/mcp/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset-core/src/superset_core/mcp/__init__.py#L44'>superset-core/src/superset_core/mcp/__init__.py:44:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/__init__.py#L37'>superset/__init__.py:37:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/__init__.py#L38'>superset/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/__init__.py#L39'>superset/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 65 additional changes omitted for rule RUF067
++ <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/apache/superset/blob/e5489bd30f590040631a8a1604091e3ca785f459/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+... 66 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -58 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L101'>src/bokeh/__init__.py:101:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L102'>src/bokeh/__init__.py:102:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L107'>src/bokeh/__init__.py:107:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L109'>src/bokeh/__init__.py:109:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L110'>src/bokeh/__init__.py:110:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L111'>src/bokeh/__init__.py:111:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 51 additional changes omitted for rule RUF067
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+... 50 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -142 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L31'>ibis/__init__.py:31:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L42'>ibis/__init__.py:42:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1517'>ibis/backends/__init__.py:1517:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1530'>ibis/backends/__init__.py:1530:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1550'>ibis/backends/__init__.py:1550:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1557'>ibis/backends/__init__.py:1557:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1567'>ibis/backends/__init__.py:1567:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1601'>ibis/backends/__init__.py:1601:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1648'>ibis/backends/__init__.py:1648:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1673'>ibis/backends/__init__.py:1673:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 132 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+0 -274 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L14'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:14:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L15'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L6'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:6:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/__init__.py#L19'>libs/core/langchain_core/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/__init__.py#L20'>libs/core/langchain_core/__init__.py:20:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/_api/__init__.py#L45'>libs/core/langchain_core/_api/__init__.py:45:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/callbacks/__init__.py#L86'>libs/core/langchain_core/callbacks/__init__.py:86:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/document_loaders/__init__.py#L21'>libs/core/langchain_core/document_loaders/__init__.py:21:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/documents/__init__.py#L39'>libs/core/langchain_core/documents/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/embeddings/__init__.py#L16'>libs/core/langchain_core/embeddings/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 264 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -58 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+... 7 additional changes omitted for rule PLC0206
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L19'>src/latch_cli/docker_utils/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L27'>src/latch_cli/docker_utils/__init__.py:27:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L38'>src/latch_cli/docker_utils/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L401'>src/latch_cli/docker_utils/__init__.py:401:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 54 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+<p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
+<details><summary>Changes by rule (3 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF067 | 2020 | 0 | 2020 | 0 | 0 |
+| PLC0206 | 40 | 20 | 20 | 0 | 0 |
+| RUF100 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bnyro">@Bnyro</a> reviewed on 2025-12-29 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Bnyro">@Bnyro</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:84 on 2025-12-29 16:23</div>
+            <div class="timeline-body"><p>I think that would only work well if we didn't have to make sure that all three statements <code>stmt_a</code>, <code>stmt_b</code>, and <code>stmt_c</code> are a variable to variable assignment (e.g. <code>x = y</code>). If we used something like</p>
+<pre><code class="language-rs">for (stmt_a, stmt_b, stmt_c) in stmts.tuple_windows() {
+...
+}
+</code></pre>
+<p>We would still need to check if all of them are such var-to-var assignments by calling <code>var_to_var_assignment</code> and checking if all the <code>Option</code>s (one for <code>stmt_a</code>, one for <code>stmt_b</code>, one for <code>stmt_c</code>) are all <code>Some</code>.</p>
+<p>So we would probably need to repeat the same call to <code>var_to_var_assignment</code> three times, i.e.</p>
+<pre><code class="language-rs">let Some(stmt_a) = var_to_var_assignment(stmt_a) else { return; }
+let Some(stmt_b) = var_to_var_assignment(stmt_b) else { return; }
+let Some(stmt_c) = var_to_var_assignment(stmt_c) else { return; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bnyro">@Bnyro</a> reviewed on 2025-12-29 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Bnyro">@Bnyro</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:41 on 2025-12-29 16:35</div>
+            <div class="timeline-body"><p>Hmm, I'm bad with naming too.</p>
+<p><code>UnnecessaryTemporaryVariable</code> feels a bit too generic in my opinion, that name is probably going to be better suited for other rules in the future that can spot more generally applicable scenarios/issues than temporary variable swapping.</p>
+<p>My idea would be <code>SwapWithTemporaryVariable</code>, but I'm not really happy with it either, because it doesn't really say why that's a bad thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bnyro">@Bnyro</a> on 2025-12-29 16:37</div>
+            <div class="timeline-body"><p>Thanks a lot for the review @ntBre!</p>
+<p>I've applied all suggestions except for the 2 unresolved ones above where I'm not quite sure yet, I'd appreciate your thoughts on that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-29 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:84 on 2025-12-29 16:55</div>
+            <div class="timeline-body"><p>Ohhh, I see, you're checking that there are three statements <em>and</em> that they're all of the right type. I was really just trying to avoid collecting a temporary <code>Vec</code>, but that does make it a bit more awkward. Maybe something like this?</p>
+<pre><code class="language-rust">    for stmt_sequence in stmts.iter().map(var_to_var_assignment).tuple_windows() {
+        let (Some(stmt_a), Some(stmt_b), Some(stmt_c)) = stmt_sequence else {
+            continue;
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-29 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/consider_swap_variables.rs</code>:41 on 2025-12-29 17:03</div>
+            <div class="timeline-body"><p>I like <code>SwapWithTemporaryVariable</code>, that preserves a bit more of the original name too! I think it's okay not to say why it's bad in the name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs</code>:63 on 2026-01-02 17:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        format!(&quot;Consider swapping `{first_var}` and `{second_var}` by using tuple unpacking&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs</code>:145 on 2026-01-02 17:42</div>
+            <div class="timeline-body"><p>Could we avoid cloning here too? <code>VarToVarAssignment</code> may need a lifetime bound, but I think it should be doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py</code>:5 on 2026-01-02 17:47</div>
+            <div class="timeline-body"><p>Could you test a case where the <code>temp</code> variable is used later? I just thought of that tricky case, and I think our fix would cause an error currently.</p>
+<p>I think we could use something like this to check that there are no references after the swap:</p>
+<p>https://github.com/astral-sh/ruff/blob/26230b1ed3db02f5c2d5b9ed9d49c70062d66736/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs#L253-L266</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs</code>:54 on 2026-01-02 17:51</div>
+            <div class="timeline-body"><p>A couple of nits on the naming here:</p>
+<pre><code class="language-suggestion">struct SwapAssignment {
+    target: Name,
+    value: Name,
+    range: TextRange,
+}
+</code></pre>
+<p>Or something else is fine too, we just typically try to avoid abbreviations like <code>var</code>. Can you put this below the main rule implementation just above your <code>var_to_var_assignment</code> function? That function could also be a <code>from_stmt</code> method on this struct, which would fix the <code>var</code> abbreviations in that name too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-02 17:53</div>
+            <div class="timeline-body"><p>Thank you again, this is looking great!</p>
+<p>I had a couple more nits and one larger concern about removing the temporary variable, but even that shouldn't be too much trouble, I hope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`]: Implement `consider-swap-variables` (PLR1712)" to "[`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)" by @ntBre on 2026-01-02 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Bnyro">@Bnyro</a> on <code>crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs</code>:145 on 2026-01-03 11:41</div>
+            <div class="timeline-body"><p>I tried it, but calling <code>target.name_expr()</code> consumes <code>target</code> and hence it doesn't seem to be possible to get away without <code>clone</code> here (or I just don't know how), because the result of <code>name_expr()</code> is owned by our current scope and hence may not escape outside of it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bnyro">@Bnyro</a> reviewed on 2026-01-03 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bnyro">@Bnyro</a> reviewed on 2026-01-03 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Bnyro">@Bnyro</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py</code>:5 on 2026-01-03 12:52</div>
+            <div class="timeline-body"><p>You're right, very good catch!</p>
+<p>I've implemented this now, but it's not yet working because it looks like <code>checker.semantic().bindings</code> does not contain any <code>Assignment</code>s, although that doesn't make any sense?! I've spent some time debugging this, but I've really no idea what's going on, i.e. why</p>
+<pre><code class="language-rs">            let temporary_variable_binding = checker
+                .semantic()
+                .bindings
+                .iter()
+                .find(|binding| stmt_a.range.contains_range(binding.range))
+                .unwrap();
+
+</code></pre>
+<p>doesn't find the binding definition and panics.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

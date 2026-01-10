@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Speedup ty-walltime benchmarks - astral-sh/ruff #22126</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Speedup ty-walltime benchmarks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22126">#22126</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-21 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-21 10:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Reduce the time-to-completion for walltime benchmarks from ~15min to ~9min by  (should be even faster once the rust caching kicks in):</p>
+<ul>
+<li>Increase the sharding from 2 to 4 jobs</li>
+<li>Manual selection of the tests per shard based on their walltime</li>
+<li>Use a depot runner to build the benchmarks to reduce our codspeed cost and for faster queue and build times (from ~6min to 3min when using a 4-core machine). We could use a larger runner, but I don't think this is necessary, once the third-party dependencies are cached.</li>
+</ul>
+<p>I also had to rename the benchmarks because codspeed seems to struggle if benchmarks from different groups run on different shards. But I think that's for the better anyway:</p>
+<p>Remove the small, medium and large groups because projects that used to be very fast
+to type check now take longer and would have to be moved into another group so that we can update the iteration counts.</p>
+<p>This PR also updates the iteration counts for colour_science and pandas (from 3 to 2, equal to moving them to large) and
+pydantic (from 1 to 3, moving it from large to medium).</p>
+<p>The downside of this is that we lose our historical data but this is a better long-term setup.</p>
+<p>| Benchmark | Time/iter | Iters | Total | Shard |
+|-----------|-----------|-------|-------|-------|
+| colour_science | 1.46 min | 2 | ~2.9 min | 1 |
+| pandas | 1.04 min | 2 | ~2.1 min | 2 |
+| tanjun | 2.5s | 6 | ~15s | 2 |
+| altair | 5.1s | 6 | ~31s | 2 |
+| static_frame | 20s | 3 | ~1 min | 3 |
+| sympy | 51s | 2 | ~1.7 min | 3 |
+| pydantic | 10.6s | 6 | ~64s | 4 |
+| multithreaded | 1.4s | 24 | ~34s | 4 |
+| freqtrade | 8s | 6 | ~48s | 4 |</p>
+<p>| Shard | Benchmarks | Total Time |
+|-------|------------|------------|
+| 1 | <code>colour_science</code> | ~2.9 min |
+| 2 | <code>pandas\|tanjun\|altair</code> | ~2.9 min |
+| 3 | <code>static_frame\|sympy</code> | ~2.7 min |
+| 4 | <code>pydantic\|multithreaded\|freqtrade</code> | ~2.4 min |</p>
+<p>TLDR: The benchmarks now often complete before the ty-instrumented benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @MichaReiser on 2025-12-21 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-21 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-21 11:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-21 12:01</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #22126 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>micha/better-balanced-walltime-shardiing</code> (c085f30) with <code>main</code> (fee4e2d)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 43</code> untouched<br />
+<code>🆕 9</code> new</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Aaltair&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>altair</code></a> | N/A | 5.1 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Atanjun&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>tanjun</code></a> | N/A | 2.5 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apandas&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>pandas</code></a> | N/A | 62.1 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>colour_science</code></a> | N/A | 89.7 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asympy&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>sympy</code></a> | N/A | 50.7 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>static_frame</code></a> | N/A | 20.3 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amultithreaded&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>multithreaded</code></a> | N/A | 1.4 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>freqtrade</code></a> | N/A | 8 s | N/A |
+| 🆕 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fbetter-balanced-walltime-shardiing?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>pydantic</code></a> | N/A | 10.6 s | N/A |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-21 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-12-21 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Improve sharding of ty walltime benchmarks" to "[ty] Faster walltime benchmarks" by @MichaReiser on 2025-12-21 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-21 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-12-21 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-12-21 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Faster walltime benchmarks" to "[ty] Speedup ty-walltime benchmarks" by @MichaReiser on 2025-12-21 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/ci.yaml</code>:1007 on 2025-12-21 20:49</div>
+            <div class="timeline-body"><p>we already only run this job if <code>github.repository == 'astral-sh/ruff'</code> (see the <code>if</code> condition on line 1009), so I don't think this complexity is necessary here</p>
+<pre><code class="language-suggestion">    # We only run this job if `github.repository == 'astral-sh/ruff'`,
+    # so hardcoding depot here is fine
+    runs-on: depot-ubuntu-22.04-arm-4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-21 20:52</div>
+            <div class="timeline-body"><p>This is awesome, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-22 00:04</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-22 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-22 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-22 07:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

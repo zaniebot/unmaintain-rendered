@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Ability to Output to Multiple Files/Formats - astral-sh/ruff #21633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add Ability to Output to Multiple Files/Formats</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21633">#21633</a>
+        opened by <a href="https://github.com/celestialorb">@celestialorb</a>
+        on 2025-11-25 23:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/celestialorb">@celestialorb</a> on 2025-11-25 23:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>I have written many CI jobs where Ruff outputs in the GitLab format to a file, but this suppresses outputting to <code>stdout</code>/<code>stderr</code>. If Ruff finds an issue this will fail the CI job and it won't be immediately obvious to the developer what the lint finding was -- they'd have to go and crack open the GitLab JSON artifact, or view it in GitLab's merge request view.</p>
+<p>This change allows us to write both a machine-readable artifact (e.g. GitLab JSON format) as well as output Ruff's findings in a human-readable format without needing to run it twice.</p>
+<p>This PR should resolve #2388.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Tested locally, and hopefully tests will also be run in a CI pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-11-26 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-11-26 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @amyreese on 2025-11-26 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @amyreese on 2025-11-26 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/penguinolog">@penguinolog</a> on 2025-11-26 07:20</div>
+            <div class="timeline-body"><p>Have to added context: GitLab comment code in PR only for the most expensive subscription and not all developers immediately rushing to read CodeQuality report.
+Having issues displayed at CI CLI output will be serious time saver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 07:51</div>
+            <div class="timeline-body"><p>I'd like to explore some more designs on the CLI argument. I don't think what's recommended in this PR has good ergonomics.</p>
+<p>E.g. some alternatives:</p>
+<ul>
+<li>allow <code>--output-file</code> multiple times where the value can be <code>&lt;path&gt;</code> or <code>&lt;format:path&gt;</code>.</li>
+<li>match <code>--output-file</code> with their corresponding <code>--output-format</code>: <code>--output-file path --output-format concise</code>: This might be tricky to implement and understand</li>
+</ul>
+<p>What bothers me a bit is that <code>--output-format</code> mostly becomes irrelevant when using <code>--output-file=&lt;format:path&gt;</code></p>
+<p>Have you looked at what other tools do (not just pylint)?</p>
+<p>For example, this is what vitest does:</p>
+<pre><code>--outputFile &lt;filename/-s&gt;                            Write test results to a file when supporter reporter is also specified, use cac's dot notation for individual outputs of multiple reporters (example: --outputFile.tap=./tap.txt)
+</code></pre>
+<p><strong>golang CLI</strong></p>
+<pre><code>golangci-lint run \
+  --output.text.path=stdout \
+  --output.json.path=./report.json \
+  --output.checkstyle.path=./report.xml
+</code></pre>
+<p>We might also be able to get away with something easier because what I understand is that this is a CI specific issue and the only thing people need is to allow one output file, but keeping the default CLI output. I didn't see any request where someone actually wants to write 3 outputs at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-11-26 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/celestialorb">@celestialorb</a> on 2025-11-26 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to explore some more designs on the CLI argument. I don't think what's recommended in this PR has good ergonomics.</p>
+<p>E.g. some alternatives:</p>
+<ul>
+<li>allow <code>--output-file</code> multiple times where the value can be <code>&lt;path&gt;</code> or <code>&lt;format:path&gt;</code>.</li>
+<li>match <code>--output-file</code> with their corresponding <code>--output-format</code>: <code>--output-file path --output-format concise</code>: This might be tricky to implement and understand</li>
+</ul>
+<p>What bothers me a bit is that <code>--output-format</code> mostly becomes irrelevant when using <code>--output-file=&lt;format:path&gt;</code></p>
+<p>Have you looked at what other tools do (not just pylint)?</p>
+<p>For example, this is what vitest does:</p>
+<pre><code>--outputFile &lt;filename/-s&gt;                            Write test results to a file when supporter reporter is also specified, use cac's dot notation for individual outputs of multiple reporters (example: --outputFile.tap=./tap.txt)
+</code></pre>
+<p><strong>golang CLI</strong></p>
+<pre><code>golangci-lint run \
+  --output.text.path=stdout \
+  --output.json.path=./report.json \
+  --output.checkstyle.path=./report.xml
+</code></pre>
+<p>We might also be able to get away with something easier because what I understand is that this is a CI specific issue and the only thing people need is to allow one output file, but keeping the default CLI output. I didn't see any request where someone actually wants to write 3 outputs at once.</p>
+</blockquote>
+<p>Yeah, the main use case here is to produce two outputs, a human-readable (<code>stdout/stderr</code>) report for developers and a machine-readable report for integration into development systems (e.g. GitHub, GitLab). I can't envision someone needing to produce multiple machine-readable reports of different formats in a single job/context.</p>
+<p>What do you think of an approach where we tweak the behavior to <em>always</em> produce a human-readable report in the console? The invocation might be akin to:</p>
+<pre><code>ruff check
+  --output-console-format=concise
+  --output-file-format=gitlab
+  --output-file-path=./reports/codequality.json
+</code></pre>
+<p>We could also introduce a new console format to disable reporting findings out to the console, should that behavior be desired. Thus we'd have a few different options for this proposed <code>--output-console-format</code> parameter: <code>none</code>, <code>text</code>, <code>concise</code>, <code>full</code>, etc.</p>
+<p>The minor downside here is that we're introducing new parameters and we'd probably want to deprecate the old ones if we're to use something like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 07:20</div>
+            <div class="timeline-body"><p>I'd prefer not to introduce new parameters if possible. I also think that <code>--output-format-console</code> is too long for a parameter that isn't that uncommonly used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 20:44</div>
+            <div class="timeline-body"><p>It might be worth taking a look at what basedpyright does here https://docs.basedpyright.com/latest/benefits-over-pyright/improved-ci-integration/</p>
+<p>We also discussed in the past to automatically change the behavior based on wheter we dedect that ruff runs in CI (where the CI variable is set)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-26 11:50</div>
+            <div class="timeline-body"><p>I'll close this PR as it has stalled. We can continue the design discussion on the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-26 11:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

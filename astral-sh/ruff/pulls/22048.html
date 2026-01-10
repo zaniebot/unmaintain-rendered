@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve union builder performance - astral-sh/ruff #22048</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve union builder performance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22048">#22048</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-18 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 07:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Lazily compute <code>negated</code> as it often isn't even needed</li>
+<li>Remove a redundant early return check</li>
+<li>~~Remove <code>to_remove</code> with eagerly removing elements (I don't feel a 100% sure about this change but there isn't a single failing test)~~</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-12-18 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-18 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-18 07:19</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-18 07:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
+
+xarray (https://github.com/pydata/xarray)
+- xarray/core/dataarray.py:5737:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `T_Xarray@map_blocks | DataArray | Dataset`
++ xarray/core/dataarray.py:5737:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `DataArray | Dataset`
+- xarray/core/dataset.py:8866:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `T_Xarray@map_blocks | DataArray | Dataset`
++ xarray/core/dataset.py:8866:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `DataArray | Dataset`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 43 diagnostics
++ Found 44 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/_src/tree_util.py:295:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
++ jax/_src/tree_util.py:298:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
++ jax/_src/tree_util.py:301:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- Found 2799 diagnostics
++ Found 2802 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Top[Index[Any]] | Top[Series[Any, Any]] | ... omitted 7 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | TypeBlocks | Batch | ... omitted 7 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Top[Index[Any]] | TypeBlocks | ... omitted 7 union elements, generic[object]]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Top[Index[Any]] | TypeBlocks | ... omitted 7 union elements, object_ | Self@iloc]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | TypeBlocks | Batch | ... omitted 7 union elements, generic[object]]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Top[Index[Any]] | TypeBlocks | ... omitted 7 union elements, generic[object]]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1223:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5086 diagnostics
++ Found 5085 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+-     struct fields = ~4MB
++     struct fields = ~3MB
+
+trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~167MB
++ TOTAL MEMORY USAGE: ~159MB
+-     struct metadata = ~11MB
++     struct metadata = ~10MB
+-     struct fields = ~12MB
++     struct fields = ~11MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~287MB
+-     struct metadata = ~21MB
++     struct metadata = ~20MB
+-     struct fields = ~21MB
++     struct fields = ~20MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~54MB
++     struct fields = ~52MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-18 07:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:593 on 2025-12-18 07:23</div>
+            <div class="timeline-body"><p>This check is redundant with the check on line 577</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-18 07:37</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #22048 will <strong>improve performances by 19.12%</strong></h3>
+<p><sub>Comparing <code>micha/union-builder-simplify</code> (3848ada) with <code>main</code> (76854fd)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 8</code> improvements<br />
+<code>✅ 14</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bpandas%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>medium[pandas]</code></a> | 66.7 s | 63.2 s | +5.62% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bstatic-frame%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>medium[static-frame]</code></a> | 20.3 s | 19.3 s | +4.69% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Btanjun%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>small[tanjun]</code></a> | 2.6 s | 2.5 s | +4.31% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bsympy%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>large[sympy]</code></a> | 52.8 s | 50.2 s | +5.25% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bpydantic%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>large[pydantic]</code></a> | 128.5 s | 107.9 s | +19.12% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Baltair%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>small[altair]</code></a> | 5.5 s | 5.3 s | +4.03% |
+| ⚡ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>hydra-zen</code></a> | 1.3 s | 1.3 s | +4.04% |
+| ⚡ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_many_string_assignments%3A%3Aty_micro%5Bmany_string_assignments%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[many_string_assignments]</code></a> | 83.7 ms | 79.8 ms | +4.77% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funion-builder-simplify?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 07:51</div>
+            <div class="timeline-body"><p>The memory and performance improvements make me a little suspicious. But maybe it's because we now defer computing <code>negated</code>, which leads to fewer interned structs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:564 on 2025-12-18 07:55</div>
+            <div class="timeline-body"><p>Hmm, too bad. This is actually incorrect. But I'm surprised that there isn't a single failing test!</p>
+<p>The issue is that we now insert the element even in case where it later turns out that it's redundant?</p>
+<p>We also end up removing existing elements if <code>ty</code> turns out to be redundant (although, not sure when this would happen because it would mean another existing element has been redundant too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-18 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-18 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:561 on 2025-12-18 08:03</div>
+            <div class="timeline-body"><p>Unlike before, the new implementation removes redundant elements before we decided if we want to add <code>ty</code>.</p>
+<p>I think this might be okay because we only early-exit if the type is redundant with any existing type and, if that's the case, then the element that would be removed here must have been redundant too? But not feeling a 100% sure about this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Small union builder nits" to "[ty] Improve union builder performance" by @MichaReiser on 2025-12-18 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-12-18 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-12-18 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-18 08:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:388 on 2025-12-18 08:17</div>
+            <div class="timeline-body"><p>I think we should <code>continue</code> here, the same as in <code>push_type</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-18 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:564 on 2025-12-18 08:26</div>
+            <div class="timeline-body"><p>Funny, that this was the main performance improvement (up to 10%). Sort of confusing why that would be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-12-18 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-18 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-12-18 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-18 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-18 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:368 on 2025-12-18 11:29</div>
+            <div class="timeline-body"><p>did you consider using a <code>OnceCell</code> here? It might make the logic more readable and less repetitive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:386 on 2025-12-18 11:37</div>
+            <div class="timeline-body"><p>I had to play around with this code a little to figure out how we even get to this branch, and why it's correct here for <code>to_remove</code> to be <code>Option&lt;usize&gt;</code> rather than <code>Vec&lt;usize&gt;</code>. It might be helpful to add a comment here (and similar comments to the <code>if existing.is_subtype_of(db, ty)</code> calls in the <code>Type::IntLiteral()</code> and <code>Type::BytesLiteral</code> branches below):</p>
+<pre><code class="language-suggestion">                            // e.g. `existing` could be `Literal[&quot;&quot;] &amp; Any`,
+                            // and `ty` could be `Literal[&quot;&quot;]`
+                            if existing.is_subtype_of(self.db, ty) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:388 on 2025-12-18 11:39</div>
+            <div class="timeline-body"><p>yes, I think this is correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:581 on 2025-12-18 11:54</div>
+            <div class="timeline-body"><p>I think I'd prefer a design where <code>i</code> is only incremented in a single place, at the start of the loop body. It feels more robust because you don't have to remember to do <code>i += 1</code> every time you have a <code>continue</code> in the loop:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/builder.rs b/crates/ty_python_semantic/src/types/builder.rs
+index b5042d41be..89dc16c561 100644
+--- a/crates/ty_python_semantic/src/types/builder.rs
++++ b/crates/ty_python_semantic/src/types/builder.rs
+@@ -560,6 +560,7 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+         let mut ty_negated: Option&lt;Type&gt; = None;
+ 
+         let mut i = 0;
++        let mut is_first = true;
+         let mut insertion_point: Option&lt;usize&gt; = None;
+ 
+         let mut remove_or_replace = |i: usize, elements: &amp;mut Vec&lt;UnionElement&lt;'db&gt;&gt;| {
+@@ -570,7 +571,17 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+             }
+         };
+ 
+-        while i &lt; self.elements.len() {
++        loop {
++            if !is_first {
++                i += 1;
++            }
++
++            if i &gt;= self.elements.len() {
++                break;
++            }
++
++            is_first = false;
++
+             let element = &amp;mut self.elements[i];
+ 
+             let element_type = match element.try_reduce(self.db, ty) {
+@@ -578,7 +589,6 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+                     if !keep {
+                         remove_or_replace(i, &amp;mut self.elements);
+                     }
+-                    i += 1;
+                     continue;
+                 }
+                 ReduceResult::Type(ty) =&gt; ty,
+@@ -605,7 +615,6 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+             // compare `TypedDict`s by name/identity instead of using the `has_relation_to`
+             // machinery.
+             if element_type.is_typed_dict() &amp;&amp; ty.is_typed_dict() {
+-                i += 1;
+                 continue;
+             }
+ 
+@@ -616,7 +625,6 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+ 
+                 if element_type.is_redundant_with(self.db, ty) {
+                     remove_or_replace(i, &amp;mut self.elements);
+-                    i += 1;
+                     continue;
+                 }
+ 
+@@ -635,8 +643,6 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+                     return;
+                 }
+             }
+-
+-            i += 1;
+         }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:561 on 2025-12-18 12:00</div>
+            <div class="timeline-body"><p>I think this rationale makes sense, yes. And the fact that all our tests pass (plus no ecosystem impact) gives me confidence that this is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-18 12:00</div>
+            <div class="timeline-body"><p>Very cool 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:01</div>
+            <div class="timeline-body"><p>If you're looking for further improvements to union-building performance: we've known for a while that we need to do the same thing for enum-literal types that we do for bytes-literal, int-literal and string-literal types. Big unions of enum literals are currently very slow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 18:08</div>
+            <div class="timeline-body"><p>I'd feel slightly more comfortable if @carljm at least skimmed over the change, given that our mypy primer results aren't as useful anymore (are there changes? I can't tell)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:386 on 2025-12-18 18:34</div>
+            <div class="timeline-body"><p>Yes I agree those comments would be helpful.</p>
+<p>I think the reason it's OK to just track one <code>to_remove</code> is also a bit subtle -- it's because there are a limited number of possible subtypes of a literal, and all the possible subtypes (e.g. <code>Literal[1] &amp; Any</code>, <code>Literal[1] &amp; Unknown</code>) are also redundant with each other, so it's not possible that we'd have more than one as an existing element.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:574 on 2025-12-18 18:49</div>
+            <div class="timeline-body"><p>Why is this safe? Can't we remove elements and end up going out of bounds here? (It seems maybe we can't, given it doesn't happen in ecosystem -- but I don't understand why)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:561 on 2025-12-18 18:55</div>
+            <div class="timeline-body"><p>I think that's correct, as long as our is-redundant-with implementation obeys transitivity. A comment might be good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-12-18 18:57</div>
+            <div class="timeline-body"><p>Looks good, just one question I don't understand</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 21:53</div>
+            <div class="timeline-body"><p>Curious to see what the pydantic benchmark number is after rebasing on main, now https://github.com/astral-sh/ruff/commit/fa57253980c317cce7ff1f35691e3d850c0fb58b has landed (I'm sure it's still an improvement, just curious how much of an improvement it is now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 00:45</div>
+            <div class="timeline-body"><p>I did a local benchmark with a rebase on main and got a 21% improvement (https://github.com/astral-sh/ruff/pull/22052#issuecomment-3672906832)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-19 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:561 on 2025-12-19 06:58</div>
+            <div class="timeline-body"><p>Turns out, this assumption is incorrect or there is indeed a bug in our <code>is_redundant_with</code>. I added assert statements to all our early returns, asserting that <code>insertion_point.is_none</code> (meaning, we haven't inserted the element yet), and <code>pep695_type_aliases.… - PEP 695 type aliases - Cyclic aliases - Recursive invariant</code> now panics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-19 07:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:574 on 2025-12-19 07:02</div>
+            <div class="timeline-body"><p>Because of the check on the line above. It checks <code>i</code> against the current length of <code>self.elements</code> in each iteration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-19 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:368 on 2025-12-19 07:08</div>
+            <div class="timeline-body"><p>Not sure what the benefit of using <code>OnceCell</code> here is. The main advantage of <code>OnceCell</code> is that it doesn't require <code>mut</code>, but the <code>mut</code> isn't an issue here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 07:29</div>
+            <div class="timeline-body"><p>I reverted the <code>to_remove</code> change because I don't feel confident enough. The good news is that it isn't responsible for most of the perf improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-19 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-19 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-19 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-19 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:368 on 2025-12-19 13:55</div>
+            <div class="timeline-body"><p>Thanks, yeah, a <code>OnceCell</code> doesn't really make much sense here. The main thing I was wondering about was whether there was any way to reduce the repetition of having to do <code>ty_negated.get_or_insert_with(|| ty.negate(db))</code> so many times. See https://github.com/astral-sh/ruff/pull/22082.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

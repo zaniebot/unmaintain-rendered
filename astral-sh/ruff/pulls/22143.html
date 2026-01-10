@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Add `non-empty-init-module` (`RUF067`) - astral-sh/ruff #22143</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Add <code>non-empty-init-module</code> (<code>RUF067</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22143">#22143</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-12-22 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-22 17:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new rule, <code>non-empty-init-module</code>, which restricts the kind of
+code that can be included in an <code>__init__.py</code> file. By default, docstrings,
+imports, and assignments to <code>__all__</code> are allowed. When the new configuration
+option <code>lint.ruff.strictly-empty-init-modules</code> is enabled, no code at all is
+allowed.</p>
+<p>This closes #9848, where these two variants correspond to different rules in the
+<a href="https://github.com/samueljsb/flake8-empty-init-modules/"><code>flake8-empty-init-modules</code></a>
+linter. The upstream rules are EIM001, which bans all code, and EIM002, which
+bans non-import/docstring/<code>__all__</code> code. Since we discussed folding these into
+one rule on <a href="https://discord.com/channels/1039017663004942429/1082324250112823306/1440086001035771985">Discord</a>, I just added the rule to the <code>RUF</code> group instead of
+adding a new <code>EIM</code> plugin.</p>
+<p>I'm not really sure we need to flag docstrings even when the strict setting is
+enabled, but I just followed upstream for now. Similarly, as I noted in a TODO
+comment, we could also allow more statements involving <code>__all__</code>, such as
+<code>__all__.append(...)</code> or <code>__all__.extend(...)</code>. The current version only allows
+assignments, like upstream, as well as annotated and augmented assignments,
+unlike upstream.</p>
+<p>I think when we discussed this previously, we considered flagging the module
+itself as containing code, but for now I followed the upstream implementation of
+flagging each statement in the module that breaks the rule (actually the
+upstream linter flags each <em>line</em>, including comments). This will obviously be a
+bit noisier, emitting many diagnostics for the same module. But this also seems
+preferable because it flags every statement that needs to be fixed up front
+instead of only emitting one diagnostic for the whole file that persists as you
+keep removing more lines. It was also easy to implement in <code>analyze::statement</code>
+without a separate visitor.</p>
+<p>The first commit adds the rule and baseline tests, the second commit adds the
+option and a diff test showing the additional diagnostics when the setting is
+enabled.</p>
+<p>I noticed a small (~2%) performance regression on our largest benchmark, so I also added a cached <code>Checker::in_init_module</code> field and method instead of the <code>Checker::path</code> method. This was almost the only reason for the <code>Checker::path</code> field at all, but there's one remaining reference in a <code>warn_user!</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/definitions.rs#L188">call</a>.</p>
+<h2>Test Plan</h2>
+<p>New tests adapted from the upstream linter</p>
+<h2>Ecosystem Report</h2>
+<p>I've spot-checked the ecosystem report, and the results look &quot;correct.&quot; This is obviously a very noisy rule if you do include code in <code>__init__.py</code> files. We could make it less noisy by adding more exceptions (e.g. allowing <code>if TYPE_CHECKING</code> blocks, allowing <code>__getattr__</code> functions, allowing imports from <code>importlib</code> assignments), but I'm sort of inclined just to start simple and see what users need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-22 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-22 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-22 17:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2016 -0 violations, +0 -0 fixes in 24 projects; 31 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+28 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L13'>disnake/__init__.py:13:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L15'>disnake/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L16'>disnake/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L83'>disnake/__init__.py:83:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L11'>disnake/ext/mypy_plugin/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L7'>disnake/ext/mypy_plugin/__init__.py:7:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L38'>disnake/ext/tasks/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L39'>disnake/ext/tasks/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L40'>disnake/ext/tasks/__init__.py:40:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L41'>disnake/ext/tasks/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 18 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/__init__.py#L10'>rasa/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/cli/__init__.py#L5'>rasa/cli/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/__init__.py#L5'>rasa/core/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L28'>rasa/core/channels/__init__.py:28:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L47'>rasa/core/channels/__init__.py:47:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L10'>rasa/core/training/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L33'>rasa/core/training/__init__.py:33:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/__init__.py#L5'>rasa/nlu/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/classifiers/__init__.py#L3'>rasa/nlu/classifiers/__init__.py:3:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/utils/__init__.py#L11'>rasa/nlu/utils/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+389 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L130'>airflow-core/src/airflow/__init__.py:130:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L137'>airflow-core/src/airflow/__init__.py:137:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L38'>airflow-core/src/airflow/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L46'>airflow-core/src/airflow/__init__.py:46:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L80'>airflow-core/src/airflow/__init__.py:80:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/__init__.py#L84'>airflow-core/src/airflow/__init__.py:84:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/api/client/__init__.py#L25'>airflow-core/src/airflow/api/client/__init__.py:25:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py#L53'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py:53:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py#L56'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py:56:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/airflow/blob/cf80ae19840f1d03e16323e7bca819550633db97/airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py#L61'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/__init__.py:61:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 379 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+70 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset-core/src/superset_core/mcp/__init__.py#L100'>superset-core/src/superset_core/mcp/__init__.py:100:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset-core/src/superset_core/mcp/__init__.py#L41'>superset-core/src/superset_core/mcp/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset-core/src/superset_core/mcp/__init__.py#L44'>superset-core/src/superset_core/mcp/__init__.py:44:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L37'>superset/__init__.py:37:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L38'>superset/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L39'>superset/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L40'>superset/__init__.py:40:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L41'>superset/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L42'>superset/__init__.py:42:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/apache/superset/blob/02411ffde09e51f30e1db44493d6415ac7a63460/superset/__init__.py#L45'>superset/__init__.py:45:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 60 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+56 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L101'>src/bokeh/__init__.py:101:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L102'>src/bokeh/__init__.py:102:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L107'>src/bokeh/__init__.py:107:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L109'>src/bokeh/__init__.py:109:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L110'>src/bokeh/__init__.py:110:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L111'>src/bokeh/__init__.py:111:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L37'>src/bokeh/__init__.py:37:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L62'>src/bokeh/__init__.py:62:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L85'>src/bokeh/__init__.py:85:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L92'>src/bokeh/__init__.py:92:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 46 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+142 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L31'>ibis/__init__.py:31:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L42'>ibis/__init__.py:42:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1517'>ibis/backends/__init__.py:1517:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1530'>ibis/backends/__init__.py:1530:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1550'>ibis/backends/__init__.py:1550:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1557'>ibis/backends/__init__.py:1557:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1567'>ibis/backends/__init__.py:1567:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1601'>ibis/backends/__init__.py:1601:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1648'>ibis/backends/__init__.py:1648:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1673'>ibis/backends/__init__.py:1673:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 132 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+274 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L14'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:14:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L15'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L6'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:6:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/__init__.py#L19'>libs/core/langchain_core/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/__init__.py#L20'>libs/core/langchain_core/__init__.py:20:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/_api/__init__.py#L45'>libs/core/langchain_core/_api/__init__.py:45:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/callbacks/__init__.py#L86'>libs/core/langchain_core/callbacks/__init__.py:86:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/document_loaders/__init__.py#L21'>libs/core/langchain_core/document_loaders/__init__.py:21:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/documents/__init__.py#L39'>libs/core/langchain_core/documents/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/langchain-ai/langchain/blob/721bf15430ee231bfe50a8b7c6015d91a8d9a24a/libs/core/langchain_core/embeddings/__init__.py#L16'>libs/core/langchain_core/embeddings/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 264 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+52 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L19'>src/latch_cli/docker_utils/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L27'>src/latch_cli/docker_utils/__init__.py:27:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L38'>src/latch_cli/docker_utils/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L401'>src/latch_cli/docker_utils/__init__.py:401:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L427'>src/latch_cli/docker_utils/__init__.py:427:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/services/init/assemble_and_sort/__init__.py#L13'>src/latch_cli/services/init/assemble_and_sort/__init__.py:13:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/services/init/assemble_and_sort/__init__.py#L14'>src/latch_cli/services/init/assemble_and_sort/__init__.py:14:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/services/init/assemble_and_sort/__init__.py#L58'>src/latch_cli/services/init/assemble_and_sort/__init__.py:58:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/services/init/assemble_and_sort/__init__.py#L81'>src/latch_cli/services/init/assemble_and_sort/__init__.py:81:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
++ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/services/init/assemble_and_sort/__init__.py#L86'>src/latch_cli/services/init/assemble_and_sort/__init__.py:86:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
+... 42 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+<p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF067 | 2016 | 2016 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-22 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:64 on 2025-12-22 18:56</div>
+            <div class="timeline-body"><p>Definitely open to suggestions here, this feels a bit too short. Adding <code>in an __init__.py file</code> seems redundant with the filename in the output, though. The upstream linter at least customizes the message based on the strictness (e.g. <code>Non-import code detected</code> for the default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-12-22 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-12-22 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-23 17:54</div>
+            <div class="timeline-body"><p>Based on the ecosystem results, and my conversation with Micha today, I added a few more allowed statement types in non-strict mode:</p>
+<ul>
+<li>Module-level <code>__getattr__</code> functions</li>
+<li><code>TYPE_CHECKING</code> blocks</li>
+<li>Assignments to <code>__path__</code> (to support legacy namespace packages)</li>
+</ul>
+<p>I also fixed my top-level statement check, which was previously only checking the scope and thus emitting diagnostics for statements within <code>if</code> bodies, as just one example.</p>
+<p>That will clear out 10/17 of the airflow diagnostics rendered in the comment, so I expect it to drop the total number of ecosystem hits substantially too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-23 20:34</div>
+            <div class="timeline-body"><p>A few remaining common patterns in the ecosystem:</p>
+<ul>
+<li>Initializing loggers</li>
+<li>Setting <code>__version__</code></li>
+<li><code>__dir__</code> functions</li>
+</ul>
+<p>I think I'll add support for the last two at least since <code>__dir__</code> was added in the same PEP as <code>__getattr__</code> and often appears with it, and it seems safe enough to allow <code>__version__</code> too.</p>
+<p>I'm less convinced about the loggers since they can be hard to detect and also seem a bit less common.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @amyreese by @MichaReiser on 2025-12-26 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-26 12:12</div>
+            <div class="timeline-body"><p>Haven't started reviewing but we should probably allow all listed here https://peps.python.org/pep-0008/#module-level-dunder-names</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:492 on 2025-12-26 12:21</div>
+            <div class="timeline-body"><p>What's the reason that this doesn't check for <code>__init__.pyi</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:1063 on 2025-12-26 12:21</div>
+            <div class="timeline-body"><p>Nit: I prefer avoiding &quot;holes&quot; and instead assign rule ids on the rule that comes first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:38 on 2025-12-26 12:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// When [`lint.ruff.strictly-empty-init-modules`] is enabled, all code, including imports, docstrings, and `__all__`, will be
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:77 on 2025-12-26 12:26</div>
+            <div class="timeline-body"><p>Maybe use <code>semantic_model.at_top_level()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-26 12:27</div>
+            <div class="timeline-body"><p>Can you say more about the reason for allowing attribute docstrings, given that attributes are denied by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-26 12:30</div>
+            <div class="timeline-body"><p>Might be worth being slighlty more strict and asserting that this is an <code>extend_path</code> call (ignore the left side, just the <code>.extend_path(__path__, __name__)</code>)</p>
+<p>See https://github.com/astral-sh/ruff/blob/b4c2825afdd8c1010c3a5859521629d2d1e0a6df/crates/ty_module_resolver/src/resolve.rs#L1627</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:64 on 2025-12-26 12:36</div>
+            <div class="timeline-body"><p>I agree that the message is a bit surprising. It's like, yeah, this is code, what's wrong with it?</p>
+<p>Using separate messages based on strictness probably makes sense. For strict mode, maybe <code>init module must be empty</code> (although it doesn't really say what's wrong)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-26 12:36</div>
+            <div class="timeline-body"><p>Thank you. This is great. The bigest open question for me is whether this rule should also apply to <code>__init__.pyi</code> files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:492 on 2025-12-26 16:31</div>
+            <div class="timeline-body"><p>This was the pattern in the existing checks I factored this out of, but to be honest I hadn't thought too much about the <code>pyi</code> version. For this rule in particular, if the motivation is avoiding surprising runtime behavior, I think it makes sense to ignore <code>pyi</code> files, though. Stubs aren't executed, and I think stub authors often have less control over the actual code they're defining the interface for, if I understand correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-26 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-26 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:38 on 2025-12-26 16:32</div>
+            <div class="timeline-body"><p>Ah thank you! I felt that I needed to expand the docs with all the exceptions, and this is a really nice way to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-26 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/codes.rs</code>:1063 on 2025-12-26 16:35</div>
+            <div class="timeline-body"><p>I just felt bad because another rule currently using RUF067 is sitting in my review queue (along with RUF069), but I'll update this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-26 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-26 16:41</div>
+            <div class="timeline-body"><p>Hmm yeah that makes sense. I was just following upstream again here without too much thought. I guess it would be nice if you did want to allow one attribute that you only have to write:</p>
+<pre><code class="language-py">CONST = 1  # noqa: RUF070
+&quot;My docstring&quot;
+</code></pre>
+<p>instead of a noqa on both lines. But the flip side is that removing the constant adds a new diagnostic on the string. So I'm happy to remove this exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-26 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-26 16:51</div>
+            <div class="timeline-body"><p>Makes sense, thanks for the link!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-26 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Haven't started reviewing but we should probably allow all listed here <a href="https://peps.python.org/pep-0008/#module-level-dunder-names">peps.python.org/pep-0008#module-level-dunder-names</a></p>
+</blockquote>
+<p>I'm not sure that this is an exhaustive list, and from when I searched around last week, even <code>__version__</code> doesn't strictly seem to be a standard (<a href="https://discuss.python.org/t/please-make-package-version-go-away/58501">one reference</a>). But I've added <code>__author__</code>, which I think was the only one missing from that section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-29 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:492 on 2025-12-29 09:38</div>
+            <div class="timeline-body"><p>Makes sense. That's the conclusion I came to as well on my way to the groccery store :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-29 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-29 09:39</div>
+            <div class="timeline-body"><p>This makes sense to me. Might be worth an inline comment explaining the reason why we allow this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Add `non-empty-init-module` (`RUF070`)" to "[`ruff`] Add `non-empty-init-module` (`RUF067`)" by @ntBre on 2025-12-29 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-29 15:20</div>
+            <div class="timeline-body"><p>I ended up removing the exception for attribute docstrings, but I can put it back if you prefer. I can see an argument in either direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-29 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-30 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:1063 on 2025-12-30 08:26</div>
+            <div class="timeline-body"><p>What I do is that I change the rule code myself if I end up approving a contributor PR, so that we don't need to feel bad about it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-30 08:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_empty_init_module.rs</code>:113 on 2025-12-30 08:27</div>
+            <div class="timeline-body"><p>Not having to use two suppressions seems desirable (for as long as it doesn't result in any false negatives)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-12-30 14:55</div>
+            <div class="timeline-body"><p>Part of the rationale is currently that “Including code in <code>__init__.py</code> files can cause surprising slowdowns because the code is run at import time.” If it is slow to define a class in __init__.py, it is just as slow (or marginally slower) to define a class elsewhere and import it in __init__.py. Moving code to a different module that __init__.py imports doesn’t stop that code from being run at import time. So that part of the rationale does not make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-30 15:33</div>
+            <div class="timeline-body"><p>Good catch, thanks! That rationale works for the strict form of the rule, but I agree that it doesn't make much sense next to the first example I have here. I'll try to come up with something better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-30 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-30 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-30 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Add RUF069 to detect duplicate entries in __all__ - astral-sh/ruff #22114</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Add RUF069 to detect duplicate entries in <strong>all</strong></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22114">#22114</a>
+        opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a>
+        on 2025-12-20 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-20 15:36</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>This MR adds a new rule and its fix, <code>RUF069</code>, <code>DuplicateEntryInDunderAll</code>. I'm using <code>RUF069</code> because we already have <a href="https://github.com/astral-sh/ruff/pull/20585">RUF068</a> and <a href="https://github.com/astral-sh/ruff/pull/21079#issuecomment-3493839453">RUF069</a> in the works.</p>
+<p>The rule job is to prevent users from accidentally adding duplicate entries to <code>__all__</code>, which, for example, can result from copy-paste mistakes.</p>
+<p>It deals with the following syntaxes:</p>
+<pre><code class="language-python">__all__: list[str] = [&quot;a&quot;, &quot;a&quot;]
+__all__: typing.Any = (&quot;a&quot;, &quot;a&quot;)
+__all__.extend([&quot;a&quot;, &quot;a&quot;])
+__all__ += [&quot;a&quot;, &quot;a&quot;]
+</code></pre>
+<p>But it does not keep track of <code>__all__</code> contents, meaning the following code snippet is a false negative:</p>
+<pre><code class="language-python">class A: ...
+
+__all__ = [&quot;A&quot;]
+__all__.extend([&quot;A&quot;])
+</code></pre>
+<h2>Violation Example</h2>
+<pre><code class="language-console">RUF069 `__all__` contains duplicate entries
+ --&gt; RUF069.py:2:17
+  |
+1 | __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;]
+  |                 ^^^
+help: Remove duplicate entries from `__all__`
+1 | __all__ = [&quot;A&quot;, &quot;B&quot;]
+  - __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;]
+</code></pre>
+<h2>Ecosystem Report</h2>
+<p>The <code>ruff-ecosystem</code> results contain seven violations in four projects, all of them seem like true positives, with one instance appearing to be an actual bug.</p>
+<p>This <a href="https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4">code snippet</a> from <code>reportlab</code> contains the same entry twice instead of exporting both functions.</p>
+<pre><code class="language-python">def get_rl_tempdir(*subdirs: str) -&gt; str: ...
+def get_rl_tempfile(fn: str | None = None) -&gt; str: ...
+
+__all__ = (&quot;get_rl_tempdir&quot;, &quot;get_rl_tempdir&quot;)
+</code></pre>
+<p>Closes <a href="https://github.com/astral-sh/ruff/issues/21945">#21945</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-20 15:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+7 -0 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L53'>src/bokeh/core/query.py:53:5:</a> RUF069 [*] `__all__` contains duplicate entries
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/3dcafac79bb696220f8e70f8ca82fcdc4b0b0dd7/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/langchain-ai/langchain/blob/3dcafac79bb696220f8e70f8ca82fcdc4b0b0dd7/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF069 [*] `__all__` contains duplicate entries
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF069 `__all__` contains duplicate entries
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/astropy/astropy/blob/237a3ff8f949ebfd49bdc08e1023356fedd9e632/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF069 [*] `__all__` contains duplicate entries
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF069 | 7 | 7 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-20 16:29</div>
+            <div class="timeline-body"><p>It seems that those are all true positives.</p>
+<p>This one might even be a bug.
+https://github.com/python/typeshed/blob/06ecffccc72423711137c07be80c90522c084bbe/stubs/reportlab/reportlab/lib/rltempfile.pyi#L1-L4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-12-21 09:31</div>
+            <div class="timeline-body"><p>What about these cases?</p>
+<pre><code class="language-py">import typing
+
+
+class A: ...
+
+
+class B: ...
+
+__all__ = &quot;A&quot; + &quot;B&quot;
+__all__: list[str] = [&quot;A&quot;, &quot;B&quot;]
+__all__: typing.Any = (&quot;A&quot;, &quot;B&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-12-21 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:1 on 2025-12-21 09:35</div>
+            <div class="timeline-body"><p>maybe <code>use rustc_hash::FxHashSet;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-21 09:44</div>
+            <div class="timeline-body"><blockquote>
+<p>What about these cases?</p>
+<pre><code class="language-py">import typing
+
+
+class A: ...
+
+
+class B: ...
+
+__all__ = &quot;A&quot; + &quot;B&quot;
+__all__: list[str] = [&quot;A&quot;, &quot;B&quot;]
+__all__: typing.Any = (&quot;A&quot;, &quot;B&quot;)
+</code></pre>
+</blockquote>
+<p>Do you want to test whether those situations produce false positives or whether it still catches duplicates when using tuples, concatenation and/or type annotations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-12-21 09:46</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>What about these cases?</p>
+<pre><code class="language-python">import typing
+
+
+class A: ...
+
+
+class B: ...
+
+__all__ = &quot;A&quot; + &quot;B&quot;
+__all__: list[str] = [&quot;A&quot;, &quot;B&quot;]
+__all__: typing.Any = (&quot;A&quot;, &quot;B&quot;)
+</code></pre>
+</blockquote>
+<p>Do you want to test whether those situations produce false positives or whether it still catches duplicates when using tuples, concatenation and/or type annotations?</p>
+</blockquote>
+<p>I think it makes sense to add them to the test cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-12-21 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:1 on 2025-12-21 13:55</div>
+            <div class="timeline-body"><p>Done as suggested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-21 13:56</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>What about these cases?</p>
+<pre><code class="language-python">import typing
+
+
+class A: ...
+
+
+class B: ...
+
+__all__ = &quot;A&quot; + &quot;B&quot;
+__all__: list[str] = [&quot;A&quot;, &quot;B&quot;]
+__all__: typing.Any = (&quot;A&quot;, &quot;B&quot;)
+</code></pre>
+</blockquote>
+<p>Do you want to test whether those situations produce false positives or whether it still catches duplicates when using tuples, concatenation and/or type annotations?</p>
+</blockquote>
+<p>I think it makes sense to add them to the test cases</p>
+</blockquote>
+<p>Added these cases as suggested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-21 14:08</div>
+            <div class="timeline-body"><p>I added some extra cases, based on RUF022:</p>
+<pre><code class="language-python">__all__: list[str] = [&quot;a&quot;, &quot;a&quot;]
+__all__: typing.Any = (&quot;a&quot;, &quot;a&quot;)
+__all__.extend([&quot;a&quot;, &quot;a&quot;])
+__all__ += [&quot;a&quot;, &quot;a&quot;]
+</code></pre>
+<p>It still does not track mutable <code>__all__</code>, example:</p>
+<pre><code class="language-python">__all__ = [&quot;a&quot;]
+__all__ += [&quot;a&quot;]
+</code></pre>
+<p>This will be a false negative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @chirizxc by @leandrobbraga on 2025-12-21 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-12-21 17:33</div>
+            <div class="timeline-body"><p>LGTM.</p>
+<p>There may be other cases, but again, we cannot check dynamically created <code>__all__</code>, and we can only look at one file at a time, so if someone decides to add a duplicate in another file, we will not be able to detect it.</p>
+<p>I also think it's worth adding <code>RUF069.pyi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-21 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>LGTM.</p>
+<p>There may be other cases, but again, we cannot check dynamically created <code>__all__</code>, and we can only look at one file at a time, so if someone decides to add a duplicate in another file, we will not be able to detect it.</p>
+<p>I also think it's worth adding <code>RUF069.pyi</code>.</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @chirizxc removed by @ntBre on 2025-12-23 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-12-23 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2026-01-01 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2026-01-01 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @ntBre on 2026-01-01 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:89 on 2026-01-01 16:15</div>
+            <div class="timeline-body"><p>I think if you use <code>&amp;**func</code> like in <code>args</code> and <code>keywords</code> above you can avoid the <code>ref</code>s here, but either way is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:157 on 2026-01-01 16:28</div>
+            <div class="timeline-body"><p>I think we should try to inspect the tokens instead of doing this text manipulation. I think we could use something like <code>SimpleTokenizer::starts_at(range.end(), checker.source()).skip_trivia().next()</code> to find the trailing comma. That's similar to what we do in this rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/b2b9d91859f2abc017e35d22f01696f141f6f5b1/crates/ruff_linter/src/rules/flake8_bugbear/rules/duplicate_value.rs#L82-L91</p>
+<p>Actually that whole function would almost work here. It might be worth making that a helper function that just takes a <code>&amp;[Expr]</code> since it really only uses <code>set.elts</code> (even <code>set.len()</code> defers to the length of <code>elts</code>).</p>
+<p>The helper could go in this file maybe:</p>
+<p>https://github.com/astral-sh/ruff/blob/b2b9d91859f2abc017e35d22f01696f141f6f5b1/crates/ruff_linter/src/fix/edits.rs#L272</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:167 on 2026-01-01 16:29</div>
+            <div class="timeline-body"><p>Small nit, but the usual pattern we use here is something like:</p>
+<pre><code class="language-suggestion">            let applicability = if checker.comment_ranges().intersects(fix_range) {
+                Applicability::Unsafe
+            } else {
+                Applicability::Safe
+            };
+            
+            diagnostic.set_fix(Fix::applicable_edit(edit, applicability));
+</code></pre>
+<p>or you could inline the applicability too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:146 on 2026-01-01 16:33</div>
+            <div class="timeline-body"><p>Do we need to check this before iterating over the elements and starting to emit diagnostics? Based on the comment, it sounds like we should, but it also seems like we could actually just <code>continue</code> here. It should be okay to emit diagnostics in this case right?</p>
+<pre><code class="language-py">__all__ = [
+	foo,
+	&quot;bar&quot;,
+	&quot;bar&quot;,  # RUF069
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF069_RUF069.py.snap</code>:196 on 2026-01-01 16:35</div>
+            <div class="timeline-body"><p>We shouldn't append this comma to the comment. Hopefully the token approach will help with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.pyi</code>:1 on 2026-01-01 16:36</div>
+            <div class="timeline-body"><p>Just curious, what's the benefit of including the <code>.pyi</code> version? I don't think the rule has any stub-specific behavior right? Maybe it was just to check that it runs on stubs?</p>
+<p>cc @chirizxc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py</code>:23 on 2026-01-01 16:38</div>
+            <div class="timeline-body"><p>Let's throw in one multi-line case without comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:1 on 2026-01-01 16:39</div>
+            <div class="timeline-body"><p>Small nit, and this might just be me, but I often expect the file name to match the struct name exactly, so could we rename the file to <code>duplicate_entry_in_dunder_all.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:35 on 2026-01-01 16:48</div>
+            <div class="timeline-body"><p>We should add a <code>## Fix safety</code> section explaining the unsafety around comments. We may also want to double-check the comment range check. I don't think the existing test case actually deletes comments. I think the only way we could delete a comment is in a highly contrived case like:</p>
+<pre><code class="language-py">__all__ = [
+	&quot;a&quot;,
+	&quot;a&quot;
+	# comment
+	,
+	&quot;b&quot;
+]
+</code></pre>
+<p>since we need to delete both the second <code>&quot;a&quot;</code> and its trailing comma.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2026-01-01 16:51</div>
+            <div class="timeline-body"><p>Thank you! This looks great overall, and the summary was really helpful.</p>
+<p>Thanks @chirizxc for the rule suggestion and the reviews, as well.</p>
+<p>My main concern was with the fix, but all of my other comments are very minor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2026-01-01 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.pyi</code>:1 on 2026-01-01 17:23</div>
+            <div class="timeline-body"><p>Yes, there will be nothing like that in <code>.pyi</code> if the duplicate remains, but I think it's useful to check this, since duplicates were most likely added as a result of IDE autocompletion, or in large files where <code>__all__</code> can be 100-200 lines or more. In any case, it's something like a typo check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-01 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.pyi</code>:1 on 2026-01-01 17:28</div>
+            <div class="timeline-body"><p>Oh sorry, I didn't phrase my question very well. I think most of our rules apply to both <code>py</code> and <code>pyi</code> files, so I was thinking it might be okay to remove the duplicate tests in this <code>pyi</code> file (remove this file) since there's no stub-specific functionality being tested.</p>
+<p>I agree that the rule should apply to stubs, just wondering if we can reduce the number of identical tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2026-01-01 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.pyi</code>:1 on 2026-01-01 17:31</div>
+            <div class="timeline-body"><p>Yes, I think we can remove the tests for <code>.pyi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-01 17:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I also think it's worth adding a check for <code>__all__.append()</code>. If we look at the <a href="https://github.com/search?q=__all__.append&amp;type=code">code search on GitHub</a>, there are 21,000 matches. 🤔</p>
+<p>@ntBre what do you think about this?</p>
+</blockquote>
+<p>@chirizxc I think it's tricky to check <code>.append</code> because we'd have to keep internal state on <code>__all__</code> values we've seen so far. There's not really a good way to do that with the current structure of the rule, which only sees one statement/expression at a time. I'm okay with leaving it out of the rule, especially in a first version.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

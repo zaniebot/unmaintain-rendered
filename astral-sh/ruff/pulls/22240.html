@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Limit the returned completions to reduce lag - astral-sh/ruff #22240</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Limit the returned completions to reduce lag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22240">#22240</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-29 08:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 08:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Reduce the number of completions sent to clients to reduce serialization/deserialization overhead, thereby reducing lag.</p>
+<p>Serializing large responses can cause noticeable lag because serialization occurs on the server's main thread.
+Not only is serializing large responses expensive on the server, but deserializing them is equally expensive for the client.</p>
+<p>This PR limits the number of completions sent to the client to at most 1k. I picked the number rather arbitrarily, and we could maybe even go as low as 100
+But the serialization/deserialization cost between 100 and 1000 is minimal.</p>
+<p>I also made some changes to our tracing setup, which allowed me to debug this more easily:</p>
+<ul>
+<li>Change the response logging from <code>trace</code> to <code>debug</code>, it includes the end-to-end time it took to process a response (including wait time for an available worker thread and serialization)</li>
+<li>Add spans to <code>all_symbols</code> and <code>workspace_symbols</code> so that tracing preserves the request information for the spawned tasks running on a worker thread (tracing now logs that <code>symbols_for_file_globals_only</code> is part of the <code>completions </code>request`)</li>
+</ul>
+<p>Mitigates https://github.com/astral-sh/ty/issues/2254</p>
+<h2>Test Plan</h2>
+<p><strong>before</strong></p>
+<p>https://github.com/user-attachments/assets/ced8ab40-20dd-4291-af08-e8544c574ca2</p>
+<p><strong>After</strong></p>
+<p>https://github.com/user-attachments/assets/3873e4f0-bae8-41d4-a102-6da6fe1e2967</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-29 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-12-29 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-29 09:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-29 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-29 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-29 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-12-30 15:19</div>
+            <div class="timeline-body"><p>Could the LSP response please set the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionList"><code>CompletionList.isIncomplete</code> flag</a> in the response based on wether or not the list has been truncated?</p>
+<p>From the LSP 3.17 documentation string for that attribute:</p>
+<blockquote>
+<p>This list is not complete. Further typing should result in recomputing this list.</p>
+<p>Recomputed lists have all their items replaced (not appended) in the incomplete completion sessions.</p>
+</blockquote>
+<p>Also, is there any way a client could opt into getting the full list anyway?</p>
+<p>I realise that my use-case is not typical (I'm using the LSP protocol to gather Python project API information) but I was kinda counting on these responses being complete ;-) If <code>isIncomplete</code> is set based on wether or not the list was truncated, I can at least programatically detect when to send more detailed queries, as checking for a length of exactly 1000 items feels icky and not very robust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-30 15:23</div>
+            <div class="timeline-body"><p>My impression is that we already set <code>is_incomplete</code></p>
+<p>https://github.com/astral-sh/ruff/blob/f1e6c9c3a0befd642b5a44b78a7df266b0606b79/crates/ty_server/src/server/api/requests/completion.rs#L134-L137</p>
+<p>are there cases where it's missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-12-31 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>My impression is that we already set <code>is_incomplete</code></p>
+</blockquote>
+<p>Indeed, it is being set regardless of the list actually being complete or not. Could it reflect wether or not the list was truncated instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-31 16:16</div>
+            <div class="timeline-body"><p>We can't, because our current fuzzy search returns more results when you type more text, and it's important that clients don't cache the completion results.</p>
+<blockquote>
+<p>for speed clients should be able to filter an already received completion list if the user continues typing. Servers can opt out of this using a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionList">CompletionList</a> and mark it as isIncomplete.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-12-31 16:39</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>for speed clients should be able to filter an already received completion list if the user continues typing. Servers can opt out of this using a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionList">CompletionList</a> and mark it as isIncomplete.</p>
+</blockquote>
+</blockquote>
+<p>Thanks for finding that entry, I had missed that note. So <code>isIncomplete</code> is overloaded to mean both 'there can be more results' and 'do not filter this list down yourself, leave that to the server'. Check!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>

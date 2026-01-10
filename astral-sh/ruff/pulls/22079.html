@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] Make `SIM114` autofix unsafe when branches have different comments - astral-sh/ruff #22079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] Make <code>SIM114</code> autofix unsafe when branches have different comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22079">#22079</a>
+        opened by <a href="https://github.com/phongddo">@phongddo</a>
+        on 2025-12-19 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-19 12:10</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/19576</p>
+<p>Improves <code>SIM114</code> rule to handle branch merging with comment preservation safely, offer unsafe fixes when branches contain different comments to prevent comment loss.</p>
+<h2>Problem</h2>
+<p>The original <code>SIM114</code> autofix has an issue where it wasn't detecting trailing comments because it was checking comments within <code>body_range</code> starting from the <strong>end of line</strong> rather than the <strong>end of test</strong> as documented.</p>
+<p>For example, this case was incorrectly handled:</p>
+<pre><code class="language-python">if x == 1: # 1
+    print(&quot;Hello&quot;)
+elif x == 2: # 2
+    print(&quot;Hello&quot;)
+</code></pre>
+<p>Running with <code>--fix</code> would produce:</p>
+<pre><code class="language-bash">-if x == 1: # 1
+-    print(&quot;Hello&quot;)
+-elif x == 2: # 2
++if x == 1 or x == 2: # 1
+     print(&quot;Hello&quot;)
+
+Would fix 1 error.
+</code></pre>
+<p>It offers a <strong>safe</strong> fix even though the comments are not identical. I believe this is exactly the case mentioned in the reported issue, so in this situation we should offer unsafe fixes instead. In my opinion, this is a good strategy and consistent with how other rules are handled as @ntBre mentioned in other PR linked to the issue (please let me know what you think).</p>
+<h2>Solution</h2>
+<ul>
+<li>Fixed <code>body_range</code> to start from the end of the test (as it's documented) instead of the end of the test's line, allowing detection of trailing comments and validation against comments in the other branch before merging branches.</li>
+<li>Modified <code>merge_branches</code> to offer an unsafe fix when the code block is identical but comments differ, instead of skipping the merge entirely. Otherwise, a safe fix is offered as is.</li>
+<li>Updated rule documentation to include <code>Fix Safety</code> section to explain unsafe fix in this scenario.</li>
+</ul>
+<h2>Manual Verification</h2>
+<p>✏️ Those ecosystem reports are about unsafe fixes that we offer when merging branches with different comments.</p>
+<p><strong>The above test case → unsafe fix</strong></p>
+<pre><code class="language-bash">SIM114 Combine `if` branches using logical `or` operator
+  |
+1 | / if x == 1: # 1
+2 | |     print(&quot;Hello&quot;)
+3 | | elif x == 2: # 2
+4 | |     print(&quot;Hello&quot;)
+  | |__________________^
+  |
+help: Combine `if` branches
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p><strong>The issue's test case → unsafe fix</strong></p>
+<pre><code class="language-bash">SIM114 Combine `if` branches using logical `or` operator
+   |
+ 1 | / if isinstance(exc, HTTPError) and (
+ 2 | |     (500 &lt;= exc.status &lt;= 599)
+ 3 | |     or exc.status == 408  # server errors
+ 4 | |     or exc.status == 429  # request timeout
+ 5 | |     ):  # too many requests
+ 6 | |         return True
+ 7 | |
+ 8 | | # Consider all SSL errors as temporary. There are a lot of bug
+ 9 | | # reports from people where various SSL errors cause a crash
+10 | | # but are actually just temporary. On the other hand, we have
+11 | | # no information if this ever revealed a problem where retrying
+12 | | # was not the right choice.
+13 | | elif isinstance(exc, ssl.SSLError):
+14 | |     return True
+   | |_______________^
+   |
+help: Combine `if` branches
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p><strong>No comments test case → safe fix</strong></p>
+<pre><code class="language-bash">SIM114 [*] Combine `if` branches using logical `or` operator
+  |
+1 | / if x == 1:
+2 | |     print(&quot;Hello&quot;)
+3 | | elif x == 2:
+4 | |     print(&quot;Hello&quot;)
+  | |__________________^
+  |
+help: Combine `if` branches
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a comment in snapshot test. I'm not sure how we can distinguish between a safe and an unsafe fix in the snapshot test, so please guide me 🙏</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 12:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -1 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/main.py#L164'>main.py:164:33:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/cibuildwheel/blob/99059b74429eb968569914f1951bdeca074fb7ed/test/utils.py#L268'>test/utils.py:268:62:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM114`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |
+| SIM114 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -1 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/main.py#L164'>main.py:164:33:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/cibuildwheel/blob/99059b74429eb968569914f1951bdeca074fb7ed/test/utils.py#L268'>test/utils.py:268:62:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM114`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |
+| SIM114 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @phongddo on 2025-12-19 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-19 12:33</div>
+            <div class="timeline-body"><p>Hey @ntBre 👋 I've got this PR up with a suggestion to address the issue https://github.com/astral-sh/ruff/issues/19576. Please take a look whenever you have a moment. Thank you 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-12-19 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-19 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-19 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM114_SIM114.py.snap</code>:436 on 2025-12-19 17:32</div>
+            <div class="timeline-body"><p>This added <code>note</code> is how we can tell that the fix is now unsafe 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py</code>:11 on 2025-12-19 17:34</div>
+            <div class="timeline-body"><p>Ah this looks like a duplicate test case? I think I'd still lean toward not removing it here because it causes all the line numbers in the snapshot to churn. Same with the new comment below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-19 17:36</div>
+            <div class="timeline-body"><p>Thanks! I still need to review more closely, just a quick suggestion on reverting the test changes to make the snapshots easier to review. It should make the new unsafe notes more prominent too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-19 17:38</div>
+            <div class="timeline-body"><p>Could you take a look at the ecosystem check too? I don't think we should be changing when the rule applies, only the safety of its fix, but it looks like there are new diagnostics showing up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-19 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py</code>:11 on 2025-12-19 17:40</div>
+            <div class="timeline-body"><p>Ah, sorry for not mentioning it earlier, it’s a duplicate one so I removed it. I’m fine reverting it too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phongddo">@phongddo</a> reviewed on 2025-12-19 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/phongddo">@phongddo</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py</code>:11 on 2025-12-19 22:00</div>
+            <div class="timeline-body"><p>I reverted in https://github.com/astral-sh/ruff/pull/22079/commits/9981ea57b677cca8cd08671f60c7ef245313a8f1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-19 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I still need to review more closely</p>
+</blockquote>
+<p>Sure, please take your time 🙏</p>
+<blockquote>
+<p>Could you take a look at the ecosystem check too? I don't think we should be changing when the rule applies, only the safety of its fix, but it looks like there are new diagnostics showing up.</p>
+</blockquote>
+<p>I've looked into those reports, so please correct me if I'm wrong, but I think those changes make sense since we now offer an unsafe fix when merging branches with different comments. Previously, we didn't merge branches at all and simply returned without any fix (<a href="https://github.com/astral-sh/ruff/pull/22079/changes#diff-11a16368fae4b28fc3b47729a9db05e583106d078120ecbf523de5ab43de6773L87-L89">this check</a>). However, we ended up merging (without an unsafe fix) in the trailing comment scenario (the below example) due to the incorrect way we construct the body range that I fixed <a href="https://github.com/astral-sh/ruff/pull/22079/changes#diff-11a16368fae4b28fc3b47729a9db05e583106d078120ecbf523de5ab43de6773R191">here</a>, which I described in the PR's description:</p>
+<pre><code class="language-python">if x == 1: # 1
+    print(&quot;Hello&quot;)
+elif x == 2: # 2
+    print(&quot;Hello&quot;)
+
+# Snapshot test case
+if a:  # we preserve comments, too!
+    b
+elif c:  # but not on the second branch
+    b
+</code></pre>
+<p>With the fix, we now correctly check comment equality and offer an unsafe fix instead of ignoring it. For example, <a href="https://github.com/langchain-ai/langchain/blob/795e746ca70771925b65f9d3b1f551745a8316e7/libs/core/langchain_core/messages/block_translators/openai.py#L76">this report from ecosystem</a></p>
+<pre><code class="language-bash">+ [libs/core/langchain_core/messages/block_translators/openai.py:76:13:](https://github.com/langchain-ai/langchain/blob/795e746ca70771925b65f9d3b1f551745a8316e7/libs/core/langchain_core/messages/block_translators/openai.py#L76) SIM114 Combine `if` branches using logical `or` operator
+</code></pre>
+<p><strong>Previous</strong> → All checks passed!</p>
+<p><strong>After</strong></p>
+<pre><code class="language-bash">SIM114 Combine `if` branches using logical `or` operator
+  |
+1 |   if filename := block.get(&quot;filename&quot;):
+2 |       file[&quot;filename&quot;] = filename
+3 | / elif (extras := block.get(&quot;extras&quot;)) and (&quot;filename&quot; in extras):
+4 | |     file[&quot;filename&quot;] = extras[&quot;filename&quot;]
+5 | | elif (extras := block.get(&quot;metadata&quot;)) and (&quot;filename&quot; in extras):
+6 | |     # Backward compat
+7 | |     file[&quot;filename&quot;] = extras[&quot;filename&quot;]
+  | |_________________________________________^
+  |
+help: Combine `if` branches
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>In my opinion, providing an unsafe fix in this situation feels more consistent with other rules like <a href="https://docs.astral.sh/ruff/rules/async-zero-sleep/#fix-safety"><code>ASYNC115</code></a>. That said, please let me know if you disagree, I'm fine to revert and keep the previous behavior (by reverting the comments equality check, and it only returns safe fix) 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @phongddo on 2025-12-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 16:53</div>
+            <div class="timeline-body"><p>I think there are two different kinds of comments at play here. I think I agree with the comments in this test case:</p>
+<p>https://github.com/astral-sh/ruff/blob/adef89eb7cfb6eb7c3e0646dcd120e6f1adc7af2/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py#L107-L112</p>
+<p>that such comments should disable the rule. This seems like a clear signal to me that the user wants the two blocks of code to be separate, even if the <em>code</em> in the body happens to be the same.</p>
+<p>In contrast, this case:</p>
+<p>https://github.com/astral-sh/ruff/blob/e3498121b4700f5a9dce9bf6d72af4bc411e262d/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py#L138-L141</p>
+<p>seems like a known bug to me, recorded in our test cases. Removing this second comment should make the fix unsafe.</p>
+<p>As I commented on the first PR (https://github.com/astral-sh/ruff/pull/19759#pullrequestreview-3112435910), I think one easy fix here would be to check if the replacement range contains any comments and mark the fix as unsafe if it does, separate from the <code>first_comments.eq(second_comments)</code> check.</p>
+<p>However, I also kind of feel like the case in the issue, something like <a href="https://play.ruff.rs/c411c2ee-7121-4263-85fa-4f891cff9e70">this</a>:</p>
+<pre><code class="language-py">def foo():
+    if isinstance(exc, HTTPError) and (
+		(500 &lt;= exc.status &lt;= 599)
+		or exc.status == 408  # server errors
+		or exc.status == 429  # request timeout
+	):  # too many requests
+        return True
+
+	# Consider all SSL errors as temporary. There are a lot of bug
+	# reports from people where various SSL errors cause a crash
+	# but are actually just temporary. On the other hand, we have
+	# no information if this ever revealed a problem where retrying
+	# was not the right choice.
+    elif isinstance(exc, ssl.SSLError):
+        return True
+</code></pre>
+<p>falls pretty clearly into the first category. If I wrote this comment, I would <em>not</em> want an autofix to delete it, and as a result, I probably wouldn't want the rule to fire at all. So another bug fix here would be to associate that comment with one of the bodies so that the rule doesn't fire.</p>
+<p>Overall, I think we should just avoid a diagnostic and fix entirely in both of these cases to avoid trying to differentiate between comments it's okay to delete and those it's not.</p>
+<p>Whatever we end up doing, I think we need to add a test case like the sample from the issue because that comment placement seems a bit different from any of the other tests we have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-24 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Overall, I think we should just avoid a diagnostic and fix entirely in both of these cases to avoid trying to differentiate between comments it's okay to delete and those it's not.</p>
+</blockquote>
+<p>I agree 👍 avoid a diagnostic and fix makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-24 18:23</div>
+            <div class="timeline-body"><p>@ntBre I reverted the unsafe fix and kept only the <code>body_range</code> fix <a href="https://github.com/astral-sh/ruff/pull/22079/changes#diff-11a16368fae4b28fc3b47729a9db05e583106d078120ecbf523de5ab43de6773R176">here</a>. This change would skip the diagnostic and fix entirely where branch comments differ. I also added a test case similar to the one mentioned in the issue (and adjust comments in other test cases). Please let me know what you think 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:50</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Oh no, I think I see why end-of-line comments might have been treated separately :grimacing: There's a newly removed RUF100 unused noqa comment diagnostic in the <a href="https://github.com/pypa/cibuildwheel/blob/99059b74429eb968569914f1951bdeca074fb7ed/test/utils.py#L263-L277">ecosystem report</a>:</p>
+<pre><code class="language-py">if platform == &quot;pyodide&quot; and python_abi_tags is None:
+    python_abi_tags = [
+        &quot;cp312-cp312&quot;,
+        &quot;cp313-cp313&quot;,
+    ]
+elif platform == &quot;android&quot; and python_abi_tags is None:  # noqa: SIM114
+    python_abi_tags = [
+        &quot;cp313-cp313&quot;,
+        &quot;cp314-cp314&quot;,
+    ]
+elif platform == &quot;ios&quot; and python_abi_tags is None:
+    python_abi_tags = [
+        &quot;cp313-cp313&quot;,
+        &quot;cp314-cp314&quot;,
+    ]
+</code></pre>
+<p>I think this comment is now preventing SIM114 from firing, making it &quot;unused&quot; as a noqa comment, but removing it would make SIM114 trigger again. Apparently this has come up before, but I didn't realize it (https://github.com/astral-sh/ruff/issues/6025). Let's make sure to add a comment about this somewhere, it's a bit surprising.</p>
+<p>I think we can fix this if we keep the diagnostic for removing end-of-line comments but make the fix unsafe, but suppress the diagnostic for comments like the ones in the issue. Is that doable?</p>
+<p>Sorry for the back and forth, but I keep noticing new things in the ecosystem check!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-26 08:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we can fix this if we keep the diagnostic for removing end-of-line comments but make the fix unsafe, but suppress the diagnostic for comments like the ones in the issue. Is that doable?</p>
+</blockquote>
+<p>Could we detect if any of the comments are a pragma comment instead and not emit a diagnostic in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-26 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we detect if any of the comments are a pragma comment instead and not emit a diagnostic in that case?</p>
+</blockquote>
+<p>Ah that's a good idea, I'd prefer not to emit diagnostics for the end-of-line comments otherwise too.</p>
+<p>(We actually need to emit a diagnostic <em>only</em> if it's a pragma comment so that the pragma isn't unused, but I definitely agree with treating them specially)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @phongddo on 2026-01-02 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2026-01-02 11:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we detect if any of the comments are a pragma comment instead and not emit a diagnostic in that case?</p>
+</blockquote>
+<p>I also agree with this! I've made this PR a draft to make some changes to not emit diagnostic for pragma comments. I'll request your review again when it's ready. Thanks for the comments @ntBre @MichaReiser 🙏</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:42 UTC
+    </footer>
+</body>
+</html>

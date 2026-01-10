@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> [ty] Optimize IntersectionType for the common case of a single negated element (v2) - astral-sh/ruff #22360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Optimize IntersectionType for the common case of a single negated element (v2)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22360">#22360</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-03 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 17:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Similar to https://github.com/astral-sh/ruff/pull/22344, but uses a smallvec inside <code>IntersectionType</code> itself. This means that we need to implement fewer methods on the custom enum, but may result in slower <code>self.negative(db).contains(...)</code> checks for intersections. We'll see!</p>
+<h2>Test Plan</h2>
+<p>Existing tests / mypy_primer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2026-01-03 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-03 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-03 17:43</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-03 17:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">urllib3 (https://github.com/urllib3/urllib3)
++ src/urllib3/response.py:808:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 266 diagnostics
++ Found 267 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/job_processor/contract_job.py:167:24: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `Unknown | None | (Divergent &amp; ~AlwaysFalsy)`
++ dragonchain/job_processor/contract_job.py:167:24: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `Unknown | None | (Divergent &amp; ~Divergent)`
+- dragonchain/job_processor/contract_job.py:198:60: error[not-iterable] Object of type `Unknown | None | (Divergent &amp; ~AlwaysFalsy)` may not be iterable
++ dragonchain/job_processor/contract_job.py:198:60: error[not-iterable] Object of type `Unknown | None | (Divergent &amp; ~Divergent)` may not be iterable
+- dragonchain/job_processor/contract_job.py:250:29: error[invalid-argument-type] Argument to bound method `pull_image` is incorrect: Expected `str`, found `Unknown | None | (Divergent &amp; ~AlwaysFalsy)`
++ dragonchain/job_processor/contract_job.py:250:29: error[invalid-argument-type] Argument to bound method `pull_image` is incorrect: Expected `str`, found `Unknown | None | (Divergent &amp; ~Divergent)`
+- dragonchain/job_processor/contract_job.py:327:23: error[not-iterable] Object of type `Unknown | None | (Divergent &amp; ~AlwaysFalsy)` may not be iterable
++ dragonchain/job_processor/contract_job.py:327:23: error[not-iterable] Object of type `Unknown | None | (Divergent &amp; ~Divergent)` may not be iterable
+- dragonchain/job_processor/contract_job.py:419:13: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | (Divergent &amp; ~AlwaysFalsy)`
++ dragonchain/job_processor/contract_job.py:419:13: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | (Divergent &amp; ~Divergent)`
+- dragonchain/job_processor/contract_job_utest.py:431:9: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | (Divergent &amp; ~AlwaysFalsy)`
++ dragonchain/job_processor/contract_job_utest.py:431:9: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | (Divergent &amp; ~Divergent)`
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/email/base.py:525:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `tuple[(@Todo &amp; ~AlwaysFalsy) | Literal[False], @Todo]`
++ apprise/plugins/email/base.py:525:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `tuple[(@Todo &amp; ~@Todo) | Literal[False], @Todo]`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Index[Any]] | Top[Series[Any, Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Bus[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Yarn[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `(A@BaseDecoderTools &amp; BTCAddress) | (A@BaseDecoderTools &amp; ChecksumAddress) | (A@BaseDecoderTools &amp; SubstrateAddress) | (A@BaseDecoderTools &amp; SolanaAddress)`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `(A@BaseDecoderTools &amp; BTCAddress) | (A@BaseDecoderTools &amp; ChecksumAddress) | (A@BaseDecoderTools &amp; SubstrateAddress) | (A@BaseDecoderTools &amp; SolanaAddress) | None`, found `A@BaseDecoderTools | None`
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[(A@BaseDecoderTools &amp; BTCAddress) | (A@BaseDecoderTools &amp; ChecksumAddress) | (A@BaseDecoderTools &amp; SubstrateAddress) | (A@BaseDecoderTools &amp; SolanaAddress)]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- Found 2095 diagnostics
++ Found 2093 diagnostics
+
+core (https://github.com/home-assistant/core)
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -&gt; _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14435 diagnostics
++ Found 14436 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 18:03</div>
+            <div class="timeline-body"><p>The codspeed report here actually looks basically as good as the report on https://github.com/astral-sh/ruff/pull/22344. The biggest speedups aren't quite as big, but they're in basically the same range, and speedups are reported across a broader range of benchmarks: https://codspeed.io/astral-sh/ruff/branches/alex%2Foptimize-intersections-single-neg-slice?utm_source=github&amp;utm_medium=check&amp;utm_content=details</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-04 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:14433 on 2026-01-04 17:12</div>
+            <div class="timeline-body"><p>Is the assumption here and below that <code>normalize_impl</code> never returns the same <code>Type</code> (two types that are <code>Eq</code>) if the input types were different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-04 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:14433 on 2026-01-04 17:20</div>
+            <div class="timeline-body"><p>Hmm, not sure I understand the question.</p>
+<p>A type can normalize to itself, and two types with different Salsa IDs can normalize to the same type. But I don't understand how that's relevant to this change.</p>
+<p>This code is just mapping over an existing <code>SmallVec&lt;[Type&lt;'db&gt;; 1]&gt;</code>, normalizing each element in that smallvec, and collecting it back into a new <code>SmallVec&lt;[Type&lt;'db&gt;; 1]&gt;</code>. It's exactly the same as the existing code, except that the existing code maps over an <code>FxOrderSet</code> and collects the normalized elements into a new <code>FxOrderSet</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-04 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:14433 on 2026-01-04 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>It's exactly the same as the existing code, except that the existing code maps over an FxOrderSet and collects the normalized elements into a new FxOrderSet.</p>
+</blockquote>
+<p>The difference is that the small vec doesn't deduplicate normalized elements that are equal. My question is whether this is okay or if this is a concern</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-04 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:14433 on 2026-01-04 18:52</div>
+            <div class="timeline-body"><p>Ahh, I see. Hmmm, good question. In theory, we <em>should</em> be okay there, I think, because two types with different Salsa IDs would only normalize to the same type if they are equivalent types, and we shouldn't ever have two equivalent types in the same intersection. In practice... I wouldn't bet my life on us upholding those invariants <em>everywhere</em>, currently 😄</p>
+<p>If we do come across that, I think it indicates a bug elsewhere, so I'm not sure we should worry about that here. But the fact that this is a question that must be asked is maybe another point in favour of https://github.com/astral-sh/ruff/pull/22344 over this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-04 21:45</div>
+            <div class="timeline-body"><p>It looks like we're probably going with https://github.com/astral-sh/ruff/pull/22344</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-04 21:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>

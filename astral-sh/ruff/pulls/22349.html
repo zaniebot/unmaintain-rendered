@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] narrow `TypedDict` unions with `not in` - astral-sh/ruff #22349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] narrow <code>TypedDict</code> unions with <code>not in</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22349">#22349</a>
+        opened by <a href="https://github.com/felixscherz">@felixscherz</a>
+        on 2026-01-02 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/felixscherz">@felixscherz</a> on 2026-01-02 21:59</div>
+            <div class="timeline-body"><p>Hi, this fixes https://github.com/astral-sh/ty/issues/2191.</p>
+<h2>Summary</h2>
+<p>Added narrowing for unions of <code>TypedDict</code> where union members can be excluded based on the absence of a key.</p>
+<pre><code class="language-python">class Foo(TypedDict):
+    foo: int
+
+class Bar(TypedDict):
+    bar: int
+
+def _(u: Foo | Bar):
+    if &quot;foo&quot; not in u:
+        reveal_type(u)  # was `Foo | Bar`, is now `Bar`
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @felixscherz on 2026-01-02 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @felixscherz on 2026-01-02 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @felixscherz on 2026-01-02 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @felixscherz on 2026-01-02 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-02 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-02 22:08</div>
+            <div class="timeline-body"><p>Thanks! It looks like your branch is a bit behind <code>main</code>, though, which is causing compilation failures (https://github.com/astral-sh/ruff/pull/20974 reworked our narrowing-constraints machinery a bit). Could you rebase and fix the compilation failures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-02 22:31</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-02 22:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- backend/services/utils.py:71:16: error[invalid-return-type] Return type does not match returned value: expected `dict[Literal[&quot;data&quot;], Any] | None`, found `SrcErrorResultDto`
+- Found 29 diagnostics
++ Found 28 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/modules/simd.py:103:54: error[invalid-argument-type] Argument to function `extract_as_list` is incorrect: Expected `dict[str, Unknown]`, found `StaticLibrary`
++ mesonbuild/modules/simd.py:103:54: error[invalid-argument-type] Argument to function `extract_as_list` is incorrect: Expected `dict[Never, Unknown]`, found `StaticLibrary`
+- mesonbuild/modules/simd.py:105:24: error[invalid-key] TypedDict `StaticLibrary` can only be subscripted with a string literal key, got key of type `str`.
++ mesonbuild/modules/simd.py:105:24: error[invalid-assignment] Cannot assign value of type `Never` to key of type `Never` on TypedDict `StaticLibrary`
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/plugins/openlibrary/lists.py:89:19: error[invalid-key] Unknown key &quot;key&quot; for TypedDict `AnnotatedSeedDict`: Unknown key &quot;key&quot;
++ openlibrary/plugins/openlibrary/lists.py:90:25: warning[redundant-cast] Value is already of type `ThingReferenceDict`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/_trace/utils_botocore/span_pointers/dynamodb.py:483:25: warning[redundant-cast] Value is already of type `_DynamoDBDeleteRequestWriteRequest`
++ ddtrace/_trace/utils_botocore/span_pointers/dynamodb.py:554:34: warning[redundant-cast] Value is already of type `_DynamoDBTransactUpdateItem`
+- Found 8425 diagnostics
++ Found 8427 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/tree_util.py:302:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- jax/_src/tree_util.py:305:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- jax/_src/tree_util.py:308:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -&gt; T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -&gt; T@register_pytree_node`
+- Found 2801 diagnostics
++ Found 2798 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Bus[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Index[Any]] | Top[Series[Any, Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5160 diagnostics
++ Found 5159 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/tts/__init__.py:292:53: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `MediaSourceOptions | str`
+- homeassistant/components/tts/__init__.py:292:53: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `MediaSourceOptions | str`
+- homeassistant/components/tts/__init__.py:292:62: error[invalid-key] Unknown key &quot;options&quot; for TypedDict `ParsedMediaSourceStreamId`: Unknown key &quot;options&quot;
+- homeassistant/components/tts/__init__.py:293:41: error[invalid-key] Unknown key &quot;message&quot; for TypedDict `ParsedMediaSourceStreamId`: Unknown key &quot;message&quot;
+- homeassistant/components/tts/media_source.py:145:61: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `MediaSourceOptions | str`
+- homeassistant/components/tts/media_source.py:145:61: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `MediaSourceOptions | str`
+- homeassistant/components/tts/media_source.py:145:70: error[invalid-key] Unknown key &quot;options&quot; for TypedDict `ParsedMediaSourceStreamId`: Unknown key &quot;options&quot;
+- homeassistant/components/tts/media_source.py:146:49: error[invalid-key] Unknown key &quot;message&quot; for TypedDict `ParsedMediaSourceStreamId`: Unknown key &quot;message&quot;
+- Found 14443 diagnostics
++ Found 14435 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2026-01-02 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felixscherz">@felixscherz</a> on 2026-01-02 22:34</div>
+            <div class="timeline-body"><p>Sorry about that, I rebased onto the latest changes and fixed the compilation error.
+I'm also going to fix the clippy error that failed the CI run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/narrow.rs</code>:1155 on 2026-01-02 22:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        union.filter(self.db, |ty| match ty {
+                            Type::TypedDict(td) =&gt; !requires_key(td),
+                            Type::Intersection(intersection) =&gt; {
+                                !intersection.positive(self.db).iter().any(|ty| match ty {
+                                    Type::TypedDict(td) =&gt; requires_key(td),
+                                    _ =&gt; false,
+                                })
+                            }
+                            _ =&gt; true,
+                        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/narrow.rs</code>:1161 on 2026-01-02 22:39</div>
+            <div class="timeline-body"><p>similar to https://github.com/astral-sh/ruff/pull/22348, I think this would be slightly more efficient if we used a &quot;typeguard constraint&quot; here rather than a &quot;regular constraint&quot;. A regular constraint creates an intersection with the pre-existing type, but that's unnecessary here because we know what the intersection of the unfiltered union with the filtered union will simplify to: it will simplify to the filtered union.</p>
+<p>We can also avoid adding the constraint if the narrowed type is exactly the same as the original type.</p>
+<pre><code class="language-suggestion">                if narrowed != rhs_type {
+	                let place = self.expect_place(&amp;rhs_place_expr);
+	                constraints.insert(place, NarrowingConstraint::typeguard(narrowed));
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-02 22:39</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: narrow `TypedDict` unions with `not in`" to "[ty] narrow `TypedDict` unions with `not in`" by @AlexWaygood on 2026-01-02 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-02 22:41</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 4 | 2 |
+| <code>invalid-key</code> | 0 | 6 | 0 |
+| <code>invalid-return-type</code> | 0 | 1 | 4 |
+| <code>redundant-cast</code> | 3 | 0 | 0 |
+| <code>invalid-assignment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>4</strong> | <strong>11</strong> | <strong>6</strong> |</p>
+<p><strong><a href="https://df0f81c4.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://df0f81c4.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2026-01-02 22:48</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/felixscherz%3Afeat%2Fnarrow-typeddict-unions-with-not-in?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #22349 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>felixscherz:feat/narrow-typeddict-unions-with-not-in</code> (840c4ad) with <code>main</code> (d0f841b)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/felixscherz%3Afeat%2Fnarrow-typeddict-unions-with-not-in?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2026-01-03 13:02</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2026-01-03 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-03 13:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:36:43 UTC
+    </footer>
+</body>
+</html>
