@@ -1,0 +1,390 @@
+```yaml
+number: 21456
+title: "[ty] Further improve details around which expressions should be deferred in stub files"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/stub-not-so-deferred
+created_at: 2025-11-14T14:14:36Z
+updated_at: 2025-11-14T21:07:05Z
+url: https://github.com/astral-sh/ruff/pull/21456
+synced_at: 2026-01-10T16:53:56Z
+```
+
+# [ty] Further improve details around which expressions should be deferred in stub files
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-11-14 14:14_
+
+## Summary
+
+- Always restore the previous `deferred_state` after parsing a type expression: we don't want that state leaking out into other contexts where we shouldn't be deferring expression inference
+- Always defer the right-hand-side of a PEP-613 type alias in a stub file, allowing for forward references on the right-hand side of `T: TypeAlias = X | Y` in a stub file
+
+Addresses @carljm's review in https://github.com/astral-sh/ruff/pull/21401#discussion_r2524260153
+
+## Test Plan
+
+I added a regression test for a regression that the first version of this PR introduced (we need to make sure the r.h.s. of a PEP-613 `TypeAlias`es is always deferred in a stub file)
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-11-14 14:14_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-14 14:17_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-14 14:17_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ mitmproxy/contrib/wbxml/ASWBXML.py:874:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `Unknown | CDATASection` does not satisfy upper bound `Comment | DocumentType | Element | ProcessingInstruction` of type variable `_DocumentChildrenVar`
++ mitmproxy/contrib/wbxml/ASWBXML.py:878:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `Unknown | Text` does not satisfy upper bound `Comment | DocumentType | Element | ProcessingInstruction` of type variable `_DocumentChildrenVar`
+- Found 1841 diagnostics
++ Found 1843 diagnostics
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/_asyncio.pyi:11:29: error[unresolved-reference] Name `Future` used when not defined
+- mypy/typeshed/stdlib/_csv.pyi:25:33: error[unresolved-reference] Name `Dialect` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:25: error[unresolved-reference] Name `_SimpleCData` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:45: error[unresolved-reference] Name `_Pointer` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:61: error[unresolved-reference] Name `CFuncPtr` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:72: error[unresolved-reference] Name `Union` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:80: error[unresolved-reference] Name `Structure` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:84:92: error[unresolved-reference] Name `Array` used when not defined
+- mypy/typeshed/stdlib/_ctypes.pyi:157:57: error[unresolved-reference] Name `CFuncPtr` used when not defined
+- mypy/typeshed/stdlib/_hashlib.pyi:8:44: error[unresolved-reference] Name `_HashObject` used when not defined
+- mypy/typeshed/stdlib/_typeshed/__init__.pyi:359:60: error[unresolved-reference] Name `TraceFunction` used when not defined
+- mypy/typeshed/stdlib/argparse.pyi:33:49: error[unresolved-reference] Name `FileType` used when not defined
+- mypy/typeshed/stdlib/asyncio/events.pyi:67:42: error[unresolved-reference] Name `AbstractEventLoop` used when not defined
+- mypy/typeshed/stdlib/asyncio/streams.pyi:26:49: error[unresolved-reference] Name `StreamReader` used when not defined
+- mypy/typeshed/stdlib/asyncio/streams.pyi:26:63: error[unresolved-reference] Name `StreamWriter` used when not defined
++ mypy/typeshed/stdlib/builtins.pyi:1459:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/decimal.pyi:35:23: error[unresolved-reference] Name `Decimal` used when not defined
+- mypy/typeshed/stdlib/decimal.pyi:36:26: error[unresolved-reference] Name `Decimal` used when not defined
+- mypy/typeshed/stdlib/decimal.pyi:37:29: error[unresolved-reference] Name `Decimal` used when not defined
+- mypy/typeshed/stdlib/email/message.pyi:22:27: error[unresolved-reference] Name `Message` used when not defined
+- mypy/typeshed/stdlib/email/message.pyi:23:34: error[unresolved-reference] Name `Message` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:13:48: error[unresolved-reference] Name `IPv4Address` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:13:62: error[unresolved-reference] Name `IPv6Address` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:14:30: error[unresolved-reference] Name `IPv4Network` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:14:44: error[unresolved-reference] Name `IPv6Network` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:14:58: error[unresolved-reference] Name `IPv4Interface` used when not defined
+- mypy/typeshed/stdlib/ipaddress.pyi:14:74: error[unresolved-reference] Name `IPv6Interface` used when not defined
+- mypy/typeshed/stdlib/lib2to3/pytree.pyi:10:18: error[unresolved-reference] Name `Node` used when not defined
+- mypy/typeshed/stdlib/lib2to3/pytree.pyi:10:25: error[unresolved-reference] Name `Leaf` used when not defined
+- mypy/typeshed/stdlib/logging/__init__.pyi:80:30: error[unresolved-reference] Name `Filter` used when not defined
+- mypy/typeshed/stdlib/logging/__init__.pyi:80:49: error[unresolved-reference] Name `LogRecord` used when not defined
+- mypy/typeshed/stdlib/multiprocessing/synchronize.pyi:9:24: error[unresolved-reference] Name `Lock` used when not defined
+- mypy/typeshed/stdlib/multiprocessing/synchronize.pyi:9:31: error[unresolved-reference] Name `RLock` used when not defined
+- mypy/typeshed/stdlib/ssl.pyi:49:38: error[unresolved-reference] Name `SSLSocket` used when not defined
+- mypy/typeshed/stdlib/ssl.pyi:49:50: error[unresolved-reference] Name `SSLObject` used when not defined
+- mypy/typeshed/stdlib/ssl.pyi:49:73: error[unresolved-reference] Name `SSLSocket` used when not defined
+- mypy/typeshed/stdlib/tarfile.pyi:47:40: error[unresolved-reference] Name `TarInfo` used when not defined
+- mypy/typeshed/stdlib/tarfile.pyi:47:55: error[unresolved-reference] Name `TarInfo` used when not defined
+- mypy/typeshed/stdlib/tkinter/font.pyi:17:7: error[unresolved-reference] Name `Font` used when not defined
+- mypy/typeshed/stdlib/unittest/runner.pyi:11:41: error[unresolved-reference] Name `_TextTestStream` used when not defined
+- mypy/typeshed/stdlib/unittest/runner.pyi:11:70: error[unresolved-reference] Name `TextTestResult` used when not defined
+- mypy/typeshed/stdlib/unittest/suite.pyi:7:49: error[unresolved-reference] Name `TestSuite` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:16:33: error[unresolved-reference] Name `DocumentFragment` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:16:52: error[unresolved-reference] Name `Attr` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:16:59: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:16:69: error[unresolved-reference] Name `Document` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:36: error[unresolved-reference] Name `CDATASection` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:51: error[unresolved-reference] Name `Comment` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:61: error[unresolved-reference] Name `DocumentType` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:76: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:86: error[unresolved-reference] Name `Notation` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:97: error[unresolved-reference] Name `ProcessingInstruction` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:17:121: error[unresolved-reference] Name `Text` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:19:28: error[unresolved-reference] Name `Text` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:20:31: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:20:41: error[unresolved-reference] Name `ProcessingInstruction` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:20:65: error[unresolved-reference] Name `Comment` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:20:75: error[unresolved-reference] Name `Text` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:20:82: error[unresolved-reference] Name `CDATASection` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:21:30: error[unresolved-reference] Name `Text` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:40: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:50: error[unresolved-reference] Name `Text` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:57: error[unresolved-reference] Name `CDATASection` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:72: error[unresolved-reference] Name `ProcessingInstruction` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:96: error[unresolved-reference] Name `Comment` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:22:106: error[unresolved-reference] Name `Notation` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:23:32: error[unresolved-reference] Name `Comment` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:23:42: error[unresolved-reference] Name `DocumentType` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:23:57: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/dom/minidom.pyi:23:67: error[unresolved-reference] Name `ProcessingInstruction` used when not defined
+- mypy/typeshed/stdlib/xml/etree/ElementPath.pyi:11:34: error[unresolved-reference] Name `_SelectorContext` used when not defined
+- mypy/typeshed/stdlib/xml/etree/ElementTree.pyi:82:45: error[unresolved-reference] Name `Element` used when not defined
+- mypy/typeshed/stdlib/xml/etree/ElementTree.pyi:82:53: error[unresolved-reference] Name `_ElementCallable` used when not defined
+- mypy/typeshed/stdlib/xmlrpc/client.pyi:16:34: error[unresolved-reference] Name `DateTime` used when not defined
+- Found 1654 diagnostics
++ Found 1582 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 43 diagnostics
++ Found 44 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/contrib/auth/models.pyi:22:31: error[unresolved-reference] Name `AnonymousUser` used when not defined
+- django-stubs/contrib/postgres/search.pyi:10:45: error[unresolved-reference] Name `SearchQueryCombinable` used when not defined
+- django-stubs/core/mail/message.pyi:45:41: error[unresolved-reference] Name `EmailMessage` used when not defined
+- django-stubs/urls/resolvers.pyi:45:23: error[unresolved-reference] Name `RegexPattern` used when not defined
+- django-stubs/urls/resolvers.pyi:45:38: error[unresolved-reference] Name `RoutePattern` used when not defined
+- django-stubs/urls/resolvers.pyi:45:53: error[unresolved-reference] Name `LocalePrefixPattern` used when not defined
+- Found 464 diagnostics
++ Found 458 diagnostics
+
+sympy (https://github.com/sympy/sympy)
++ sympy/printing/mathml.py:171:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:172:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:187:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:189:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:201:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:202:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:233:35: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:236:35: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:237:35: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:246:33: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:274:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:275:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:279:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:327:35: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:332:38: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:335:37: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:339:37: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:342:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:428:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:434:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:435:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:458:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:461:36: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:465:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:472:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:478:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:486:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:492:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:493:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:501:37: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:516:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:523:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:530:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:539:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:541:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:672:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:682:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:691:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:707:34: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:708:34: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:746:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:759:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:769:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:797:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:798:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:827:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:829:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:834:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:889:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:895:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:899:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:910:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:938:38: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:943:41: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:944:41: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:954:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:969:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:971:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:975:28: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1045:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1065:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1066:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1080:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1083:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1084:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1087:34: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1096:33: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1112:33: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1114:37: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1118:35: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1124:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1139:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1141:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1162:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1168:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1176:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1189:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1250:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1254:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1283:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1285:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1292:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1301:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1322:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1366:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1377:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1381:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1388:31: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1393:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `Unknown | Element | str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1417:38: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1422:38: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1430:39: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1436:38: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1467:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1471:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `Unknown | Element | str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1514:34: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1532:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1537:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1541:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1681:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1693:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1697:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1712:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1770:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1774:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1787:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1791:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1804:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1808:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1809:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1848:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1852:29: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1853:25: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1891:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1902:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1914:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1918:26: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1930:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1932:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1934:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1944:30: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1973:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1975:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1978:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1980:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1982:27: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:1992:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2001:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2003:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2012:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2013:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2015:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2024:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2025:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2027:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2036:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2038:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2047:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_ElementChildrenPlusFragment`
++ sympy/printing/mathml.py:2049:23: error[invalid-argument-type] Argument to bound method `appendChild` is incorrect: Argument type `str` does not satisfy upper bound `Element | ProcessingInstruction | Comment | Text | DocumentFragment` of type variable `_Ele
+
+... (truncated 15 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Renamed from "[ty] Always restore the previous `deferred_state` after parsing a type expression" to "[ty] Further improve details around which expressions should be deferred in stub files" by @AlexWaygood on 2025-11-14 15:11_
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 15:13_
+
+Lots of new sympy diagnostics, but I think that's just because we now understand some type aliases that were previously inferred as `Unknown` due to forward references...
+
+---
+
+_Marked ready for review by @AlexWaygood on 2025-11-14 15:13_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-11-14 15:13_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-11-14 15:13_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-11-14 15:13_
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 16:17_
+
+> ```diff
+> + mypy/typeshed/stdlib/builtins.pyi:1459:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
+> ```
+
+not sure what's going on here but it looks like a pre-existing issue. I get lots of these diagnostics if I run `cargo run --manifest-path ../ruff/Cargo.toml -p ty check mypy/typeshed/stdlib/builtins.pyi` from mypy mypy clone with our `main` branch checked out in the `../ruff` directory
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 16:20_
+
+> Lots of new sympy diagnostics, but I think that's just because we now understand some type aliases that were previously inferred as `Unknown` due to forward references...
+
+Yes, it's because we now understand [this typeshed type alias](https://github.com/python/typeshed/blob/0c0bad88312ca103b794e52c5f2f20466a743b59/stdlib/xml/dom/minidom.pyi#L23), which is used as the upper bound for [this typeshed TypeVar](https://github.com/python/typeshed/blob/0c0bad88312ca103b794e52c5f2f20466a743b59/stdlib/xml/dom/minidom.pyi#L28), which is used in [this typeshed method annotation](https://github.com/python/typeshed/blob/0c0bad88312ca103b794e52c5f2f20466a743b59/stdlib/xml/dom/minidom.pyi#L637)
+
+---
+
+_@carljm approved on 2025-11-14 21:04_
+
+Might have been simpler to defer the PEP 613 part of this to the PEP 613 PR, but the conflict should be minor. Thank you!
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 21:06_
+
+> Might have been simpler to defer the PEP 613 part of this to the PEP 613 PR, but the conflict should be minor. Thank you!
+
+Yeah — I initially did it without that bit but it led to a few ecosystem regressions without the r.h.s. of PEP-613 aliases being deferred!
+
+---
+
+_Merged by @AlexWaygood on 2025-11-14 21:07_
+
+---
+
+_Closed by @AlexWaygood on 2025-11-14 21:07_
+
+---
+
+_Branch deleted on 2025-11-14 21:07_
+
+---

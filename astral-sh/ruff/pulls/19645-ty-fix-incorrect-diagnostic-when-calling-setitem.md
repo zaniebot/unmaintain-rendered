@@ -1,0 +1,317 @@
+```yaml
+number: 19645
+title: "[ty] Fix incorrect diagnostic when calling `__setitem__`"
+type: pull_request
+state: merged
+author: MatthewMckee4
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: fix-set-attr-diagnostic
+created_at: 2025-07-30T17:57:01Z
+updated_at: 2025-11-06T11:49:03Z
+url: https://github.com/astral-sh/ruff/pull/19645
+synced_at: 2026-01-10T16:53:55Z
+```
+
+# [ty] Fix incorrect diagnostic when calling `__setitem__`
+
+---
+
+_Pull request opened by @MatthewMckee4 on 2025-07-30 17:57_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Resolves https://github.com/astral-sh/ty/issues/862 by not emitting a diagnostic.
+
+## Test Plan
+
+Add test to show we don't emit the diagnostic
+
+
+---
+
+_Review requested from @carljm by @MatthewMckee4 on 2025-07-30 17:57_
+
+---
+
+_Review requested from @AlexWaygood by @MatthewMckee4 on 2025-07-30 17:57_
+
+---
+
+_Review requested from @sharkdp by @MatthewMckee4 on 2025-07-30 17:57_
+
+---
+
+_Review requested from @dcreager by @MatthewMckee4 on 2025-07-30 17:57_
+
+---
+
+_Renamed from "Fix set attr diagnostic" to "[ty] Fix incorrect diagnostic when calling `__setattr__`" by @MatthewMckee4 on 2025-07-30 17:58_
+
+---
+
+_Renamed from "[ty] Fix incorrect diagnostic when calling `__setattr__`" to "[ty] Fix incorrect diagnostic when calling `__setattr__` with no `__getattr__`" by @MatthewMckee4 on 2025-07-30 17:58_
+
+---
+
+_Renamed from "[ty] Fix incorrect diagnostic when calling `__setattr__` with no `__getattr__`" to "[ty] Fix incorrect diagnostic when calling `__setattr__`" by @MatthewMckee4 on 2025-07-30 17:58_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-30 18:01_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on typing conformance tests
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-07-30 18:02_
+
+---
+
+_Renamed from "[ty] Fix incorrect diagnostic when calling `__setattr__`" to "[ty] Fix incorrect diagnostic when calling `__setitem__`" by @AlexWaygood on 2025-07-30 18:02_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-30 18:02_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pybind11 (https://github.com/pybind/pybind11)
+- tests/test_sequences_and_iterators.py:157:5: error[non-subscriptable] Cannot subscript object of type `reversed[Unknown]` with no `__getitem__` method
+- Found 210 diagnostics
++ Found 209 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/main.py:109:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 765 diagnostics
++ Found 764 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/dbus.py:431:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/dbus.py:439:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/dbus.py:442:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/dbus.py:446:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/dbus.py:449:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/gnome.py:260:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/gnome.py:268:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/gnome.py:273:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/macosx.py:240:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/macosx.py:246:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/macosx.py:250:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1174:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1178:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1183:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1188:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1192:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1196:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1199:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1203:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1206:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1209:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/telegram.py:1214:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/windows.py:275:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- apprise/plugins/windows.py:282:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/test_apprise_config.py:265:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/test_apprise_config.py:576:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1696 diagnostics
++ Found 1670 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+- aiohttp_devtools/runserver/serve.py:375:17: error[non-subscriptable] Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
+- aiohttp_devtools/runserver/serve.py:381:25: error[non-subscriptable] Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
+- Found 58 diagnostics
++ Found 56 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/utils.py:91:13: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
+- tests/test_routing.py:604:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 366 diagnostics
++ Found 364 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- colour/recovery/otsu2018.py:1593:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 478 diagnostics
++ Found 477 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/contrib/emscripten/fetch.py:402:9: error[non-subscriptable] Cannot subscript object of type `Buffer` with no `__getitem__` method
+- Found 396 diagnostics
++ Found 395 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/classification/utils.py:319:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1482 diagnostics
++ Found 1481 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- win32/test/test_win32file.py:30:9: error[non-subscriptable] Cannot subscript object of type `PyOVERLAPPEDReadBuffer` with no `__getitem__` method
+- win32/test/test_win32file.py:36:9: error[non-subscriptable] Cannot subscript object of type `PyOVERLAPPEDReadBuffer` with no `__getitem__` method
+- Found 2004 diagnostics
++ Found 2002 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:553:21: error[non-subscriptable] Cannot subscript object of type `Iterable[Unknown | type[FrameDeferred]]` with no `__getitem__` method
+- Found 1774 diagnostics
++ Found 1773 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/base.py:50:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- src/prefect/deployments/base.py:51:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 3821 diagnostics
++ Found 3819 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- benchmarks/set_http_meta/scenario.py:74:13: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- benchmarks/set_http_meta/scenario.py:80:13: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- Found 6517 diagnostics
++ Found 6515 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/decomposition/_lda.py:155:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:988:25: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/metrics/_base.py:184:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/preprocessing/tests/test_function_transformer.py:92:5: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/utils/_encode.py:77:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/utils/_encode.py:80:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sklearn/utils/_encode.py:313:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 2053 diagnostics
++ Found 2046 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/parsing/autolev/test-examples/ruletest9.py:45:1: error[non-subscriptable] Cannot subscript object of type `<module 'math'>` with no `__getitem__` method
+- sympy/polys/matrices/lll.py:82:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sympy/polys/matrices/lll.py:82:23: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ sympy/tensor/array/expressions/from_array_to_matrix.py:997:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- sympy/utilities/lambdify.py:1238:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- sympy/utilities/lambdify.py:1241:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 12934 diagnostics
++ Found 12930 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- scipy/_lib/_array_api.py:772:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:211:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:212:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:229:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:230:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:231:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:232:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/cluster/hierarchy.py:3769:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/cluster/hierarchy.py:3770:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/cluster/hierarchy.py:3772:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/integrate/_ivp/common.py:241:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/integrate/_ivp/common.py:242:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/integrate/_quad_vec.py:412:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/ndimage/_measurements.py:674:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/ndimage/_measurements.py:977:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/ndimage/_measurements.py:984:5: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/ndimage/_morphology.py:2387:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/ndimage/_morphology.py:2418:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/optimize/_shgo.py:511:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/signal/_spectral_py.py:1280:9: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- scipy/signal/_spectral_py.py:1408:9: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- scipy/sparse/linalg/_isolve/iterative.py:543:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/sparse/linalg/_isolve/iterative.py:564:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/sparse/linalg/_isolve/iterative.py:995:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/sparse/linalg/_isolve/iterative.py:997:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- scipy/sparse/tests/test_coo.py:129:9: error[non-subscriptable] Cannot subscript object of type `coo_array` with no `__getitem__` method
+- scipy/spatial/transform/_rotation_spline.py:442:13: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/spatial/transform/_rotation_spline.py:444:13: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/stats/tests/test_binned_statistic.py:346:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/stats/tests/test_binned_statistic.py:347:9: error[non-subscriptable] Cannot subscript object of type `signedinteger[@Todo(Support for `typing.TypeAlias`)]` with no `__getitem__` method
+- scipy/stats/tests/test_quantile.py:27:5: error[non-subscriptable] Cannot subscript object of type `floating[Any]` with no `__getitem__` method
+- Found 6802 diagnostics
++ Found 6771 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Comment by @MatthewMckee4 on 2025-07-30 18:03_
+
+ah thanks
+
+---
+
+_Comment by @MatthewMckee4 on 2025-07-30 18:10_
+
+I'm not sure how to check the conformance tests
+
+---
+
+_Comment by @sharkdp on 2025-07-30 18:19_
+
+> I'm not sure how to check the conformance tests
+
+You can check out the https://github.com/python/typing repository and see the relevant files in its `conformance` directory.
+
+---
+
+_Comment by @sharkdp on 2025-07-30 18:23_
+
+> > I'm not sure how to check the conformance tests
+> 
+> You can check out the https://github.com/python/typing repository and see the relevant files in its `conformance` directory.
+
+I don't immediately understand how this diff is related to your PR. This looks strange?
+
+---
+
+_Comment by @MatthewMckee4 on 2025-07-30 18:23_
+
+Yeah looks very strange
+
+---
+
+_Comment by @sharkdp on 2025-07-30 18:25_
+
+/cc @dhruvmanila Looks like maybe the merge base was computed incorrectly for the typing conformance check here?
+
+Edit: check previous version of the PR comment.
+
+---
+
+_Comment by @MatthewMckee4 on 2025-07-30 18:27_
+
+they've gone away now at least
+
+---
+
+_@sharkdp approved on 2025-07-30 18:28_
+
+Thank you very much!
+
+---
+
+_Merged by @sharkdp on 2025-07-30 18:34_
+
+---
+
+_Closed by @sharkdp on 2025-07-30 18:34_
+
+---
+
+_Branch deleted on 2025-11-06 11:49_
+
+---

@@ -1,0 +1,1374 @@
+```yaml
+number: 21173
+title: "[ty] introduce local variables for `from` imports of submodules in `__init__.py(i)`"
+type: pull_request
+state: merged
+author: Gankra
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: gankra/py-import-from
+created_at: 2025-10-31T19:19:37Z
+updated_at: 2025-11-10T23:12:06Z
+url: https://github.com/astral-sh/ruff/pull/21173
+synced_at: 2026-01-10T16:53:55Z
+```
+
+# [ty] introduce local variables for `from` imports of submodules in `__init__.py(i)`
+
+---
+
+_Pull request opened by @Gankra on 2025-10-31 19:19_
+
+This rips out the previous implementation in favour of a new implementation with 3 rules:
+
+- **froms are locals**: a `from..import` can only define locals, it does not have global
+    side-effects. Specifically any submodule attribute `a` that's implicitly introduced by either
+    `from .a import b` or `from . import a as b` (in an `__init__.py(i)`) is a local and not a
+    global. If you do such an import at the top of a file you won't notice this. However if you do
+    such an import in a function, that means it will only be function-scoped (so you'll need to do
+    it in every function that wants to access it, making your code less sensitive to execution
+    order).
+
+- **first from first serve**: only the *first* `from..import` in an `__init__.py(i)` that imports a
+    particular direct submodule of the current package introduces that submodule as a local.
+    Subsequent imports of the submodule will not introduce that local. This reflects the fact that
+    in actual python only the first import of a submodule (in the entire execution of the program)
+    introduces it as an attribute of the package. By "first" we mean "the first time in this scope
+    (or any parent scope)". This pairs well with the fact that we are specifically introducing a
+    local (as long as you don't accidentally shadow or overwrite the local).
+
+- **dot re-exports**: `from . import a` in an `__init__.pyi` is considered a re-export of `a`
+    (equivalent to `from . import a as a`). This is required to properly handle many stubs in the
+    wild. Currently it must be *exactly* `from . import ...`.
+    
+This implementation is intentionally limited/conservative (notably, often requiring a from import to be relative). I'm going to file a ton of followups for improvements so that their impact can be evaluated separately.
+
+
+Fixes https://github.com/astral-sh/ty/issues/133
+
+---
+
+_Label `ty` added by @Gankra on 2025-10-31 19:19_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-10-31 19:19_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-31 19:21_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-10 23:02:35.450360648 +0000
++++ new-output.txt	2025-11-10 23:02:38.823377146 +0000
+@@ -1,4 +1,4 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/05a9af7/src/function/execute.rs:451:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(19371)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/05a9af7/src/function/execute.rs:451:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(19384)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-31 19:23_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+kornia (https://github.com/kornia/kornia)
+- kornia/augmentation/container/ops.py:213:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:233:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:309:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:372:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:415:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:468:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:513:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:566:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/augmentation/container/ops.py:612:34: error[unresolved-attribute] Module `kornia.augmentation.auto` has no member `operations`
+- kornia/core/mixin/onnx.py:145:22: error[unresolved-attribute] Module `kornia.onnx` has no member `utils`
+- kornia/core/mixin/onnx.py:306:20: error[unresolved-attribute] Module `kornia.onnx` has no member `utils`
+- kornia/core/mixin/onnx.py:399:14: error[unresolved-attribute] Module `kornia.onnx` has no member `utils`
+- kornia/core/module.py:142:20: error[unresolved-attribute] Module `kornia.utils` has no member `image`
+- kornia/core/module.py:237:25: error[unresolved-attribute] Module `kornia.utils` has no member `image`
+- kornia/core/module.py:263:25: error[unresolved-attribute] Module `kornia.utils` has no member `image`
+- kornia/utils/sample.py:108:26: error[unresolved-attribute] Module `kornia.geometry` has no member `transform`
+- Found 781 diagnostics
++ Found 765 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:124:24: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
++ src/pip/_vendor/urllib3/contrib/pyopenssl.py:136:5: error[invalid-assignment] Object of type `<class 'PyOpenSSLContext'>` is not assignable to attribute `SSLContext` of type `<class 'SSLContext'> | <class 'SSLContext'>`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:136:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:138:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
++ src/pip/_vendor/urllib3/contrib/pyopenssl.py:140:5: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `IS_PYOPENSSL` of type `Literal[False]`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:140:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:147:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:149:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:151:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/pyopenssl.py:208:16: error[unresolved-attribute] Module `pip._vendor.idna` has no member `core`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:92:24: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:193:5: error[invalid-assignment] Object of type `<class 'SecureTransportContext'>` is not assignable to attribute `SSLContext` of type `<class 'SSLContext'> | <class 'SSLContext'>`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:193:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:195:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:197:5: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `IS_SECURETRANSPORT` of type `Literal[False]`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:197:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:205:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:207:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:209:5: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:857:23: error[unresolved-attribute] Module `pip._vendor.urllib3.util` has no member `ssl_`
+- Found 585 diagnostics
++ Found 573 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/cli.py:67:12: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:78:23: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:101:14: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:123:21: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:149:21: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:161:28: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- boostedblob/cli.py:211:15: error[unresolved-attribute] Module `boostedblob` has no member `boost`
+- boostedblob/cli.py:226:27: error[unresolved-attribute] Module `boostedblob` has no member `boost`
+- boostedblob/cli.py:246:35: error[unresolved-attribute] Module `boostedblob` has no member `copying`
+- boostedblob/cli.py:256:15: error[unresolved-attribute] Module `boostedblob` has no member `boost`
+- boostedblob/cli.py:265:24: error[unresolved-attribute] Module `boostedblob` has no member `copying`
+- boostedblob/cli.py:277:32: error[unresolved-attribute] Module `boostedblob` has no member `delete`
+- boostedblob/cli.py:285:15: error[unresolved-attribute] Module `boostedblob` has no member `boost`
+- boostedblob/cli.py:296:28: error[unresolved-attribute] Module `boostedblob` has no member `delete`
+- boostedblob/cli.py:300:28: error[unresolved-attribute] Module `boostedblob` has no member `delete`
+- boostedblob/cli.py:427:28: error[unresolved-attribute] Module `boostedblob` has no member `listing`
+- Found 31 diagnostics
++ Found 15 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/paastaapi/configuration.py:353:16: error[unresolved-attribute] Module `urllib3` has no member `util`
+- Found 991 diagnostics
++ Found 990 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- github/GithubIntegration.py:120:77: error[unresolved-attribute] Module `urllib3` has no member `util`
+- github/MainClass.py:223:77: error[unresolved-attribute] Module `urllib3` has no member `util`
+- Found 285 diagnostics
++ Found 283 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/detection/transforms.py:140:24: error[unresolved-attribute] Module `torchvision.ops` has no member `boxes`
+- references/segmentation/v2_extras.py:11:21: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- references/segmentation/v2_extras.py:14:28: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- references/segmentation/v2_extras.py:23:16: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- references/segmentation/v2_extras.py:24:16: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- test/test_datasets_samplers.py:9:25: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_datasets_video_utils.py:34:29: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_datasets_video_utils.py:58:29: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_extended_models.py:110:72: error[unresolved-attribute] Module `torchvision.models` has no member `_api`
+- test/test_io.py:17:5: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_io.py:264:9: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_models.py:646:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:647:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:648:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:649:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:650:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:651:5: error[unresolved-attribute] Module `torchvision.models` has no member `vision_transformer`
+- test/test_models.py:1033:18: error[unresolved-attribute] Module `torchvision.models.optical_flow` has no member `raft`
+- test/test_onnx.py:124:24: error[unresolved-attribute] Module `torchvision.ops` has no member `boxes`
+- test/test_onnx.py:428:17: error[unresolved-attribute] Module `torchvision.models.detection` has no member `faster_rcnn`
+- test/test_onnx.py:429:21: error[unresolved-attribute] Module `torchvision.models.detection` has no member `faster_rcnn`
+- test/test_onnx.py:484:17: error[unresolved-attribute] Module `torchvision.models.detection` has no member `mask_rcnn`
+- test/test_onnx.py:485:21: error[unresolved-attribute] Module `torchvision.models.detection` has no member `mask_rcnn`
+- test/test_onnx.py:546:17: error[unresolved-attribute] Module `torchvision.models.detection` has no member `keypoint_rcnn`
+- test/test_onnx.py:547:21: error[unresolved-attribute] Module `torchvision.models.detection` has no member `keypoint_rcnn`
++ test/test_ops.py:717:58: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | tuple[int] | list[int]`, found `Unknown | tuple[Literal[7], Literal[7]]`
+- test/test_ops.py:717:15: error[unresolved-attribute] Module `torchvision.ops` has no member `poolers`
+- test/test_ops.py:909:24: error[unresolved-attribute] Module `torchvision.ops` has no member `boxes`
+- test/test_ops.py:910:22: error[unresolved-attribute] Module `torchvision.ops` has no member `boxes`
+- test/test_ops.py:1236:13: error[unresolved-attribute] Module `torchvision.ops` has no member `misc`
+- test/test_ops.py:1256:15: error[unresolved-attribute] Module `torchvision.ops` has no member `misc`
+- test/test_ops.py:1264:15: error[unresolved-attribute] Module `torchvision.ops` has no member `misc`
+- test/test_prototype_models.py:17:20: error[unresolved-attribute] Module `torchvision.prototype.models.depth.stereo` has no member `raft_stereo`
+- test/test_prototype_models.py:18:18: error[unresolved-attribute] Module `torchvision.prototype.models.depth.stereo` has no member `raft_stereo`
+- test/test_transforms.py:2212:9: error[unresolved-attribute] Module `torchvision.transforms` has no member `transforms`
+- test/test_transforms_v2.py:824:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:1247:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:1489:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:1863:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:2081:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:2772:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:2925:12: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- test/test_transforms_v2.py:2931:16: error[unresolved-attribute] Module `torchvision.transforms.v2` has no member `_utils`
+- test/test_transforms_v2.py:2939:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_meta`
+- test/test_transforms_v2.py:2956:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_meta`
+- test/test_transforms_v2.py:2972:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_meta`
+- test/test_transforms_v2.py:3080:26: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:3197:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:3306:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:3456:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:3748:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_augment`
+- test/test_transforms_v2.py:3887:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_misc`
+- test/test_transforms_v2.py:4411:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:4879:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:5131:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:5399:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:5774:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:5813:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:5868:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:5915:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:5954:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6003:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6045:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6085:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6129:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6200:27: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:6204:26: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_geometry`
+- test/test_transforms_v2.py:6359:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:6423:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_color`
+- test/test_transforms_v2.py:7814:14: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_augment`
+- test/test_video_reader.py:21:5: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- test/test_videoapi.py:23:5: error[unresolved-attribute] Module `torchvision.io` has no member `video`
+- torchvision/transforms/v2/_misc.py:450:17: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_misc`
+- torchvision/transforms/v2/_misc.py:548:17: error[unresolved-attribute] Module `torchvision.transforms.v2.functional` has no member `_misc`
+- Found 1501 diagnostics
++ Found 1429 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/contrib/pyopenssl.py:133:24: error[unresolved-attribute] Module `urllib3.util` has no member `ssl_`
++ src/urllib3/contrib/pyopenssl.py:71:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/urllib3/contrib/pyopenssl.py:72:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/urllib3/contrib/pyopenssl.py:147:5: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `IS_PYOPENSSL` of type `Literal[False]`
+- src/urllib3/contrib/pyopenssl.py:147:5: error[unresolved-attribute] Module `urllib3.util` has no member `ssl_`
+- src/urllib3/contrib/pyopenssl.py:154:5: error[unresolved-attribute] Module `urllib3.util` has no member `ssl_`
+- src/urllib3/contrib/pyopenssl.py:156:5: error[unresolved-attribute] Module `urllib3.util` has no member `ssl_`
+- src/urllib3/contrib/pyopenssl.py:213:16: error[unresolved-attribute] Module `idna` has no member `core`
+- src/urllib3/contrib/pyopenssl.py:511:36: error[unresolved-attribute] Module `urllib3.util` has no member `ssl_`
+- test/contrib/emscripten/test_emscripten.py:909:21: error[unresolved-attribute] Module `urllib3` has no member `util`
+- test/with_dummyserver/test_proxy_poolmanager.py:734:21: error[unresolved-attribute] Module `urllib3` has no member `util`
+- test/with_dummyserver/test_proxy_poolmanager.py:751:21: error[unresolved-attribute] Module `urllib3` has no member `util`
+- test/with_dummyserver/test_proxy_poolmanager.py:877:21: error[unresolved-attribute] Module `urllib3` has no member `util`
+- Found 361 diagnostics
++ Found 354 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/addons/clientplayback.py:36:18: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:54:19: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:55:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:63:23: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:63:47: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:66:23: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:67:21: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:69:19: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:69:43: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:73:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:74:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:75:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:76:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:77:17: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:132:30: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/addons/clientplayback.py:132:60: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:18:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:19:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:21:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:22:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:26:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- mitmproxy/eventsequence.py:29:19: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- mitmproxy/eventsequence.py:30:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- mitmproxy/eventsequence.py:32:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- mitmproxy/eventsequence.py:38:11: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- mitmproxy/eventsequence.py:41:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- mitmproxy/eventsequence.py:43:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- mitmproxy/eventsequence.py:45:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- mitmproxy/eventsequence.py:51:11: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- mitmproxy/eventsequence.py:54:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- mitmproxy/eventsequence.py:56:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- mitmproxy/eventsequence.py:58:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- mitmproxy/eventsequence.py:63:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- mitmproxy/eventsequence.py:65:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- mitmproxy/eventsequence.py:67:15: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- test/mitmproxy/proxy/layers/http/test_http3.py:370:55: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/proxy/layers/http/test_http3.py:391:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/proxy/layers/test_modes.py:187:12: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
++ test/mitmproxy/proxy/layers/test_modes.py:187:38: error[invalid-argument-type] Argument is incorrect: Expected `DNSFlow`, found `Unknown | _Placeholder[Unknown]`
+- test/mitmproxy/test_eventsequence.py:20:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:21:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:23:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:24:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:26:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:33:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:34:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:35:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:36:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_eventsequence.py:38:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- test/mitmproxy/test_eventsequence.py:40:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- test/mitmproxy/test_eventsequence.py:42:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- test/mitmproxy/test_eventsequence.py:44:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- test/mitmproxy/test_eventsequence.py:46:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `websocket`
+- test/mitmproxy/test_eventsequence.py:53:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- test/mitmproxy/test_eventsequence.py:55:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- test/mitmproxy/test_eventsequence.py:57:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- test/mitmproxy/test_eventsequence.py:60:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- test/mitmproxy/test_eventsequence.py:62:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `tcp`
+- test/mitmproxy/test_eventsequence.py:69:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- test/mitmproxy/test_eventsequence.py:71:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- test/mitmproxy/test_eventsequence.py:73:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- test/mitmproxy/test_eventsequence.py:76:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- test/mitmproxy/test_eventsequence.py:78:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `udp`
+- test/mitmproxy/test_eventsequence.py:93:32: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- test/mitmproxy/test_eventsequence.py:95:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- test/mitmproxy/test_eventsequence.py:97:36: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `dns`
+- test/mitmproxy/test_flow.py:136:54: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_flow.py:140:54: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- test/mitmproxy/test_flow.py:148:54: error[unresolved-attribute] Module `mitmproxy.proxy.layers` has no member `http`
+- Found 1889 diagnostics
++ Found 1822 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/timeout.py:23:20: error[unresolved-attribute] Module `multiprocessing` has no member `context`
+- Found 204 diagnostics
++ Found 205 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_connection_info.py:50:22: error[unresolved-attribute] Module `psycopg.pq` has no member `misc`
+- tests/scripts/copytest.py:37:30: error[unresolved-attribute] Module `psycopg` has no member `copy`
+- tests/scripts/copytest.py:53:30: error[unresolved-attribute] Module `psycopg` has no member `copy`
+- tests/scripts/copytest.py:141:21: error[unresolved-attribute] Module `psycopg` has no member `copy`
+- tests/test_connection.py:387:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- tests/test_connection_async.py:383:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- tests/test_pipeline.py:442:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- tests/test_pipeline.py:446:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- tests/test_pipeline_async.py:441:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- tests/test_pipeline_async.py:445:24: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- Found 666 diagnostics
++ Found 656 diagnostics
+
+operator (https://github.com/canonical/operator)
+- ops/model.py:3720:17: error[unresolved-attribute] Module `ops.hookcmds` has no member `_utils`
+- ops/model.py:3770:22: error[unresolved-attribute] Module `ops.hookcmds` has no member `_utils`
+- ops/model.py:3900:13: error[unresolved-attribute] Module `ops.hookcmds` has no member `_utils`
+- Found 112 diagnostics
++ Found 109 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- optuna/storages/_rdb/storage.py:229:27: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- optuna/storages/_rdb/storage.py:256:27: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- optuna/storages/_rdb/storage.py:1083:18: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- Found 572 diagnostics
++ Found 569 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/ensemble/tests/test_forest.py:96:26: error[unresolved-attribute] Module `joblib` has no member `parallel`
+- sklearn/utils/_testing.py:326:13: error[unresolved-attribute] Module `joblib` has no member `parallel`
+- Found 2563 diagnostics
++ Found 2561 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/ext/commands/hybrid.py:214:9: error[unresolved-attribute] Module `discord.app_commands` has no member `transformers`
+- Found 504 diagnostics
++ Found 503 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- tests/test_apprise_config.py:980:5: error[unresolved-attribute] Module `apprise` has no member `config`
++ tests/test_apprise_config.py:980:5: error[unresolved-attribute] Unresolved attribute `ConfigDummy` on type `<module 'apprise.config'>`.
+- tests/test_apprise_config.py:981:5: error[unresolved-attribute] Module `apprise` has no member `config`
++ tests/test_apprise_config.py:981:5: error[unresolved-attribute] Unresolved attribute `ConfigDummy2` on type `<module 'apprise.config'>`.
+- tests/test_apprise_config.py:982:5: error[unresolved-attribute] Module `apprise` has no member `config`
++ tests/test_apprise_config.py:982:5: error[unresolved-attribute] Unresolved attribute `ConfigDummy3` on type `<module 'apprise.config'>`.
+- tests/test_apprise_config.py:983:5: error[unresolved-attribute] Module `apprise` has no member `config`
++ tests/test_apprise_config.py:983:5: error[unresolved-attribute] Unresolved attribute `ConfigDummy4` on type `<module 'apprise.config'>`.
++ tests/test_plugin_email.py:634:5: error[invalid-assignment] Object of type `tuple[@Todo, @Todo]` is not assignable to attribute `EMAIL_TEMPLATES` of type `tuple[tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]`
+- tests/test_plugin_email.py:634:5: error[unresolved-attribute] Module `apprise.plugins.email` has no member `templates`
+- tests/test_plugin_email.py:647:10: error[unresolved-attribute] Module `apprise.plugins.email` has no member `templates`
+- Found 2470 diagnostics
++ Found 2469 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_channel.py:305:17: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_channel.py:518:25: error[unresolved-attribute] Module `trio` has no member `_channel`
+- src/trio/_core/_parking_lot.py:101:15: error[unresolved-attribute] Module `trio._core` has no member `_exceptions`
+- src/trio/_core/_tests/test_asyncgen.py:200:44: error[unresolved-attribute] Module `trio._core` has no member `_entry_queue`
+- src/trio/_core/_tests/test_asyncgen.py:201:18: error[unresolved-attribute] Module `trio._core` has no member `_run`
+- src/trio/_core/_tests/test_guest_mode.py:606:30: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_core/_tests/test_guest_mode.py:609:23: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_core/_tests/test_guest_mode.py:611:18: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_core/_tests/test_run.py:2341:9: error[unresolved-attribute] Module `trio._core` has no member `_run`
+- src/trio/_core/_tests/test_run.py:2352:27: error[unresolved-attribute] Module `trio._core` has no member `_run`
+- src/trio/_tests/test_path.py:267:9: error[unresolved-attribute] Module `trio` has no member `_path`
+- src/trio/_tests/test_path.py:268:9: error[unresolved-attribute] Module `trio` has no member `_path`
+- src/trio/_tests/test_path.py:269:9: error[unresolved-attribute] Module `trio` has no member `_path`
+- src/trio/_tests/test_path.py:270:9: error[unresolved-attribute] Module `trio` has no member `_path`
+- src/trio/_tests/test_scheduler_determinism.py:36:25: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_tests/test_scheduler_determinism.py:39:17: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_tests/test_scheduler_determinism.py:41:13: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_tests/test_scheduler_determinism.py:44:13: error[unresolved-attribute] Module `trio` has no member `_core`
+- src/trio/_tests/test_subprocess.py:735:25: error[unresolved-attribute] Module `trio` has no member `_subprocess`
+- src/trio/_tests/test_testing_raisesgroup.py:1106:9: error[unresolved-attribute] Module `trio.testing` has no member `_raises_group`
+- src/trio/_tests/test_testing_raisesgroup.py:1108:9: error[unresolved-attribute] Module `trio.testing` has no member `_raises_group`
+- src/trio/_tests/test_threads.py:406:25: error[unresolved-attribute] Module `trio._core` has no member `_thread_cache`
+- src/trio/_tests/test_threads.py:614:25: error[unresolved-attribute] Module `trio._core` has no member `_thread_cache`
+- Found 598 diagnostics
++ Found 575 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/backend/vs2010backend.py:99:12: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/backend/vs2010backend.py:100:19: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/backend/vs2010backend.py:109:28: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/backend/vs2010backend.py:109:104: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/backend/vs2010backend.py:898:16: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/environment.py:303:43: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/environment.py:334:37: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/environment.py:338:37: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- mesonbuild/interpreter/interpreter.py:573:25: error[unresolved-attribute] Module `mesonbuild.dependencies` has no member `base`
+- mesonbuild/interpreter/interpreter.py:577:33: error[invalid-argument-type] Argument to bound method `lookup` is incorrect: Expected `DependencyObjectKWs`, found `dict[Unknown | str, Unknown | MachineChoice]`
+- mesonbuild/interpreter/interpreter.py:1783:27: error[unresolved-attribute] Module `mesonbuild.dependencies` has no member `base`
+- unittests/__init__.py:10:47: error[unresolved-attribute] Module `mesonbuild.compilers` has no member `compilers`
+- Found 1673 diagnostics
++ Found 1661 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- tests/native/test_cpu_automatic.py:6:10: error[unresolved-attribute] Module `manticore.core.smtlib` has no member `solver`
+- Found 11081 diagnostics
++ Found 11080 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/cli/__init__.py:16:9: error[call-non-callable] Object of type `<module 'strawberry.cli.app'>` is not callable
+- Found 381 diagnostics
++ Found 382 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- asv_benchmarks/benchmarks/benchmarks.py:96:31: error[unresolved-attribute] Module `arviz` has no member `utils`
+- asv_benchmarks/benchmarks/benchmarks.py:97:31: error[unresolved-attribute] Module `arviz` has no member `utils`
+- examples/matplotlib/mpl_plot_ecdf.py:18:44: error[unresolved-attribute] Module `arviz` has no member `utils`
+- Found 826 diagnostics
++ Found 823 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/_internal/pydantic/v1_schema.py:12:32: error[unresolved-attribute] Object of type `object` has no attribute `PydanticDeprecatedSince20`
+- src/prefect/flows.py:609:40: error[unresolved-attribute] Object of type `object` has no attribute `PydanticDeprecatedSince20`
+- src/prefect/flows.py:635:44: error[unresolved-attribute] Object of type `object` has no attribute `PydanticDeprecatedSince20`
++ src/prefect/server/database/_migrations/env.py:62:46: error[unresolved-attribute] Object of type `SchemaItem` has no attribute `name`
++ src/prefect/server/database/_migrations/env.py:62:61: error[unresolved-attribute] Object of type `SchemaItem` has no attribute `name`
++ src/prefect/server/database/_migrations/env.py:63:27: error[unresolved-attribute] Object of type `SchemaItem` has no attribute `_ddl_if`
+- src/prefect/server/database/_migrations/env.py:23:13: error[unresolved-attribute] Module `sqlalchemy` has no member `schema`
++ src/prefect/server/database/_migrations/env.py:81:13: error[unresolved-attribute] Object of type `SchemaItem` has no attribute `type`
+- src/prefect/server/database/_migrations/env.py:27:26: error[unresolved-attribute] Module `sqlalchemy` has no member `schema`
++ src/prefect/server/database/_migrations/env.py:84:16: error[unresolved-attribute] Object of type `SchemaItem` has no attribute `type`
+- src/prefect/server/database/configurations.py:67:32: error[unresolved-attribute] Module `sqlalchemy` has no member `pool`
+- src/prefect/server/database/configurations.py:414:31: error[unresolved-attribute] Module `sqlalchemy` has no member `pool`
+- src/prefect/server/database/interface.py:141:31: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- src/prefect/server/database/orm_models.py:64:18: error[unresolved-attribute] Module `sqlalchemy` has no member `schema`
+- src/prefect/server/utilities/database.py:750:24: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- src/prefect/server/utilities/database.py:753:15: error[unresolved-attribute] Module `sqlalchemy` has no member `engine`
+- Found 3251 diagnostics
++ Found 3245 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/scikit_build_core/file_api/_cattrs_converter.py:29:15: error[unresolved-attribute] Module `cattr` has no member `gen`
+- src/scikit_build_core/file_api/_cattrs_converter.py:32:22: error[unresolved-attribute] Module `cattr` has no member `gen`
+- src/scikit_build_core/file_api/_cattrs_converter.py:33:18: error[unresolved-attribute] Module `cattr` has no member `gen`
+- src/scikit_build_core/file_api/_cattrs_converter.py:34:23: error[unresolved-attribute] Module `cattr` has no member `gen`
+- src/scikit_build_core/file_api/_cattrs_converter.py:35:23: error[unresolved-attribute] Module `cattr` has no member `gen`
+- Found 49 diagnostics
++ Found 43 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/build_meta.py:76:20: error[unresolved-attribute] Module `setuptools` has no member `dist`
+- setuptools/monkey.py:82:31: error[unresolved-attribute] Module `setuptools` has no member `dist`
+- setuptools/monkey.py:90:23: error[unresolved-attribute] Module `setuptools` has no member `extension`
+- Found 1184 diagnostics
++ Found 1181 diagnostics
+
+altair (https://github.com/vega/altair)
++ tests/test_jupyter_chart.py:19:32: warning[possibly-missing-import] Member `jupyter_chart` of module `altair.jupyter` may be missing
+- Found 1021 diagnostics
++ Found 1022 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- colour/__init__.py:1007:13: error[unresolved-attribute] Module `colour` has no member `utilities`
+- colour/__init__.py:1052:17: error[unresolved-attribute] Module `colour` has no member `utilities`
+- colour/examples/adaptation/examples_cie1994.py:44:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_cmccat2000.py:36:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_cmccat2000.py:66:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_fairchild1990.py:32:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_vonkries.py:24:7: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_vonkries.py:30:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_vonkries.py:45:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_vonkries.py:65:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/adaptation/examples_zhai2018.py:45:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/algebra/examples_interpolation.py:183:7: error[unresolved-attribute] Module `colour` has no member `algebra`
+- colour/examples/algebra/examples_interpolation.py:193:7: error[unresolved-attribute] Module `colour` has no member `algebra`
+- colour/examples/appearance/examples_rlab.py:21:5: error[unresolved-attribute] Module `colour` has no member `appearance`
+- colour/examples/characterisation/examples_aces_it.py:40:15: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_aces_it.py:59:5: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_aces_it.py:62:17: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/characterisation/examples_aces_it.py:63:10: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/characterisation/examples_aces_it.py:69:15: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_aces_it.py:80:11: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_aces_it.py:82:26: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:81:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:93:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:105:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:117:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:128:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:139:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:153:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:165:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:177:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:189:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:200:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/characterisation/examples_correction.py:210:7: error[unresolved-attribute] Module `colour` has no member `characterisation`
+- colour/examples/colorimetry/examples_blackbody.py:30:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_blackbody.py:31:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:27:5: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:31:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:42:5: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:46:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:58:5: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:62:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:74:5: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:78:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:90:5: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_cmfs.py:94:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_lightness.py:31:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_lightness.py:40:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_lightness.py:49:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_lightness.py:58:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_lightness.py:67:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_luminance.py:19:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_luminance.py:28:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_luminance.py:38:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_luminance.py:48:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_luminance.py:57:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:24:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:35:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:45:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:54:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:67:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_whiteness.py:83:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_yellowness.py:21:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_yellowness.py:30:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/colorimetry/examples_yellowness.py:37:7: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/contrast/examples_contrast.py:29:8: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:71:13: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:72:17: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:73:13: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:77:22: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:95:5: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:96:9: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:97:5: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:110:7: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/contrast/examples_contrast.py:120:11: error[unresolved-attribute] Module `colour` has no member `contrast`
+- colour/examples/corresponding/examples_prediction.py:27:5: error[unresolved-attribute] Module `colour` has no member `corresponding`
+- colour/examples/corresponding/examples_prediction.py:39:8: error[unresolved-attribute] Module `colour` has no member `corresponding`
+- colour/examples/corresponding/examples_prediction.py:48:8: error[unresolved-attribute] Module `colour` has no member `corresponding`
+- colour/examples/corresponding/examples_prediction.py:57:8: error[unresolved-attribute] Module `colour` has no member `corresponding`
+- colour/examples/difference/examples_delta_e.py:25:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:36:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:47:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:58:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:69:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:80:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:91:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:104:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:117:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:128:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:141:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/difference/examples_delta_e.py:152:7: error[unresolved-attribute] Module `colour` has no member `difference`
+- colour/examples/examples_colour.py:172:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/examples_colour.py:188:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/examples_colour.py:208:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/examples_colour.py:229:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/examples_colour.py:266:5: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/geometry/examples_geometry.py:28:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/geometry/examples_geometry.py:48:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/geometry/examples_geometry.py:70:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/geometry/examples_geometry.py:95:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/geometry/examples_geometry.py:122:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/geometry/examples_geometry.py:146:5: error[unresolved-attribute] Module `colour` has no member `geometry`
+- colour/examples/graph/examples_graph.py:74:11: error[unresolved-attribute] Module `colour` has no member `utilities`
+- colour/examples/io/examples_ctl.py:23:33: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:33:5: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:49:5: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:69:9: error[unresolved-attribute] Module `colour` has no member `utilities`
+- colour/examples/io/examples_ctl.py:71:9: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:87:34: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:107:5: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:124:5: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:145:9: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:185:13: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:206:31: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:220:13: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:237:13: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_ctl.py:250:13: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:25:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:33:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:41:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:49:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:57:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:65:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:73:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:82:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:89:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:96:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/io/examples_luts.py:101:7: error[unresolved-attribute] Module `colour` has no member `io`
+- colour/examples/models/examples_rgb.py:45:7: error[unresolved-attribute] Module `colour` has no member `adaptation`
+- colour/examples/models/examples_rgb.py:78:1: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_rgb.py:85:1: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_rgb.py:91:1: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:20:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:30:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:36:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:43:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:49:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/models/examples_transfer_functions.py:56:7: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/notation/examples_munsell.py:22:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:31:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:40:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:49:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:58:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:67:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/notation/examples_munsell.py:76:7: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/phenomena/examples_interference_tmm.py:42:8: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:88:26: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:134:26: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:141:22: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:186:20: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:217:24: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:241:20: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_interference_tmm.py:277:22: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_rayleigh.py:28:7: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/phenomena/examples_rayleigh.py:36:7: error[unresolved-attribute] Module `colour` has no member `phenomena`
+- colour/examples/plotting/examples_colorimetry_plots.py:58:13: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_colorimetry_plots.py:911:10: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_colorimetry_plots.py:919:16: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_colorimetry_plots.py:922:16: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_colorimetry_plots.py:944:9: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_colorimetry_plots.py:945:9: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/plotting/examples_section_plots.py:117:19: error[unresolved-attribute] Module `colour` has no member `notation`
+- colour/examples/quality/examples_cfi.py:18:7: error[unresolved-attribute] Module `colour` has no member `quality`
+- colour/examples/quality/examples_cfi.py:24:7: error[unresolved-attribute] Module `colour` has no member `quality`
+- colour/examples/quality/examples_cfi.py:40:5: error[unresolved-attribute] Module `colour` has no member `quality`
+- colour/examples/quality/examples_cfi.py:52:5: error[unresolved-attribute] Module `colour` has no member `quality`
+- colour/examples/recovery/examples_jakob2019.py:24:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jakob2019.py:33:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jakob2019.py:34:14: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/recovery/examples_jiang2013.py:13:9: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jiang2013.py:17:16: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/recovery/examples_jiang2013.py:29:11: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jiang2013.py:31:29: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jiang2013.py:35:5: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_jiang2013.py:36:5: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_mallet2019.py:26:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_mallet2019.py:43:5: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_mallet2019.py:44:9: error[unresolved-attribute] Module `colour` has no member `models`
+- colour/examples/recovery/examples_meng2015.py:24:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_otsu2018.py:24:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_otsu2018.py:33:16: error[unresolved-attribute] Module `colour` has no member `colorimetry`
+- colour/examples/recovery/examples_otsu2018.py:35:9: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_otsu2018.py:36:13: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_otsu2018.py:39:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/recovery/examples_smits1999.py:24:7: error[unresolved-attribute] Module `colour` has no member `recovery`
+- colour/examples/temperature/examples_cct.py:23:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:29:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:38:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:48:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:57:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:67:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:76:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:86:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:95:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:105:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/examples/temperature/examples_cct.py:114:7: error[unresolved-attribute] Module `colour` has no member `temperature`
+- colour/graph/conversion.py:1830:9: error[unresolved-attribute] Module `colour` has no member `graph`
+- colour/plotting/graph.py:92:28: error[unresolved-attribute] Module `colour` has no member `graph`
+- Found 561 diagnostics
++ Found 364 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- tests/test_generic_consistency.py:105:84: error[unresolved-attribute] Module `django_stubs_ext` has no member `patch`
+- tests/test_generic_consistency.py:108:78: error[unresolved-attribute] Module `django_stubs_ext` has no member `patch`
+- Found 477 diagnostics
++ Found 475 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/internal/datadog/profiling/stack_v2/__init__.py:22:85: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ddtrace/internal/debug.py:82:28: error[unresolved-attribute] Module `ddtrace` has no member `_monkey`
+- ddtrace/internal/debug.py:86:41: error[unresolved-attribute] Module `ddtrace` has no member `_monkey`
+- ddtrace/internal/runtime/runtime_metrics.py:93:35: error[unresolved-attribute] Module `ddtrace` has no member `settings`
+- ddtrace/llmobs/_llmobs.py:864:62: error[unresolved-attribute] Module `ddtrace` has no member `_monkey`
+- tests/appsec/contrib_appsec/conftest.py:6:26: error[unresolved-attribute] Module `ddtrace` has no member `version`
+- tests/ci_visibility/test_ci_visibility.py:343:17: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/test_ci_visibility.py:343:17: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/ci_visibility/test_ci_visibility.py:686:9: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/test_ci_visibility.py:686:9: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/ci_visibility/test_ci_visibility.py:705:9: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/test_ci_visibility.py:705:9: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/ci_visibility/util.py:24:16: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/util.py:24:16: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/ci_visibility/util.py:25:5: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/util.py:25:5: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/ci_visibility/util.py:27:5: error[unresolved-attribute] Module `ddtrace` has no member `internal`
++ tests/ci_visibility/util.py:27:5: error[unresolved-attribute] Module `ddtrace.internal` has no member `ci_visibility`
+- tests/conftest.py:612:9: error[unresolved-attribute] Module `ddtrace` has no member `internal`
+- tests/conftest.py:619:9: error[unresolved-attribute] Module `ddtrace` has no member `internal`
+- Found 8211 diagnostics
++ Found 8205 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
++ adodbapi/test/adodbapitest.py:1544:13: error[invalid-assignment] Object of type `pythonTimeConverter` is not assignable to attribute `dateconverter` of type `pythonDateTimeConverter`
+- adodbapi/test/adodbapitest.py:1544:13: error[unresolved-attribute] Module `adodbapi` has no member `adodbapi`
+- adodbapi/test/adodbapitest.py:1546:19: error[unresolved-attribute] Module `adodbapi` has no member `adodbapi`
+- adodbapi/test/adodbapitestconfig.py:80:9: error[unresolved-attribute] Module `adodbapi` has no member `adodbapi`
+- adodbapi/test/test_adodbapi_dbapi20.py:27:5: error[unresolved-attribute] Module `adodbapi` has no member `adodbapi`
+- com/win32comext/adsi/__init__.py:33:40: warning[possibly-unresolved-reference] Name `adsi` used when possibly not defined
+- Found 2611 diagnostics
++ Found 2607 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/pallas/mosaic_gpu/core.py:117:23: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `core`
+- jax/_src/pallas/mosaic_gpu/core.py:117:53: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `core`
+- jax/_src/pallas/mosaic_gpu/core.py:1491:16: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `fragmented_array`
+- jax/_src/pallas/mosaic_gpu/core.py:1516:16: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `fragmented_array`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3491:13: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3522:13: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3542:5: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3557:27: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/pallas_call_registration.py:111:10: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `core`
+- jax/_src/pallas/mosaic_gpu/primitives.py:235:16: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/primitives.py:584:16: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/primitives.py:742:16: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/primitives.py:2857:13: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `dialect_lowering`
+- jax/_src/pallas/mosaic_gpu/primitives.py:2865:28: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `dialect_lowering`
+- jax/_src/pallas/mosaic_gpu/primitives.py:2874:18: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `layouts`
+- jax/_src/pallas/mosaic_gpu/primitives.py:2923:24: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `layouts`
+- jax/_src/pallas/mosaic_gpu/primitives.py:2928:21: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `dialect_lowering`
+- jax/_src/pallas/mosaic_gpu/primitives.py:3474:15: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- jax/_src/pallas/mosaic_gpu/primitives.py:3494:7: error[unresolved-attribute] Module `jax.experimental.mosaic.gpu` has no member `utils`
+- Found 2581 diagnostics
++ Found 2562 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/core/numbers.py:4022:13: error[unresolved-attribute] Module `mpmath.libmp` has no member `libhyper`
+- sympy/matrices/tests/test_matrices.py:2645:9: error[unresolved-attribute] Module `sympy.physics.quantum` has no member `operator`
+- sympy/parsing/autolev/test-examples/ruletest8.py:39:5: error[unresolved-attribute] Module `sympy.physics.mechanics` has no member `functions`
+- sympy/parsing/autolev/test-examples/ruletest8.py:40:5: error[unresolved-attribute] Module `sympy.physics.mechanics` has no member `functions`
+- sympy/parsing/autolev/test-examples/ruletest8.py:41:5: error[unresolved-attribute] Module `sympy.physics.mechanics` has no member `functions`
+- sympy/parsing/latex/_parse_latex_antlr.py:428:28: error[unresolved-attribute] Module `sympy` has no member `functions`
+- sympy/parsing/latex/_parse_latex_antlr.py:431:28: error[unresolved-attribute] Module `sympy` has no member `functions`
+- sympy/parsing/latex/_parse_latex_antlr.py:463:28: error[unresolved-attribute] Module `sympy` has no member `functions`
+- sympy/parsing/latex/lark/transformer.py:51:13: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/parsing/latex/lark/transformer.py:113:20: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/parsing/latex/lark/transformer.py:115:20: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/parsing/tests/test_custom_latex.py:51:20: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/parsing/tests/test_custom_latex.py:53:20: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/physics/quantum/tests/test_fermion.py:52:37: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/polys/polyoptions.py:129:13: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:359:16: error[unresolved-attribute] Module `sympy.polys` has no member `orderings`
+- sympy/polys/polyoptions.py:363:16: error[unresolved-attribute] Module `sympy.polys` has no member `orderings`
+- sympy/polys/polyoptions.py:415:36: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:416:31: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:422:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:425:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:428:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:431:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:434:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:442:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:444:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:452:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:454:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:459:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:469:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:471:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:473:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:475:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:477:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:479:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:489:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:491:28: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:497:24: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:508:62: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:539:33: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:572:33: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polyoptions.py:599:33: error[unresolved-attribute] Module `sympy.polys` has no member `domains`
+- sympy/polys/polytools.py:3647:16: error[unresolved-attribute] Module `sympy.polys` has no member `rootoftools`
+- sympy/polys/polytools.py:3666:17: error[unresolved-attribute] Module `sympy.polys` has no member `rootoftools`
+- sympy/polys/polytools.py:3693:17: error[unresolved-attribute] Module `sympy.polys` has no member `rootoftools`
+- sympy/printing/aesaracode.py:71:13: error[unresolved-attribute] Module `sympy` has no member `core`
+- sympy/printing/theanocode.py:74:13: error[unresolved-attribute] Module `sympy` has no member `core`
+- Found 14495 diagnostics
++ Found 14448 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- misc/python/materialize/cli/run.py:564:16: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- misc/python/materialize/parallel_workload/executor.py:196:29: error[unresolved-attribute] Module `websocket` has no member `_exceptions`
+- misc/python/materialize/scalability/endpoint/endpoint.py:24:10: error[unresolved-attribute] Module `psycopg` has no member `connection`
+- test/lang/python/smoketest.py:42:21: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- test/lang/python/smoketest.py:48:21: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- test/lang/python/smoketest.py:71:21: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- test/lang/python/smoketest.py:184:44: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- test/lang/python/smoketest.py:223:40: error[unresolved-attribute] Module `psycopg` has no member `errors`
+- Found 3370 diagnostics
++ Found 3362 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/automation/config.py:89:30: error[unresolved-attribute] Module `homeassistant.components.blueprint` has no member `schemas`
+- homeassistant/components/cast/home_assistant_cast.py:38:40: error[unresolved-attribute] Module `homeassistant.auth` has no member `const`
+- homeassistant/components/homekit/util.py:342:24: error[unresolved-attribute] Module `homeassistant.components.media_player` has no member `const`
+- homeassistant/components/improv_ble/config_flow.py:221:18: error[unresolved-attribute] Module `homeassistant.components.bluetooth` has no member `match`
+- homeassistant/components/manual_mqtt/alarm_control_panel.py:130:9: error[unresolved-attribute] Module `homeassistant.components.mqtt` has no member `config`
+- homeassistant/components/mqtt_json/device_tracker.py:39:57: error[unresolved-attribute] Module `homeassistant.components.mqtt` has no member `config`
+- homeassistant/components/zha/radio_manager.py:277:23: error[unresolved-attribute] Module `homeassistant.components.zha.repairs` has no member `wrong_silabs_firmware`
+- homeassistant/components/zha/radio_manager.py:278:22: error[unresolved-attribute] Module `homeassistant.components.zha.repairs` has no member `wrong_silabs_firmware`
+- homeassistant/helpers/recorder.py:40:12: error[unresolved-attribute] Module `homeassistant.components.recorder` has no member `util`
+- homeassistant/helpers/recorder.py:48:12: error[unresolved-attribute] Module `homeassistant.components.recorder` has no member `util`
+- Found 14476 diagnostics
++ Found 14466 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- benchmarks/benchmarks/linalg.py:254:9: error[unresolved-attribute] Module `scipy.linalg` has no member `blas`
+- benchmarks/benchmarks/linalg.py:257:9: error[unresolved-attribute] Module `scipy.linalg` has no member `blas`
+- benchmarks/benchmarks/sparse_linalg_onenormest.py:54:17: error[unresolved-attribute] Module `scipy.sparse.linalg` has no member `_matfuncs`
+- benchmarks/benchmarks/sparse_linalg_onenormest.py:58:17: error[unresolved-attribute] Module `scipy.sparse.linalg` has no member `_matfuncs`
+- scipy/optimize/tests/test_bracket.py:123:16: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/optimize/tests/test_optimize.py:713:20: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_optimize.py:721:24: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_optimize.py:724:20: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_optimize.py:742:11: error[unresolved-attribute] Module `scipy.optimize` has no member `_minimize`
+- scipy/optimize/tests/test_optimize.py:763:5: error[unresolved-attribute] Module `scipy.optimize` has no member `_minimize`
+- scipy/optimize/tests/test_optimize.py:2235:23: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_optimize.py:2295:25: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_optimize.py:2333:25: error[unresolved-attribute] Module `scipy.optimize` has no member `_optimize`
+- scipy/optimize/tests/test_tnc.py:198:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:203:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:211:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:216:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:224:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:229:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:236:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:241:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:248:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:253:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:260:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:265:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:272:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:277:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:284:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:289:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:297:48: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/optimize/tests/test_tnc.py:302:33: error[unresolved-attribute] Module `scipy.optimize` has no member `_tnc`
+- scipy/sparse/linalg/_dsolve/linsolve.py:13:15: error[unresolved-import] Module `scipy.sparse.linalg._dsolve` has no member `_superlu`
+- scipy/sparse/linalg/_dsolve/tests/test_linsolve.py:20:28: error[unresolved-import] Module `scipy.sparse.linalg._dsolve` has no member `_superlu`
+- scipy/stats/_sampling.py:625:29: error[unresolved-attribute] Module `scipy.stats` has no member `distributions`
+- scipy/stats/_survival.py:683:12: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/_survival.py:684:14: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_axis_nan_policy.py:45:12: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_axis_nan_policy.py:51:12: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_axis_nan_policy.py:56:12: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_axis_nan_policy.py:78:16: error[unresolved-attribute] Module `scipy.stats` has no member `_morestats`
+- scipy/stats/tests/test_axis_nan_policy.py:84:16: error[unresolved-attribute] Module `scipy.stats` has no member `_morestats`
+- scipy/stats/tests/test_stats.py:4328:22: error[unresolved-attribute] Module `scipy.stats` has no member `distributions`
+- scipy/stats/tests/test_stats.py:5168:31: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5184:31: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5198:31: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5951:32: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5969:32: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5982:32: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- scipy/stats/tests/test_stats.py:5995:32: error[unresolved-attribute] Module `scipy.stats` has no member `_stats_py`
+- Found 9168 diagnostics
++ Found 9119 diagnostics
+
+
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+flake8 (https://github.com/pycqa/flake8)
+-     struct fields = ~3MB
++     struct fields = ~4MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     struct fields = ~18MB
++     struct fields = ~19MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~40MB
++     struct fields = ~42MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-31 19:34_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-10-31 20:18_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-10-31 20:18_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-31 20:24_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unresolved-attribute` | 6 | 612 | 10 |
+| `invalid-assignment` | 7 | 0 | 0 |
+| `invalid-argument-type` | 2 | 1 | 0 |
+| `unused-ignore-comment` | 3 | 0 | 0 |
+| `unresolved-import` | 0 | 2 | 0 |
+| `call-non-callable` | 1 | 0 | 0 |
+| `possibly-missing-import` | 1 | 0 | 0 |
+| `possibly-unresolved-reference` | 0 | 1 | 0 |
+| **Total** | **20** | **616** | **10** |
+
+**[Full report with detailed diff](https://gankra-py-import-from.ecosystem-663.pages.dev/diff)** ([timing results](https://gankra-py-import-from.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-02 18:50_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-02 18:50_
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-02 20:22_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-02 20:22_
+
+---
+
+_Comment by @Gankra on 2025-11-03 19:42_
+
+Preserving for future comparison: this is the "submodule-attributes" approach's results. I am now pushing up a different WIP implementation.
+
+<img width="1053" height="800" alt="Screenshot 2025-11-03 at 2 41 32 PM" src="https://github.com/user-attachments/assets/a63e783f-b3a7-4689-9011-2d89a7b6bf27" />
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-03 19:42_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-03 19:42_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-11-03 19:59_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/gankra%2Fpy-import-from?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21173 will **not alter performance**
+
+<sub>Comparing <code>gankra/py-import-from</code> (d9f6fa2) with <code>main</code> (5f3e086)</sub>
+
+
+
+### Summary
+
+`✅ 52` untouched  
+
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-03 20:07_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-03 20:07_
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-03 20:26_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-03 20:26_
+
+---
+
+_Comment by @sharkdp on 2025-11-03 20:34_
+
+> Preserving for future comparison
+
+Just FYI, you can also access the full history here, I do that quite often after pushing a change.
+
+<img width="1102" height="594" alt="image" src="https://github.com/user-attachments/assets/9dc84d7f-b127-4113-a853-cda4e9f19527" />
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-03 21:05_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-03 21:05_
+
+---
+
+_Comment by @Gankra on 2025-11-03 21:09_
+
+> Just FYI, you can also access the full history here, I do that quite often after pushing a change.
+
+Good callout, but I've done so many ecosystem runs on this PR to evaluate different approaches it would be very easy to lose track of which run is which.
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-03 21:48_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-03 21:48_
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-04 03:13_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-04 03:13_
+
+---
+
+_Comment by @Gankra on 2025-11-04 20:44_
+
+I have cleaned up the implementation and added some more tests. I've made a few edge-cases a bit more strict. I am hoping this is a complete implementation, except for some code/mdtest comments need to be updated to reflect the current semantics.
+
+For posterity, this is the results that we agreed seemed shippable *before* my cleanup. Hopefully the stricter implementation isn't a huge change!
+
+<img width="937" height="608" alt="Screenshot 2025-11-04 at 3 41 00 PM" src="https://github.com/user-attachments/assets/b05d03b1-a0a2-4576-bc1c-986be26aa4fb" />
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @Gankra on 2025-11-04 20:44_
+
+---
+
+_Label `ecosystem-analyzer` added by @Gankra on 2025-11-04 20:44_
+
+---
+
+_Comment by @Gankra on 2025-11-04 20:55_
+
+I believe the TL;DR of this PR is now:
+
+* I have ripped out my previous work with submodule-attributes
+* I have introduced a re-export rule that treats `from . import x` in `__init__.pyi` as if it was `x as x` (must be *only* from `.`, cannot be `.y`)
+* I have introduced a new `ImportFromImplicitDefinitionKind` that expresses the implicit `x = <thispackage.x>` that results from the first `from .x.y import z` in an `__init__.py(i)` 
+  * This value is *never* re-exported, as there wasn't a good way to "turn it off" (you could do an absolute import in the current implementation), and you can just do `from . import x` if you wanted to re-export it.
+  * Because it's not a submodule-attribute, it essentially introduces a local variable, which means it implicitly models semantics that imports in a function should probably only be visible in that function, safety-wise. While top-level imports would be visible to all functions.
+  * Because it's not a submodule-attribute, it can be overwritten and we won't complain (`from .myfunc import myfunc`, `from .myfunc import other; myfunc = 0`)
+  * Only the first import of a particular direct-submodule name will create an assignment
+    * Known bug I'm shipping and will file an issue for: the "first" check is file-global and not per-scope, which means we get confused if e.g. two functions do the same import (only the first will see the symbol). 
+
+
+As a reminder, "re-exported" is only an applicable concern for definitions in .pyi files, so both kinds of definitions will be fully visible in .py files.
+
+---
+
+_Marked ready for review by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Review requested from @carljm by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Review requested from @AlexWaygood by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Review requested from @sharkdp by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Review requested from @dcreager by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Review requested from @MichaReiser by @Gankra on 2025-11-05 14:43_
+
+---
+
+_Renamed from "[ty] cautiously model more `from..import` effects" to "[ty] introduce local variables for `from` imports of submodules in `__init__.py(i)`" by @Gankra on 2025-11-05 14:45_
+
+---
+
+_Comment by @Gankra on 2025-11-05 17:54_
+
+See https://github.com/astral-sh/ty/issues/133#issuecomment-3492576578 for a list of followups that I am intentionally punting on in this PR (or the sea of references right above this comment...)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:5 on 2025-11-07 21:31_
+
+The current text below buries (or eliminates) the lede: we dive straight into the edgiest of edge cases (like submodule imports inside a function) without any discussion of the general/common cases and how we choose to model these "submodule attributes" in general.
+
+I think it probably makes most sense to do an update here separately, after a few more PRs in this area land. I'm happy to do the prose update myself since I have opinions about how we present it.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:15 on 2025-11-07 21:37_
+
+I assume that in the upcoming PR you mentioned in person, this whole paragraph goes away to be replaced by something that says "we only model submodule imports adding the submodule attribute for global-scope submodule imports"
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:23 on 2025-11-07 21:38_
+
+I like this paragraph, very clear. (Last sentence I also expect to go away in a future PR.)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:27 on 2025-11-07 21:39_
+
+And it sounds like you have a PR in the works that will also eliminate the last sentence here?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:32 on 2025-11-07 21:41_
+
+Nit: "should definitely be" seems like quite strong language here, given that all of the stub-file rules are kind of arbitrary (there's no runtime behavior to model it on) and we're just trying to find the right balance between "what the spec explicitly says" and "what stub files in the wild rely on." I'd give this a more descriptive tone: "We consider ... to be an explicit re-export."
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:32 on 2025-11-07 21:44_
+
+Nit: the fact that all test headers / names in this test file assume "in a stub file" by default (and then suffix "(Non-stub Check)" to a subsequent equivalent-except-not-in-stub test) may have made sense before this PR, when this file was really only about tweaking stub file rules, but it feels weird after this PR, now that this file is really about submodule attributes in general, stub or non-stub.
+
+I would just have a single test heading describing each case, and then use sub-headings `### In py file` and `### In stub file` under that, rather than repeating the whole test description.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:679 on 2025-11-09 01:15_
+
+I would find it useful to future-us to document here what we mean by "dangerous", and why it's dangerous
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:768 on 2025-11-09 01:22_
+
+
+```suggestion
+We avoid this by ensuring that the imported name (the right-hand `funcmod` in
+`from .funcmod import funcmod`) overwrites the submodule attribute (the left-hand
+`funcmod`), as it does at runtime.
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md`:614 on 2025-11-09 01:39_
+
+I think this is a good change, in the interest of simpler and more self-contained tests, but I assume (hope?) the previous version of this test (using importlib) still passes after this PR? It's just that the simpler version was easier to debug in development?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1465 on 2025-11-09 01:54_
+
+Great explanation, very helpful.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1485 on 2025-11-09 01:56_
+
+I don't know that it matters, since the from-import node itself is otherwise unused as a definition NodeKey, and there can only be one implicit definition per from-import, but I'm curious whether we could attach this definition to the Identifier for the submodule itself rather than to the entire import-from node? It seems slightly more intuitive/clearer. Maybe we can't do this because `Identifier` isn't a real AST node? (I don't recall...)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/definition.rs`:213 on 2025-11-09 01:57_
+
+nit: I think I would slightly prefer if this (and all the related stuff) used the name `ImportFromSubmodule` rather than `ImportFromImplicit`? This is always used for "implicit attachment of submodule as attribute to parent package" -- of all the words in that verbose description, I think "submodule", more than "implicit", gestures in a clarifying direction.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:5509 on 2025-11-09 02:00_
+
+As discussed in person, I don't think accepting these two bugs (submodule-attribute works only in first function, and can wrongly clobber a function local) is the right tradeoff, vs just not modeling submodule-attribute side-effects at all for imports inside functions. The latter is a clearly delineated and explainable choice of what to model and what not to model; the former two are confusing edge-case bugs where something sometimes works but then sometimes fails in surprising ways.
+
+Assuming this text will be updated in upcoming PR!
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:924 on 2025-11-10 21:12_
+
+This should change in an upcoming PR.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:5544 on 2025-11-10 21:21_
+
+```suggestion
+            // We explicitly don't introduce a *declaration* because it's actual ok
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:5556 on 2025-11-10 21:21_
+
+I assume this was caught be ecosystem? Do we have any test covering this case?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:5566 on 2025-11-10 21:23_
+
+Nit: we are trying to create the "member" here -- what we've failed to do is find the submodule that it should point to. So I would expect something more like:
+```suggestion
+            "Module `{module_name}` has no submodule `{name}`"
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:10992 on 2025-11-10 21:25_
+
+```suggestion
+    /// `from x.y import z` instances are currently ignored because the `x.y` part may not be a
+```
+
+---
+
+_@carljm approved on 2025-11-10 21:28_
+
+This is great, thank you!
+
+Normally I would want to adjust more of the wordings and tests in this PR to accurately describe the behavior I think we should be aiming for (with TODOs as needed where we don't achieve it yet), but I'm good with skipping those updates here if the follow-up PRs are coming shortly. So consider all comments on this PR as OK to address in follow-ups if you prefer.
+
+---
+
+_@Gankra reviewed on 2025-11-10 22:32_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md`:32 on 2025-11-10 22:32_
+
+You're extremely right and I was hoping no one would notice. *rolls up sleeves*
+
+---
+
+_@Gankra reviewed on 2025-11-10 22:38_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md`:614 on 2025-11-10 22:38_
+
+Different versions of this PR have variously broken and unbroken the test because of the line `from importlib.abc import Loader` in typeshed's `importlib/__init__.pyi`. I would rather check in this not-relying-on-a-random-library version.
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1485 on 2025-11-10 22:39_
+
+I was definitely under the impression that the `Identifier` couldn't be attached to, yeah.
+(I agree, I would've if I thought I could've)
+
+---
+
+_@Gankra reviewed on 2025-11-10 22:39_
+
+---
+
+_@Gankra reviewed on 2025-11-10 22:43_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/src/types/infer/builder.rs`:5556 on 2025-11-10 22:43_
+
+No this is copy-paste from `infer_from_import_definition`, I have no insights. I just assumed it was a common "don't do diagnostics about dead code" idiom.
+
+---
+
+_@carljm reviewed on 2025-11-10 22:49_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:5556 on 2025-11-10 22:49_
+
+Yeah that's exactly what it is, makes sense that it would just be copied over. Don't even feel strongly about having a test for it, but it seems like a good idea to avoid future regression?
+
+---
+
+_Merged by @Gankra on 2025-11-10 23:04_
+
+---
+
+_Closed by @Gankra on 2025-11-10 23:04_
+
+---
+
+_Branch deleted on 2025-11-10 23:04_
+
+---
+
+_@Gankra reviewed on 2025-11-10 23:07_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/src/types/infer/builder.rs`:5556 on 2025-11-10 23:07_
+
+Followup it is!
+
+---

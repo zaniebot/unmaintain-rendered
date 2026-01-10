@@ -1,0 +1,1203 @@
+```yaml
+number: 21476
+title: "[ty] Better invalid-assignment diagnostics"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+  - diagnostics
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/fix-1556
+created_at: 2025-11-15T21:41:29Z
+updated_at: 2025-11-18T14:08:02Z
+url: https://github.com/astral-sh/ruff/pull/21476
+synced_at: 2026-01-10T16:53:56Z
+```
+
+# [ty] Better invalid-assignment diagnostics
+
+---
+
+_Pull request opened by @sharkdp on 2025-11-15 21:41_
+
+## Summary
+
+Improve the diagnostic range for `invalid-assignment` diagnostics, and add source annotations for the value and target type.
+
+closes https://github.com/astral-sh/ty/issues/1556
+
+### Before
+
+<img width="836" height="601" alt="image" src="https://github.com/user-attachments/assets/a48219bb-58a8-4a83-b290-d09ef50ce5f0" />
+
+### After
+
+<img width="857" height="742" alt="image" src="https://github.com/user-attachments/assets/cfcaa4f4-94fb-459e-8d64-97050dfecb50" />
+
+## Ecosystem impact
+
+Very good! Due to the wider diagnostic range, we now pick up more `# type: ignore` directives that were supposed to suppress an invalid assignment diagnostic.
+
+## Test Plan
+
+New snapshot tests
+
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-11-15 21:41_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-11-15 21:41_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-11-15 21:41_
+
+---
+
+_Review requested from @MichaReiser by @sharkdp on 2025-11-15 21:41_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_assignment.md`:1 on 2025-11-15 21:42_
+
+I thought about adding the following example as well, but that leads to a different error code, and takes a different code path.
+```py
+x = "three"
+x: int
+```
+
+
+---
+
+_@sharkdp reviewed on 2025-11-15 21:42_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-15 21:43_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-18 13:25:04.775648783 +0000
++++ new-output.txt	2025-11-18 13:25:08.231658473 +0000
+@@ -33,8 +33,8 @@
+ aliases_implicit.py:119:10: error[invalid-type-form] Variable of type `Literal["int | str"]` is not allowed in a type expression
+ aliases_implicit.py:133:6: error[call-non-callable] Object of type `UnionType` is not callable
+ aliases_newtype.py:11:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["user"]`
+-aliases_newtype.py:12:1: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
+-aliases_newtype.py:18:1: error[invalid-assignment] Object of type `<NewType pseudo-class 'UserId'>` is not assignable to `type`
++aliases_newtype.py:12:14: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
++aliases_newtype.py:18:11: error[invalid-assignment] Object of type `<NewType pseudo-class 'UserId'>` is not assignable to `type`
+ aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `<NewType pseudo-class 'UserId'>`
+ aliases_newtype.py:26:21: error[invalid-base] Cannot subclass an instance of NewType
+ aliases_newtype.py:35:1: error[invalid-newtype] The name of a `NewType` (`BadName`) must match the name of the variable it is assigned to (`GoodName`)
+@@ -123,7 +123,7 @@
+ callables_annotation.py:57:18: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+ callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+ callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+-callables_annotation.py:157:5: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
++callables_annotation.py:157:20: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
+ callables_kwargs.py:24:5: error[type-assertion-failure] Type `int` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:32:9: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:35:5: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+@@ -131,60 +131,60 @@
+ callables_kwargs.py:52:11: error[too-many-positional-arguments] Too many positional arguments to function `func1`: expected 0, got 3
+ callables_kwargs.py:64:11: error[invalid-argument-type] Argument to function `func2` is incorrect: Expected `str`, found `Literal[1]`
+ callables_kwargs.py:64:14: error[parameter-already-assigned] Multiple values provided for parameter `v3` of function `func2`
+-callables_kwargs.py:103:1: error[invalid-assignment] Object of type `def func1(**kwargs: @Todo(`Unpack[]` special form)) -> None` is not assignable to `TDProtocol5`
+-callables_kwargs.py:134:1: error[invalid-assignment] Object of type `def func7(*, v1: int, v3: str, v2: str = Literal[""]) -> None` is not assignable to `TDProtocol6`
+-callables_protocol.py:35:1: error[invalid-assignment] Object of type `def cb1_bad1(*vals: bytes, *, max_items: int | None) -> list[bytes]` is not assignable to `Proto1`
+-callables_protocol.py:36:1: error[invalid-assignment] Object of type `def cb1_bad2(*vals: bytes) -> list[bytes]` is not assignable to `Proto1`
+-callables_protocol.py:37:1: error[invalid-assignment] Object of type `def cb1_bad3(*vals: bytes, *, max_len: str | None) -> list[bytes]` is not assignable to `Proto1`
+-callables_protocol.py:67:1: error[invalid-assignment] Object of type `def cb2_bad1(*a: bytes) -> Unknown` is not assignable to `Proto2`
+-callables_protocol.py:68:1: error[invalid-assignment] Object of type `def cb2_bad2(*a: str, **b: str) -> Unknown` is not assignable to `Proto2`
+-callables_protocol.py:69:1: error[invalid-assignment] Object of type `def cb2_bad3(*a: bytes, **b: bytes) -> Unknown` is not assignable to `Proto2`
+-callables_protocol.py:70:1: error[invalid-assignment] Object of type `def cb2_bad4(**b: str) -> Unknown` is not assignable to `Proto2`
+-callables_protocol.py:97:1: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -> None` is not assignable to `Proto4`
+-callables_protocol.py:121:1: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -> list[bytes]` is not assignable to `NotProto6`
+-callables_protocol.py:169:1: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -> Any` is not assignable to `Proto8`
++callables_kwargs.py:103:19: error[invalid-assignment] Object of type `def func1(**kwargs: @Todo(`Unpack[]` special form)) -> None` is not assignable to `TDProtocol5`
++callables_kwargs.py:134:19: error[invalid-assignment] Object of type `def func7(*, v1: int, v3: str, v2: str = Literal[""]) -> None` is not assignable to `TDProtocol6`
++callables_protocol.py:35:7: error[invalid-assignment] Object of type `def cb1_bad1(*vals: bytes, *, max_items: int | None) -> list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:36:7: error[invalid-assignment] Object of type `def cb1_bad2(*vals: bytes) -> list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:37:7: error[invalid-assignment] Object of type `def cb1_bad3(*vals: bytes, *, max_len: str | None) -> list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:67:7: error[invalid-assignment] Object of type `def cb2_bad1(*a: bytes) -> Unknown` is not assignable to `Proto2`
++callables_protocol.py:68:7: error[invalid-assignment] Object of type `def cb2_bad2(*a: str, **b: str) -> Unknown` is not assignable to `Proto2`
++callables_protocol.py:69:7: error[invalid-assignment] Object of type `def cb2_bad3(*a: bytes, **b: bytes) -> Unknown` is not assignable to `Proto2`
++callables_protocol.py:70:7: error[invalid-assignment] Object of type `def cb2_bad4(**b: str) -> Unknown` is not assignable to `Proto2`
++callables_protocol.py:97:16: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -> None` is not assignable to `Proto4`
++callables_protocol.py:121:18: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -> list[bytes]` is not assignable to `NotProto6`
++callables_protocol.py:169:7: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -> Any` is not assignable to `Proto8`
+ callables_protocol.py:186:5: error[invalid-assignment] Object of type `Literal["str"]` is not assignable to attribute `other_attribute` of type `int`
+ callables_protocol.py:187:5: error[unresolved-attribute] Unresolved attribute `xxx` on type `Proto9[P@decorator1, R@decorator1]`.
+ callables_protocol.py:197:7: error[unresolved-attribute] Object of type `Proto9[Unknown, Unknown]` has no attribute `other_attribute2`
+-callables_protocol.py:238:1: error[invalid-assignment] Object of type `def cb11_bad1(x: int, y: str, /) -> Any` is not assignable to `Proto11`
+-callables_protocol.py:260:1: error[invalid-assignment] Object of type `def cb12_bad1(*args: Any, *, kwarg0: Any) -> None` is not assignable to `Proto12`
+-callables_protocol.py:284:1: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -> str` is not assignable to `Proto13_Default`
+-callables_protocol.py:311:1: error[invalid-assignment] Object of type `def cb14_no_default(*, path: str) -> str` is not assignable to `Proto14_Default`
+-callables_subtyping.py:26:5: error[invalid-assignment] Object of type `(int, /) -> int` is not assignable to `(int | float, /) -> int | float`
+-callables_subtyping.py:29:5: error[invalid-assignment] Object of type `(int | float, /) -> int | float` is not assignable to `(int, /) -> int`
+-callables_subtyping.py:51:5: error[invalid-assignment] Object of type `PosOnly2` is not assignable to `Standard2`
+-callables_subtyping.py:52:5: error[invalid-assignment] Object of type `KwOnly2` is not assignable to `Standard2`
+-callables_subtyping.py:55:5: error[invalid-assignment] Object of type `KwOnly2` is not assignable to `PosOnly2`
+-callables_subtyping.py:58:5: error[invalid-assignment] Object of type `PosOnly2` is not assignable to `KwOnly2`
+-callables_subtyping.py:82:5: error[invalid-assignment] Object of type `NoArgs3` is not assignable to `IntArgs3`
+-callables_subtyping.py:85:5: error[invalid-assignment] Object of type `NoArgs3` is not assignable to `FloatArgs3`
+-callables_subtyping.py:86:5: error[invalid-assignment] Object of type `IntArgs3` is not assignable to `FloatArgs3`
+-callables_subtyping.py:116:5: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `PosOnly4`
+-callables_subtyping.py:119:5: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `IntStrArgs4`
+-callables_subtyping.py:120:5: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `IntStrArgs4`
+-callables_subtyping.py:122:5: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `StrArgs4`
+-callables_subtyping.py:124:5: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `IntArgs4`
+-callables_subtyping.py:126:5: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `Standard4`
+-callables_subtyping.py:151:5: error[invalid-assignment] Object of type `NoKwargs5` is not assignable to `IntKwargs5`
+-callables_subtyping.py:154:5: error[invalid-assignment] Object of type `NoKwargs5` is not assignable to `FloatKwargs5`
+-callables_subtyping.py:155:5: error[invalid-assignment] Object of type `IntKwargs5` is not assignable to `FloatKwargs5`
+-callables_subtyping.py:187:5: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `KwOnly6`
+-callables_subtyping.py:190:5: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `IntStrKwargs6`
+-callables_subtyping.py:191:5: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `IntStrKwargs6`
+-callables_subtyping.py:193:5: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `StrKwargs6`
+-callables_subtyping.py:195:5: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `IntKwargs6`
+-callables_subtyping.py:196:5: error[invalid-assignment] Object of type `IntStrKwargs6` is not assignable to `Standard6`
+-callables_subtyping.py:197:5: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `Standard6`
+-callables_subtyping.py:236:5: error[invalid-assignment] Object of type `NoDefaultArg8` is not assignable to `DefaultArg8`
+-callables_subtyping.py:237:5: error[invalid-assignment] Object of type `NoX8` is not assignable to `DefaultArg8`
+-callables_subtyping.py:240:5: error[invalid-assignment] Object of type `NoX8` is not assignable to `NoDefaultArg8`
+-callables_subtyping.py:243:5: error[invalid-assignment] Object of type `NoDefaultArg8` is not assignable to `NoX8`
+-callables_subtyping.py:273:5: error[invalid-assignment] Object of type `Overloaded9` is not assignable to `FloatArg9`
+-callables_subtyping.py:297:5: error[invalid-assignment] Object of type `StrArg10` is not assignable to `Overloaded10`
++callables_protocol.py:238:8: error[invalid-assignment] Object of type `def cb11_bad1(x: int, y: str, /) -> Any` is not assignable to `Proto11`
++callables_protocol.py:260:8: error[invalid-assignment] Object of type `def cb12_bad1(*args: Any, *, kwarg0: Any) -> None` is not assignable to `Proto12`
++callables_protocol.py:284:27: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -> str` is not assignable to `Proto13_Default`
++callables_protocol.py:311:27: error[invalid-assignment] Object of type `def cb14_no_default(*, path: str) -> str` is not assignable to `Proto14_Default`
++callables_subtyping.py:26:36: error[invalid-assignment] Object of type `(int, /) -> int` is not assignable to `(int | float, /) -> int | float`
++callables_subtyping.py:29:32: error[invalid-assignment] Object of type `(int | float, /) -> int | float` is not assignable to `(int, /) -> int`
++callables_subtyping.py:51:21: error[invalid-assignment] Object of type `PosOnly2` is not assignable to `Standard2`
++callables_subtyping.py:52:21: error[invalid-assignment] Object of type `KwOnly2` is not assignable to `Standard2`
++callables_subtyping.py:55:20: error[invalid-assignment] Object of type `KwOnly2` is not assignable to `PosOnly2`
++callables_subtyping.py:58:19: error[invalid-assignment] Object of type `PosOnly2` is not assignable to `KwOnly2`
++callables_subtyping.py:82:20: error[invalid-assignment] Object of type `NoArgs3` is not assignable to `IntArgs3`
++callables_subtyping.py:85:22: error[invalid-assignment] Object of type `NoArgs3` is not assignable to `FloatArgs3`
++callables_subtyping.py:86:22: error[invalid-assignment] Object of type `IntArgs3` is not assignable to `FloatArgs3`
++callables_subtyping.py:116:20: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `PosOnly4`
++callables_subtyping.py:119:23: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `IntStrArgs4`
++callables_subtyping.py:120:23: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `IntStrArgs4`
++callables_subtyping.py:122:20: error[invalid-assignment] Object of type `IntArgs4` is not assignable to `StrArgs4`
++callables_subtyping.py:124:20: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `IntArgs4`
++callables_subtyping.py:126:22: error[invalid-assignment] Object of type `StrArgs4` is not assignable to `Standard4`
++callables_subtyping.py:151:22: error[invalid-assignment] Object of type `NoKwargs5` is not assignable to `IntKwargs5`
++callables_subtyping.py:154:24: error[invalid-assignment] Object of type `NoKwargs5` is not assignable to `FloatKwargs5`
++callables_subtyping.py:155:24: error[invalid-assignment] Object of type `IntKwargs5` is not assignable to `FloatKwargs5`
++callables_subtyping.py:187:19: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `KwOnly6`
++callables_subtyping.py:190:25: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `IntStrKwargs6`
++callables_subtyping.py:191:25: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `IntStrKwargs6`
++callables_subtyping.py:193:22: error[invalid-assignment] Object of type `IntKwargs6` is not assignable to `StrKwargs6`
++callables_subtyping.py:195:22: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `IntKwargs6`
++callables_subtyping.py:196:22: error[invalid-assignment] Object of type `IntStrKwargs6` is not assignable to `Standard6`
++callables_subtyping.py:197:22: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `Standard6`
++callables_subtyping.py:236:23: error[invalid-assignment] Object of type `NoDefaultArg8` is not assignable to `DefaultArg8`
++callables_subtyping.py:237:23: error[invalid-assignment] Object of type `NoX8` is not assignable to `DefaultArg8`
++callables_subtyping.py:240:25: error[invalid-assignment] Object of type `NoX8` is not assignable to `NoDefaultArg8`
++callables_subtyping.py:243:16: error[invalid-assignment] Object of type `NoDefaultArg8` is not assignable to `NoX8`
++callables_subtyping.py:273:21: error[invalid-assignment] Object of type `Overloaded9` is not assignable to `FloatArg9`
++callables_subtyping.py:297:24: error[invalid-assignment] Object of type `StrArg10` is not assignable to `Overloaded10`
+ classes_classvar.py:38:11: error[invalid-type-form] Type qualifier `typing.ClassVar` expected exactly 1 argument, got 2
+ classes_classvar.py:39:14: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+ classes_classvar.py:40:14: error[unresolved-reference] Name `var` used when not defined
+-classes_classvar.py:52:5: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `list[str]`
++classes_classvar.py:52:33: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `list[str]`
+ classes_classvar.py:55:17: error[invalid-type-form] Type qualifier `typing.ClassVar` is not allowed in type expressions (only in annotation expressions)
+ classes_classvar.py:69:23: error[invalid-type-form] `ClassVar` is not allowed in function parameter annotations
+ classes_classvar.py:70:12: error[invalid-type-form] `ClassVar` annotations are only allowed in class-body scopes
+@@ -192,7 +192,7 @@
+ classes_classvar.py:73:26: error[invalid-type-form] `ClassVar` is not allowed in function return type annotations
+ classes_classvar.py:77:8: error[invalid-type-form] `ClassVar` annotations are only allowed in class-body scopes
+ classes_classvar.py:111:1: error[invalid-attribute-access] Cannot assign to ClassVar `stats` from an instance of type `Starship`
+-classes_classvar.py:140:1: error[invalid-assignment] Object of type `ProtoAImpl` is not assignable to `ProtoA`
++classes_classvar.py:140:13: error[invalid-assignment] Object of type `ProtoAImpl` is not assignable to `ProtoA`
+ constructors_call_init.py:21:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `float`
+ constructors_call_init.py:25:1: error[type-assertion-failure] Type `Class1[int | float]` does not match asserted type `Class1[float]`
+ constructors_call_init.py:56:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Class4[int]`, found `Class4[str]`
+@@ -350,7 +350,7 @@
+ directives_deprecated.py:34:7: warning[deprecated] The class `Ham` is deprecated: Use Spam instead
+ directives_deprecated.py:69:1: warning[deprecated] The function `lorem` is deprecated: Deprecated
+ directives_deprecated.py:98:7: warning[deprecated] The function `foo` is deprecated: Deprecated
+-directives_no_type_check.py:15:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_no_type_check.py:15:14: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+ directives_no_type_check.py:29:7: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `int`, found `Literal[b"invalid"]`
+ directives_no_type_check.py:29:19: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `str`, found `Literal[b"arguments"]`
+ directives_no_type_check.py:32:1: error[missing-argument] No arguments provided for required parameters `a`, `b` of function `func1`
+@@ -360,16 +360,16 @@
+ directives_reveal_type.py:17:17: info[revealed-type] Revealed type: `ForwardReference`
+ directives_reveal_type.py:19:5: error[missing-argument] No argument provided for required parameter `obj` of function `reveal_type`
+ directives_reveal_type.py:20:20: error[too-many-positional-arguments] Too many positional arguments to function `reveal_type`: expected 1, got 2
+-directives_type_checking.py:11:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_type_ignore_file2.py:14:1: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:14:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:19:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:22:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:27:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:31:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:36:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:40:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:45:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_type_checking.py:11:14: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_type_ignore_file2.py:14:10: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:14:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:19:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:22:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:27:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:31:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:36:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:40:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
++directives_version_platform.py:45:17: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+ enums_behaviors.py:27:1: error[type-assertion-failure] Type `Color` does not match asserted type `Unknown`
+ enums_behaviors.py:28:1: error[type-assertion-failure] Type `Literal[Color.RED]` does not match asserted type `Unknown`
+ enums_behaviors.py:32:1: error[type-assertion-failure] Type `Literal[Color.BLUE]` does not match asserted type `Color`
+@@ -503,7 +503,7 @@
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+ generics_self_protocols.py:61:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `BadReturnType`
+-generics_self_usage.py:50:5: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(typing.Self, /) -> int`
++generics_self_usage.py:50:34: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(typing.Self, /) -> int`
+ generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+@@ -530,32 +530,32 @@
+ generics_syntax_declarations.py:79:23: error[unresolved-reference] Name `S` used when not defined
+ generics_syntax_infer_variance.py:21:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@ShouldBeCovariant1`
+ generics_syntax_infer_variance.py:24:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T@ShouldBeCovariant1]`
+-generics_syntax_infer_variance.py:28:1: error[invalid-assignment] Object of type `ShouldBeCovariant1[int]` is not assignable to `ShouldBeCovariant1[int | float]`
+-generics_syntax_infer_variance.py:29:1: error[invalid-assignment] Object of type `ShouldBeCovariant1[int | float]` is not assignable to `ShouldBeCovariant1[int]`
++generics_syntax_infer_variance.py:28:37: error[invalid-assignment] Object of type `ShouldBeCovariant1[int]` is not assignable to `ShouldBeCovariant1[int | float]`
++generics_syntax_infer_variance.py:29:35: error[invalid-assignment] Object of type `ShouldBeCovariant1[int | float]` is not assignable to `ShouldBeCovariant1[int]`
+ generics_syntax_infer_variance.py:39:50: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@ShouldBeCovariant2 | Sequence[T@ShouldBeCovariant2]`
+ generics_syntax_infer_variance.py:42:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_syntax_infer_variance.py:46:1: error[invalid-assignment] Object of type `ShouldBeCovariant2[int]` is not assignable to `ShouldBeCovariant2[int | float]`
+-generics_syntax_infer_variance.py:47:1: error[invalid-assignment] Object of type `ShouldBeCovariant2[int | float]` is not assignable to `ShouldBeCovariant2[int]`
++generics_syntax_infer_variance.py:46:37: error[invalid-assignment] Object of type `ShouldBeCovariant2[int]` is not assignable to `ShouldBeCovariant2[int | float]`
++generics_syntax_infer_variance.py:47:35: error[invalid-assignment] Object of type `ShouldBeCovariant2[int | float]` is not assignable to `ShouldBeCovariant2[int]`
+ generics_syntax_infer_variance.py:51:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `ShouldBeCovariant2[T@ShouldBeCovariant3]`
+-generics_syntax_infer_variance.py:55:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int]` is not assignable to `ShouldBeCovariant3[int | float]`
+-generics_syntax_infer_variance.py:56:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
+-generics_syntax_infer_variance.py:84:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int]` is not assignable to `ShouldBeCovariant5[int | float]`
+-generics_syntax_infer_variance.py:85:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
++generics_syntax_infer_variance.py:55:37: error[invalid-assignment] Object of type `ShouldBeCovariant3[int]` is not assignable to `ShouldBeCovariant3[int | float]`
++generics_syntax_infer_variance.py:56:35: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
++generics_syntax_infer_variance.py:84:36: error[invalid-assignment] Object of type `ShouldBeCovariant5[int]` is not assignable to `ShouldBeCovariant5[int | float]`
++generics_syntax_infer_variance.py:85:34: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
+ generics_syntax_infer_variance.py:92:9: error[invalid-assignment] Cannot assign to final attribute `x` on type `Self@__init__`
+-generics_syntax_infer_variance.py:95:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int]` is not assignable to `ShouldBeCovariant6[int | float]`
+-generics_syntax_infer_variance.py:96:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
+-generics_syntax_infer_variance.py:112:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
+-generics_syntax_infer_variance.py:113:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int | float]` is not assignable to `ShouldBeInvariant1[int]`
+-generics_syntax_infer_variance.py:127:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int]` is not assignable to `ShouldBeInvariant2[int | float]`
+-generics_syntax_infer_variance.py:128:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int | float]` is not assignable to `ShouldBeInvariant2[int]`
+-generics_syntax_infer_variance.py:135:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int, str]` is not assignable to `ShouldBeInvariant3[int | float, str]`
+-generics_syntax_infer_variance.py:136:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int | float, str]` is not assignable to `ShouldBeInvariant3[int, str]`
+-generics_syntax_infer_variance.py:137:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+-generics_syntax_infer_variance.py:138:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+-generics_syntax_infer_variance.py:146:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_syntax_infer_variance.py:154:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+-generics_syntax_infer_variance.py:165:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+-generics_syntax_infer_variance.py:166:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int | float]` is not assignable to `ShouldBeContravariant1[int]`
++generics_syntax_infer_variance.py:95:36: error[invalid-assignment] Object of type `ShouldBeCovariant6[int]` is not assignable to `ShouldBeCovariant6[int | float]`
++generics_syntax_infer_variance.py:96:34: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
++generics_syntax_infer_variance.py:112:38: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
++generics_syntax_infer_variance.py:113:36: error[invalid-assignment] Object of type `ShouldBeInvariant1[int | float]` is not assignable to `ShouldBeInvariant1[int]`
++generics_syntax_infer_variance.py:127:38: error[invalid-assignment] Object of type `ShouldBeInvariant2[int]` is not assignable to `ShouldBeInvariant2[int | float]`
++generics_syntax_infer_variance.py:128:36: error[invalid-assignment] Object of type `ShouldBeInvariant2[int | float]` is not assignable to `ShouldBeInvariant2[int]`
++generics_syntax_infer_variance.py:135:43: error[invalid-assignment] Object of type `ShouldBeInvariant3[int, str]` is not assignable to `ShouldBeInvariant3[int | float, str]`
++generics_syntax_infer_variance.py:136:41: error[invalid-assignment] Object of type `ShouldBeInvariant3[int | float, str]` is not assignable to `ShouldBeInvariant3[int, str]`
++generics_syntax_infer_variance.py:137:43: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
++generics_syntax_infer_variance.py:138:41: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
++generics_syntax_infer_variance.py:146:38: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
++generics_syntax_infer_variance.py:154:38: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
++generics_syntax_infer_variance.py:165:45: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
++generics_syntax_infer_variance.py:166:43: error[invalid-assignment] Object of type `ShouldBeContravariant1[int | float]` is not assignable to `ShouldBeContravariant1[int]`
+ generics_syntax_scoping.py:35:7: error[unresolved-reference] Name `T` used when not defined
+ generics_syntax_scoping.py:40:23: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `((...) -> R@decorator1, /) -> (...) -> R@decorator1`
+ generics_syntax_scoping.py:44:17: error[unresolved-reference] Name `T` used when not defined
+@@ -639,33 +639,33 @@
+ generics_variance.py:196:15: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+ generics_variance.py:196:25: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+ generics_variance_inference.py:19:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T3@ClassA`
+-generics_variance_inference.py:24:5: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int, int, int]`
+-generics_variance_inference.py:25:5: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int | float, int | float, int]`
+-generics_variance_inference.py:28:5: error[invalid-assignment] Object of type `ClassA[int, int | float, int | float]` is not assignable to `ClassA[int, int, int]`
++generics_variance_inference.py:24:33: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int, int, int]`
++generics_variance_inference.py:25:37: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int | float, int | float, int]`
++generics_variance_inference.py:28:33: error[invalid-assignment] Object of type `ClassA[int, int | float, int | float]` is not assignable to `ClassA[int, int, int]`
+ generics_variance_inference.py:33:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@ShouldBeCovariant1`
+ generics_variance_inference.py:36:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T@ShouldBeCovariant1]`
+-generics_variance_inference.py:41:1: error[invalid-assignment] Object of type `ShouldBeCovariant1[int | float]` is not assignable to `ShouldBeCovariant1[int]`
+-generics_variance_inference.py:49:1: error[invalid-assignment] Object of type `ShouldBeCovariant2[int | float]` is not assignable to `ShouldBeCovariant2[int]`
++generics_variance_inference.py:41:35: error[invalid-assignment] Object of type `ShouldBeCovariant1[int | float]` is not assignable to `ShouldBeCovariant1[int]`
++generics_variance_inference.py:49:35: error[invalid-assignment] Object of type `ShouldBeCovariant2[int | float]` is not assignable to `ShouldBeCovariant2[int]`
+ generics_variance_inference.py:53:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `ShouldBeCovariant2[T@ShouldBeCovariant3]`
+-generics_variance_inference.py:58:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
+-generics_variance_inference.py:66:1: error[invalid-assignment] Object of type `ShouldBeCovariant4[int]` is not assignable to `ShouldBeCovariant4[int | float]`
+-generics_variance_inference.py:67:1: error[invalid-assignment] Object of type `ShouldBeCovariant4[int | float]` is not assignable to `ShouldBeCovariant4[int]`
+-generics_variance_inference.py:80:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
+-generics_variance_inference.py:96:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
+-generics_variance_inference.py:97:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int | float]` is not assignable to `ShouldBeInvariant1[int]`
+-generics_variance_inference.py:111:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int]` is not assignable to `ShouldBeInvariant2[int | float]`
+-generics_variance_inference.py:112:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int | float]` is not assignable to `ShouldBeInvariant2[int]`
+-generics_variance_inference.py:119:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int, str]` is not assignable to `ShouldBeInvariant3[int | float, str]`
+-generics_variance_inference.py:120:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int | float, str]` is not assignable to `ShouldBeInvariant3[int, str]`
+-generics_variance_inference.py:121:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+-generics_variance_inference.py:122:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+-generics_variance_inference.py:130:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_variance_inference.py:138:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+-generics_variance_inference.py:149:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+-generics_variance_inference.py:169:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int | float]` is not assignable to `ShouldBeInvariant6[int]`
+-generics_variance_inference.py:170:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int]` is not assignable to `ShouldBeInvariant6[int | float]`
+-generics_variance_inference.py:181:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
+-generics_variance_inference.py:194:1: error[invalid-assignment] Object of type `ShouldBeContravariant2[int]` is not assignable to `ShouldBeContravariant2[int | float]`
++generics_variance_inference.py:58:35: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
++generics_variance_inference.py:66:36: error[invalid-assignment] Object of type `ShouldBeCovariant4[int]` is not assignable to `ShouldBeCovariant4[int | float]`
++generics_variance_inference.py:67:34: error[invalid-assignment] Object of type `ShouldBeCovariant4[int | float]` is not assignable to `ShouldBeCovariant4[int]`
++generics_variance_inference.py:80:34: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
++generics_variance_inference.py:96:38: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
++generics_variance_inference.py:97:36: error[invalid-assignment] Object of type `ShouldBeInvariant1[int | float]` is not assignable to `ShouldBeInvariant1[int]`
++generics_variance_inference.py:111:38: error[invalid-assignment] Object of type `ShouldBeInvariant2[int]` is not assignable to `ShouldBeInvariant2[int | float]`
++generics_variance_inference.py:112:36: error[invalid-assignment] Object of type `ShouldBeInvariant2[int | float]` is not assignable to `ShouldBeInvariant2[int]`
++generics_variance_inference.py:119:43: error[invalid-assignment] Object of type `ShouldBeInvariant3[int, str]` is not assignable to `ShouldBeInvariant3[int | float, str]`
++generics_variance_inference.py:120:41: error[invalid-assignment] Object of type `ShouldBeInvariant3[int | float, str]` is not assignable to `ShouldBeInvariant3[int, str]`
++generics_variance_inference.py:121:43: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
++generics_variance_inference.py:122:41: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
++generics_variance_inference.py:130:38: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
++generics_variance_inference.py:138:38: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
++generics_variance_inference.py:149:45: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
++generics_variance_inference.py:169:31: error[invalid-assignment] Object of type `ShouldBeInvariant6[int | float]` is not assignable to `ShouldBeInvariant6[int]`
++generics_variance_inference.py:170:33: error[invalid-assignment] Object of type `ShouldBeInvariant6[int]` is not assignable to `ShouldBeInvariant6[int | float]`
++generics_variance_inference.py:181:31: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
++generics_variance_inference.py:194:37: error[invalid-assignment] Object of type `ShouldBeContravariant2[int]` is not assignable to `ShouldBeContravariant2[int | float]`
+ historical_positional.py:18:4: error[positional-only-parameter-as-kwarg] Positional-only parameter 1 (`__x`) passed as keyword argument of function `f1`
+ historical_positional.py:43:6: error[positional-only-parameter-as-kwarg] Positional-only parameter 2 (`__x`) passed as keyword argument of bound method `m1`
+ literals_interactions.py:15:5: error[index-out-of-bounds] Index 5 is out of bounds for tuple `tuple[int, str, list[bool]]` with length 3
+@@ -680,19 +680,19 @@
+ literals_literalstring.py:23:51: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `LiteralString`
+ literals_literalstring.py:36:29: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+ literals_literalstring.py:37:22: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+-literals_literalstring.py:43:5: error[invalid-assignment] Object of type `Literal["two"]` is not assignable to `Literal[""]`
++literals_literalstring.py:43:23: error[invalid-assignment] Object of type `Literal["two"]` is not assignable to `Literal[""]`
+ literals_literalstring.py:53:5: error[type-assertion-failure] Type `str` does not match asserted type `LiteralString`
+ literals_literalstring.py:63:5: error[type-assertion-failure] Type `LiteralString` does not match asserted type `str`
+-literals_literalstring.py:66:5: error[invalid-assignment] Object of type `str` is not assignable to `LiteralString`
++literals_literalstring.py:66:25: error[invalid-assignment] Object of type `str` is not assignable to `LiteralString`
+ literals_literalstring.py:68:5: error[type-assertion-failure] Type `str` does not match asserted type `LiteralString`
+-literals_literalstring.py:74:5: error[invalid-assignment] Object of type `Literal[3]` is not assignable to `LiteralString`
+-literals_literalstring.py:75:5: error[invalid-assignment] Object of type `Literal[b"test"]` is not assignable to `LiteralString`
++literals_literalstring.py:74:25: error[invalid-assignment] Object of type `Literal[3]` is not assignable to `LiteralString`
++literals_literalstring.py:75:25: error[invalid-assignment] Object of type `Literal[b"test"]` is not assignable to `LiteralString`
+ literals_literalstring.py:79:21: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `bool`
+ literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `TLiteral`
+ literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `T`
+ literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `LiteralString`, found `str`
+ literals_literalstring.py:167:1: error[type-assertion-failure] Type `A` does not match asserted type `B`
+-literals_literalstring.py:171:5: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
++literals_literalstring.py:171:21: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
+ literals_parameterizations.py:41:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+ literals_parameterizations.py:42:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+ literals_parameterizations.py:43:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+@@ -709,10 +709,10 @@
+ literals_parameterizations.py:56:28: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+ literals_parameterizations.py:60:4: error[invalid-type-form] `typing.Literal` requires at least one argument when used in a type expression
+ literals_parameterizations.py:61:12: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+-literals_parameterizations.py:65:5: error[invalid-assignment] Object of type `Literal[Color.RED]` is not assignable to `Literal["Color.RED"]`
+-literals_semantics.py:10:1: error[invalid-assignment] Object of type `Literal[4]` is not assignable to `Literal[3]`
+-literals_semantics.py:24:5: error[invalid-assignment] Object of type `Literal[0]` is not assignable to `Literal[False]`
+-literals_semantics.py:25:5: error[invalid-assignment] Object of type `Literal[False]` is not assignable to `Literal[0]`
++literals_parameterizations.py:65:32: error[invalid-assignment] Object of type `Literal[Color.RED]` is not assignable to `Literal["Color.RED"]`
++literals_semantics.py:10:18: error[invalid-assignment] Object of type `Literal[4]` is not assignable to `Literal[3]`
++literals_semantics.py:24:26: error[invalid-assignment] Object of type `Literal[0]` is not assignable to `Literal[False]`
++literals_semantics.py:25:22: error[invalid-assignment] Object of type `Literal[False]` is not assignable to `Literal[0]`
+ literals_semantics.py:33:5: error[invalid-assignment] Object of type `Literal[6, 7, 8]` is not assignable to `Literal[3, 4, 5]`
+ namedtuples_define_class.py:32:7: error[index-out-of-bounds] Index 3 is out of bounds for tuple `Point` with length 3
+ namedtuples_define_class.py:33:7: error[index-out-of-bounds] Index -4 is out of bounds for tuple `Point` with length 3
+@@ -729,8 +729,8 @@
+ namedtuples_define_class.py:123:1: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+ namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
+ namedtuples_define_class.py:132:24: error[invalid-named-tuple] NamedTuple class `Unit` cannot use multiple inheritance except with `Generic[]`
+-namedtuples_type_compat.py:22:1: error[invalid-assignment] Object of type `Point` is not assignable to `tuple[int, int]`
+-namedtuples_type_compat.py:23:1: error[invalid-assignment] Object of type `Point` is not assignable to `tuple[int, str, str]`
++namedtuples_type_compat.py:22:23: error[invalid-assignment] Object of type `Point` is not assignable to `tuple[int, int]`
++namedtuples_type_compat.py:23:28: error[invalid-assignment] Object of type `Point` is not assignable to `tuple[int, str, str]`
+ namedtuples_usage.py:34:7: error[index-out-of-bounds] Index 3 is out of bounds for tuple `Point` with length 3
+ namedtuples_usage.py:35:7: error[index-out-of-bounds] Index -4 is out of bounds for tuple `Point` with length 3
+ namedtuples_usage.py:40:1: error[invalid-assignment] Cannot assign to read-only property `x` on object of type `Point`
+@@ -747,7 +747,7 @@
+ narrowing_typeguard.py:89:9: error[type-assertion-failure] Type `B` does not match asserted type `object`
+ narrowing_typeguard.py:93:9: error[type-assertion-failure] Type `B` does not match asserted type `object`
+ narrowing_typeis.py:21:9: error[type-assertion-failure] Type `tuple[str, ...]` does not match asserted type `tuple[str, ...] & ~tuple[str, str]`
+-narrowing_typeis.py:35:9: error[invalid-assignment] Object of type `object` is not assignable to `int`
++narrowing_typeis.py:35:18: error[invalid-assignment] Object of type `object` is not assignable to `int`
+ narrowing_typeis.py:38:9: error[type-assertion-failure] Type `int` does not match asserted type `int & ~Awaitable[object]`
+ narrowing_typeis.py:72:9: error[type-assertion-failure] Type `int` does not match asserted type `object`
+ narrowing_typeis.py:76:9: error[type-assertion-failure] Type `int` does not match asserted type `object`
+@@ -790,47 +790,47 @@
+ overloads_evaluation.py:115:5: error[no-matching-overload] No overload of function `example2` matches arguments
+ overloads_evaluation.py:161:5: error[type-assertion-failure] Type `Literal[0, 1]` does not match asserted type `Literal[0]`
+ overloads_evaluation.py:291:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@example6`
+-protocols_class_objects.py:58:1: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA1`
+-protocols_class_objects.py:59:1: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA2`
++protocols_class_objects.py:58:16: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA1`
++protocols_class_objects.py:59:16: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA2`
+ protocols_definition.py:30:11: error[invalid-argument-type] Argument to function `close_all` is incorrect: Expected `Iterable[SupportsClose]`, found `list[Unknown | int]`
+-protocols_definition.py:114:1: error[invalid-assignment] Object of type `Concrete2_Bad1` is not assignable to `Template2`
+-protocols_definition.py:115:1: error[invalid-assignment] Object of type `Concrete2_Bad2` is not assignable to `Template2`
+-protocols_definition.py:116:1: error[invalid-assignment] Object of type `Concrete2_Bad3` is not assignable to `Template2`
+-protocols_definition.py:156:1: error[invalid-assignment] Object of type `Concrete3_Bad1` is not assignable to `Template3`
+-protocols_definition.py:159:1: error[invalid-assignment] Object of type `Concrete3_Bad4` is not assignable to `Template3`
+-protocols_definition.py:160:1: error[invalid-assignment] Object of type `Concrete3_Bad5` is not assignable to `Template3`
+-protocols_definition.py:219:1: error[invalid-assignment] Object of type `Concrete4_Bad2` is not assignable to `Template4`
+-protocols_definition.py:285:1: error[invalid-assignment] Object of type `Concrete5_Bad1` is not assignable to `Template5`
+-protocols_definition.py:286:1: error[invalid-assignment] Object of type `Concrete5_Bad2` is not assignable to `Template5`
+-protocols_definition.py:287:1: error[invalid-assignment] Object of type `Concrete5_Bad3` is not assignable to `Template5`
+-protocols_definition.py:288:1: error[invalid-assignment] Object of type `Concrete5_Bad4` is not assignable to `Template5`
+-protocols_definition.py:289:1: error[invalid-assignment] Object of type `Concrete5_Bad5` is not assignable to `Template5`
++protocols_definition.py:114:22: error[invalid-assignment] Object of type `Concrete2_Bad1` is not assignable to `Template2`
++protocols_definition.py:115:22: error[invalid-assignment] Object of type `Concrete2_Bad2` is not assignable to `Template2`
++protocols_definition.py:116:22: error[invalid-assignment] Object of type `Concrete2_Bad3` is not assignable to `Template2`
++protocols_definition.py:156:22: error[invalid-assignment] Object of type `Concrete3_Bad1` is not assignable to `Template3`
++protocols_definition.py:159:22: error[invalid-assignment] Object of type `Concrete3_Bad4` is not assignable to `Template3`
++protocols_definition.py:160:22: error[invalid-assignment] Object of type `Concrete3_Bad5` is not assignable to `Template3`
++protocols_definition.py:219:22: error[invalid-assignment] Object of type `Concrete4_Bad2` is not assignable to `Template4`
++protocols_definition.py:285:22: error[invalid-assignment] Object of type `Concrete5_Bad1` is not assignable to `Template5`
++protocols_definition.py:286:22: error[invalid-assignment] Object of type `Concrete5_Bad2` is not assignable to `Template5`
++protocols_definition.py:287:22: error[invalid-assignment] Object of type `Concrete5_Bad3` is not assignable to `Template5`
++protocols_definition.py:288:22: error[invalid-assignment] Object of type `Concrete5_Bad4` is not assignable to `Template5`
++protocols_definition.py:289:22: error[invalid-assignment] Object of type `Concrete5_Bad5` is not assignable to `Template5`
+ protocols_explicit.py:56:9: error[invalid-assignment] Object of type `tuple[int, int, str]` is not assignable to attribute `rgb` of type `tuple[int, int, int]`
+-protocols_generic.py:40:1: error[invalid-assignment] Object of type `Concrete1` is not assignable to `Proto1[int, str]`
+-protocols_generic.py:56:5: error[invalid-assignment] Object of type `Box[int | float]` is not assignable to `Box[int]`
+-protocols_generic.py:66:5: error[invalid-assignment] Object of type `Sender[int]` is not assignable to `Sender[int | float]`
+-protocols_generic.py:74:5: error[invalid-assignment] Object of type `AttrProto[int]` is not assignable to `AttrProto[int | float]`
+-protocols_generic.py:75:5: error[invalid-assignment] Object of type `AttrProto[int | float]` is not assignable to `AttrProto[int]`
+-protocols_merging.py:52:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable1`
+-protocols_merging.py:53:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable2`
+-protocols_merging.py:54:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable3`
++protocols_generic.py:40:24: error[invalid-assignment] Object of type `Concrete1` is not assignable to `Proto1[int, str]`
++protocols_generic.py:56:20: error[invalid-assignment] Object of type `Box[int | float]` is not assignable to `Box[int]`
++protocols_generic.py:66:25: error[invalid-assignment] Object of type `Sender[int]` is not assignable to `Sender[int | float]`
++protocols_generic.py:74:28: error[invalid-assignment] Object of type `AttrProto[int]` is not assignable to `AttrProto[int | float]`
++protocols_generic.py:75:26: error[invalid-assignment] Object of type `AttrProto[int | float]` is not assignable to `AttrProto[int]`
++protocols_merging.py:52:25: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable1`
++protocols_merging.py:53:25: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable2`
++protocols_merging.py:54:25: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable3`
+ protocols_merging.py:67:16: error[invalid-protocol] Protocol class `BadProto` cannot inherit from non-protocol class `SizedAndClosable3`
+-protocols_merging.py:83:1: error[invalid-assignment] Object of type `SCConcrete1` is not assignable to `SizedAndClosable4`
+-protocols_modules.py:25:1: error[invalid-assignment] Object of type `<module '_protocols_modules1'>` is not assignable to `Options1`
+-protocols_modules.py:26:1: error[invalid-assignment] Object of type `<module '_protocols_modules1'>` is not assignable to `Options2`
+-protocols_modules.py:47:1: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter1`
+-protocols_modules.py:48:1: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter2`
+-protocols_modules.py:49:1: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter3`
++protocols_merging.py:83:24: error[invalid-assignment] Object of type `SCConcrete1` is not assignable to `SizedAndClosable4`
++protocols_modules.py:25:17: error[invalid-assignment] Object of type `<module '_protocols_modules1'>` is not assignable to `Options1`
++protocols_modules.py:26:17: error[invalid-assignment] Object of type `<module '_protocols_modules1'>` is not assignable to `Options2`
++protocols_modules.py:47:18: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter1`
++protocols_modules.py:48:18: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter2`
++protocols_modules.py:49:18: error[invalid-assignment] Object of type `<module '_protocols_modules2'>` is not assignable to `Reporter3`
+ protocols_recursive.py:76:35: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@func1`
+ protocols_recursive.py:81:1: error[type-assertion-failure] Type `list[int]` does not match asserted type `Unknown`
+ protocols_runtime_checkable.py:23:8: error[invalid-argument-type] Class `Proto1` cannot be used as the second argument to `isinstance`: This call will raise `TypeError` at runtime
+ protocols_subtyping.py:16:6: error[call-non-callable] Cannot instantiate class `Proto1`: This call will raise `TypeError` at runtime
+-protocols_subtyping.py:38:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Concrete2`
+-protocols_subtyping.py:55:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Proto3`
+-protocols_subtyping.py:79:5: error[invalid-assignment] Object of type `Proto5[int]` is not assignable to `Proto4[int, int | float]`
+-protocols_subtyping.py:80:5: error[invalid-assignment] Object of type `Proto4[int, int]` is not assignable to `Proto5[int | float]`
+-protocols_subtyping.py:102:5: error[invalid-assignment] Object of type `Proto6[int | float, int | float]` is not assignable to `Proto7[int, int | float]`
+-protocols_subtyping.py:103:5: error[invalid-assignment] Object of type `Proto6[int | float, int | float]` is not assignable to `Proto7[int | float, object]`
++protocols_subtyping.py:38:21: error[invalid-assignment] Object of type `Proto2` is not assignable to `Concrete2`
++protocols_subtyping.py:55:18: error[invalid-assignment] Object of type `Proto2` is not assignable to `Proto3`
++protocols_subtyping.py:79:30: error[invalid-assignment] Object of type `Proto5[int]` is not assignable to `Proto4[int, int | float]`
++protocols_subtyping.py:80:25: error[invalid-assignment] Object of type `Proto4[int, int]` is not assignable to `Proto5[int | float]`
++protocols_subtyping.py:102:30: error[invalid-assignment] Object of type `Proto6[int | float, int | float]` is not assignable to `Proto7[int, int | float]`
++protocols_subtyping.py:103:33: error[invalid-assignment] Object of type `Proto6[int | float, int | float]` is not assignable to `Proto7[int | float, object]`
+ qualifiers_annotated.py:38:17: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+ qualifiers_annotated.py:39:17: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+ qualifiers_annotated.py:39:18: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+@@ -845,8 +845,8 @@
+ qualifiers_annotated.py:48:18: error[invalid-type-form] Boolean operations are not allowed in type expressions
+ qualifiers_annotated.py:49:18: error[fstring-type-annotation] Type expressions cannot use f-strings
+ qualifiers_annotated.py:59:8: error[invalid-type-form] Special form `typing.Annotated` expected at least 2 arguments (one type and at least one metadata element)
+-qualifiers_annotated.py:71:1: error[invalid-assignment] Object of type `<typing.Annotated special form>` is not assignable to `type[Any]`
+-qualifiers_annotated.py:72:1: error[invalid-assignment] Object of type `<typing.Annotated special form>` is not assignable to `type[Any]`
++qualifiers_annotated.py:71:24: error[invalid-assignment] Object of type `<typing.Annotated special form>` is not assignable to `type[Any]`
++qualifiers_annotated.py:72:24: error[invalid-assignment] Object of type `<typing.Annotated special form>` is not assignable to `type[Any]`
+ qualifiers_annotated.py:86:1: error[call-non-callable] Object of type `typing.Annotated` is not callable
+ qualifiers_annotated.py:87:1: error[call-non-callable] Object of type `GenericAlias` is not callable
+ qualifiers_annotated.py:88:1: error[call-non-callable] Object of type `GenericAlias` is not callable
+@@ -869,10 +869,10 @@
+ specialtypes_any.py:86:1: error[type-assertion-failure] Type `int` does not match asserted type `int | @Todo(instance attribute on class with dynamic base)`
+ specialtypes_never.py:19:22: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Never`
+ specialtypes_never.py:32:12: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Literal["whatever works"]`
+-specialtypes_never.py:86:5: error[invalid-assignment] Object of type `list[Never]` is not assignable to `list[int]`
++specialtypes_never.py:86:21: error[invalid-assignment] Object of type `list[Never]` is not assignable to `list[int]`
+ specialtypes_never.py:105:12: error[invalid-return-type] Return type does not match returned value: expected `ClassC[U@func10]`, found `ClassC[Never]`
+ specialtypes_none.py:21:7: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `None`, found `<class 'NoneType'>`
+-specialtypes_none.py:27:1: error[invalid-assignment] Object of type `None` is not assignable to `Iterable[Unknown]`
++specialtypes_none.py:27:19: error[invalid-assignment] Object of type `None` is not assignable to `Iterable[Unknown]`
+ specialtypes_none.py:32:1: error[missing-argument] No argument provided for required parameter `value` of function `__eq__`
+ specialtypes_promotions.py:13:5: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `int | float`
+ specialtypes_type.py:44:1: error[type-a
+
+... (truncated 78 lines) ...
+```
+
+</details>
+
+
+
+
+---
+
+_@sharkdp reviewed on 2025-11-15 21:43_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/stubs/ellipsis.md`:65 on 2025-11-15 21:43_
+
+The target column changed for this diagnostic, so I removed those columns across the whole file.
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-15 21:44_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/utils.py:32:9: error[invalid-assignment] Object of type `str` is not assignable to `Path`
++ mypy_primer/utils.py:32:16: error[invalid-assignment] Object of type `str` is not assignable to `Path`
+
+attrs (https://github.com/python-attrs/attrs)
+- bench/test_benchmarks.py:151:5: error[invalid-assignment] Object of type `Literal["bar"]` is not assignable to `tuple[str]`
++ bench/test_benchmarks.py:151:21: error[invalid-assignment] Object of type `Literal["bar"]` is not assignable to `tuple[str]`
+- src/attr/_make.py:1608:5: error[invalid-assignment] Object of type `tuple[Attribute | Unknown, ...]` is not assignable to `list[Attribute | Unknown]`
++ src/attr/_make.py:1608:13: error[invalid-assignment] Object of type `tuple[Attribute | Unknown, ...]` is not assignable to `list[Attribute | Unknown]`
+- src/attr/exceptions.py:20:5: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `tuple[str]`
++ src/attr/exceptions.py:20:34: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `tuple[str]`
+- tests/test_annotations.py:644:9: error[invalid-assignment] Implicit shadowing of class `C`
++ tests/test_annotations.py:644:13: error[invalid-assignment] Implicit shadowing of class `C`
+- tests/test_make.py:620:9: error[invalid-assignment] Implicit shadowing of class `C`
++ tests/test_make.py:620:13: error[invalid-assignment] Implicit shadowing of class `C`
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:3430:13: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `Sequence[bytes | str | memoryview[int]] | AbstractSet[AnyKeyT@_zaggregate]`
++ aioredis/client.py:3430:34: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `Sequence[bytes | str | memoryview[int]] | AbstractSet[AnyKeyT@_zaggregate]`
+- aioredis/client.py:3430:24: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `ValuesView[int | float] | None`
++ aioredis/client.py:3430:34: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `ValuesView[int | float] | None`
+- aioredis/client.py:4114:9: error[invalid-assignment] Object of type `dict[Unknown, Any | None]` is not assignable to `dict[bytes | str | memoryview[int], (dict[str, str], /) -> Awaitable[None]]`
++ aioredis/client.py:4114:55: error[invalid-assignment] Object of type `dict[Unknown, Any | None]` is not assignable to `dict[bytes | str | memoryview[int], (dict[str, str], /) -> Awaitable[None]]`
+
+nionutils (https://github.com/nion-software/nionutils)
+- nion/utils/Stream.py:344:13: error[invalid-assignment] Object of type `(Observable & AbstractStream[object]) | AbstractStream[Observable]` is not assignable to `AbstractStream[Observable]`
++ nion/utils/Stream.py:344:29: error[invalid-assignment] Object of type `(Observable & AbstractStream[object]) | AbstractStream[Observable]` is not assignable to `AbstractStream[Observable]`
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- src/itsdangerous/serializer.py:95:5: error[invalid-assignment] Object of type `<module 'json'>` is not assignable to `_PDataSerializer[Any]`
++ src/itsdangerous/serializer.py:95:51: error[invalid-assignment] Object of type `<module 'json'>` is not assignable to `_PDataSerializer[Any]`
+- src/itsdangerous/url_safe.py:21:5: error[invalid-assignment] Object of type `<class '_CompactJSON'>` is not assignable to `_PDataSerializer[str]`
++ src/itsdangerous/url_safe.py:21:49: error[invalid-assignment] Object of type `<class '_CompactJSON'>` is not assignable to `_PDataSerializer[str]`
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/exceptions.py:43:13: error[invalid-assignment] Object of type `str | Undefined | None` is not assignable to `str | None`
++ src/jinja2/exceptions.py:43:23: error[invalid-assignment] Object of type `str | Undefined | None` is not assignable to `str | None`
+- src/jinja2/filters.py:169:9: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str, Any]]`
++ src/jinja2/filters.py:169:48: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str, Any]]`
+- src/jinja2/runtime.py:690:17: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
++ src/jinja2/runtime.py:690:38: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/middleware/shared_data.py:121:13: error[invalid-assignment] Object of type `ItemsView[object, object]` is not assignable to `Mapping[str, str | tuple[str, str]] | Iterable[tuple[str, str | tuple[str, str]]]`
++ src/werkzeug/middleware/shared_data.py:121:23: error[invalid-assignment] Object of type `ItemsView[object, object]` is not assignable to `Mapping[str, str | tuple[str, str]] | Iterable[tuple[str, str | tuple[str, str]]]`
+- src/werkzeug/test.py:815:13: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
++ src/werkzeug/test.py:815:32: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
+- src/werkzeug/wsgi.py:244:13: error[invalid-assignment] Object of type `list[Unknown | (() -> None) | (Iterable[() -> None] & (() -> object))]` is not assignable to `None | (() -> None) | Iterable[() -> None]`
++ src/werkzeug/wsgi.py:244:25: error[invalid-assignment] Object of type `list[Unknown | (() -> None) | (Iterable[() -> None] & (() -> object))]` is not assignable to `None | (() -> None) | Iterable[() -> None]`
+- tests/test_utils.py:73:9: error[invalid-assignment] Implicit shadowing of function `prop`
++ tests/test_utils.py:73:16: error[invalid-assignment] Implicit shadowing of function `prop`
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/network/session.py:357:9: error[invalid-assignment] Object of type `Retry` is not assignable to `int`
+- src/pip/_internal/network/session.py:372:12: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_internal/operations/install/wheel.py:227:9: error[invalid-assignment] Object of type `bytes` is not assignable to `str`
++ src/pip/_internal/operations/install/wheel.py:227:16: error[invalid-assignment] Object of type `bytes` is not assignable to `str`
+- src/pip/_vendor/distlib/compat.py:17:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
++ src/pip/_vendor/distlib/compat.py:17:11: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
+- src/pip/_vendor/distlib/util.py:20:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
++ src/pip/_vendor/distlib/util.py:20:11: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
+- src/pip/_vendor/distro/distro.py:56:5: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `typing.TypedDict`
++ src/pip/_vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `typing.TypedDict`
+- src/pip/_vendor/pkg_resources/__init__.py:2840:13: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str | None, Iterable[str]]]`
++ src/pip/_vendor/pkg_resources/__init__.py:2840:21: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str | None, Iterable[str]]]`
+- src/pip/_vendor/requests/help.py:19:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'pip._vendor.urllib3.contrib.pyopenssl'>`
++ src/pip/_vendor/requests/help.py:19:17: error[invalid-assignment] Object of type `None` is not assignable to `<module 'pip._vendor.urllib3.contrib.pyopenssl'>`
+- src/pip/_vendor/urllib3/connection.py:22:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
++ src/pip/_vendor/urllib3/connection.py:22:11: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
+- src/pip/_vendor/urllib3/contrib/socks.py:72:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
++ src/pip/_vendor/urllib3/contrib/socks.py:72:11: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ssl'>`
+- src/pip/_vendor/urllib3/util/ssl_.py:75:27: error[invalid-assignment] Object of type `Literal[2]` is not assignable to `Literal[_SSLMethod.PROTOCOL_SSLv23]`
++ src/pip/_vendor/urllib3/util/ssl_.py:75:42: error[invalid-assignment] Object of type `Literal[2]` is not assignable to `Literal[_SSLMethod.PROTOCOL_SSLv23]`
+- src/pip/_vendor/urllib3/util/ssl_.py:80:5: error[invalid-assignment] Object of type `Literal[_SSLMethod.PROTOCOL_SSLv23]` is not assignable to `Literal[_SSLMethod.PROTOCOL_TLS_CLIENT]`
++ src/pip/_vendor/urllib3/util/ssl_.py:80:27: error[invalid-assignment] Object of type `Literal[_SSLMethod.PROTOCOL_SSLv23]` is not assignable to `Literal[_SSLMethod.PROTOCOL_TLS_CLIENT]`
+- src/pip/_vendor/urllib3/util/ssl_.py:86:5: error[invalid-assignment] Object of type `tuple[Literal[16777216], Literal[33554432]]` is not assignable to `Literal[Options.OP_NO_SSLv2]`
++ src/pip/_vendor/urllib3/util/ssl_.py:86:32: error[invalid-assignment] Object of type `tuple[Literal[16777216], Literal[33554432]]` is not assignable to `Literal[Options.OP_NO_SSLv2]`
+- src/pip/_vendor/urllib3/util/ssl_.py:86:18: error[invalid-assignment] Object of type `tuple[Literal[16777216], Literal[33554432]]` is not assignable to `Literal[Options.OP_NO_SSLv3]`
++ src/pip/_vendor/urllib3/util/ssl_.py:86:32: error[invalid-assignment] Object of type `tuple[Literal[16777216], Literal[33554432]]` is not assignable to `Literal[Options.OP_NO_SSLv3]`
+- src/pip/_vendor/urllib3/util/ssl_.py:87:5: error[invalid-assignment] Object of type `Literal[131072]` is not assignable to `Literal[Options.OP_NO_COMPRESSION]`
++ src/pip/_vendor/urllib3/util/ssl_.py:87:25: error[invalid-assignment] Object of type `Literal[131072]` is not assignable to `Literal[Options.OP_NO_COMPRESSION]`
+- src/pip/_vendor/urllib3/util/ssl_.py:93:5: error[invalid-assignment] Object of type `Literal[16384]` is not assignable to `Literal[Options.OP_NO_TICKET]`
++ src/pip/_vendor/urllib3/util/ssl_.py:93:20: error[invalid-assignment] Object of type `Literal[16384]` is not assignable to `Literal[Options.OP_NO_TICKET]`
+- src/pip/_vendor/urllib3/util/ssl_match_hostname.py:16:5: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ipaddress'>`
++ src/pip/_vendor/urllib3/util/ssl_match_hostname.py:16:17: error[invalid-assignment] Object of type `None` is not assignable to `<module 'ipaddress'>`
+- src/pip/_vendor/urllib3/util/wait.py:133:9: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
++ src/pip/_vendor/urllib3/util/wait.py:133:27: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
+- src/pip/_vendor/urllib3/util/wait.py:135:9: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
++ src/pip/_vendor/urllib3/util/wait.py:135:27: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
+- src/pip/_vendor/urllib3/util/wait.py:137:9: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
++ src/pip/_vendor/urllib3/util/wait.py:137:27: error[invalid-assignment] Implicit shadowing of function `wait_for_socket`
+- Found 581 diagnostics
++ Found 579 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/bootstrap/core.py:225:17: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
++ lib/spack/spack/bootstrap/core.py:225:35: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
+- lib/spack/spack/bootstrap/core.py:233:18: error[invalid-assignment] Object of type `tuple[partial[Unknown], dict[Unknown, Unknown]]` is not assignable to `QueryInfo`
++ lib/spack/spack/bootstrap/core.py:233:25: error[invalid-assignment] Object of type `tuple[partial[Unknown], dict[Unknown, Unknown]]` is not assignable to `QueryInfo`
+- lib/spack/spack/bootstrap/core.py:246:18: error[invalid-assignment] Object of type `tuple[partial[Unknown], dict[Unknown, Unknown]]` is not assignable to `QueryInfo`
++ lib/spack/spack/bootstrap/core.py:246:25: error[invalid-assignment] Object of type `tuple[partial[Unknown], dict[Unknown, Unknown]]` is not assignable to `QueryInfo`
+- lib/spack/spack/bootstrap/core.py:267:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
++ lib/spack/spack/bootstrap/core.py:267:27: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
+- lib/spack/spack/bootstrap/core.py:307:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
++ lib/spack/spack/bootstrap/core.py:307:27: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `QueryInfo`
+- lib/spack/spack/config.py:627:9: error[invalid-assignment] Object of type `ConfigScope` is not assignable to `str`
++ lib/spack/spack/config.py:627:17: error[invalid-assignment] Object of type `ConfigScope` is not assignable to `str`
+- lib/spack/spack/config.py:673:9: error[invalid-assignment] Object of type `ConfigScope` is not assignable to `str | None`
++ lib/spack/spack/config.py:673:17: error[invalid-assignment] Object of type `ConfigScope` is not assignable to `str | None`
+- lib/spack/spack/detection/path.py:399:9: error[invalid-assignment] Object of type `list[Pattern[str] | Unknown]` is not assignable to `list[str]`
++ lib/spack/spack/detection/path.py:399:20: error[invalid-assignment] Object of type `list[Pattern[str] | Unknown]` is not assignable to `list[str]`
+- lib/spack/spack/directives.py:298:5: error[invalid-assignment] Object of type `list[Unknown | ~str]` is not assignable to `((...) -> None) | str | list[((...) -> None) | str] | None`
++ lib/spack/spack/directives.py:298:15: error[invalid-assignment] Object of type `list[Unknown | ~str]` is not assignable to `((...) -> None) | str | list[((...) -> None) | str] | None`
+- lib/spack/spack/externals.py:291:17: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str]` is not assignable to `DependencyDict`
++ lib/spack/spack/externals.py:291:41: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str]` is not assignable to `DependencyDict`
+- lib/spack/spack/installer.py:2205:9: error[invalid-assignment] Object of type `(set[str] & ~AlwaysFalsy) | list[str]` is not assignable to `set[str] | None`
++ lib/spack/spack/installer.py:2205:25: error[invalid-assignment] Object of type `(set[str] & ~AlwaysFalsy) | list[str]` is not assignable to `set[str] | None`
+- lib/spack/spack/util/package_hash.py:360:5: error[invalid-assignment] Object of type `str` is not assignable to `bytes | None`
++ lib/spack/spack/util/package_hash.py:360:14: error[invalid-assignment] Object of type `str` is not assignable to `bytes | None`
+- lib/spack/spack/util/pattern.py:92:21: error[invalid-assignment] Implicit shadowing of function `getter`
++ lib/spack/spack/util/pattern.py:92:30: error[invalid-assignment] Implicit shadowing of function `getter`
+- lib/spack/spack/vendor/distro/distro.py:56:5: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `typing.TypedDict`
++ lib/spack/spack/vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `typing.TypedDict`
+- lib/spack/spack/vendor/jinja2/exceptions.py:43:13: error[invalid-assignment] Object of type `str | Undefined | None` is not assignable to `str | None`
++ lib/spack/spack/vendor/jinja2/exceptions.py:43:23: error[invalid-assignment] Object of type `str | Undefined | None` is not assignable to `str | None`
+- lib/spack/spack/vendor/jinja2/filters.py:219:9: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str, Any]]`
++ lib/spack/spack/vendor/jinja2/filters.py:219:50: error[invalid-assignment] Object of type `dict_items[object, object]` is not assignable to `Iterable[tuple[str, Any]]`
+- lib/spack/spack/vendor/jinja2/runtime.py:734:17: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
++ lib/spack/spack/vendor/jinja2/runtime.py:734:38: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
+- lib/spack/spack/vendor/pyrsistent/_transformations.py:5:5: error[invalid-assignment] Implicit shadowing of function `signature`
++ lib/spack/spack/vendor/pyrsistent/_transformations.py:5:17: error[invalid-assignment] Implicit shadowing of function `signature`
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/contrib/signaling.py:44:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None | int]` is not assignable to `dict[str, int | str]`
++ src/aiortc/contrib/signaling.py:44:19: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None | int]` is not assignable to `dict[str, int | str]`
+
+black (https://github.com/psf/black)
+- src/black/cache.py:144:17: error[invalid-assignment] Object of type `dict[str | Unknown, tuple[@Todo] | Unknown]` is not assignable to `dict[str, tuple[int | float, int, str]]`
++ src/black/cache.py:144:59: error[invalid-assignment] Object of type `dict[str | Unknown, tuple[@Todo] | Unknown]` is not assignable to `dict[str, tuple[int | float, int, str]]`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/_py/path.py:626:17: error[invalid-assignment] Object of type `ModuleType` is not assignable to `<module 'hashlib'>`
++ src/_pytest/_py/path.py:626:23: error[invalid-assignment] Object of type `ModuleType` is not assignable to `<module 'hashlib'>`
+- src/_pytest/junitxml.py:372:9: error[invalid-assignment] Implicit shadowing of function `record_func`
++ src/_pytest/junitxml.py:372:23: error[invalid-assignment] Implicit shadowing of function `record_func`
+- src/_pytest/terminal.py:1583:13: error[invalid-assignment] Object of type `tuple[str, None, object]` is not assignable to `tuple[str, int | None, str]`
++ src/_pytest/terminal.py:1583:48: error[invalid-assignment] Object of type `tuple[str, None, object]` is not assignable to `tuple[str, int | None, str]`
+- testing/_py/test_local.py:930:13: error[invalid-assignment] Implicit shadowing of class `ExecutionFailed`
++ testing/_py/test_local.py:930:31: error[invalid-assignment] Implicit shadowing of class `ExecutionFailed`
+
+pylint (https://github.com/pycqa/pylint)
+- pylint/checkers/classes/class_checker.py:493:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/classes/class_checker.py:493:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:37:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:37:71: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:46:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:46:68: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:55:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:55:68: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:64:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:64:70: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:73:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:73:67: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/deprecated.py:82:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/deprecated.py:82:71: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]] | bool]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/exceptions.py:62:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/exceptions.py:62:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/format.py:54:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | str]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/format.py:54:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | str]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/imports.py:227:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]] | tuple[str, str, str]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/imports.py:227:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]] | tuple[str, str, str]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/stdlib.py:488:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions] | tuple[str, str, str, dict[Unknown | str, Unknown | tuple[int, int]]] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/stdlib.py:488:47: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions] | tuple[str, str, str, dict[Unknown | str, Unknown | tuple[int, int]]] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/typecheck.py:220:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]] | tuple[str, str, str]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/typecheck.py:220:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]] | tuple[str, str, str]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+- pylint/checkers/variables.py:351:1: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
++ pylint/checkers/variables.py:351:43: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | tuple[str, str, str] | tuple[str, str, str, dict[Unknown | str, Unknown | list[Unknown | tuple[str, str]]]]]` is not assignable to `dict[str, tuple[str, str, str] | tuple[str, str, str, ExtraMessageOptions]]`
+
+alerta (https://github.com/alerta/alerta)
+- alerta/database/backends/mongodb/base.py:864:9: error[invalid-assignment] Implicit shadowing of function `pipeline`
++ alerta/database/backends/mongodb/base.py:864:20: error[invalid-assignment] Implicit shadowing of function `pipeline`
+
+starlette (https://github.com/encode/starlette)
+- starlette/routing.py:67:5: error[invalid-assignment] Object of type `((Request, /) -> Awaitable[Response] | Response) | partial[Unknown]` is not assignable to `(Request, /) -> Awaitable[Response]`
++ starlette/routing.py:67:51: error[invalid-assignment] Object of type `((Request, /) -> Awaitable[Response] | Response) | partial[Unknown]` is not assignable to `(Request, /) -> Awaitable[Response]`
+- tests/middleware/test_errors.py:24:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/middleware/test_errors.py:24:11: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:35:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/middleware/test_errors.py:35:11: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:47:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/middleware/test_errors.py:47:11: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:61:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/middleware/test_errors.py:61:11: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:75:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/middleware/test_errors.py:75:11: error[invalid-assignment] Implicit shadowing of function `app`
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/local_run.py:822:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown]` is not assignable to `AWSSessionCreds`
++ paasta_tools/cli/cmds/local_run.py:822:47: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown]` is not assignable to `AWSSessionCreds`
+- paasta_tools/cli/cmds/local_run.py:876:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown]` is not assignable to `AWSSessionCreds`
++ paasta_tools/cli/cmds/local_run.py:876:35: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown]` is not assignable to `AWSSessionCreds`
+- paasta_tools/cli/cmds/spark_run.py:1210:9: error[invalid-assignment] Object of type `dict[str, str] | None` is not assignable to `dict[str, str]`
++ paasta_tools/cli/cmds/spark_run.py:1210:36: error[invalid-assignment] Object of type `dict[str, str] | None` is not assignable to `dict[str, str]`
+- paasta_tools/cli/utils.py:1124:9: error[invalid-assignment] Object of type `str | None` is not assignable to `str`
++ paasta_tools/cli/utils.py:1124:17: error[invalid-assignment] Object of type `str | None` is not assignable to `str`
+- paasta_tools/contrib/rightsizer_soaconfigs_update.py:282:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `KubernetesRecommendation | CassandraRecommendation`
++ paasta_tools/contrib/rightsizer_soaconfigs_update.py:282:73: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `KubernetesRecommendation | CassandraRecommendation`
+- paasta_tools/frameworks/native_service_config.py:176:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str] | ... omitted 3 union elements]` is not assignable to `TaskInfo`
++ paasta_tools/frameworks/native_service_config.py:176:26: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str] | ... omitted 3 union elements]` is not assignable to `TaskInfo`
+- paasta_tools/instance/hpa_metrics_parser.py:24:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `HPAMetricsDict`
++ paasta_tools/instance/hpa_metrics_parser.py:24:34: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `HPAMetricsDict`
+- paasta_tools/instance/hpa_metrics_parser.py:41:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `HPAMetricsDict`
++ paasta_tools/instance/hpa_metrics_parser.py:41:34: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `HPAMetricsDict`
+- paasta_tools/metrics/metastatus_lib.py:606:9: error[invalid-assignment] Object of type `Sequence[typing.TypeVar]` is not assignable to `Sequence[_GenericNodeT@group_slaves_by_key_func]`
++ paasta_tools/metrics/metastatus_lib.py:606:25: error[invalid-assignment] Object of type `Sequence[typing.TypeVar]` is not assignable to `Sequence[_GenericNodeT@group_slaves_by_key_func]`
+- paasta_tools/utils.py:595:9: error[invalid-assignment] Object of type `list[Unknown | dict[Unknown | str, Unknown | str]]` is not assignable to `list[DockerParameter]`
++ paasta_tools/utils.py:595:45: error[invalid-assignment] Object of type `list[Unknown | dict[Unknown | str, Unknown | str]]` is not assignable to `list[DockerParameter]`
+- paasta_tools/utils.py:2125:5: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `SystemPaastaConfigDict`
++ paasta_tools/utils.py:2125:38: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `SystemPaastaConfigDict`
+- paasta_tools/utils.py:3606:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None]` is not assignable to `BranchDictV2`
++ paasta_tools/utils.py:3606:37: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None]` is not assignable to `BranchDictV2`
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/execution/execute.py:216:5: error[invalid-assignment] Object of type `staticmethod[Unknown, Unknown]` is not assignable to `(Any, /) -> @Todo`
++ src/graphql/execution/execute.py:216:59: error[invalid-assignment] Object of type `staticmethod[Unknown, Unknown]` is not assignable to `(Any, /) -> @Todo`
+- tests/pyutils/test_boxed_awaitabe_or_value.py:29:9: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[Future[Unknown]]` is not assignable to `BoxedAwaitableOrValue[int]`
++ tests/pyutils/test_boxed_awaitabe_or_value.py:29:45: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[Future[Unknown]]` is not assignable to `BoxedAwaitableOrValue[int]`
+- tests/pyutils/test_boxed_awaitabe_or_value.py:36:9: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, int]]` is not assignable to `BoxedAwaitableOrValue[int]`
++ tests/pyutils/test_boxed_awaitabe_or_value.py:36:45: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, int]]` is not assignable to `BoxedAwaitableOrValue[int]`
+- tests/pyutils/test_boxed_awaitabe_or_value.py:41:9: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[Future[Unknown]]` is not assignable to `BoxedAwaitableOrValue[list[int]]`
++ tests/pyutils/test_boxed_awaitabe_or_value.py:41:51: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[Future[Unknown]]` is not assignable to `BoxedAwaitableOrValue[list[int]]`
+- tests/pyutils/test_boxed_awaitabe_or_value.py:56:9: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, int]]` is not assignable to `BoxedAwaitableOrValue[int]`
++ tests/pyutils/test_boxed_awaitabe_or_value.py:56:45: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, int]]` is not assignable to `BoxedAwaitableOrValue[int]`
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_core/engines/admission.py:449:5: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | str] | Unknown]` is not assignable to `Collection[MatchExpression]`
++ kopf/_core/engines/admission.py:449:42: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | str] | Unknown]` is not assignable to `Collection[MatchExpression]`
+- kopf/on.py:899:9: error[invalid-assignment] Object of type `frozenset[Unknown | str]` is not assignable to `Collection[Literal["CREATE", "UPDATE", "DELETE", "CONNECT"]] | None`
++ kopf/on.py:899:22: error[invalid-assignment] Object of type `frozenset[Unknown | str]` is not assignable to `Collection[Literal["CREATE", "UPDATE", "DELETE", "CONNECT"]] | None`
+
+scrapy (https://github.com/scrapy/scrapy)
+- scrapy/core/downloader/__init__.py:98:9: error[invalid-assignment] Object of type `object` is not assignable to `int | float`
++ scrapy/core/downloader/__init__.py:98:17: error[invalid-assignment] Object of type `object` is not assignable to `int | float`
+- scrapy/core/downloader/__init__.py:108:9: error[invalid-assignment] Object of type `object` is not assignable to `int`
++ scrapy/core/downloader/__init__.py:108:23: error[invalid-assignment] Object of type `object` is not assignable to `int`
+- scrapy/downloadermiddlewares/cookies.py:182:13: error[invalid-assignment] Object of type `tuple[dict[Unknown | str, Unknown], ...]` is not assignable to `Iterable[VerboseCookie]`
++ scrapy/downloadermiddlewares/cookies.py:182:23: error[invalid-assignment] Object of type `tuple[dict[Unknown | str, Unknown], ...]` is not assignable to `Iterable[VerboseCookie]`
+- scrapy/exporters.py:289:17: error[invalid-assignment] Object of type `ValuesView[object]` is not assignable to `Iterable[str]`
++ scrapy/exporters.py:289:26: error[invalid-assignment] Object of type `ValuesView[object]` is not assignable to `Iterable[str]`
+- scrapy/http/headers.py:37:9: error[invalid-assignment] Object of type `ItemsView[object, object] | (Iterable[tuple[AnyStr@update, Any]] & ~Top[Mapping[Unknown, object]])` is not assignable to `Mapping[AnyStr@update, Any] | Iterable[tuple[AnyStr@update, Any]]`
++ scrapy/http/headers.py:37:15: error[invalid-assignment] Object of type `ItemsView[object, object] | (Iterable[tuple[AnyStr@update, Any]] & ~Top[Mapping[Unknown, object]])` is not assignable to `Mapping[AnyStr@update, Any] | Iterable[tuple[AnyStr@update, Any]]`
+- scrapy/utils/datatypes.py:90:9: error[invalid-assignment] Object of type `ItemsView[object, object] | (Iterable[tuple[AnyStr@update, Any]] & ~Top[Mapping[Unknown, object]])` is not assignable to `Mapping[AnyStr@update, Any] | Iterable[tuple[AnyStr@update, Any]]`
++ scrapy/utils/datatypes.py:90:15: error[invalid-assignment] Object of type `ItemsView[object, object] | (Iterable[tuple[AnyStr@update, Any]] & ~Top[Mapping[Unknown, object]])` is not assignable to `Mapping[AnyStr@update, Any] | Iterable[tuple[AnyStr@update, Any]]`
+- scrapy/utils/decorators.py:40:9: error[invalid-assignment] Implicit shadowing of function `deco`
++ scrapy/utils/decorators.py:40:16: error[invalid-assignment] Implicit shadowing of function `deco`
+- tests/test_pipeline_files.py:368:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
++ tests/test_pipeline_files.py:368:28: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
+- tests/test_pipeline_files.py:369:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
++ tests/test_pipeline_files.py:369:35: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- tests/test_pipeline_files.py:371:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
++ tests/test_pipeline_files.py:371:35: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
+- tests/test_pipeline_files.py:372:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
++ tests/test_pipeline_files.py:372:42: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- tests/test_pipeline_images.py:332:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
++ tests/test_pipeline_images.py:332:29: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
+- tests/test_pipeline_images.py:333:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
++ tests/test_pipeline_images.py:333:36: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- tests/test_pipeline_images.py:335:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
++ tests/test_pipeline_images.py:335:36: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[str]`
+- tests/test_pipeline_images.py:336:5: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
++ tests/test_pipeline_images.py:336:43: error[invalid-assignment] Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/engine/test_event_handlers.py:553:5: error[invalid-assignment] Implicit shadowing of function `foo`
++ tests/ignite/engine/test_event_handlers.py:553:11: error[invalid-assignment] Implicit shadowing of function `foo`
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/model.py:812:9: error[invalid-assignment] Object of type `list[Unknown | None]` is not assignable to `list[int] | None`
++ sockeye/model.py:812:23: error[invalid-assignment] Object of type `list[Unknown | None]` is not assignable to `list[int] | None`
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/pack.py:2583:9: error[invalid-assignment] Object of type `object` is not assignable to `(bytes, /) -> int`
++ dulwich/pack.py:2583:20: error[invalid-assignment] Object of type `object` is not assignable to `(bytes, /) -> int`
+- dulwich/porcelain.py:1327:13: error[invalid-assignment] Object of type `list[Unknown | (str & ~AlwaysFalsy) | (bytes & ~AlwaysFalsy) | ... omitted 3 union elements]` is not assignable to `Sequence[str | bytes | PathLike[str]] | bytes | PathLike[str] | None`
++ dulwich/porcelain.py:1327:21: error[invalid-assignment] Object of type `list[Unknown | (str & ~AlwaysFalsy) | (bytes & ~AlwaysFalsy) | ... omitted 3 union elements]` is not assignable to `Sequence[str | bytes | PathLike[str]] | bytes | PathLike[str] | None`
+- dulwich/porcelain.py:2176:13: error[invalid-assignment] Object of type `bytes` is not assignable to `str | PathLike[str] | None`
++ dulwich/porcelain.py:2176:20: error[invalid-assignment] Object of type `bytes` is not assignable to `str | PathLike[str] | None`
+- dulwich/porcelain.py:2431:17: error[invalid-assignment] Object of type `tuple[int, bool]` is not assignable to `int | None`
++ dulwich/porcelain.py:2431:32: error[invalid-assignment] Object of type `tuple[int, bool]` is not assignable to `int | None`
+- dulwich/worktree.py:298:13: error[invalid-assignment] Object of type `list[Unknown | str | bytes | (Iterable[str | bytes | PathLike[str]] & PathLike[object]) | PathLike[str]]` is not assignable to `Iterable[str | bytes | PathLike[str]] | bytes | PathLike[str]`
++ dulwich/worktree.py:298:24: error[invalid-assignment] Object of type `list[Unknown | str | bytes | (Iterable[str | bytes | PathLike[str]] & PathLike[object]) | PathLike[str]]` is not assignable to `Iterable[str | bytes | PathLike[str]] | bytes | PathLike[str]`
+
+mkosi (https://github.com/systemd/mkosi)
+- mkosi/qemu.py:343:5: error[invalid-assignment] Object of type `list[Unknown | Path | None | str]` is not assignable to `list[Path | str]`
++ mkosi/qemu.py:343:33: error[invalid-assignment] Object of type `list[Unknown | Path | None | str]` is not assignable to `list[Path | str]`
+- mkosi/sysupdate.py:70:9: error[invalid-assignment] Object of type `list[Unknown | Path | None | str]` is not assignable to `list[Path | str]`
++ mkosi/sysupdate.py:70:33: error[invalid-assignment] Object of type `list[Unknown | Path | None | str]` is not assignable to `list[Path | str]`
+
+poetry (https://github.com/python-poetry/poetry)
+- src/poetry/utils/env/mock_env.py:34:13: error[invalid-assignment] Object of type `tuple[@Todo, Literal["final"], Literal[0]]` is not assignable to `tuple[int, int, int] | tuple[int, int, int, str, int]`
++ src/poetry/utils/env/mock_env.py:34:28: error[invalid-assignment] Object of type `tuple[@Todo, Literal["final"], Literal[0]]` is not assignable to `tuple[int, int, int] | tuple[int, int, int, str, int]`
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:903:1: error[invalid-assignment] Implicit shadowing of function `convert_yielded`
++ tornado/gen.py:903:19: error[invalid-assignment] Implicit shadowing of function `convert_yielded`
+- tornado/util.py:438:9: error[invalid-assignment] Implicit shadowing of function `websocket_mask`
++ tornado/util.py:438:27: error[invalid-assignment] Implicit shadowing of function `websocket_mask`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/auths.py:369:17: error[invalid-assignment] Object of type `CachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
++ src/schemathesis/auths.py:369:28: error[invalid-assignment] Object of type `CachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
+- src/schemathesis/auths.py:371:17: error[invalid-assignment] Object of type `KeyedCachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
++ src/schemathesis/auths.py:371:28: error[invalid-assignment] Object of type `KeyedCachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
+- src/schemathesis/auths.py:378:13: error[invalid-assignment] Object of type `SelectiveAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
++ src/schemathesis/auths.py:378:24: error[invalid-assignment] Object of type `SelectiveAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
+- src/schemathesis/core/deserialization.py:137:5: error[invalid-assignment] Object of type `type` is not assignable to `type[SafeLoader]`
++ src/schemathesis/core/deserialization.py:137:34: error[invalid-assignment] Object of type `type` is not assignable to `type[SafeLoader]`
+- src/schemathesis/pytest/lazy.py:272:17: error[invalid-assignment] Implicit shadowing of function `wrapped_test`
++ src/schemathesis/pytest/lazy.py:272:32: error[invalid-assignment] Implicit shadowing of function `wrapped_test`
+- src/schemathesis/specs/openapi/negative/mutations.py:145:13: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[@Todo]`
++ src/schemathesis/specs/openapi/negative/mutations.py:145:25: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[@Todo]`
+- src/schemathesis/specs/openapi/negative/mutations.py:152:13: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[@Todo]`
++ src/schemathesis/specs/openapi/negative/mutations.py:152:25: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[@Todo]`
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/backends/pandas/components.py:1054:17: error[invalid-assignment] Object of type `Hashable` is not assignable to `str | None`
++ pandera/backends/pandas/components.py:1054:36: error[invalid-assignment] Object of type `Hashable` is not assignable to `str | None`
+- tests/modin/test_logical_dtypes.py:126:5: error[invalid-assignment] Object of type `Series[Any]` is not assignable to `list[bool]`
++ tests/modin/test_logical_dtypes.py:126:21: error[invalid-assignment] Object of type `Series[Any]` is not assignable to `list[bool]`
+- tests/pandas/test_dtypes.py:170:1: error[invalid-assignment] Object of type `list[Unknown | tuple[dict[Unknown | <class 'int'> | <class 'Int'> | ... omitted 8 union elements, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | <class 'INT8'> | <class 'INT16'> | <class 'INT32'> | <class 'INT64'>, Unknown | str], list[Unknown | int | None]] | ... omitted 14 union elements]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
++ tests/pandas/test_dtypes.py:170:43: error[invalid-assignment] Object of type `list[Unknown | tuple[dict[Unknown | <class 'int'> | <class 'Int'> | ... omitted 8 union elements, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | <class 'INT8'> | <class 'INT16'> | <class 'INT32'> | <class 'INT64'>, Unknown | str], list[Unknown | int | None]] | ... omitted 14 union elements]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
+- tests/pandas/test_logical_dtypes.py:121:5: error[invalid-assignment] Object of type `Series[Any]` is not assignable to `list[bool]`
++ tests/pandas/test_logical_dtypes.py:121:21: error[invalid-assignment] Object of type `Series[Any]` is not assignable to `list[bool]`
+- tests/pandas/test_model.py:2172:9: error[invalid-assignment] Object of type `pandas.core.frame.DataFrame` is not assignable to `pandera.typing.pandas.DataFrame[PanderaDataFrameModel]`
++ tests/pandas/test_model.py:2172:58: error[invalid-assignment] Object of type `pandas.core.frame.DataFrame` is not assignable to `pandera.typing.pandas.DataFrame[PanderaDataFrameModel]`
+- tests/pandas/test_schemas.py:1789:5: error[invalid-assignment] Object of type `(type & ~<class 'int'>) | str` is not assignable to `type`
++ tests/pandas/test_schemas.py:1789:18: error[invalid-assignment] Object of type `(type & ~<class 'int'>) | str` is not assignable to `type`
+- tests/pandas/test_schemas.py:1792:5: error[invalid-assignment] Object of type `(type & ~<class 'int'>) | str` is not assignable to `type`
++ tests/pandas/test_schemas.py:1792:16: error[invalid-assignment] Object of type `(type & ~<class 'int'>) | str` is not assignable to `type`
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/connectionpool.py:479:13: error[invalid-assignment] Object of type `OSError | TimeoutError | BaseSSLError | CertificateError | SSLError` is not assignable to `Exception`
++ src/urllib3/connectionpool.py:479:32: error[invalid-assignment] Object of type `OSError | TimeoutError | BaseSSLError | CertificateError | SSLError` is not assignable to `Exception`
+- src/urllib3/connectionpool.py:824:13: error[invalid-assignment] Object of type `TimeoutError | HTTPException | OSError | ... omitted 5 union elements` is not assignable to `Exception`
++ src/urllib3/connectionpool.py:824:32: error[invalid-assignment] Object of type `TimeoutError | HTTPException | OSError | ... omitted 5 union elements` 
+
+... (truncated 1419 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @sharkdp on 2025-11-15 21:45_
+
+Oh, as the ecosystem report shows, we can't do this without touching the concise message. I really really want a separate API for concise diagnostic messages.
+
+---
+
+_Comment by @carljm on 2025-11-15 21:51_
+
+I don't disagree about an API to give us more control over the concise message -- but in general I find this PR to be an improvement to the concise output as well?
+
+---
+
+_Comment by @sharkdp on 2025-11-15 21:53_
+
+> I don't disagree about an API to give us more control over the concise message -- but in general I find this PR to be an improvement to the concise output as well?
+
+I don't like that the value type is now mentioned twice.
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-11-15 22:20_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-11-15 22:20_
+
+---
+
+_Converted to draft by @sharkdp on 2025-11-17 10:56_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-11-18 09:11_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-18 09:17_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-assignment` | 3 | 8 | 796 |
+| `unused-ignore-comment` | 0 | 4 | 0 |
+| **Total** | **3** | **12** | **796** |
+
+**[Full report with detailed diff](https://david-fix-1556.ecosystem-663.pages.dev/diff)** ([timing results](https://david-fix-1556.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-11-18 09:57_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-11-18 09:57_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-11-18 10:35_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-11-18 10:35_
+
+---
+
+_Comment by @sharkdp on 2025-11-18 10:50_
+
+<img width="452" height="151" alt="image" src="https://github.com/user-attachments/assets/b24b9a79-291a-4958-b774-86e90f9ec31d" />
+
+The math seems slightly off, because there is a weird edge case where the same diagnostic is (correctly) emitted twice for a single line in python-egglog, and both of them change their column. ecosystem-analyzer is not smart enough to understand this and emits a single change and a single removal, instead of two changes.
+
+---
+
+_@sharkdp reviewed on 2025-11-18 10:51_
+
+---
+
+_Review comment by @sharkdp on `.github/workflows/ty-ecosystem-analyzer.yaml`:70 on 2025-11-18 10:51_
+
+Includes two fixes to ecosystem-analyzer to make the report here easier to read (only columns change in most cases).
+
+---
+
+_@sharkdp reviewed on 2025-11-18 10:52_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/suppressions/ty_ignore.md`:213 on 2025-11-18 10:52_
+
+This does not work on `main`, and is the reason for the ecosystem changes here.
+
+---
+
+_@sharkdp reviewed on 2025-11-18 10:53_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/diagnostic.rs`:2146 on 2025-11-18 10:53_
+
+This sounds potentially costly?
+
+---
+
+_@sharkdp reviewed on 2025-11-18 10:55_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/diagnostic.rs`:2150 on 2025-11-18 10:55_
+
+Thank you for the hint, Micha
+
+---
+
+_Marked ready for review by @sharkdp on 2025-11-18 11:02_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/resources/mdtest/snapshots/invalid_assignment.m…_-_Invalid_assignment_d…_-_Multiple_targets_(e20ddfd7a91affb0).snap`:31 on 2025-11-18 12:19_
+
+This looks wrong but is tracked by https://github.com/astral-sh/ty/issues/1580
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:2146 on 2025-11-18 12:24_
+
+Hmm yeah, this sounds non-ideal but I think it would be fine merging as is but we should create a follow-up issue and rewrite (if possible) or have a second `parenthesized_ranges` function that takes `&Tokens` as arguments instead of the comment ranges and doesn't use `SimpleTokenizer` or `BackwardsTokenizer` at all.
+
+
+
+---
+
+_@MichaReiser approved on 2025-11-18 12:24_
+
+Thank you
+
+---
+
+_@MichaReiser reviewed on 2025-11-18 12:44_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:2146 on 2025-11-18 12:44_
+
+An uptimization that you could consider doing is to only take the tokens up to `value_node.start()`. 
+
+```rust
+let comment_ranges = CommentRanges::from(context.module().tokens().before(value_node.start());
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/snapshots/invalid_assignment.m…_-_Invalid_assignment_d…_-_Multiple_targets_(e20ddfd7a91affb0).snap`:31 on 2025-11-18 12:59_
+
+Yes, exactly. Forgot to add the reference here.
+
+---
+
+_@sharkdp reviewed on 2025-11-18 12:59_
+
+---
+
+_@sharkdp reviewed on 2025-11-18 13:24_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/diagnostic.rs`:2146 on 2025-11-18 13:24_
+
+Gave up trying to get this to work after a couple of minutes. I'll open as issue with what you wrote above.
+
+---
+
+_@MichaReiser reviewed on 2025-11-18 13:24_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:2146 on 2025-11-18 13:24_
+
+You can create it in the ruff repo and mark it as good first issue
+
+---
+
+_Merged by @sharkdp on 2025-11-18 13:31_
+
+---
+
+_Closed by @sharkdp on 2025-11-18 13:31_
+
+---
+
+_Branch deleted on 2025-11-18 13:31_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/snapshots/invalid_assignment.m…_-_Invalid_assignment_d…_-_Multiline_expression…_(f316976ffe72c6c7).snap`:42 on 2025-11-18 13:34_
+
+I would find this diagnostic more readable if the rendering did not include the parentheses:
+
+<img width="1524" height="494" alt="image" src="https://github.com/user-attachments/assets/06396012-3dca-45ca-8d18-b3fa3656975b" />
+
+I think the problem being fixed by including the parentheses in the diagnostic range is basically the same one that we previously discussed in https://github.com/astral-sh/ruff/pull/18050#discussion_r2085743755 (and elsewhere as well): the range you want highlighted in a diagnostic when it's rendered is often not the same range that you want a suppression comment to apply for.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:2153 on 2025-11-18 13:36_
+
+Hmm, why does it make sense to special-case this diagnostic in particular here? If we want enclosing parentheses to be part of the range for a suppression comment, wouldn't it make more sense to apply this change to our diagnostics infrastructure or suppression-comment infrastructure, so that all our diagnostics benefit from it
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:2184 on 2025-11-18 13:37_
+
+sometimes the original declaration of the variable might be some way off if the scope is a long function or class and the variable is declared at the beginning of the scope -- pointing to the original declaration as well as (or instead of) the assignment target might be more helpful here?
+
+---
+
+_@AlexWaygood reviewed on 2025-11-18 13:39_
+
+Nice! This is a big improvement.
+
+Don't feel the need to immediately followup on any of these comments; none of them are urgent
+
+---
+
+_@sharkdp reviewed on 2025-11-18 14:06_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/diagnostic.rs`:2153 on 2025-11-18 14:06_
+
+Before I made that change, we saw ecosystem regressions (`# ty: ignore` comments that didn't match anymore) for this specific diagnostic. That's why @MichaReiser  and I discussed that we could fix this using `parentheses_iterator`. It's not immediately clear to me if this trick could/should be blindly applied to all diagnostics. Micha also mentioned the possibility of adding a new function to `Diagnostic` that would allow us to add additional suppression ranges. I'm not sure if that would have helped for this specific case, though.
+
+---
+
+_@sharkdp reviewed on 2025-11-18 14:08_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/snapshots/invalid_assignment.m…_-_Invalid_assignment_d…_-_Multiline_expression…_(f316976ffe72c6c7).snap`:42 on 2025-11-18 14:08_
+
+I agree. See below:
+
+> Micha also mentioned the possibility of adding a new function to Diagnostic that would allow us to add additional suppression ranges.
+
+---

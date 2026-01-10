@@ -1,0 +1,250 @@
+```yaml
+number: 20474
+title: "[ty] Implement additional implicit re-exports idiom for `__init__.pyi`"
+type: pull_request
+state: closed
+author: Gankra
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: gankra/implort2
+created_at: 2025-09-18T19:20:17Z
+updated_at: 2025-11-12T14:00:24Z
+url: https://github.com/astral-sh/ruff/pull/20474
+synced_at: 2026-01-10T16:53:55Z
+```
+
+# [ty] Implement additional implicit re-exports idiom for `__init__.pyi`
+
+---
+
+_Pull request opened by @Gankra on 2025-09-18 19:20_
+
+Relative imports like `from . import submodule` in `__init.pyi__` are pervasively used to define `mypackage.submodule` and should be regarded as intentional (if not intentional, you can use `from mypackage import submodule` to opt out).
+
+A simple example of this in the wild that requires this is:
+
+```
+import msgspec
+reveal_type(msgspec.json)
+```
+
+Because msgspec's `__init.pyi__` (and `__init.py__`) contain `from . import json`
+
+The more subtle one is `from .submodule import whatever`. In this case pylance considers both `submodule` and `whatever` to be re-exported. Pylance [documents and implements this behaviour](https://microsoft.github.io/pyright/#/import-statements). However I don't (yet) have an in-the-wild example of this. As such I have not yet implemented it, pending more testing (really the worst part of this whole feature has just been making sure I'm actually testing the behaviour I mean to test because there's a dozen subtly different situations).
+
+Fixes https://github.com/astral-sh/ty/issues/133
+
+---
+
+_@Gankra reviewed on 2025-09-18 19:21_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/src/place.rs`:1329 on 2025-09-18 19:21_
+
+I plan to rename `is_reexported` everywhere to `reexport` or something
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-18 19:22_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_@Gankra reviewed on 2025-09-18 19:23_
+
+---
+
+_Review comment by @Gankra on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1577 on 2025-09-18 19:23_
+
+Possibly this should be `>= 1`? Need to test that situation more.
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-18 19:32_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+attrs (https://github.com/python-attrs/attrs)
+- tests/test_packaging.py:41:49: error[unresolved-attribute] Type `<module 'attr'>` has no attribute `VersionInfo`
+- tests/test_version_info.py:6:18: error[unresolved-import] Module `attr` has no member `VersionInfo`
++ tests/test_version_info.py:11:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 5
++ tests/test_version_info.py:19:22: error[unresolved-attribute] Type `<class 'VersionInfo'>` has no attribute `_from_version_string`
++ tests/test_version_info.py:27:16: error[unresolved-attribute] Type `<class 'VersionInfo'>` has no attribute `_from_version_string`
++ tests/test_version_info.py:63:45: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 5
+- Found 565 diagnostics
++ Found 567 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/async_task.py:78:24: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `scheduler`
+- asynq/async_task.py:115:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `scheduler`
+- asynq/contexts.py:59:19: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `scheduler`
++ asynq/contexts.py:59:19: error[unresolved-attribute] Type `<module 'asynq.scheduler'>` has no attribute `_state`
++ asynq/tests/test_debug.py:30:32: error[invalid-argument-type] Argument to function `dump_error` is incorrect: Expected `BaseException`, found `None`
++ asynq/tests/test_debug.py:40:46: error[invalid-argument-type] Argument to function `format_error` is incorrect: Expected `BaseException`, found `None`
+- asynq/tests/test_debug.py:29:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:30:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:40:21: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:43:5: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:46:25: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:49:17: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
++ asynq/tests/test_debug.py:199:60: error[invalid-argument-type] Argument to function `extract_tb` is incorrect: Expected `TracebackType`, found `None | @Todo(Support for `typing.TypeAlias`)`
++ asynq/tests/test_debug.py:249:53: error[invalid-argument-type] Argument to function `format_tb` is incorrect: Expected `TracebackType`, found `None | @Todo(Support for `typing.TypeAlias`)`
+- asynq/tests/test_debug.py:57:17: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:62:5: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:65:17: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:80:5: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:81:17: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:87:5: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:88:17: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:97:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:100:13: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:115:32: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:138:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:139:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:199:37: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:239:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:240:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:249:31: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:254:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_debug.py:259:26: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
++ asynq/tests/test_debug.py:306:38: error[invalid-argument-type] Argument to function `filter_traceback` is incorrect: Expected `list[str]`, found `list[LiteralString]`
++ asynq/tests/test_debug.py:323:38: error[invalid-argument-type] Argument to function `filter_traceback` is incorrect: Expected `list[str]`, found `list[LiteralString]`
++ asynq/tests/test_debug.py:355:38: error[invalid-argument-type] Argument to function `filter_traceback` is incorrect: Expected `list[str]`, found `list[LiteralString]`
++ asynq/tests/test_debug.py:383:38: error[invalid-argument-type] Argument to function `filter_traceback` is incorrect: Expected `list[str]`, found `list[LiteralString]`
+- asynq/tests/test_debug.py:306:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:309:19: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:323:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:355:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_debug.py:383:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `debug`
+- asynq/tests/test_mock.py:165:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:166:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:167:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:172:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:173:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:176:9: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:181:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:182:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:183:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:188:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:189:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:190:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:196:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:197:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:198:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:203:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:204:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:205:2: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:214:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:221:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:230:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:234:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:241:13: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:257:14: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:264:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- asynq/tests/test_mock.py:269:10: error[unresolved-attribute] Type `<module 'asynq'>` has no attribute `mock`
+- Found 184 diagnostics
++ Found 135 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/lib/dao/transaction_dao.py:77:16: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redis.py:364:48: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `client`
+- dragonchain/lib/database/redisearch.py:184:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:347:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:361:24: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:382:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:431:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:436:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch.py:449:16: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/lib/database/redisearch_utest.py:84:49: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/webserver/lib/blocks.py:52:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- dragonchain/webserver/lib/transactions.py:68:12: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- Found 302 diagnostics
++ Found 290 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/test/circlerefs_test.py:146:24: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `testing`
+- tornado/test/circlerefs_test.py:147:18: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `httpserver`
+- tornado/test/circlerefs_test.py:205:18: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `concurrent`
+- tornado/test/escape_test.py:217:22: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- tornado/test/import_test.py:66:23: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `ioloop`
+- tornado/test/import_test.py:66:52: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `util`
+- tornado/test/import_test.py:67:23: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `gen`
+- tornado/test/import_test.py:67:49: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `util`
+- tornado/test/import_test.py:68:23: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `util`
+- tornado/test/util_test.py:296:56: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- tornado/test/util_test.py:302:56: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- tornado/web.py:1380:25: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `locale`
+- tornado/web.py:1401:29: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `locale`
+- tornado/web.py:1404:43: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `locale`
+- tornado/web.py:1414:61: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `locale`
+- tornado/web.py:2242:24: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `netutil`
+- tornado/websocket.py:139:24: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `web`
+- tornado/websocket.py:222:22: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `web`
+- tornado/websocket.py:364:23: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- tornado/websocket.py:758:39: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `web`
+- tornado/websocket.py:1097:23: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- tornado/websocket.py:1098:19: error[unresolved-attribute] Type `<module 'tornado'>` has no attribute `escape`
+- Found 248 diagnostics
++ Found 226 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- arviz/plots/ecdfplot.py:314:30: error[no-matching-overload] No overload of bound method `cdf` matches arguments
+- Found 710 diagnostics
++ Found 709 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
++ com/win32com/test/pippo_server.py:44:37: error[unresolved-import] Module `setuptools.modified` has no member `newer`
++ setup.py:41:33: error[unresolved-import] Module `setuptools.modified` has no member `newer_group`
++ setup.py:64:21: error[unresolved-attribute] Type `<module 'setuptools._distutils.ccompiler'>` has no attribute `new_compiler`
+- Found 1983 diagnostics
++ Found 1986 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- scripts/setup/generate_secrets.py:177:31: error[unresolved-attribute] Type `<module 'redis'>` has no attribute `exceptions`
+- Found 2670 diagnostics
++ Found 2669 diagnostics
+
+CPython (peg_generator) (https://github.com/python/cpython)
+- Lib/test/support/__init__.py:1993:13: error[unresolved-attribute] Type `Compiler` has no attribute `initialize`
++ Lib/test/support/__init__.py:1988:16: error[unresolved-attribute] Type `<module 'setuptools._distutils.ccompiler'>` has no attribute `new_compiler`
++ Tools/peg_generator/pegen/build.py:97:49: error[unresolved-import] Module `setuptools._distutils.ccompiler` has no member `new_compiler`
++ Tools/peg_generator/pegen/build.py:99:37: error[unresolved-import] Module `setuptools.modified` has no member `newer_group`
+- Found 23866 diagnostics
++ Found 23868 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-09-18 20:01_
+
+---
+
+_Renamed from "Implement additional implicit re-exports idiom for `__init__.pyi`" to "[ty] Implement additional implicit re-exports idiom for `__init__.pyi`" by @AlexWaygood on 2025-09-18 20:01_
+
+---
+
+_Comment by @Gankra on 2025-11-12 14:00_
+
+Obsolete
+
+---
+
+_Closed by @Gankra on 2025-11-12 14:00_
+
+---
