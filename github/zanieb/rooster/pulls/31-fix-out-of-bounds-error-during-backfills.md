@@ -13,7 +13,7 @@ head: zb/out-of-bounds
 created_at: 2024-03-24T16:58:43Z
 updated_at: 2024-03-24T16:59:36Z
 url: https://github.com/zanieb/rooster/pull/31
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Fix out-of-bounds error during backfills

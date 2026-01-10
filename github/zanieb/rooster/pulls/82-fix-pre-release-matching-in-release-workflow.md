@@ -12,7 +12,7 @@ head: zb/prerelease
 created_at: 2025-09-11T13:15:11Z
 updated_at: 2025-09-11T13:15:23Z
 url: https://github.com/zanieb/rooster/pull/82
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Fix pre-release matching in release workflow

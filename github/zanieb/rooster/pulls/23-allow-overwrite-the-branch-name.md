@@ -12,7 +12,7 @@ head: add-branch-name-variable
 created_at: 2024-03-23T16:52:04Z
 updated_at: 2025-09-08T13:12:08Z
 url: https://github.com/zanieb/rooster/pull/23
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Allow overwrite the branch name

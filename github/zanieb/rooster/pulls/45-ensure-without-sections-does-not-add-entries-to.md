@@ -12,7 +12,7 @@ head: zb/exclude
 created_at: 2024-06-11T20:53:36Z
 updated_at: 2024-06-11T20:54:30Z
 url: https://github.com/zanieb/rooster/pull/45
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Ensure `--without-sections` does not add entries to the unknown section

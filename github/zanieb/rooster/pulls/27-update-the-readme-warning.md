@@ -13,7 +13,7 @@ head: zb/readme
 created_at: 2024-03-24T16:47:10Z
 updated_at: 2024-03-24T17:01:22Z
 url: https://github.com/zanieb/rooster/pull/27
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Update the README warning

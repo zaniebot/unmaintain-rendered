@@ -12,7 +12,7 @@ head: zb/syr
 created_at: 2025-05-03T21:53:04Z
 updated_at: 2025-05-03T21:53:52Z
 url: https://github.com/zanieb/rooster/pull/57
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Remove syrupy

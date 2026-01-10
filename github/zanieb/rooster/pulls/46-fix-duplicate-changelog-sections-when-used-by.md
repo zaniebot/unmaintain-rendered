@@ -12,7 +12,7 @@ head: zb/rooster-dup
 created_at: 2024-08-21T23:39:07Z
 updated_at: 2024-08-21T23:48:52Z
 url: https://github.com/zanieb/rooster/pull/46
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Fix duplicate changelog sections when used by multiple labels

@@ -12,7 +12,7 @@ head: zb/err
 created_at: 2025-01-24T03:34:27Z
 updated_at: 2025-01-27T16:06:56Z
 url: https://github.com/zanieb/rooster/pull/48
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # Error if we cannot find the previous version's commit

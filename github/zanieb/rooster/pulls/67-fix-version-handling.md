@@ -12,7 +12,7 @@ head: fix-version-handling
 created_at: 2025-05-13T10:07:45Z
 updated_at: 2025-05-13T12:44:23Z
 url: https://github.com/zanieb/rooster/pull/67
-synced_at: 2026-01-10T00:06:57Z
+synced_at: 2026-01-10T00:09:01Z
 ---
 
 # fix version handling
