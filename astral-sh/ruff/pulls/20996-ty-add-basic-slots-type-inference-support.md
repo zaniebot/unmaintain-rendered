@@ -1,0 +1,576 @@
+```yaml
+number: 20996
+title: "[ty] Add basic __slots__ type inference support"
+type: pull_request
+state: open
+author: BlairAllan
+labels:
+  - ty
+assignees: []
+base: main
+head: feature/slots-type-inference
+created_at: 2025-10-20T14:18:36Z
+updated_at: 2025-10-23T08:17:26Z
+url: https://github.com/astral-sh/ruff/pull/20996
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Add basic __slots__ type inference support
+
+---
+
+_Pull request opened by @BlairAllan on 2025-10-20 14:18_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests).
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+Implements initial `__slots__` type checking as requested in astral-sh/ty#1268. This is the first PR which has come from PR #20636 which ballooned in size trying to solve all of the issues requests. This PR solely focuses on the initial inference. (It's missing inheritance and `__dict__` functionality which can be added in a future PR.)
+
+The changes made ensures that when a class defines `__slots__` only the attributes declared in the `__slots__` are allowed.
+
+Before:
+
+```py
+class A:
+    __slots__ = ("foo", "bar")
+
+    def __init__(self, foo: int, bar: str):
+        self.foo = foo
+        self.bar = bar
+
+a = A(1, "zip")
+a.foo = 2
+a.bar = "woo"
+a.baz = 3  # no error (this is the bug this PR solves)
+```
+
+After:
+
+```py
+class A:
+    __slots__ = ("foo", "bar")
+
+    def __init__(self, foo: int, bar: str):
+        self.foo = foo
+        self.bar = bar
+
+a = A(1, "zip")
+a.foo = 2
+a.bar = "woo"
+a.baz = 3  # error: [unresolved-attribute]
+```
+
+### Key Changes
+
+- Added slots_members() to extract slot names from __slots__ declarations
+- Supports tuple form: `__slots__` = ("x", "y")
+- Supports string form: `__slots__` = "xyz" → {"x", "y", "z"}
+
+I couldn't use the existing `__slot__` support because it acknowledge that there was something defined in `__slots__` but it didn't extract the actual slot names required for attribute checking, which is why `slots_members()` was added. We then use `slots_members()` to enforce the attribute checking via `apply_slots_constraints()`.
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+Carried out several manual checks and created `slots.md` with cases for:
+
+- Basic slots
+- Accessing undefined attributes
+- Empty slots
+- Single-char strings
+- Multi-char strings
+
+### Note
+To clarify @sharkdp comments the core logic of the code was written by myself in this PR. Claude assisted specifically with the Place type refactor. All code was reviewed and tested by myself to ensure its worth the teams time to review - Thank you for all your hard work!
+
+
+---
+
+_Review requested from @carljm by @BlairAllan on 2025-10-20 14:18_
+
+---
+
+_Review requested from @AlexWaygood by @BlairAllan on 2025-10-20 14:18_
+
+---
+
+_Review requested from @sharkdp by @BlairAllan on 2025-10-20 14:18_
+
+---
+
+_Review requested from @dcreager by @BlairAllan on 2025-10-20 14:18_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-10-20 14:20_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-20 16:30_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:686:29: error[unresolved-attribute] Object of type `Attribute` has no attribute `name`
++ src/attr/_make.py:686:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Attribute`
+- tests/test_slots.py:339:23: error[unresolved-attribute] Class `HasXSlot` has no attribute `x`
++ tests/test_slots.py:339:23: error[unresolved-attribute] Attribute `x` can only be accessed on instances, not on the class object `<class 'HasXSlot'>` itself.
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/logging.py:827:13: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/logging.py:828:13: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/logging.py:841:9: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/logging.py:860:17: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/logging.py:861:17: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/python.py:1354:37: warning[possibly-missing-attribute] Attribute `stash` may be missing on object of type `Node | Unknown`
++ src/_pytest/reports.py:346:35: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ src/_pytest/skipping.py:247:5: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/skipping.py:254:15: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/skipping.py:256:9: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/skipping.py:275:15: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ src/_pytest/tmpdir.py:311:5: error[unresolved-attribute] Object of type `Item` has no attribute `stash`
++ testing/logging/test_fixture.py:311:22: warning[possibly-missing-attribute] Attribute `stash` may be missing on object of type `Unknown | Node`
++ testing/python/collect.py:573:21: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/python/fixtures.py:694:32: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/python/fixtures.py:1169:31: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/python/fixtures.py:1171:27: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/python/fixtures.py:1172:32: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/python/fixtures.py:1174:28: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/python/metafunc.py:1868:29: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/python/metafunc.py:1869:29: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/python/metafunc.py:1870:25: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/python/metafunc.py:1871:29: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/test_collection.py:940:9: warning[possibly-missing-attribute] Attribute `keywords` may be missing on object of type `(Unknown & ~None) | Node`
++ testing/test_collection.py:942:16: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/test_collection.py:943:20: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/test_collection.py:943:46: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ testing/test_collection.py:963:16: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/test_collection.py:964:16: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/test_collection.py:965:16: error[unresolved-attribute] Object of type `Function` has no attribute `keywords`
++ testing/test_mark.py:542:25: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
+- Found 483 diagnostics
++ Found 514 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ test/conftest.py:44:29: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
++ test/conftest.py:46:56: error[unresolved-attribute] Object of type `Item` has no attribute `keywords`
+- Found 368 diagnostics
++ Found 370 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- tests/other/test_smtlibv2.py:107:9: error[unresolved-attribute] Unresolved attribute `a` on type `X`.
++ tests/other/test_smtlibv2.py:107:9: warning[possibly-missing-attribute] Attribute `a` may be missing on object of type `X`
+- tests/other/test_smtlibv2.py:108:9: error[unresolved-attribute] Unresolved attribute `b` on type `X`.
++ tests/other/test_smtlibv2.py:108:9: warning[possibly-missing-attribute] Attribute `b` may be missing on object of type `X`
+- tests/other/test_smtlibv2.py:109:9: error[unresolved-attribute] Unresolved attribute `t` on type `X`.
++ tests/other/test_smtlibv2.py:109:9: warning[possibly-missing-attribute] Attribute `t` may be missing on object of type `X`
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/tests/test_declarations.py:555:9: error[unresolved-attribute] Unresolved attribute `__implemented__` on type `Foo`.
+- src/zope/interface/tests/test_declarations.py:583:9: error[unresolved-attribute] Unresolved attribute `__implemented__` on type `Foo`.
+- src/zope/interface/tests/test_declarations.py:598:9: error[unresolved-attribute] Unresolved attribute `__implemented__` on type `Foo`.
+- src/zope/interface/tests/test_declarations.py:608:9: error[unresolved-attribute] Unresolved attribute `__implemented__` on type `Foo`.
++ src/zope/interface/tests/test_declarations.py:555:9: warning[possibly-missing-attribute] Attribute `__implemented__` may be missing on object of type `Foo`
++ src/zope/interface/tests/test_declarations.py:583:9: warning[possibly-missing-attribute] Attribute `__implemented__` may be missing on object of type `Foo`
++ src/zope/interface/tests/test_declarations.py:598:9: warning[possibly-missing-attribute] Attribute `__implemented__` may be missing on object of type `Foo`
++ src/zope/interface/tests/test_declarations.py:608:9: warning[possibly-missing-attribute] Attribute `__implemented__` may be missing on object of type `Foo`
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/common/tests/test_bases.py:70:12: error[unresolved-attribute] Object of type `Foo` has no attribute `a`
+- ibis/common/tests/test_bases.py:71:12: error[unresolved-attribute] Object of type `Foo` has no attribute `b`
+- ibis/common/tests/test_bases.py:304:12: error[unresolved-attribute] Object of type `MyObj` has no attribute `a`
+- ibis/common/tests/test_bases.py:305:12: error[unresolved-attribute] Object of type `MyObj` has no attribute `b`
++ ibis/common/tests/test_bases.py:70:12: warning[possibly-missing-attribute] Attribute `a` may be missing on object of type `Foo`
++ ibis/common/tests/test_bases.py:71:12: warning[possibly-missing-attribute] Attribute `b` may be missing on object of type `Foo`
++ ibis/common/tests/test_bases.py:304:12: warning[possibly-missing-attribute] Attribute `a` may be missing on object of type `MyObj`
++ ibis/common/tests/test_bases.py:305:12: warning[possibly-missing-attribute] Attribute `b` may be missing on object of type `MyObj`
+- ibis/common/tests/test_bases.py:330:12: error[unresolved-attribute] Object of type `MyObj2` has no attribute `a`
+- ibis/common/tests/test_bases.py:331:12: error[unresolved-attribute] Object of type `MyObj2` has no attribute `b`
+- ibis/common/tests/test_bases.py:332:12: error[unresolved-attribute] Object of type `MyObj2` has no attribute `c`
++ ibis/common/tests/test_bases.py:330:12: warning[possibly-missing-attribute] Attribute `a` may be missing on object of type `MyObj2`
++ ibis/common/tests/test_bases.py:331:12: warning[possibly-missing-attribute] Attribute `b` may be missing on object of type `MyObj2`
++ ibis/common/tests/test_bases.py:332:12: warning[possibly-missing-attribute] Attribute `c` may be missing on object of type `MyObj2`
+- ibis/common/tests/test_bases.py:361:12: error[unresolved-attribute] Object of type `MyFrozenObj` has no attribute `a`
+- ibis/common/tests/test_bases.py:362:12: error[unresolved-attribute] Object of type `MyFrozenObj` has no attribute `b`
++ ibis/common/tests/test_bases.py:361:12: warning[possibly-missing-attribute] Attribute `a` may be missing on object of type `MyFrozenObj`
++ ibis/common/tests/test_bases.py:362:12: warning[possibly-missing-attribute] Attribute `b` may be missing on object of type `MyFrozenObj`
+- ibis/common/tests/test_grounds.py:307:12: error[unresolved-attribute] Object of type `Op` has no attribute `custom`
++ ibis/common/tests/test_grounds.py:307:12: warning[possibly-missing-attribute] Attribute `custom` may be missing on object of type `Op`
+
+jax (https://github.com/google/jax)
+- jax/_src/interpreters/ad.py:100:5: error[unresolved-attribute] Unresolved attribute `tag` on type `DynamicJaxprTrace`.
++ jax/_src/interpreters/ad.py:100:5: warning[possibly-missing-attribute] Attribute `tag` may be missing on object of type `DynamicJaxprTrace`
+- jax/_src/interpreters/ad.py:182:3: error[unresolved-attribute] Unresolved attribute `tag` on type `DynamicJaxprTrace`.
++ jax/_src/interpreters/ad.py:182:3: warning[possibly-missing-attribute] Attribute `tag` may be missing on object of type `DynamicJaxprTrace`
+- jax/_src/interpreters/ad.py:249:5: error[unresolved-attribute] Unresolved attribute `tag` on type `DynamicJaxprTrace`.
++ jax/_src/interpreters/ad.py:249:5: warning[possibly-missing-attribute] Attribute `tag` may be missing on object of type `DynamicJaxprTrace`
+
+sympy (https://github.com/sympy/sympy)
+- sympy/codegen/tests/test_ast.py:268:12: error[unresolved-attribute] Object of type `String` has no attribute `text`
+- sympy/codegen/tests/test_ast.py:278:12: error[unresolved-attribute] Object of type `Signifier` has no attribute `text`
+- sympy/codegen/tests/test_ast.py:278:23: error[unresolved-attribute] Object of type `String` has no attribute `text`
+- sympy/codegen/tests/test_ast.py:285:12: error[unresolved-attribute] Object of type `Comment` has no attribute `text`
++ sympy/codegen/tests/test_ast.py:268:12: warning[possibly-missing-attribute] Attribute `text` may be missing on object of type `String`
++ sympy/codegen/tests/test_ast.py:278:12: warning[possibly-missing-attribute] Attribute `text` may be missing on object of type `Signifier`
++ sympy/codegen/tests/test_ast.py:278:23: warning[possibly-missing-attribute] Attribute `text` may be missing on object of type `String`
++ sympy/codegen/tests/test_ast.py:285:12: warning[possibly-missing-attribute] Attribute `text` may be missing on object of type `Comment`
+- sympy/codegen/tests/test_ast.py:353:12: error[unresolved-attribute] Object of type `Variable` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:354:12: error[unresolved-attribute] Object of type `Variable` has no attribute `type`
++ sympy/codegen/tests/test_ast.py:353:12: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:354:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Variable`
+- sympy/codegen/tests/test_ast.py:360:12: error[unresolved-attribute] Object of type `Variable` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:361:12: error[unresolved-attribute] Object of type `Variable` has no attribute `type`
++ sympy/codegen/tests/test_ast.py:360:12: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:361:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Variable`
+- sympy/codegen/tests/test_ast.py:366:12: error[unresolved-attribute] Object of type `Variable` has no attribute `type`
+- sympy/codegen/tests/test_ast.py:369:12: error[unresolved-attribute] Object of type `Variable` has no attribute `type`
+- sympy/codegen/tests/test_ast.py:392:12: error[unresolved-attribute] Object of type `Pointer` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:393:12: error[unresolved-attribute] Object of type `Pointer` has no attribute `type`
++ sympy/codegen/tests/test_ast.py:366:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:369:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:392:12: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Pointer`
++ sympy/codegen/tests/test_ast.py:393:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Pointer`
+- sympy/codegen/tests/test_ast.py:400:12: error[unresolved-attribute] Object of type `Pointer` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:401:12: error[unresolved-attribute] Object of type `Pointer` has no attribute `type`
++ sympy/codegen/tests/test_ast.py:400:12: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Pointer`
++ sympy/codegen/tests/test_ast.py:401:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Pointer`
+- sympy/codegen/tests/test_ast.py:414:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:416:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
++ sympy/codegen/tests/test_ast.py:414:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:416:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
+- sympy/codegen/tests/test_ast.py:426:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:427:23: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:428:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:435:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:436:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:440:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
+- sympy/codegen/tests/test_ast.py:441:12: error[unresolved-attribute] Object of type `Declaration` has no attribute `variable`
++ sympy/codegen/tests/test_ast.py:426:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:427:23: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:428:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:435:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:436:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:440:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
++ sympy/codegen/tests/test_ast.py:441:12: warning[possibly-missing-attribute] Attribute `variable` may be missing on object of type `Declaration`
+- sympy/codegen/tests/test_ast.py:545:12: error[unresolved-attribute] Object of type `While` has no attribute `condition`
+- sympy/codegen/tests/test_ast.py:546:12: error[unresolved-attribute] Object of type `While` has no attribute `condition`
+- sympy/codegen/tests/test_ast.py:547:12: error[unresolved-attribute] Object of type `While` has no attribute `condition`
+- sympy/codegen/tests/test_ast.py:548:12: error[unresolved-attribute] Object of type `While` has no attribute `body`
+- sympy/codegen/tests/test_ast.py:562:12: error[unresolved-attribute] Object of type `Scope` has no attribute `body`
+- sympy/codegen/tests/test_ast.py:571:16: error[unresolved-attribute] Object of type `Print` has no attribute `format_string`
+- sympy/codegen/tests/test_ast.py:572:12: error[unresolved-attribute] Object of type `Print` has no attribute `print_args`
+- sympy/codegen/tests/test_ast.py:581:12: error[unresolved-attribute] Object of type `Print` has no attribute `format_string`
+- sympy/codegen/tests/test_ast.py:588:12: error[unresolved-attribute] Object of type `FunctionPrototype` has no attribute `return_type`
+- sympy/codegen/tests/test_ast.py:589:12: error[unresolved-attribute] Object of type `FunctionPrototype` has no attribute `name`
+- sympy/codegen/tests/test_ast.py:590:12: error[unresolved-attribute] Object of type `FunctionPrototype` has no attribute `parameters`
+- sympy/codegen/tests/test_ast.py:598:12: error[unresolved-attribute] Object of type `FunctionDefinition` has no attribute `return_type`
+- sympy/codegen/tests/test_ast.py:599:16: error[unresolved-attribute] Object of type `FunctionDefinition` has no attribute `name`
+- sympy/codegen/tests/test_ast.py:600:12: error[unresolved-attribute] Object of type `FunctionDefinition` has no attribute `parameters`
+- sympy/codegen/tests/test_ast.py:601:12: error[unresolved-attribute] Object of type `FunctionDefinition` has no attribute `body`
+- sympy/codegen/tests/test_ast.py:623:12: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:624:12: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:625:16: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:626:23: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:633:16: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:634:12: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:635:12: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:636:12: error[unresolved-attribute] Object of type `FunctionCall` has no attribute `function_args`
+- sympy/codegen/tests/test_ast.py:647:58: error[unresolved-attribute] Object of type `Variable` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:647:68: error[unresolved-attribute] Object of type `Variable` has no attribute `symbol`
+- sympy/codegen/tests/test_ast.py:648:13: error[unresolved-attribute] Object of type `FunctionDefinition` has no attribute `name`
++ sympy/codegen/tests/test_ast.py:545:12: warning[possibly-missing-attribute] Attribute `condition` may be missing on object of type `While`
++ sympy/codegen/tests/test_ast.py:546:12: warning[possibly-missing-attribute] Attribute `condition` may be missing on object of type `While`
++ sympy/codegen/tests/test_ast.py:547:12: warning[possibly-missing-attribute] Attribute `condition` may be missing on object of type `While`
++ sympy/codegen/tests/test_ast.py:548:12: warning[possibly-missing-attribute] Attribute `body` may be missing on object of type `While`
++ sympy/codegen/tests/test_ast.py:562:12: warning[possibly-missing-attribute] Attribute `body` may be missing on object of type `Scope`
++ sympy/codegen/tests/test_ast.py:571:16: warning[possibly-missing-attribute] Attribute `format_string` may be missing on object of type `Print`
++ sympy/codegen/tests/test_ast.py:572:12: warning[possibly-missing-attribute] Attribute `print_args` may be missing on object of type `Print`
++ sympy/codegen/tests/test_ast.py:581:12: warning[possibly-missing-attribute] Attribute `format_string` may be missing on object of type `Print`
++ sympy/codegen/tests/test_ast.py:588:12: warning[possibly-missing-attribute] Attribute `return_type` may be missing on object of type `FunctionPrototype`
++ sympy/codegen/tests/test_ast.py:589:12: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `FunctionPrototype`
++ sympy/codegen/tests/test_ast.py:590:12: warning[possibly-missing-attribute] Attribute `parameters` may be missing on object of type `FunctionPrototype`
++ sympy/codegen/tests/test_ast.py:598:12: warning[possibly-missing-attribute] Attribute `return_type` may be missing on object of type `FunctionDefinition`
++ sympy/codegen/tests/test_ast.py:599:16: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `FunctionDefinition`
++ sympy/codegen/tests/test_ast.py:600:12: warning[possibly-missing-attribute] Attribute `parameters` may be missing on object of type `FunctionDefinition`
++ sympy/codegen/tests/test_ast.py:601:12: warning[possibly-missing-attribute] Attribute `body` may be missing on object of type `FunctionDefinition`
++ sympy/codegen/tests/test_ast.py:623:12: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:624:12: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:625:16: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:626:23: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:633:16: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:634:12: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:635:12: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:636:12: warning[possibly-missing-attribute] Attribute `function_args` may be missing on object of type `FunctionCall`
++ sympy/codegen/tests/test_ast.py:647:58: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:647:68: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Variable`
++ sympy/codegen/tests/test_ast.py:648:13: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `FunctionDefinition`
+- sympy/codegen/tests/test_cnodes.py:38:12: error[unresolved-attribute] Object of type `Label` has no attribute `name`
+- sympy/codegen/tests/test_cnodes.py:39:12: error[unresolved-attribute] Object of type `Label` has no attribute `body`
+- sympy/codegen/tests/test_cnodes.py:45:12: error[unresolved-attribute] Object of type `Label` has no attribute `name`
+- sympy/codegen/tests/test_cnodes.py:46:12: error[unresolved-attribute] Object of type `Label` has no attribute `body`
+- sympy/codegen/tests/test_cnodes.py:90:16: error[unresolved-attribute] Object of type `struct` has no attribute `name`
+- sympy/codegen/tests/test_cnodes.py:91:16: error[unresolved-attribute] Object of type `struct` has no attribute `declarations`
+- sympy/codegen/tests/test_cnodes.py:92:56: error[unresolved-attribute] Object of type `struct` has no attribute `declarations`
+- sympy/codegen/tests/test_cnodes.py:105:16: error[unresolved-attribute] Object of type `union` has no attribute `name`
+- sympy/codegen/tests/test_cnodes.py:106:16: error[unresolved-attribute] Object of type `union` has no attribute `declarations`
+- sympy/codegen/tests/test_cnodes.py:107:56: error[unresolved-attribute] Object of type `union` has no attribute `declarations`
++ sympy/codegen/tests/test_cnodes.py:38:12: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Label`
++ sympy/codegen/tests/test_cnodes.py:39:12: warning[possibly-missing-attribute] Attribute `body` may be missing on object of type `Label`
++ sympy/codegen/tests/test_cnodes.py:45:12: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Label`
++ sympy/codegen/tests/test_cnodes.py:46:12: warning[possibly-missing-attribute] Attribute `body` may be missing on object of type `Label`
++ sympy/codegen/tests/test_cnodes.py:90:16: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `struct`
++ sympy/codegen/tests/test_cnodes.py:91:16: warning[possibly-missing-attribute] Attribute `declarations` may be missing on object of type `struct`
++ sympy/codegen/tests/test_cnodes.py:92:56: warning[possibly-missing-attribute] Attribute `declarations` may be missing on object of type `struct`
++ sympy/codegen/tests/test_cnodes.py:105:16: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `union`
++ sympy/codegen/tests/test_cnodes.py:106:16: warning[possibly-missing-attribute] Attribute `declarations` may be missing on object of type `union`
++ sympy/codegen/tests/test_cnodes.py:107:56: warning[possibly-missing-attribute] Attribute `declarations` may be missing on object of type `union`
+- sympy/geometry/tests/test_polygon.py:189:48: error[unresolved-attribute] Object of type `RegularPolygon` has no attribute `_n`
++ sympy/geometry/tests/test_polygon.py:189:48: warning[possibly-missing-attribute] Attribute `_n` may be missing on object of type `RegularPolygon`
+- sympy/physics/quantum/tests/test_cartesian.py:25:12: error[unresolved-attribute] Object of type `XOp` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_cartesian.py:62:12: error[unresolved-attribute] Object of type `PxOp` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_cartesian.py:84:12: error[unresolved-attribute] Object of type `YOp` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_cartesian.py:85:12: error[unresolved-attribute] Object of type `ZOp` has no attribute `hilbert_space`
++ sympy/physics/quantum/tests/test_cartesian.py:25:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `XOp`
++ sympy/physics/quantum/tests/test_cartesian.py:62:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `PxOp`
++ sympy/physics/quantum/tests/test_cartesian.py:84:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `YOp`
++ sympy/physics/quantum/tests/test_cartesian.py:85:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `ZOp`
+- sympy/physics/quantum/tests/test_operator.py:49:12: error[unresolved-attribute] Object of type `Operator` has no attribute `hilbert_space`
++ sympy/physics/quantum/tests/test_operator.py:49:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `Operator`
+- sympy/physics/quantum/tests/test_piab.py:17:12: error[unresolved-attribute] Object of type `PIABHamiltonian` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_piab.py:25:12: error[unresolved-attribute] Object of type `PIABKet` has no attribute `hilbert_space`
++ sympy/physics/quantum/tests/test_piab.py:17:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `PIABHamiltonian`
++ sympy/physics/quantum/tests/test_piab.py:25:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `PIABKet`
+- sympy/physics/quantum/tests/test_qexpr.py:17:12: error[unresolved-attribute] Object of type `QExpr` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_sho1d.py:66:12: error[unresolved-attribute] Object of type `RaisingOp` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_sho1d.py:128:12: error[unresolved-attribute] Object of type `SHOKet` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_state.py:59:12: error[unresolved-attribute] Object of type `Ket` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_state.py:68:12: error[unresolved-attribute] Object of type `Ket` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_state.py:93:12: error[unresolved-attribute] Object of type `Bra` has no attribute `hilbert_space`
+- sympy/physics/quantum/tests/test_state.py:102:12: error[unresolved-attribute] Object of type `Bra` has no attribute `hilbert_space`
++ sympy/physics/quantum/tests/test_qexpr.py:17:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `QExpr`
++ sympy/physics/quantum/tests/test_sho1d.py:66:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `RaisingOp`
++ sympy/physics/quantum/tests/test_sho1d.py:128:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `SHOKet`
++ sympy/physics/quantum/tests/test_state.py:59:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `Ket`
++ sympy/physics/quantum/tests/test_state.py:68:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `Ket`
++ sympy/physics/quantum/tests/test_state.py:93:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `Bra`
++ sympy/physics/quantum/tests/test_state.py:102:12: warning[possibly-missing-attribute] Attribute `hilbert_space` may be missing on object of type `Bra`
+- sympy/polys/domains/tests/test_domains.py:1372:26: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
++ sympy/polys/domains/tests/test_domains.py:1372:26: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
+- sympy/polys/numberfields/tests/test_numbers.py:21:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:22:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:23:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:24:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:34:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:35:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:36:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:37:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:44:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:45:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:46:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:47:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:52:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:53:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:54:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:56:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:57:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:59:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:60:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:63:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:67:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:68:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:69:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:70:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:80:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:81:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:82:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:83:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:90:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:91:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:92:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:93:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `minpoly`
+- sympy/polys/numberfields/tests/test_numbers.py:98:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:99:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `rep`
+- sympy/polys/numberfields/tests/test_numbers.py:157:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `alias`
+- sympy/polys/numberfields/tests/test_numbers.py:161:12: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
+- sympy/polys/numberfields/tests/test_numbers.py:161:22: error[unresolved-attribute] Object of type `AlgebraicNumber` has no attribute `root`
++ sympy/polys/numberfields/tests/test_numbers.py:21:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:22:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:23:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:24:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:34:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:35:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:36:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:37:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:44:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:45:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:46:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:47:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:52:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:53:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:54:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:56:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:57:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:59:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:60:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:63:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:67:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:68:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:69:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:70:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:80:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:81:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:82:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:83:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:90:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:91:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:92:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:93:12: warning[possibly-missing-attribute] Attribute `minpoly` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:98:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:99:12: warning[possibly-missing-attribute] Attribute `rep` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:157:12: warning[possibly-missing-attribute] Attribute `alias` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:161:12: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
++ sympy/polys/numberfields/tests/test_numbers.py:161:22: warning[possibly-missing-attribute] Attribute `root` may be missing on object of type `AlgebraicNumber`
+- sympy/polys/tests/test_pythonrational.py:7:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:8:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:9:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:10:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:11:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:12:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:14:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:15:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:16:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:17:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:18:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:19:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:21:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:22:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:23:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:24:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:25:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:26:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:28:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:29:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:30:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:31:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:33:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:34:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
+- sympy/polys/tests/test_pythonrational.py:35:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `numerator`
+- sympy/polys/tests/test_pythonrational.py:36:12: error[unresolved-attribute] Object of type `PythonMPQ` has no attribute `denominator`
++ sympy/polys/tests/test_pythonrational.py:7:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:8:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:9:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:10:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:11:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:12:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:14:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:15:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:16:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:17:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:18:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:19:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:21:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:22:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:23:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:24:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:25:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:26:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:28:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:29:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:30:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:31:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:33:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:34:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:35:12: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `PythonMPQ`
++ sympy/polys/tests/test_pythonrational.py:36:12: warning[possibly-missing-attribute] Attribute `denominator` may be missing on object of type `PythonMPQ`
+- sympy/polys/tests/test_rootoftools.py:289:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:293:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:395:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:396:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:399:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:400:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:406:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:407:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:410:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:411:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:420:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:421:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:427:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
+- sympy/polys/tests/test_rootoftools.py:428:12: error[unresolved-attribute] Object of type `ComplexRootOf` has no attribute `poly`
++ sympy/polys/tests/test_rootoftools.py:289:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:293:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:395:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:396:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:399:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:400:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:406:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:407:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:410:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:411:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:420:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:421:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:427:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
++ sympy/polys/tests/test_rootoftools.py:428:12: warning[possibly-missing-attribute] Attribute `poly` may be missing on object of type `ComplexRootOf`
+- sympy/printing/tests/test_c.py:749:22: error[unresolved-attribute] Object of type `Variable` has no attribute `symbol`
+- sympy/printing/tests/test_c.py:749:35: error[unresolved-attribute] Object of type `Variable` has no attribute `type`
++ sympy/printing/tests/test_c.py:749:22: warning[possibly-missing-attribute] Attribute `symbol` may be missing on object of type `Variable`
++ sympy/printing/tests/test_c.py:749:35: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Variable`
+- sympy/printing/tests/test_c.py:756:35: error[unresolved-attribute] Object of type `FloatType` has no attribute `nbits`
+- sympy/printing/tests/test_c.py:756:51: error[unresolved-attribute] Object of type `FloatType` has no attribute `nmant`
+- sympy/printing/tests/test_c.py:756:67: error[unresolved-attribute] Object of type `FloatType` has no attribute `nexp`
+- sympy/printing/tests/test_codeprinter.py:21:42: error[unresolved-attribute] Object of type `Dummy` has no attribute `dummy_index`
++ sympy/printing/tests/test_c.py:756:35: warning[possibly-missing-attribute] Attribute `nbits` may be missing on object of type `FloatType`
++ sympy/printing/tests/test_c.py:756:51: warning[possibly-missing-attribute] Attribute `nmant` may be missing on object of type `FloatType`
++ sympy/printing/tests/test_c.py:756:67: warning[possibly-missing-attribute] Attribute `nexp` may be missing on object of type `FloatType`
++ sympy/printing/tests/test_codeprinter.py:21:42: warning[possibly-missing-attribute] Attribute `dummy_index` may be missing on object of type `Dummy`
+- sympy/printing/tests/test_repr.py:203:46: error[unresolved-attribute] Object of type `Dummy` has no attribute `dummy_index`
+- sympy/printing/tests/test_repr.py:209:59: error[unresolved-attribute] Object of type `Dummy` has no attribute `dummy_index`
+- sympy/printing/tests/test_repr.py:210:59: error[unresolved-attribute] Object of type `Dummy` has no attribute `dummy_index`
++ sympy/printing/tests/test_repr.py:203:46: warning[possibly-missing-attribute] Attribute `dummy_index` may be missing on object of type `Dummy`
++ sympy/printing/tests/test_repr.py:209:59: warning[possibly-missing-attribute] Attribute `dummy_index` may be missing on object of type `Dummy`
++ sympy/printing/tests/test_repr.py:210:59: warning[possibly-missing-attribute] Attribute `dummy_index` may be missing on object of type `Dummy`
+- sympy/simplify/tests/test_epathtools.py:78:12: error[unresolved-attribute] Object of type `EPath` has no attribute `_path`
+- sympy/simplify/tests/test_epathtools.py:79:12: error[unresolved-attribute] Object of type `EPath` has no attribute `_path`
++ sympy/simplify/tests/test_epathtools.py:78:12: warning[possibly-missing-attribute] Attribute `_path` may be missing on object of type `EPath`
++ sympy/simplify/tests/test_epathtools.py:79:12: warning[possibly-missing-attribute] Attribute `_path` may be missing on object of type `EPath`
+- sympy/utilities/autowrap.py:1171:59: error[unresolved-attribute] Object of type `Dummy` has no attribute `dummy_index`
++ sympy/utilities/autowrap.py:1171:59: warning[possibly-missing-attribute] Attribute `dummy_index` may be missing on object of type `Dummy`
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2025-10-20 19:25_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-20 23:23_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Comment by @sharkdp on 2025-10-23 08:17_
+
+This should have a bigger ecosystem impact now that type-of-self has landed
+
+---

@@ -1,0 +1,702 @@
+```yaml
+number: 20783
+title: " [ty] Support `dataclass_transform` for base class models "
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/dataclass_transform-base-class-models
+created_at: 2025-10-09T10:25:37Z
+updated_at: 2025-10-17T12:04:32Z
+url: https://github.com/astral-sh/ruff/pull/20783
+synced_at: 2026-01-10T17:34:34Z
+```
+
+#  [ty] Support `dataclass_transform` for base class models 
+
+---
+
+_Pull request opened by @sharkdp on 2025-10-09 10:25_
+
+## Summary
+
+Support `dataclass_transform` when used on a (base) class.
+
+## Typing conformance
+
+* The changes in `dataclasses_transform_class.py` look good, just a few mistakes due to missing `alias` support.
+* I didn't look closely at the changes in `dataclasses_transform_converter.py` since we don't support `converter` yet. 
+
+## Ecosystem impact
+
+The impact looks huge, but it's concentrated on a single project (ibis). Their setup looks more or less like this:
+
+* the real `Annotatable`: https://github.com/ibis-project/ibis/blob/d7083c2c96e12bb7b2a1e643a52b4725f4303fcb/ibis/common/grounds.py#L100-L101
+* the real `DataType`: https://github.com/ibis-project/ibis/blob/d7083c2c96e12bb7b2a1e643a52b4725f4303fcb/ibis/expr/datatypes/core.py#L161-L179
+* the real `Array`: https://github.com/ibis-project/ibis/blob/d7083c2c96e12bb7b2a1e643a52b4725f4303fcb/ibis/expr/datatypes/core.py#L1003-L1006
+
+
+```py
+from typing import dataclass_transform
+
+@dataclass_transform()
+class Annotatable:
+    pass
+
+class DataType(Annotatable):
+    nullable: bool = True
+
+class Array[T](DataType):
+    value_type: T
+```
+
+They expect something like `Array([1, 2])` to work, but ty, pyright, mypy, and pyrefly would all expect there to be a first argument for the `nullable` field on `DataType`. I don't really understand on what grounds they expect the `nullable` field to be excluded from the signature, but this seems to be the main reason for the new diagnostics here. Not sure if related, but it looks like their typing setup is not really complete (https://github.com/ibis-project/ibis/issues/6844#issuecomment-1868274770, this thread also mentions `dataclass_transform`).
+
+## Test Plan
+
+Update pre-existing tests.
+
+---
+
+_Label `ty` added by @sharkdp on 2025-10-09 10:25_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-09 10:26_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-09 10:28_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-10-17 08:56:09.473745513 +0000
++++ new-output.txt	2025-10-17 08:56:12.856758756 +0000
+@@ -1,5 +1,5 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(d417)): execute: too many cycle iterations`
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17443)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(d817)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17c43)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -244,39 +244,46 @@
+ dataclasses_postinit.py:29:7: error[unresolved-attribute] Type `DC1` has no attribute `y`
+ dataclasses_slots.py:66:1: error[unresolved-attribute] Type `<class 'DC6'>` has no attribute `__slots__`
+ dataclasses_slots.py:69:1: error[unresolved-attribute] Type `DC6` has no attribute `__slots__`
+-dataclasses_transform_class.py:60:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:60:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:60:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:60:36: error[unknown-argument] Argument `other_name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:66:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[3]`
+-dataclasses_transform_class.py:66:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 2, got 3
+-dataclasses_transform_class.py:68:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:68:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:68:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
++dataclasses_transform_class.py:60:36: error[unknown-argument] Argument `other_name` does not match any known parameter
++dataclasses_transform_class.py:66:8: error[missing-argument] No arguments provided for required parameters `id`, `name`
++dataclasses_transform_class.py:66:18: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
+ dataclasses_transform_class.py:72:6: error[unsupported-operator] Operator `<` is not supported for types `Customer1` and `Customer1`
+-dataclasses_transform_class.py:74:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:74:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:74:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:76:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:76:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+ dataclasses_transform_class.py:78:6: error[unsupported-operator] Operator `<` is not supported for types `Customer2` and `Customer2`
+-dataclasses_transform_class.py:82:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[0]`
+-dataclasses_transform_class.py:82:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 2, got 3
+-dataclasses_transform_class.py:106:24: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:119:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:119:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
++dataclasses_transform_class.py:82:8: error[missing-argument] No argument provided for required parameter `id`
++dataclasses_transform_class.py:82:18: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
++dataclasses_transform_class.py:122:1: error[invalid-assignment] Property `id` defined in `Customer3` is read-only
+ dataclasses_transform_converter.py:25:6: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@model_field`
+ dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -> Unknown`, found `def bad_converter1() -> int`
+ dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -> Unknown`, found `def bad_converter2(*, x: int) -> int`
+-dataclasses_transform_converter.py:107:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:108:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:109:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:112:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
++dataclasses_transform_converter.py:107:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f1"]`
++dataclasses_transform_converter.py:107:14: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f2"]`
++dataclasses_transform_converter.py:107:20: error[invalid-argument-type] Argument is incorrect: Expected `ConverterClass`, found `Literal[b"f3"]`
++dataclasses_transform_converter.py:107:27: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `list[Unknown]`
++dataclasses_transform_converter.py:108:5: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f0"]`
++dataclasses_transform_converter.py:108:11: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f1"]`
++dataclasses_transform_converter.py:108:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f2"]`
++dataclasses_transform_converter.py:108:23: error[invalid-argument-type] Argument is incorrect: Expected `ConverterClass`, found `Literal[1]`
++dataclasses_transform_converter.py:108:26: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `list[Unknown]`
++dataclasses_transform_converter.py:109:5: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f0"]`
++dataclasses_transform_converter.py:109:11: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f1"]`
++dataclasses_transform_converter.py:109:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f2"]`
++dataclasses_transform_converter.py:109:23: error[invalid-argument-type] Argument is incorrect: Expected `ConverterClass`, found `Literal["f3"]`
++dataclasses_transform_converter.py:109:29: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `complex`
++dataclasses_transform_converter.py:112:11: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f0"]`
++dataclasses_transform_converter.py:112:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f1"]`
++dataclasses_transform_converter.py:112:23: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f2"]`
++dataclasses_transform_converter.py:112:29: error[invalid-argument-type] Argument is incorrect: Expected `ConverterClass`, found `Literal[b"f6"]`
++dataclasses_transform_converter.py:112:36: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `list[Unknown]`
+ dataclasses_transform_converter.py:114:1: error[invalid-assignment] Object of type `Literal["f1"]` is not assignable to attribute `field0` of type `int`
+ dataclasses_transform_converter.py:115:1: error[invalid-assignment] Object of type `Literal["f6"]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:116:1: error[invalid-assignment] Object of type `Literal[b"f6"]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:119:1: error[invalid-assignment] Object of type `Literal[1]` is not assignable to attribute `field3` of type `ConverterClass`
+-dataclasses_transform_converter.py:121:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 7
++dataclasses_transform_converter.py:121:11: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f0"]`
++dataclasses_transform_converter.py:121:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f1"]`
++dataclasses_transform_converter.py:121:23: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["f2"]`
++dataclasses_transform_converter.py:121:29: error[invalid-argument-type] Argument is incorrect: Expected `ConverterClass`, found `Literal["f6"]`
++dataclasses_transform_converter.py:121:35: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["1"]`
++dataclasses_transform_converter.py:121:40: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, str]`, found `tuple[tuple[Literal["a"], Literal["1"]], tuple[Literal["b"], Literal["2"]]]`
+ dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -> Unknown`, found `def converter_simple(s: str) -> int`
+ dataclasses_transform_field.py:49:43: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> @Todo(unsupported type[X] special form)`
+ dataclasses_transform_field.py:64:16: error[unknown-argument] Argument `id` does not match any known parameter
+@@ -910,5 +917,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 912 diagnostics
++Found 919 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-09 10:29_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+ibis (https://github.com/ibis-project/ibis)
++ ibis/backends/athena/__init__.py:287:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/athena/__init__.py:236:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/athena/__init__.py:287:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/athena/__init__.py:583:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/athena/__init__.py:583:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/bigquery/__init__.py:752:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/bigquery/datatypes.py:50:31: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/bigquery/datatypes.py:61:29: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/bigquery/datatypes.py:67:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/datatypes.py:50:21: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/datatypes.py:50:31: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[@Todo, @Todo]`
++ ibis/backends/bigquery/datatypes.py:61:20: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/bigquery/datatypes.py:61:29: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `DataType`
++ ibis/backends/bigquery/datatypes.py:67:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/bigquery/tests/system/udf/test_udf_execute.py:51:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/system/udf/test_udf_execute.py:50:48: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/system/udf/test_udf_execute.py:51:9: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | <class 'float'>]`
++ ibis/backends/bigquery/tests/unit/test_compiler.py:273:26: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, Literal["string"]]`
+- ibis/backends/bigquery/tests/unit/test_compiler.py:273:26: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/bigquery/tests/unit/test_compiler.py:275:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 4
++ ibis/backends/bigquery/tests/unit/test_compiler.py:615:33: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_compiler.py:616:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_compiler.py:616:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Struct`
+- ibis/backends/bigquery/tests/unit/test_compiler.py:617:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_compiler.py:616:17: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/unit/test_compiler.py:617:21: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, Array[Unknown]]`
++ ibis/backends/bigquery/tests/unit/test_compiler.py:618:43: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_compiler.py:619:29: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_compiler.py:619:29: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Struct`
+- ibis/backends/bigquery/tests/unit/test_compiler.py:620:33: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_compiler.py:619:29: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/unit/test_compiler.py:620:33: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, str]`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:25:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:25:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:25:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:26:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:26:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:26:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:28:23: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:28:13: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:28:23: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | String]`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:34:59: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:34:68: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:34:68: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:55:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:55:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:55:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Struct`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:55:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:55:22: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:55:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | String]`
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:86:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/test_datatypes.py:86:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/test_datatypes.py:86:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:56:10: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:56:19: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:56:19: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:58:22: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:58:31: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:58:31: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:10: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:19: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:19: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:19: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:28: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:60:28: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:20: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:10: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:20: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | Array[Unknown]]`
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:26: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:35: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/bigquery/tests/unit/udf/test_usage.py:62:35: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
+- ibis/backends/clickhouse/__init__.py:513:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/__init__.py:513:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
++ ibis/backends/clickhouse/tests/test_datatypes.py:45:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:45:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:45:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
+- ibis/backends/clickhouse/tests/test_datatypes.py:46:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:45:34: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:46:15: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:46:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/clickhouse/tests/test_datatypes.py:46:35: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:47:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:47:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:47:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
++ ibis/backends/clickhouse/tests/test_datatypes.py:47:36: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:23: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:50:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:32: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:50:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:41: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:51: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:50:68: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:73:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:73:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:73:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int8`
++ ibis/backends/clickhouse/tests/test_datatypes.py:73:47: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:78:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:78:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:78:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int16`
++ ibis/backends/clickhouse/tests/test_datatypes.py:78:48: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:83:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:83:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:83:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int32`
++ ibis/backends/clickhouse/tests/test_datatypes.py:83:48: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:88:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:88:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:88:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
++ ibis/backends/clickhouse/tests/test_datatypes.py:88:48: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:93:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:93:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:93:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `UInt8`
++ ibis/backends/clickhouse/tests/test_datatypes.py:93:48: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:98:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:98:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:98:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `UInt16`
++ ibis/backends/clickhouse/tests/test_datatypes.py:98:49: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:103:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:103:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:103:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `UInt32`
++ ibis/backends/clickhouse/tests/test_datatypes.py:103:49: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:108:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:108:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:108:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `UInt64`
++ ibis/backends/clickhouse/tests/test_datatypes.py:108:49: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:113:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:113:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:113:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float32`
++ ibis/backends/clickhouse/tests/test_datatypes.py:113:50: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:118:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:118:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:118:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
++ ibis/backends/clickhouse/tests/test_datatypes.py:118:50: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:123:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:123:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:123:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/clickhouse/tests/test_datatypes.py:123:49: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:128:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:128:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:128:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/clickhouse/tests/test_datatypes.py:128:60: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:133:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:133:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:133:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Date`
++ ibis/backends/clickhouse/tests/test_datatypes.py:133:47: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:138:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:138:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:138:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Timestamp`
++ ibis/backends/clickhouse/tests/test_datatypes.py:138:61: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:143:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:143:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:143:22: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Timestamp`
++ ibis/backends/clickhouse/tests/test_datatypes.py:143:61: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:146:33: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:146:42: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:146:42: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Null`
++ ibis/backends/clickhouse/tests/test_datatypes.py:146:51: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:147:30: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:147:39: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:147:39: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Null`
++ ibis/backends/clickhouse/tests/test_datatypes.py:147:48: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:150:13: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:151:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:151:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:151:17: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:151:26: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:151:26: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int8`
++ ibis/backends/clickhouse/tests/test_datatypes.py:151:51: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:152:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:158:13: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:159:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:159:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:159:17: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:160:21: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:160:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:160:21: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:160:30: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:160:30: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int8`
++ ibis/backends/clickhouse/tests/test_datatypes.py:160:55: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:161:21: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:163:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:169:13: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:170:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:170:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:170:17: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:171:21: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:171:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:171:21: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:172:25: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:172:25: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:172:25: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:172:34: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:172:34: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int8`
++ ibis/backends/clickhouse/tests/test_datatypes.py:172:59: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:173:25: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:175:21: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:177:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:183:13: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:183:20: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
++ ibis/backends/clickhouse/tests/test_datatypes.py:183:20: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
+- ibis/backends/clickhouse/tests/test_datatypes.py:190:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:183:42: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:189:13: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/clickhouse/tests/test_datatypes.py:190:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, String | Array[Unknown]]`
++ ibis/backends/clickhouse/tests/test_datatypes.py:192:23: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:192:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:192:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
+- ibis/backends/clickhouse/tests/test_datatypes.py:206:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:192:44: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:194:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:205:13: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/clickhouse/tests/test_datatypes.py:206:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, String | Array[Unknown]]`
++ ibis/backends/clickhouse/tests/test_datatypes.py:208:24: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:208:33: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:208:33: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
+- ibis/backends/clickhouse/tests/test_datatypes.py:222:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:208:45: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:210:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:221:13: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/clickhouse/tests/test_datatypes.py:222:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, String | Array[Unknown]]`
++ ibis/backends/clickhouse/tests/test_datatypes.py:224:24: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:224:33: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:224:33: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
+- ibis/backends/clickhouse/tests/test_datatypes.py:238:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:224:45: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:226:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:237:13: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/clickhouse/tests/test_datatypes.py:238:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, Array[Unknown]]`
++ ibis/backends/clickhouse/tests/test_datatypes.py:239:23: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:239:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:239:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/clickhouse/tests/test_datatypes.py:239:59: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:23: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
+- ibis/backends/clickhouse/tests/test_datatypes.py:240:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:32: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/clickhouse/tests/test_datatypes.py:240:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:41: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
+- ibis/backends/clickhouse/tests/test_datatypes.py:313:50: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:53: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:240:70: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:242:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/clickhouse/tests/test_datatypes.py:263:26: error[invalid-argument-type] Argument is incorrect: Expected `Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None`, found `int`
++ ibis/backends/clickhouse/tests/test_datatypes.py:313:41: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/clickhouse/tests/test_datatypes.py:313:50: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["float"]`
+- ibis/backends/databricks/__init__.py:48:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/__init__.py:63:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/__init__.py:82:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/databricks/__init__.py:47:16: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/databricks/__init__.py:48:13: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `DataType`
++ ibis/backends/databricks/__init__.py:51:13: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/databricks/__init__.py:62:16: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/databricks/__init__.py:63:13: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[@Todo, @Todo]`
++ ibis/backends/databricks/__init__.py:69:13: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
++ ibis/backends/databricks/__init__.py:82:9: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/databricks/__init__.py:266:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/__init__.py:608:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/databricks/__init__.py:608:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/databricks/tests/test_datatypes.py:19:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/tests/test_datatypes.py:26:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/tests/test_datatypes.py:64:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/databricks/tests/test_datatypes.py:67:39: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/databricks/tests/test_datatypes.py:19:9: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown | str, Unknown | str | Struct]`
++ ibis/backends/databricks/tests/test_datatypes.py:25:27: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/databricks/tests/test_datatypes.py:26:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | str]`
++ ibis/backends/databricks/tests/test_datatypes.py:63:30: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/databricks/tests/test_datatypes.py:64:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | str | Struct]`
++ ibis/backends/databricks/tests/test_datatypes.py:67:29: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/databricks/tests/test_datatypes.py:67:39: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | str]`
+- ibis/backends/datafusion/__init__.py:542:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/datafusion/__init__.py:542:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/druid/__init__.py:143:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/druid/__init__.py:143:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
++ ibis/backends/duckdb/__init__.py:329:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/duckdb/__init__.py:280:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/duckdb/__init__.py:329:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/duckdb/__init__.py:1714:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/__init__.py:1714:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/duckdb/tests/test_datatypes.py:25:38: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:25:26: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/duckdb/tests/test_datatypes.py:25:38: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["us"]`
++ ibis/backends/duckdb/tests/test_datatypes.py:39:27: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/duckdb/tests/test_datatypes.py:39:36: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:39:36: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int32`
++ ibis/backends/duckdb/tests/test_datatypes.py:40:28: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/duckdb/tests/test_datatypes.py:40:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:40:37: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int32`
+- ibis/backends/duckdb/tests/test_datatypes.py:41:45: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
+- ibis/backends/duckdb/tests/test_datatypes.py:45:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/duckdb/tests/test_datatypes.py:48:36: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/duckdb/tests/test_datatypes.py:48:43: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
+- ibis/backends/duckdb/tests/test_datatypes.py:48:63: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/duckdb/tests/test_datatypes.py:52:38: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:41:38: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/duckdb/tests/test_datatypes.py:41:45: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/duckdb/tests/test_datatypes.py:44:17: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/duckdb/tests/test_datatypes.py:45:21: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[str, Int32 | String | Array[Unknown]]`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:27: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:36: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Map[Unknown, Unknown]`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:36: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:43: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:54: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/duckdb/tests/test_datatypes.py:48:63: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
++ ibis/backends/duckdb/tests/test_datatypes.py:52:29: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/duckdb/tests/test_datatypes.py:52:38: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Array[Unknown]`
++ ibis/backends/duckdb/tests/test_datatypes.py:52:38: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/duckdb/tests/test_datatypes.py:52:47: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:52:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int32`
+- ibis/backends/duckdb/tests/test_datatypes.py:86:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/duckdb/tests/test_datatypes.py:85:78: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/duckdb/tests/test_datatypes.py:86:9: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[Unknown | str, Unknown | Int32]`
+- ibis/backends/exasol/__init__.py:274:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/exasol/__init__.py:274:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/exasol/__init__.py:438:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/__init__.py:285:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/datatypes.py:75:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/flink/datatypes.py:74:20: error[missing-argument] No argument provided for required parameter `fields`
++ ibis/backends/flink/datatypes.py:75:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `dict[@Todo, @Todo]`
++ ibis/backends/flink/datatypes.py:76:17: error[parameter-already-assigned] Multiple values provided for parameter `nullable`
+- ibis/backends/flink/ddl.py:128:42: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/ddl.py:136:38: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/flink/ddl.py:128:42: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
++ ibis/backends/flink/ddl.py:136:38: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/flink/tests/test_ddl.py:262:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/tests/test_ddl.py:456:30: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/tests/test_ddl.py:484:34: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/flink/tests/test_ddl.py:486:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/flink/tests/test_ddl.py:262:9: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown | str, Unknown]`
++ ibis/backends/flink/tests/test_ddl.py:456:30: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown | str, Unknown | String | Int64 | Float64]`
++ ibis/backends/flink/tests/test_ddl.py:484:34: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown | str, Unknown | String | Int64]`
++ ibis/backends/flink/tests/test_ddl.py:486:24: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown | str, Unknown | String | Int64 | Float64]`
+- ibis/backends/impala/__init__.py:1200:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/impala/__init__.py:1200:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
+- ibis/backends/impala/ddl.py:141:42: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/impala/ddl.py:149:38: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/impala/ddl.py:141:42: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
++ ibis/backends/impala/ddl.py:149:38: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/mssql/__init__.py:316:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/mssql/__init__.py:381:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/mssql/__init__.py:316:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
++ ibis/backends/mssql/__init__.py:381:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
+- ibis/backends/mssql/__init__.py:737:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/mysql/__init__.py:207:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/mysql/__init__.py:207:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
+- ibis/backends/mysql/__init__.py:231:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/mysql/__init__.py:231:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/mysql/__init__.py:451:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/mysql/datatypes.py:60:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/mysql/datatypes.py:60:15: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/mysql/datatypes.py:60:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
+- ibis/backends/mysql/tests/test_client.py:43:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/mysql/tests/test_client.py:58:47: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/mysql/tests/test_client.py:43:37: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["UTC"]`
++ ibis/backends/mysql/tests/test_client.py:58:38: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/mysql/tests/test_client.py:58:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/mysql/tests/test_client.py:69:22: error[invalid-argument-type] Argument is incorrect: Expected `Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] | None`, found `(int & ~AlwaysFalsy) | None`
+- ibis/backends/oracle/__init__.py:377:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/oracle/__init__.py:377:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
++ ibis/backends/oracle/__init__.py:599:27: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[Unknown, Unknown]`
+- ibis/backends/oracle/__init__.py:475:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/oracle/__init__.py:599:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/oracle/tests/test_datatypes.py:29:45: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/oracle/tests/test_datatypes.py:53:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/oracle/tests/test_datatypes.py:29:45: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[str, str]`
++ ibis/backends/oracle/tests/test_datatypes.py:53:9: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[str, str]`
+- ibis/backends/polars/__init__.py:104:34: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 4
++ ibis/backends/polars/compiler.py:866:34: error[invalid-argument-type] Argument is incorrect: Expected `Value[Unknown, Any]`, found `None`
++ ibis/backends/polars/compiler.py:867:34: error[invalid-argument-type] Argument is incorrect: Expected `Value[Unknown, Any]`, found `None`
+- ibis/backends/polars/compiler.py:859:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
+- ibis/backends/polars/compiler.py:863:22: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
+- ibis/backends/polars/compiler.py:866:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 4
+- ibis/backends/polars/compiler.py:867:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 4
+- ibis/backends/polars/rewrites.py:33:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/polars/rewrites.py:33:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/postgres/__init__.py:497:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/__init__.py:497:13: error[invalid-argument-type] Argument is incorrect: Expected `FrozenOrderedDict[str, DataType]`, found `dict[@Todo, @Todo]`
+- ibis/backends/postgres/__init__.py:671:13: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:107:40: error[invalid-argument-type] Argument is incorrect: Expected `IntervalUnit`, found `Literal["m"]`
+- ibis/backends/postgres/tests/test_client.py:115:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:115:20: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:115:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["D"]`
+- ibis/backends/postgres/tests/test_client.py:116:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:116:20: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:116:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["h"]`
+- ibis/backends/postgres/tests/test_client.py:117:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:117:20: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:117:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["m"]`
+- ibis/backends/postgres/tests/test_client.py:118:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:118:20: error[missing-argument] No argument provided for required parameter `unit`
+- ibis/backends/postgres/tests/test_client.py:131:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/postgres/tests/test_client.py:132:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/postgres/tests/test_client.py:133:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/postgres/tests/test_client.py:187:55: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/postgres/tests/test_client.py:188:38: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/postgres/tests/test_client.py:202:68: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_client.py:118:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["s"]`
++ ibis/backends/postgres/tests/test_client.py:131:29: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:131:41: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["Y"]`
++ ibis/backends/postgres/tests/test_client.py:132:29: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:132:41: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["Y"]`
++ ibis/backends/postgres/tests/test_client.py:133:29: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:133:41: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["M"]`
++ ibis/backends/postgres/tests/test_client.py:187:55: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["UTC"]`
++ ibis/backends/postgres/tests/test_client.py:188:26: error[missing-argument] No argument provided for required parameter `unit`
++ ibis/backends/postgres/tests/test_client.py:188:38: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal["s"]`
++ ibis/backends/postgres/tests/test_client.py:202:59: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/postgres/tests/test_functions.py:886:51: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:886:42: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/postgres/tests/test_functions.py:1087:25: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:1225:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/postgres/tests/test_functions.py:1225:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:1225:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
+- ibis/backends/postgres/tests/test_functions.py:1226:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:1226:15: error[missing-argument] No argument provided for required parameter `value_type`
++ ibis/backends/postgres/tests/test_functions.py:1226:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `String`
++ ibis/backends/postgres/tests/test_functions.py:1227:15: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/postgres/tests/test_functions.py:1227:24: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:1227:24: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Float64`
++ ibis/backends/postgres/tests/test_functions.py:1230:23: error[missing-argument] No argument provided for required parameter `value_type`
+- ibis/backends/postgres/tests/test_functions.py:1230:32: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ ibis/backends/postgres/tests/test_functions.py:1230:32: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Int64`
+- ibis/backends/pyspark/__init__.py:244:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/pyspark/__init__.py:618:27: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/pyspark/datatypes.py:54:29: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/pyspark/datatypes.py:57:17: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 3
+- ibis/backends/pyspark/datatypes.py:64:30: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- ibis/backends/pyspark...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-09 10:31_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `too-many-positional-arguments` | 1 | 1,199 | 84 |
+| `invalid-argument-type` | 901 | 0 | 0 |
+| `missing-argument` | 514 | 1 | 0 |
+| `parameter-already-assigned` | 99 | 0 | 0 |
+| `unknown-argument` | 44 | 0 | 0 |
+| **Total** | **1,559** | **1,200** | **84** |
+
+**[Full report with detailed diff](https://david-dataclass-transform-ba.ecosystem-663.pages.dev/diff)** ([timing results](https://david-dataclass-transform-ba.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Comment by @sharkdp on 2025-10-09 10:33_
+
+Looks like we should solve https://github.com/astral-sh/ty/issues/1068 first
+
+---
+
+_Renamed from " [ty] Support dataclass_transform for base class models " to " [ty] Support `dataclass_transform` for base class models " by @sharkdp on 2025-10-09 10:33_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-10-15 14:58_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-15 14:58_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-10-17 08:54_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-17 08:54_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/dataclasses/dataclass_transform.md`:436 on 2025-10-17 08:56_
+
+This is tracked under *"Support overwriting of \*_default parameters …"* in https://github.com/astral-sh/ty/issues/1327
+
+---
+
+_@sharkdp reviewed on 2025-10-17 08:56_
+
+---
+
+_Marked ready for review by @sharkdp on 2025-10-17 09:36_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-10-17 09:36_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-10-17 09:36_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-10-17 09:36_
+
+---
+
+_@AlexWaygood approved on 2025-10-17 11:48_
+
+---
+
+_Merged by @sharkdp on 2025-10-17 12:04_
+
+---
+
+_Closed by @sharkdp on 2025-10-17 12:04_
+
+---
+
+_Branch deleted on 2025-10-17 12:04_
+
+---

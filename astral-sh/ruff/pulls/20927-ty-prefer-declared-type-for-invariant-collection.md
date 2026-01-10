@@ -1,0 +1,602 @@
+```yaml
+number: 20927
+title: "[ty] Prefer declared type for invariant collection literals"
+type: pull_request
+state: merged
+author: ibraheemdev
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: ibraheem/declared-container-type
+created_at: 2025-10-16T18:39:22Z
+updated_at: 2025-10-16T20:11:30Z
+url: https://github.com/astral-sh/ruff/pull/20927
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Prefer declared type for invariant collection literals
+
+---
+
+_Pull request opened by @ibraheemdev on 2025-10-16 18:39_
+
+## Summary
+
+Prefer the declared type for collection literals, e.g.,
+```py
+x: list[Any] = [1, "2", (3,)]
+reveal_type(x)  # list[Any]
+```
+
+This solves a large part of https://github.com/astral-sh/ty/issues/136 for invariant generics, where respecting the declared type is a lot more important. It also means that annotated dict literals with `dict[_, Any]` is a way out of https://github.com/astral-sh/ty/issues/1248.
+
+---
+
+_Label `ty` added by @ibraheemdev on 2025-10-16 18:39_
+
+---
+
+_Review requested from @carljm by @ibraheemdev on 2025-10-16 18:39_
+
+---
+
+_Review requested from @AlexWaygood by @ibraheemdev on 2025-10-16 18:39_
+
+---
+
+_Review requested from @sharkdp by @ibraheemdev on 2025-10-16 18:39_
+
+---
+
+_Review requested from @dcreager by @ibraheemdev on 2025-10-16 18:39_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 18:42_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Label `ecosystem-analyzer` added by @ibraheemdev on 2025-10-16 18:43_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 18:43_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `str | None`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `int | None`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_mypy` is incorrect: Expected `bool`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_pyright` is incorrect: Expected `str | None`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `str`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_ty` is incorrect: Expected `str | None`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `str`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `str | None`, found `Any | str | None | int | Path`
+- mypy_primer/main.py:70:87: error[invalid-argument-type] Argument to function `setup_pyrefly` is incorrect: Expected `Path | None`, found `Any | str | None | int | Path`
+- Found 13 diagnostics
++ Found 3 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:916:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type[Connection]`, found `Any | str | int | None | float`
+- aioredis/client.py:916:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | None`, found `Any | str | int | None | float`
+- Found 16 diagnostics
++ Found 14 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- kornia/contrib/models/tiny_vit.py:411:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:411:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:411:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float | list[int | float]`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:411:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:420:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:420:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:420:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float | list[int | float]`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- kornia/contrib/models/tiny_vit.py:420:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | list[@Todo] | PatchMerging | None | bool`
+- Found 801 diagnostics
++ Found 793 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/simple.py:222:13: warning[possibly-missing-attribute] Attribute `append` on type `Any | list[Unknown] | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/bandersnatch/simple.py:290:25: warning[possibly-missing-attribute] Attribute `append` on type `Any | dict[Unknown | str, Unknown | int] | list[Unknown]` may be missing
+- Found 116 diagnostics
++ Found 114 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/network/session.py:121:8: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/pip/_internal/network/session.py:122:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/pip/_internal/network/session.py:123:10: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/pip/_internal/network/session.py:127:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/pip/_internal/network/session.py:130:10: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/pip/_internal/network/session.py:132:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/pip/_internal/network/session.py:133:10: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/pip/_internal/network/session.py:135:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/pip/_internal/network/session.py:162:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- src/pip/_internal/network/session.py:165:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str] | str` may be missing
+- Found 463 diagnostics
++ Found 453 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/execution/test_defer.py:210:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:210:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:210:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:211:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:211:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:211:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Any | str | list[Unknown | str | int]`
+- tests/execution/test_defer.py:237:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | str | list[Unknown]`
+- tests/execution/test_defer.py:237:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | str | list[Unknown]`
+- tests/execution/test_defer.py:238:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | str | list[Unknown]`
+- tests/execution/test_defer.py:238:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | str | list[Unknown]`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:285:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any]`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:286:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:352:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:353:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | dict[Unknown | str, Unknown | str] | list[Unknown | GraphQLError] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[PendingResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[CompletedResult] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | bool | list[Unknown | PendingResult] | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:193:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:194:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:229:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | int] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[GraphQLError] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/execution/test_stream.py:230:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `Any | list[Unknown | str] | str | ... omitted 3 union elements`
+- tests/test_user_registry.py:570:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["id"]` on object of type `str`
+- Found 418 diagnostics
++ Found 357 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- testing/python/metafunc.py:356:50: error[invalid-argument-type] Argument is incorrect: Expected `Config | None`, found `Any | MockConfig`
+- testing/python/metafunc.py:594:17: error[invalid-argument-type] Argument is incorrect: Expected `Config | None`, found `Any | MockConfig`
+- testing/python/metafunc.py:628:67: error[invalid-argument-type] Argument is incorrect: Expected `Config | None`, found `Any | MockConfig`
+- testing/python/metafunc.py:657:17: error[invalid-argument-type] Argument is incorrect: Expected `Config | None`, found `Any | MockConfig`
+- Found 487 diagnostics
++ Found 483 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- starlette/testclient.py:365:49: warning[possibly-missing-attribute] Attribute `read` on type `Any | int | list[Unknown] | BytesIO` may be missing
+- Found 144 diagnostics
++ Found 143 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/porcelain.py:1584:19: error[invalid-argument-type] Argument is incorrect: Expected `Tree`, found `Tree | Blob | Commit | Tag`
+- dulwich/porcelain.py:1584:19: error[invalid-argument-type] Argument is incorrect: Expected `Blob`, found `Tree | Blob | Commit | Tag`
+- dulwich/porcelain.py:1584:19: error[invalid-argument-type] Argument is incorrect: Expected `Commit`, found `Tree | Blob | Commit | Tag`
+- dulwich/porcelain.py:1584:19: error[invalid-argument-type] Argument is incorrect: Expected `Tag`, found `Tree | Blob | Commit | Tag`
+- Found 188 diagnostics
++ Found 184 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/metrics/test_metric.py:1214:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_num_correct` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1214:9: error[unresolved-attribute] Unresolved attribute `_num_correct` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1215:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_num_examples` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1215:9: error[unresolved-attribute] Unresolved attribute `_num_examples` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1216:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_numerator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1216:9: error[unresolved-attribute] Unresolved attribute `_numerator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1217:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_denominator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1217:9: error[unresolved-attribute] Unresolved attribute `_denominator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1218:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_weight` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1218:9: error[unresolved-attribute] Unresolved attribute `_weight` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1219:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_updated` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1219:9: error[unresolved-attribute] Unresolved attribute `_updated` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1226:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_numerator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1226:9: error[unresolved-attribute] Unresolved attribute `_numerator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1227:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_denominator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1227:9: error[unresolved-attribute] Unresolved attribute `_denominator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1228:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_weight` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1228:9: error[unresolved-attribute] Unresolved attribute `_weight` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1229:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_updated` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1229:9: error[unresolved-attribute] Unresolved attribute `_updated` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1231:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_numerator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1231:9: error[unresolved-attribute] Unresolved attribute `_numerator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1232:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_denominator` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1232:9: error[unresolved-attribute] Unresolved attribute `_denominator` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1233:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_weight` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1233:9: error[unresolved-attribute] Unresolved attribute `_weight` on type `Metric`.
+- tests/ignite/metrics/test_metric.py:1234:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_updated` on type `Metric | Unknown`
++ tests/ignite/metrics/test_metric.py:1234:9: error[unresolved-attribute] Unresolved attribute `_updated` on type `Metric`.
+
+mkosi (https://github.com/systemd/mkosi)
+- mkosi/config.py:3145:45: error[invalid-argument-type] Argument to function `make_simple_config_parser` is incorrect: Expected `Sequence[ConfigSetting[object]]`, found `list[ConfigSetting[Any] | ConfigSetting[bool]]`
+- Found 114 diagnostics
++ Found 113 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_dataclasses.py:223:12: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 765 diagnostics
++ Found 764 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- tests/installation/test_installer.py:369:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- tests/installation/test_installer.py:370:26: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- tests/installation/test_installer.py:372:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- tests/installation/test_installer.py:373:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | dict[Unknown | str, Unknown | str | bool | list[Unknown]], (s: slice[Any, Any, Any], /) -> list[Unknown | dict[Unknown | str, Unknown | str | bool | list[Unknown]]]]` cannot be called with key of type `Literal["files"]` on object of type `list[Unknown | dict[Unknown | str, Unknown | str | bool | list[Unknown]]]`
+- tests/installation/test_installer.py:3042:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3043:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3044:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3045:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3149:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3150:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3151:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3152:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | str` may be missing
+- tests/installation/test_installer.py:3280:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- tests/installation/test_installer.py:3281:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- tests/installation/test_installer.py:3282:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- tests/installation/test_installer.py:3283:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | str | bool | list[Unknown] | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | bool | list[Unknown]] | str` may be missing
+- Found 990 diagnostics
++ Found 974 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/config/_projects.py:534:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_parent` on type `T@from_hierarchy | Unknown`
+- src/schemathesis/generation/coverage.py:517:52: error[invalid-argument-type] Argument to function `_negative_enum` is incorrect: Expected `list[Unknown]`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:522:52: error[invalid-argument-type] Argument to function `_negative_type` is incorrect: Expected `str | list[str]`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:534:55: error[invalid-argument-type] Argument to function `_negative_pattern` is incorrect: Expected `str`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:534:62: error[invalid-argument-type] Argument to function `_negative_pattern` is incorrect: Expected `int | None`, found `Unknown | None | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:534:85: error[invalid-argument-type] Argument to function `_negative_pattern` is incorrect: Expected `int | None`, found `Unknown | None | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:536:62: error[invalid-argument-type] Argument to function `_negative_format` is incorrect: Expected `str`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:538:28: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:542:28: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:550:70: error[invalid-argument-type] Argument to function `_negative_multiple_of` is incorrect: Expected `int | float`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:553:45: error[unsupported-operator] Operator `<` is not supported for types `int` and `dict[Unknown, Unknown]`, in comparing `Literal[0]` with `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:553:49: error[unsupported-operator] Operator `<` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[32768]`
+- src/schemathesis/generation/coverage.py:565:55: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~Literal[1]) | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:565:55: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~Literal[1]) | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:583:45: error[unsupported-operator] Operator `<` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[32768]`
+- src/schemathesis/generation/coverage.py:585:51: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:585:51: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:589:32: error[unsupported-operator] Operator `>` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[100]`
+- src/schemathesis/generation/coverage.py:614:66: error[invalid-argument-type] Argument to function `_negative_required` is incorrect: Expected `list[str]`, found `Unknown | dict[Unknown, Unknown]`
+- src/schemathesis/generation/coverage.py:842:35: error[unsupported-operator] Operator `<` is not supported for types `str` and `int`, in comparing `(Unknown & ~Literal[0] & ~None) | str` with `Literal[32768]`
+- src/schemathesis/generation/coverage.py:852:18: error[unsupported-operator] Operator `+` is unsupported between objects of type `(Unknown & ~Literal[0] & ~None) | str` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:863:12: error[unsupported-operator] Operator `<` is not supported for types `str` and `int`, in comparing `(Unknown & ~None) | str` with `Literal[32768]`
+- src/schemathesis/generation/coverage.py:870:19: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~None) | str` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:900:19: error[unsupported-operator] Operator `+` is unsupported between objects of type `(Unknown & ~None) | str` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:902:19: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~None) | str` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:932:54: error[invalid-argument-type] Argument to function `closest_multiple_greater_than` is incorrect: Expected `int`, found `(Unknown & ~None) | str`
+- src/schemathesis/generation/coverage.py:932:63: error[invalid-argument-type] Argument to function `closest_multiple_greater_than` is incorrect: Expected `int`, found `(Unknown & ~None) | str`
+- src/schemathesis/generation/coverage.py:940:22: error[unsupported-operator] Operator `+` is unsupported between objects of type `int | (Unknown & ~None) | str` and `(Unknown & ~None) | str`
+- src/schemathesis/generation/coverage.py:942:22: error[unsupported-operator] Operator `+` is unsupported between objects of type `(Unknown & ~None) | str` and `Literal[1]`
+- src/schemathesis/generation/coverage.py:949:23: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~None) | str` and `Unknown | str`
+- src/schemathesis/generation/coverage.py:957:23: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | str` and `(Unknown & ~None) | str`
+- src/schemathesis/generation/coverage.py:959:23: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown & ~None) | str` and `Literal[1]`
+- Found 321 diagnostics
++ Found 289 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/contrib/pyopenssl.py:397:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, list[Any]] | None`, found `dict[str, list[Any] | tuple[tuple[tuple[str, Unknown]]] | list[tuple[str, str]]]`
++ src/urllib3/contrib/pyopenssl.py:397:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, list[Any]] | None`, found `dict[str, list[Any] | tuple[tuple[tuple[str, Unknown]]]]`
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[str] | None`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[int] | None`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[RequestHistory, ...] | None`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:110:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[str]`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[str] | None`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[int] | None`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[RequestHistory, ...] | None`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | int`
+- cki_lib/session.py:113:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Collection[str]`, found `Any | int`
+- Found 182 diagnostics
++ Found 168 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/addons/savehar.py:260:13: error[invalid-assignment] Method `__setitem__` of type `Any | (bound method dict[Unknown | str, Unknown | str | int].__setitem__(key: Unknown | str, value: Unknown | str | int, /) -> None) | (bound method dict[Unknown | str, Unknown | int | str | dict[Unknown | str, Unknown | int]].__setitem__(key: Unknown | str, value: Unknown | int | str | dict[Unknown | str, Unknown | int], /) -> None) | ... omitted 3 union elements` cannot be called with a key of type `Literal["postData"]` and a value of type `dict[Unknown | str, Unknown | str | None]` on object of type `Any | int | dict[Unknown | str, Unknown | str | int] | ... omitted 4 union elements`
+- Found 1844 diagnostics
++ Found 1843 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- optuna/storages/_callbacks.py:71:9: warning[possibly-missing-attribute] Attribute `append` on type `Any | int | list[Unknown]` may be missing
+- optuna/storages/_callbacks.py:73:38: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Any | int | list[Unknown]`
+- Found 565 diagnostics
++ Found 563 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/tests/test_dataarray.py:3805:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> str, (index: slice[Any, Any, Any], /) -> tuple[str, ...]]` cannot be called with key of type `Literal["x"]` on object of type `tuple[str, str]`
+- xarray/tests/test_dataarray.py:3805:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["x"]` on object of type `str`
+- xarray/tests/test_dataarray.py:3807:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["x"]` on object of type `str`
+- xarray/tests/test_dataarray.py:3807:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> str, (index: slice[Any, Any, Any], /) -> tuple[str, ...]]` cannot be called with key of type `Literal["x"]` on object of type `tuple[str, str]`
+- xarray/tests/test_dataarray.py:3807:9: warning[possibly-missing-attribute] Attribute `update` on type `Any | ndarray[@Todo, Unknown] | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
+- xarray/tests/test_dataset.py:5038:53: error[invalid-argument-type] Argument to bound method `squeeze` is incorrect: Expected `bool`, found `Unknown | list[Unknown | str]`
+- xarray/tests/test_dataset.py:5038:53: error[invalid-argument-type] Argument to bound method `squeeze` is incorrect: Expected `int | Iterable[int] | None`, found `Unknown | list[Unknown | str]`
+- xarray/tests/test_dataset.py:5393:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | tuple[str] | list[Unknown] | dict[Unknown, Unknown]] | int | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
+- xarray/tests/test_dataset.py:5395:17: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | dict[Unknown | str, Unknown | tuple[str] | list[Unknown] | dict[Unknown, Unknown]] | int | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
+- xarray/tests/test_dataset.py:5412:13: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- xarray/tests/test_dataset.py:5413:13: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- xarray/tests/test_dataset.py:5414:13: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- xarray/tests/test_dataset.py:5416:9: warning[possibly-missing-attribute] Attribute `update` on type `Any | dict[Unknown | str, Unknown | tuple[str] | list[Unknown] | dict[Unknown, Unknown]] | int | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
+- xarray/tests/test_dataset.py:5417:9: warning[possibly-missing-attribute] Attribute `update` on type `Any | dict[Unknown | str, Unknown | tuple[str] | list[Unknown] | dict[Unknown, Unknown]] | int | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
+- xarray/tests/test_dataset.py:5418:9: warning[possibly-missing-attribute] Attribute `update` on type `Any | dict[Unknown | str, Unknown | tuple[str] | list[Unknown] | dict[Unknown, Unknown]] | int | dict[Unknown | str, Unknown | tuple[str] | dict[Unknown, Unknown]]` may be missing
++ xarray/tests/test_distributed.py:274:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ xarray/tests/test_distributed.py:278:13: warning[possibly-missing-attribute] Attribute `compute` on type `ZarrStore | Unknown` may be missing
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `Any | dict[Unknown | str, Unknown | bool]`
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `Any | dict[Unknown | str, Unknown | bool]`
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `Literal["coordinates", "all"] | bool | None`, found `Any | dict[Unknown | str, Unknown | bool]`
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | bool]`
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `Any | dict[Unknown | str, Unknown | bool]`
+- xarray/tests/test_distributed.py:280:53: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | None`, found `Any | dict[Unknown | str, Unknown | bool]`
+- Found 1614 diagnostics
++ Found 1595 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/domains/cpp/_symbol.py:1183:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[Symbol] | None, str]`, found `tuple[list[Symbol | (Unknown & ~None)], None]`
++ sphinx/domains/cpp/_symbol.py:1183:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[Symbol] | None, str]`, found `tuple[list[Symbol], None]`
+- sphinx/ext/apidoc/_cli.py:346:9: warning[possibly-missing-attribute] Attribute `extend` on type `Any | str | int | list[Unknown | str]` may be missing
+- sphinx/ext/apidoc/_cli.py:350:16: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- sphinx/ext/apidoc/_cli.py:352:13: warning[possibly-missing-attribute] Attribute `remove` on type `Any | str | int | list[Unknown | str]` may be missing
+- sphinx/ext/apidoc/_cli.py:353:13: warning[possibly-missing-attribute] Attribute `extend` on type `Any | str | int | list[Unknown | str]` may be missing
+- Found 494 diagnostics
++ Found 490 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/json_util.py:1015:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[int, (Any, JSONOptions, /) -> Any].__setitem__(key: int, value: (Any, JSONOptions, /) -> Any, /) -> None` cannot be called with a key of type `object` and a value of type `((Any, JSONOptions, /) -> Any) | ((obj: Any, dummy0: Any) -> Any) | ((obj: Binary, json_options: JSONOptions) -> dict[Unknown, Unknown]) | ... omitted 9 union elements` on object of type `dict[int, (Any, JSONOptions, /) -> Any]`
++ bson/json_util.py:1015:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[int, (Any, JSONOptions, /) -> Any].__setitem__(key: int, value: (Any, JSONOptions, /) -> Any, /) -> None` cannot be called with a key of type `object` and a value of type `(Any, JSONOptions, /) -> Any` on object of type `dict[int, (Any, JSONOptions, /) -> Any]`
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- tests/test_examples.py:84:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:85:23: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:86:23: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:87:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:88:27: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:89:32: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- tests/test_examples.py:90:27: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["bar"]` on object of type `list[Unknown | str]`
+- Found 161 diagnostics
++ Found 154 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/theme.py:73:53: error[invalid-argument-type] Argument to function `parse_locale` is incorrect: Expected `str`, found `str | Any | None`
+- Found 206 diagnostics
++ Found 205 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/tests/test_metaestimators_metadata_routing.py:492:26: warning[possibly-missing-attribute] Attribute `__name__` on type `Unknown | <class 'MultiOutputRegressor'> | str | ... omitted 44 union elements` may be missing
+- Found 1994 diagnostics
++ Found 1993 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/classification/utils.py:420:5: error[invalid-assignment] Object of type `tuple[type | Unknown, ...]` is not assignable to `list[type] | None`
++ references/classification/utils.py:420:5: error[invalid-assignment] Object of type `tuple[type, ...]` is not assignable to `list[type] | None`
+- torchvision/models/video/mvit.py:743:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:744:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:745:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:746:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:747:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:748:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:749:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown] | list[Unknown | int]`
+- torchvision/models/video/mvit.py:876:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:877:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:878:17: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:879:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:880:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:881:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown | int]`
+- torchvision/models/video/mvit.py:882:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int]`, found `Unknown | int | list[Unknown | int]`
+- Found 1480 diagnostics
++ Found 1466 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- cloudinit/cmd/status.py:204:37: warning[possibly-missing-attribute] Attribute `items` on type `(Any & ~AlwaysFalsy) | (str & ~AlwaysFalsy) | (list[str] & ~AlwaysFalsy) | (dict[str, list[str]] & ~AlwaysFalsy)` may be missing
+- cloudinit/cmd/status.py:204:37: warning[possibly-missing-attribute] Attribute `items` on type `(Any & ~AlwaysFalsy) | (str & ~AlwaysFalsy) | (list[str] & ~AlwaysFalsy) | (dict[str, list[str]] & ~AlwaysFalsy)` may be missing
+- cloudinit/cmd/status.py:204:37: warning[possibly-missing-attribute] Attribute `items` on type `(Any & ~AlwaysFalsy) | (str & ~AlwaysFalsy) | (list[str] & ~AlwaysFalsy) | (dict[str, list[str]] & ~AlwaysFalsy)` may be missing
+- cloudinit/distros/alpine.py:325:27: error[not-iterable] Object of type `Any | list[Unknown] | None` may not be iterable
+- cloudinit/distros/alpine.py:393:44: error[invalid-argument-type] Argument to bound method `fromisoformat` is incorrect: Expected `str`, found `(Any & ~None) | list[Unknown]`
+- cloudinit/distros/alpine.py:401:17: error[invalid-assignment] Method `__setitem__` of type `Overload[(key: SupportsIndex, value: str, /) -> None, (key: slice[Any, Any, Any], value: Iterable[str], /) -> None]` cannot be called with a key of type `Literal[6]` and a value of type `(Any & ~None) | list[Unknown]` on object of type `list[str]`
+- cloudinit/net/eni.py:643:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | str | dict[Unknown | str, Unknown | str]` may be missing
+- cloudinit/net/eni.py:647:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | str | dict[Unknown | str, Unknown | str]` may be missing
+- cloudinit/sources/DataSourceAzure.py:2120:17: warning[possibly-missing-attribute] Attribute `append` on type `Any | bool | dict[Unknown | str, Unknown | int] | list[Unknown]` may be missing
+- cloudinit/sources/DataSourceAzure.py:2131:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | int | dict[Unknown, Unknown]` may be missing
+- tests/unittests/config/test_cc_ansible.py:377:9: warning[possibly-missing-attribute] Attribute `pop` on type `Any | str | dict[Unknown | str, Unknown | list[Unknown | list[Unknown | str]]] | dict[Unknown | str, Unknown | str | list[Unknown | str] | bool]` may be missing
+- tests/unittests/config/test_cc_ansible.py:378:43: error[invalid-argument-type] Argument to function `filter_args` is incorrect: Expected `dict[Unknown, Unknown]`, found `Any | str | dict[Unknown | str, Unknown | list[Unknown | list[Unknown | str]]] | dict[Unknown | str, Unknown | str | list[Unknown | str] | bool]`
+- tests/unittests/sources/test_maas.py:146:16: warning[possibly-missing-attribute] Attribute `decode` on type `Unknown | str | bytes` may be missing
+- Found 844 diagnostics
++ Found 831 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/field_extensions/input_mutation.py:45:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | str | dict[Unknown, Unknown]` may be missing
+- strawberry/field_extensions/input_mutation.py:59:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Any | str | dict[Unknown, Unknown]`
+- Found 380 diagnostics
++ Found 378 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/interpreter/interpreter.py:1604:48: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str | None] | None`, found `list[str] | list[Unknown]`
+- mesonbuild/rewriter.py:494:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Any | str | dict[Unknown | str, Unknown | list[@Todo]]` may be missing
+- mesonbuild/rewriter.py:518:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["default_options"]` on object of type `str`
+- Found 887 diagnostics
++ Found 886 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ openlibrary/catalog/add_book/__init__.py:1096:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ openlibrary/catalog/add_book/__init__.py:1099:78: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 862 diagnostics
++ Found 864 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/tests/test_editable_install.py:884:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["mod1.py"]` on object of type `str`
+- setuptools/tests/test_editable_install.py:886:22: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["subpackage"]` on object of type `str`
+- setuptools/tests/test_editable_install.py:894:32: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["mod1.py"]` on object of type `str`
+- setuptools/tests/test_editable_install.py:895:35: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["subpackage"]` on object of type `str`
+- setuptools/tests/test_editable_install.py:956:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str]]` and `str`
++ setuptools/tests/test_editable_install.py:956:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `dict[Unknown | str, Unknown]` and `str`
+- setuptools/tests/test_editable_install.py:956:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str]]]` and `str`
+- setuptools/tests/test_editable_install.py:956:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str] | str]]` and `str`
++ setuptools/tests/test_editable_install.py:956:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown]]` and `str`
+- setuptools/tests/test_editable_install.py:969:5: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | dict[Unknown | str, Unknown | str] | str | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str]] | dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str]]` may be missing
++ setuptools/tests/test_editable_install.py:969:5: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | dict[Unknown | str, Unknown | str] | str | dict[Unknown | str, Unknown]` may be missing
+- Found 801 diagnostics
++ Found 796 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1185:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1197:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1112:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1112:46: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["value"]` on object of type `str`
+- src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1113:17: warning[possibly-missing-attribute] Attribute `remove` on type `Any | (str & ~AlwaysFalsy)` may be missing
+- src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1184:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:1196:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
+- src/integrations/prefect-ray/prefect_ray/task_runners.py:379:47: error[invalid-argument-type] Argument to function `run_task_async` is incorrect: Expected `UUID | None`, found `Any | UUID | Iterable[PrefectFuture[Any]] | ... omitted 4 union elements`
+- src/integrations/prefect-ray/prefect_ray/task_runners.py:379:47: error[invalid-argument-type] Argument to function `run_task_async` is incorrect: Expected `TaskRun | None`, found `Any | UUID | Iterable[PrefectFuture[Any]] | ... omitted 4 union elements`
+- src/integrations/prefect-ray/prefect_ray/task_runners.py:379:47: error[invalid-argument-type] Argument to function `run_task_async` is incorrect: Expected `dict[str, Any] | None`, found `Any | UUID | Iterable[PrefectFuture[Any]] | ... omitted 4 union elements`
+- src/integrations/prefect-ray/prefect_ray/task_runners.py:379:47: error[invalid-argument-type] Argument to function `run_task_async` is incorrect: Expected `Literal["state", "result"]`, found `Any | UUID | Iterable[PrefectFuture[Any]] | ... omitted 4 union elements`
+- src/integrations/prefect-ray/prefect_ray/task_runners.py:379:47: error[invalid-argument-type] Argument to function `run_task_async` is incorrect: Expected `dict[str, set[RunInput]] | None`, found `Any | UUID | Iterable[PrefectFuture[Any]] | ... omitted 4 union elements`
+- src/...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 18:49_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 6 | 276 | 7 |
+| `possibly-missing-implicit-call` | 0 | 56 | 1 |
+| `possibly-missing-attribute` | 1 | 38 | 0 |
+| `unsupported-operator` | 1 | 31 | 3 |
+| `invalid-assignment` | 0 | 24 | 3 |
+| `unresolved-attribute` | 15 | 0 | 0 |
+| `non-subscriptable` | 0 | 14 | 0 |
+| `unused-ignore-comment` | 6 | 1 | 0 |
+| `invalid-return-type` | 0 | 1 | 5 |
+| `no-matching-overload` | 0 | 6 | 0 |
+| `index-out-of-bounds` | 0 | 2 | 0 |
+| `not-iterable` | 0 | 2 | 0 |
+| `invalid-await` | 0 | 0 | 1 |
+| `redundant-cast` | 1 | 0 | 0 |
+| `type-assertion-failure` | 0 | 1 | 0 |
+| **Total** | **30** | **452** | **20** |
+
+**[Full report with detailed diff](https://ibraheem-declared-container.ecosystem-663.pages.dev/diff)** ([timing results](https://ibraheem-declared-container.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Renamed from "[ty] Prefer declared type for collection literals" to "[ty] Prefer declared type for invariant collection literals" by @AlexWaygood on 2025-10-16 18:55_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-16 18:55_
+
+(Retitled the PR because tuples are also collection literals, but those don't look like they're touched by this PR -- a decision which I support!)
+
+---
+
+_@AlexWaygood approved on 2025-10-16 18:56_
+
+---
+
+_Label `ecosystem-analyzer` removed by @ibraheemdev on 2025-10-16 19:47_
+
+---
+
+_Label `ecosystem-analyzer` added by @ibraheemdev on 2025-10-16 19:47_
+
+---
+
+_Label `ecosystem-analyzer` removed by @ibraheemdev on 2025-10-16 19:58_
+
+---
+
+_Label `ecosystem-analyzer` added by @ibraheemdev on 2025-10-16 19:58_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-10-16 20:09_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fdeclared-container-type)
+
+### Merging #20927 will **improve performances by 5.14%**
+
+<sub>Comparing <code>ibraheem/declared-container-type</code> (07f16f5) with <code>main</code> (25023cc)</sub>
+
+
+
+### Summary
+
+`⚡ 1` improvement  
+`✅ 20` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | WallTime | [`` medium[colour-science] ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fdeclared-container-type?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bcolour-science%5D&runnerMode=WallTime) | 10.6 s | 10 s | +5.14% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fdeclared-container-type?sectionId=benchmark-comparison-section-baseline-result-skipped).
+
+
+---
+
+_Comment by @ibraheemdev on 2025-10-16 20:10_
+
+Looks like there are no regressions in the ecosystem report and a lot of clear improvements, so hopefully this is fairly uncontroversial (I also discussed this with @carljm and he agreed).
+
+---
+
+_Merged by @ibraheemdev on 2025-10-16 20:11_
+
+---
+
+_Closed by @ibraheemdev on 2025-10-16 20:11_
+
+---
+
+_Branch deleted on 2025-10-16 20:11_
+
+---

@@ -1,0 +1,2258 @@
+```yaml
+number: 18473
+title: "[ty] Infer type of self as typing.Self in method body"
+type: pull_request
+state: merged
+author: Glyphack
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: david/type-of-self-in-methods-integration
+head: typing-self-function-scope
+created_at: 2025-06-04T21:51:36Z
+updated_at: 2025-10-22T15:12:13Z
+url: https://github.com/astral-sh/ruff/pull/18473
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Infer type of self as typing.Self in method body
+
+---
+
+_Pull request opened by @Glyphack on 2025-06-04 21:51_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Part of https://github.com/astral-sh/ty/issues/159
+
+
+Add support for adding a synthetic `typing.Self` type for `self` arguments in methods.
+`typing.Self` is assigned as the type if there are no annotations.
+This PR only adds the functionality when the symbol lookup is happening.
+
+https://github.com/astral-sh/ruff/pull/18007 is handling the case when a call is happening.
+
+## Surfaced issues
+
+After running tests and mypy primer some tests started failing because `self` was not `Any` anymore:
+
+**MDtests**
+
+- https://github.com/astral-sh/ty/issues/664
+- https://github.com/astral-sh/ty/issues/697
+
+**Too many cycle iterations**
+
+- https://github.com/astral-sh/ty/issues/660
+- https://github.com/astral-sh/ty/issues/692
+
+- incrementing a value inside a tuple: solved by https://github.com/astral-sh/ruff/pull/18473#issuecomment-3238259472
+```py
+class ChunkedBytesIO:
+    def __init__(self: Self, contents: list[bytes]) -> None:
+        self.contents = contents
+        self.pos = (0, 0)
+
+    def read(self: Self):
+        chunk, cursor = self.pos
+        self.pos = (chunk + 1, cursor)
+```
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+- Updated md tests.
+- Added new TODOs because some tests started failing once the `self` was not unknown anymore.
+
+
+---
+
+_Label `ty` added by @ntBre on 2025-06-04 22:25_
+
+---
+
+_Comment by @dcreager on 2025-06-06 01:35_
+
+Hi @Glyphack, saw that you opened this up! Let me know if you want to find some time to chat through the options.
+
+Edit: Tomorrow, that is, it's the end of the day for me :smile: 
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-06-11 21:10_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope)
+
+### Merging #18473 will **degrade performances by 16.08%**
+
+<sub>Comparing <code>Glyphack:typing-self-function-scope</code> (a4d6a2a) with <code>main</code> (058fc37)[^unexpected-base]</sub>
+[^unexpected-base]: No successful run was found on <code>david/type-of-self-in-methods-integration</code> (ec9faa3) during the generation of this report, so <code>main</code> (058fc37) was used instead as the comparison base. There might be some changes unrelated to this pull request in this report.
+
+
+
+### Summary
+
+`❌ 6` regressions  
+`✅ 42` untouched  
+`⏩ 4` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Instrumentation | [`` anyio ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aanyio%3A%3Aproject%3A%3Aanyio&runnerMode=Instrumentation) | 819.6 ms | 915.2 ms | -10.44% |
+| ❌ | WallTime | [`` large[sympy] ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bsympy%5D&runnerMode=WallTime) | 38.4 s | 41.9 s | -8.26% |
+| ❌ | WallTime | [`` small[altair] ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Baltair%5D&runnerMode=WallTime) | 2.3 s | 2.4 s | -4.26% |
+| ❌ | WallTime | [`` small[freqtrade] ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Bfreqtrade%5D&runnerMode=WallTime) | 4.2 s | 4.8 s | -12.64% |
+| ❌ | WallTime | [`` small[pydantic] ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Bpydantic%5D&runnerMode=WallTime) | 2.4 s | 2.5 s | -7.4% |
+| ❌ | WallTime | [`` small[tanjun] ``](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Btanjun%5D&runnerMode=WallTime) | 1.6 s | 1.9 s | -16.08% |
+[^skipped]: 4 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?sectionId=benchmark-comparison-section-baseline-result-skipped).
+
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/infer.rs`:3255 on 2025-06-11 21:14_
+
+This is probably very hacky and should be changed, but I tried it and included it in the PR to see what is the solution if I try to make tests pass for self and then review the rules for emitting diagnostic in attribute stores discussed here:
+
+https://discord.com/channels/1039017663004942429/1343690517745111081/1382289482937667675
+
+If we don't want the hacky way I can first make a PR for that one.
+
+---
+
+_@Glyphack reviewed on 2025-06-11 21:14_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types.rs`:10135 on 2025-06-11 21:17_
+
+This is not a working code and should be removed, I added this to resolve this error:
+
+https://github.com/astral-sh/ruff/pull/18473/files#diff-86a6d2cbee6f30f42c4f4b3d099f4c0b85d6c010125089ce2ba056cc82ebf3a5R281
+
+But it did not work. I kept it here because I think this code is correct but something else is not working that it's causing the diagnostic.
+
+---
+
+_@Glyphack reviewed on 2025-06-11 21:17_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-11 21:19_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_@Glyphack reviewed on 2025-06-11 21:20_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/protocols.md`:946 on 2025-06-11 21:20_
+
+I copied the comment, but should this be fine?
+pyright emits diagnostic for this one:
+https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAK4MYAxmADYBQNpFAhgM6NQBiYYAFEWCeRQEoAXFShioADyGYUMUeLjTGMEPLEATAKbAoAfV2okMfZ0aaKwAVAC0APigA5MCk0jx7qGYsA6CVAC8UAAsAExiAMRQwKiaah5ewN70AVAArABsEVAAKgDyACK5SgAWYACuFOpQmhBGUOpI9GgoYMpIpHHuCd4ARtKo%2BIEAjCEAHFl5hSXlldW1%2BA1NLW0dcVo6LSgGKEa6EJowpeqm5pY29k4ubh5i3XAp6UFZmiDgINIA2qgAbvQUSOprExGEhmvtZABdKAAIlyPQAVppSPgwDp4AhNFAAAYAGSMLz%2BH0eEKxmBYLXwwNBKHoPQomJIUHoMBUSB6ZRgmKxcFJqNgiC5yhAWOhnXE3VIKQA7GEoJFJkVPKUKlUanVFs1WjB2kA
+
+---
+
+_Marked ready for review by @Glyphack on 2025-06-11 22:02_
+
+---
+
+_Review requested from @carljm by @Glyphack on 2025-06-11 22:02_
+
+---
+
+_Review requested from @AlexWaygood by @Glyphack on 2025-06-11 22:02_
+
+---
+
+_Review requested from @sharkdp by @Glyphack on 2025-06-11 22:02_
+
+---
+
+_Review requested from @dcreager by @Glyphack on 2025-06-11 22:02_
+
+---
+
+_Renamed from "Infer type of self as typing.Self in method body" to "[ty] Infer type of self as typing.Self in method body" by @MichaReiser on 2025-06-12 06:53_
+
+---
+
+_Review requested from @MichaReiser by @Glyphack on 2025-06-14 13:02_
+
+---
+
+_@Glyphack reviewed on 2025-06-14 13:20_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/attributes.md`:332 on 2025-06-14 13:20_
+
+My plan is to fix these in a separate PR to not emit unresolved reference or possibly unbound diagnostics when storing attributes.
+
+---
+
+_@Glyphack reviewed on 2025-06-14 13:21_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/annotations/self.md`:33 on 2025-06-14 13:21_
+
+This is only happening because `self` is `Shape` but return type is a type var. If instead of inferring `self` as instance of the class we infer it as a typevar then it would work.
+
+If we don't consider the type var when `self` is in the method body this case would fail:
+
+https://play.ty.dev/f8a86899-61d7-4b8d-988d-69b3fee5e72d
+```py
+from typing import TypeVar
+
+Self = TypeVar("Self", bound="Container")
+
+class Container:
+    # error: Return type does not match returned value: expected `Self`, found `Container` (invalid-return-type) [Ln 7, Col 54]
+    def set_value(self: "Container") -> Self: return self
+```
+
+I think the error is correct. The method returns `Self` but what we return is not a type var.
+I was wondering if this assignment is valid or not. I think the current behavior is correct. Because this is also valid diagnostic(and I think they both are from the same rule):
+```py
+T = TypeVar("T", bound=int)
+
+def f(a: T) -> T:
+    # error: Return type does not match returned value: expected `T`, found `Literal[1]` (invalid-return-type) [Ln 14, Col 12]
+    return 1
+```
+I feel this is also very close to the third rejected case here:
+https://typing.python.org/en/latest/spec/generics.html#valid-locations-for-self
+We have two annotations defined for `Self` the `self` is annotated with the class itself and the return type is `Self` so we have two different annotations for `self`.
+
+---
+
+_Converted to draft by @Glyphack on 2025-06-17 07:02_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/infer.rs`:2325 on 2025-06-17 14:29_
+
+I think this check is superfluous, since you're only calling this method after having verified above that there's no user-provided annotation.
+
+That said, per discord we might consider _always_ adding the implicit `self` annotation, and _intersecting_ it with the user-provided annotation if there is one.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/class/super.md`:281 on 2025-06-17 14:35_
+
+https://github.com/astral-sh/ruff/issues/17432 is resolved, is there something else causing this?
+
+You might need to include the identity specialization of the class's generic context when creating the annotation for `self`
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/cycle.md`:35 on 2025-06-17 14:37_
+
+I think we need a better name for this section, and a `reveal_type` showing an `Unknown` result. Unless this results in a salsa cycle error if you do that?
+
+---
+
+_@dcreager reviewed on 2025-06-17 14:38_
+
+---
+
+_Comment by @Glyphack on 2025-06-21 22:14_
+
+The next panic panic(execute: too many cycle iterations) is in apprise project. I think the minimal reproduction is this:
+```
+from typing import Self
+
+class A:
+    def __init__(self: Self, secure_mode=None):
+        # secure is defined in a parent class in the actual code.
+        if secure_mode:
+            self.secure_mode = secure_mode.lower()
+        else:
+            self.secure_mode = "insecure" \
+                if not self.secure else "ssl"
+
+        if self.secure_mode not in ["secure"]:
+            raise TypeError("invalid")
+
+        if not self.secure and self.secure_mode != "insecure":
+            self.secure = True
+```
+
+Full example: https://github.com/caronc/apprise/blob/ce90151051f630803cba755fc9f06e16f7d8590b/apprise/plugins/email/base.py#L244
+
+But in the full example `self.secure` is defined in a parent class. But I cannot reproduce the panic if I add that to this minimal example.
+
+---
+
+_@Glyphack reviewed on 2025-06-23 21:06_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/cycle.md`:35 on 2025-06-23 21:06_
+
+No we can do that. I changed the section name and added the reveal_type.
+
+---
+
+_@Glyphack reviewed on 2025-06-23 21:07_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/infer.rs`:2325 on 2025-06-23 21:07_
+
+Right, since we don't need this check in any case because if the user has provided a value then we can check if there is a type inferred for this parameter? So I remove this check.
+
+---
+
+_@Glyphack reviewed on 2025-06-23 21:08_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/annotations/self.md`:33 on 2025-06-23 21:08_
+
+I changed the code to return type var instead of an instance and this error is gone now.
+
+---
+
+_@Glyphack reviewed on 2025-06-24 22:31_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/class/super.md`:281 on 2025-06-24 22:31_
+
+sorry I linked an unrelated link. I could reproduce this issue on main with other types. I think in generic classes if `self` has a type then `super` call emits a diagnotic. I created an issue:
+https://github.com/astral-sh/ty/issues/697
+
+---
+
+_Comment by @Glyphack on 2025-07-17 21:01_
+
+This PR is blocked by https://github.com/astral-sh/ty/issues/758 the performance regression is a lot. I'm working on that issue.
+
+---
+
+_@sharkdp reviewed on 2025-08-28 14:50_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/infer.rs`:11125 on 2025-08-28 14:50_
+
+I have added this example as a benchmark now (see `crates/ruff_benchmark/benches/ty.rs`), so I guess we can remove this test.
+
+---
+
+_@sharkdp reviewed on 2025-08-28 14:51_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/builder.rs`:209 on 2025-08-28 14:51_
+
+I implemented this quickfix in https://github.com/astral-sh/ruff/pull/20137
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-29 18:56_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-10-16 14:31:57.480696715 +0000
++++ new-output.txt	2025-10-16 14:32:00.901695943 +0000
+@@ -1,5 +1,5 @@
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(d417)): execute: too many cycle iterations`
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(16c43)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17043)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -345,6 +345,7 @@
+ enums_member_names.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal["RED", "BLUE", "GREEN"]`
+ enums_member_values.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal[1, 2, 3]`
+ enums_member_values.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
++enums_member_values.py:85:9: error[invalid-assignment] Object of type `int` is not assignable to attribute `_value_` of type `str`
+ enums_member_values.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ enums_members.py:128:21: info[revealed-type] Revealed type: `Unknown | Literal[2]`
+ enums_members.py:129:9: error[type-assertion-failure] Argument does not have asserted type `Unknown`
+@@ -438,7 +439,6 @@
+ generics_self_advanced.py:18:1: error[type-assertion-failure] Argument does not have asserted type `ParentA`
+ generics_self_advanced.py:19:1: error[type-assertion-failure] Argument does not have asserted type `ChildA`
+ generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@method1`
+-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+ generics_self_advanced.py:36:9: error[type-assertion-failure] Argument does not have asserted type `list[Self@method2]`
+ generics_self_advanced.py:37:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+ generics_self_advanced.py:38:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+@@ -448,7 +448,6 @@
+ generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `typing.Self | None`, found `LinkedList[int]`
+ generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `typing.Self | None`
+ generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `typing.Self | None`
+-generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+ generics_self_basic.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+@@ -492,6 +491,7 @@
+ generics_syntax_infer_variance.py:46:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
+ generics_syntax_infer_variance.py:74:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int]` is not assignable to `ShouldBeCovariant5[int | float]`
+ generics_syntax_infer_variance.py:75:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
++generics_syntax_infer_variance.py:82:9: error[invalid-assignment] Cannot assign to final attribute `x` on type `Self@__init__`
+ generics_syntax_infer_variance.py:85:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int]` is not assignable to `ShouldBeCovariant6[int | float]`
+ generics_syntax_infer_variance.py:86:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
+ generics_syntax_infer_variance.py:102:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
+@@ -757,6 +757,8 @@
+ protocols_definition.py:287:1: error[invalid-assignment] Object of type `Concrete5_Bad3` is not assignable to `Template5`
+ protocols_definition.py:288:1: error[invalid-assignment] Object of type `Concrete5_Bad4` is not assignable to `Template5`
+ protocols_definition.py:289:1: error[invalid-assignment] Object of type `Concrete5_Bad5` is not assignable to `Template5`
++protocols_explicit.py:56:9: error[invalid-assignment] Object of type `tuple[int, int, str]` is not assignable to attribute `rgb` of type `tuple[int, int, int]`
++protocols_explicit.py:85:9: error[invalid-attribute-access] Cannot assign to ClassVar `cm1` from an instance of type `Self@__init__`
+ protocols_generic.py:40:1: error[invalid-assignment] Object of type `Concrete1` is not assignable to `Proto1[int, str]`
+ protocols_generic.py:56:5: error[invalid-assignment] Object of type `Box[int | float]` is not assignable to `Box[int]`
+ protocols_generic.py:66:5: error[invalid-assignment] Object of type `Sender[int]` is not assignable to `Sender[int | float]`
+@@ -801,6 +803,11 @@
+ qualifiers_annotated.py:64:8: error[invalid-type-form] Special form `typing.Annotated` expected at least 2 arguments (one type and at least one metadata element)
+ qualifiers_annotated.py:91:1: error[call-non-callable] Object of type `typing.Annotated` is not callable
+ qualifiers_final_annotation.py:18:7: error[invalid-type-form] Type qualifier `typing.Final` expected exactly 1 argument, got 2
++qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
++qualifiers_final_annotation.py:54:9: error[invalid-assignment] Cannot assign to final attribute `ID5` on type `Self@__init__`
++qualifiers_final_annotation.py:57:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
++qualifiers_final_annotation.py:59:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
++qualifiers_final_annotation.py:65:9: error[invalid-assignment] Cannot assign to final attribute `ID7` on type `Self@method1`
+ qualifiers_final_annotation.py:71:1: error[invalid-assignment] Reassignment of `Final` symbol `RATE` is not allowed: Symbol later reassigned here
+ qualifiers_final_annotation.py:81:1: error[invalid-assignment] Cannot assign to final attribute `DEFAULT_ID` on type `<class 'ClassB'>`
+ qualifiers_final_annotation.py:118:9: error[invalid-type-form] Type qualifier `typing.Final` is not allowed in type expressions (only in annotation expressions)
+@@ -898,5 +905,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 900 diagnostics
++Found 907 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @Glyphack on 2025-08-29 20:49_
+
+New uncovered panics:
+
+1. Cyclic dependancy in `TypeAliasType`
+
+https://github.com/astral-sh/ruff/pull/18473#issuecomment-3237931459
+
+```toml
+[environment]
+python-version = "3.12"
+```
+
+```py
+from typing import TypeAliasType
+
+BadAlias4 = TypeAliasType("BadAlias4", "BadAlias4")
+```
+
+https://play.ty.dev/3e9933ef-e1cd-457c-a521-f0ebb53a5137
+
+I am surprised how this is surfaced on my PR while it breaks on main as well? Maybe I'm confusing something.
+
+
+
+3. Updating value of a tuple attribute
+
+```toml
+[environment]
+python-version = "3.11"
+```
+
+```py
+from typing import Self
+
+
+class ChunkedBytesIO:
+    def __init__(self: Self, contents: list[bytes]) -> None:
+        self.contents = contents
+        self.pos = (0, 0)
+
+    def read(self: Self):
+        chunk, cursor = self.pos
+        self.pos = (chunk + 1, cursor)
+```
+
+https://play.ty.dev/a1a44a86-be59-4188-8617-d87e0eb4f529
+
+---
+
+_Comment by @carljm on 2025-08-29 20:53_
+
+> I am surprised how this is surfaced on my PR while it breaks on main as well
+
+I don't think it is newly-surfaced on this PR. There's just an annoying quirk of the reporting where the line changes because it includes a Salsa ID that changed. This panic isn't a blocker for this PR, I'm already working on it.
+
+---
+
+_Comment by @carljm on 2025-08-29 20:57_
+
+The other issue looks like just another variant of https://github.com/astral-sh/ty/issues/957 that takes one extra iteration to resolve, so we still hit the iteration limit of 200 -- dropping `MAX_UNION_LITERALS` to 190 instead of 199 avoids the panic for now.
+
+---
+
+_Comment by @Glyphack on 2025-08-31 21:07_
+
+Two new panics I found:
+
+## Scipy 
+scipy/integrate/_ivp/bdf.py
+https://github.com/scipy/scipy/blob/faae633e80534a872bc7ea0fa04d061b1646c080/scipy/integrate/_ivp/bdf.py#L347
+
+There seem to be really long or infinite(?) cycle problem here because the type checking never finishes.
+
+I tried making a smaller example by removing things that will not make type checking finish.
+https://play.ty.dev/23a54c41-02c1-46c6-b0a2-7b842d710f08
+
+<details>
+
+```
+MAX_ORDER = 5
+NEWTON_MAXITER = 4
+MIN_FACTOR = 0.2
+MAX_FACTOR = 10
+
+
+def compute_R(order, factor):
+    """Compute the matrix for changing the differences array."""
+    I = np.arange(1, order + 1)[:, None]
+    J = np.arange(1, order + 1)
+    M = np.zeros((order + 1, order + 1))
+    M[1:, 1:] = (I - 1 - factor * J) / I
+    M[0] = 1
+    return np.cumprod(M, axis=0)
+
+
+def change_D(D, order, factor):
+    """Change differences array in-place when step size is changed."""
+    R = compute_R(order, factor)
+    U = compute_R(order, 1)
+    RU = R.dot(U)
+    D[: order + 1] = np.dot(RU.T, D[: order + 1])
+
+
+def solve_bdf_system(fun, t_new, y_predict, c, psi, LU, solve_lu, scale, tol):
+    """Solve the algebraic system resulting from BDF method."""
+    d = 0
+    y = y_predict.copy()
+    dy_norm_old = None
+    converged = False
+    for k in range(NEWTON_MAXITER):
+        f = fun(t_new, y)
+        if not np.all(np.isfinite(f)):
+            break
+
+        dy = solve_lu(LU, c * f - psi - d)
+
+        if dy_norm_old is None:
+            rate = None
+        else:
+            rate = dy_norm / dy_norm_old
+
+        if rate is not None and (
+            rate >= 1 or rate ** (NEWTON_MAXITER - k) / (1 - rate) * dy_norm > tol
+        ):
+            break
+
+        y += dy
+        d += dy
+
+        if dy_norm == 0 or rate is not None and rate / (1 - rate) * dy_norm < tol:
+            converged = True
+            break
+
+        dy_norm_old = dy_norm
+
+    return converged, k + 1, y, d
+
+
+class BDF(OdeSolver):
+    def __init__(
+        self,
+        fun,
+        t0,
+        y0,
+        t_bound,
+        max_step=np.inf,
+        rtol=1e-3,
+        atol=1e-6,
+        jac=None,
+        jac_sparsity=None,
+        vectorized=False,
+        first_step=None,
+        **extraneous,
+    ):
+        warn_extraneous(extraneous)
+        super().__init__(fun, t0, y0, t_bound, vectorized, support_complex=True)
+        self.max_step = validate_max_step(max_step)
+        self.rtol, self.atol = validate_tol(rtol, atol, self.n)
+        f = self.fun(self.t, self.y)
+        if first_step is None:
+            self.h_abs = select_initial_step(
+                self.fun,
+                self.t,
+                self.y,
+                t_bound,
+                max_step,
+                f,
+                self.direction,
+                1,
+                self.rtol,
+                self.atol,
+            )
+        else:
+            self.h_abs = validate_first_step(first_step, t0, t_bound)
+        self.h_abs_old = None
+        self.error_norm_old = None
+
+        self.newton_tol = max(10 * EPS / rtol, min(0.03, rtol**0.5))
+
+        self.jac_factor = None
+        self.jac, self.J = self._validate_jac(jac, jac_sparsity)
+
+        def lu(A):
+            self.nlu += 1
+            return splu(A)
+
+        def solve_lu(LU, b):
+            return LU.solve(b)
+
+        I = eye(self.n, format="csc", dtype=self.y.dtype)
+
+        self.lu = lu
+        self.solve_lu = solve_lu
+        self.I = I
+
+        kappa = np.array([0, -0.1850, -1 / 9, -0.0823, -0.0415, 0])
+        self.gamma = np.hstack((0, np.cumsum(1 / np.arange(1, MAX_ORDER + 1))))
+        self.alpha = (1 - kappa) * self.gamma
+        self.error_const = kappa * self.gamma + 1 / np.arange(1, MAX_ORDER + 2)
+
+        D = np.empty((MAX_ORDER + 3, self.n), dtype=self.y.dtype)
+        D[0] = self.y
+        D[1] = f * self.h_abs * self.direction
+        self.D = D
+
+        self.order = 1
+        self.n_equal_steps = 0
+        self.LU = None
+
+    def _step_impl(self):
+        t = self.t
+        D = self.D
+
+        max_step = self.max_step
+        min_step = 10 * np.abs(np.nextafter(t, self.direction * np.inf) - t)
+        # NOTE: This if seems to be important
+        if self.h_abs > max_step:
+            h_abs = max_step
+            change_D(D, self.order, max_step / self.h_abs)
+            self.n_equal_steps = 0
+        elif self.h_abs < min_step:
+            h_abs = min_step
+            # NOTE: Removing this call will make type checking finish ~5 sec.
+            change_D(D, self.order, min_step / self.h_abs)
+            self.n_equal_steps = 0
+        else:
+            h_abs = self.h_abs
+
+        alpha = self.alpha
+        gamma = self.gamma
+        error_const = self.error_const
+
+        J = self.J
+        LU = self.LU
+        current_jac = self.jac is None
+
+        step_accepted = False
+        # NOTE: The file is important.
+        while not step_accepted:
+            if h_abs < min_step:
+                return False, self.TOO_SMALL_STEP
+
+            h = h_abs * self.direction
+            t_new = t + h
+
+            if self.direction * (t_new - self.t_bound) > 0:
+                t_new = self.t_bound
+                change_D(D, order, np.abs(t_new - t) / h_abs)
+                self.n_equal_steps = 0
+                LU = None
+
+            h = t_new - t
+            h_abs = np.abs(h)
+
+            y_predict = np.sum(D[: order + 1], axis=0)
+
+            scale = atol + rtol * np.abs(y_predict)
+            psi = np.dot(D[1 : order + 1].T, gamma[1 : order + 1]) / alpha[order]
+
+            converged = False
+            c = h / alpha[order]
+            while not converged:
+                if LU is None:
+                    LU = self.lu(self.I - c * J)
+
+                # NOTE: Removing this call make type checking finish fast
+                converged, n_iter, y_new, d = solve_bdf_system(
+                    self.fun,
+                    t_new,
+                    y_predict,
+                    c,
+                    psi,
+                    LU,
+                    self.solve_lu,
+                    scale,
+                    self.newton_tol,
+                )
+
+                if not converged:
+                    if current_jac:
+                        break
+                    J = self.jac(t_new, y_predict)
+                    LU = None
+                    current_jac = True
+
+            safety = 0.9 * (2 * NEWTON_MAXITER + 1) / (2 * NEWTON_MAXITER + n_iter)
+
+            scale = atol + rtol * np.abs(y_new)
+            error = error_const[order] * d
+            error_norm = norm(error / scale)
+
+            step_accepted = True
+
+        # NOTE: related
+        self.t = t_new
+        self.y = y_new
+
+        # NOTE: Removing this will make type check finish but it's still not fast.
+        error_norms = np.array([error_m_norm, error_norm, error_p_norm])
+        with np.errstate(divide="ignore"):
+            factors = error_norms ** (-1 / np.arange(order, order + 3))
+
+        delta_order = np.argmax(factors) - 1
+        order += delta_order
+        self.order = order
+
+        factor = min(MAX_FACTOR, safety * np.max(factors))
+        self.h_abs *= factor
+        change_D(D, order, factor)
+
+        return True, None
+```
+</details>
+
+## Sympy 
+sympy/physics/biomechanics/musculotendon.py
+https://github.com/sympy/sympy/blob/ecb8f94555f5aa5419d23a44a5fb547d4c297a44/sympy/physics/biomechanics/musculotendon.py#L102
+
+I haven't checked this yet. So far I simplified it to this:
+
+<details>
+
+```
+class MusculotendonBase:
+    def __init__(
+        self,
+        name,
+        pathway,
+        activation_dynamics,
+        *,
+        tendon_slack_length=None,
+        peak_isometric_force=None,
+        optimal_fiber_length=None,
+        maximal_fiber_velocity=None,
+        optimal_pennation_angle=None,
+        fiber_damping_coefficient=None,
+        with_defaults=False,
+    ):
+        self.name = name
+
+        self._activation_dynamics = activation_dynamics
+        self._child_objects = (self._activation_dynamics,)
+
+        # Constants
+        if tendon_slack_length is not None:
+            self._l_T_slack = tendon_slack_length
+
+        # Musculotendon dynamics
+        self._with_defaults = with_defaults
+
+        self._force = -self._F_T
+
+    def _rigid_tendon_musculotendon_dynamics(self):
+        """Rigid tendon musculotendon."""
+        self._l_MT = self.pathway.length
+        self._v_MT = self.pathway.extension_velocity
+        self._l_T = self._l_T_slack
+        self._l_T_tilde = Integer(1)
+        self._l_M = sqrt(
+            (self._l_MT - self._l_T) ** 2 + (self._l_M_opt * sin(self._alpha_opt)) ** 2
+        )
+        self._l_M_tilde = self._l_M / self._l_M_opt
+        self._v_M = self._v_MT * (self._l_MT - self._l_T_slack) / self._l_M
+        self._v_M_tilde = self._v_M / self._v_M_max
+        if self._with_defaults:
+            self._fl_T = self.curves.tendon_force_length.with_defaults(self._l_T_tilde)
+            self._fl_M_pas = self.curves.fiber_force_length_passive.with_defaults(
+                self._l_M_tilde
+            )
+            self._fl_M_act = self.curves.fiber_force_length_active.with_defaults(
+                self._l_M_tilde
+            )
+            self._fv_M = self.curves.fiber_force_velocity.with_defaults(self._v_M_tilde)
+        else:
+            fl_T_constants = symbols(f"c_0:4_fl_T_{self.name}")
+            self._fl_T = self.curves.tendon_force_length(
+                self._l_T_tilde, *fl_T_constants
+            )
+            fl_M_pas_constants = symbols(f"c_0:2_fl_M_pas_{self.name}")
+            self._fl_M_pas = self.curves.fiber_force_length_passive(
+                self._l_M_tilde, *fl_M_pas_constants
+            )
+            fl_M_act_constants = symbols(f"c_0:12_fl_M_act_{self.name}")
+            self._fl_M_act = self.curves.fiber_force_length_active(
+                self._l_M_tilde, *fl_M_act_constants
+            )
+            fv_M_constants = symbols(f"c_0:4_fv_M_{self.name}")
+            self._fv_M = self.curves.fiber_force_velocity(
+                self._v_M_tilde, *fv_M_constants
+            )
+        self._F_M_tilde = (
+            self.a * self._fl_M_act * self._fv_M
+            + self._fl_M_pas
+            + self._beta * self._v_M_tilde
+        )
+        self._F_T_tilde = self._F_M_tilde
+        self._F_M = self._F_M_tilde * self._F_M_max
+        self._cos_alpha = cos(self._alpha_opt)
+        self._F_T = self._F_M * self._cos_alpha
+
+        # Containers
+        self._state_vars = zeros(0, 1)
+        self._input_vars = zeros(0, 1)
+        self._state_eqns = zeros(0, 1)
+        self._curve_constants = (
+            Matrix(
+                fl_T_constants
+                + fl_M_pas_constants
+                + fl_M_act_constants
+                + fv_M_constants
+            )
+            if not self._with_defaults
+            else zeros(0, 1)
+        )
+
+    def _tendon_force_explicit_musculotendon_dynamics(self):
+        """Elastic tendon musculotendon using `F_T_tilde` as a state."""
+        self._F_T_tilde = dynamicsymbols(f"F_T_tilde_{self.name}")
+        self._l_MT = self.pathway.length
+        self._v_MT = self.pathway.extension_velocity
+        self._fl_T = self._F_T_tilde
+        if self._with_defaults:
+            self._fl_T_inv = self.curves.tendon_force_length_inverse.with_defaults(
+                self._fl_T
+            )
+        else:
+            fl_T_constants = symbols(f"c_0:4_fl_T_{self.name}")
+            self._fl_T_inv = self.curves.tendon_force_length_inverse(
+                self._fl_T, *fl_T_constants
+            )
+        self._l_T_tilde = self._fl_T_inv
+        self._l_T = self._l_T_tilde * self._l_T_slack
+        self._l_M = sqrt(
+            (self._l_MT - self._l_T) ** 2 + (self._l_M_opt * sin(self._alpha_opt)) ** 2
+        )
+        self._l_M_tilde = self._l_M / self._l_M_opt
+        if self._with_defaults:
+            self._fl_M_pas = self.curves.fiber_force_length_passive.with_defaults(
+                self._l_M_tilde
+            )
+            self._fl_M_act = self.curves.fiber_force_length_active.with_defaults(
+                self._l_M_tilde
+            )
+        else:
+            fl_M_pas_constants = symbols(f"c_0:2_fl_M_pas_{self.name}")
+            self._fl_M_pas = self.curves.fiber_force_length_passive(
+                self._l_M_tilde, *fl_M_pas_constants
+            )
+            fl_M_act_constants = symbols(f"c_0:12_fl_M_act_{self.name}")
+            self._fl_M_act = self.curves.fiber_force_length_active(
+                self._l_M_tilde, *fl_M_act_constants
+            )
+        self._cos_alpha = (self._l_MT - self._l_T) / self._l_M
+        self._F_T = self._F_T_tilde * self._F_M_max
+        self._F_M = self._F_T / self._cos_alpha
+        self._F_M_tilde = self._F_M / self._F_M_max
+        self._fv_M = (self._F_M_tilde - self._fl_M_pas) / (self.a * self._fl_M_act)
+        if self._with_defaults:
+            self._fv_M_inv = self.curves.fiber_force_velocity_inverse.with_defaults(
+                self._fv_M
+            )
+        else:
+            fv_M_constants = symbols(f"c_0:4_fv_M_{self.name}")
+            self._fv_M_inv = self.curves.fiber_force_velocity_inverse(
+                self._fv_M, *fv_M_constants
+            )
+        self._v_M_tilde = self._fv_M_inv
+        self._v_M = self._v_M_tilde * self._v_M_max
+        self._v_T = self._v_MT - (self._v_M / self._cos_alpha)
+        self._v_T_tilde = self._v_T / self._l_T_slack
+        if self._with_defaults:
+            self._fl_T = self.curves.tendon_force_length.with_defaults(self._l_T_tilde)
+        else:
+            self._fl_T = self.curves.tendon_force_length(
+                self._l_T_tilde, *fl_T_constants
+            )
+        self._dF_T_tilde_dt = self._fl_T.diff(dynamicsymbols._t).subs(
+            {self._l_T_tilde.diff(dynamicsymbols._t): self._v_T_tilde}
+        )
+
+        self._state_vars = Matrix([self._F_T_tilde])
+        self._input_vars = zeros(0, 1)
+        self._state_eqns = Matrix([self._dF_T_tilde_dt])
+        self._curve_constants = (
+            Matrix(
+                fl_T_constants
+                + fl_M_pas_constants
+                + fl_M_act_constants
+                + fv_M_constants
+            )
+            if not self._with_defaults
+            else zeros(0, 1)
+        )
+```
+
+
+Command
+```
+/tmp/mypy_primer/ty_new/target/debug/ty check sympy/physics/biomechanics/musculotendon.py --python /tmp/mypy_primer/projects/_sympy_venv --output-format concise
+```
+</details>
+
+---
+
+_Comment by @Glyphack on 2025-09-02 16:49_
+
+I ran primer on rest of the projects, there are more cases that type checking does not finish. I didn't check the root cause but they are similar to the ones above. Just keeping them here to try them out with the fix.
+
+(Used [this](https://gist.github.com/Glyphack/6f430f90c3c28954f89216c7b87b61d4) little script to get what timed out)
+
+## parso
+
+This slimmed down version of https://github.com/davidhalter/parso/blob/be9f5a401feaa1a7eda935bc68b2d3baed9a30ab/parso/python/pep8.py#L152 runs in 7s.
+
+<details>
+
+```py
+class IndentationTypes:
+    VERTICAL_BRACKET = object()
+    HANGING_BRACKET = object()
+    BACKSLASH = object()
+    SUITE = object()
+    IMPLICIT = object()
+
+class PEP8Normalizer:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._previous_part = None
+        self._on_newline = True
+        self._implicit_indentation_possible = False
+
+    def add_issue(self):
+        pass
+
+    def _check_tabs_spaces(self):
+        pass
+
+    def _visit_part(self, part, spacing):
+        value = part.value
+        type_ = part.type
+        if type_ == 'error_leaf':
+            return
+
+        if value == ',':
+            self._indentation_tos = self._indentation_tos.parent
+
+        node = self._indentation_tos
+
+        indentation = spacing.value
+        if not self._check_tabs_spaces():
+            pass
+            if value in '])}':
+                should_be_indentation = node.bracket_indentation
+            if indentation != should_be_indentation:
+                if part.value not in {'\n', '\r\n', '\r'}:
+                    if value in '])}':
+                        if node.type == IndentationTypes.VERTICAL_BRACKET:
+                            pass
+                    else:
+                        if len(indentation) < len(should_be_indentation):
+                            if node.type == IndentationTypes.VERTICAL_BRACKET:
+                                # Doing a member access like add_issue here is important
+                                self.add_issue()
+                            elif node.type == IndentationTypes.BACKSLASH:
+                                self.add_issue()
+
+        if value in ('=', ':') and self._implicit_indentation_possible:
+            indentation = node.indentation
+            self._indentation_tos = ImplicitNode(
+                self._config, part, parent=self._indentation_tos
+            )
+        self._previous_part = part
+```
+
+</details>
+
+## pycryptodome
+
+Similar to previous one:
+
+[https://github.com/Legrandin/pycryptodome/blob/2c3a8905a7929335a9b2763e18d6e9ed516b8a38/lib/Crypto/Cipher/_mode_ccm.py#L1](https://github.com/Legrandin/pycryptodome/blob/2c3a8905a7929335a9b2763e18d6e9ed516b8a38/lib/Crypto/Cipher/_mode_ccm.py#L1) 
+
+<details>
+
+```py
+import struct
+from Crypto.Util.py3compat import (_copy_bytes)
+from Crypto.Util._raw_api import is_writeable_buffer
+from Crypto.Util.number import long_to_bytes
+
+def enum(**enums):
+    return type('Enum', (), enums)
+
+MacStatus = enum(NOT_STARTED=0, PROCESSING_AUTH_DATA=1, PROCESSING_PLAINTEXT=2)
+
+class CcmMode(object):
+    def __init__(self, factory, key, nonce, mac_len, msg_len, assoc_len,
+                 cipher_params):
+
+        self.block_size = factory.block_size
+        """The block size of the underlying cipher, in bytes."""
+
+        self.nonce = _copy_bytes(None, None, nonce)
+        """The nonce used for this cipher instance"""
+
+        self._factory = factory
+        self._key = _copy_bytes(None, None, key)
+        self._mac_len = mac_len
+        self._msg_len = msg_len
+        self._assoc_len = assoc_len
+        self._cipher_params = cipher_params
+
+        self._mac_tag = None  # Cache for MAC tag
+
+        if self.block_size != 16:
+            raise ValueError("CCM mode is only available for ciphers"
+                             " that operate on 128 bits blocks")
+
+        # MAC tag length (Tlen)
+        if mac_len not in (4, 6, 8, 10, 12, 14, 16):
+            raise ValueError("Parameter 'mac_len' must be even"
+                             " and in the range 4..16 (not %d)" % mac_len)
+
+        # Nonce value
+        if not (7 <= len(nonce) <= 13):
+            raise ValueError("Length of parameter 'nonce' must be"
+                             " in the range 7..13 bytes")
+
+        # Message length (if known already)
+        q = 15 - len(nonce)  # length of Q, the encoded message length
+        if msg_len and len(long_to_bytes(msg_len)) > q:
+            raise CCMMessageTooLongError("Message too long for a %u-byte nonce" % len(nonce))
+
+        # Create MAC object (the tag will be the last block
+        # bytes worth of ciphertext)
+        self._mac = self._factory.new(key,
+                                      factory.MODE_CBC,
+                                      iv=b'\x00' * 16,
+                                      **cipher_params)
+        self._mac_status = MacStatus.NOT_STARTED
+        self._t = None
+
+        # Allowed transitions after initialization
+        self._next = ["update", "encrypt", "decrypt",
+                      "digest", "verify"]
+
+        # Cumulative lengths
+        self._cumul_assoc_len = 0
+        self._cumul_msg_len = 0
+
+        # Cache for unaligned associated data/plaintext.
+        # This is a list with byte strings, but when the MAC starts,
+        # it will become a binary string no longer than the block size.
+        self._cache = []
+
+        # Start CTR cipher, by formatting the counter (A.3)
+        self._cipher = self._factory.new(key,
+                                         self._factory.MODE_CTR,
+                                         nonce=struct.pack("B", q - 1) + self.nonce,
+                                         **cipher_params)
+
+        # S_0, step 6 in 6.1 for j=0
+        self._s_0 = self._cipher.encrypt(b'\x00' * 16)
+
+        # Try to start the MAC
+        if None not in (assoc_len, msg_len):
+            self._start_mac()
+
+    def _update(self, assoc_data_pt=b""):
+        """Update the MAC with associated data or plaintext
+           (without FSM checks)"""
+
+        # If MAC has not started yet, we just park the data into a list.
+        # If the data is mutable, we create a copy and store that instead.
+        if self._mac_status == MacStatus.NOT_STARTED:
+            if is_writeable_buffer(assoc_data_pt):
+                assoc_data_pt = _copy_bytes(None, None, assoc_data_pt)
+            self._cache.append(assoc_data_pt)
+            return
+
+        assert(len(self._cache) < self.block_size)
+
+        if len(self._cache) > 0:
+            filler = min(self.block_size - len(self._cache),
+                         len(assoc_data_pt))
+            self._cache += _copy_bytes(None, filler, assoc_data_pt)
+            assoc_data_pt = _copy_bytes(filler, None, assoc_data_pt)
+
+            if len(self._cache) < self.block_size:
+                return
+
+            # The cache is exactly one block
+            self._t = self._mac.encrypt(self._cache)
+            self._cache = b""
+
+        update_len = len(assoc_data_pt) // self.block_size * self.block_size
+        self._cache = _copy_bytes(update_len, None, assoc_data_pt)
+        if update_len > 0:
+            self._t = self._mac.encrypt(assoc_data_pt[:update_len])[-16:]
+
+
+    def decrypt(self, ciphertext, output=None):
+        """Decrypt data with the key set at initialization.
+
+        A cipher object is stateful: once you have decrypted a message
+        you cannot decrypt (or encrypt) another message with the same
+        object.
+
+        This method can be called only **once** if ``msg_len`` was
+        not passed at initialization.
+
+        If ``msg_len`` was given, the data to decrypt can be
+        broken up in two or more pieces and `decrypt` can be
+        called multiple times.
+
+        That is, the statement:
+
+            >>> c.decrypt(a) + c.decrypt(b)
+
+        is equivalent to:
+
+             >>> c.decrypt(a+b)
+
+        This function does not remove any padding from the plaintext.
+
+        :Parameters:
+          ciphertext : bytes/bytearray/memoryview
+            The piece of data to decrypt.
+            It can be of any length.
+        :Keywords:
+          output : bytearray/memoryview
+            The location where the plaintext must be written to.
+            If ``None``, the plaintext is returned.
+        :Return:
+          If ``output`` is ``None``, the plaintext as ``bytes``.
+          Otherwise, ``None``.
+        """
+
+        if "decrypt" not in self._next:
+            raise TypeError("decrypt() can only be called"
+                            " after initialization or an update()")
+        self._next = ["decrypt", "verify"]
+
+        # No more associated data allowed from now
+        if self._assoc_len is None:
+            assert(isinstance(self._cache, list))
+            self._assoc_len = sum([len(x) for x in self._cache])
+            if self._msg_len is not None:
+                self._start_mac()
+        else:
+            if self._cumul_assoc_len < self._assoc_len:
+                raise ValueError("Associated data is too short")
+
+        # Only once piece of ciphertext accepted if message length was
+        # not declared in advance
+        if self._msg_len is None:
+            q = 15 - len(self.nonce)
+            if len(long_to_bytes(len(ciphertext))) > q:
+                raise CCMMessageTooLongError("Message too long for a %u-byte nonce" % len(self.nonce))
+
+            self._msg_len = len(ciphertext)
+            self._start_mac()
+            self._next = ["verify"]
+
+        self._cumul_msg_len += len(ciphertext)
+        if self._cumul_msg_len > self._msg_len:
+            msg = "Message longer than declared for (%u bytes vs %u bytes" % \
+                  (self._cumul_msg_len, self._msg_len)
+            raise CCMMessageTooLongError(msg)
+
+        if self._mac_status == MacStatus.PROCESSING_AUTH_DATA:
+            # Associated data is concatenated with the least number
+            # of zero bytes (possibly none) to reach alignment to
+            # the 16 byte boundary (A.2.3)
+            self._pad_cache_and_update()
+            self._mac_status = MacStatus.PROCESSING_PLAINTEXT
+
+        # Encrypt is equivalent to decrypt with the CTR mode
+        plaintext = self._cipher.encrypt(ciphertext, output=output)
+        if output is None:
+            self._update(plaintext)
+        else:
+            self._update(output)
+        return plaintext
+```
+
+</details>
+
+## Others
+Rest of the apps that did not finish but I didn’t check what file:
+
+<details>
+
+apprise
+
+```
+cd /tmp/mypy_primer/projects/apprise && /tmp/mypy_primer/ty_new/target/debug/ty check . --python /tmp/mypy_primer/projects/_apprise_venv --output-format concise -vv
+```
+
+pandas
+
+```
+cd /tmp/mypy_primer/projects/pandas && /tmp/mypy_primer/ty_new/target/debug/ty check pandas --python /tmp/mypy_primer/projects/_pandas_venv --output-format concise  -vv
+```
+
+aiohttp
+
+```
+cd /tmp/mypy_primer/projects/aiohttp && /tmp/mypy_primer/ty_new/target/debug/ty check aiohttp --python /tmp/mypy_primer/projects/_aiohttp_venv --output-format concise       -vv
+```
+
+</details>
+
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-03 10:29_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-03 10:52_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-03 10:52_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-03 10:58_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+**Failing projects**:
+
+| Project | Old Status | New Status | Old Return Code | New Return Code |
+|---------|------------|------------|-----------------|------------------|
+| `zulip` | success | abnormal exit | `1` | `101` |
+| `setuptools` | success | abnormal exit | `1` | `101` |
+| `bokeh` | success | abnormal exit | `1` | `101` |
+| `sympy` | success | timeout | `1` | `None` |
+| `scipy` | success | timeout | `1` | `None` |
+| `pywin32` | success | timeout | `1` | `None` |
+| `pycryptodome` | success | timeout | `1` | `None` |
+| `prefect` | success | timeout | `1` | `None` |
+| `parso` | success | timeout | `1` | `None` |
+| `pandas` | success | timeout | `1` | `None` |
+| `apprise` | success | timeout | `1` | `None` |
+| `aiohttp` | success | timeout | `1` | `None` |
+
+**Diagnostic changes:**
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `possibly-missing-attribute` | 2,424 | 4 | 14 |
+| `unresolved-attribute` | 1,481 | 0 | 0 |
+| `invalid-argument-type` | 1,384 | 6 | 90 |
+| `unused-ignore-comment` | 0 | 962 | 0 |
+| `invalid-super-argument` | 404 | 0 | 1 |
+| `invalid-assignment` | 382 | 6 | 15 |
+| `invalid-return-type` | 302 | 63 | 14 |
+| `unsupported-operator` | 201 | 2 | 7 |
+| `non-subscriptable` | 185 | 0 | 0 |
+| `missing-argument` | 177 | 0 | 0 |
+| `too-many-positional-arguments` | 158 | 0 | 0 |
+| `call-non-callable` | 148 | 0 | 0 |
+| `possibly-missing-implicit-call` | 62 | 4 | 5 |
+| `not-iterable` | 59 | 0 | 0 |
+| `no-matching-overload` | 57 | 0 | 0 |
+| `deprecated` | 28 | 0 | 0 |
+| `unknown-argument` | 18 | 0 | 0 |
+| `possibly-unresolved-reference` | 0 | 14 | 0 |
+| `parameter-already-assigned` | 9 | 4 | 0 |
+| `redundant-cast` | 13 | 0 | 0 |
+| `division-by-zero` | 3 | 4 | 0 |
+| `invalid-await` | 2 | 0 | 1 |
+| `type-assertion-failure` | 0 | 3 | 0 |
+| `index-out-of-bounds` | 2 | 0 | 0 |
+| `invalid-context-manager` | 2 | 0 | 0 |
+| `invalid-key` | 2 | 0 | 0 |
+| `missing-typed-dict-key` | 2 | 0 | 0 |
+| `unsupported-base` | 2 | 0 | 0 |
+| `invalid-parameter-default` | 1 | 0 | 0 |
+| `invalid-type-form` | 1 | 0 | 0 |
+| **Total** | **7,509** | **1,072** | **147** |
+
+
+---
+
+_Comment by @sharkdp on 2025-09-03 11:07_
+
+> I ran primer on rest of the projects
+
+Thank you for doing that. Being able to analyze changes like that across the ecosystem will be useful for other PRs as well, so I updated [ecosystem-analyzer](https://github.com/astral-sh/ecosystem-analyzer) a bit to be able to handle timeouts on projects and report abnormal exit codes (e.g. panics). As you can see from the comment above, the workflow reports timeouts for the same projects that you also found. In addition, it also reports a change in exit code for `home-assistant/core` (a stack overflow). We should maybe look into that, but we've had problems with stack-overflows on that project in the past. And it does seem unlikely that this PR is the root cause.
+
+ecosystem-analyzer can now also create timing diffs across all ecosystem projects. I uploaded the report for this PR here: https://shark.fish/type-of-self-timing-diff.html. As we can see, the overall effect is actually not that bad, except for the timeouts.
+
+The full ecosystem diagnostic diff (for the non-failing projects) can be found here: https://shark.fish/type-of-self-diff.html. A huge increase in diagnostics is certainly expected for this change, and a full analysis of the changes is certainly not useful. But maybe there are some alarming patterns that someone spots.
+
+---
+
+_Comment by @sharkdp on 2025-09-03 12:57_
+
+> In addition, it also reports a change in exit code for `home-assistant/core` (a stack overflow). We should maybe look into that, but we've had problems with stack-overflows on that project in the past. And it does seem unlikely that this PR is the root cause.
+
+I narrowed that down to something like
+```py
+type JsonValueType = (
+    dict[str, JsonValueType] | list[JsonValueType] | str | int | float | bool | None
+)
+type JsonArrayType = list[JsonValueType]
+type JsonObjectType = dict[str, JsonValueType]
+
+
+def _(games: JsonObjectType):
+    games.update({})
+```
+so this is probably just https://github.com/astral-sh/ty/issues/256, manifesting as a stack overflow.
+
+---
+
+_Review comment by @sharkdp on `crates/ruff_benchmark/benches/ty.rs`:670 on 2025-09-03 13:19_
+
+I think we can remove these.
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/call/dunder.md`:205 on 2025-09-03 13:21_
+
+The "implicit shadowing" message is what we always show if you try to assign to something that is a function or class, so this seems fine.
+```suggestion
+        # error: [invalid-assignment] "Implicit shadowing of function `__getitem__`"
+```
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md`:189 on 2025-09-03 13:25_
+
+```suggestion
+        # TODO: Should not be an error
+        # error: [invalid-assignment] "Cannot assign to final attribute `INSTANCE_FINAL_C` on type `Self@__init__`"
+```
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md`:1 on 2025-09-03 13:26_
+
+I checked the [ecosystem diff](https://shark.fish/type-of-self-diff.html) and there are no (new) "Cannot assign to final attribute …" diagnostics, so this `self.x: Final; self.x = 1` variant does not seem wide-spread. I think it's okay to accept this as a limitation for now.
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/attributes.md`:332 on 2025-09-03 13:27_
+
+Should this be kept?
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/attributes.md`:400 on 2025-09-03 13:28_
+
+There are around [1600 new `unresolved-attribute` diagnostics](https://shark.fish/type-of-self-diff.html). Is it plausible that some of them are related to this?
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/attributes.md`:609 on 2025-09-03 13:31_
+
+What is going on here? The attribute assignment should not cause errors?
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/attributes.md`:1849 on 2025-09-03 13:33_
+
+There are a few new "implicit shadowing of function …" diagnostics in the [diff](https://shark.fish/type-of-self-diff.html). This seems sort-of fine, but maybe worth looking into.
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/cycle.md`:48 on 2025-09-03 13:34_
+
+This can be removed. We have more or less the same test in `attributes.md` (search for "`class Counter`").
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/descriptor_protocol.md`:174 on 2025-09-03 13:39_
+
+I think the new diagnostic is fine, because *if* `flag` is `True`, then `self.attr` is a `DataDescriptor`, and in that case, we would call its `__set__` method with an invalid type.
+
+```suggestion
+            # error: [invalid-assignment] "Invalid assignment to data descriptor attribute `attr` on type `Self@f` with custom `__set__` method"
+```
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/protocols.md`:946 on 2025-09-03 13:39_
+
+FYI @AlexWaygood 
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/primer/bad.txt`:22 on 2025-09-03 13:40_
+
+Remove?
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/primer/good.txt`:17 on 2025-09-03 13:40_
+
+Add again?
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/function.rs`:737 on 2025-09-03 13:44_
+
+I added a `is_classmethod` method on `FunctionType` recently (https://github.com/astral-sh/ruff/pull/20190). Note that `__new__` is not a classmethod (https://github.com/astral-sh/ruff/pull/20190#discussion_r2313195861). I suggest we remove this, and use `is_classmethod` below.
+
+---
+
+_@sharkdp reviewed on 2025-09-03 13:45_
+
+I added a first batch of review comments. Thank you very much for working on this. I am planning to resolve a few of these comments myself.
+
+---
+
+_@Glyphack reviewed on 2025-09-03 14:02_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/attributes.md`:332 on 2025-09-03 14:02_
+
+Yes, looks like my mistake
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/function.rs`:737 on 2025-09-03 14:08_
+
+I added a new `is_staticmethod` helper as well, and added it as a separated change here: https://github.com/astral-sh/ruff/pull/20212
+
+---
+
+_@sharkdp reviewed on 2025-09-03 14:08_
+
+---
+
+_@Glyphack reviewed on 2025-09-03 14:17_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/attributes.md`:609 on 2025-09-03 14:17_
+
+We should not emit unresolved attribute when setting it or am I missing something? (this and also the ones assigning through for loop they should not unresolved attribute diagnostic.)
+I created https://github.com/astral-sh/ty/issues/664 now checking it I see that I only put the unresolved attribute in the title but not in the example code.
+
+---
+
+_@sharkdp reviewed on 2025-09-03 14:24_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/attributes.md`:609 on 2025-09-03 14:24_
+
+Ah, for some reason I didn't realize it was the same mistake as above. Thanks.
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-03 14:27_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ tests/conftest.py:298:54: error[invalid-argument-type] Argument to bound method `run_pytest` is incorrect: Expected `Literal[False]`, found `bool`
+- Found 175 diagnostics
++ Found 176 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ mypy_primer/model.py:483:16: error[invalid-return-type] Return type does not match returned value: expected `str | Path`, found `(Unknown & ~None & ~list[Unknown]) | str | Path | (list[str] & ~list[Unknown])`
+- Found 8 diagnostics
++ Found 9 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
++ src/async_utils/_qs.py:557:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'Queue'>` in `super(<class 'Queue'>, Self@__init__)` call
++ src/async_utils/_qs.py:585:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'LIFOQueue'>` in `super(<class 'LIFOQueue'>, Self@__init__)` call
++ src/async_utils/_qs.py:615:13: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'PriorityQueue'>` in `super(<class 'PriorityQueue'>, Self@__init__)` call
++ src/async_utils/_qs.py:627:13: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'PriorityQueue'>` in `super(<class 'PriorityQueue'>, Self@__init__)` call
++ src/async_utils/task_cache.py:107:16: error[invalid-super-argument] `Self@__repr__` is not an instance or subclass of `<class '_WrappedSignature'>` in `super(<class '_WrappedSignature'>, Self@__repr__)` call
+- Found 7 diagnostics
++ Found 12 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- pyp.py:468:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_asyncio.py:165:35: error[invalid-argument-type] Argument to function `_cancel_all_tasks` is incorrect: Expected `AbstractEventLoop`, found `AbstractEventLoop | None`
++ src/anyio/_backends/_asyncio.py:166:17: warning[possibly-unbound-attribute] Attribute `run_until_complete` on type `AbstractEventLoop | None` is possibly unbound
++ src/anyio/_backends/_asyncio.py:166:41: warning[possibly-unbound-attribute] Attribute `shutdown_asyncgens` on type `AbstractEventLoop | None` is possibly unbound
++ src/anyio/_backends/_asyncio.py:170:21: error[unresolved-attribute] Type `None` has no attribute `run_until_complete`
++ src/anyio/_backends/_asyncio.py:170:72: error[invalid-argument-type] Argument to function `_shutdown_default_executor` is incorrect: Expected `AbstractEventLoop`, found `None`
++ src/anyio/_backends/_asyncio.py:174:17: warning[possibly-unbound-attribute] Attribute `close` on type `AbstractEventLoop | None` is possibly unbound
++ src/anyio/_backends/_asyncio.py:181:20: error[invalid-return-type] Return type does not match returned value: expected `AbstractEventLoop`, found `AbstractEventLoop | None`
++ src/anyio/_backends/_asyncio.py:255:17: warning[possibly-unbound-attribute] Attribute `call_soon_threadsafe` on type `AbstractEventLoop | None` is possibly unbound
++ src/anyio/_backends/_asyncio.py:493:21: error[unresolved-attribute] Type `Task[Unknown]` has no attribute `uncancel`
+- src/anyio/_backends/_asyncio.py:567:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_backends/_asyncio.py:572:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_backends/_asyncio.py:2126:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_backends/_asyncio.py:2129:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_backends/_asyncio.py:2130:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/anyio/_core/_fileio.py:407:51: error[unknown-argument] Argument `case_sensitive` does not match any known parameter of bound method `match`
++ src/anyio/_core/_fileio.py:617:57: error[unknown-argument] Argument `walk_up` does not match any known parameter of bound method `relative_to`
+- src/anyio/_core/_tempfile.py:295:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/anyio/_core/_tempfile.py:297:13: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'SpooledTemporaryFile'>` in `super(<class 'SpooledTemporaryFile'>, Self@__init__)` call
++ src/anyio/_core/_tempfile.py:312:15: error[invalid-super-argument] `Self@aclose` is not an instance or subclass of `<class 'SpooledTemporaryFile'>` in `super(<class 'SpooledTemporaryFile'>, Self@aclose)` call
+- src/anyio/_core/_tempfile.py:342:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_core/_tempfile.py:356:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_core/_tempfile.py:363:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_core/_tempfile.py:423:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_core/_tempfile.py:451:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/anyio/_core/_tempfile.py:384:22: error[invalid-super-argument] `Self@seek` is not an instance or subclass of `<class 'SpooledTemporaryFile'>` in `super(<class 'SpooledTemporaryFile'>, Self@seek)` call
++ src/anyio/_core/_tempfile.py:391:22: error[invalid-super-argument] `Self@tell` is not an instance or subclass of `<class 'SpooledTemporaryFile'>` in `super(<class 'SpooledTemporaryFile'>, Self@tell)` call
++ src/anyio/_core/_tempfile.py:398:22: error[invalid-super-argument] `Self@truncate` is not an instance or subclass of `<class 'SpooledTemporaryFile'>` in `super(<class 'SpooledTemporaryFile'>, Self@truncate)` call
+- Found 222 diagnostics
++ Found 227 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:269:66: error[invalid-super-argument] `Self@items` is not an instance or subclass of `<class 'BidictBase'>` in `super(<class 'BidictBase'>, Self@items)` call
++ bidict/_base.py:468:48: error[parameter-already-assigned] Multiple values provided for parameter `unwrites` of bound method `_write`
++ bidict/_orderedbase.py:77:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbase.py:78:9: error[invalid-assignment] Object of type `Node` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
++ bidict/_orderedbase.py:82:24: error[invalid-assignment] Object of type `Self@relink` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
++ bidict/_orderedbase.py:133:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'OrderedBidictBase'>` in `super(<class 'OrderedBidictBase'>, Self@__init__)` call
++ bidict/_orderedbase.py:144:49: error[invalid-super-argument] `Self@_make_inverse` is not an instance or subclass of `<class 'OrderedBidictBase'>` in `super(<class 'OrderedBidictBase'>, Self@_make_inverse)` call
++ bidict/_orderedbase.py:160:9: error[invalid-super-argument] `Self@_init_from` is not an instance or subclass of `<class 'OrderedBidictBase'>` in `super(<class 'OrderedBidictBase'>, Self@_init_from)` call
++ bidict/_orderedbase.py:171:9: error[invalid-super-argument] `Self@_write` is not an instance or subclass of `<class 'OrderedBidictBase'>` in `super(<class 'OrderedBidictBase'>, Self@_write)` call
++ bidict/_orderedbidict.py:46:9: error[invalid-super-argument] `Self@clear` is not an instance or subclass of `<class 'OrderedBidict'>` in `super(<class 'OrderedBidict'>, Self@clear)` call
++ bidict/_orderedbidict.py:51:15: error[invalid-super-argument] `Self@_pop` is not an instance or subclass of `<class 'OrderedBidict'>` in `super(<class 'OrderedBidict'>, Self@_pop)` call
++ bidict/_orderedbidict.py:80:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbidict.py:81:9: error[invalid-assignment] Object of type `Node` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
+- Found 14 diagnostics
++ Found 27 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ aioredis/connection.py:206:20: error[invalid-return-type] Return type does not match returned value: expected `ResponseError`, found `Exception | @Todo(Type::Intersection.call())`
+- aioredis/connection.py:352:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- aioredis/connection.py:803:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ aioredis/lock.py:251:19: error[call-non-callable] Object of type `None` is not callable
++ aioredis/lock.py:279:19: error[call-non-callable] Object of type `None` is not callable
++ aioredis/lock.py:299:23: error[unsupported-operator] Operator `*` is unsupported between objects of type `Unknown | int | float | None` and `Literal[1000]`
++ aioredis/lock.py:301:19: error[call-non-callable] Object of type `None` is not callable
+- Found 14 diagnostics
++ Found 17 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
++ src/pegen/grammar_parser.py:438:31: error[no-matching-overload] No overload of bound method `join` matches arguments
++ src/pegen/python_generator.py:270:51: error[unresolved-attribute] Type `GrammarVisitor` has no attribute `keywords`
++ src/pegen/python_generator.py:271:56: error[unresolved-attribute] Type `GrammarVisitor` has no attribute `soft_keywords`
+- Found 46 diagnostics
++ Found 49 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
++ nion/utils/ListModel.py:39:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ListModel'>` in `super(<class 'ListModel'>, Self@__init__)` call
++ nion/utils/ListModel.py:632:59: error[unresolved-attribute] Type `object` has no attribute `listen`
++ nion/utils/ListModel.py:633:57: error[unresolved-attribute] Type `object` has no attribute `listen`
++ nion/utils/ListModel.py:990:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ObservedListModel'>` in `super(<class 'ObservedListModel'>, Self@__init__)` call
++ nion/utils/Model.py:50:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'PropertyModel'>` in `super(<class 'PropertyModel'>, Self@__init__)` call
++ nion/utils/Model.py:83:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'FuncStreamValueModel'>` in `super(<class 'FuncStreamValueModel'>, Self@__init__)` call
++ nion/utils/Model.py:146:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'StreamValueModel'>` in `super(<class 'StreamValueModel'>, Self@__init__)` call
++ nion/utils/Model.py:168:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'PropertyChangedPropertyModel'>` in `super(<class 'PropertyChangedPropertyModel'>, Self@__init__)` call
++ nion/utils/Stream.py:34:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'AbstractStream'>` in `super(<class 'AbstractStream'>, Self@__init__)` call
++ nion/utils/Stream.py:97:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ValueStream'>` in `super(<class 'ValueStream'>, Self@__init__)` call
++ nion/utils/Stream.py:129:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'MapStream'>` in `super(<class 'MapStream'>, Self@__init__)` call
++ nion/utils/Stream.py:161:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'CombineLatestStream'>` in `super(<class 'CombineLatestStream'>, Self@__init__)` call
++ nion/utils/Stream.py:226:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'DebounceStream'>` in `super(<class 'DebounceStream'>, Self@__init__)` call
++ nion/utils/Stream.py:275:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'SampleStream'>` in `super(<class 'SampleStream'>, Self@__init__)` call
++ nion/utils/Stream.py:313:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ConstantStream'>` in `super(<class 'ConstantStream'>, Self@__init__)` call
++ nion/utils/Stream.py:329:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'PropertyChangedEventStream'>` in `super(<class 'PropertyChangedEventStream'>, Self@__init__)` call
++ nion/utils/Stream.py:380:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'OptionalStream'>` in `super(<class 'OptionalStream'>, Self@__init__)` call
++ nion/utils/Stream.py:403:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'FollowStream'>` in `super(<class 'FollowStream'>, Self@__init__)` call
++ nion/utils/Stream.py:446:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ValueStreamAction'>` in `super(<class 'ValueStreamAction'>, Self@__init__)` call
++ nion/utils/Stream.py:488:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ValueChangeStream'>` in `super(<class 'ValueChangeStream'>, Self@__init__)` call
++ nion/utils/Stream.py:499:13: error[invalid-super-argument] `Self@_send_value` is not an instance or subclass of `<class 'ValueChangeStream'>` in `super(<class 'ValueChangeStream'>, Self@_send_value)` call
+- Found 5 diagnostics
++ Found 26 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_check/logic/logcls.py:364:9: error[missing-argument] No argument provided for required parameter `get_cause_enumerator_item` of bound method `__init__`
+- beartype/_check/metadata/hint/hintmeta.py:126:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintmeta.py:127:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintmeta.py:128:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintmeta.py:129:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintmeta.py:130:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:298:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:301:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:302:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:303:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:305:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:306:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:307:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:423:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:632:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:332:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:334:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:335:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:336:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:339:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:341:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:342:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:343:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/metadecor.py:344:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_clawastutil.py:71:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:233:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:238:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:338:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:343:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:476:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:484:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:692:78: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:796:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastimport.py:1122:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_kind/clawastmodule.py:212:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:143:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:156:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:203:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:323:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:326:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:339:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:341:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep526.py:351:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_pep/clawastpep695.py:237:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_ast/_scope/clawastscope.py:185:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/door/_cls/pep/pep484585/doorpep484585subscripted.py:50:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/vale/_core/_valecorebinary.py:95:9: error[missing-argument] No arguments provided for required parameters `is_valid`, `is_valid_code` of bound method `__init__`
++ beartype/vale/_core/_valecoreunary.py:77:9: error[missing-argument] No arguments provided for required parameters `is_valid`, `is_valid_code` of bound method `__init__`
+- Found 590 diagnostics
++ Found 548 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
++ zipp/__init__.py:95:16: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:95:43: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:442:16: error[no-matching-overload] No overload of bound method `format` matches arguments
+- Found 2 diagnostics
++ Found 5 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/magic/_utils.py:73:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pyinstrument/magic/_utils.py:74:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pyinstrument/session.py:213:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, str].__setitem__(key: str, value: str, /) -> None` cannot be called with a key of type `str` and a value of type `str | bytes` on object of type `dict[str, str]`
++ pyinstrument/vendor/decorator.py:165:31: warning[possibly-unbound-attribute] Attribute `split` on type `Unknown | None | LiteralString` is possibly unbound
+
+python-chess (https://github.com/niklasf/python-chess)
++ chess/__init__.py:1512:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `BaseBoard`
++ chess/__init__.py:1796:20: error[invalid-return-type] Return type does not match returned value: expected `Self@root`, found `Board`
+- chess/engine.py:881:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/engine.py:908:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ chess/engine.py:509:20: error[unsupported-operator] Operator `<` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:515:20: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:521:20: error[unsupported-operator] Operator `>` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:527:20: error[unsupported-operator] Operator `>=` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/gaviota.py:1667:46: error[invalid-argument-type] Argument to bound method `egtb_loadindexes` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ chess/gaviota.py:1668:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, BinaryIO].__setitem__(key: str, value: BinaryIO, /) -> None` cannot be called with a key of type `str` and a value of type `TextIOWrapper[_WrappedBuffer]` on object of type `dict[str, BinaryIO]`
+- chess/gaviota.py:1670:16: error[invalid-return-type] Return type does not match returned value: expected `BinaryIO`, found `(Unknown & ~None) | TextIOWrapper[_WrappedBuffer]`
++ chess/gaviota.py:1670:16: error[invalid-return-type] Return type does not match returned value: expected `BinaryIO`, found `BinaryIO | TextIOWrapper[_WrappedBuffer]`
+- chess/pgn.py:353:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ chess/pgn.py:1050:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `Headers`
++ chess/variant.py:876:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `CrazyhousePocket`
+- Found 14 diagnostics
++ Found 21 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
++ expression/effect/async_option.py:130:16: error[invalid-super-argument] `Self@__call__` is not an instance or subclass of `<class 'AsyncOptionBuilder'>` in `super(<class 'AsyncOptionBuilder'>, Self@__call__)` call
++ expression/effect/async_result.py:131:16: error[invalid-super-argument] `Self@__call__` is not an instance or subclass of `<class 'AsyncResultBuilder'>` in `super(<class 'AsyncResultBuilder'>, Self@__call__)` call
++ expression/effect/option.py:105:16: error[invalid-super-argument] `Self@__call__` is not an instance or subclass of `<class 'OptionBuilder'>` in `super(<class 'OptionBuilder'>, Self@__call__)` call
++ expression/effect/result.py:96:16: error[invalid-super-argument] `Self@__call__` is not an instance or subclass of `<class 'ResultBuilder'>` in `super(<class 'ResultBuilder'>, Self@__call__)` call
++ expression/effect/seq.py:108:16: error[invalid-super-argument] `Self@__call__` is not an instance or subclass of `<class 'SeqBuilder'>` in `super(<class 'SeqBuilder'>, Self@__call__)` call
+- Found 225 diagnostics
++ Found 230 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- src/websockets/asyncio/connection.py:1009:13: error[parameter-already-assigned] Multiple values provided for parameter `pause` of bound method `__init__`
+- src/websockets/asyncio/connection.py:1010:13: error[parameter-already-assigned] Multiple values provided for parameter `resume` of bound method `__init__`
+- src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo(Type::Intersection.call()) | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b"Server is shutting down.\n"] | list[@Todo(list literal element type)]`
+- Found 44 diagnostics
++ Found 41 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
++ htmlgen/document.py:209:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `url` on type `Self@__init__` with custom `__set__` method
++ htmlgen/document.py:245:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `relation` on type `Self@__init__` with custom `__set__` method
++ htmlgen/document.py:246:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `url` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:91:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `type` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:92:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `name` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:125:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `value` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:169:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `number` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:232:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `time` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:293:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `value` on type `Self@__init__` with custom `__set__` method
++ htmlgen/form.py:337:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `value` on type `Self@__init__` with custom `__set__` method
+- Found 27 diagnostics
++ Found 37 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ src/attr/_make.py:843:13: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `__attrs_own_setattr__` on type `Unknown | type`
++ src/attr/_make.py:1062:13: error[invalid-argument-type] Argument to function `_make_hash_script` is incorrect: Expected `list[Attribute | Unknown]`, found `Unknown | type`
++ src/attr/_make.py:1108:26: error[not-iterable] Object of type `Unknown | type` may not be iterable
++ src/attr/_make.py:1140:41: error[invalid-argument-type] Argument to function `_make_eq_script` is incorrect: Expected `list[Unknown]`, found `Unknown | type`
++ src/attr/_make.py:1163:18: error[not-iterable] Object of type `Unknown | type` may not be iterable
++ src/attr/_make.py:2571:65: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `metadata`
++ src/attr/_make.py:2929:9: error[missing-argument] No argument provided for required parameter `converter` of bound method `__init__`
++ tests/test_cmp.py:321:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:329:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:389:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:397:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:407:18: warning[possibly-unbound-attribute] Attribute `__lt__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:415:18: warning[possibly-unbound-attribute] Attribute `__le__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:425:18: warning[possibly-unbound-attribute] Attribute `__gt__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:435:18: warning[possibly-unbound-attribute] Attribute `__ge__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:461:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:469:16: warning[possibly-unbound-attribute] Attribute `strip` on type `Unknown | str | None` is possibly unbound
++ tests/test_cmp.py:479:18: warning[possibly-unbound-attribute] Attribute `__lt__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:487:18: warning[possibly-unbound-attribute] Attribute `__le__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:495:18: warning[possibly-unbound-attribute] Attribute `__gt__` on type `Unknown | type` is possibly unbound
++ tests/test_cmp.py:503:18: warning[possibly-unbound-attribute] Attribute `__ge__` on type `Unknown | type` is possibly unbound
++ tests/test_make.py:2079:24: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `Unknown | ((...) -> Unknown)` is possibly unbound
++ tests/test_slots.py:971:24: error[unresolved-attribute] Type `<super: <class 'B'>, B>` has no attribute `__getattr__`
+- Found 563 diagnostics
++ Found 586 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
++ jwt/jwks_client.py:50:13: error[invalid-assignment] Implicit shadowing of function `get_signing_key`
++ jwt/jwks_client.py:117:16: error[missing-argument] No argument provided for required parameter `kid` of function `get_signing_key`
+- Found 23 diagnostics
++ Found 25 diagnostics
+
+black (https://github.com/psf/black)
+- src/blib2to3/pgen2/pgen.py:318:29: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `tuple[NFAState, NFAState]`
++ src/blib2to3/pgen2/parse.py:366:13: warning[possibly-unbound-attribute] Attribute `append` on type `Unknown | list[@Todo(Inference of subscript on special form)] | None` is possibly unbound
+
+antidote (https://github.com/Finistere/antidote)
++ src/antidote/core/_catalog.py:214:65: error[invalid-argument-type] Argument is incorrect: Expected `ReferenceType[CatalogImpl]`, found `ReferenceType[Self@__init__]`
++ src/antidote/core/_raw/wrapper.py:102:13: error[unresolved-attribute] Type `(...) -> object` has no attribute `__get__`
++ src/antidote/core/_raw/wrapper.py:136:13: error[unresolved-attribute] Type `(...) -> Awaitable[object]` has no attribute `__get__`
+- src/antidote/core/_scope.py:51:16: error[invalid-return-type] Return type does not match returned value: expected `ScopeVarToken[T@AbstractScopeVar, Any]`, found `ScopeVarToken[T@AbstractScopeVar | Missing, Unknown]`
++ src/antidote/core/_scope.py:51:16: error[invalid-return-type] Return type does not match returned value: expected `ScopeVarToken[T@AbstractScopeVar, Any]`, found `ScopeVarToken[T@AbstractScopeVar | Missing, Self@set]`
++ src/antidote/core/scope.py:130:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'ScopeGlobalVar'>` in `super(<class 'ScopeGlobalVar'>, Self@__init__)` call
++ src/antidote/core/scope.py:133:58: error[invalid-super-argument] `Self@set` is not an instance or subclass of `<class 'ScopeGlobalVar'>` in `super(<class 'ScopeGlobalVar'>, Self@set)` call
++ src/antidote/core/scope.py:136:16: error[invalid-super-argument] `Self@reset` is not an instance or subclass of `<class 'ScopeGlobalVar'>` in `super(<class 'ScopeGlobalVar'>, Self@reset)` call
++ src/antidote/core/wiring.py:150:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, Methods | frozenset[str] | Mapping[str, object] | bool].__setitem__(key: str, value: Methods | frozenset[str] | Mapping[str, object] | bool, /) -> None` cannot be called with a key of type `Literal["methods"]` and a value of type `Iterable[str]` on object of type `dict[str, Methods | frozenset[str] | Mapping[str, object] | bool]`
+- src/antidote/lib/interface_ext/_interface.py:242:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/antidote/lib/interface_ext/_interface.py:306:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/antidote/lib/interface_ext/_internal.py:114:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 382 diagnostics
++ Found 386 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
++ src/zope/interface/adapter.py:198:26: error[unresolved-attribute] Type `Self@_createLookup` has no attribute `LookupClass`
++ src/zope/interface/adapter.py:647:22: error[unresolved-attribute] Type `Self@lookup` has no attribute `_uncached_lookup`
++ src/zope/interface/adapter.py:701:22: error[unresolved-attribute] Type `Self@lookupAll` has no attribute `_uncached_lookupAll`
++ src/zope/interface/adapter.py:715:22: error[unresolved-attribute] Type `Self@subscriptions` has no attribute `_uncached_subscriptions`
++ src/zope/interface/adapter.py:769:9: error[unresolved-attribute] Type `<super: <class 'AdapterLookupBase'>, AdapterLookupBase>` has no attribute `changed`
++ src/zope/interface/adapter.py:855:19: error[unresolved-attribute] Type `Self@queryMultiAdapter` has no attribute `lookup`
++ src/zope/interface/adapter.py:886:31: error[unresolved-attribute] Type `Self@names` has no attribute `lookupAll`
++ src/zope/interface/adapter.py:912:25: error[unresolved-attribute] Type `Self@subscribers` has no attribute `subscriptions`
++ src/zope/interface/common/tests/basemapping.py:75:16: error[unresolved-attribute] Type `Self@testIReadMapping` has no attribute `_IReadMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:76:17: error[unresolved-attribute] Type `Self@testIReadMapping` has no attribute `_IReadMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:77:18: error[unresolved-attribute] Type `Self@testIReadMapping` has no attribute `_IReadMapping__absentKeys`
++ src/zope/interface/common/tests/basemapping.py:86:16: error[unresolved-attribute] Type `Self@test_keys` has no attribute `_IEnumerableMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:87:17: error[unresolved-attribute] Type `Self@test_keys` has no attribute `_IEnumerableMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:92:16: error[unresolved-attribute] Type `Self@test_values` has no attribute `_IEnumerableMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:93:17: error[unresolved-attribute] Type `Self@test_values` has no attribute `_IEnumerableMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:98:16: error[unresolved-attribute] Type `Self@test_items` has no attribute `_IEnumerableMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:99:17: error[unresolved-attribute] Type `Self@test_items` has no attribute `_IEnumerableMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:104:16: error[unresolved-attribute] Type `Self@test___len__` has no attribute `_IEnumerableMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:105:17: error[unresolved-attribute] Type `Self@test___len__` has no attribute `_IEnumerableMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:109:16: error[unresolved-attribute] Type `Self@_IReadMapping__stateDict` has no attribute `_IEnumerableMapping__stateDict`
++ src/zope/interface/common/tests/basemapping.py:112:16: error[unresolved-attribute] Type `Self@_IReadMapping__sample` has no attribute `_IEnumerableMapping__sample`
++ src/zope/interface/common/tests/basemapping.py:115:16: error[unresolved-attribute] Type `Self@_IReadMapping__absentKeys` has no attribute `_IEnumerableMapping__absentKeys`
++ src/zope/interface/declarations.py:780:49: error[index-out-of-bounds] Index 0 is out of bounds for tuple `tuple[()]` with length 0
++ src/zope/interface/declarations.py:901:19: error[unresolved-attribute] Type `Self@__get__` has no attribute `_cls`
++ src/zope/interface/declarations.py:909:20: error[unresolved-attribute] Type `Self@__get__` has no attribute `_implements`
++ src/zope/interface/interface.py:176:29: error[unresolved-attribute] Type `Self@isOrExtends` has no attribute `_implied`
++ src/zope/interface/interface.py:226:15: error[unresolved-attribute] Type `Self@_compare` has no attribute `__name__`
++ src/zope/interface/interface.py:307:12: error[unresolved-attribute] Type `Self@__adapt__` has no attribute `providedBy`
++ src/zope/interface/interface.py:391:9: warning[possibly-unbound-implicit-call] Method `__setitem__` of type `Unknown | WeakKeyDictionary[Unknown, Unknown] | None` is possibly unbound
++ src/zope/interface/interface.py:395:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ src/zope/interface/interface.py:660:13: error[unresolved-attribute] Type `Self@__repr__` has no attribute `__module`
++ src/zope/interface/registry.py:180:44: warning[possibly-unbound-attribute] Attribute `items` on type `str | Any` is possibly unbound
++ src/zope/interface/registry.py:298:16: warning[possibly-unbound-attribute] Attribute `lookup` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:301:19: warning[possibly-unbound-attribute] Attribute `lookup` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:307:20: warning[possibly-unbound-attribute] Attribute `lookupAll` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:310:16: warning[possibly-unbound-attribute] Attribute `subscriptions` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:363:16: warning[possibly-unbound-attribute] Attribute `queryAdapter` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:366:19: warning[possibly-unbound-attribute] Attribute `queryAdapter` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:373:16: warning[possibly-unbound-attribute] Attribute `queryMultiAdapter` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:377:19: warning[possibly-unbound-attribute] Attribute `queryMultiAdapter` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:383:30: warning[possibly-unbound-attribute] Attribute `lookupAll` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:458:16: warning[possibly-unbound-attribute] Attribute `subscribers` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:516:9: warning[possibly-unbound-attribute] Attribute `subscribers` on type `Unknown | AdapterRegistry` is possibly unbound
++ src/zope/interface/registry.py:552:9: error[invalid-assignment] Object of type `(_) -> Unknown` is not assignable to attribute `changed` on type `Unknown | AdapterRegistry`
++ src/zope/interface/tests/__init__.py:26:13: error[unresolved-attribute] Type `Self@test_optimizations` has no attribute `assertIsNot`
++ src/zope/interface/tests/__init__.py:28:13: error[unresolved-attribute] Type `Self@test_optimizations` has no attribute `assertIs`
++ src/zope/interface/tests/test_adapter.py:64:16: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ src/zope/interface/tests/test_adapter.py:67:9: warning[possibly-unbound-implicit-call] Method `__setitem__` of type `Unknown | None` is possibly unbound
++ src/zope/interface/tests/test_adapter.py:70:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ src/zope/interface/tests/test_adapter.py:73:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
++ src/zope/interface/tests/test_adapter.py:76:16: error[unsupported-operator] Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `Unknown | None`
++ src/zope/interface/tests/test_declarations.py:44:21: error[unresolved-attribute] Type `Self@_run_generated_code` has no attribute `fail`
++ src/zope/interface/tests/test_declarations.py:921:9: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIs`
++ src/zope/interface/tests/test_declarations.py:924:13: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIs`
++ src/zope/interface/tests/test_declarations.py:926:9: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertEqual`
++ src/zope/interface/tests/test_declarations.py:929:9: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIs`
++ src/zope/interface/tests/test_declarations.py:930:9: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIs`
++ src/zope/interface/tests/test_declarations.py:932:13: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIsInstance`
++ src/zope/interface/tests/test_declarations.py:933:13: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertIsInstance`
++ src/zope/interface/tests/test_declarations.py:934:13: error[unresolved-attribute] Type `Self@_check_implementer` has no attribute `assertEqual`
++ src/zope/interface/tests/test_interface.py:1805:38: error[invalid-argument-type] Argument to bound method `assertNotIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'IEmpty'>`
++ src/zope/interface/tests/test_interface.py:1817:31: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'ISimple'>`
++ src/zope/interface/tests/test_interface.py:1818:33: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'ISimple'>`
++ src/zope/interface/tests/test_interface.py:1839:31: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'IDerived'>`
++ src/zope/interface/tests/test_interface.py:1840:33: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'IDerived'>`
++ src/zope/interface/tests/test_interface.py:1841:32: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'IDerived'>`
++ src/zope/interface/tests/test_interface.py:1842:34: error[invalid-argument-type] Argument to bound method `assertIn` is incorrect: Expected `Iterable[Any] | Container[Any]`, found `<class 'IDerived'>`
++ src/zope/interface/tests/test_interfaces.py:9:16: error[unresolved-attribute] Type `Self@_makeOne` has no attribute `_getTargetClass`
++ src/zope/interface/tests/test_interfaces.py:14:35: error[unresolved-attribute] Type `Self@test_class_conforms_to_IObjectEvent` has no attribute `_getTargetClass`
++ src/zope/interface/tests/test_interfaces.py:27:41: error[unresolved-attribute] Type `Self@test_class_conforms_to_IRegistrationEvent` has no attribute `_getTargetClass`
++ src/zope/interface/tests/test_sorting.py:70:9: error[no-matching-overload] No overload of bound method `assertLess` matches arguments
++ src/zope/interface/tests/test_verify.py:37:16: error[call-non-callable] Object of type `None` is not callable
+- Found 340 diagnostics
++ Found 412 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ kopf/_cogs/aiokits/aioenums.py:35:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'FlagSetter'>` in `super(<class 'FlagSetter'>, Self@__init__)` call
++ kopf/_cogs/aiokits/aioenums.py:80:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'FlagWaiter'>` in `super(<class 'FlagWaiter'>, Self@__init__)` call
++ kopf/_cogs/aiokits/aioenums.py:163:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'AsyncFlagPromise'>` in `super(<class 'AsyncFlagPromise'>, Self@__init__)` call
++ kopf/_cogs/aiokits/aiovalues.py:11:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'Container'>` in `super(<class 'Container'>, Self@__init__)` call
++ kopf/_cogs/structs/credentials.py:163:16: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `dict[str, object] | None | dict[@Todo(dict literal key type), @Todo(dict literal value type)]`
++ kopf/_cogs/structs/credentials.py:165:24: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `dict[str, object] | None | dict[@Todo(dict literal key type), @Todo(dict literal value type)]`
++ kopf/_cogs/structs/credentials.py:166:25: warning[possibly-unbound-implicit-call] Method `__setitem__` of type `dict[str, object] | None | dict[@Todo(dict literal key type), @Todo(dict literal value type)]` is possibly unbound
++ kopf/_cogs/structs/credentials.py:167:44: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- kopf/_cogs/structs/patches.py:116:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ kopf/_cogs/structs/dicts.py:283:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'MappingView'>` in `super(<class 'MappingView'>, Self@__init__)` call
++ kopf/_core/engines/indexing.py:31:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'Store'>` in `super(<class 'Store'>, Self@__init__)` call
++ kopf/_core/engines/indexing.py:83:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'Index'>` in `super(<class 'Index'>, Self@__init__)` call
++ kopf/_core/intents/registries.py:37:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'GenericRegistry'>` in `super(<class 'GenericRegistry'>, Self@__init__)` call
+- Found 50 diagnostics
++ Found 61 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_io_epoll.py:308:40: error[invalid-argument-type] Argument to bound method `_update_registrations` is incorrect: Expected `int`, found `int | _HasFileNo`
++ src/trio/_core/_ki.py:131:13: error[invalid-parameter-default] Default value of type `ReferenceType[Self@__init__]` is not assignable to annotated parameter type `ReferenceType[WeakKeyIdentityDictionary[_KT@WeakKeyIdentityDictionary, _VT@WeakKeyIdentityDictionary]]`
++ src/trio/_core/_run.py:1031:9: error[invalid-assignment] Object of type `StatusT@_TaskStatus` is not assignable to attribute `_value` of type `None | <class '_NoStatus'>`
+- src/trio/_core/_run.py:1626:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_core/_run.py:2012:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_file_io.py:260:21: error[invalid-super-argument] `Self@__dir__` is not an instance or subclass of `<class 'AsyncIOWrapper'>` in `super(<class 'AsyncIOWrapper'>, Self@__dir__)` call
++ src/trio/_socket.py:878:20: warning[possibly-unbound-attribute] Attribute `share` on type `Unknown | socket` is possibly unbound
++ src/trio/_ssl.py:442:13: error[invalid-super-argument] `Self@__setattr__` is not an instance or subclass of `<class 'SSLStream'>` in `super(<class 'SSLStream'>, Self@__setattr__)` call
++ src/trio/_ssl.py:445:21: error[invalid-super-argument] `Self@__dir__` is not an instance or subclass of `<class 'SSLStream'>` in `super(<class 'SSLStream'>, Self@__dir__)` call
++ src/trio/_sync.py:140:18: warning[deprecated] The function `__bool__` is deprecated: trio.Event.__bool__ is deprecated since Trio 0.31.0; use trio.Event.is_set instead (https://github.com/python-trio/trio/issues/3238)
++ src/trio/_sync.py:656:36: error[invalid-argument-type] Argument to function `remove_parking_lot_breaker` is incorrect: Expected `Task`, found `Task | None`
++ src/trio/_threads.py:191:58: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Self@run_in_host_task`
++ src/trio/_threads.py:248:58: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Self@run_in_host_task`
+- src/trio/testing/_fake_net.py:95:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/testing/_fake_net.py:330:56: error[invalid-argument-type] Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `None | Unknown`
++ src/trio/testing/_fake_net.py:330:56: error[invalid-argument-type] Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `None | tuple[str, int]`
++ src/trio/testing/_raises_group.py:311:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'Matcher'>` in `super(<class 'Matcher'>, Self@__init__)` call
++ src/trio/testing/_raises_group.py:720:17: error[unsupported-operator] Operator `+=` is unsupported between objects of type `None` and `str`
+- Found 683 diagnostics
++ Found 693 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ httpx_caching/_async/_cache.py:20:38: error[invalid-argument-type] Argument to bound method `loads` is incorrect: Expected `bytes`, found `Unknown | None`
++ httpx_caching/_sync/_cache.py:20:38: error[invalid-argument-type] Argument to bound method `loads` is incorrect: Expected `bytes`, found `Unknown | None`
+- httpx_caching/_utils.py:51:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- httpx_caching/_utils.py:57:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- httpx_caching/_utils.py:63:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- httpx_caching/_utils.py:66:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 29 diagnostics
++ Found 27 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ alerta/database/base.py:470:9: error[unresolved-attribute] Unresolved attribute `alerts` on type `type[QueryBuilder]`.
++ alerta/database/base.py:471:9: error[unresolved-attribute] Unresolved attribute `blackouts` on type `type[QueryBuilder]`.
++ alerta/database/base.py:472:9: error[unresolved-attribute] Unresolved attribute `heartbeats` on type `type[QueryBuilder]`.
++ alerta/database/base.py:473:9: error[unresolved-attribute] Unresolved attribute `keys` on type `type[QueryBuilder]`.
++ alerta/database/base.py:474:9: error[unresolved-attribute] Unresolved attribute `users` on type `type[QueryBuilder]`.
++ alerta/database/base.py:475:9: error[unresolved-attribute] Unresolved attribute `groups` on type `type[QueryBuilder]`.
++ alerta/database/base.py:476:9: error[unresolved-attribute] Unresolved attribute `perms` on type `type[QueryBuilder]`.
++ alerta/database/base.py:477:9: error[unresolved-attribute] Unresolved attribute `customers` on type `type[QueryBuilder]`.
+- alerta/models/group.py:78:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ alerta/utils/audit.py:62:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_log_response`
++ alerta/utils/audit.py:65:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_webhook_response`
++ alerta/utils/audit.py:68:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_log_response`
++ alerta/utils/audit.py:71:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_webhook_response`
++ alerta/utils/audit.py:74:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_log_response`
++ alerta/utils/audit.py:77:9: error[missing-argument] No arguments provided for required parameters `event`, `message`, `user`, `customers`, `scopes`, `resource_id`, `type`, `request` of bound method `_webhook_response`
+- Found 497 diagnostics
++ Found 510 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- koda_validate/_internal.py:111:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ koda_validate/is_type.py:20:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'TypeValidator'>` in `super(<class 'TypeValidator'>, Self@__init__)` call
+- koda_validate/set.py:64:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- koda_validate/set.py:118:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- koda_validate/tuple.py:435:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- koda_validate/tuple.py:489:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 39 diagnostics
++ Found 35 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- starlette/middleware/errors.py:205:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 149 diagnostics
++ Found 148 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ comtypes/_memberspec.py:495:9: error[unresolved-attribute] Unresolved attribute `__name__` on type `(...) -> Any`.
++ comtypes/_memberspec.py:533:13: error[unresolved-attribute] Unresolved attribute `__name__` on type `(...) -> Any`.
++ comtypes/_post_coinit/_cominterface_meta_patcher.py:70:20: error[unresolved-attribute] Type `Self@__len__` has no attribute `Count`
++ comtypes/_post_coinit/_cominterface_meta_patcher.py:81:20: error[unresolved-attribute] Type `Self@__call__` has no attribute `Item`
++ comtypes/_post_coinit/_cominterface_meta_patcher.py:138:20: error[unresolved-attribute] Type `Self@__iter__` has no attribute `_NewEnum`
+- comtypes/_post_coinit/unknwn.py:284:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/_post_coinit/unknwn.py:402:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/_post_coinit/unknwn.py:412:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/_post_coinit/unknwn.py:416:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/automation.py:634:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ comtypes/automation.py:654:9: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `Reset`
++ comtypes/automation.py:659:9: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `Skip`
++ comtypes/automation.py:669:13: error[unresolved-attribute] Type `Self@Next` has no attribute `__com_Next`
++ comtypes/automation.py:672:9: error[unresolved-attribute] Type `Self@Next` has no attribute `__com_Next`
+- comtypes/automation.py:819:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/automation.py:828:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/automation.py:848:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/automation.py:886:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ comtypes/client/_events.py:222:32: error[unresolved-attribute] Type `(...) -> Any` has no attribute `__self__`
++ comtypes/client/_events.py:222:47: error[unresolved-attribute] Type `(...) -> Any` has no attribute `__func__`
++ comtypes/client/dynamic.py:85:21: error[unresolved-attribute] Type `IEnumVARIANT` has no attribute `Skip`
++ comtypes/git.py:39:9: error[unresolved-attribute] Type `Self@RegisterInterfaceInGlobal` has no attribute `__com_RegisterInterfaceInGlobal`
++ comtypes/git.py:44:9: error[unresolved-attribute] Type `Self@GetInterfaceFromGlobal` has no attribute `__com_GetInterfaceFromGlobal`
++ comtypes/git.py:48:9: error[unresolved-attribute] Type `Self@RevokeInterfaceFromGlobal` has no attribute `__com_RevokeInterfaceFromGlobal`
++ comtypes/safearray.py:390:18: error[unresolved-attribute] Type `Self@__setitem__` has no attribute `_type_`
+- comtypes/server/__init__.py:46:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/server/connectionpoints.py:84:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/server/localserver.py:64:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ comtypes/server/register.py:287:25: warning[possibly-unbound-attribute] Attribute `_reg_clsid_` on type `Unknown | type` is possibly unbound
++ comtypes/server/register.py:308:25: warning[possibly-unbound-attribute] Attribute `_reg_clsid_` on type `Unknown | type` is possibly unbound
+- comtypes/shelllink.py:160:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:165:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:170:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:175:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:181:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:295:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:300:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:305:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:310:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/shelllink.py:316:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/stream.py:51:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_comserver.py:43:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_comserver.py:47:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_comserver.py:67:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_comserver.py:99:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:44:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:46:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:65:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:67:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:69:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:70:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:73:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:79:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:90:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:97:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:102:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:106:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:109:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/test/test_excel.py:110:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ comtypes/test/test_urlhistory.py:26:21: error[unresolved-attribute] Type `Self@__ctypes_from_outparam__` has no attribute `_fields_`
++ comtypes/test/test_urlhistory.py:28:22: error[unresolved-attribute] Type `Self@__ctypes_from_outparam__` has no attribute `pwcsUrl`
++ comtypes/test/test_urlhistory.py:28:36: error[unresolved-attribute] Type `Self@__ctypes_from_outparam__` has no attribute `pwcsTitle`
++ comtypes/test/test_urlhistory.py:29:24: error[no-matching-overload] No overload of function `cast_field` matches arguments
++ comtypes/test/test_urlhistory.py:30:24: error[no-matching-overload] No overload of function `cast_field` matches arguments
++ comtypes/tools/codegenerator/codegenerator.py:95:30: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str`, found `Any | None`
++ comtypes/tools/codegenerator/namespaces.py:93:20: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, str | None].__getitem__(key: str, /) -> str | None` cannot be called with key of type `Unknown | str | (tuple[str, str] & ~tuple[Unknown, ...])` on object of type `dict[str, str | None]`
++ comtypes/tools/typedesc_base.py:194:9: error[invalid-assignment] Object of type `list[Field]` is not assignable to attribute `members` of type `list[Field | Method | Constructor]`
++ comtypes/tools/typedesc_base.py:216:9: error[invalid-assignment] Object of type `list[Field]` is not assignable to attribute `members` of type `list[Field | Method | Constructor]`
+- comtypes/typeinfo.py:272:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:284:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:297:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:379:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:387:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:393:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:400:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:408:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:415:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:434:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:450:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:477:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:501:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:510:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/typeinfo.py:512:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 399 diagnostics
++ Found 370 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/annotation.py:176:42: error[invalid-type-form] Variable of type `type[Any]` is not allowed in a type expression
++ strawberry/channels/handlers/ws_handler.py:128:9: error[invalid-super-argument] `Self@__init__` is not an instance or subclass of `<class 'GraphQLWSConsumer'>` in `super(<class 'GraphQLWSConsumer'>, Self@__init__)` call
+- strawberry/codegen/query_codegen.py:542:84: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/codegen/query_codegen.py:549:86: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/codegen/query_codegen.py:651:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/codegen/query_codegen.py:659:44: error[call-non-callable] Object of type `None` is not callable
++ strawberry/exceptions/utils/source_finder.py:65:18: warning[possibly-unbound-attribute] Attribute `parse_module` on type `Unknown | ModuleType` is possibly unbound
+- strawberry/ex...*[Comment body truncated]*
+
+---
+
+_@sharkdp reviewed on 2025-09-03 14:33_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/infer.rs`:3044 on 2025-09-03 14:33_
+
+I don't think it's necessary to set `self.typevar_binding_context` here?
+
+```suggestion
+        Type::SpecialForm(SpecialFormType::TypingSelf)
+            .in_type_expression(self.db(), self.scope(), Some(definition))
+            .ok()
+```
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-09-03 15:12_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed WallTime Performance Report](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?runnerMode=WallTime)
+
+### Merging #18473 will **degrade performances by 15.38%**
+
+<sub>Comparing <code>Glyphack:typing-self-function-scope</code> (2a62a7d) with <code>main</code> (b14fc96)</sub>
+
+
+
+### Summary
+
+`❌ 6` regressions  
+`⁉️ 2` dropped benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-function-scope?runnerMode=WallTime)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⁉️ | `` large[sympy] `` | 39.7 s | N/A | N/A |
+| ❌ | `` medium[colour-science] `` | 6.8 s | 7.2 s | -5.01% |
+| ⁉️ | `` medium[pandas] `` | 25.7 s | N/A | N/A |
+| ❌ | `` medium[static-frame] `` | 7.8 s | 9 s | -13.47% |
+| ❌ | `` small[altair] `` | 2.5 s | 2.6 s | -7.15% |
+| ❌ | `` small[freqtrade] `` | 4 s | 4.6 s | -14.43% |
+| ❌ | `` small[pydantic] `` | 2.3 s | 2.5 s | -9.63% |
+| ❌ | `` small[tanjun] `` | 1.7 s | 2 s | -15.38% |
+
+
+---
+
+_Comment by @MichaReiser on 2025-09-23 12:59_
+
+I ran the walltime benchamarks locally after pulling in https://github.com/astral-sh/ruff/pull/20515
+
+This PR clearly regresses for all projects but they complete in a reasonable time:
+
+```
+# main
+Main
+
+Timer precision: 41 ns
+ty_walltime           fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ large                            │               │               │               │         │
+│  ╰─ sympy           5.032 s       │ 5.34 s        │ 5.186 s       │ 5.186 s       │ 2       │ 2
+├─ medium                           │               │               │               │         │
+│  ├─ colour-science  1.18 s        │ 1.235 s       │ 1.192 s       │ 1.202 s       │ 3       │ 3
+│  ├─ pandas          3.765 s       │ 3.893 s       │ 3.812 s       │ 3.823 s       │ 3       │ 3
+│  ╰─ static-frame    1.073 s       │ 1.182 s       │ 1.099 s       │ 1.118 s       │ 3       │ 3
+├─ multithreaded                    │               │               │               │         │
+│  ╰─ pydantic        58.27 ms      │ 60.06 ms      │ 59.26 ms      │ 59.17 ms      │ 8       │ 24
+╰─ small                            │               │               │               │         │
+   ├─ altair          335.2 ms      │ 342.4 ms      │ 340.3 ms      │ 339.3 ms      │ 3       │ 6
+   ├─ freqtrade       580.5 ms      │ 601.1 ms      │ 587.4 ms      │ 589.7 ms      │ 3       │ 6
+   ├─ pydantic        301.2 ms      │ 309.1 ms      │ 305.1 ms      │ 305.1 ms      │ 3       │ 6
+   ╰─ tanjun          215.6 ms      │ 229.3 ms      │ 218.7 ms      │ 221.2 ms      │ 3       │ 6
+
+# self type
+ty_walltime           fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ large                            │               │               │               │         │
+│  ╰─ sympy           6.35 s        │ 6.801 s       │ 6.575 s       │ 6.575 s       │ 2       │ 2
+├─ medium                           │               │               │               │         │
+│  ├─ colour-science  1.204 s       │ 1.218 s       │ 1.205 s       │ 1.209 s       │ 3       │ 3
+│  ├─ pandas          5.059 s       │ 5.081 s       │ 5.068 s       │ 5.069 s       │ 3       │ 3
+│  ╰─ static-frame    1.133 s       │ 1.137 s       │ 1.136 s       │ 1.135 s       │ 3       │ 3
+├─ multithreaded                    │               │               │               │         │
+│  ╰─ pydantic        60.82 ms      │ 62.54 ms      │ 62.03 ms      │ 61.89 ms      │ 8       │ 24
+╰─ small                            │               │               │               │         │
+   ├─ altair          329 ms        │ 333.1 ms      │ 331.1 ms      │ 331 ms        │ 3       │ 6
+   ├─ freqtrade       626.1 ms      │ 645.8 ms      │ 633.3 ms      │ 635.1 ms      │ 3       │ 6
+   ├─ pydantic        318.1 ms      │ 325 ms        │ 320.5 ms      │ 321.2 ms      │ 3       │ 6
+   ╰─ tanjun          247.3 ms      │ 249.3 ms      │ 248.3 ms      │ 248.3 ms      │ 3       │ 6
+```
+
+---
+
+_Comment by @MichaReiser on 2025-09-23 13:19_
+
+The mypy primer runs still take significantly longer:
+
+```
+/tmp/mypy_primer/ty_old/target/debug/ty on prefect took 4.94s
+/tmp/mypy_primer/ty_new/target/debug/ty on prefect took 26.98s
+
+/tmp/mypy_primer/ty_old/target/debug/ty on apprise took 1.97s
+/tmp/mypy_primer/ty_new/target/debug/ty on apprise took 34.79s
+
+```
+
+and there are projects that still don't complete, e.g. `parso`
+
+But it's certainly much better than before where prefect never completed too
+
+One of the files that's much slower on this branch than before is src/prefect/_vendor/croniter/croniter.py
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-25 17:07_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-25 17:08_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-30 07:10_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-30 07:10_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-30 10:00_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-30 10:00_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-10-07 14:31_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-07 14:31_
+
+---
+
+_Comment by @MichaReiser on 2025-10-11 16:37_
+
+I "forked" this PR in https://github.com/astral-sh/ruff/pull/20812 and updated the salsa version. There are 4 new projects that now fail with too many iteration errors https://micha-typing-self-function-s.ecosystem-663.pages.dev/timing. I only checked setuptools, and the error looks legit. The type becomes massive! I think this should now be unblocked (once we figure out how to fix the non-convergent cases).
+
+The perf impact is still pretty "bad" but I think that's expected given that we now check much more code https://codspeed.io/astral-sh/ruff/branches/micha%2Ftyping-self-function-scope
+
+---
+
+_Comment by @sharkdp on 2025-10-16 14:32_
+
+I will squash-merge this into https://github.com/astral-sh/ruff/pull/20922 for the same reasons that applied for the previous type-of-self PR. I'd like to clean up the looong history a bit (I will transfer comments that are still relevant), and I'd like to iterate faster on the ecosystem results, which are more convenient to use when it's not a contributor PR. @Glyphack thank you!
+
+---
+
+_Marked ready for review by @sharkdp on 2025-10-16 14:38_
+
+---
+
+_Merged by @sharkdp on 2025-10-16 14:39_
+
+---
+
+_Closed by @sharkdp on 2025-10-16 14:39_
+
+---
+
+_Branch deleted on 2025-10-22 15:12_
+
+---

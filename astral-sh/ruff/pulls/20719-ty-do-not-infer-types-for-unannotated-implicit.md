@@ -1,0 +1,645 @@
+```yaml
+number: 20719
+title: "[ty] Do not infer types for unannotated implicit instance attributes"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: david/do-not-infer-unannotated-implicit-instance-attributes
+created_at: 2025-10-06T13:23:31Z
+updated_at: 2025-10-08T09:47:55Z
+url: https://github.com/astral-sh/ruff/pull/20719
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Do not infer types for unannotated implicit instance attributes
+
+---
+
+_Pull request opened by @sharkdp on 2025-10-06 13:23_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @sharkdp on 2025-10-06 13:23_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-06 13:23_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 13:25_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-10-06 15:01:43.972043493 +0000
++++ new-output.txt	2025-10-06 15:01:47.227066720 +0000
+@@ -472,7 +472,6 @@
+ generics_syntax_infer_variance.py:127:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+ generics_syntax_infer_variance.py:128:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+ generics_syntax_infer_variance.py:136:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_syntax_infer_variance.py:144:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+ generics_syntax_infer_variance.py:155:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+ generics_syntax_infer_variance.py:156:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int | float]` is not assignable to `ShouldBeContravariant1[int]`
+ generics_syntax_scoping.py:35:7: error[unresolved-reference] Name `T` used when not defined
+@@ -582,7 +581,6 @@
+ generics_variance_inference.py:121:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+ generics_variance_inference.py:122:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+ generics_variance_inference.py:130:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_variance_inference.py:138:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+ generics_variance_inference.py:149:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+ generics_variance_inference.py:169:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int | float]` is not assignable to `ShouldBeInvariant6[int]`
+ generics_variance_inference.py:170:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int]` is not assignable to `ShouldBeInvariant6[int | float]`
+@@ -856,5 +854,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 857 diagnostics
++Found 855 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 13:26_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/test_mirror.py:236:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:325:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:349:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:392:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:443:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:471:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:511:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:557:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:601:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:622:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_sync.py:17:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 116 diagnostics
++ Found 127 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/ci/gitlab.py:424:61: error[invalid-argument-type] Argument to function `ensure_expected_target_path` is incorrect: Expected `str`, found `Unknown | str | bytes`
++ lib/spack/spack/ci/gitlab.py:424:61: error[invalid-argument-type] Argument to function `ensure_expected_target_path` is incorrect: Expected `str`, found `Unknown | bytes | str`
++ lib/spack/spack/vendor/jinja2/compiler.py:64:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/compiler.py:88:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:503:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:527:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:760:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/runtime.py:734:17: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
+- Found 7518 diagnostics
++ Found 7522 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- test/test_backend.py:228:25: warning[possibly-missing-attribute] Attribute `verbose` on type `Unknown | None` may be missing
+- test/test_backend.py:272:30: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
+- test/test_backend.py:273:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/test_python_types.py:173:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 86 diagnostics
++ Found 82 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/tests/test_recursion.py:54:29: warning[division-by-zero] Cannot divide object of type `int` by zero
+- asynq/tests/test_recursion.py:54:29: warning[division-by-zero] Cannot divide object of type `float` by zero
+- asynq/tests/test_recursion.py:61:29: warning[division-by-zero] Cannot divide object of type `int` by zero
+- asynq/tests/test_recursion.py:61:29: warning[division-by-zero] Cannot divide object of type `float` by zero
+- Found 139 diagnostics
++ Found 135 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/index/collector.py:83:40: warning[possibly-missing-attribute] Attribute `method` on type `Unknown | None` may be missing
+- src/pip/_internal/index/collector.py:314:9: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
+- src/pip/_internal/network/auth.py:513:21: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `bytes`
+- src/pip/_internal/network/auth.py:523:9: warning[possibly-missing-attribute] Attribute `release_conn` on type `Unknown | None` may be missing
+- src/pip/_internal/network/auth.py:546:17: warning[possibly-missing-attribute] Attribute `url` on type `Unknown | None` may be missing
+- src/pip/_internal/network/auth.py:557:22: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[400]`
+- src/pip/_internal/network/download.py:135:15: error[no-matching-overload] No overload of function `splitext` matches arguments
+- src/pip/_internal/network/session.py:220:32: error[invalid-argument-type] Argument to function `url_to_path` is incorrect: Expected `str`, found `Unknown | None | str`
+- src/pip/_internal/network/utils.py:45:8: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[400]` with `Unknown | None`
+- src/pip/_internal/network/utils.py:45:15: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[500]`
+- src/pip/_internal/network/utils.py:50:10: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[500]` with `Unknown | None`
+- src/pip/_internal/network/utils.py:50:17: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[600]`
+- src/pip/_internal/network/utils.py:65:22: warning[possibly-missing-attribute] Attribute `stream` on type `Unknown | None` may be missing
+- src/pip/_internal/network/utils.py:95:21: warning[possibly-missing-attribute] Attribute `read` on type `Unknown | None` may be missing
+- src/pip/_internal/operations/prepare.py:291:12: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:293:44: warning[possibly-missing-attribute] Attribute `file_path` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:314:48: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:321:12: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:326:12: warning[possibly-missing-attribute] Attribute `is_existing_dir` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:328:30: warning[possibly-missing-attribute] Attribute `file_path` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:352:12: warning[possibly-missing-attribute] Attribute `is_vcs` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:354:12: warning[possibly-missing-attribute] Attribute `is_existing_dir` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:396:25: warning[possibly-missing-attribute] Attribute `metadata_link` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:416:13: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:487:30: warning[possibly-missing-attribute] Attribute `url` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/legacy/resolver.py:477:20: warning[possibly-missing-attribute] Attribute `scheme` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:295:12: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:295:39: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:296:27: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:307:20: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:308:20: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_vendor/cachecontrol/adapter.py:75:13: warning[possibly-missing-attribute] Attribute `update` on type `Unknown | None | CaseInsensitiveDict` may be missing
++ src/pip/_vendor/cachecontrol/adapter.py:130:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/pip/_vendor/cachecontrol/adapter.py:147:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/cachecontrol/controller.py:149:12: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal["Range"]` with `Unknown | None | CaseInsensitiveDict`
+- src/pip/_vendor/cachecontrol/serialize.py:55:32: warning[possibly-missing-attribute] Attribute `get` on type `Unknown | None | CaseInsensitiveDict` may be missing
+- src/pip/_vendor/cachecontrol/serialize.py:102:16: warning[possibly-missing-attribute] Attribute `get` on type `Unknown | None | CaseInsensitiveDict` may be missing
+- Found 467 diagnostics
++ Found 434 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/compiler.py:65:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/compiler.py:88:86: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/nodes.py:505:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/nodes.py:529:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/nodes.py:758:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/jinja2/runtime.py:690:17: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
+- tests/test_loader.py:94:16: error[unsupported-operator] Operator `in` is not supported for types `tuple[ReferenceType[Any], Literal["one"]]` and `None`, in comparing `tuple[ReferenceType[Any], Literal["one"]]` with `Unknown | MutableMapping[tuple[ReferenceType[BaseLoader], str], Template] | None`
+- tests/test_loader.py:95:16: error[unsupported-operator] Operator `not in` is not supported for types `tuple[ReferenceType[Any], Literal["two"]]` and `None`, in comparing `tuple[ReferenceType[Any], Literal["two"]]` with `Unknown | MutableMapping[tuple[ReferenceType[BaseLoader], str], Template] | None`
+- tests/test_loader.py:96:16: error[unsupported-operator] Operator `in` is not supported for types `tuple[ReferenceType[Any], Literal["three"]]` and `None`, in comparing `tuple[ReferenceType[Any], Literal["three"]]` with `Unknown | MutableMapping[tuple[ReferenceType[BaseLoader], str], Template] | None`
+- Found 184 diagnostics
++ Found 185 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
+- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
+- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
+- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
+- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
++ src/werkzeug/routing/map.py:691:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` on type `Unknown | None | set[@Todo]` may be missing
+- tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` on type `Unknown | None | set[@Todo]` may be missing
+- tests/test_routing.py:604:5: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | Mapping[str, Any] | None` may be missing
+- Found 366 diagnostics
++ Found 359 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/sdp.py:486:25: error[invalid-assignment] Object of type `str | None` is not assignable to attribute `muxId` on type `Unknown | RTCRtpParameters`
+- Found 100 diagnostics
++ Found 99 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/autoscale.py:243:12: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[200]` with `Unknown | None`
+- paasta_tools/cli/cmds/autoscale.py:243:19: error[unsupported-operator] Operator `<=` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[299]`
+- paasta_tools/cli/cmds/list_deploy_queue.py:85:32: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/list_deploy_queue.py:86:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | None`
+- paasta_tools/cli/cmds/mesh_status.py:117:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[int, list[str]]`, found `tuple[Unknown | None, list[Unknown | str]]`
+- paasta_tools/cli/cmds/mesh_status.py:119:31: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/remote_run.py:193:33: error[invalid-argument-type] Argument to function `parse_error` is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/remote_run.py:290:33: error[invalid-argument-type] Argument to function `parse_error` is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/status.py:327:40: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/status.py:328:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | None`
+- paasta_tools/paastaapi/api_client.py:198:22: warning[possibly-missing-attribute] Attribute `decode` on type `Unknown | None` may be missing
+- paasta_tools/tron_tools.py:1097:17: error[invalid-argument-type] Argument to function `build_spark_command` is incorrect: Expected `dict[str, Any]`, found `Unknown | None`
+- paasta_tools/tron_tools.py:1112:25: error[invalid-argument-type] Argument to function `get_spark_ports_from_config` is incorrect: Expected `dict[str, str]`, found `Unknown | None`
+- paasta_tools/tron_tools.py:1129:21: error[invalid-argument-type] Argument to function `get_spark_driver_monitoring_annotations` is incorrect: Expected `dict[str, str]`, found `Unknown | None`
+- paasta_tools/tron_tools.py:1133:17: error[invalid-argument-type] Argument to function `get_spark_driver_monitoring_labels` is incorrect: Expected `dict[str, str]`, found `Unknown | None`
+- Found 912 diagnostics
++ Found 897 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/junitxml.py:372:9: error[invalid-assignment] Implicit shadowing of function `record_func`
+- src/_pytest/pastebin.py:43:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method Stash.__setitem__[T](key: StashKey[T@__setitem__], value: T@__setitem__) -> None)` cannot be called with a key of type `StashKey[IO[bytes]]` and a value of type `TextIOWrapper[_WrappedBuffer]` on object of type `Unknown | Stash`
+- Found 489 diagnostics
++ Found 487 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- alerta/tasks.py:37:61: error[invalid-argument-type] Argument to function `process_status` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/views/alerts.py:46:38: error[invalid-argument-type] Argument to function `assign_customer` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/views/blackouts.py:32:41: error[invalid-argument-type] Argument to function `assign_customer` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/webhooks/slack.py:41:52: warning[possibly-missing-attribute] Attribute `capitalize` on type `Unknown | None` may be missing
+- alerta/webhooks/telegram.py:52:61: warning[possibly-missing-attribute] Attribute `capitalize` on type `Unknown | None` may be missing
+- Found 513 diagnostics
++ Found 508 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/client.py:1137:89: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method DiskRefsContainer.__getitem__(name: bytes) -> bytes` cannot be called with key of type `str | bytes` on object of type `DiskRefsContainer`
+- dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method ReftableRefsContainer.__getitem__(name: bytes) -> bytes` cannot be called with key of type `str | bytes` on object of type `ReftableRefsContainer`
+- dulwich/worktree.py:923:17: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method DiskRefsContainer.__setitem__(name: bytes, ref: bytes) -> None) | (bound method ReftableRefsContainer.__setitem__(name: bytes, ref: bytes) -> None)` cannot be called with a key of type `str | bytes` and a value of type `bytes` on object of type `Unknown | DiskRefsContainer | ReftableRefsContainer`
+- dulwich/worktree.py:948:48: error[invalid-argument-type] Argument to bound method `set_symbolic_ref` is incorrect: Expected `bytes`, found `str | bytes`
+- dulwich/worktree.py:948:48: error[invalid-argument-type] Argument to bound method `set_symbolic_ref` is incorrect: Expected `bytes`, found `str | bytes`
+- Found 197 diagnostics
++ Found 193 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- tests/test_logging.py:55:14: warning[possibly-missing-attribute] Attribute `getvalue` on type `Unknown | IO[str]` may be missing
+- tests/test_logging.py:86:14: warning[possibly-missing-attribute] Attribute `getvalue` on type `Unknown | IO[str]` may be missing
+- tests/test_logging.py:146:20: warning[possibly-missing-attribute] Attribute `getvalue` on type `Unknown | IO[str]` may be missing
+- tests/test_logging.py:153:21: warning[possibly-missing-attribute] Attribute `getvalue` on type `Unknown | IO[str]` may be missing
+- tests/test_logging.py:160:20: warning[possibly-missing-attribute] Attribute `getvalue` on type `Unknown | IO[str]` may be missing
+- tests/test_text.py:247:9: warning[possibly-missing-attribute] Attribute `link` on type `Unknown | str | Style` may be missing
+- tests/test_text.py:261:9: warning[possibly-missing-attribute] Attribute `link` on type `Unknown | str | Style` may be missing
+- Found 311 diagnostics
++ Found 304 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/inference.py:376:32: error[no-matching-overload] No overload of bound method `get` matches arguments
+- sockeye/inference.py:376:32: error[no-matching-overload] No overload of bound method `get` matches arguments
+- test/unit/test_data_io.py:361:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | list[Unknown] | None`
+- test/unit/test_data_io.py:361:70: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | list[Unknown] | None`
+- test/unit/test_data_io.py:367:20: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_data_io.py:414:25: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_data_io.py:415:25: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_data_io.py:420:28: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:48:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:49:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:50:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:53:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:54:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:57:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- test/unit/test_knn.py:58:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 321 diagnostics
++ Found 306 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ github/GithubRetry.py:129:103: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/GithubRetry.py:190:102: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/GithubRetry.py:199:103: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/GithubRetry.py:224:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 347 diagnostics
++ Found 351 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- examples/references/classification/imagenet/main.py:182:57: error[unsupported-operator] Operator `%` is unsupported between objects of type `Unknown | Literal[0]` and `Unknown | int | None`
+- examples/references/classification/imagenet/main.py:187:23: error[unsupported-operator] Operator `%` is unsupported between objects of type `Unknown | Literal[0]` and `Unknown | int | None`
+- examples/reinforcement_learning/actor_critic.py:147:5: error[invalid-assignment] Object of type `Literal[10]` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/actor_critic.py:154:9: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `ep_reward` on type `Unknown | State`
+- examples/reinforcement_learning/actor_critic.py:159:13: warning[possibly-missing-attribute] Attribute `timestep` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:160:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/actor_critic.py:160:47: warning[possibly-missing-attribute] Attribute `ep_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:160:86: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:168:50: warning[possibly-missing-attribute] Attribute `ep_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:169:34: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:175:26: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/actor_critic.py:179:45: warning[possibly-missing-attribute] Attribute `timestep` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:90:5: error[invalid-assignment] Object of type `Literal[10]` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:96:9: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `ep_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:100:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:100:47: warning[possibly-missing-attribute] Attribute `ep_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:100:86: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:107:50: warning[possibly-missing-attribute] Attribute `ep_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:108:34: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:113:26: warning[possibly-missing-attribute] Attribute `running_reward` on type `Unknown | State` may be missing
+- examples/reinforcement_learning/reinforce.py:117:45: warning[possibly-missing-attribute] Attribute `timestep` on type `Unknown | State` may be missing
++ ignite/engine/__init__.py:619:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/fbresearch_logger.py:225:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/fbresearch_logger.py:232:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/lr_finder.py:105:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/lr_finder.py:109:89: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/param_scheduler.py:217:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/param_scheduler.py:219:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/state_param_scheduler.py:64:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/state_param_scheduler.py:73:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/tqdm_logger.py:296:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/tqdm_logger.py:305:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/handlers/tqdm_logger.py:310:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/ignite/distributed/test_launcher.py:281:16: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal["nproc_per_node"]` with `Unknown | None`
+- tests/ignite/distributed/test_launcher.py:281:44: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/ignite/distributed/test_launcher.py:282:16: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal["start_method"]` with `Unknown | None`
+- tests/ignite/distributed/test_launcher.py:282:42: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/ignite/engine/test_custom_events.py:124:12: warning[possibly-missing-attribute] Attribute `test_event` on type `Unknown | State` may be missing
+- tests/ignite/engine/test_engine.py:1222:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `dataiter` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:115:31: warning[possibly-missing-attribute] Attribute `alpha` on type `Unknown | State` may be missing
+- tests/ignite/engine/test_engine_state_dict.py:116:30: warning[possibly-missing-attribute] Attribute `beta` on type `Unknown | State` may be missing
+- tests/ignite/engine/test_engine_state_dict.py:188:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:247:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:248:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/engine/test_event_handlers.py:214:20: warning[possibly-missing-attribute] Attribute `_parent` on type `Unknown | ((...) -> Unknown) | None` may be missing
+- tests/ignite/handlers/test_ema_handler.py:68:20: warning[possibly-missing-attribute] Attribute `ema_momentum` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_ema_handler.py:70:20: warning[possibly-missing-attribute] Attribute `ema_momentum` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_ema_handler.py:74:36: warning[possibly-missing-attribute] Attribute `ema_momentum` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_ema_handler.py:141:16: warning[possibly-missing-attribute] Attribute `ema_momentum` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_fbresearch_logger.py:79:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:81:5: error[invalid-assignment] Object of type `Literal["4.2"]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:83:5: error[invalid-assignment] Object of type `list[Unknown | float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:85:5: error[invalid-assignment] Object of type `tuple[float, float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:101:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:102:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:103:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `gamma` on type `Unknown | State`
+- tests/ignite/handlers/test_lr_finder.py:596:5: error[invalid-assignment] Object of type `int | float` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:484:21: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_param_scheduler.py:491:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:554:21: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_param_scheduler.py:562:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:627:21: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_param_scheduler.py:635:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:655:17: warning[possibly-missing-attribute] Attribute `param_history` on type `(Unknown & ~<Protocol with members 'param_history'>) | (State & ~<Protocol with members 'param_history'>)` may be missing
+- tests/ignite/handlers/test_param_scheduler.py:1121:29: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_param_scheduler.py:1124:13: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:1368:34: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_state_param_scheduler.py:87:19: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
+- tests/ignite/handlers/test_state_param_scheduler.py:362:13: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_state_param_scheduler.py:363:13: warning[possibly-missing-attribute] Attribute `param_history` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_time_limit.py:28:9: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `is_terminated` on type `Unknown | State`
+- tests/ignite/handlers/test_time_limit.py:31:5: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `is_terminated` on type `Unknown | State`
+- tests/ignite/handlers/test_time_limit.py:36:12: warning[possibly-missing-attribute] Attribute `is_terminated` on type `Unknown | State` may be missing
+- tests/ignite/handlers/test_tqdm_logger.py:217:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/handlers/test_tqdm_logger.py:218:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/handlers/test_tqdm_logger.py:219:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `gamma` on type `Unknown | State`
+- Found 2167 diagnostics
++ Found 2115 diagnostics
+
+pylox (https://github.com/sco1/pylox)
++ tests/expressions/test_evaluate.py:26:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 22 diagnostics
++ Found 23 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/iostream.py:1177:13: warning[possibly-missing-attribute] Attribute `connect` on type `Unknown | socket | None` may be missing
+- tornado/test/iostream_test.py:1128:34: warning[possibly-missing-attribute] Attribute `cipher` on type `Unknown | None | SSLSocket` may be missing
++ tornado/test/iostream_test.py:1128:34: warning[possibly-missing-attribute] Attribute `cipher` on type `Unknown | None` may be missing
++ tornado/test/process_test.py:237:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tornado/web.py:2016:12: warning[possibly-missing-attribute] Attribute `endswith` on type `Unknown | None | str` may be missing
+- tornado/web.py:2018:23: warning[possibly-missing-attribute] Attribute `rstrip` on type `Unknown | None | str` may be missing
+- tornado/web.py:2045:16: warning[possibly-missing-attribute] Attribute `endswith` on type `Unknown | None | str` may be missing
+- tornado/web.py:2047:23: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | None | str` and `Literal["/"]`
++ tornado/wsgi.py:258:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 244 diagnostics
++ Found 241 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/contract_invoker/contract_invoker.py:109:31: error[invalid-argument-type] Argument to function `restart_serial_worker` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/job_processor/contract_job_utest.py:502:13: warning[possibly-missing-attribute] Attribute `assert_called` on type `Unknown | (bound method SmartContractModel.save() -> None)` may be missing
+- dragonchain/lib/crypto.py:238:23: warning[possibly-missing-attribute] Attribute `encode` on type `Unknown | None | str` may be missing
+- dragonchain/lib/crypto.py:258:19: error[not-iterable] Object of type `Unknown | None` may not be iterable
+- dragonchain/lib/crypto.py:260:18: error[not-iterable] Object of type `Unknown | None` may not be iterable
+- dragonchain/lib/crypto.py:762:50: error[invalid-argument-type] Argument to function `hash_l1_block` is incorrect: Expected `int`, found `Unknown | None`
+- dragonchain/lib/crypto.py:779:50: error[invalid-argument-type] Argument to function `hash_l2_block` is incorrect: Expected `int`, found `Unknown | None`
+- dragonchain/lib/crypto.py:796:50: error[invalid-argument-type] Argument to function `hash_l3_block` is incorrect: Expected `int`, found `Unknown | None`
+- dragonchain/lib/crypto.py:813:50: error[invalid-argument-type] Argument to function `hash_l4_block` is incorrect: Expected `int`, found `Unknown | None`
+- dragonchain/lib/dao/smart_contract_dao.py:81:69: error[invalid-argument-type] Argument to function `put_document` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/lib/dao/transaction_type_dao.py:88:70: error[invalid-argument-type] Argument to function `new_from_contract_create` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/lib/dao/transaction_type_dao.py:88:89: error[invalid-argument-type] Argument to function `new_from_contract_create` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/lib/database/redisearch.py:423:55: error[invalid-argument-type] Argument to function `put_document` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/lib/database/redisearch.py:470:38: error[invalid-argument-type] Argument to function `put_document` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/lib/database/redisearch.py:470:58: error[invalid-argument-type] Argument to function `put_document` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/transaction_processor/level_1_actions.py:119:37: error[invalid-argument-type] Argument to function `fire_if_exists` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/transaction_processor/level_1_actions.py:181:54: error[invalid-argument-type] Argument to function `set_current_block_level_sync` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_1_actions.py:182:59: error[invalid-argument-type] Argument to function `schedule_block_for_broadcast_sync` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_2_actions.py:54:37: error[invalid-argument-type] Argument to function `verify_transaction_count` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_2_actions.py:54:53: error[invalid-argument-type] Argument to function `verify_transaction_count` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_2_actions.py:107:42: error[invalid-argument-type] Argument to function `get_verifying_keys` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_2_actions.py:125:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, Any].__setitem__(key: str, value: Any, /) -> None` cannot be called with a key of type `Unknown | None` and a value of type `bool` on object of type `dict[str, Any]`
+- dragonchain/transaction_processor/level_3_actions.py:144:45: error[invalid-argument-type] Argument to function `get_verifying_keys` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_3_actions.py:149:63: error[invalid-argument-type] Argument to function `get_registration` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_4_actions.py:143:42: error[invalid-argument-type] Argument to function `get_verifying_keys` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_5_actions.py:140:27: error[invalid-argument-type] Argument to function `set_last_block_number` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_5_actions.py:196:65: error[invalid-argument-type] Argument to function `put_document` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/transaction_processor/level_5_actions.py:223:54: error[invalid-argument-type] Argument to bound method `should_retry_broadcast` is incorrect: Expected `int`, found `Unknown | None`
+- dragonchain/webserver/lib/dragonnet.py:89:86: error[invalid-argument-type] Argument to function `add_receipt` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/webserver/lib/smart_contracts.py:80:62: error[invalid-argument-type] Argument to function `get_registered_transaction_type` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/webserver/lib/transactions.py:129:36: error[invalid-argument-type] Argument to function `register_callback` is incorrect: Expected `str`, found `Unknown | None`
+- dragonchain/webserver/lib/transactions.py:131:12: error[invalid-return-type] Return type does not match returned value: expected `dict[str, str]`, found `dict[Unknown | str, Unknown | None]`
+- Found 315 diagnostics
++ Found 283 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
++ pandera/api/dataframe/model.py:67:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/dataframe/model.py:69:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/dataframe/model.py:72:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/ibis/model.py:83:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/pandas/model.py:102:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/polars/model.py:78:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/pyspark/model.py:321:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/pyspark/model.py:529:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/pyspark/model.py:531:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/api/pyspark/model.py:534:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pandera/backends/pandas/base.py:197:32: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- pandera/backends/pandas/base.py:200:32: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- pandera/backends/pandas/components.py:777:46: warning[possibly-missing-attribute] Attribute `assign` on type `Unknown | None` may be missing
+- pandera/backends/pandas/error_formatters.py:199:16: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal["column"]` with `Unknown | None`
+- pandera/backends/pandas/error_formatters.py:200:26: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- pandera/backends/pandas/error_formatters.py:206:29: warning[possibly-missing-attribute] Attribute `assign` on type `Unknown | None` may be missing
+- pandera/backends/pandas/error_formatters.py:211:32: warning[possibly-missing-attribute] Attribute `shape` on type `Unknown | None` may be missing
+- pandera/backends/polars/base.py:174:33: warning[possibly-missing-attribute] Attribute `with_row_count` on type `(Unknown & ~<Protocol with members 'with_row_index'>) | None` may be missing
+- pandera/backends/pyspark/container.py:59:33: error[non-subscriptable] Cannot subscript object of type `SchemaError` with no `__getitem__` method
+- pandera/backends/pyspark/container.py:60:34: error[non-subscriptable] Cannot subscript object of type `SchemaError` with no `__getitem__` method
+- pandera/backends/pyspark/container.py:424:27: error[non-subscriptable] Cannot subscript object of type `SchemaError` with no `__getitem__` method
+- pandera/backends/pyspark/container.py:428:21: error[non-subscriptable] Cannot subscript object of type `SchemaError` with no `__getitem__` method
+- pandera/decorators.py:113:9: error[invalid-argument-type] Argument to function `_parse_schema_error` is incorrect: Expected `SchemaErrorReason`, found `Unknown | None`
++ pandera/decorators.py:619:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/modin/test_schemas_on_modin.py:259:22: warning[possibly-missing-attribute] Attribute `failure_case` on type `Unknown | None` may be missing
+- tests/modin/test_schemas_on_modin.py:308:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/pandas/test_errors.py:304:16: error[unsupported-operator] Operator `in` is not supported for types `None` and `str`, in comparing `Unknown | None` with `str`
+- tests/pandas/test_model.py:705:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
+- tests/pandas/test_model.py:752:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
+- tests/pandas/test_model.py:818:43: error[not-iterable] Object of type `Unknown | None` may not be iterable
+- tests/pandas/test_model.py:819:43: error[not-iterable] Object of type `Unknown | None` may not be iterable
+- tests/pandas/test_model.py:1427:12: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
+- tests/pandas/test_model.py:1439:39: warning[possibly-missing-attribute] Attribute `indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_pandas_engine.py:613:13: warning[possibly-missing-attribute] Attribute `iterrows` on type `Unknown | None` may be missing
+- tests/pandas/test_pydantic_dtype.py:71:13: error[invalid-argument-type] Argument to function `assert_frame_equal` is incorrect: Expected `DataFrame`, found `Unknown | None`
+- tests/pandas/test_schema_components.py:80:12: warning[possibly-missing-attribute] Attribute `names` on type `Unknown | None` may be missing
+- tests/pandas/test_schema_components.py:92:12: warning[possibly-missing-attribute] Attribute `dtype` on type `Unknown | None` may be missing
+- tests/pandas/test_schema_components.py:101:12: warning[possibly-missing-attribute] Attribute `dtype` on type `Unknown | None` may be missing
+- tests/pandas/test_schema_components.py:191:12: warning[possibly-missing-attribute] Attribute `names` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:1907:16: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2279:12: warning[possibly-missing-attribute] Attribute `title` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2280:12: warning[possibly-missing-attribute] Attribute `description` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2281:12: warning[possibly-missing-attribute] Attribute `metadata` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2291:12: warning[possibly-missing-attribute] Attribute `unique` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2292:12: warning[possibly-missing-attribute] Attribute `title` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2293:12: warning[possibly-missing-attribute] Attribute `description` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2294:12: warning[possibly-missing-attribute] Attribute `metadata` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2414:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2415:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2416:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2418:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2419:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/pandas/test_schemas.py:2420:12: warning[possibly-missing-attribute] Attribute `named_indexes` on type `Unknown | None` may be missing
+- tests/polars/test_polars_check.py:152:9: warning[possibly-missing-attribute] Attribute `equals` on type `Unknown | None` may be missing
+- tests/polars/test_polars_check.py:167:13: warning[possibly-missing-attribute] Attribute `equals` on type `Unknown | None` may be missing
+- tests/polars/test_polars_config.py:199:20: warning[possibly-missing-attribute] Attribute `rows` on type `Unknown | None` may be missing
+- tests/pyspark/test_schemas_on_pyspark_pandas.py:489:17: warning[possibly-missing-attribute] Attribute `failure_case` on type `Unknown | None` may be missing
+- tests/pyspark/test_schemas_on_pyspark_pandas.py:498:17: warning[possibly-missing-attribute] Attribute `failure_case` on type `Unknown | None` may be missing
+- tests/pyspark/test_schemas_on_pyspark_pandas.py:499:16: warning[possibly-missing-attribute] Attribute `shape` on type `Unknown | None` may be missing
+- tests/pyspark/test_schemas_on_pyspark_pandas.py:542:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1595 diagnostics
++ Found 1557 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- dummyserver/testcase.py:323:17: warning[possibly-missing-attribute] Attribute `sendall` on type `socket | @Todo | None` may be missing
+- test/test_http2_connection.py:133:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:133:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:150:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:150:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:173:9: warning[possibly-missing-attribute] Attribute `assert_has_calls` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:173:9: warning[possibly-missing-attribute] Attribute `assert_has_calls` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:205:17: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:205:17: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:229:13: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:229:13: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:259:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:259:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:292:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:292:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:325:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:325:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- test/test_http2_connection.py:347:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo | (bound method SSLTransport.sendall(data: bytes, flags: int = Literal[0]) -> None)` may be missing
++ test/test_http2_connection.py:347:9: warning[possibly-missing-attribute] Attribute `assert_called_with` on type `(bound method socket.sendall(data: @Todo, flags: int = Literal[0], /) -> None) | @Todo` may be missing
+- Found 366 diagnostics
++ Found 365 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/specs/openapi/stateful/__init__.py:316:61: error[invalid-argument-type] Argument to bound method `allow_root_transition` is incorrect: Expected `dict[str, CaseInsensitiveDict[Unknown]]`, found `dict[str, CaseInsensitiveDict[Unknown]] | dict[str, list[Unknown]]`
+- Found 323 diagnostics
++ Found 322 diagnostics
+
+mypy (https://github.com/python/mypy)
++ mypy/plugins/singledispatch.py:39:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ mypy/plugins/singledispatch.py:196:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- mypy/semanal_enum.py:200:26: error[unresolved-attribute] Type `Expression` has no attribute `value`
+- mypy/semanal_namedtuple.py:417:26: error[unresolved-attribute] Type `Expression` has no attribute `value`
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- tests/test_s3bucket.py:49:26: warning[possibly-missing-attribute] Attribute `signature_version` on type `Unknown | None` may be missing
+- tests/test_s3bucket.py:57:27: warning[possibly-missing-attribute] Attribute `signature_version` on type `Unknown | None` may be missing
+- tests/test_s3bucket.py:65:26: warning[possibly-missing-attribute] Attribute `signature_version` on type `Unknown | None` may be missing
+- Found 183 diagnostics
++ Found 180 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/domains/c/__init__.py:153:22: warning[possibly-missing-attribute] Attribute `clone` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/c/__init__.py:557:13: warning[possibly-missing-attribute] Attribute `describe_signature` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/c/_ast.py:837:16: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/c/_ast.py:837:16: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/c/_symbol.py:146:16: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | ASTIdentifier | None` may be missing
+- sphinx/domains/c/_symbol.py:152:12: warning[possibly-missing-attribute] Attribute `is_anonymous` on type `Unknown | ASTIdentifier | None` may be missing
+- sphinx/domains/c/_symbol.py:156:16: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | ASTIdentifier | None` may be missing
+- sphinx/domains/c/_symbol.py:160:12: warning[possibly-missing-attribute] Attribute `is_anonymous` on type `Unknown | ASTIdentifier | None` may be missing
+- sphinx/domains/c/_symbol.py:553:26: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | ASTIdentifier | None` may be missing
+- sphinx/domains/cpp/__init__.py:214:22: warning[possibly-missing-attribute] Attribute `clone` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/__init__.py:675:13: warning[possibly-missing-attribute] Attribute `describe_signature` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:316:20: warning[possibly-missing-attribute] Attribute `templatePrefix` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:317:21: error[invalid-assignment] Object of type `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None` is not assignable to `list[Any]`
+- sphinx/domains/cpp/_ast.py:317:39: warning[possibly-missing-attribute] Attribute `templatePrefix` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:2041:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:2041:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:3427:29: warning[possibly-missing-attribute] Attribute `templatePrefix` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:3507:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:3507:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:4054:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:4054:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:4103:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:4103:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:4103:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
+- sphinx/domains/cpp/_ast.py:4164:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:4164:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:4164:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
+- sphinx/domains/cpp/_ast.py:4315:20: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- sphinx/domains/cpp/_ast.py:4315:20: warning[possibly-missing-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` may be missing
+- sphinx/domains/cpp/_ast.py:4315:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
+- sphinx/domains/cpp/_parser.py:2081:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None`
+- sphinx/domains/cpp/_parser.py:2106:38: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[@Todo]`, found `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None`
+- sphinx/domains/cpp/_symbol.py:622:66: error[invalid-argument-type] Argument is incorrect: Expected `ASTTemplateArgs`, found `Unknown | ASTTemplateArgs | None`
+- sphinx/domains/cpp/_symbol.py:653:13: error[invalid-argument-type] Argument to bound method `_find_named_symbols` is incorrect: Expected `ASTTemplateArgs`, found `Unknown | ASTTemplateArgs | None`
+- sphinx/domains/cpp/_symbol.py:664:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ASTTemplateArgs`, found `Unknown | ASTTemplateArgs | None`
+- sphinx/domains/cpp/_symbol.py:963:47: warning[possibly-missing-attribute] Attribute `declaration` on type `Unknown | Symbol | None` may be missing
+- Found 500 diagnostics
++ Found 464 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- schema_salad/ref_resolver.py:78:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | None`
+- schema_salad/ref_resolver.py:80:40: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
+- schema_salad/ref_resolver.py:81:18: warning[possibly-missing-attribute] Attribute `line` on type `Unknown | None` may be missing
+- schema_salad/ref_resolver.py:81:33: warning[possibly-missing-attribute] Attribute `column` on type `Unknown | None` may be missing
+- Found 171 diagnostics
++ Found 167 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/crdb/connection.py:36:21: warning[possibly-missing-attribute] Attribute `parameter_status` on type `(Connection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | (AsyncConnection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | PGconn | Unknown` may be missing
++ psycopg/psycopg/crdb/connection.py:36:21: warning[possibly-missing-attribute] Attribute `parameter_status` on type `(Connection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | (AsyncConnection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | (PGconn & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | Unknown` may be missing
+- tests/test_tstring.py:217:25: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/test_tstring.py:217:25: warning[possibly-missing-attribute] Attribute `decode` on type `Unknown | None` may be missing
+- tests/test_tstring.py:219:27: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/test_tstring.py:219:27: warning[possibly-missing-attribute] Attribute `decode` on type `Unknown | None` may be missing
+- Found 685 diagnostics
++ Found 681 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
+- tests/arti/internal/test_mappings.py:142:5: error[invalid-assignment] Object of type `Coord` is not assignable to attribute `z` on type `Unknown | int | Coord | TypedBox[Coord]`
++ tests/arti/internal/test_mappings.py:142:5: error[invalid-assignment] Object of type `Coord` is not assignable to attribute `z` on type `Unknown | Coord | TypedBox[Coord]`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- examples/contrib/webscanner_helper/test_proxyauth_selenium.py:49:9: warning[possibly-missing-attribute] Attribute `close` on type `Unknown | None` may be missing
+- mitmproxy/contentviews/_view_wbxml.py:15:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Unknown | None`
+- test/mitmproxy/addons/test_tlsconfig.py:304:19: warning[possibly-missing-attribute] Attribute `tls` on type `Unknown | None` may be missing
+- test/mitmproxy/proxy/layers/quic/test__stream_layers.py:439:5: warning[possibly-missing-attribute] Attribute `send_datagram_frame` on type `Unknown | None` may be missing
+- test/mitmproxy/proxy/layers/quic/test__stream_layers.py:447:20: warning[possibly-missing-attribute] Attribute `next_event` on type `Unknown | None` may be missing
+- test/mitm...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 13:28_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unsupported-operator` | 0 | 543 | 2 |
+| `possibly-missing-attribute` | 0 | 382 | 12 |
+| `invalid-argument-type` | 0 | 115 | 4 |
+| `unused-ignore-comment` | 112 | 0 | 0 |
+| `non-subscriptable` | 0 | 85 | 0 |
+| `invalid-assignment` | 0 | 54 | 7 |
+| `call-non-callable` | 0 | 13 | 0 |
+| `not-iterable` | 0 | 12 | 0 |
+| `invalid-return-type` | 0 | 8 | 1 |
+| `possibly-missing-implicit-call` | 0 | 5 | 4 |
+| `unresolved-attribute` | 0 | 9 | 0 |
+| `no-matching-overload` | 0 | 7 | 0 |
+| `division-by-zero` | 0 | 4 | 0 |
+| `invalid-key` | 0 | 1 | 0 |
+| **Total** | **112** | **1,238** | **30** |
+
+**[Full report with detailed diff](https://david-do-not-infer-unannotat.ecosystem-663.pages.dev/diff)** ([timing results](https://david-do-not-infer-unannotat.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Renamed from "[ty] Do not infer types for unannotated implicit instance attribtues" to "[ty] Do not infer types for unannotated implicit instance attributes" by @sharkdp on 2025-10-06 18:13_
+
+---
+
+_Closed by @sharkdp on 2025-10-08 09:47_
+
+---

@@ -1,0 +1,315 @@
+```yaml
+number: 20912
+title: "[ty] Limit shown import paths to at most 5 unless ty runs with `-v`"
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - ty
+  - diagnostics
+assignees: []
+merged: true
+base: main
+head: micha/unresolved-import-verbosity
+created_at: 2025-10-16T07:16:57Z
+updated_at: 2025-10-16T11:18:10Z
+url: https://github.com/astral-sh/ruff/pull/20912
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Limit shown import paths to at most 5 unless ty runs with `-v`
+
+---
+
+_Pull request opened by @MichaReiser on 2025-10-16 07:16_
+
+## Summary
+
+This PR makes two changes:
+
+1. It limits the search paths shown by unresolved import diagnostics to at most 5 unless ty runs with `-v`
+2. ~~Hide editable installs by default. The reasoning behind this is that editable installs are part of `site-packages`. As a user, I would assume that ty picks them up if they're inside side packages.~~
+
+Fixes https://github.com/astral-sh/ty/issues/1267
+
+## Test Plan
+
+Run on airflow without `-v`
+
+```
+error[unresolved-import]: Cannot resolve imported module `airflow.sdk.module_loading`
+  --> task-sdk/tests/task_sdk/io/test_path.py:33:6
+   |
+31 | from airflow.sdk.io import attach
+32 | from airflow.sdk.io.store import _STORE_CACHE, ObjectStore
+33 | from airflow.sdk.module_loading import qualname
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+info: Searched in the following paths during module resolution:
+info:   1. /Users/micha/astral/ecosystem/airflow/airflow-core (first-party code)
+info:   2. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info:   3. /Users/micha/astral/ecosystem/airflow/.venv/lib/python3.13/site-packages (site-packages)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+```
+
+
+Run on airflow with `-v`
+
+```
+error[unresolved-import]: Cannot resolve imported module `airflow.sdk.io.fs`
+   --> task-sdk/tests/task_sdk/io/test_path.py:330:14
+    |
+328 |     @pytest.fixture(autouse=True)
+329 |     def reset(self):
+330 |         from airflow.sdk.io.fs import _register_filesystems
+    |              ^^^^^^^^^^^^^^^^^
+331 |
+332 |         _register_filesystems.cache_clear()
+    |
+info: Searched in the following paths during module resolution:
+info:   1. /Users/micha/astral/ecosystem/airflow/airflow-core (first-party code)
+info:   2. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info:   3. /Users/micha/astral/ecosystem/airflow/.venv/lib/python3.13/site-packages (site-packages)
+info:   4. /Users/micha/astral/ecosystem/airflow/airflow-core/src (editable install)
+info:   5. /Users/micha/astral/ecosystem/airflow/airflow-ctl/src (editable install)
+info:   6. /Users/micha/astral/ecosystem/airflow/shared/logging/src (editable install)
+info:   7. /Users/micha/astral/ecosystem/airflow/shared/secrets_masker/src (editable install)
+info:   8. /Users/micha/astral/ecosystem/airflow/shared/timezones/src (editable install)
+info:   9. /Users/micha/astral/ecosystem/airflow/task-sdk/src (editable install)
+info:   10. /Users/micha/astral/ecosystem/airflow/providers/airbyte/src (editable install)
+info:   11. /Users/micha/astral/ecosystem/airflow/providers/alibaba/src (editable install)
+info:   12. /Users/micha/astral/ecosystem/airflow/providers/amazon/src (editable install)
+info:   13. /Users/micha/astral/ecosystem/airflow/providers/apache/cassandra/src (editable install)
+info:   14. /Users/micha/astral/ecosystem/airflow/providers/apache/drill/src (editable install)
+info:   15. /Users/micha/astral/ecosystem/airflow/providers/apache/druid/src (editable install)
+info:   16. /Users/micha/astral/ecosystem/airflow/providers/apache/flink/src (editable install)
+info:   17. /Users/micha/astral/ecosystem/airflow/providers/apache/hdfs/src (editable install)
+info:   18. /Users/micha/astral/ecosystem/airflow/providers/apache/hive/src (editable install)
+info:   19. /Users/micha/astral/ecosystem/airflow/providers/apache/iceberg/src (editable install)
+info:   20. /Users/micha/astral/ecosystem/airflow/providers/apache/impala/src (editable install)
+info:   21. /Users/micha/astral/ecosystem/airflow/providers/apache/kylin/src (editable install)
+info:   22. /Users/micha/astral/ecosystem/airflow/providers/apache/livy/src (editable install)
+info:   23. /Users/micha/astral/ecosystem/airflow/providers/apache/pig/src (editable install)
+info:   24. /Users/micha/astral/ecosystem/airflow/providers/apache/pinot/src (editable install)
+info:   25. /Users/micha/astral/ecosystem/airflow/providers/apache/spark/src (editable install)
+info:   26. /Users/micha/astral/ecosystem/airflow/providers/apache/tinkerpop/src (editable install)
+info:   27. /Users/micha/astral/ecosystem/airflow/providers/apprise/src (editable install)
+info:   28. /Users/micha/astral/ecosystem/airflow/providers/arangodb/src (editable install)
+info:   29. /Users/micha/astral/ecosystem/airflow/providers/asana/src (editable install)
+info:   30. /Users/micha/astral/ecosystem/airflow/providers/atlassian/jira/src (editable install)
+info:   31. /Users/micha/astral/ecosystem/airflow/providers/celery/src (editable install)
+info:   32. /Users/micha/astral/ecosystem/airflow/providers/cloudant/src (editable install)
+info:   33. /Users/micha/astral/ecosystem/airflow/providers/cncf/kubernetes/src (editable install)
+info:   34. /Users/micha/astral/ecosystem/airflow/providers/cohere/src (editable install)
+info:   35. /Users/micha/astral/ecosystem/airflow/providers/common/compat/src (editable install)
+info:   36. /Users/micha/astral/ecosystem/airflow/providers/common/io/src (editable install)
+info:   37. /Users/micha/astral/ecosystem/airflow/providers/common/messaging/src (editable install)
+info:   38. /Users/micha/astral/ecosystem/airflow/providers/common/sql/src (editable install)
+info:   39. /Users/micha/astral/ecosystem/airflow/providers/databricks/src (editable install)
+info:   40. /Users/micha/astral/ecosystem/airflow/providers/datadog/src (editable install)
+info:   41. /Users/micha/astral/ecosystem/airflow/providers/dbt/cloud/src (editable install)
+info:   42. /Users/micha/astral/ecosystem/airflow/providers/dingding/src (editable install)
+info:   43. /Users/micha/astral/ecosystem/airflow/providers/discord/src (editable install)
+info:   44. /Users/micha/astral/ecosystem/airflow/providers/docker/src (editable install)
+info:   45. /Users/micha/astral/ecosystem/airflow/providers/edge3/src (editable install)
+info:   46. /Users/micha/astral/ecosystem/airflow/providers/elasticsearch/src (editable install)
+info:   47. /Users/micha/astral/ecosystem/airflow/providers/exasol/src (editable install)
+info:   48. /Users/micha/astral/ecosystem/airflow/providers/facebook/src (editable install)
+info:   49. /Users/micha/astral/ecosystem/airflow/providers/ftp/src (editable install)
+info:   50. /Users/micha/astral/ecosystem/airflow/providers/git/src (editable install)
+info:   51. /Users/micha/astral/ecosystem/airflow/providers/github/src (editable install)
+info:   52. /Users/micha/astral/ecosystem/airflow/providers/google/src (editable install)
+info:   53. /Users/micha/astral/ecosystem/airflow/providers/grpc/src (editable install)
+info:   54. /Users/micha/astral/ecosystem/airflow/providers/hashicorp/src (editable install)
+info:   55. /Users/micha/astral/ecosystem/airflow/providers/http/src (editable install)
+info:   56. /Users/micha/astral/ecosystem/airflow/providers/imap/src (editable install)
+info:   57. /Users/micha/astral/ecosystem/airflow/providers/influxdb/src (editable install)
+info:   58. /Users/micha/astral/ecosystem/airflow/providers/jdbc/src (editable install)
+info:   59. /Users/micha/astral/ecosystem/airflow/providers/jenkins/src (editable install)
+info:   60. /Users/micha/astral/ecosystem/airflow/providers/keycloak/src (editable install)
+info:   61. /Users/micha/astral/ecosystem/airflow/providers/microsoft/azure/src (editable install)
+info:   62. /Users/micha/astral/ecosystem/airflow/providers/microsoft/mssql/src (editable install)
+info:   63. /Users/micha/astral/ecosystem/airflow/providers/microsoft/psrp/src (editable install)
+info:   64. /Users/micha/astral/ecosystem/airflow/providers/microsoft/winrm/src (editable install)
+info:   65. /Users/micha/astral/ecosystem/airflow/providers/mongo/src (editable install)
+info:   66. /Users/micha/astral/ecosystem/airflow/providers/mysql/src (editable install)
+info:   67. /Users/micha/astral/ecosystem/airflow/providers/neo4j/src (editable install)
+info:   68. /Users/micha/astral/ecosystem/airflow/providers/odbc/src (editable install)
+info:   69. /Users/micha/astral/ecosystem/airflow/providers/openai/src (editable install)
+info:   70. /Users/micha/astral/ecosystem/airflow/providers/openfaas/src (editable install)
+info:   71. /Users/micha/astral/ecosystem/airflow/providers/openlineage/src (editable install)
+info:   72. /Users/micha/astral/ecosystem/airflow/providers/opensearch/src (editable install)
+info:   73. /Users/micha/astral/ecosystem/airflow/providers/opsgenie/src (editable install)
+info:   74. /Users/micha/astral/ecosystem/airflow/providers/oracle/src (editable install)
+info:   75. /Users/micha/astral/ecosystem/airflow/providers/pagerduty/src (editable install)
+info:   76. /Users/micha/astral/ecosystem/airflow/providers/papermill/src (editable install)
+info:   77. /Users/micha/astral/ecosystem/airflow/providers/pgvector/src (editable install)
+info:   78. /Users/micha/astral/ecosystem/airflow/providers/pinecone/src (editable install)
+info:   79. /Users/micha/astral/ecosystem/airflow/providers/postgres/src (editable install)
+info:   80. /Users/micha/astral/ecosystem/airflow/providers/presto/src (editable install)
+info:   81. /Users/micha/astral/ecosystem/airflow/providers/qdrant/src (editable install)
+info:   82. /Users/micha/astral/ecosystem/airflow/providers/redis/src (editable install)
+info:   83. /Users/micha/astral/ecosystem/airflow/providers/salesforce/src (editable install)
+info:   84. /Users/micha/astral/ecosystem/airflow/providers/samba/src (editable install)
+info:   85. /Users/micha/astral/ecosystem/airflow/providers/segment/src (editable install)
+info:   86. /Users/micha/astral/ecosystem/airflow/providers/sendgrid/src (editable install)
+info:   87. /Users/micha/astral/ecosystem/airflow/providers/sftp/src (editable install)
+info:   88. /Users/micha/astral/ecosystem/airflow/providers/singularity/src (editable install)
+info:   89. /Users/micha/astral/ecosystem/airflow/providers/slack/src (editable install)
+info:   90. /Users/micha/astral/ecosystem/airflow/providers/smtp/src (editable install)
+info:   91. /Users/micha/astral/ecosystem/airflow/providers/snowflake/src (editable install)
+info:   92. /Users/micha/astral/ecosystem/airflow/providers/sqlite/src (editable install)
+info:   93. /Users/micha/astral/ecosystem/airflow/providers/ssh/src (editable install)
+info:   94. /Users/micha/astral/ecosystem/airflow/providers/standard/src (editable install)
+info:   95. /Users/micha/astral/ecosystem/airflow/providers/tableau/src (editable install)
+info:   96. /Users/micha/astral/ecosystem/airflow/providers/telegram/src (editable install)
+info:   97. /Users/micha/astral/ecosystem/airflow/providers/teradata/src (editable install)
+info:   98. /Users/micha/astral/ecosystem/airflow/providers/trino/src (editable install)
+info:   99. /Users/micha/astral/ecosystem/airflow/providers/vertica/src (editable install)
+info:   100. /Users/micha/astral/ecosystem/airflow/providers/weaviate/src (editable install)
+info:   101. /Users/micha/astral/ecosystem/airflow/providers/zendesk/src (editable install)
+info:   102. /Users/micha/astral/ecosystem/airflow/dev/breeze/src (editable install)
+info:   103. /Users/micha/astral/ecosystem/airflow/devel-common/src (editable install)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+```
+
+
+---
+
+_Label `ty` added by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Label `diagnostics` added by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Review requested from @carljm by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Review requested from @AlexWaygood by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Label `ty` added by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Review requested from @sharkdp by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Review requested from @dcreager by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Label `diagnostics` added by @MichaReiser on 2025-10-16 07:16_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 07:18_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 07:20_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 52 diagnostics
++ Found 51 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Comment by @sharkdp on 2025-10-16 07:52_
+
+> Hide editable installs by default. The reasoning behind this is that editable installs are part of `site-packages`. As a user, I would assume that ty picks them up if they're inside side packages.
+
+I'm potentially misunderstanding the term, but aren't editable installs also involved when I develop two projects side by side and add `A` as an editable dependency for `B`? I used to work in this mode quite often, and in this case, I'd like to see that the editable install of `A` is correctly detected by `ty` when type-checking `B`?
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-16 08:01_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @MichaReiser on 2025-10-16 08:05_
+
+> I'm potentially misunderstanding the term, but aren't editable installs also involved when I develop two projects side by side and add A as an editable dependency for B? I used to work in this mode quite often, and in this case, I'd like to see that the editable install of A is correctly detected by ty when type-checking B?
+
+I'm fine reverting that part, but the editable installs in the airflow case are just noise, and I'd rather see all other search paths. 
+
+When you work in this mode, you'd still add the editable install within your venv, no? So I'd consider it to be part of that virtual environment. 
+
+IMO, the question is how we can show the most relevant information and editable installs just seem less relevant in most cases. I'm also happy to add a info message when we hide editable installs so that you can run with `-v` to see them listed.
+
+---
+
+_Comment by @AlexWaygood on 2025-10-16 10:16_
+
+I'm also not sure I see the logic in ignoring editable installs by default. The `.pth` files that point to the editable installations are inside the `site-packages` directory, but the editable-install search paths themselves are always search paths outside the `site-packages` directory. Some unusual cases like airflow have many editable installations that point inside the first-party root, but even then I don't really see these as noisy -- it's good confirmation that ty understands the unusual package layout correctly. And in other cases, if you have lots of editable installs, I think it's quite likely that lots of them will point to directories that don't overlap with the first-party roots.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:4817 on 2025-10-16 10:19_
+
+I'm not sure the example output you pasted into your PR description is up to date, because I don't see this message in it. Would you be able to add a CLI snapshot test, similar to this one?
+
+https://github.com/astral-sh/ruff/blob/c9dfb51f49a99ecc838dd21ee4ed564eec193740/crates/ty/tests/cli/python_environment.rs#L375-L423
+
+Then it would be easy to see exactly what the output is with lots of search paths, on the latest version of the PR
+
+---
+
+_@AlexWaygood reviewed on 2025-10-16 10:19_
+
+Thank you!
+
+---
+
+_@AlexWaygood approved on 2025-10-16 10:55_
+
+Thanks, this looks great!
+
+---
+
+_Merged by @MichaReiser on 2025-10-16 11:18_
+
+---
+
+_Closed by @MichaReiser on 2025-10-16 11:18_
+
+---
+
+_Branch deleted on 2025-10-16 11:18_
+
+---

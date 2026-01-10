@@ -1,0 +1,707 @@
+```yaml
+number: 20123
+title: "[ty] Implement support for respecting return type of __new__ "
+type: pull_request
+state: closed
+author: rowillia
+labels:
+  - ty
+assignees: []
+base: main
+head: roy/implement_ty_new
+created_at: 2025-08-28T00:54:48Z
+updated_at: 2025-10-21T07:23:42Z
+url: https://github.com/astral-sh/ruff/pull/20123
+synced_at: 2026-01-10T17:34:34Z
+```
+
+# [ty] Implement support for respecting return type of __new__ 
+
+---
+
+_Pull request opened by @rowillia on 2025-08-28 00:54_
+
+(Reopening https://github.com/astral-sh/ruff/pull/18125 - sorry for ghost on it last time 😢, but I addressed @carljm 's very helpful feedback!)
+
+https://github.com/astral-sh/ty/issues/281
+
+## Summary
+
+Previously `ty` didn't respect the return type of `__new__` when type checking, which is used by libraries like trio widely https://github.com/astral-sh/ty/issues/385
+
+## Test Plan
+
+Added test cases!
+
+
+---
+
+_Review requested from @carljm by @rowillia on 2025-08-28 00:54_
+
+---
+
+_Review requested from @AlexWaygood by @rowillia on 2025-08-28 00:54_
+
+---
+
+_Review requested from @sharkdp by @rowillia on 2025-08-28 00:54_
+
+---
+
+_Review requested from @dcreager by @rowillia on 2025-08-28 00:54_
+
+---
+
+_Renamed from "Roy/implement ty new" to "[ty] Implement support for respecting return type of __new__ " by @rowillia on 2025-08-28 00:58_
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-28 00:58_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-08-28 18:53:15.020103884 +0000
++++ new-output.txt	2025-08-28 18:53:17.563109239 +0000
+@@ -148,8 +148,11 @@
+ classes_classvar.py:111:1: error[invalid-attribute-access] Cannot assign to ClassVar `stats` from an instance of type `Starship`
+ classes_classvar.py:140:1: error[invalid-assignment] Object of type `ProtoAImpl` is not assignable to `ProtoA`
+ constructors_call_init.py:21:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `float`
++constructors_call_init.py:24:1: error[type-assertion-failure] Argument does not have asserted type `Class1[int]`
+ constructors_call_init.py:25:1: error[type-assertion-failure] Argument does not have asserted type `Class1[int | float]`
+ constructors_call_init.py:56:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Class4[int]`, found `Class4[str]`
++constructors_call_init.py:72:1: error[type-assertion-failure] Argument does not have asserted type `Class5[list[int]]`
++constructors_call_init.py:74:1: error[type-assertion-failure] Argument does not have asserted type `Class5[set[str]]`
+ constructors_call_init.py:75:1: error[type-assertion-failure] Argument does not have asserted type `Class5[int | float]`
+ constructors_call_init.py:91:1: error[type-assertion-failure] Argument does not have asserted type `Class6[int, str]`
+ constructors_call_init.py:99:1: error[type-assertion-failure] Argument does not have asserted type `Class7[str, int]`
+@@ -162,17 +165,10 @@
+ constructors_call_metaclass.py:65:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+ constructors_call_new.py:21:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `int`, found `float`
+ constructors_call_new.py:24:1: error[type-assertion-failure] Argument does not have asserted type `Class1[int | float]`
+-constructors_call_new.py:49:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-constructors_call_new.py:49:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:64:1: error[type-assertion-failure] Argument does not have asserted type `Class4 | Any`
+-constructors_call_new.py:64:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:76:5: error[type-assertion-failure] Argument does not have asserted type `Never`
++constructors_call_new.py:35:1: error[type-assertion-failure] Argument does not have asserted type `Class2[int]`
++constructors_call_new.py:36:1: error[type-assertion-failure] Argument does not have asserted type `Class2[str]`
+ constructors_call_new.py:76:17: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:89:1: error[type-assertion-failure] Argument does not have asserted type `int | Class6`
+-constructors_call_new.py:89:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+ constructors_call_new.py:113:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class8[list[T@Class8]]`
+-constructors_call_new.py:116:1: error[type-assertion-failure] Argument does not have asserted type `Class8[list[int]]`
+-constructors_call_new.py:117:1: error[type-assertion-failure] Argument does not have asserted type `Class8[list[str]]`
+ constructors_call_new.py:125:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__new__`
+ constructors_call_new.py:140:47: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class11[int]`
+ constructors_call_type.py:40:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of function `__new__`
+@@ -281,6 +277,7 @@
+ dataclasses_usage.py:127:8: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ dataclasses_usage.py:130:1: error[missing-argument] No argument provided for required parameter `y` of bound method `__init__`
+ dataclasses_usage.py:179:6: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++dataclasses_usage.py:213:1: error[type-assertion-failure] Argument does not have asserted type `DC16[int]`
+ directives_assert_type.py:27:5: error[type-assertion-failure] Argument does not have asserted type `int`
+ directives_assert_type.py:28:5: error[type-assertion-failure] Argument does not have asserted type `int`
+ directives_assert_type.py:29:5: error[type-assertion-failure] Argument does not have asserted type `int`
+@@ -368,7 +365,6 @@
+ generics_defaults.py:59:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+ generics_defaults.py:63:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+ generics_defaults.py:79:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+-generics_defaults.py:80:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(specialized non-generic class)`
+ generics_defaults.py:91:26: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+ generics_defaults.py:94:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+ generics_defaults.py:95:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(specialized non-generic class)`
+@@ -379,6 +375,8 @@
+ generics_defaults.py:155:58: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[bytes]`?
+ generics_defaults.py:169:1: error[type-assertion-failure] Argument does not have asserted type `(Foo7[int], /) -> Foo7[int]`
+ generics_defaults_referential.py:23:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
++generics_defaults_referential.py:35:1: error[type-assertion-failure] Argument does not have asserted type `Foo[int, str]`
++generics_defaults_referential.py:35:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[1]`
+ generics_defaults_referential.py:36:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+ generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+ generics_defaults_referential.py:94:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+@@ -398,7 +396,6 @@
+ generics_paramspec_semantics.py:53:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:57:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:76:30: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+-generics_paramspec_semantics.py:82:5: error[type-assertion-failure] Argument does not have asserted type `@Todo(specialized non-generic class)`
+ generics_paramspec_semantics.py:82:28: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+ generics_paramspec_semantics.py:84:5: error[type-assertion-failure] Argument does not have asserted type `(int, /) -> str`
+ generics_paramspec_semantics.py:87:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+@@ -501,6 +498,9 @@
+ generics_syntax_scoping.py:116:13: error[type-assertion-failure] Argument does not have asserted type `TypeVar`
+ generics_syntax_scoping.py:121:9: error[type-assertion-failure] Argument does not have asserted type `int | float | complex`
+ generics_syntax_scoping.py:124:13: error[type-assertion-failure] Argument does not have asserted type `int | float | complex`
++generics_type_erasure.py:17:1: error[type-assertion-failure] Argument does not have asserted type `Node[str]`
++generics_type_erasure.py:18:1: error[type-assertion-failure] Argument does not have asserted type `Node[int]`
++generics_type_erasure.py:21:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ generics_type_erasure.py:28:1: error[type-assertion-failure] Argument does not have asserted type `Node[int]`
+ generics_type_erasure.py:30:1: error[type-assertion-failure] Argument does not have asserted type `Node[str]`
+ generics_type_erasure.py:38:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | None`, found `Literal[""]`
+@@ -627,8 +627,6 @@
+ literals_literalstring.py:75:5: error[invalid-assignment] Object of type `Literal[b"test"]` is not assignable to `LiteralString`
+ literals_literalstring.py:79:21: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `bool`
+ literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound of type variable `TLiteral`
+-literals_literalstring.py:130:5: error[invalid-assignment] Object of type `Container[str]` is not assignable to `Container[LiteralString]`
+-literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound of type variable `T`
+ literals_literalstring.py:167:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ literals_literalstring.py:171:5: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
+ literals_parameterizations.py:41:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+@@ -859,5 +857,5 @@
+ typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 860 diagnostics
++Found 858 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-28 01:00_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+parso (https://github.com/davidhalter/parso)
++ parso/python/errors.py:650:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- parso/python/tokenize.py:230:42: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str]`, found `set[str]`
++ parso/python/tokenize.py:230:42: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str]`, found `set[Unknown]`
+- Found 74 diagnostics
++ Found 75 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_core/_fileio.py:201:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AnyStr@wrap_file` does not satisfy constraints of type variable `AnyStr`
+- Found 222 diagnostics
++ Found 221 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_util/error/utilerrwarn.py:65:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 587 diagnostics
++ Found 588 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- tests/test_map.py:49:19: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Map[str, int], /) -> Unknown`, found `def to_seq[_Key, _Value](table: Map[_Key@to_seq, _Value@to_seq]) -> Iterable[tuple[_Key@to_seq, _Value@to_seq]]`
+- Found 231 diagnostics
++ Found 230 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/nodes.py:1199:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 187 diagnostics
++ Found 188 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- tests/middleware/test_shared_data.py:45:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound of type variable `_SupportsCloseT`
+- tests/middleware/test_shared_data.py:54:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 369 diagnostics
++ Found 367 diagnostics
+
+black (https://github.com/psf/black)
++ src/black/parsing.py:129:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 63 diagnostics
++ Found 64 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/common/tests/test_io.py:37:56: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `StringIO` does not satisfy upper bound of type variable `_BufferedReaderStreamT`
++ src/zope/interface/tests/test_ro.py:413:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/zope/interface/tests/test_ro.py:432:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 340 diagnostics
++ Found 341 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/middleware/base.py:180:9: error[invalid-assignment] Object of type `tuple[MemoryObjectSendStream[Unknown], MemoryObjectReceiveStream[Unknown]]` is not assignable to `create_memory_object_stream[Unknown | MutableMapping[str, Any]]`
++ starlette/testclient.py:135:9: error[invalid-assignment] Object of type `tuple[MemoryObjectSendStream[Unknown], MemoryObjectReceiveStream[Unknown]]` is not assignable to `create_memory_object_stream[Unknown | MutableMapping[str, Any]]`
++ starlette/testclient.py:137:9: error[invalid-assignment] Object of type `tuple[MemoryObjectSendStream[Unknown], MemoryObjectReceiveStream[Unknown]]` is not assignable to `create_memory_object_stream[Unknown | MutableMapping[str, Any]]`
++ starlette/testclient.py:683:13: error[invalid-assignment] Object of type `tuple[MemoryObjectSendStream[Unknown], MemoryObjectReceiveStream[Unknown]]` is not assignable to `create_memory_object_stream[MutableMapping[str, Any] | None]`
++ starlette/testclient.py:686:13: error[invalid-assignment] Object of type `tuple[MemoryObjectSendStream[Unknown], MemoryObjectReceiveStream[Unknown]]` is not assignable to `create_memory_object_stream[MutableMapping[str, Any]]`
+- Found 149 diagnostics
++ Found 154 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- koda_validate/generic.py:152:56: error[invalid-argument-type] Argument is incorrect: Argument type `ExactMatchT@EqualsValidator` does not satisfy constraints of type variable `ExactMatchT`
+- Found 39 diagnostics
++ Found 38 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ tests/annotations/declarations.py:1208:5: error[type-assertion-failure] Argument does not have asserted type `dict[str, int]`
+- Found 567 diagnostics
++ Found 568 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_tests/test_guest_mode.py:316:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/trio/_core/_tests/test_guest_mode.py:320:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/trio/_core/_tests/test_guest_mode.py:338:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/trio/_core/_tests/test_run.py:2720:9: error[invalid-assignment] Object of type `ExceptionGroup[@Todo(list literal element type) | Exception]` is not assignable to `ValueError | ExceptionGroup[ValueError]`
++ src/trio/_core/_tests/tutil.py:68:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- src/trio/_subprocess.py:783:16: error[invalid-return-type] Return type does not match returned value: expected `CompletedProcess[bytes]`, found `CompletedProcess[bytes | None]`
+- src/trio/_tests/test_testing_raisesgroup.py:390:10: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/trio/_tests/type_tests/raisesgroup.py:30:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ValueError] | ValueError`
++ src/trio/_tests/type_tests/raisesgroup.py:32:9: error[type-assertion-failure] Argument does not have asserted type `ExceptionGroup[ValueError]`
++ src/trio/_tests/type_tests/raisesgroup.py:40:5: error[invalid-assignment] Object of type `BaseExceptionGroup[BaseException]` is not assignable to `BaseExceptionGroup[KeyboardInterrupt]`
+- src/trio/_tests/type_tests/raisesgroup.py:98:5: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/trio/_tests/type_tests/raisesgroup.py:103:5: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/trio/_tests/type_tests/raisesgroup.py:119:5: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/trio/_tests/type_tests/raisesgroup.py:92:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:95:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:99:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:102:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:106:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:107:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/type_tests/raisesgroup.py:154:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ExceptionGroup[ValueError]]`
+- Found 676 diagnostics
++ Found 686 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/pack.py:728:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[bytes, int, int | None]]`, found `list[tuple[bytes, int, int]]`
+- dulwich/tests/utils.py:119:12: error[invalid-return-type] Return type does not match returned value: expected `T@make_object`, found `TestObject`
+- Found 189 diagnostics
++ Found 187 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ rich/progress.py:504:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_console.py:1012:5: warning[possibly-unbound-attribute] Attribute `close` on type `IO[bytes] | None` is possibly unbound
++ tests/test_console.py:1012:5: warning[possibly-unbound-attribute] Attribute `close` on type `IO[Unknown] | None` is possibly unbound
+- Found 310 diagnostics
++ Found 311 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/printer/printer.py:203:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 376 diagnostics
++ Found 377 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/regex.py:83:16: error[invalid-return-type] Return type does not match returned value: expected `Regex[_T@Regex]`, found `Regex[str]`
+- Found 507 diagnostics
++ Found 506 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
++ src/check_jsonschema/parsers/yaml.py:61:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 58 diagnostics
++ Found 59 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_config.py:143:28: error[invalid-key] Cannot access `ConfigDict` with a key of type `str`. Only string literals are allowed as keys on TypedDicts.
++ pydantic/_internal/_generate_schema.py:583:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ pydantic/functional_validators.py:822:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 770 diagnostics
++ Found 771 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- tests/test_sequences_and_iterators.py:157:5: error[invalid-assignment] Cannot assign to object of type `reversed[Unknown]` with no `__setitem__` method
++ tests/test_sequences_and_iterators.py:157:5: error[invalid-assignment] Cannot assign to object of type `Iterator[Unknown]` with no `__setitem__` method
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ tests/Framework.py:438:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 308 diagnostics
++ Found 309 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ optuna/study/_optimize.py:187:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- optuna/visualization/_parallel_coordinate.py:195:13: error[invalid-assignment] Object of type `list[int]` is not assignable to `list[int | float]`
+- optuna/visualization/_parallel_coordinate.py:229:17: error[invalid-argument-type] Argument is incorrect: Expected `list[int | float]`, found `list[int]`
+- tests/gp_tests/test_acqf.py:71:23: error[invalid-argument-type] Argument to bound method `update` is incorrect: Expected `GPRegressor | SearchSpace`, found `float`
++ tests/pruners_tests/test_percentile.py:153:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/pruners_tests/test_percentile.py:222:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_cmaes.py:436:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_gp.py:63:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_gp.py:91:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaii.py:179:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaii.py:202:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaii.py:373:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaii.py:660:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaiii.py:146:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_nsgaiii.py:170:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:25:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:49:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:71:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:92:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:109:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_partial_fixed.py:125:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_qmc.py:31:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- tests/samplers_tests/test_samplers.py:371:5: error[invalid-assignment] Object of type `dict[str, CategoricalDistribution]` is not assignable to `dict[str, BaseDistribution]`
++ tests/samplers_tests/test_samplers.py:582:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_samplers.py:819:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_samplers.py:840:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_samplers.py:859:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_samplers.py:881:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/test_samplers.py:909:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_probability_distributions.py:87:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:115:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:125:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:141:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:147:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:161:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:179:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:186:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:192:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:198:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:217:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:233:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:243:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:264:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:291:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:314:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:338:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:367:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:379:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:403:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:428:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:1024:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/samplers_tests/tpe_tests/test_sampler.py:1101:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/storages_tests/rdb_tests/test_storage.py:203:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/storages_tests/rdb_tests/test_storage.py:253:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/storages_tests/rdb_tests/test_storage.py:302:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/storages_tests/rdb_tests/test_storage.py:318:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/storages_tests/test_heartbeat.py:205:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/study_tests/test_study.py:968:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_distributions.py:298:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_distributions.py:322:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_distributions.py:406:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/trial_tests/test_trial.py:448:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/visualization_tests/test_pareto_front.py:97:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/visualization_tests/test_pareto_front.py:153:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/visualization_tests/test_pareto_front.py:208:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/visualization_tests/test_pareto_front.py:254:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 561 diagnostics
++ Found 619 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+- aiohttp_devtools/runserver/serve.py:47:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- aiohttp_devtools/runserver/serve.py:57:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_runserver_watch.py:108:5: error[invalid-assignment] Object of type `set[tuple[MagicMock, str]]` is not assignable to `set[tuple[WebSocketResponse, str]]`
+- Found 124 diagnostics
++ Found 121 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/auth.py:6:6: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/websockets/http.py:8:6: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 44 diagnostics
++ Found 46 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/tests/test_generator.py:28:24: error[unresolved-attribute] Type `Value[str]` has no attribute `value`
++ asynq/tests/test_generator.py:28:24: error[unresolved-attribute] Type `Value[Unknown]` has no attribute `value`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/cli/commands/run/loaders.py:60:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/schemathesis/core/compat.py:16:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- src/schemathesis/engine/phases/stateful/_executor.py:247:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/engine/phases/__init__.py:91:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/schemathesis/engine/phases/probes.py:160:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ src/schemathesis/engine/phases/unit/_executor.py:198:58: error[invalid-argument-type] Argument to function `get_invalid_regular_expression_message` is incorrect: Expected `list[WarningMessage]`, found `list[Unknown] | None`
++ src/schemathesis/generation/hypothesis/builder.py:361:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- src/schemathesis/specs/openapi/schemas.py:161:48: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound of type variable `D`
+- src/schemathesis/specs/openapi/schemas.py:161:58: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound of type variable `D`
+- Found 270 diagnostics
++ Found 273 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ test/contrib/emscripten/test_emscripten.py:1006:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ test/test_util.py:639:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ test/test_util.py:642:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ test/with_dummyserver/test_connection.py:63:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ test/with_dummyserver/test_connection.py:64:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ test/with_dummyserver/test_connectionpool.py:498:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ test/with_dummyserver/test_https.py:248:39: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
++ test/with_dummyserver/test_https.py:299:39: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
++ test/with_dummyserver/test_https.py:745:25: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
++ test/with_dummyserver/test_https.py:864:35: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
++ test/with_dummyserver/test_https.py:882:35: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
+- Found 391 diagnostics
++ Found 402 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ tests/integration_tests/test_reaper.py:77:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
+- Found 630 diagnostics
++ Found 631 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/test/asyncio_test.py:136:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/test/asyncio_test.py:241:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/test/asyncio_test.py:261:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/test/log_test.py:34:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/test/simple_httpclient_test.py:617:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tornado/test/simple_httpclient_test.py:619:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tornado/test/simple_httpclient_test.py:625:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tornado/test/simple_httpclient_test.py:627:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tornado/test/simple_httpclient_test.py:629:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tornado/test/testing_test.py:155:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/test/util.py:91:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tornado/testing.py:151:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- tornado/websocket.py:1022:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, bool].__setitem__(key: str, value: bool, /) -> None` cannot be called with a key of type `Literal["max_wbits"]` and a value of type `int` on object of type `dict[str, bool]`
+- tornado/websocket.py:1024:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, bool].__setitem__(key: str, value: bool, /) -> None` cannot be called with a key of type `Literal["max_wbits"]` and a value of type `int` on object of type `dict[str, bool]`
+- tornado/websocket.py:1025:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, bool].__setitem__(key: str, value: bool, /) -> None` cannot be called with a key of type `Literal["compression_options"]` and a value of type `dict[str, Any] | None` on object of type `dict[str, bool]`
+- Found 244 diagnostics
++ Found 253 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ mkdocs/config/base.py:387:10: error[unresolved-attribute] Type `Config` has no attribute `strict`
++ mkdocs/config/base.py:392:12: error[invalid-return-type] Return type does not match returned value: expected `MkDocsConfig`, found `Config`
++ mkdocs/tests/base.py:41:12: error[invalid-return-type] Return type does not match returned value: expected `MkDocsConfig`, found `Config`
++ mkdocs/tests/structure/page_tests.py:33:12: error[invalid-return-type] Return type does not match returned value: expected `MkDocsConfig`, found `Config`
+- Found 179 diagnostics
++ Found 183 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ ignite/handlers/neptune_logger.py:682:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- tests/ignite/distributed/test_launcher.py:53:19: warning[possibly-unbound-attribute] Attribute `read` on type `IO[bytes] | None` is possibly unbound
++ tests/ignite/distributed/test_launcher.py:53:19: warning[possibly-unbound-attribute] Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- tests/ignite/distributed/test_launcher.py:53:48: warning[possibly-unbound-attribute] Attribute `read` on type `IO[bytes] | None` is possibly unbound
++ tests/ignite/distributed/test_launcher.py:53:48: warning[possibly-unbound-attribute] Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- tests/ignite/distributed/test_launcher.py:54:92: warning[possibly-unbound-attribute] Attribute `read` on type `IO[bytes] | None` is possibly unbound
++ tests/ignite/distributed/test_launcher.py:54:92: warning[possibly-unbound-attribute] Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- tests/ignite/distributed/test_launcher.py:55:16: warning[possibly-unbound-attribute] Attribute `read` on type `IO[bytes] | None` is possibly unbound
++ tests/ignite/distributed/test_launcher.py:55:16: warning[possibly-unbound-attribute] Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- tests/ignite/distributed/test_launcher.py:55:45: warning[possibly-unbound-attribute] Attribute `read` on type `IO[bytes] | None` is possibly unbound
++ tests/ignite/distributed/test_launcher.py:55:45: warning[possibly-unbound-attribute] Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ tests/ignite/handlers/test_checkpoint.py:640:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/handlers/test_neptune_logger.py:541:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:53:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:61:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:152:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:188:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:243:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/nlp/test_bleu.py:289:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_precision.py:221:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_precision.py:287:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_precision.py:434:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_recall.py:223:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_recall.py:290:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_recall.py:437:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_running_average.py:38:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/ignite/metrics/test_running_average.py:224:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 2109 diagnostics
++ Found 2126 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ test/common_utils.py:528:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ test/common_utils.py:539:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- torchvision/datasets/_stereo_matching.py:74:13: error[invalid-assignment] Object of type `list[str]` is not assignable to `list[None | str]`
++ torchvision/io/_video_opt.py:342:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ torchvision/io/_video_opt.py:387:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ torchvision/io/_video_opt.py:430:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 1466 diagnostics
++ Found 1470 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/hexdump.py:97:9: error[invalid-assignment] Object of type `list[int]` is not assignable to `bytes`
++ pwndbg/hexdump.py:97:9: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to `bytes`
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- schema_salad/makedoc.py:816:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `object` does not satisfy upper bound of type variable `_BufferT_co`
+- Found 146 diagnostics
++ Found 145 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/spiders/__init__.py:130:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ scrapy/spiders/init.py:34:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ scrapy/utils/reactor.py:143:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- tests/test_contracts.py:263:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound of type variable `_StreamT`
+- tests/test_contracts.py:565:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound of type variable `_StreamT`
++ tests/test_core_downloader.py:86:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_core_downloader.py:119:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_core_downloader.py:122:24: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_crawler.py:94:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_downloadermiddleware_offsite.py:123:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_downloadermiddleware_offsite.py:213:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_dupefilters.py:265:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_dupefilters.py:267:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_dupefilters.py:270:16: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_feedexport.py:2923:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_feedexport.py:2957:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_feedexport.py:2973:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_feedexport.py:2990:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_http_request.py:399:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_http_request.py:1519:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_http_request.py:1520:50: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_request.py:1531:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_http_request.py:1532:50: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_request.py:1542:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_http_request.py:1548:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_http_request.py:1638:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_pipeline_files.py:754:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_files.py:767:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_files.py:784:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_files.py:804:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:419:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:431:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:448:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:472:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:495:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:519:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_pipeline_media.py:540:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_scheduler.py:389:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- tests/test_scrapy__getattr__.py:14:16: warning[possibly-unbound-attribute] Attribute `args` on type `Warning | str` is possibly unbound
+- tests/test_scrapy__getattr__.py:28:16: warning[possibly-unbound-attribute] Attribute `args` on type `Warning | str` is possibly unbound
++ tests/test_scrapy__getattr__.py:14:16: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_scrapy__getattr__.py:28:16: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_settings/__init__.py:568:13: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spider.py:482:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:486:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:498:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:500:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:504:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:516:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spider.py:839:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spider_start.py:49:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spider_start.py:61:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spider_start.py:74:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spider_start.py:113:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spider_start.py:129:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spiderloader/__init__.py:146:20: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spiderloader/__init__.py:150:17: warning[possibly-unbound-attribute] Attribute `pop` on type `list[Unknown] | None` is possibly unbound
++ tests/test_spiderloader/__init__.py:151:64: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spiderloader/__init__.py:175:20: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spiderloader/__init__.py:179:17: warning[possibly-unbound-attribute] Attribute `pop` on type `list[Unknown] | None` is possibly unbound
++ tests/test_spiderloader/__init__.py:180:64: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spiderloader/__init__.py:196:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spiderloader/__init__.py:197:23: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spiderloader/__init__.py:219:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spiderloader/__init__.py:220:23: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spidermiddleware_process_start.py:134:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_process_start.py:140:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_process_start.py:153:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_process_start.py:159:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_process_start.py:222:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_process_start.py:257:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_spidermiddleware_referer.py:857:32: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_spidermiddleware_referer.py:858:28: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_spidermiddleware_referer.py:858:61: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_curl.py:216:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_datatypes.py:233:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_datatypes.py:234:31: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_datatypes.py:236:21: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_deprecate.py:123:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_deprecate.py:148:19: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_deprecate.py:153:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_deprecate.py:190:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_deprecate.py:224:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_deprecate.py:274:55: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_deprecate.py:289:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_deprecate.py:290:52: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_deprecate.py:291:55: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_deprecate.py:294:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_deprecate.py:303:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:98:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:101:24: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:105:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:106:71: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:109:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:110:71: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:113:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:114:71: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:117:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:118:71: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:165:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:168:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:171:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:174:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:177:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:180:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:183:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:186:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:246:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:249:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:252:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:255:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:258:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:261:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:264:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:267:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:275:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:276:49: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:305:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:311:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_misc/test_return_with_argument_inside_generator.py:312:44: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_project.py:44:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_reactor.py:25:24: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Unknown] | None`
++ tests/test_utils_reactor.py:25:62: error[not-iterable] Object of type `list[Unknown] | None` may not be iterable
++ tests/test_utils_request.py:362:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
++ tests/test_utils_url.py:467:27: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_utils_url.py:468:27: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1070 diagnostics
++ Found 1188 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- com/win32com/client/gencache.py:146:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `int` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 1986 diagnostics
++ Found 1985 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- colour/plotting/colorimetry.py:533:12: warning[redundant-cast] Value is already of type `list[MultiSpectralDistributions]`
+- colour/plotting/colorimetry.py:699:19: warning[redundant-cast] Value is already of type `list[SpectralDistribution]`
+- colour/plotting/models.py:540:20: warning[redundant-cast] Value is already of type `list[RGB_Colourspace]`
+- colour/plotting/volume.py:511:20: warning[redundant-cast] Value is already of type `list[RGB_Colourspace]`
++ colour/utilities/common.py:464:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `catch_warnings[None]`, found `catch_warnings[list[Unknown] | None]`
+- Found 629 diagnostics
++ Found 626 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- tests/types/test_array.py:314:12: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- Found 642 diagnostics
++ Found 641 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:2894:17: warning[possibly-unbound-attribute] Attribute `write` on type `IO[bytes] | None` is possibly unbound
++ paasta_tools/utils.py:2894:17: warning[possibly-unbound-attribute] Attribute `write` on type `IO[Unknown] | None` is possibly unbound
+- paasta_tools/utils.py:2895:17: warning[possibly-unbound-attribute] Attribute `flush` on type `IO[bytes] | None` is possibly unbound
++ paasta_tools/utils.py:2895:17: warning[possibly-unbound-attribute] Attribute `flush` on type `IO[Unknown] | None` is possibly unbound
+- paasta_tools/utils.py:2907:31: warning[possibly-unbound-attribute] Attribute `readline` on type `IO[bytes] | None` is possibly unbound
++ paasta_tools/utils.py:2907:31: warning[possibly-unbound-attribute] Attribute `readline` on type `IO[Unknown] | None` is possibly unbound
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/core/templates.py:112:1: error[invalid-assignment] Object of type `dict[str, () -> Unknown]` is not assignable to `dict[str, () -> Template]`
+- src/bokeh/layouts.py:666:16: error[invalid-return-type] Return type does not match returned value: expected `list[L@_parse_children_arg]`, found `list[L@_parse_children_arg | list[L@_parse_children_arg]]`
+- src/bokeh/plotting/_renderer.py:138:56: error[invalid-argument-type] Argument to function `update_legend` is incorrect: Expected `GlyphRenderer[Glyph]`, found `GlyphRenderer[Glyph | None | str]`
+- src/bokeh/plotting/_renderer.py:140:12: error[invalid-return-type] Return type does not match returned value: expected `GlyphRenderer[Glyph]`, found `GlyphRenderer[Glyph | None | str]`
+- src/bokeh/plotting/contour.py:248:9: error[invalid-argument-type] Argument is incorrect: Expected `GlyphRenderer[Glyph]`, found `GlyphRenderer[MultiPolygons]`
+- src/bokeh/plotting/contour.py:249:9: error[invalid-argument-type] Argument is incorrect: Expected `GlyphRenderer[Glyph]`, found `GlyphRenderer[MultiLine]`
+- src/bokeh/resources.py:111:1...*[Comment body truncated]*
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-08-28 07:56_
+
+---
+
+_Comment by @carljm on 2025-08-29 00:04_
+
+Thanks for the PR!
+
+Can you look into the failing tests? It looks like a lot of our mdtests are failing; should be able to repro locally with `cargo test -p ty_python_semantic`. It's possible that some of these are TODOs in the tests documenting our missing feature, and we just need to update the test to reflect the fact that we now handle this correctly, but it seems like more failures than I'd expect for that.
+
+We will also need to look into the changes on the conformance suite (in an expandable comment above) and verify that this PR is improving conformance (that is, adding diagnostics on lines marked with `# E` in the conformance suite, and removing diagnostics on lines not so marked).
+
+And we'll also need to at least spot-check the mypy-primer ecosystem results similarly, to verify that the diagnostics we're adding are true positives, and the diagnostics we're removing are true-negatives.
+
+Probably the above should be done in the listed order: first make sure the ty CI is happy, then make sure the conformance suite is good, and only then worry about the ecosystem check.
+
+Someone will need to do all the above before we can merge; as much of it as you can do would be great. If you reach the end of what you have time to do, comment and we'll see if someone else is available for the rest.
+
+Thank you!
+
+---
+
+_@MichaReiser requested changes on 2025-09-15 16:10_
+
+based on Carl's feedback
+
+---
+
+_Comment by @MichaReiser on 2025-10-21 07:23_
+
+Thanks for working on this feature. I'll close this PR due to inactivity. Anyone interested in this feature, A new PR with Carl's feedback addressed would be welcomed.
+
+---
+
+_Closed by @MichaReiser on 2025-10-21 07:23_
+
+---
