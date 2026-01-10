@@ -1,0 +1,196 @@
+```yaml
+number: 13680
+title: "[ruff-0.7] Stabilise the expansion of `open-file-with-context-handler` to work with other standard-library IO modules (`SIM115`)"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - rule
+assignees: []
+merged: true
+base: ruff-0.7
+head: stabilise-SIM115-behaviour
+created_at: 2024-10-08T13:08:50Z
+updated_at: 2024-10-08T13:41:50Z
+url: https://github.com/astral-sh/ruff/pull/13680
+synced_at: 2026-01-10T20:59:36Z
+```
+
+# [ruff-0.7] Stabilise the expansion of `open-file-with-context-handler` to work with other standard-library IO modules (`SIM115`)
+
+---
+
+_Pull request opened by @AlexWaygood on 2024-10-08 13:08_
+
+## Summary
+
+Stabilises the preview-only changes that were made in https://github.com/astral-sh/ruff/pull/12959. Closes #7313.
+
+These changes were first released in preview as part of Ruff 0.6.2 (released August 22nd). There have been no issues about the changes since then.
+
+## Test Plan
+
+`cargo test -p ruff_linter --lib` + ecosystem report on this PR
+
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-10-08 13:08_
+
+---
+
+_Review requested from @MichaReiser by @AlexWaygood on 2024-10-08 13:12_
+
+---
+
+_Review requested from @dhruvmanila by @AlexWaygood on 2024-10-08 13:12_
+
+---
+
+_Added to milestone `v0.7` by @AlexWaygood on 2024-10-08 13:12_
+
+---
+
+_Comment by @github-actions[bot] on 2024-10-08 13:22_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+23 -5 violations, +0 -0 fixes in 7 projects; 47 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/amazon/aws/hooks/s3.py#L1450'>airflow/providers/amazon/aws/hooks/s3.py:1450:20:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py#L247'>airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py:247:29:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/docker/operators/docker.py#L487'>airflow/providers/docker/operators/docker.py:487:19:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/hooks/cloud_sql.py#L934'>airflow/providers/google/cloud/hooks/cloud_sql.py:934:22:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/transfers/cassandra_to_gcs.py#L195'>airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:195:27:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/transfers/cassandra_to_gcs.py#L212'>airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:212:35:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/transfers/cassandra_to_gcs.py#L228'>airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:228:34:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/transfers/sql_to_gcs.py#L354'>airflow/providers/google/cloud/transfers/sql_to_gcs.py:354:27:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/providers/google/cloud/transfers/sql_to_gcs.py#L465'>airflow/providers/google/cloud/transfers/sql_to_gcs.py:465:34:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/airflow/utils/file.py#L159'>airflow/utils/file.py:159:30:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py#L185'>dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:185:24:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/airflow/blob/2933a653342a075046fe126277557d09a5209e81/dev/breeze/src/airflow_breeze/utils/parallel.py#L63'>dev/breeze/src/airflow_breeze/utils/parallel.py:63:12:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/a849c292888f32b8912a1a06dfe1591706a53220/superset/commands/dataset/importers/v1/utils.py#L198'>superset/commands/dataset/importers/v1/utils.py:198:16:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/superset/blob/a849c292888f32b8912a1a06dfe1591706a53220/tests/integration_tests/email_tests.py#L160'>tests/integration_tests/email_tests.py:160:22:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/superset/blob/a849c292888f32b8912a1a06dfe1591706a53220/tests/integration_tests/email_tests.py#L44'>tests/integration_tests/email_tests.py:44:22:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/superset/blob/a849c292888f32b8912a1a06dfe1591706a53220/tests/integration_tests/email_tests.py#L64'>tests/integration_tests/email_tests.py:64:22:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/apache/superset/blob/a849c292888f32b8912a1a06dfe1591706a53220/tests/integration_tests/email_tests.py#L95'>tests/integration_tests/email_tests.py:95:22:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/util/filesystem.py#L133'>tests/support/util/filesystem.py:133:9:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/util/filesystem.py#L151'>tests/support/util/filesystem.py:151:9:</a> SIM115 Use a context manager for opening files
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/command/test_util__command.py#L72'>tests/unit/bokeh/command/test_util__command.py:72:9:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/inspection/lazy_wheel.py#L278'>src/poetry/inspection/lazy_wheel.py:278:41:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/af83161feddf9d7927941cb3088b36da75b60946/reflex/utils/prerequisites.py#L722'>reflex/utils/prerequisites.py:722:14:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/c39e86504ad00dbc8a3edfcd3a58d117137f32fa/zerver/management/commands/backup.py#L124'>zerver/management/commands/backup.py:124:36:</a> SIM115 Use a context manager for opening files
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+0 -5 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/indico/indico/blob/647a2240e2effbade9dc27f2ef2fb8af53493b35/indico/modules/events/export.py#L151'>indico/modules/events/export.py:151:75:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM115`)
+- <a href='https://github.com/indico/indico/blob/647a2240e2effbade9dc27f2ef2fb8af53493b35/indico/modules/events/export.py#L416'>indico/modules/events/export.py:416:59:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM115`)
+- <a href='https://github.com/indico/indico/blob/647a2240e2effbade9dc27f2ef2fb8af53493b35/indico/modules/events/static/offline.py#L91'>indico/modules/events/static/offline.py:91:42:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM115`)
+- <a href='https://github.com/indico/indico/blob/647a2240e2effbade9dc27f2ef2fb8af53493b35/indico/modules/events/util.py#L710'>indico/modules/events/util.py:710:91:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM115`)
+- <a href='https://github.com/indico/indico/blob/647a2240e2effbade9dc27f2ef2fb8af53493b35/indico/modules/users/export.py#L79'>indico/modules/users/export.py:79:87:</a> RUF100 [*] Unused `noqa` directive (unused: `SIM115`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM115 | 23 | 23 | 0 | 0 | 0 |
+| RUF100 | 5 | 0 | 5 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2024-10-08 13:33_
+
+The ecosystem report all LGTM from skimming through it, though I'd appreciate a second pair of eyes to make sure I'm not missing any glaring false positives!
+
+---
+
+_@MichaReiser approved on 2024-10-08 13:33_
+
+---
+
+_Merged by @AlexWaygood on 2024-10-08 13:41_
+
+---
+
+_Closed by @AlexWaygood on 2024-10-08 13:41_
+
+---
+
+_Branch deleted on 2024-10-08 13:41_
+
+---
