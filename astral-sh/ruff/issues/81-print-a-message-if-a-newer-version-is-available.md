@@ -1,0 +1,38 @@
+```yaml
+number: 81
+title: Print a message if a newer version is available
+type: issue
+state: closed
+author: beardgans
+labels: []
+assignees: []
+created_at: 2022-09-01T20:00:07Z
+updated_at: 2022-09-03T20:31:45Z
+url: https://github.com/astral-sh/ruff/issues/81
+synced_at: 2026-01-10T15:56:04Z
+```
+
+# Print a message if a newer version is available
+
+---
+
+_Issue opened by @beardgans on 2022-09-01 20:00_
+
+👋 Hi there!
+
+I found this feature in the [GitHub CLI application](https://github.com/cli/cli/blob/trunk/internal/update/update.go) and [npm](https://github.com/npm/cli/blob/latest/lib/utils/update-notifier.js).
+
+I think it'll be useful for users who install `ruff` via `PyPi`.
+And this will let them know that a new version is available and it's time to update.
+
+Ready-made crate to implement that: [update-informer](https://github.com/mgrachev/update-informer)
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-09-02 14:19_
+
+---
+
+_Closed by @charliermarsh on 2022-09-03 20:31_
+
+---

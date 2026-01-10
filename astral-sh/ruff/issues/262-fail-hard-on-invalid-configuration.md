@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-23T21:46:56Z
 updated_at: 2022-09-24T01:16:08Z
 url: https://github.com/astral-sh/ruff/issues/262
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Fail hard on invalid configuration?
@@ -44,10 +44,6 @@ _Originally posted by @amotl in https://github.com/charliermarsh/ruff/issues/124
 ---
 
 _Renamed from "Fail hard on invalid configuration" to "Fail hard on invalid configuration?" by @amotl on 2022-09-23 21:47_
-
----
-
-_Referenced in [astral-sh/ruff#264](../../astral-sh/ruff/pulls/264.md) on 2022-09-23 22:04_
 
 ---
 

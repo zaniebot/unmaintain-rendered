@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-08-27T22:31:16Z
 updated_at: 2022-08-29T21:16:42Z
 url: https://github.com/astral-sh/ruff/issues/31
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:04Z
 ```
 
 # Cut releases via GitHub Actions
@@ -35,9 +35,5 @@ _Label `releases` added by @charliermarsh on 2022-08-28 13:57_
 ---
 
 _Closed by @charliermarsh on 2022-08-29 21:16_
-
----
-
-_Referenced in [astral-sh/ruff#14403](../../astral-sh/ruff/pulls/14403.md) on 2024-11-18 08:47_
 
 ---

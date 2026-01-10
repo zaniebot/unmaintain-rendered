@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-09T22:51:14Z
+updated_at: 2026-01-10T12:27:46Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-10T15:56:06Z
 ```
 
 # Dependency Dashboard
@@ -66,6 +66,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.11
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/imperative-1.x-lockfile -->Update Rust crate imperative to v1.0.7
+ - [ ] <!-- unschedule-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.179
  - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.112
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.12
@@ -84,7 +85,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
  - [ ] <!-- approvePr-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- approvePr-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
- - [ ] <!-- approvePr-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- approvePr-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
@@ -830,7 +830,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `@eslint/js ^9.21.0`
  - `@tailwindcss/vite ^4.0.14`
- - `@types/react ^19.0.11`
+ - `@types/react ^19.0.11` → [Updates: `^19.0.11`]
  - `@types/react-dom ^19.0.0`
  - `@vitejs/plugin-react-swc ^4.0.0`
  - `eslint ^9.22.0`

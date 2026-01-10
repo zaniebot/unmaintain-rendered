@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-18T07:20:05Z
 updated_at: 2022-09-18T16:45:53Z
 url: https://github.com/astral-sh/ruff/issues/223
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Line length should be calculated by number of chars in UTF-32 (E501)
@@ -46,9 +46,5 @@ Resolved by #224.
 ---
 
 _Closed by @charliermarsh on 2022-09-18 16:45_
-
----
-
-_Referenced in [quarylabs/sqruff#1431](../../quarylabs/sqruff/issues/1431.md) on 2025-03-19 15:01_
 
 ---

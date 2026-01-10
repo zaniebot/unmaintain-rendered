@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-03T07:58:38Z
 updated_at: 2022-11-03T14:10:10Z
 url: https://github.com/astral-sh/ruff/issues/564
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Make --quiet more quiet
@@ -40,10 +40,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-03 13:21_
 _Comment by @charliermarsh on 2022-11-03 13:41_
 
 Will fix this today. I want to do a small refactor around those settings.
-
----
-
-_Referenced in [astral-sh/ruff#566](../../astral-sh/ruff/pulls/566.md) on 2022-11-03 14:07_
 
 ---
 

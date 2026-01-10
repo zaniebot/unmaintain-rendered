@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-01T12:48:58Z
 updated_at: 2022-09-01T13:15:19Z
 url: https://github.com/astral-sh/ruff/issues/70
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:04Z
 ```
 
 # Crash if no pyproject.toml file is found
@@ -30,10 +30,6 @@ Try running `ruff` in a location where it cannot find a `pyproject.toml`file at 
 I already forked and fixed the bug :) 
 
 
-
----
-
-_Referenced in [astral-sh/ruff#71](../../astral-sh/ruff/pulls/71.md) on 2022-09-01 12:49_
 
 ---
 

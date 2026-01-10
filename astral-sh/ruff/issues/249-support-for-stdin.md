@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-21T21:00:00Z
 updated_at: 2022-10-11T13:56:21Z
 url: https://github.com/astral-sh/ruff/issues/249
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Support for stdin?
@@ -36,10 +36,6 @@ _Label `enhancement` added by @charliermarsh on 2022-09-21 22:08_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2022-09-26 01:03_
-
----
-
-_Referenced in [astral-sh/ruff#387](../../astral-sh/ruff/pulls/387.md) on 2022-10-10 13:46_
 
 ---
 

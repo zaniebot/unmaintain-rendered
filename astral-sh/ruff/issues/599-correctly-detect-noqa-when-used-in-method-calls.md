@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-05T13:53:59Z
 updated_at: 2022-11-05T14:51:41Z
 url: https://github.com/astral-sh/ruff/issues/599
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Correctly detect noqa when used in method calls
@@ -75,11 +75,7 @@ _Comment by @charliermarsh on 2022-11-05 14:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#603](../../astral-sh/ruff/pulls/603.md) on 2022-11-05 14:51_
-
----
-
-_Closed by @charliermarsh in #603 on 2022-11-05 14:51_
+_Closed by @charliermarsh on 2022-11-05 14:51_
 
 ---
 

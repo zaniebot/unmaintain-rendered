@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-07T21:43:38Z
 updated_at: 2022-09-08T08:08:09Z
 url: https://github.com/astral-sh/ruff/issues/124
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Settings: Support the `ignore` option also within `pyproject.toml`
@@ -68,10 +68,6 @@ Good call, can definitely support this.
 
 ---
 
-_Referenced in [astral-sh/ruff#126](../../astral-sh/ruff/pulls/126.md) on 2022-09-08 02:22_
-
----
-
 _Closed by @charliermarsh on 2022-09-08 02:34_
 
 ---
@@ -79,9 +75,5 @@ _Closed by @charliermarsh on 2022-09-08 02:34_
 _Comment by @amotl on 2022-09-08 08:08_
 
 Thank you very much!
-
----
-
-_Referenced in [astral-sh/ruff#262](../../astral-sh/ruff/issues/262.md) on 2022-09-23 21:46_
 
 ---

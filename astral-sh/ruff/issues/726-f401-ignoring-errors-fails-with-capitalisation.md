@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-13T20:01:59Z
 updated_at: 2022-11-14T01:34:42Z
 url: https://github.com/astral-sh/ruff/issues/726
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # F401: Ignoring errors fails with capitalisation
@@ -69,10 +69,6 @@ My bad! Will fix today.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-11-13 21:02_
-
----
-
-_Referenced in [astral-sh/ruff#728](../../astral-sh/ruff/pulls/728.md) on 2022-11-13 21:09_
 
 ---
 

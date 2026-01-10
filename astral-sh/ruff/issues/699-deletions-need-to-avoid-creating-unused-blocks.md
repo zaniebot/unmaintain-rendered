@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-12T16:29:08Z
 updated_at: 2022-11-12T16:39:10Z
 url: https://github.com/astral-sh/ruff/issues/699
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Deletions need to avoid creating unused blocks
@@ -42,10 +42,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-12 16:29_
 
 ---
 
-_Referenced in [astral-sh/ruff#700](../../astral-sh/ruff/pulls/700.md) on 2022-11-12 16:39_
-
----
-
-_Closed by @charliermarsh in #700 on 2022-11-12 16:39_
+_Closed by @charliermarsh on 2022-11-12 16:39_
 
 ---

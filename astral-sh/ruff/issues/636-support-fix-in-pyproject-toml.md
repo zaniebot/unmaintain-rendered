@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-07T09:08:23Z
 updated_at: 2022-11-07T14:46:23Z
 url: https://github.com/astral-sh/ruff/issues/636
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # support fix in pyproject.toml
@@ -38,10 +38,6 @@ _Label `enhancement` added by @charliermarsh on 2022-11-07 10:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#639](../../astral-sh/ruff/pulls/639.md) on 2022-11-07 14:46_
-
----
-
-_Closed by @charliermarsh in #639 on 2022-11-07 14:46_
+_Closed by @charliermarsh on 2022-11-07 14:46_
 
 ---

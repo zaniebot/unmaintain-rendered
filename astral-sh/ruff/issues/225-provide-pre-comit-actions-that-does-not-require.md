@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-19T11:58:45Z
 updated_at: 2022-09-20T03:06:40Z
 url: https://github.com/astral-sh/ruff/issues/225
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Provide pre-comit actions that does not require cargo crate run 
@@ -33,14 +33,6 @@ _Label `bug` added by @charliermarsh on 2022-09-20 01:41_
 
 ---
 
-_Referenced in [astral-sh/ruff#229](../../astral-sh/ruff/pulls/229.md) on 2022-09-20 03:06_
-
----
-
 _Closed by @charliermarsh on 2022-09-20 03:06_
-
----
-
-_Referenced in [tombi-toml/tombi#376](../../tombi-toml/tombi/issues/376.md) on 2025-05-24 23:30_
 
 ---

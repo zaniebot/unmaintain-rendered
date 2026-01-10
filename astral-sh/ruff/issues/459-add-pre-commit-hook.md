@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-21T14:28:47Z
 updated_at: 2022-10-21T14:50:00Z
 url: https://github.com/astral-sh/ruff/issues/459
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Add pre commit hook
@@ -44,9 +44,5 @@ _Closed by @lusmoura on 2022-10-21 14:37_
 _Comment by @charliermarsh on 2022-10-21 14:50_
 
 @lusmoura - if you have any issues using the pre-commit hook, don’t hesitate to ask!
-
----
-
-_Referenced in [astral-sh/ruff#18222](../../astral-sh/ruff/pulls/18222.md) on 2025-05-20 15:24_
 
 ---

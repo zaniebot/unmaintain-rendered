@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-04T03:23:54Z
 updated_at: 2022-11-04T16:04:15Z
 url: https://github.com/astral-sh/ruff/issues/577
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # `fixer.rs` doesn't support multi-byte characters
@@ -27,17 +27,9 @@ _Label `bug` added by @charliermarsh on 2022-11-04 03:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#578](../../astral-sh/ruff/pulls/578.md) on 2022-11-04 03:41_
-
----
-
 _Comment by @charliermarsh on 2022-11-04 04:23_
 
 (Will fix this tomorrow AM.)
-
----
-
-_Referenced in [astral-sh/ruff#584](../../astral-sh/ruff/pulls/584.md) on 2022-11-04 15:50_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-02T09:26:19Z
 updated_at: 2022-09-02T12:46:40Z
 url: https://github.com/astral-sh/ruff/issues/83
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:04Z
 ```
 
 # F401 `__future__.annotations` imported but unused
@@ -38,9 +38,5 @@ Thanks! Fixed in #85.
 ---
 
 _Closed by @charliermarsh on 2022-09-02 12:46_
-
----
-
-_Referenced in [astral-sh/ruff#123](../../astral-sh/ruff/issues/123.md) on 2022-09-07 21:35_
 
 ---

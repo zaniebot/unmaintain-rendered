@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-11-07T14:56:22Z
 updated_at: 2022-11-16T04:08:32Z
 url: https://github.com/astral-sh/ruff/issues/641
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Automatically remove .encode("utf-8")
@@ -90,10 +90,6 @@ check.amend(Fix::deletion(
 _Comment by @charliermarsh on 2022-11-11 15:10_
 
 I would structure that as a `Fix::replacement` of the entire string: `"foo".encode("utf-8")` -> `b"foo"`. [`assert_false.rs`](src/flake8_bugbear/plugins/assert_false.rs) could be a good example -- you'd basically build a new AST, then use `SourceGenerator` to convert that AST to source code, and use _that_ output as your replacement.
-
----
-
-_Referenced in [astral-sh/ruff#686](../../astral-sh/ruff/pulls/686.md) on 2022-11-11 18:45_
 
 ---
 

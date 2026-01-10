@@ -1,0 +1,607 @@
+```yaml
+number: 22469
+title: "[ty] Support calls to intersection types"
+type: pull_request
+state: open
+author: carljm
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: claude/fix-issue-1858-UjARA
+created_at: 2026-01-09T00:06:59Z
+updated_at: 2026-01-09T22:22:03Z
+url: https://github.com/astral-sh/ruff/pull/22469
+synced_at: 2026-01-10T15:56:07Z
+```
+
+# [ty] Support calls to intersection types
+
+---
+
+_Pull request opened by @carljm on 2026-01-09 00:06_
+
+Implement proper handling for calling intersection types. Previously, calling an intersection type would return a `@Todo` type that suppressed errors but provided no useful type information.
+
+Now, when calling an intersection type:
+- We check each positive element of the intersection for callability
+- If at least one element is callable, the intersection is callable
+- The return type is the intersection of the return types from all callable elements
+- If no elements are callable, a proper error is reported
+
+This is a partial fix for #1858. Further improvements could include better handling of signatures and parameter validation.
+
+---
+
+_Label `ty` added by @carljm on 2026-01-09 00:07_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-09 00:08_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-09 00:10_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ mypy_primer/git_utils.py:65:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 3 diagnostics
++ Found 4 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:3898:38: error[no-matching-overload] No overload of bound method `split` matches arguments
++ aioredis/connection.py:206:20: error[call-non-callable] Object of type `Mapping[str, type[Exception]]` is not callable
+- aioredis/connection.py:206:20: error[invalid-return-type] Return type does not match returned value: expected `ResponseError`, found `Exception | @Todo`
++ aioredis/connection.py:206:20: error[invalid-return-type] Return type does not match returned value: expected `ResponseError`, found `Exception | Unknown`
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/llnl/util/lock.py:735:24: error[call-non-callable] Object of type `ContextManager[Unknown]` is not callable
+- lib/spack/spack/test/cmd/develop.py:265:18: error[no-matching-overload] No overload matches arguments
+- lib/spack/spack/util/gpg.py:353:9: error[no-matching-overload] No overload matches arguments
+- lib/spack/spack/vendor/jinja2/environment.py:1612:17: error[no-matching-overload] No overload of bound method `writelines` matches arguments
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1071:16: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1071:16: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `Unknown | Loader`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1096:15: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1096:15: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `Unknown | Loader`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1097:19: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1097:19: warning[possibly-missing-attribute] Attribute `_constructor` may be missing on object of type `Unknown | Loader`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1099:9: warning[possibly-missing-attribute] Attribute `_parser` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1099:9: warning[possibly-missing-attribute] Attribute `_parser` may be missing on object of type `Unknown | Loader`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1101:13: warning[possibly-missing-attribute] Attribute `_reader` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1101:13: warning[possibly-missing-attribute] Attribute `_reader` may be missing on object of type `Unknown | Loader`
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1105:13: warning[possibly-missing-attribute] Attribute `_scanner` may be missing on object of type `@Todo | Loader`
++ lib/spack/spack/vendor/ruamel/yaml/main.py:1105:13: warning[possibly-missing-attribute] Attribute `_scanner` may be missing on object of type `Unknown | Loader`
+- Found 4320 diagnostics
++ Found 4318 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/cachecontrol/controller.py:349:12: error[unresolved-attribute] Object of type `~None` has no attribute `status`
++ src/pip/_vendor/cachecontrol/controller.py:351:45: error[unresolved-attribute] Object of type `~None` has no attribute `status`
++ src/pip/_vendor/cachecontrol/controller.py:356:13: error[unresolved-attribute] Object of type `~None` has no attribute `headers`
++ src/pip/_vendor/cachecontrol/controller.py:420:49: error[invalid-argument-type] Argument to bound method `_cache_set` is incorrect: Expected `HTTPResponse`, found `~None`
++ src/pip/_vendor/cachecontrol/controller.py:424:18: error[unresolved-attribute] Object of type `~None` has no attribute `status`
++ src/pip/_vendor/cachecontrol/controller.py:426:49: error[invalid-argument-type] Argument to bound method `_cache_set` is incorrect: Expected `HTTPResponse`, found `~None`
++ src/pip/_vendor/cachecontrol/controller.py:443:21: error[invalid-argument-type] Argument to bound method `_cache_set` is incorrect: Expected `HTTPResponse`, found `~None`
++ src/pip/_vendor/cachecontrol/controller.py:466:25: error[invalid-argument-type] Argument to bound method `_cache_set` is incorrect: Expected `HTTPResponse`, found `~None`
++ src/pip/_vendor/cachecontrol/filewrapper.py:84:29: error[invalid-argument-type] Argument is incorrect: Expected `bytes`, found `Literal[b""] | memoryview[int]`
++ src/pip/_vendor/rich/_log_render.py:60:36: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/pip/_vendor/rich/text.py:622:31: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/pip/_vendor/rich/text.py:622:31: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 610 diagnostics
++ Found 622 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_decor/_nontype/decornontype.py:156:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_decor/_nontype/decornontype.py:215:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/vale/_core/_valecore.py:322:30: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 497 diagnostics
++ Found 496 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/middleware/profiler.py:135:28: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/werkzeug/utils.py:498:19: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 382 diagnostics
++ Found 384 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/legacy/server.py:632:29: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/websockets/legacy/server.py:632:29: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/websockets/legacy/server.py:632:29: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 40 diagnostics
++ Found 43 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/downloadermiddlewares/retry.py:110:22: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ scrapy/downloadermiddlewares/retry.py:110:22: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 1784 diagnostics
++ Found 1786 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/execution/execute.py:1437:34: error[invalid-await] `Awaitable[bool] | bool` is not awaitable
++ src/graphql/type/definition.py:302:12: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 199 diagnostics
++ Found 201 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/python.py:475:28: error[call-non-callable] Object of type `Class` is not callable
++ src/_pytest/python.py:475:28: error[call-non-callable] Object of type `<Protocol with members 'pytest_generate_tests'>` is not callable
+- Found 427 diagnostics
++ Found 429 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/_exception_handler.py:59:42: error[invalid-argument-type] Argument is incorrect: Expected `Request`, found `Request | WebSocket`
++ starlette/middleware/errors.py:176:38: error[invalid-await] `Unknown | Response | Awaitable[Response]` is not awaitable
+- starlette/middleware/errors.py:181:23: error[call-non-callable] Object of type `None` is not callable
+- Found 216 diagnostics
++ Found 217 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ kopf/_core/intents/registries.py:471:16: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- kopf/_kits/hierarchies.py:44:24: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:82:24: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:125:30: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:139:17: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:181:25: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:185:25: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- kopf/_kits/hierarchies.py:232:30: error[no-matching-overload] No overload of bound method `get` matches arguments
+- kopf/_kits/hierarchies.py:233:21: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- Found 267 diagnostics
++ Found 260 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/object_store.py:2911:12: error[unsupported-operator] Operator `in` is not supported between objects of type `ObjectID` and `Unknown | ((() -> dict[ObjectID, ObjectID]) & ~AlwaysTruthy & ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ dulwich/object_store.py:2911:12: error[unsupported-operator] Operator `in` is not supported between objects of type `ObjectID` and `Unknown | ((() -> dict[ObjectID, ObjectID]) & ~AlwaysTruthy & ~AlwaysFalsy) | (dict[ObjectID, ObjectID] & ~AlwaysFalsy) | dict[Unknown, Unknown]`
+- dulwich/pack.py:2266:78: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ dulwich/pack.py:3529:13: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ dulwich/repo.py:2839:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ dulwich/worktree.py:570:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ dulwich/worktree.py:570:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 234 diagnostics
++ Found 237 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ rich/_log_render.py:60:36: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ rich/text.py:622:31: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ rich/text.py:622:31: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 345 diagnostics
++ Found 348 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ ignite/handlers/base_logger.py:48:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 2036 diagnostics
++ Found 2037 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/inference.py:376:32: error[no-matching-overload] No overload of bound method `get` matches arguments
+- Found 416 diagnostics
++ Found 415 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ github/Auth.py:199:27: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 299 diagnostics
++ Found 300 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- tests/test_pytypes.py:457:29: error[no-matching-overload] No overload of class `str` matches arguments
+- Found 216 diagnostics
++ Found 215 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ src/poetry/utils/cache.py:147:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 979 diagnostics
++ Found 980 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- mkosi/config.py:2465:9: error[no-matching-overload] No overload of bound method `pop` matches arguments
+- Found 95 diagnostics
++ Found 94 diagnostics
+
+nox (https://github.com/wntrblm/nox)
++ nox/_option_set.py:162:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ nox/_option_set.py:162:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 24 diagnostics
++ Found 26 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/core/marks.py:34:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 278 diagnostics
++ Found 279 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/escape.py:352:28: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- tornado/routing.py:582:17: error[no-matching-overload] No overload of bound method `match` matches arguments
++ tornado/tcpclient.py:258:27: error[invalid-assignment] Object of type `_ComplexLike` is not assignable to `int | float | timedelta | None`
+- Found 328 diagnostics
++ Found 329 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ test/datasets_utils.py:835:57: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ test/datasets_utils.py:835:57: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ test/datasets_utils.py:956:57: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ test/datasets_utils.py:956:57: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ torchvision/models/_utils.py:201:43: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 1409 diagnostics
++ Found 1414 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ psycopg_pool/psycopg_pool/pool.py:652:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ psycopg_pool/psycopg_pool/pool.py:662:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 665 diagnostics
++ Found 667 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/json_schema.py:550:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/json_schema.py:1676:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/json_schema.py:1678:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/config.py:133:13: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- pydantic/v1/config.py:133:13: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
+- Found 3159 diagnostics
++ Found 3154 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/engines/numpy_engine.py:64:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1579 diagnostics
++ Found 1578 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/strategy/informative_decorator.py:157:49: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ freqtrade/strategy/informative_decorator.py:157:49: error[missing-argument] No argument provided for required parameter 1
++ freqtrade/strategy/informative_decorator.py:157:59: error[unknown-argument] Argument `column` does not match any known parameter
++ freqtrade/strategy/informative_decorator.py:159:19: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ freqtrade/strategy/informative_decorator.py:159:19: error[missing-argument] No argument provided for required parameter 1
++ freqtrade/strategy/informative_decorator.py:159:29: error[unknown-argument] Argument `column` does not match any known parameter
+- Found 681 diagnostics
++ Found 687 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- schema_salad/metaschema.py:1037:24: error[no-matching-overload] No overload of bound method `get` matches arguments
+- schema_salad/metaschema.py:1038:21: error[no-matching-overload] No overload of bound method `get` matches arguments
+- schema_salad/metaschema.py:1039:21: error[no-matching-overload] No overload of bound method `get` matches arguments
+- schema_salad/python_codegen_support.py:1034:24: error[no-matching-overload] No overload of bound method `get` matches arguments
+- schema_salad/python_codegen_support.py:1035:21: error[no-matching-overload] No overload of bound method `get` matches arguments
+- schema_salad/python_codegen_support.py:1036:21: error[no-matching-overload] No overload of bound method `get` matches arguments
+- Found 249 diagnostics
++ Found 243 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ koda_validate/_internal.py:129:23: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[SuccessT@_ToTupleStandardValidator] | Nothing`
++ koda_validate/_internal.py:157:23: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[SuccessT@_ToTupleStandardValidator] | Nothing`
++ koda_validate/_internal.py:220:30: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Valid[Any] | Invalid`
++ koda_validate/_internal.py:254:30: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Valid[A@_wrap_sync_validator] | Invalid`
++ koda_validate/_internal.py:256:24: error[invalid-return-type] Return type does not match returned value: expected `tuple[Literal[True], A@_wrap_sync_validator] | tuple[Literal[False], Invalid]`, found `tuple[Literal[False], Valid[A@_wrap_sync_validator] | Invalid]`
++ koda_validate/dataclasses.py:173:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/dataclasses.py:224:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/dictionary.py:113:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/dictionary.py:169:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/list.py:48:42: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[list[Any]] | Nothing`
++ koda_validate/list.py:85:42: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[list[Any]] | Nothing`
++ koda_validate/namedtuple.py:166:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/namedtuple.py:217:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/set.py:45:41: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[set[Any]] | Nothing`
++ koda_validate/set.py:88:41: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[set[Any]] | Nothing`
++ koda_validate/signature.py:299:29: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Valid[Any] | Invalid` on object of type `dict[str, Invalid]`
++ koda_validate/signature.py:301:50: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Valid[Any] | Invalid`
++ koda_validate/signature.py:304:46: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Valid[Any] | Invalid`
++ koda_validate/signature.py:306:25: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Valid[Any] | Invalid` on object of type `dict[str, Invalid]`
++ koda_validate/signature.py:315:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Invalid`, found `Valid[Any] | Invalid`
++ koda_validate/tuple.py:294:48: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[tuple[Any, ...]] | Nothing`
++ koda_validate/tuple.py:335:48: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[tuple[Any, ...]] | Nothing`
++ koda_validate/tuple.py:415:48: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[tuple[Any, ...]] | Nothing`
++ koda_validate/tuple.py:459:48: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[tuple[Any, ...]] | Nothing`
++ koda_validate/typeddict.py:167:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
++ koda_validate/typeddict.py:209:47: warning[possibly-missing-attribute] Attribute `val` may be missing on object of type `Unknown | Just[dict[Any, Any]] | Nothing`
+- Found 405 diagnostics
++ Found 431 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/compilers/compilers.py:1329:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ mesonbuild/compilers/compilers.py:1329:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ mesonbuild/compilers/d.py:551:30: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ mesonbuild/compilers/mixins/clike.py:403:40: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ mesonbuild/compilers/vala.py:159:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ mesonbuild/compilers/vala.py:159:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- mesonbuild/dependencies/detect.py:190:16: error[invalid-return-type] Return type does not match returned value: expected `list[DependencyCandidate[ExternalDependency]]`, found `list[Unknown | DependencyCandidate[Unknown]] | list[Unknown | (((Environment, DependencyObjectKWs, /) -> list[DependencyCandidate[ExternalDependency]]) & DependencyCandidate[object] & ~type) | (DependencyCandidate[Unknown] & ~type)] | @Todo`
++ mesonbuild/dependencies/detect.py:190:16: error[invalid-return-type] Return type does not match returned value: expected `list[DependencyCandidate[ExternalDependency]]`, found `list[Unknown | DependencyCandidate[Unknown]] | list[Unknown | (((Environment, DependencyObjectKWs, /) -> list[DependencyCandidate[ExternalDependency]]) & DependencyCandidate[object] & ~type) | (DependencyCandidate[Unknown] & ~type)] | list[DependencyCandidate[ExternalDependency]]`
++ mesonbuild/interpreter/interpreterobjects.py:928:16: error[invalid-return-type] Return type does not match returned value: expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `Unknown | str | int | ... omitted 7 union elements`
+- Found 2154 diagnostics
++ Found 2161 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- cloudinit/config/cc_rh_subscription.py:253:29: error[no-matching-overload] No overload of bound method `split` matches arguments
+- Found 1179 diagnostics
++ Found 1178 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/exceptions.py:219:23: error[no-matching-overload] No overload of class `str` matches arguments
+- Found 421 diagnostics
++ Found 420 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ openlibrary/core/cache.py:487:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ openlibrary/core/cache.py:504:23: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ openlibrary/plugins/worksearch/code.py:272:34: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ openlibrary/plugins/worksearch/schemes/__init__.py:75:33: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ openlibrary/plugins/worksearch/schemes/__init__.py:81:24: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 1163 diagnostics
++ Found 1168 diagnostics
+
+archinstall (https://github.com/archlinux/archinstall)
++ archinstall/lib/output.py:34:12: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 43 diagnostics
++ Found 44 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/types/fields/resolver.py:250:16: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 357 diagnostics
++ Found 358 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/checker.py:121:53: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/checker.py:121:53: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/checker.py:124:60: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/checker.py:124:60: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/command_line_tool.py:615:50: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/command_line_tool.py:620:32: error[no-matching-overload] No overload of bound method `get` matches arguments
+- cwltool/process.py:1221:37: error[no-matching-overload] No overload of bound method `get` matches arguments
+- Found 258 diagnostics
++ Found 251 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ setuptools/_vendor/typing_extensions.py:2853:28: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ setuptools/config/_apply_pyprojecttoml.py:82:13: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ setuptools/config/expand.py:329:14: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 1273 diagnostics
++ Found 1276 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-dask/prefect_dask/task_runners.py:354:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/integrations/prefect-dask/prefect_dask/task_runners.py:354:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/prefect/server/models/workers.py:299:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/prefect/server/models/workers.py:298:19: error[missing-argument] No arguments provided for required parameters 1, 2, 3, 4
++ src/prefect/server/models/workers.py:300:17: error[unknown-argument] Argument `occurred` does not match any known parameter
++ src/prefect/server/models/workers.py:301:17: error[unknown-argument] Argument `pre_update_work_pool` does not match any known parameter
++ src/prefect/server/models/workers.py:302:17: error[unknown-argument] Argument `work_pool` does not match any known parameter
++ src/prefect/tasks.py:568:40: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/prefect/tasks.py:568:40: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/prefect/tasks.py:568:40: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- src/prefect/tasks.py:1634:20: error[invalid-return-type] Return type does not match returned value: expected `list[State[R@Task]] | PrefectFutureList[R@Task]`, found `list[PrefectDistributedFuture[R@Task] | Unknown] | @Todo`
++ src/prefect/tasks.py:1634:20: error[invalid-return-type] Return type does not match returned value: expected `list[State[R@Task]] | PrefectFutureList[R@Task]`, found `list[PrefectDistributedFuture[R@Task] | Unknown] | Any`
++ src/prefect/utilities/_engine.py:40:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/prefect/utilities/_engine.py:66:29: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ src/prefect/utilities/_engine.py:69:29: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5363 diagnostics
++ Found 5379 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/wrapper/_implementations.py:435:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/hydra_zen/wrapper/_implementations.py:437:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 521 diagnostics
++ Found 519 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ pwndbg/aglib/heap/ptmalloc.py:274:30: error[call-non-callable] Object of type `~None & ~Type` is not callable
+- pwndbg/aglib/heap/ptmalloc.py:275:28: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None | @Todo`
++ pwndbg/aglib/heap/ptmalloc.py:275:28: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None | Unknown`
++ pwndbg/aglib/heap/ptmalloc.py:607:30: error[call-non-callable] Object of type `~None & ~Type` is not callable
+- pwndbg/aglib/heap/ptmalloc.py:609:28: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None | @Todo`
++ pwndbg/aglib/heap/ptmalloc.py:609:28: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None | Unknown`
++ pwndbg/commands/ptmalloc2.py:54:15: error[call-non-callable] Object of type `~None` is not callable
+- Found 2062 diagnostics
++ Found 2065 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/backends/zarr.py:1243:21: error[invalid-argument-type] Argument to function `grid_rechunk` is incorrect: Expected `tuple[slice[Any, Any, Any], ...]`, found `tuple[Unknown | str | slice[Any, Any, Any], ...]`
++ xarray/backends/zarr.py:1243:21: error[invalid-argument-type] Argument to function `grid_rechunk` is incorrect: Expected `tuple[slice[Any, Any, Any], ...]`, found `tuple[Unknown | Divergent | str | slice[Any, Any, Any], ...]`
+- xarray/backends/zarr.py:1260:21: error[invalid-argument-type] Argument to function `validate_grid_chunks_alignment` is incorrect: Expected `tuple[slice[Any, Any, Any], ...]`, found `tuple[Unknown | str | slice[Any, Any, Any], ...]`
++ xarray/backends/zarr.py:1260:21: error[invalid-argument-type] Argument to function `validate_grid_chunks_alignment` is incorrect: Expected `tuple[slice[Any, Any, Any], ...]`, found `tuple[Unknown | Divergent | str | slice[Any, Any, Any], ...]`
+- xarray/conventions.py:349:12: error[no-matching-overload] No overload of bound method `get` matches arguments
++ xarray/core/common.py:518:20: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ xarray/core/dataarray.py:3250:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ xarray/core/dataset.py:5874:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ xarray/core/datatree_render.py:287:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- xarray/tests/test_backends_file_manager.py:173:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:176:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:179:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:198:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:200:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:202:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:214:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:271:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- xarray/tests/test_backends_file_manager.py:287:5: error[no-matching-overload] No overload of bound method `write` matches arguments
+- Found 1761 diagnostics
++ Found 1755 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- lib/Crypto/IO/_PBES.py:353:38: error[invalid-argument-type] Argument to function `scrypt` is incorrect: Expected `str`, found `@Todo | bytes`
++ lib/Crypto/IO/_PBES.py:353:38: error[invalid-argument-type] Argument to function `scrypt` is incorrect: Expected `str`, found `Unknown | bytes`
+- lib/Crypto/Math/_IntegerBase.py:338:20: error[invalid-argument-type] Argument to function `bord` is incorrect: Expected `bytes`, found `@Todo | int`
++ lib/Crypto/Math/_IntegerBase.py:338:20: error[invalid-argument-type] Argument to function `bord` is incorrect: Expected `bytes`, found `Unknown | int`
+
+altair (https://github.com/vega/altair)
+- altair/vegalite/v6/api.py:913:5: error[no-matching-overload] No overload of bound method `update` matches arguments
+- Found 1061 diagnostics
++ Found 1060 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- tests/contrib/integration_registry/registry_update_helpers/integration_registry_manager.py:161:24: error[no-matching-overload] No overload of function `getattr` matches arguments
+- Found 8473 diagnostics
++ Found 8472 diagnostics
+
+hydpy (https://github.com/hydpy-dev/hydpy)
++ hydpy/exe/xmltools.py:2373:20: error[invalid-assignment] Object of type `SetItem` is not assignable to `_TypeSetOrAddOrMultiplyItem@_get_changeitem`
+- Found 666 diagnostics
++ Found 667 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/_src/linear_util.py:323:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ jax/_src/linear_util.py:323:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ jax/_src/numpy/ufunc_api.py:182:12: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/numpy/ufunc_api.py:257:12: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/numpy/ufunc_api.py:377:12: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/numpy/ufunc_api.py:444:12: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/numpy/ufunc_api.py:444:45: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/numpy/ufunc_api.py:521:12: error[call-non-callable] Object of type `int` is not callable
++ jax/_src/pallas/fuser/block_spec.py:2079:35: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `BlockSpec | tuple[BlockSpec, ...]`, found `BlockSpec | NoBlockSpec`
++ jax/_src/pallas/fuser/block_spec.py:2081:36: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `BlockSpec | tuple[BlockSpec, ...]`, found `BlockSpec | NoBlockSpec`
++ jax/_src/pallas/fuser/block_spec.py:2083:51: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `Iterable[BlockSpec | NoBlockSpec]`, found `BlockSpec | tuple[BlockSpec, ...] | list[Unknown | BlockSpec | tuple[BlockSpec, ...]]`
++ jax/_src/xla_bridge.py:534:28: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ jax/experimental/pallas/ops/tpu/megablox/gmm.py:373:14: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ jax/experimental/pallas/ops/tpu/megablox/gmm.py:621:14: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 2803 diagnostics
++ Found 2817 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
++ com/win32com/server/policy.py:145:18: error[call-non-callable] Object of type `str` is not callable
+- Found 2713 diagnostics
++ Found 2714 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ lib/streamlit/navigation/page.py:304:17: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ lib/streamlit/web/server/server_util.py:101:13: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- Found 102 diagnostics
++ Found 104 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/algorithms.py:552:34: error[no-matching-overload] No overload of bound method `astype` matches arguments
+- pandas/core/algorithms.py:552:34: error[no-matching-overload] No overload of bound method `astype` matches arguments
+- pandas/core/algorithms.py:583:18: error[no-matching-overload] No overload of bound method `astype` matches arguments
+- pandas/core/algorithms.py:583:18: error[no-matching-overload] No overload of bound method `astype` matches arguments
++ pandas/core/apply.py:1062:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1062:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1062:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1066:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1066:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1066:25: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1078:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1078:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1078:21: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1146:19: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1146:19: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1146:19: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1183:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1183:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1183:26: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1529:22: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1529:22: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
++ pandas/core/apply.py:1529:22: error[call-top-callable] Object of type `Top[(...) -> object]` is not safe to call; its signature is not known
+- pandas/core/arrays/boolean.py:260:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[ndarray[tuple[Any, ...], dtype[Any]], ndarray[tuple[Any, ...], dtype[Any]]]`, found `tuple[@Todo | ndarray[tuple[int], dtype[Any]], Unknown | None | ndarray[tuple[Any, ...], dtype[numpy.bool[builtins.bool]]] | ndarray[tuple[Any, ...], dtype[Any]]]`
++ pandas/core/arrays/boolean.py:260:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[ndarray[tuple[Any, ...], dtype[Any]], ndarray[tuple[Any, ...], dtype[Any]]]`, found `tuple[(Unknown & ndarray[tuple[object, ...], dtype[object]]) | ndarray[tuple[int], dtype[Any]], Unknown | None | nda
+
+... (truncated 209 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2026-01-09 03:43_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-09 03:48_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `call-top-callable` | 114 | 0 | 0 |
+| `invalid-argument-type` | 22 | 0 | 20 |
+| `possibly-missing-attribute` | 22 | 0 | 17 |
+| `invalid-return-type` | 2 | 0 | 22 |
+| `unused-ignore-comment` | 0 | 24 | 0 |
+| `no-matching-overload` | 0 | 18 | 0 |
+| `call-non-callable` | 16 | 1 | 0 |
+| `unknown-argument` | 15 | 0 | 0 |
+| `missing-argument` | 12 | 0 | 0 |
+| `invalid-assignment` | 6 | 0 | 5 |
+| `unresolved-attribute` | 4 | 0 | 2 |
+| `index-out-of-bounds` | 5 | 0 | 0 |
+| `too-many-positional-arguments` | 5 | 0 | 0 |
+| `invalid-await` | 2 | 2 | 0 |
+| `not-iterable` | 0 | 0 | 2 |
+| `unsupported-operator` | 1 | 0 | 1 |
+| **Total** | **226** | **45** | **69** |
+
+
+**[Full report with detailed diff](https://7baa43d3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://7baa43d3.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-10T20:41:51Z
 updated_at: 2022-09-11T14:44:28Z
 url: https://github.com/astral-sh/ruff/issues/146
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # `F841` false negative when access from inner function
@@ -43,10 +43,6 @@ I see similar behaviour when `inner` is defined using `lambda`.
 ---
 
 _Label `bug` added by @charliermarsh on 2022-09-11 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#156](../../astral-sh/ruff/pulls/156.md) on 2022-09-11 14:27_
 
 ---
 

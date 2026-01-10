@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-10-03T22:21:17Z
 updated_at: 2022-10-04T18:31:53Z
 url: https://github.com/astral-sh/ruff/issues/310
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Automatically remove metaclass definitions
@@ -35,10 +35,6 @@ _Label `good first issue` added by @charliermarsh on 2022-10-03 22:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#324](../../astral-sh/ruff/pulls/324.md) on 2022-10-04 18:31_
-
----
-
-_Closed by @charliermarsh in #324 on 2022-10-04 18:31_
+_Closed by @charliermarsh on 2022-10-04 18:31_
 
 ---

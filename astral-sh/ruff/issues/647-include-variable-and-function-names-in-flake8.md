@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-07T19:57:33Z
 updated_at: 2022-11-07T20:27:04Z
 url: https://github.com/astral-sh/ruff/issues/647
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Include variable and function names in flake8-annotation errors
@@ -30,10 +30,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-07 19:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#648](../../astral-sh/ruff/pulls/648.md) on 2022-11-07 20:26_
-
----
-
-_Closed by @charliermarsh in #648 on 2022-11-07 20:27_
+_Closed by @charliermarsh on 2022-11-07 20:27_
 
 ---

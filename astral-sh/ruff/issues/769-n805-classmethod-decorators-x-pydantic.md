@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-16T15:52:30Z
 updated_at: 2022-11-16T19:15:04Z
 url: https://github.com/astral-sh/ruff/issues/769
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # N805 classmethod-decorators x Pydantic
@@ -121,10 +121,6 @@ Ok yeah the logic here just wasn't general enough! Will fix.
 
 ---
 
-_Referenced in [astral-sh/ruff#772](../../astral-sh/ruff/pulls/772.md) on 2022-11-16 17:23_
-
----
-
 _Closed by @charliermarsh on 2022-11-16 17:24_
 
 ---
@@ -144,9 +140,5 @@ Building now: https://github.com/charliermarsh/ruff/releases/tag/v0.0.124
 _Comment by @g-as on 2022-11-16 19:15_
 
 cheers!
-
----
-
-_Referenced in [astral-sh/ruff#2151](../../astral-sh/ruff/issues/2151.md) on 2023-01-25 09:20_
 
 ---

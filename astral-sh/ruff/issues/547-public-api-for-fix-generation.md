@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-02T09:15:57Z
 updated_at: 2022-11-02T13:44:48Z
 url: https://github.com/astral-sh/ruff/issues/547
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Public api for fix generation
@@ -34,17 +34,9 @@ I'm happy to put together a PR for this but given that the solution is more pers
 
 ---
 
-_Referenced in [Seamooo/ruffd#23](../../Seamooo/ruffd/pulls/23.md) on 2022-11-02 09:27_
-
----
-
 _Comment by @charliermarsh on 2022-11-02 12:33_
 
 Ah yeah, my mistake. Let’s change the default in that path to Generate.
-
----
-
-_Referenced in [astral-sh/ruff#551](../../astral-sh/ruff/pulls/551.md) on 2022-11-02 13:42_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-29T11:44:27Z
 updated_at: 2022-09-30T11:51:30Z
 url: https://github.com/astral-sh/ruff/issues/285
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Create `CONTRIBUTING.md`
@@ -39,10 +39,6 @@ _Label `documentation` added by @charliermarsh on 2022-09-29 19:17_
 _Comment by @charliermarsh on 2022-09-29 20:46_
 
 Good call, I'll draft this now.
-
----
-
-_Referenced in [astral-sh/ruff#288](../../astral-sh/ruff/pulls/288.md) on 2022-09-29 21:42_
 
 ---
 

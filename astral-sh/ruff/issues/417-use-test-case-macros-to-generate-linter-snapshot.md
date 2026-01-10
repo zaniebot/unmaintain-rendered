@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-13T13:25:49Z
 updated_at: 2022-10-13T22:51:02Z
 url: https://github.com/astral-sh/ruff/issues/417
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Use test-case macros to generate linter snapshot tests
@@ -29,10 +29,6 @@ _Label `internal` added by @charliermarsh on 2022-10-13 13:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-10-13 22:13_
-
----
-
-_Referenced in [astral-sh/ruff#424](../../astral-sh/ruff/pulls/424.md) on 2022-10-13 22:48_
 
 ---
 

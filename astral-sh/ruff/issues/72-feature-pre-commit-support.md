@@ -1,0 +1,51 @@
+```yaml
+number: 72
+title: (feature) pre-commit support
+type: issue
+state: closed
+author: kierun
+labels: []
+assignees: []
+created_at: 2022-09-01T14:54:37Z
+updated_at: 2022-09-05T14:21:08Z
+url: https://github.com/astral-sh/ruff/issues/72
+synced_at: 2026-01-10T15:56:04Z
+```
+
+# (feature) pre-commit support
+
+---
+
+_Issue opened by @kierun on 2022-09-01 14:54_
+
+It would be nice to have [pre-commit](https://pre-commit.com/) support. [How to create new hooks](https://pre-commit.com/#new-hooks) in case it is needed.
+
+It can wait… Definitely not an urgent task.
+
+---
+
+_Comment by @ahonnecke on 2022-09-01 16:07_
+
+:+1: 
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-09-01 16:42_
+
+---
+
+_Comment by @charliermarsh on 2022-09-01 16:47_
+
+#55 has something to this effect! Just need to get around to testing + merging it.
+
+---
+
+_Comment by @charliermarsh on 2022-09-05 14:21_
+
+Solved via #55.
+
+---
+
+_Closed by @charliermarsh on 2022-09-05 14:21_
+
+---

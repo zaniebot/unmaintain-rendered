@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-08T03:05:20Z
 updated_at: 2022-10-08T21:25:23Z
 url: https://github.com/astral-sh/ruff/issues/360
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # False positive for W292
@@ -74,10 +74,6 @@ index f3b30be..8330cc8 100644
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-10-08 21:15_
-
----
-
-_Referenced in [astral-sh/ruff#365](../../astral-sh/ruff/pulls/365.md) on 2022-10-08 21:24_
 
 ---
 

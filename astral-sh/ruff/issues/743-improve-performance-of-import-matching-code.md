@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-14T19:17:03Z
 updated_at: 2022-11-14T23:18:13Z
 url: https://github.com/astral-sh/ruff/issues/743
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Improve performance of import matching code
@@ -28,10 +28,6 @@ _Label `performance` added by @charliermarsh on 2022-11-14 19:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-11-14 19:18_
-
----
-
-_Referenced in [astral-sh/ruff#744](../../astral-sh/ruff/pulls/744.md) on 2022-11-14 22:04_
 
 ---
 

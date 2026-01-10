@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-27T16:35:54Z
 updated_at: 2022-10-27T17:10:27Z
 url: https://github.com/astral-sh/ruff/issues/486
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Add example of per-file-ignores in TOML to Readme
@@ -49,14 +49,6 @@ F401 = [
 
 ---
 
-_Referenced in [astral-sh/ruff#487](../../astral-sh/ruff/pulls/487.md) on 2022-10-27 16:55_
-
----
-
-_Referenced in [astral-sh/ruff#488](../../astral-sh/ruff/pulls/488.md) on 2022-10-27 16:58_
-
----
-
 _Closed by @charliermarsh on 2022-10-27 16:58_
 
 ---
@@ -92,13 +84,5 @@ Always!
 _Comment by @charliermarsh on 2022-10-27 17:10_
 
 (Going out in v0.0.86, which is building now.)
-
----
-
-_Referenced in [astral-sh/ruff#531](../../astral-sh/ruff/pulls/531.md) on 2022-10-31 22:37_
-
----
-
-_Referenced in [codegrande/ruff#5](../../codegrande/ruff/pulls/5.md) on 2024-05-17 07:07_
 
 ---

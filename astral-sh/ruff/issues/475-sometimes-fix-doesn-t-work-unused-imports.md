@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-26T16:49:53Z
 updated_at: 2022-10-26T20:36:13Z
 url: https://github.com/astral-sh/ruff/issues/475
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Sometimes --fix doesn't work (unused imports)
@@ -68,10 +68,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-10-26 20:05_
 _Comment by @charliermarsh on 2022-10-26 20:09_
 
 Reproduced, I see the issue.
-
----
-
-_Referenced in [astral-sh/ruff#479](../../astral-sh/ruff/pulls/479.md) on 2022-10-26 20:34_
 
 ---
 

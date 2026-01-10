@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-02T11:05:29Z
 updated_at: 2022-11-02T13:25:46Z
 url: https://github.com/astral-sh/ruff/issues/548
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # F821 and F722 errors when importing from typing_extensions in version 0.0.94
@@ -95,10 +95,6 @@ Thank you! Will fix this today.
 
 ---
 
-_Referenced in [astral-sh/ruff#550](../../astral-sh/ruff/pulls/550.md) on 2022-11-02 13:00_
-
----
-
 _Closed by @charliermarsh on 2022-11-02 13:01_
 
 ---
@@ -112,9 +108,5 @@ Thanks for this and apologies for the oversight. This is going out in [v0.0.95](
 _Comment by @StefanBRas on 2022-11-02 13:25_
 
 No worries, I can hardly complain when there's a fix two hours after reporting.
-
----
-
-_Referenced in [astral-sh/ruff#2342](../../astral-sh/ruff/issues/2342.md) on 2023-01-30 08:43_
 
 ---

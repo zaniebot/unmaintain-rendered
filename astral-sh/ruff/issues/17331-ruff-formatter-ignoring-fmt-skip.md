@@ -2,16 +2,16 @@
 number: 17331
 title: "Ruff formatter ignoring `fmt: skip`"
 type: issue
-state: open
+state: closed
 author: madduck
 labels:
   - bug
   - formatter
 assignees: []
 created_at: 2025-04-10T10:05:01Z
-updated_at: 2025-12-22T15:24:44Z
+updated_at: 2026-01-10T14:56:59Z
 url: https://github.com/astral-sh/ruff/issues/17331
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-10T15:56:06Z
 ```
 
 # Ruff formatter ignoring `fmt: skip`
@@ -389,5 +389,9 @@ This will be fixed by #22119 but note that the exact example given in the OP doe
 ```
 
 (I assume this is just a typo though because the other examples in the post _do_ have a `#` character in between)
+
+---
+
+_Closed by @dylwil3 on 2026-01-10 14:56_
 
 ---

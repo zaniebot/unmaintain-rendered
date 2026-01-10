@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-07T19:42:38Z
 updated_at: 2022-10-07T19:58:44Z
 url: https://github.com/astral-sh/ruff/issues/345
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Unused import messages for `ImportFrom` statements are wonky
@@ -49,9 +49,5 @@ _Closed by @charliermarsh on 2022-10-07 19:44_
 _Comment by @charliermarsh on 2022-10-07 19:58_
 
 I did improve this a bit in #346 though.
-
----
-
-_Referenced in [codegrande/ruff#4](../../codegrande/ruff/pulls/4.md) on 2024-05-17 07:07_
 
 ---

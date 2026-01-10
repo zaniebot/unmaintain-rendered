@@ -2,16 +2,16 @@
 number: 11430
 title: "`# noqa: E702 # fmt: skip` still formats the line of code"
 type: issue
-state: open
+state: closed
 author: ngoctnq
 labels:
   - suppression
   - formatter
 assignees: []
 created_at: 2024-05-15T07:21:13Z
-updated_at: 2024-06-21T23:39:42Z
+updated_at: 2026-01-10T15:00:48Z
 url: https://github.com/astral-sh/ruff/issues/11430
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-10T15:56:06Z
 ```
 
 # `# noqa: E702 # fmt: skip` still formats the line of code
@@ -131,5 +131,15 @@ thank you for writing this issue.
 _Comment by @Peiffap on 2024-06-21 23:39_
 
 Related: #11216.
+
+---
+
+_Comment by @dylwil3 on 2026-01-10 15:00_
+
+Resolved by https://github.com/astral-sh/ruff/pull/22119
+
+---
+
+_Closed by @dylwil3 on 2026-01-10 15:00_
 
 ---

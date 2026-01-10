@@ -1,0 +1,96 @@
+```yaml
+number: 692
+title: Import sorting within indented block uses Black-incompatible line length
+type: issue
+state: closed
+author: andersk
+labels: []
+assignees: []
+created_at: 2022-11-12T04:35:26Z
+updated_at: 2022-11-12T04:46:28Z
+url: https://github.com/astral-sh/ruff/issues/692
+synced_at: 2026-01-10T15:56:05Z
+```
+
+# Import sorting within indented block uses Black-incompatible line length
+
+---
+
+_Issue opened by @andersk on 2022-11-12 04:35_
+
+Within an indented block, Ruff excludes the indentation from its line length calculation when sorting imports, thereby fighting with Black.
+
+Ruff:
+
+```python
+from line_with_88 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+from line_with_89 import (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+)
+
+if indented:
+    from line_with_88 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_89 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_90 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_91 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_92 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_93 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+```
+
+Black:
+
+```python
+from line_with_88 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+from line_with_89 import (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+)
+
+if indented:
+    from line_with_88 import aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    from line_with_89 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+    from line_with_90 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+    from line_with_91 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+    from line_with_92 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+    from line_with_93 import (
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    )
+```
+
+
+---
+
+_Comment by @charliermarsh on 2022-11-12 04:43_
+
+Ugh, I actually designed this to work, but forgot to add the offset from the indentation. Should be a trivial fix, one sec.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-12 04:43_
+
+---
+
+_Closed by @charliermarsh on 2022-11-12 04:45_
+
+---
+
+_Comment by @charliermarsh on 2022-11-12 04:45_
+
+Confirmed that https://github.com/charliermarsh/ruff/pull/693 gives that output.
+
+---
+
+_Comment by @charliermarsh on 2022-11-12 04:46_
+
+(I added this to the test case.)
+
+---

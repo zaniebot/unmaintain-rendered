@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-04T20:50:47Z
 updated_at: 2022-10-05T18:08:41Z
 url: https://github.com/astral-sh/ruff/issues/328
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Refactor `check_ast.py` into modular checks that mutate the Visitor
@@ -27,14 +27,6 @@ _Label `internal` added by @charliermarsh on 2022-10-04 20:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#331](../../astral-sh/ruff/pulls/331.md) on 2022-10-05 18:08_
-
----
-
-_Closed by @charliermarsh in #331 on 2022-10-05 18:08_
-
----
-
-_Referenced in [codegrande/ruff#4](../../codegrande/ruff/pulls/4.md) on 2024-05-17 07:07_
+_Closed by @charliermarsh on 2022-10-05 18:08_
 
 ---

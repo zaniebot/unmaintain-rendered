@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-04T12:28:39Z
 updated_at: 2022-10-04T16:30:36Z
 url: https://github.com/astral-sh/ruff/issues/319
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Add default + autofix status to rules table in README
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `documentation` added by @charliermarsh on 2022-10-04 12:28_
-
----
-
-_Referenced in [astral-sh/ruff#322](../../astral-sh/ruff/pulls/322.md) on 2022-10-04 15:19_
 
 ---
 

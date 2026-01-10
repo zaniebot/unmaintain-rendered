@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-09T19:59:23Z
 updated_at: 2022-10-09T21:37:59Z
 url: https://github.com/astral-sh/ruff/issues/373
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Inproper F401: "imported but unused" for sumodule if parent module is imported with an alias.
@@ -57,10 +57,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-10-09 20:01_
 _Comment by @charliermarsh on 2022-10-09 20:20_
 
 (Found the offending code, working on fix now.)
-
----
-
-_Referenced in [astral-sh/ruff#374](../../astral-sh/ruff/pulls/374.md) on 2022-10-09 20:44_
 
 ---
 

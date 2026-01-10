@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-12T02:07:30Z
 updated_at: 2022-09-12T02:54:12Z
 url: https://github.com/astral-sh/ruff/issues/164
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # E501: error message doesn't show how much longer the line is
@@ -33,10 +33,6 @@ Found 1 error(s).
 
 ---
 
-_Referenced in [astral-sh/ruff#165](../../astral-sh/ruff/pulls/165.md) on 2022-09-12 02:54_
-
----
-
-_Closed by @charliermarsh in #165 on 2022-09-12 02:54_
+_Closed by @charliermarsh on 2022-09-12 02:54_
 
 ---

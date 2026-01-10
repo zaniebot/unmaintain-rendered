@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-14T18:44:05Z
 updated_at: 2022-10-17T22:01:46Z
 url: https://github.com/astral-sh/ruff/issues/432
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Editor integration: `ruff --fix -` may destroy file contents when an update is available
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-10-14 19:07_
 ---
 
 _Label `bug` added by @charliermarsh on 2022-10-14 19:07_
-
----
-
-_Referenced in [astral-sh/ruff#433](../../astral-sh/ruff/pulls/433.md) on 2022-10-14 23:03_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-13T02:02:59Z
 updated_at: 2022-09-15T02:21:18Z
 url: https://github.com/astral-sh/ruff/issues/176
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # ruff uncondtionally ignores all files in folders starting with a dot
@@ -37,18 +37,6 @@ _Label `enhancement` added by @charliermarsh on 2022-09-13 14:51_
 
 ---
 
-_Referenced in [astral-sh/ruff#188](../../astral-sh/ruff/pulls/188.md) on 2022-09-14 21:30_
-
----
-
 _Closed by @charliermarsh on 2022-09-15 02:21_
-
----
-
-_Referenced in [astral-sh/ruff#232](../../astral-sh/ruff/issues/232.md) on 2022-09-20 14:46_
-
----
-
-_Referenced in [codegrande/ruff#3](../../codegrande/ruff/pulls/3.md) on 2024-05-17 07:07_
 
 ---

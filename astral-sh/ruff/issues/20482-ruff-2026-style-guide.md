@@ -10,9 +10,9 @@ labels:
   - style
 assignees: []
 created_at: 2025-09-19T13:37:01Z
-updated_at: 2025-12-09T08:34:41Z
+updated_at: 2026-01-10T15:01:47Z
 url: https://github.com/astral-sh/ruff/issues/20482
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-10T15:56:07Z
 ```
 
 # Ruff 2026 Style Guide
@@ -39,7 +39,7 @@ Goals:
 
 * [x] [`wrap_long_dict_values_in_parens`](https://github.com/psf/black/pull/3440) Non-goal, see https://github.com/psf/black/issues/4123 and https://github.com/astral-sh/ruff/issues/12856
 * [ ] [`always_one_newline_after_import`](https://github.com/psf/black/pull/4489) This is enforced by [unsorted-imports (I001)](https://docs.astral.sh/ruff/rules/unsorted-imports/#unsorted-imports-i001) and configurable via [`lines-after-imports`](https://docs.astral.sh/ruff/settings/#lint_isort_lines-after-imports). There is already some small conflict with the formatter depending on how the user configures this, and this may cause a little more. Unsure about this one...
-* [ ] [`fix_fmt_skip_in_one_liners`](https://github.com/psf/black/pull/4552) https://github.com/astral-sh/ruff/pull/20633
+* [x] [`fix_fmt_skip_in_one_liners`](https://github.com/psf/black/pull/4552) https://github.com/astral-sh/ruff/pull/20633 https://github.com/astral-sh/ruff/pull/22119
 * [x] [`wrap_comprehension_in`](https://github.com/psf/black/pull/4699)
   * https://github.com/astral-sh/ruff/pull/21005
 * [x] [`remove_parens_around_except_types`](https://github.com/psf/black/pull/4720)
@@ -77,11 +77,11 @@ Bug fixes that change how existing code is formatted and require a breaking chan
 Bug fixes that don't require a new style guide because they don't change existing code
 * [ ] [Range formatting does not handle whitespace before new classes](https://github.com/astral-sh/ruff/issues/19603)
 * [ ] [Formatter inserts trailing newline at the end of a file even when inside a fmt: off region](https://github.com/astral-sh/ruff/issues/19492)
-* [ ] [Not respecting `fmt: skip`](https://github.com/astral-sh/ruff/issues/17331) (possibly related to `fix_fmt_skip_in_one_liners` Black preview style)
+* [x] [Not respecting `fmt: skip`](https://github.com/astral-sh/ruff/issues/17331) (possibly related to `fix_fmt_skip_in_one_liners` Black preview style)
 * [ ] [Preserve trailing whitespace in docstring examples](https://github.com/astral-sh/ruff/issues/10275)
 * [ ] [Incorrect docstring code block formatting for statement sequences](https://github.com/astral-sh/ruff/issues/11480)
 * [ ] [Handling of empty lines after `;`](https://github.com/astral-sh/ruff/issues/9958)
-* [ ] [Suppressing statement sequences](https://github.com/astral-sh/ruff/issues/11430)
+* [x] [Suppressing statement sequences](https://github.com/astral-sh/ruff/issues/11430)
 * [x] [Using `fmt:skip` to suppress compound statements](https://github.com/astral-sh/ruff/issues/11216)
   - https://github.com/astral-sh/ruff/pull/20633
 * [x] [Parenthesized expression with comment on right hand side in assignment produces invalid syntax](https://github.com/astral-sh/ruff/issues/19350)

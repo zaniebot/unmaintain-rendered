@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-10-03T22:21:38Z
 updated_at: 2022-11-06T19:23:08Z
 url: https://github.com/astral-sh/ruff/issues/311
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Automatically remove coding comments 
@@ -38,10 +38,6 @@ _Label `rule` added by @charliermarsh on 2022-10-03 22:21_
 _Comment by @sobolevn on 2022-10-13 17:36_
 
 It can also be `# -*- coding: utf8 -*-`
-
----
-
-_Referenced in [astral-sh/ruff#618](../../astral-sh/ruff/pulls/618.md) on 2022-11-06 10:05_
 
 ---
 

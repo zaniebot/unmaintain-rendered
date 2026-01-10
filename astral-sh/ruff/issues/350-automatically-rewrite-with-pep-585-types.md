@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-07T20:06:55Z
 updated_at: 2022-10-09T00:28:13Z
 url: https://github.com/astral-sh/ruff/issues/350
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Automatically rewrite with PEP 585 types
@@ -38,9 +38,5 @@ Resolved by #368 and #369.
 ---
 
 _Closed by @charliermarsh on 2022-10-09 00:28_
-
----
-
-_Referenced in [codegrande/ruff#4](../../codegrande/ruff/pulls/4.md) on 2024-05-17 07:07_
 
 ---

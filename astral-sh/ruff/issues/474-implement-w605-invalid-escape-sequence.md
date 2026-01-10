@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-26T16:08:00Z
 updated_at: 2022-10-26T23:10:24Z
 url: https://github.com/astral-sh/ruff/issues/474
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Implement W605, invalid escape sequence
@@ -57,10 +57,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-10-26 21:14_
 _Comment by @charliermarsh on 2022-10-26 22:30_
 
 I can implement this via token iteration for now.
-
----
-
-_Referenced in [astral-sh/ruff#482](../../astral-sh/ruff/pulls/482.md) on 2022-10-26 23:09_
 
 ---
 

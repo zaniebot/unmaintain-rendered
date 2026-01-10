@@ -1,0 +1,255 @@
+```yaml
+number: 22495
+title: "[ty] Generalize union-type subtyping fast path"
+type: pull_request
+state: open
+author: AlexWaygood
+labels:
+  - performance
+  - ty
+assignees: []
+draft: true
+base: main
+head: alex/union-fast-path-still-vec
+created_at: 2026-01-10T15:30:40Z
+updated_at: 2026-01-10T15:42:57Z
+url: https://github.com/astral-sh/ruff/pull/22495
+synced_at: 2026-01-10T15:56:07Z
+```
+
+# [ty] Generalize union-type subtyping fast path
+
+---
+
+_Pull request opened by @AlexWaygood on 2026-01-10 15:30_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `performance` added by @AlexWaygood on 2026-01-10 15:30_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-10 15:30_
+
+---
+
+_Label `performance` added by @AlexWaygood on 2026-01-10 15:30_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-10 15:30_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-10 15:32_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-10 15:33_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+spack (https://github.com/spack/spack)
+- lib/spack/spack/spec_parser.py:466:16: error[invalid-return-type] Return type does not match returned value: expected `list[Spec]`, found `list[Spec | None]`
+- Found 4318 diagnostics
++ Found 4317 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/code/codemain.py:1199:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 497 diagnostics
++ Found 496 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/walk.py:474:35: error[invalid-argument-type] Argument to bound method `_reorder` is incorrect: Expected `Iterator[WalkEntry]`, found `Iterator[WalkEntry | None]`
+- Found 231 diagnostics
++ Found 230 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_mock_val_ser.py:137:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `validator` of type `SchemaValidator | PluggableSchemaValidator`
++ pydantic/_internal/_mock_val_ser.py:137:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `validator` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:143:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `serializer` of type `SchemaSerializer`
++ pydantic/_internal/_mock_val_ser.py:143:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `serializer` of type `SchemaSerializer`
+- pydantic/_internal/_mock_val_ser.py:176:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
++ pydantic/_internal/_mock_val_ser.py:176:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:182:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
++ pydantic/_internal/_mock_val_ser.py:182:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/annotations.py:1949:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `(int | float) & ~int`
+- tanjun/annotations.py:1996:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `(int | float) & ~int`
+- Found 134 diagnostics
++ Found 132 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
+
+zulip (https://github.com/zulip/zulip)
+- zerver/lib/markdown/__init__.py:1083:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- zerver/lib/markdown/__init__.py:1087:13: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- zerver/lib/markdown/__init__.py:1107:27: error[not-iterable] Object of type `None` is not iterable
+- zerver/lib/markdown/__init__.py:1149:50: error[invalid-argument-type] Argument to bound method `handle_video_inlining` is incorrect: Expected `ResultWithFamily[tuple[str, str | None]]`, found `ResultWithFamily[tuple[str, str | None] | None]`
+- zerver/lib/markdown/__init__.py:1159:50: error[invalid-argument-type] Argument to bound method `handle_image_inlining` is incorrect: Expected `ResultWithFamily[tuple[str, str | None]]`, found `ResultWithFamily[tuple[str, str | None] | None] | ResultWithFamily[tuple[str, str]]`
++ zerver/lib/markdown/__init__.py:1159:50: error[invalid-argument-type] Argument to bound method `handle_image_inlining` is incorrect: Expected `ResultWithFamily[tuple[str, str | None]]`, found `ResultWithFamily[tuple[str, str | None]] | ResultWithFamily[tuple[str, str]]`
+- zerver/lib/markdown/__init__.py:1171:56: error[invalid-argument-type] Argument to bound method `handle_youtube_url_inlining` is incorrect: Expected `ResultWithFamily[tuple[str, str | None]]`, found `ResultWithFamily[tuple[str, str | None] | None]`
+- zerver/lib/markdown/nested_code_blocks.py:30:58: error[invalid-argument-type] Argument to bound method `get_nested_code_blocks` is incorrect: Expected `list[ResultWithFamily[tuple[str, str | None]]]`, found `list[ResultWithFamily[tuple[str, str | None] | None]]`
+- Found 3672 diagnostics
++ Found 3666 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/advantage_air/__init__.py:69:43: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[None]`
+- homeassistant/components/airvisual/__init__.py:220:5: error[invalid-assignment] Object of type `DataUpdateCoordinator[dict[str, Any] | None]` is not assignable to attribute `runtime_data` of type `DataUpdateCoordinator[dict[str, Any]]`
+- homeassistant/components/airvisual_pro/__init__.py:91:43: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[dict[str, Any] | None]`
+- homeassistant/components/asuswrt/router.py:104:16: error[invalid-return-type] Return type does not match returned value: expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[dict[str, int] | None]`
+- homeassistant/components/hvv_departures/binary_sensor.py:123:27: error[unresolved-attribute] Object of type `None` has no attribute `items`
+- homeassistant/components/iammeter/sensor.py:146:13: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- homeassistant/components/iammeter/sensor.py:147:21: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- homeassistant/components/iammeter/sensor.py:151:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[None]`
+- homeassistant/components/iammeter/sensor.py:156:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[None]`
++ homeassistant/components/led_ble/__init__.py:91:59: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[None]`, found `DataUpdateCoordinator[dict[str, Any]]`
+- homeassistant/components/meteo_france/__init__.py:96:18: error[unresolved-attribute] Object of type `None` has no attribute `position`
++ homeassistant/components/meteo_france/__init__.py:96:18: error[unresolved-attribute] Object of type `dict[str, Any]` has no attribute `position`
+- homeassistant/components/nut/__init__.py:119:40: error[invalid-argument-type] Argument to function `_unique_id_from_status` is incorrect: Expected `dict[str, str]`, found `dict[str, str] | None`
+- homeassistant/components/nut/__init__.py:129:28: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `dict[str, str] | None`
+- homeassistant/components/nut/__init__.py:156:9: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[dict[str, Any]]`, found `DataUpdateCoordinator[dict[str, str] | None]`
++ homeassistant/components/nws/__init__.py:133:9: error[invalid-argument-type] Argument is incorrect: Expected `TimestampDataUpdateCoordinator[None]`, found `TimestampDataUpdateCoordinator[dict[str, Any]]`
++ homeassistant/components/nws/__init__.py:134:9: error[invalid-argument-type] Argument is incorrect: Expected `TimestampDataUpdateCoordinator[None]`, found `TimestampDataUpdateCoordinator[dict[str, Any]]`
++ homeassistant/components/pi_hole/__init__.py:154:42: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[None]`, found `DataUpdateCoordinator[dict[str, Any]]`
+- homeassistant/components/powerwall/__init__.py:236:43: error[invalid-assignment] Invalid assignment to key "coordinator" with declared type `DataUpdateCoordinator[PowerwallData] | None` on TypedDict `PowerwallRuntimeData`: value of type `DataUpdateCoordinator[PowerwallData | None]`
+- homeassistant/components/renault/services.py:124:42: error[unresolved-attribute] Object of type `None` has no attribute `raw_data`
+- homeassistant/components/renault/services.py:133:9: error[unresolved-attribute] Object of type `None` has no attribute `update`
+- homeassistant/components/renault/services.py:136:16: error[unresolved-attribute] Object of type `None` has no attribute `schedules`
+- homeassistant/components/renault/services.py:138:47: error[unresolved-attribute] Object of type `None` has no attribute `schedules`
+- homeassistant/components/renault/services.py:153:9: error[unresolved-attribute] Object of type `None` has no attribute `update`
+- homeassistant/components/renault/services.py:156:16: error[unresolved-attribute] Object of type `None` has no attribute `schedules`
+- homeassistant/components/renault/services.py:158:45: error[unresolved-attribute] Object of type `None` has no attribute `schedules`
++ homeassistant/components/reolink/__init__.py:261:9: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[None]`, found `DataUpdateCoordinator[dict[str, Any]]`
++ homeassistant/components/reolink/__init__.py:262:9: error[invalid-argument-type] Argument is incorrect: Expected `DataUpdateCoordinator[None]`, found `DataUpdateCoordinator[dict[str, Any]]`
++ homeassistant/components/reolink/__init__.py:269:36: error[invalid-argument-type] Argument to function `register_callbacks` is incorrect: Expected `DataUpdateCoordinator[None]`, found `DataUpdateCoordinator[dict[str, Any]]`
+- homeassistant/components/schluter/climate.py:74:42: error[unresolved-attribute] Object of type `None` has no attribute `items`
+- homeassistant/components/senz/__init__.py:79:46: error[invalid-assignment] Object of type `DataUpdateCoordinator[dict[str, Unknown] | None]` is not assignable to `SENZDataUpdateCoordinator`
+- homeassistant/components/smarttub/controller.py:73:9: error[invalid-assignment] Object of type `DataUpdateCoordinator[dict[str, Any] | None]` is not assignable to attribute `coordinator` of type `DataUpdateCoordinator[dict[str, Any]]`
+- homeassistant/components/spotify/__init__.py:82:63: error[invalid-assignment] Object of type `DataUpdateCoordinator[list[Unknown] | None]` is not assignable to `DataUpdateCoordinator[list[Unknown]]`
+- homeassistant/components/supla/__init__.py:123:36: error[unresolved-attribute] Object of type `None` has no attribute `items`
+- homeassistant/components/tesla_wall_connector/__init__.py:71:42: error[invalid-assignment] Object of type `DataUpdateCoordinator[dict[str, Any] | None]` is not assignable to `DataUpdateCoordinator[dict[str, Any]]`
+- Found 14503 diagnostics
++ Found 14484 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2026-01-10 15:42_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## Merging this PR will **improve performance by 26.05%**
+
+
+
+
+`⚡ 1` improved benchmark  
+`✅ 22` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
+
+
+
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 10.2 s | 8.1 s | +26.05% |
+---
+
+<sub>Comparing <code>alex/union-fast-path-still-vec</code> (7b2ac83) with <code>main</code> (880513a)</sub>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?utm_source=github&utm_medium=comment-v2&utm_content=button">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
+  </picture>
+</a>
+
+
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
+
+
+---

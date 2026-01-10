@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-15T03:18:01Z
 updated_at: 2022-10-29T19:35:57Z
 url: https://github.com/astral-sh/ruff/issues/434
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Implement rules in `pep8-naming`
@@ -27,10 +27,6 @@ _Label `rule` added by @charliermarsh on 2022-10-15 14:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#439](../../astral-sh/ruff/pulls/439.md) on 2022-10-16 09:43_
-
----
-
 _Assigned to @harupy by @charliermarsh on 2022-10-16 15:58_
 
 ---
@@ -38,14 +34,6 @@ _Assigned to @harupy by @charliermarsh on 2022-10-16 15:58_
 _Comment by @JinminChangz on 2022-10-17 12:31_
 
 Thanks，Mr.
-
----
-
-_Referenced in [astral-sh/ruff#456](../../astral-sh/ruff/pulls/456.md) on 2022-10-20 15:04_
-
----
-
-_Referenced in [astral-sh/ruff#457](../../astral-sh/ruff/pulls/457.md) on 2022-10-20 16:13_
 
 ---
 
@@ -64,10 +52,6 @@ _Comment by @harupy on 2022-10-26 15:19_
 _Comment by @charliermarsh on 2022-10-26 15:21_
 
 @harupy - Awesome :)
-
----
-
-_Referenced in [astral-sh/ruff#501](../../astral-sh/ruff/pulls/501.md) on 2022-10-29 05:48_
 
 ---
 

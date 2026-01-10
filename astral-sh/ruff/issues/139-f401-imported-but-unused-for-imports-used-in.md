@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-10T12:13:32Z
 updated_at: 2022-09-10T18:51:44Z
 url: https://github.com/astral-sh/ruff/issues/139
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # `F401 imported but unused` for imports used in forward reference type hints
@@ -79,10 +79,6 @@ _Comment by @charliermarsh on 2022-09-10 17:39_
 
 The fix here is that we need to take into account `Union` and other typing structures.
 
-
----
-
-_Referenced in [astral-sh/ruff#141](../../astral-sh/ruff/pulls/141.md) on 2022-09-10 18:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-04T04:42:14Z
 updated_at: 2022-10-04T17:55:33Z
 url: https://github.com/astral-sh/ruff/issues/316
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # SPR001 false positives for two-argument super()
@@ -99,10 +99,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-10-04 16:42_
 _Comment by @charliermarsh on 2022-10-04 16:42_
 
 Working on this now.
-
----
-
-_Referenced in [astral-sh/ruff#323](../../astral-sh/ruff/pulls/323.md) on 2022-10-04 17:45_
 
 ---
 

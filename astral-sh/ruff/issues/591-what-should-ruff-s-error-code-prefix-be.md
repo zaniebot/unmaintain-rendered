@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-04T21:04:27Z
 updated_at: 2022-11-05T03:13:51Z
 url: https://github.com/astral-sh/ruff/issues/591
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # What should Ruff's error code prefix be?
@@ -47,10 +47,6 @@ I note that the [Flake8 documentation](https://flake8.pycqa.org/en/stable/plugin
 _Comment by @charliermarsh on 2022-11-04 22:13_
 
 I don't mind `RUF` :)
-
----
-
-_Referenced in [astral-sh/ruff#592](../../astral-sh/ruff/pulls/592.md) on 2022-11-04 22:38_
 
 ---
 

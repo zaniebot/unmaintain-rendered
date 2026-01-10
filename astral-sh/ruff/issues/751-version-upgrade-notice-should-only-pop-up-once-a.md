@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-15T11:50:47Z
 updated_at: 2022-11-15T21:14:11Z
 url: https://github.com/astral-sh/ruff/issues/751
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Version upgrade notice should only pop up once a day.
@@ -49,10 +49,6 @@ _Renamed from "Version upgrade notice should be switchable" to "Version upgrade 
 
 ---
 
-_Referenced in [astral-sh/ruff#762](../../astral-sh/ruff/pulls/762.md) on 2022-11-15 21:14_
-
----
-
-_Closed by @charliermarsh in #762 on 2022-11-15 21:14_
+_Closed by @charliermarsh on 2022-11-15 21:14_
 
 ---

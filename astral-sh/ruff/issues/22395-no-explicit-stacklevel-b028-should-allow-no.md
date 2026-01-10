@@ -9,9 +9,9 @@ labels:
   - rule
 assignees: []
 created_at: 2026-01-05T09:17:16Z
-updated_at: 2026-01-09T11:25:13Z
+updated_at: 2026-01-10T14:18:05Z
 url: https://github.com/astral-sh/ruff/issues/22395
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-10T15:56:07Z
 ```
 
 # no-explicit-stacklevel (B028) should allow no stacklevel when skip_file_prefixes is provided
@@ -45,5 +45,13 @@ _Label `good first issue` added by @MichaReiser on 2026-01-09 11:25_
 ---
 
 _Label `rule` added by @MichaReiser on 2026-01-09 11:25_
+
+---
+
+_Comment by @caiquejjx on 2026-01-10 14:18_
+
+Hi, I believe that this is already achieved here:
+https://github.com/astral-sh/ruff/blob/046c5a46d88c930e4e5e4638ec6b3515ba919982/crates/ruff_linter/src/rules/flake8_bugbear/rules/no_explicit_stacklevel.rs#L79
+I also tested locally and I don't get the warning if I set the `skip_file_prefixes` param, so maybe only update the message to also inform about the possibility of setting `skip_file_prefixes`?
 
 ---

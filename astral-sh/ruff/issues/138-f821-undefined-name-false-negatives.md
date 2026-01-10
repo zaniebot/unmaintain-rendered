@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-10T11:49:40Z
 updated_at: 2022-09-10T19:19:18Z
 url: https://github.com/astral-sh/ruff/issues/138
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # `F821 Undefined name` false negatives
@@ -90,10 +90,6 @@ v0.0.31 is building now with those fixes. Going to close and create a separate i
 ---
 
 _Closed by @charliermarsh on 2022-09-10 17:06_
-
----
-
-_Referenced in [astral-sh/ruff#140](../../astral-sh/ruff/issues/140.md) on 2022-09-10 17:06_
 
 ---
 

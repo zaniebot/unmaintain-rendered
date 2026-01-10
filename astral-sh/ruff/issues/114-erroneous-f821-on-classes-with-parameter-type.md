@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-06T22:36:46Z
 updated_at: 2022-09-07T00:53:52Z
 url: https://github.com/astral-sh/ruff/issues/114
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Erroneous F821 on classes with parameter type annotations
@@ -74,17 +74,9 @@ ruff_test.py:25:1: F821 Undefined name `y`
 
 ---
 
-_Referenced in [astral-sh/ruff#115](../../astral-sh/ruff/pulls/115.md) on 2022-09-06 23:10_
-
----
-
 _Comment by @charliermarsh on 2022-09-07 00:21_
 
 I think I have to fix this in RustPython.
-
----
-
-_Referenced in [astral-sh/ruff#117](../../astral-sh/ruff/pulls/117.md) on 2022-09-07 00:27_
 
 ---
 

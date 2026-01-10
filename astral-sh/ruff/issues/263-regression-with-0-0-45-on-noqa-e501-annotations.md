@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-23T22:01:56Z
 updated_at: 2022-09-23T23:00:18Z
 url: https://github.com/astral-sh/ruff/issues/263
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Regression with 0.0.45 on `noqa:E501` annotations
@@ -58,10 +58,6 @@ def got_operational(self, ch, method, properties, body):
 ```
 
 That is, the noqa goes at the end of the multi-line string, which is similar to Flake8. We could support _both_ (at the end of the multi-line string _or_ within it), but it adds some complexity and I didn't think it was warranted.
-
----
-
-_Referenced in [isarengineering/SecPi#28](../../isarengineering/SecPi/pulls/28.md) on 2022-09-23 22:57_
 
 ---
 

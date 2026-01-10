@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-21T19:07:30Z
 updated_at: 2022-10-03T18:08:17Z
 url: https://github.com/astral-sh/ruff/issues/247
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Implement autofix for `F401` (`UnusedImport`)
@@ -39,10 +39,6 @@ Reference implementation: https://github.com/hakancelikdev/unimport
 _Comment by @charliermarsh on 2022-09-30 13:06_
 
 There's also: https://github.com/PyCQA/autoflake/blob/main/autoflake.py
-
----
-
-_Referenced in [astral-sh/ruff#298](../../astral-sh/ruff/pulls/298.md) on 2022-10-02 04:48_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-13T13:42:09Z
 updated_at: 2022-11-14T03:26:49Z
 url: https://github.com/astral-sh/ruff/issues/717
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Don't mark re-exported symbols as unused (F401)
@@ -65,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-13 18:46_
 
 ---
 
-_Referenced in [astral-sh/ruff#724](../../astral-sh/ruff/pulls/724.md) on 2022-11-13 18:52_
-
----
-
 _Closed by @charliermarsh on 2022-11-13 19:31_
 
 ---
@@ -115,22 +111,6 @@ Yeah, Pyright seems more correct. Opened python/mypy#14086.
 
 ---
 
-_Referenced in [astral-sh/ruff#729](../../astral-sh/ruff/pulls/729.md) on 2022-11-14 03:26_
-
----
-
 _Closed by @charliermarsh on 2022-11-14 03:26_
-
----
-
-_Referenced in [data-apis/array-api-compat#82](../../data-apis/array-api-compat/pulls/82.md) on 2024-01-26 21:50_
-
----
-
-_Referenced in [astral-sh/ruff#13777](../../astral-sh/ruff/issues/13777.md) on 2024-10-16 13:07_
-
----
-
-_Referenced in [labthings/labthings-fastapi#121](../../labthings/labthings-fastapi/pulls/121.md) on 2025-06-26 09:07_
 
 ---

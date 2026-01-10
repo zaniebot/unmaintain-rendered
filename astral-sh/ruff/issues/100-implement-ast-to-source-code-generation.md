@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-04T14:03:01Z
 updated_at: 2022-10-04T20:27:58Z
 url: https://github.com/astral-sh/ruff/issues/100
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:04Z
 ```
 
 # Implement AST-to-source code generation
@@ -30,10 +30,6 @@ _Label `enhancement` added by @charliermarsh on 2022-09-04 14:03_
 _Comment by @charliermarsh on 2022-09-04 14:04_
 
 (The solution to the 'formatting and comments' problem is to use a CST like in LibCST or an FST like in [RedBaron](https://redbaron.readthedocs.io/en/latest/index.html).)
-
----
-
-_Referenced in [astral-sh/ruff#292](../../astral-sh/ruff/pulls/292.md) on 2022-09-30 15:27_
 
 ---
 

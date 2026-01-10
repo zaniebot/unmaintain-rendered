@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-03T10:35:18Z
 updated_at: 2022-11-09T15:24:20Z
 url: https://github.com/astral-sh/ruff/issues/565
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # feat: Ambiguous character detection
@@ -32,10 +32,6 @@ This idea came from https://github.com/pydantic/pydantic/pull/4714 thanks to @ad
 
 ---
 
-_Referenced in [pydantic/pydantic#4714](../../pydantic/pydantic/pulls/4714.md) on 2022-11-03 13:19_
-
----
-
 _Label `rule` added by @charliermarsh on 2022-11-03 13:19_
 
 ---
@@ -43,10 +39,6 @@ _Label `rule` added by @charliermarsh on 2022-11-03 13:19_
 _Comment by @samuelcolvin on 2022-11-03 13:22_
 
 Great, ye I was thinking auto-fixing would be great, not sure if the available dataset includes the substitution characters, but I would assume it does.
-
----
-
-_Referenced in [astral-sh/ruff#577](../../astral-sh/ruff/issues/577.md) on 2022-11-04 03:24_
 
 ---
 
@@ -63,10 +55,6 @@ _Comment by @charliermarsh on 2022-11-04 03:30_
 
 Any input on what the error code should be for this? (E.g., I just used `X001` above.) It's one of the first rules that isn't indexed based on another plugin's coding.
 
-
----
-
-_Referenced in [astral-sh/ruff#578](../../astral-sh/ruff/pulls/578.md) on 2022-11-04 03:39_
 
 ---
 

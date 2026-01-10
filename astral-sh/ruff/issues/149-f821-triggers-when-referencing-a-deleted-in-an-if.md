@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-11T03:20:32Z
 updated_at: 2022-09-11T14:28:08Z
 url: https://github.com/astral-sh/ruff/issues/149
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # F821 triggers when referencing a deleted (in an if) variable in an else/elif
@@ -78,10 +78,6 @@ as in, all `print`s should be considered valid.
 ---
 
 _Label `bug` added by @charliermarsh on 2022-09-11 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#154](../../astral-sh/ruff/pulls/154.md) on 2022-09-11 14:06_
 
 ---
 

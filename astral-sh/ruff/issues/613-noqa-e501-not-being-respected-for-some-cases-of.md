@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-05T22:33:10Z
 updated_at: 2022-11-06T09:20:08Z
 url: https://github.com/astral-sh/ruff/issues/613
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # noqa E501 not being respected for some cases of long lines
@@ -90,10 +90,6 @@ ignore = [
     "N818",  # error suffix in exception names
 ]	   
 ```
-
----
-
-_Referenced in [astral-sh/ruff#615](../../astral-sh/ruff/pulls/615.md) on 2022-11-05 23:48_
 
 ---
 

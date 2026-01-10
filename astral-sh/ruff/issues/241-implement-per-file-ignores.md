@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-21T15:24:13Z
 updated_at: 2022-09-24T17:02:35Z
 url: https://github.com/astral-sh/ruff/issues/241
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Implement per-file ignores
@@ -24,10 +24,6 @@ See [Flake8](https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flak
 ---
 
 _Label `enhancement` added by @charliermarsh on 2022-09-21 15:24_
-
----
-
-_Referenced in [astral-sh/ruff#261](../../astral-sh/ruff/pulls/261.md) on 2022-09-23 12:17_
 
 ---
 

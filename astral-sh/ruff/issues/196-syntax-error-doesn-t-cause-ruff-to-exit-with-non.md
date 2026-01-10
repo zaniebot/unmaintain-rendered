@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-15T01:51:46Z
 updated_at: 2022-09-15T02:37:56Z
 url: https://github.com/astral-sh/ruff/issues/196
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Syntax error doesn't cause ruff to exit with non-zero code
@@ -42,18 +42,10 @@ repro.py:1:8: E999 SyntaxError: unexpected EOF while parsing
 
 ---
 
-_Referenced in [astral-sh/ruff#199](../../astral-sh/ruff/pulls/199.md) on 2022-09-15 02:32_
-
----
-
 _Label `bug` added by @charliermarsh on 2022-09-15 02:32_
 
 ---
 
 _Closed by @charliermarsh on 2022-09-15 02:37_
-
----
-
-_Referenced in [astral-sh/ruff#8447](../../astral-sh/ruff/issues/8447.md) on 2023-11-02 17:40_
 
 ---

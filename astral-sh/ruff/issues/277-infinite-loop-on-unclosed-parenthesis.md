@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-28T22:32:47Z
 updated_at: 2022-09-29T02:06:37Z
 url: https://github.com/astral-sh/ruff/issues/277
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Infinite loop on unclosed parenthesis
@@ -40,10 +40,6 @@ _Label `bug` added by @charliermarsh on 2022-09-28 23:00_
 _Comment by @charliermarsh on 2022-09-28 23:15_
 
 Oh good catch, thanks for filing. I wonder why this didn’t error before. Will take a look.
-
----
-
-_Referenced in [astral-sh/ruff#279](../../astral-sh/ruff/pulls/279.md) on 2022-09-29 01:15_
 
 ---
 

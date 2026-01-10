@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-11T02:37:05Z
 updated_at: 2022-09-11T14:44:24Z
 url: https://github.com/astral-sh/ruff/issues/147
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Exclude options are only available in configuration file
@@ -28,10 +28,6 @@ _Renamed from "Exclude options are only available in configuration" to "Exclude 
 ---
 
 _Label `enhancement` added by @charliermarsh on 2022-09-11 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#157](../../astral-sh/ruff/pulls/157.md) on 2022-09-11 14:36_
 
 ---
 

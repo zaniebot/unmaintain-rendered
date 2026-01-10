@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-04T05:18:30Z
 updated_at: 2022-10-04T12:56:15Z
 url: https://github.com/astral-sh/ruff/issues/317
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # noqa comment ineffective after comment inside tuple
@@ -32,10 +32,6 @@ Despite the `noqa` comment, ruff gives ``test.py:5:1: F401 `os` imported but unu
 ---
 
 _Label `bug` added by @charliermarsh on 2022-10-04 12:28_
-
----
-
-_Referenced in [astral-sh/ruff#320](../../astral-sh/ruff/pulls/320.md) on 2022-10-04 12:55_
 
 ---
 

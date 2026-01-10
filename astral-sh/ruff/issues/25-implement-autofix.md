@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-08-24T13:17:12Z
 updated_at: 2022-09-06T14:15:18Z
 url: https://github.com/astral-sh/ruff/issues/25
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:04Z
 ```
 
 # Implement autofix
@@ -93,10 +93,6 @@ LibCST is very powerful so it's worth exploring. If we adhere closely to their A
 _Comment by @charliermarsh on 2022-09-01 02:22_
 
 Interestingly, it looks like `Fixit` will lint code repeatedly, applying one autofix at a time, then re-linting, applying the next fix, and so on. I wonder if that's strictly necessary 🤔 
-
----
-
-_Referenced in [astral-sh/ruff#78](../../astral-sh/ruff/issues/78.md) on 2022-09-01 16:54_
 
 ---
 

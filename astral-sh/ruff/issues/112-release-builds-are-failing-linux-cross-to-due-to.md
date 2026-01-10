@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-06T17:19:29Z
 updated_at: 2022-09-06T18:19:39Z
 url: https://github.com/astral-sh/ruff/issues/112
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # Release builds are failing (linux-cross) to due to dependency on ring (via update-informer)
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-09-06 17:19_
 ---
 
 _Label `bug` added by @charliermarsh on 2022-09-06 17:19_
-
----
-
-_Referenced in [astral-sh/ruff#113](../../astral-sh/ruff/pulls/113.md) on 2022-09-06 18:03_
 
 ---
 

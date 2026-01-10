@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-07T21:35:05Z
 updated_at: 2022-09-08T08:07:08Z
 url: https://github.com/astral-sh/ruff/issues/123
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T15:56:05Z
 ```
 
 # `F401 imported but unused` when symbol is only used for type hints
@@ -50,10 +50,6 @@ Wow, this is really tricky, I think it's because the type hint is `datetime: dat
 
 ---
 
-_Referenced in [astral-sh/ruff#127](../../astral-sh/ruff/pulls/127.md) on 2022-09-08 02:34_
-
----
-
 _Closed by @charliermarsh on 2022-09-08 02:35_
 
 ---
@@ -61,9 +57,5 @@ _Closed by @charliermarsh on 2022-09-08 02:35_
 _Comment by @amotl on 2022-09-08 08:07_
 
 Oh wow, so I've catched that case accidentally ;]. Thank you for fixing it so quickly again!
-
----
-
-_Referenced in [astral-sh/ruff#139](../../astral-sh/ruff/issues/139.md) on 2022-09-10 12:13_
 
 ---
